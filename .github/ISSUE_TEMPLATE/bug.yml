@@ -1,0 +1,32 @@
+name: Controlled defect report
+description: Report a reproducible software or semantic-control defect.
+title: "[bug] "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include protected neural, participant, clinical, regulatory, security or credential data.
+  - type: input
+    id: version
+    attributes:
+      label: Workbench version
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Exact observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction using synthetic data
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Affected controlled object or decision boundary
+    validations:
+      required: true

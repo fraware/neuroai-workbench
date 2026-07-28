@@ -1,0 +1,30 @@
+name: Capability proposal
+description: Propose an additive capability or instrument change.
+title: "[proposal] "
+labels: [proposal, triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and affected users
+    validations:
+      required: true
+  - type: textarea
+    id: semantics
+    attributes:
+      label: Controlled semantics and prohibited inferences
+    validations:
+      required: true
+  - type: dropdown
+    id: change
+    attributes:
+      label: Change class
+      options: [Patch, Compatible minor, Potential major instrument change]
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Required fixtures and acceptance tests
+    validations:
+      required: true
