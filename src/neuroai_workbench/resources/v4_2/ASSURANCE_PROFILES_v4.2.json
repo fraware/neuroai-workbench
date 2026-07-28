@@ -1,0 +1,139 @@
+[
+  {
+    "Profile_ID": "AP-1",
+    "Profile": "Exploratory research measurement",
+    "Typical_Scope": "Non-interventional research recording without consequential individual decisions",
+    "Minimum_Level": "CL-2",
+    "Mandatory_Modules": "NK-01,NK-02,NK-03,NK-05,NK-08,NK-09,NK-10,NK-13",
+    "Additional_Gates": "Ethics review, consent, data governance, claim control",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ]
+  },
+  {
+    "Profile_ID": "AP-2",
+    "Profile": "Non-invasive clinical or assistive system",
+    "Typical_Scope": "Diagnostic, rehabilitative, assistive, or communication use without implanted hardware",
+    "Minimum_Level": "CL-3",
+    "Mandatory_Modules": "NK-01–NK-11,NK-13",
+    "Additional_Gates": "Clinical safety, accessibility, participant support, monitoring",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ]
+  },
+  {
+    "Profile_ID": "AP-3",
+    "Profile": "Invasive, implanted, adaptive, or closed-loop system",
+    "Typical_Scope": "Implanted interfaces, stimulation, adaptive control, or high-dependency assistive use",
+    "Minimum_Level": "CL-4",
+    "Mandatory_Modules": "NK-01–NK-13",
+    "Additional_Gates": "Participant-version evidence, independent replay, incident, continuity, withdrawal, long-term follow-up",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ]
+  },
+  {
+    "Profile_ID": "AP-4",
+    "Profile": "Consumer, commercial, or mental-state inference system",
+    "Typical_Scope": "Direct-to-consumer, wellness, entertainment, profiling, generative decoding, or recommender integration",
+    "Minimum_Level": "CL-3",
+    "Mandatory_Modules": "NK-01,NK-02,NK-03,NK-05,NK-06,NK-07,NK-08,NK-09,NK-10,NK-11,NK-12,NK-13",
+    "Additional_Gates": "Claim substantiation, manipulation, AI reuse, opt-out, multifunction controls",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ],
+    "Subprofiles": [
+      {
+        "Subprofile_ID": "AP-4G",
+        "Name": "Generative neural decoding",
+        "Trigger": "Generative reconstruction or semantic output from neural or neuro-enabled signals."
+      },
+      {
+        "Subprofile_ID": "AP-4M",
+        "Name": "Mental-state inference",
+        "Trigger": "Inference of affect, intention, preference, attention or other mental state."
+      },
+      {
+        "Subprofile_ID": "AP-4C",
+        "Name": "Consumer or commercial deployment",
+        "Trigger": "Direct-to-consumer, commercial, wellness, entertainment or recommender deployment."
+      }
+    ]
+  },
+  {
+    "Profile_ID": "AP-5",
+    "Profile": "Institutional power-imbalance deployment",
+    "Typical_Scope": "Education, workplace, insurance, welfare, justice, detention, or other essential-service context",
+    "Minimum_Level": "CL-4",
+    "Mandatory_Modules": "NK-01–NK-13",
+    "Additional_Gates": "Necessity, legal basis, non-coercion, refusal protection, independent oversight, remedy",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ]
+  },
+  {
+    "Profile_ID": "AP-6",
+    "Profile": "Dual-use, security, defence, or social-control risk",
+    "Typical_Scope": "Defence, intelligence, law enforcement, political influence, high-value surveillance, or coercive potential",
+    "Minimum_Level": "CL-4",
+    "Mandatory_Modules": "NK-01–NK-13",
+    "Additional_Gates": "Human-rights review, prohibited-use determination, security compartment, international-law analysis",
+    "Version": "v4.2",
+    "Deployment_Modifiers": [
+      "RESEARCH",
+      "CLINICAL INVESTIGATIONAL",
+      "CLINICAL AUTHORIZED",
+      "HOME OR COMMUNITY",
+      "CONSUMER",
+      "WORKPLACE",
+      "EDUCATION",
+      "JUSTICE OR DETENTION",
+      "DEFENCE OR SECURITY"
+    ]
+  }
+]

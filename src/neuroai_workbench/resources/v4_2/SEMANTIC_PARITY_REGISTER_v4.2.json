@@ -1,0 +1,227 @@
+[
+  {
+    "Parity_ID": "PAR-01",
+    "Semantic_Object": "Assessment metadata",
+    "JSON_Object": "assessment_metadata",
+    "Workbook_Sheet": "System Profile",
+    "DOCX_Section": "1. Assessment metadata",
+    "Web_Section": "Assessment metadata",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-02",
+    "Semantic_Object": "Exact system profile",
+    "JSON_Object": "system_profile",
+    "Workbook_Sheet": "System Profile / Components / Classification / Actors",
+    "DOCX_Section": "2–3. Exact system and classification",
+    "Web_Section": "System and classification",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-03",
+    "Semantic_Object": "Deployment state and future-use gates",
+    "JSON_Object": "deployment_state",
+    "Workbook_Sheet": "Deployment & Gates",
+    "DOCX_Section": "4. Deployment state and future-use gates",
+    "Web_Section": "Deployment and gates",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-04",
+    "Semantic_Object": "Profile and escalators",
+    "JSON_Object": "profile_selection",
+    "Workbook_Sheet": "Profile Selection",
+    "DOCX_Section": "5. Profile selection",
+    "Web_Section": "Profile selection",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-05",
+    "Semantic_Object": "Claims and public-claim provenance",
+    "JSON_Object": "claim_register[]",
+    "Workbook_Sheet": "Claims",
+    "DOCX_Section": "6. Claims",
+    "Web_Section": "Claims",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-06",
+    "Semantic_Object": "Evidence and access states",
+    "JSON_Object": "evidence_register[]",
+    "Workbook_Sheet": "Evidence Register",
+    "DOCX_Section": "7. Evidence and access state",
+    "Web_Section": "Evidence",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-07",
+    "Semantic_Object": "Configuration relationships",
+    "JSON_Object": "configuration_relationships[]",
+    "Workbook_Sheet": "Configuration Relations",
+    "DOCX_Section": "8. Configuration and source relations",
+    "Web_Section": "Configuration relations",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-08",
+    "Semantic_Object": "Source-version relationships",
+    "JSON_Object": "source_version_relationships[]",
+    "Workbook_Sheet": "Source Versions",
+    "DOCX_Section": "8. Configuration and source relations",
+    "Web_Section": "Source versions",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-09",
+    "Semantic_Object": "Provenance discrepancies",
+    "JSON_Object": "provenance_discrepancies[]",
+    "Workbook_Sheet": "Provenance Integrity",
+    "DOCX_Section": "9. Provenance integrity",
+    "Web_Section": "Provenance integrity",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-10",
+    "Semantic_Object": "Configuration epochs",
+    "JSON_Object": "configuration_epochs[]",
+    "Workbook_Sheet": "Configuration Epochs",
+    "DOCX_Section": "10. Longitudinal configuration epochs",
+    "Web_Section": "Configuration epochs",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-11",
+    "Semantic_Object": "Denominators",
+    "JSON_Object": "denominator_register[]",
+    "Workbook_Sheet": "Denominators",
+    "DOCX_Section": "11. Denominators",
+    "Web_Section": "Denominators",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-12",
+    "Semantic_Object": "Endpoints",
+    "JSON_Object": "endpoint_register[]",
+    "Workbook_Sheet": "Endpoints",
+    "DOCX_Section": "12. Endpoints",
+    "Web_Section": "Endpoints",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-13",
+    "Semantic_Object": "Functional contributions",
+    "JSON_Object": "functional_contribution_register[]",
+    "Workbook_Sheet": "Contributions",
+    "DOCX_Section": "13. Functional contribution",
+    "Web_Section": "Contributions",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-14",
+    "Semantic_Object": "Independence axes",
+    "JSON_Object": "independence_assessment[]",
+    "Workbook_Sheet": "Independence",
+    "DOCX_Section": "14. Independence",
+    "Web_Section": "Independence",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-15",
+    "Semantic_Object": "Latency",
+    "JSON_Object": "latency_register[]",
+    "Workbook_Sheet": "Latency",
+    "DOCX_Section": "15. Latency",
+    "Web_Section": "Latency",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-16",
+    "Semantic_Object": "Control authority",
+    "JSON_Object": "control_authority_register[]",
+    "Workbook_Sheet": "Control Authority",
+    "DOCX_Section": "16. Control authority",
+    "Web_Section": "Control authority",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-17",
+    "Semantic_Object": "Operational burden",
+    "JSON_Object": "operational_burden_register[]",
+    "Workbook_Sheet": "Operational Burden",
+    "DOCX_Section": "17. Operational burden",
+    "Web_Section": "Operational burden",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-18",
+    "Semantic_Object": "Update lineage",
+    "JSON_Object": "update_lineage_register[]",
+    "Workbook_Sheet": "Update Lineage",
+    "DOCX_Section": "18. Update lineage",
+    "Web_Section": "Update lineage",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-19",
+    "Semantic_Object": "Participant authority",
+    "JSON_Object": "participant_authority_register[]",
+    "Workbook_Sheet": "Participant Authority",
+    "DOCX_Section": "19. Participant authority",
+    "Web_Section": "Participant authority",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-20",
+    "Semantic_Object": "Postmarket exposure",
+    "JSON_Object": "postmarket_exposure_register[]",
+    "Workbook_Sheet": "Postmarket Exposure",
+    "DOCX_Section": "20. Postmarket exposure",
+    "Web_Section": "Postmarket exposure",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-21",
+    "Semantic_Object": "Reproducibility tiers",
+    "JSON_Object": "reproducibility_register[]",
+    "Workbook_Sheet": "Reproducibility",
+    "DOCX_Section": "21. Reproducibility",
+    "Web_Section": "Reproducibility",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-22",
+    "Semantic_Object": "Requirement findings",
+    "JSON_Object": "requirement_findings[]",
+    "Workbook_Sheet": "Requirement Findings",
+    "DOCX_Section": "22. Requirement findings",
+    "Web_Section": "Requirement findings",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-23",
+    "Semantic_Object": "Evidence gaps and requests",
+    "JSON_Object": "gap_register[]",
+    "Workbook_Sheet": "Gaps & Requests",
+    "DOCX_Section": "23. Gaps and requests",
+    "Web_Section": "Gaps and requests",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-24",
+    "Semantic_Object": "Typed decisions",
+    "JSON_Object": "decision_register[]",
+    "Workbook_Sheet": "Decision Register",
+    "DOCX_Section": "24. Typed decisions",
+    "Web_Section": "Decision register",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  },
+  {
+    "Parity_ID": "PAR-25",
+    "Semantic_Object": "Legacy decision and migration",
+    "JSON_Object": "legacy_bounded_decision / migration_provenance",
+    "Workbook_Sheet": "Migration",
+    "DOCX_Section": "25. Migration and historical preservation",
+    "Web_Section": "Migration",
+    "Parity_Rule": "Same field identifiers, controlled vocabulary, required state, interpretation, and migration boundary across all formats."
+  }
+]

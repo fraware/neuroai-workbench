@@ -1,0 +1,12 @@
+NeuroAI Evidence and Decision Workbench
+Copyright 2026 NeuroAI Workbench Contributors
+
+This repository incorporates the v4.2 Pilot-Calibrated Universal NeuroAI Assessment Instrument as controlled machine-readable resources. The software does not represent UNESCO endorsement, Secretariat adoption, Member State consensus, legal authorization, clinical advice, certification, or a completed conformance decision.
+
+Runtime dependency:
+- jsonschema, MIT License, Python JSON Schema project.
+
+Development dependency:
+- pytest, MIT License, pytest contributors.
+
+No third-party dependency source code is vendored in this repository.

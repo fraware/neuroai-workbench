@@ -1,0 +1,332 @@
+{
+  "model_id": "UNESCO-NEUROAI-OBJECT-MODEL-v4.2",
+  "version": "v4.2",
+  "normative_requirement_count": 78,
+  "design_principles": [
+    "Preserve the 78 normative requirement identifiers and texts.",
+    "Separate claim adjudication, legal authorization and conformance decisions.",
+    "Represent unavailable public evidence separately from evaluated nonconformance.",
+    "Resolve every quantitative claim to endpoint, denominator, configuration and source-version objects.",
+    "Preserve functional contributions, human support and infrastructure dependencies.",
+    "Keep current applicability distinct from future-use gates.",
+    "Treat capability continuity, safety continuity and lifecycle continuity as separate evidentiary states.",
+    "Require migration provenance and historical-field preservation."
+  ],
+  "top_level_objects": [
+    {
+      "name": "assessment_metadata",
+      "cardinality": "1",
+      "purpose": "Assessment identity, scope, cutoff and limitations."
+    },
+    {
+      "name": "system_profile",
+      "cardinality": "1",
+      "purpose": "Exact system, components, actors, populations, contexts and lifecycle."
+    },
+    {
+      "name": "deployment_state",
+      "cardinality": "1",
+      "purpose": "Current deployment states and future-use gates."
+    },
+    {
+      "name": "profile_selection",
+      "cardinality": "1",
+      "purpose": "Profile, modifiers, escalators and target level."
+    },
+    {
+      "name": "claim_register",
+      "cardinality": "0..n",
+      "purpose": "Verbatim and assessor-controlled claims with provenance and scope."
+    },
+    {
+      "name": "evidence_register",
+      "cardinality": "0..n",
+      "purpose": "Controlled evidence objects and access states."
+    },
+    {
+      "name": "configuration_relationships",
+      "cardinality": "0..n",
+      "purpose": "Paper, code, model, device, software and build relationships."
+    },
+    {
+      "name": "source_version_relationships",
+      "cardinality": "0..n",
+      "purpose": "Authoritative, supporting, superseded and conflicting source versions."
+    },
+    {
+      "name": "provenance_discrepancies",
+      "cardinality": "0..n",
+      "purpose": "Registry, identifier and source-link discrepancies with propagation control."
+    },
+    {
+      "name": "configuration_epochs",
+      "cardinality": "0..n",
+      "purpose": "Material longitudinal configurations and endpoint links."
+    },
+    {
+      "name": "denominator_register",
+      "cardinality": "0..n",
+      "purpose": "Enrollment, analysis, exposure, postmarket and other controlled denominators."
+    },
+    {
+      "name": "endpoint_register",
+      "cardinality": "0..n",
+      "purpose": "Versioned endpoints, metrics, ground truth, correction and uncertainty."
+    },
+    {
+      "name": "functional_contribution_register",
+      "cardinality": "0..n",
+      "purpose": "Neural, model, UI, human and infrastructure contribution decomposition."
+    },
+    {
+      "name": "independence_assessment",
+      "cardinality": "0..n",
+      "purpose": "Independence across setup, use, maintenance, recovery, transport and sponsor support."
+    },
+    {
+      "name": "latency_register",
+      "cardinality": "0..n",
+      "purpose": "Controlled output-availability and latency claims."
+    },
+    {
+      "name": "control_authority_register",
+      "cardinality": "0..n",
+      "purpose": "Fallback, override, cessation, degraded and emergency transitions."
+    },
+    {
+      "name": "operational_burden_register",
+      "cardinality": "0..n",
+      "purpose": "Setup, calibration, reprogramming, travel, caregiver and follow-up burden."
+    },
+    {
+      "name": "update_lineage_register",
+      "cardinality": "0..n",
+      "purpose": "Model or software changes linked to data, consent, privacy and withdrawal."
+    },
+    {
+      "name": "participant_authority_register",
+      "cardinality": "0..n",
+      "purpose": "Consultation, co-design, voting, veto, evidence-use, dissent and remedy."
+    },
+    {
+      "name": "postmarket_exposure_register",
+      "cardinality": "0..n",
+      "purpose": "Configuration-specific exposure denominators and vigilance events."
+    },
+    {
+      "name": "reproducibility_register",
+      "cardinality": "0..n",
+      "purpose": "Tiered reproduction state from figures to clinical workflow."
+    },
+    {
+      "name": "requirement_findings",
+      "cardinality": "78",
+      "purpose": "All normative requirement findings with access and future-use states."
+    },
+    {
+      "name": "gap_register",
+      "cardinality": "0..n",
+      "purpose": "Evidence requests with observable closure criteria."
+    },
+    {
+      "name": "decision_register",
+      "cardinality": "1..n",
+      "purpose": "Typed claim, authorization, conformance, prohibited-use and reopening decisions."
+    },
+    {
+      "name": "legacy_bounded_decision",
+      "cardinality": "0..1",
+      "purpose": "Exact historical v4.1.2 decision preserved after migration."
+    },
+    {
+      "name": "migration_provenance",
+      "cardinality": "0..1",
+      "purpose": "Source version, hashes, rules and historical-preservation verification."
+    }
+  ],
+  "calibration_trace": [
+    {
+      "change_id": "V42-C01",
+      "priority": "P0",
+      "title": "Separate claim adjudication, authorization and conformance decisions",
+      "source_observation_ids": [
+        "IF-01",
+        "CAL-ADBS-01"
+      ],
+      "required_change": "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "acceptance_test": "The same case can support a bounded claim or legal authorization while system conformance remains blocked."
+    },
+    {
+      "change_id": "V42-C02",
+      "priority": "P1",
+      "title": "Add deployment-state modifiers and future-use gates",
+      "source_observation_ids": [
+        "IF-02",
+        "IF-09",
+        "CAL-T15-09"
+      ],
+      "required_change": "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "acceptance_test": "A research system is not misclassified as a deployed consumer or institutional system."
+    },
+    {
+      "change_id": "V42-C03",
+      "priority": "P0",
+      "title": "Expand evidence availability and access states",
+      "source_observation_ids": [
+        "IF-03",
+        "CAL-ADBS-08"
+      ],
+      "required_change": "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "acceptance_test": "Missing public evidence is never represented as proof of conformity or failure."
+    },
+    {
+      "change_id": "V42-C04",
+      "priority": "P0",
+      "title": "Strengthen endpoint, denominator, ground-truth and correction semantics",
+      "source_observation_ids": [
+        "IF-04",
+        "CAL-ADBS-04",
+        "CAL-ADBS-05",
+        "CAL-T15-03"
+      ],
+      "required_change": "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "acceptance_test": "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class."
+    },
+    {
+      "change_id": "V42-C05",
+      "priority": "P0",
+      "title": "Create configuration, version, source and epoch relationship graph",
+      "source_observation_ids": [
+        "IF-05",
+        "IF-10",
+        "CAL-ADBS-02",
+        "CAL-T15-02"
+      ],
+      "required_change": "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "acceptance_test": "Every claim and endpoint resolves to an exact configuration and source version."
+    },
+    {
+      "change_id": "V42-C06",
+      "priority": "P0",
+      "title": "Add functional-contribution and multi-axis independence objects",
+      "source_observation_ids": [
+        "IF-06",
+        "CAL-T15-01",
+        "CAL-T15-04"
+      ],
+      "required_change": "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "acceptance_test": "Capability and independence claims identify every material contributor and dependency."
+    },
+    {
+      "change_id": "V42-C07",
+      "priority": "P1",
+      "title": "Add controlled latency and output-availability taxonomy",
+      "source_observation_ids": [
+        "IF-07"
+      ],
+      "required_change": "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "acceptance_test": "Real-time claims use a defined and measured latency class."
+    },
+    {
+      "change_id": "V42-C08",
+      "priority": "P1",
+      "title": "Strengthen claimant and public-claim provenance",
+      "source_observation_ids": [
+        "IF-08"
+      ],
+      "required_change": "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "acceptance_test": "Corporate, paper, project-page, media and inferred claims remain distinct."
+    },
+    {
+      "change_id": "V42-C09",
+      "priority": "P0",
+      "title": "Add trial and regulatory provenance-integrity objects",
+      "source_observation_ids": [
+        "CAL-ADBS-03"
+      ],
+      "required_change": "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "acceptance_test": "Incorrect links cannot silently corrupt trial-publication-regulatory graphs."
+    },
+    {
+      "change_id": "V42-C10",
+      "priority": "P0",
+      "title": "Formalize fallback, override, cessation and emergency states",
+      "source_observation_ids": [
+        "CAL-ADBS-06"
+      ],
+      "required_change": "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "acceptance_test": "Every hazardous or degraded state has an auditable safe transition."
+    },
+    {
+      "change_id": "V42-C11",
+      "priority": "P1",
+      "title": "Make operational burden a structured outcome and access variable",
+      "source_observation_ids": [
+        "CAL-ADBS-07"
+      ],
+      "required_change": "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "acceptance_test": "Benefit and access claims include the work required to operate the system."
+    },
+    {
+      "change_id": "V42-C12",
+      "priority": "P0",
+      "title": "Add postmarket exposure denominators and component restrictions",
+      "source_observation_ids": [
+        "CAL-ADBS-09",
+        "CAL-ADBS-10"
+      ],
+      "required_change": "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "acceptance_test": "Postmarket rates and restrictions remain configuration-specific."
+    },
+    {
+      "change_id": "V42-C13",
+      "priority": "P0",
+      "title": "Link model-update lineage to consent and neural-data governance",
+      "source_observation_ids": [
+        "CAL-T15-05"
+      ],
+      "required_change": "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal.",
+      "acceptance_test": "Continuous learning remains traceable and consent-bounded."
+    },
+    {
+      "change_id": "V42-C14",
+      "priority": "P0",
+      "title": "Represent participant authority as distinct governance powers",
+      "source_observation_ids": [
+        "CAL-T15-06"
+      ],
+      "required_change": "Separate consultation, co-design, voting, veto, evidence-use control and dissent.",
+      "acceptance_test": "Participation or satisfaction cannot be mistaken for governance authority."
+    },
+    {
+      "change_id": "V42-C15",
+      "priority": "P0",
+      "title": "Prohibit substitution of capability continuity for safety evidence",
+      "source_observation_ids": [
+        "CAL-T15-07"
+      ],
+      "required_change": "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "acceptance_test": "Longitudinal function cannot be cited as proof of safety."
+    },
+    {
+      "change_id": "V42-C16",
+      "priority": "P0",
+      "title": "Add dependency-accrual and continuity triggers",
+      "source_observation_ids": [
+        "CAL-T15-08"
+      ],
+      "required_change": "Increase continuity obligations when participants rely on an investigational or supplier-dependent function.",
+      "acceptance_test": "Essential reliance triggers funded transition, support and cessation duties."
+    },
+    {
+      "change_id": "V42-C17",
+      "priority": "P1",
+      "title": "Add tiered reproducibility states",
+      "source_observation_ids": [
+        "CAL-T15-10"
+      ],
+      "required_change": "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows.",
+      "acceptance_test": "Public analysis code cannot be represented as full-system reproduction."
+    }
+  ]
+}

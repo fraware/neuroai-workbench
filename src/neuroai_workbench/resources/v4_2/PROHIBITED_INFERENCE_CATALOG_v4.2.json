@@ -1,0 +1,97 @@
+[
+  {
+    "Inference_ID": "PI-01",
+    "Category": "Registry presence",
+    "Rule": "A registered study or programme does not establish recruitment, completion, publication, safety, effectiveness, authorization, or ethical adequacy."
+  },
+  {
+    "Inference_ID": "PI-02",
+    "Category": "Publication presence",
+    "Rule": "A publication does not establish trial-wide validation, primary-endpoint success, current configuration equivalence, or generalizability."
+  },
+  {
+    "Inference_ID": "PI-03",
+    "Category": "Mechanistic evidence",
+    "Rule": "Signal detection or classification does not establish functional benefit, independent use, or clinical outcome."
+  },
+  {
+    "Inference_ID": "PI-04",
+    "Category": "Demonstration evidence",
+    "Rule": "A demonstration does not establish prespecified performance, assistance burden, longitudinal reliability, or safety."
+  },
+  {
+    "Inference_ID": "PI-05",
+    "Category": "Generative plausibility",
+    "Rule": "Fluent or plausible output does not establish accurate neural decoding or access to intended, private, or unspoken mental content."
+  },
+  {
+    "Inference_ID": "PI-06",
+    "Category": "Participant transfer",
+    "Rule": "Performance or safety from one participant does not transfer automatically to another participant or population."
+  },
+  {
+    "Inference_ID": "PI-07",
+    "Category": "Version transfer",
+    "Rule": "Evidence from one hardware, firmware, software, model, calibration, or support configuration does not automatically transfer to another."
+  },
+  {
+    "Inference_ID": "PI-08",
+    "Category": "Context transfer",
+    "Rule": "Laboratory, clinic, supervised, or prompted performance does not establish home, autonomous, workplace, educational, or consumer performance."
+  },
+  {
+    "Inference_ID": "PI-09",
+    "Category": "Consent sufficiency",
+    "Rule": "Consent does not by itself establish legality, proportionality, voluntariness, scientific validity, or freedom from structural coercion."
+  },
+  {
+    "Inference_ID": "PI-10",
+    "Category": "Security control presence",
+    "Rule": "A documented or configured security control does not establish operating effectiveness without executed evidence."
+  },
+  {
+    "Inference_ID": "PI-11",
+    "Category": "No reported harm",
+    "Rule": "Absence of a public adverse-event report does not establish absence of harm."
+  },
+  {
+    "Inference_ID": "PI-12",
+    "Category": "Commercial or regulatory status",
+    "Rule": "Commercial availability, funding, procurement, or regulatory interaction does not establish ethical acceptability or conformance."
+  },
+  {
+    "Inference_ID": "PI-13",
+    "Category": "Decision transfer",
+    "Rule": "A supported claim, legal authorization, or regulatory decision does not establish system conformance unless a separate conformance decision has been made by the competent assurance authority."
+  },
+  {
+    "Inference_ID": "PI-14",
+    "Category": "Public evidence absence",
+    "Rule": "Absence of public evidence does not establish conformity, nonconformity, or absence of a privately held record."
+  },
+  {
+    "Inference_ID": "PI-15",
+    "Category": "Denominator transfer",
+    "Rule": "Enrollment, setup, analysis, completer, preference, exposure, and postmarket denominators may not be substituted for one another."
+  },
+  {
+    "Inference_ID": "PI-16",
+    "Category": "Capability-safety substitution",
+    "Rule": "Longitudinal performance, continued use, or active channels do not establish implant safety, adverse-event absence, or trial-wide safety."
+  },
+  {
+    "Inference_ID": "PI-17",
+    "Category": "Independence collapse",
+    "Rule": "Researcher-free operation does not establish care-partner, maintenance, infrastructure, transport, or sponsor independence."
+  },
+  {
+    "Inference_ID": "PI-18",
+    "Category": "Reproducibility tier transfer",
+    "Rule": "Reproduction of figures or analyses does not establish reproduction of endpoints, models, online systems, or clinical workflows."
+  },
+  {
+    "Inference_ID": "PI-19",
+    "Category": "Participant participation",
+    "Rule": "Consultation, co-design, satisfaction, or continued participation does not establish voting, veto, evidence-use control, dissent authority, or remedy."
+  }
+]

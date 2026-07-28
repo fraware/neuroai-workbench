@@ -1,0 +1,155 @@
+[
+  {
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Objective": "Ensure that every assurance claim resolves to an exact system, configuration, context, population, function, actor, and lifecycle state.",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ]
+  },
+  {
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Objective": "Protect dignity, autonomy, freedom of thought, mental and physical integrity, voluntariness, and dynamic consent.",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ]
+  },
+  {
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Objective": "Require science- and evidence-based claims, exact endpoints, reproducible methods, limitations, and prohibited inferences.",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ]
+  },
+  {
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Objective": "Control physical, mental, social, economic, and lifecycle harms through proportionate benefit-risk evidence and vigilance.",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ]
+  },
+  {
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Objective": "Protect direct neural data, indirect neural data, and non-neural data enabling mental-state inference through minimization, purpose limits, access controls, and rights.",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ]
+  },
+  {
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Objective": "Protect hardware, software, data, services, and lifecycle operations against compromise, misuse, failure, and supplier cessation.",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ]
+  },
+  {
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Objective": "Control model provenance, training data, bias, calibration, uncertainty, automation, human oversight, and signal-versus-prior behavior.",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ]
+  },
+  {
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Objective": "Give participants, affected communities, persons with disabilities, caregivers, and civil society meaningful authority throughout the lifecycle.",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ]
+  },
+  {
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Objective": "Detect and mitigate exclusion, bias, unequal access, stigma, linguistic and cultural barriers, and burdens on resource-constrained settings.",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ]
+  },
+  {
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Objective": "Assign accountable actors, preserve independent review and dissent, provide remedy, and publish bounded information suitable for public scrutiny.",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ]
+  },
+  {
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Objective": "Protect users when systems change, fail, are withdrawn, become obsolete, or require deactivation, removal, maintenance, or continuing access.",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ]
+  },
+  {
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Objective": "Apply heightened controls in education, employment, consumer, children, older-person, disability, mental-health, enhancement, and dual-use settings.",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ]
+  },
+  {
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Objective": "Build durable institutions, workforce competence, environmental responsibility, national coordination, indicators, and international learning.",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Version": "v4.2",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ]
+  }
+]

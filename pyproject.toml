@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neuroai-workbench"
+version = "0.1.0"
+description = "Offline-first evidence and decision workbench for the v4.2 universal NeuroAI assessment instrument"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{name = "NeuroAI Workbench Contributors"}]
+keywords = ["neurotechnology", "neuroai", "assessment", "evidence", "governance", "json-schema"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "jsonschema==4.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==9.1.1",
+]
+
+[project.scripts]
+neuroai-workbench = "neuroai_workbench.cli:main"
+
+[project.urls]
+Documentation = "https://github.com/fraware/neuroai-workbench/tree/main/docs"
+Issues = "https://github.com/fraware/neuroai-workbench/issues"
+Source = "https://github.com/fraware/neuroai-workbench"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+neuroai_workbench = [
+  "static/*",
+  "resources/v4_2/*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["neuroai_workbench"]

@@ -1,0 +1,44 @@
+[
+  {
+    "Conformance_Level": "CL-0",
+    "Name": "Unclassified",
+    "Definition": "The exact system, use, population, or accountable actor is unresolved.",
+    "Minimum_Evidence": "None sufficient",
+    "Decision": "NOT REVIEWABLE"
+  },
+  {
+    "Conformance_Level": "CL-1",
+    "Name": "Declared",
+    "Definition": "The actor has completed system identity, function, intended use, population, data, lifecycle, and claim declarations.",
+    "Minimum_Evidence": "Signed declarations and source register",
+    "Decision": "DECLARED ONLY"
+  },
+  {
+    "Conformance_Level": "CL-2",
+    "Name": "Evidence-traceable",
+    "Definition": "Material claims, risks, controls, incidents, and lifecycle states link to exact evidence and limitations.",
+    "Minimum_Evidence": "Evidence manifest, claim registry, configuration links, endpoint and incident records",
+    "Decision": "TRACEABLE WITH STATED LIMITS"
+  },
+  {
+    "Conformance_Level": "CL-3",
+    "Name": "Independently assessed",
+    "Definition": "Independent multidisciplinary and participant-inclusive assessment has examined the applicable kernel requirements.",
+    "Minimum_Evidence": "Independent findings, objections, participant record, defect and exception ledgers",
+    "Decision": "ASSESSED FOR BOUNDED SCOPE"
+  },
+  {
+    "Conformance_Level": "CL-4",
+    "Name": "Lifecycle assured",
+    "Definition": "Longitudinal monitoring, updates, incidents, continuity, withdrawal, reassessment triggers, and support obligations are operational.",
+    "Minimum_Evidence": "Monitoring, change, safety, security, continuity, and post-use evidence",
+    "Decision": "LIFECYCLE ASSURED FOR BOUNDED SCOPE"
+  },
+  {
+    "Conformance_Level": "CL-5",
+    "Name": "Publicly accountable",
+    "Definition": "The protected assurance case supports a bounded public summary, monitoring indicators, correction process, remedy routes, and periodic re-evaluation.",
+    "Minimum_Evidence": "Public assurance summary, monitoring report, remedy and correction records, current decision",
+    "Decision": "PUBLICLY ACCOUNTABLE FOR BOUNDED SCOPE"
+  }
+]

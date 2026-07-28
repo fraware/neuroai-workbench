@@ -1,0 +1,42 @@
+[
+  {
+    "Escalator_ID": "ESC-01",
+    "Condition": "Implanted, temporary invasive, or irreversible intervention",
+    "Effect": "Minimum profile AP-3 and conformance level CL-4"
+  },
+  {
+    "Escalator_ID": "ESC-02",
+    "Condition": "Closed-loop stimulation or autonomous actuation",
+    "Effect": "Mandatory safety-security interaction, stop authority, and independent replay"
+  },
+  {
+    "Escalator_ID": "ESC-03",
+    "Condition": "Mental-state inference or generative reconstruction",
+    "Effect": "Mandatory signal-versus-prior decomposition and prohibited-inference controls"
+  },
+  {
+    "Escalator_ID": "ESC-04",
+    "Condition": "Child, diminished capacity, workplace, education, justice, or detention context",
+    "Effect": "Heightened voluntariness, representation, and sectoral safeguards"
+  },
+  {
+    "Escalator_ID": "ESC-05",
+    "Condition": "Restricted neural data, cross-border sharing, or AI training reuse",
+    "Effect": "Minimum CL-4 data governance and independent access audit"
+  },
+  {
+    "Escalator_ID": "ESC-06",
+    "Condition": "Essential support or supplier dependency",
+    "Effect": "Mandatory continuity, cessation, export, and funded support evidence"
+  },
+  {
+    "Escalator_ID": "ESC-07",
+    "Condition": "Dual-use, defence, political, surveillance, or social-control potential",
+    "Effect": "AP-6 review, explicit prohibited use analysis, and human-rights oversight"
+  },
+  {
+    "Escalator_ID": "ESC-08",
+    "Condition": "Public claim exceeds publication or endpoint state",
+    "Effect": "Claim suspension until evidence-state reconciliation"
+  }
+]

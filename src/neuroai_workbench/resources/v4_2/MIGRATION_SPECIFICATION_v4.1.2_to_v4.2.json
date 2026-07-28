@@ -1,0 +1,92 @@
+{
+  "migration_id": "MIGRATION-v4.1.2-to-v4.2",
+  "source_version": "v4.1.2",
+  "target_version": "v4.2",
+  "mode": "ADDITIVE AND HISTORICAL-PRESERVING",
+  "invariants": [
+    "No claim, evidence, endpoint, requirement finding, gap, strongest supported claim, prohibited inference, or historical bounded decision may be deleted.",
+    "The original applicability and finding_status values for all 78 requirements remain unchanged.",
+    "The exact legacy bounded decision is copied into legacy_bounded_decision.",
+    "New structured fields may be populated from explicit source content or set to an unresolved state; inference is not presented as source fact.",
+    "A migration-generated conformance decision may record mechanical blockers but does not replace the historical bounded decision."
+  ],
+  "field_actions": [
+    {
+      "path": "assessment_metadata.instrument_version",
+      "action": "SET",
+      "value": "v4.2"
+    },
+    {
+      "path": "deployment_state",
+      "action": "ADD",
+      "rule": "Derive current use states conservatively from exact assessed context; all material future uses become reopening gates."
+    },
+    {
+      "path": "claim_register[]",
+      "action": "ADD FIELDS",
+      "fields": [
+        "claimant_record_type",
+        "verbatim_text",
+        "source_location",
+        "propagation_history",
+        "current_applicability",
+        "future_use_gate"
+      ]
+    },
+    {
+      "path": "evidence_register[]",
+      "action": "ADD FIELDS",
+      "fields": [
+        "access_state",
+        "known_holder",
+        "retrieval_or_authorization_required",
+        "reproducibility_tier"
+      ]
+    },
+    {
+      "path": "endpoint_register[]",
+      "action": "ADD FIELDS",
+      "fields": [
+        "metric_direction",
+        "aggregation_level",
+        "statistic_type",
+        "derivation",
+        "denominator_ids",
+        "protocol_state",
+        "ground_truth_state",
+        "correction_timing",
+        "configuration_epoch_ids"
+      ]
+    },
+    {
+      "path": "requirement_findings[]",
+      "action": "ADD FIELDS",
+      "fields": [
+        "evidence_access_state",
+        "future_use_gate_status",
+        "historical_finding_preserved"
+      ]
+    },
+    {
+      "path": "bounded_decision",
+      "action": "COPY",
+      "target": "legacy_bounded_decision"
+    },
+    {
+      "path": "decision_register",
+      "action": "ADD",
+      "rule": "Create typed claim adjudication, authorization when applicable, and blocked conformance decision."
+    },
+    {
+      "path": "migration_provenance",
+      "action": "ADD",
+      "rule": "Record source and historical projection hashes."
+    }
+  ],
+  "failure_conditions": [
+    "Any source requirement is absent or duplicated.",
+    "Any source applicability or finding status changes.",
+    "Any source claim, evidence, endpoint, gap, strongest supported claim, prohibited inference, or bounded decision is lost.",
+    "The migrated instance fails v4.2 schema or semantic validation."
+  ]
+}

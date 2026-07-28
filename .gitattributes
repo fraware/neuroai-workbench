@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.json text diff=json
+*.jsonl text diff=json
+*.csv text
+*.md text
+*.py text
+*.js text
+*.css text
+*.html text
+*.png binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.zip binary

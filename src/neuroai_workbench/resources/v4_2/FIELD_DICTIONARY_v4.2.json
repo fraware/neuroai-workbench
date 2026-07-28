@@ -1,0 +1,4362 @@
+[
+  {
+    "Field_ID": "assessment_metadata",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "system_profile",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "profile_selection",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "claim_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "claim_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "evidence_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "evidence_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "endpoint_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "endpoint_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "requirement_findings",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "requirement_findings[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "gap_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "gap_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "assessment_notes",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "assessment_notes[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "deployment_state",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "configuration_relationships",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "configuration_relationships[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "source_version_relationships",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "source_version_relationships[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "provenance_discrepancies",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "provenance_discrepancies[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "configuration_epochs",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "configuration_epochs[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "denominator_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "denominator_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "functional_contribution_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "functional_contribution_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "independence_assessment",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "independence_assessment[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "latency_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "latency_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "control_authority_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "control_authority_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "operational_burden_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "operational_burden_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "update_lineage_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "update_lineage_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "participant_authority_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "participant_authority_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "postmarket_exposure_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "postmarket_exposure_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "reproducibility_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "reproducibility_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "decision_register",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "decision_register[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "legacy_bounded_decision",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "migration_provenance",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.assessment_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.instrument_version",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.title",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.assessment_status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "DRAFT | IN PROGRESS | EVIDENCE FROZEN | DECISION READY | CLOSED | REOPENED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.assessment_purpose",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.evidence_cutoff",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.evidence_freeze_id",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.jurisdictions",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.jurisdictions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.assessors",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.assessors[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.public_private_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PUBLIC EVIDENCE ONLY | PUBLIC EVIDENCE WITH CONTROLLED PRIVATE GAP REGISTER | PRIVATE EVIDENCE AUTHORIZED | SYNTHETIC ONLY",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.source_corpus_version",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.migrated_from_version",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.assessment_metadata.migration_id",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.actor_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.name_or_role",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.organization",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.responsibility",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.accountability_state",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.actor.source_or_basis",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.component_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.component_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "HARDWARE | SOFTWARE | MODEL | FIRMWARE | DATA PIPELINE | ACCESSORY | EXTERNAL SERVICE | PROCEDURE | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.name",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.effective_period",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.supplier_or_owner",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.dependency",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.evidence_ids",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.component.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.system_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.system_name",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.system_family",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.configuration_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.configuration_effective_period",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.components",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.components[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_01",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_01.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_01.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "No direct interface | Non-invasive | Minimally invasive | Temporary invasive | Implanted",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_01.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_01.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_02",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_02.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_02.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Record | Infer | Actuate | Stimulate/modulate | Closed-loop",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_02.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_02.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_03",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_03.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_03.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Research measurement | Diagnostic | Therapeutic | Assistive | Enhancement | Monitoring/profiling | Control/communication",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_03.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_03.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_04",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_04.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_04.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Direct neural | Indirect neural | Non-neural enabling mental inference | Multimodal | Derived/model output",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_04.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_04.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_05",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_05.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_05.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "None | Signal processing | Predictive inference | Generative reconstruction | Adaptive control | Autonomous decision",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_05.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_05.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_06",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_06.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_06.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Ephemeral | Session-based | Longitudinal | Permanent implant | Persistent model/data representation",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_06.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_06.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_07",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_07.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_07.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Fully reversible | Operationally reversible | Clinically burdensome | Partially irreversible | Unknown",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_07.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_07.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_08",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_08.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_08.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "User initiated | Clinician supervised | Operator controlled | Automated | Closed-loop autonomous",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_08.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_08.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_09",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_09.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_09.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Research | Clinical | Home/community | Consumer | Education | Workplace | Justice/security | Defence",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_09.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_09.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_10",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_10.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_10.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "General adult | Person with disability | Child/adolescent | Older person | Mental-health condition | Diminished capacity | Worker/student | Other vulnerable context",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_10.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_10.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_11",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_11.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_11.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Concept | Bench | Preclinical | Early feasibility | Controlled clinical | Authorized use | Post-market",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_11.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_11.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_12",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_12.values",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_12.values[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "Offline/local | Connected | Cloud dependent | Third-party model/service | Essential supplier dependency | High-value cyber target",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_12.certainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONFIRMED | PROVISIONAL | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.classification.sc_12.rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.intended_uses",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.intended_uses[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.excluded_uses",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.excluded_uses[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.populations",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.populations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.contexts",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.contexts[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.accountable_actors",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.accountable_actors[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.affected_third_parties",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.affected_third_parties[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.lifecycle_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.material_dependencies",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.material_dependencies[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.known_change_history",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.known_change_history[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.unresolved_identity_questions",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.system_profile.unresolved_identity_questions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.initial_profile_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.triggered_escalators",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.triggered_escalators[]",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.triggered_escalators[].escalator_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "ESC-01 | ESC-02 | ESC-03 | ESC-04 | ESC-05 | ESC-06 | ESC-07 | ESC-08",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.triggered_escalators[].triggered",
+    "Type": "boolean",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.triggered_escalators[].rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.final_profile_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.target_conformance_level",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CL-0 | CL-1 | CL-2 | CL-3 | CL-4 | CL-5",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.mandatory_modules",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.mandatory_modules[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "NK-01 | NK-02 | NK-03 | NK-04 | NK-05 | NK-06 | NK-07 | NK-08 | NK-09 | NK-10 | NK-11 | NK-12 | NK-13",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.additional_gates",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.additional_gates[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.selection_rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.unresolved_profile_questions",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.profile_selection.unresolved_profile_questions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claim_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claim_text",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimant",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claim_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CAPABILITY | PERFORMANCE | SAFETY | EFFECTIVENESS | AUTHORIZATION | DEPLOYMENT | PARTICIPANT EXPERIENCE | LIFECYCLE | PRIVACY | CYBERSECURITY | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.system_and_version",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.population",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.context",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.endpoint",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.observation_window",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimed_scope.jurisdiction",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claim_status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "SUPPORTED WITHIN BOUNDED SCOPE | PARTIALLY SUPPORTED | UNSUPPORTED | CONTRADICTED | NOT REVIEWABLE | WITHDRAWN OR SUPERSEDED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.strongest_supported_claim",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.prohibited_inferences",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.prohibited_inferences[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.limitations",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.required_evidence_to_change_status",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.required_evidence_to_change_status[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.claimant_record_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PEER-REVIEWED PAPER | PREPRINT | REGULATORY AUTHORITY | TRIAL REGISTRY | SPONSOR OR INVESTIGATOR | MANUFACTURER | PROJECT PAGE | CORPORATE COMMUNICATION | MEDIA REPORT | PARTICIPANT STATEMENT | ASSESSOR-CONTROLLED CLAIM | INFERRED PUBLIC CLAIM | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.verbatim_text",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.source_location",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.propagation_history",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.propagation_history[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.current_applicability",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.claim.future_use_gate",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.evidence_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.evidence_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PEER-REVIEWED STUDY | PREPRINT | TRIAL REGISTRY | REGULATORY AUTHORIZATION | SAFETY OR VIGILANCE RECORD | PARTICIPANT OR CAREGIVER EVIDENCE | METHOD OR TECHNICAL DOCUMENT | CYBERSECURITY RECORD | PATENT | POLICY OR NORMATIVE SOURCE | PROGRAMME OR PROCUREMENT RECORD | COMMERCIAL CLAIM | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.title",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.source",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.url_or_path",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.identifiers",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.evidence_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PRIMARY SOURCE VERIFIED | PRIMARY METADATA VERIFIED | CONTROLLED DISCOVERY RECORD | PARTICIPANT OR CAREGIVER EVIDENCE | REGULATORY RECORD | TRIAL REGISTRY | PREPRINT | PEER-REVIEWED PUBLICATION | PATENT RECORD | COMMERCIAL OR MEDIA CLAIM | PRIVATE EVIDENCE REQUIRED | NOT AVAILABLE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.system_and_version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.population",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.function",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.endpoint",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.observation_window",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.controls_or_comparators",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.result_or_record_content",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.publication_or_record_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.source_retrieval_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.primary_or_secondary",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "PRIMARY | SECONDARY | MIXED | UNKNOWN",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.strongest_supported_claim",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.prohibited_inferences",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.prohibited_inferences[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.limitations",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.checksum",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.access_conditions",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.access_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.known_holder",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.retrieval_or_authorization_required",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.evidence.reproducibility_tier",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "R0 NONE | R1 FIGURES | R2 ANALYSIS | R3 ENDPOINTS | R4 MODEL | R5 ONLINE SYSTEM | R6 CLINICAL WORKFLOW",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.endpoint_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.population",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.system_and_version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.endpoint",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.measurement_method",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.observation_window",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.comparator_or_control",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.result",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.uncertainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.null_adverse_or_burden_state",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.source_evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.source_evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.transfer_limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.transfer_limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.metric_direction",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "HIGHER IS BETTER | LOWER IS BETTER | TARGET RANGE | DESCRIPTIVE | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.aggregation_level",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PARTICIPANT | SESSION | SENTENCE | EVENT | SITE | COHORT | DEVICE | MODEL BUILD | EXPOSURE TIME | OTHER | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.statistic_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "MEAN | MEDIAN | BEST CASE | WORST CASE | PROPORTION | COUNT | RATE | CONFIDENCE LIMIT | RANGE | INDIVIDUAL VALUE | OTHER | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.derivation",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.denominator_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.denominator_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.protocol_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PROTOCOL-DEFINED | AMENDED | POST-HOC | SENSITIVITY | EXPLORATORY | PUBLICATION-DERIVED | OPERATIONAL | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.ground_truth_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "EXTERNAL OBSERVED TARGET | PROMPTED KNOWN TARGET | CLINICIAN-ADJUDICATED | PARTICIPANT-RATED | CORRECTION-DERIVED | NO INDEPENDENT GROUND TRUTH | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.correction_timing",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "NO CORRECTION | PRE-OUTPUT | INTERACTIVE | POST-OUTPUT | PARTICIPANT EDIT | CLINICIAN ADJUSTMENT | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.configuration_epoch_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.endpoint.configuration_epoch_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.requirement_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "NK-01-R01 | NK-01-R02 | NK-01-R03 | NK-01-R04 | NK-01-R05 | NK-01-R06 | NK-02-R01 | NK-02-R02 | NK-02-R03 | NK-02-R04 | NK-02-R05 | NK-02-R06 | NK-03-R01 | NK-03-R02 | NK-03-R03 | NK-03-R04 | NK-03-R05 | NK-03-R06 | NK-04-R01 | NK-04-R02 | NK-04-R03 | NK-04-R04 | NK-04-R05 | NK-04-R06 | NK-05-R01 | NK-05-R02 | NK-05-R03 | NK-05-R04 | NK-05-R05 | NK-05-R06 | NK-06-R01 | NK-06-R02 | NK-06-R03 | NK-06-R04 | NK-06-R05 | NK-06-R06 | NK-07-R01 | NK-07-R02 | NK-07-R03 | NK-07-R04 | NK-07-R05 | NK-07-R06 | NK-08-R01 | NK-08-R02 | NK-08-R03 | NK-08-R04 | NK-08-R05 | NK-08-R06 | NK-09-R01 | NK-09-R02 | NK-09-R03 | NK-09-R04 | NK-09-R05 | NK-09-R06 | NK-10-R01 | NK-10-R02 | NK-10-R03 | NK-10-R04 | NK-10-R05 | NK-10-R06 | NK-11-R01 | NK-11-R02 | NK-11-R03 | NK-11-R04 | NK-11-R05 | NK-11-R06 | NK-12-R01 | NK-12-R02 | NK-12-R03 | NK-12-R04 | NK-12-R05 | NK-12-R06 | NK-13-R01 | NK-13-R02 | NK-13-R03 | NK-13-R04 | NK-13-R05 | NK-13-R06",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.module_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "NK-01 | NK-02 | NK-03 | NK-04 | NK-05 | NK-06 | NK-07 | NK-08 | NK-09 | NK-10 | NK-11 | NK-12 | NK-13",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.priority",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "P0 | P1 | P2",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.applicability",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "APPLICABLE | NOT APPLICABLE WITH RATIONALE | UNCERTAIN — RESOLUTION REQUIRED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.applicability_rationale",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.finding_status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PASS | PARTIAL | FAIL | NOT ASSESSED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.finding",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.strongest_supported_claim",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.prohibited_inferences",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.prohibited_inferences[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.evidence_gap",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.required_action",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.owner",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.target_date",
+    "Type": "[\"string\", \"null\"]",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.reassessment_trigger",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.evidence_access_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.future_use_gate_status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.requirement_finding.historical_finding_preserved",
+    "Type": "boolean",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.gap_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.linked_requirement_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.linked_requirement_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.linked_claim_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.linked_claim_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.priority",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "P0 | P1 | P2",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.missing_evidence",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.request_text",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.closure_criterion",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.responsible_actor",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "OPEN | REQUEST READY | REQUEST ISSUED | PARTIAL RESPONSE | CLOSED | INAPPLICABLE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.response_evidence_ids",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.response_evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.remaining_limitation",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.gap.evidence_access_state",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.decision_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.decision_class",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PUBLIC EVIDENCE SUFFICIENT FOR BOUNDED CLAIM | PUBLIC EVIDENCE PARTIAL — PRIVATE EVIDENCE REQUIRED | INSUFFICIENT OR INADMISSIBLE EVIDENCE | PROHIBITED OR DISPROPORTIONATE USE | SYNTHETIC GOVERNANCE FINDING ONLY | NO DECISION — ASSESSMENT INCOMPLETE",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.system_and_version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.profile_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.target_level",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CL-0 | CL-1 | CL-2 | CL-3 | CL-4 | CL-5",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope.population",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope.context",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope.function",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope.jurisdiction",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.scope.evidence_freeze_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.strongest_supported_claim",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.prohibited_inferences",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.prohibited_inferences[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.p0_nonconformities",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.p0_nonconformities[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.p1_conditions",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.p1_conditions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.participant_conditions_and_dissent",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.participant_conditions_and_dissent[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.jurisdictional_conflicts",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.jurisdictional_conflicts[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.residual_risks",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.residual_risks[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.exceptions",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.exceptions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.expiry",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.reopening_triggers",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.reopening_triggers[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.signatures",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.signatures[]",
+    "Type": "",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.decision_limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.bounded_decision.decision_limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.current_states",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.current_states[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "RESEARCH | CLINICAL INVESTIGATIONAL | CLINICAL AUTHORIZED | HOME OR COMMUNITY | CONSUMER | WORKPLACE | EDUCATION | JUSTICE OR DETENTION | DEFENCE OR SECURITY | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.future_use_gates",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.future_use_gates[]",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.future_use_gates[].state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "RESEARCH | CLINICAL INVESTIGATIONAL | CLINICAL AUTHORIZED | HOME OR COMMUNITY | CONSUMER | WORKPLACE | EDUCATION | JUSTICE OR DETENTION | DEFENCE OR SECURITY | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.future_use_gates[].gate_status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.future_use_gates[].rationale",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.modifiers",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.deployment_state.modifiers[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.relationship_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.from_configuration",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.to_configuration",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.relationship_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "SAME | SUBSET | SUPERSET | ALTERNATE | SUPERSEDED | SUCCESSOR | DERIVED FROM | APPLIES TO | INCONSISTENT WITH | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.basis",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_relationship.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.relationship_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.from_source_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.to_source_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.relationship_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "SAME | SUBSET | SUPERSET | ALTERNATE | SUPERSEDED | SUCCESSOR | DERIVED FROM | APPLIES TO | INCONSISTENT WITH | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.authority_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "AUTHORITATIVE FOR THIS CLAIM | SUPPORTING | HISTORICAL | SUPERSEDED | CONFLICTING | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.basis",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.affected_claim_ids",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.source_version_relationship.affected_claim_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.discrepancy_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.observed_pointer",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.adjudicated_identity",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.authoritative_source_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.authoritative_source_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.status",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.propagation_controls",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.propagation_controls[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.provenance_discrepancy.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.epoch_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.configuration_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.start",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.end",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.material_changes",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.material_changes[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.endpoint_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.endpoint_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.configuration_epoch.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.denominator_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.denominator_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.population_definition",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.value_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.value",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.time_window",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.configuration_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.transition_from_ids",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.transition_from_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.denominator.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.contribution_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.layer",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.target",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.comparator",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.metric_delta",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.uncertainty",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.residual_confounds",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.residual_confounds[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.functional_contribution.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.independence_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.axis",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.dependencies",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.dependencies[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.limitations",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.independence_axis.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.latency_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.latency_class",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CAUSAL STREAMING | INCREMENTAL | ASYNCHRONOUS WINDOW | BATCH | CLOSED-LOOP CONTROL | OFFLINE ANALYSIS | UNRESOLVED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.measurement_start",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.measurement_end",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.value",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.units",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.output_availability",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.latency_record.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.control_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.actor_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PARTICIPANT | CAREGIVER | CLINICIAN | OPERATOR | SYSTEM | SPONSOR | MANUFACTURER | EMERGENCY AUTHORITY | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.state_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "PAUSE TO SAFE THERAPY | STOP OUTPUT | STOP STIMULATION | CLINICIAN OVERRIDE | PARTICIPANT OVERRIDE | EMERGENCY SHUTDOWN | DEGRADED MODE | RECOVERY | OTHER",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.trigger",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.transition",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.tested_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.control_authority.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.burden_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.burden_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.actor",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.frequency",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.duration_or_load",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.outcome_or_access_effect",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.operational_burden.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.update_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.configuration_before",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.configuration_after",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.change_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.source_data_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.source_data_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.consent_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.privacy_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.withdrawal_effect",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.update_lineage.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.authority_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.power",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CONSULTATION | CO-DESIGN | VOTING | VETO | EVIDENCE-USE CONTROL | DATA-WITHDRAWAL CONTROL | SYSTEM CESSATION CONTROL | DISSENT | REMEDY | NONE DOCUMENTED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.holder",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.scope",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.exercised_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.participant_authority.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.exposure_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.configuration_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.jurisdiction",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.time_window",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.exposure_denominator_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.exposure_denominator",
+    "Type": "",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.event_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.event_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.postmarket_exposure.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.reproducibility_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.tier",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "R0 NONE | R1 FIGURES | R2 ANALYSIS | R3 ENDPOINTS | R4 MODEL | R5 ONLINE SYSTEM | R6 CLINICAL WORKFLOW",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.artifacts",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.artifacts[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.independent_execution_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.reproducibility_record.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.decision_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.decision_object_type",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "CLAIM ADJUDICATION | LEGAL OR REGULATORY AUTHORIZATION | CONFORMANCE DECISION | PROHIBITED-USE DECISION | REOPENING DECISION",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.authority",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.authority_basis",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.decision_state",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "SUPPORTED WITHIN BOUNDED SCOPE | PARTIALLY SUPPORTED | UNSUPPORTED | CONTRADICTED | AUTHORIZED WITHIN BOUNDED SCOPE | NOT AUTHORIZED | AUTHORIZATION NOT ASSESSED | NOT APPLICABLE | CONFORMS FOR BOUNDED SCOPE | CONDITIONAL CONFORMANCE | NO CONFORMANCE DECISION — BLOCKED | PROHIBITED OR DISPROPORTIONATE USE | ASSESSMENT INCOMPLETE | REOPENED",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.scope",
+    "Type": "object",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.evidence_threshold",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.evidence_ids",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.evidence_ids[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.strongest_supported_claim",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.prohibited_inferences",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.prohibited_inferences[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.conditions",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.conditions[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.expiry",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.reopening_triggers",
+    "Type": "array",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.reopening_triggers[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.linked_legacy_decision_id",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.limitations",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.typed_decision.limitations[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance",
+    "Type": "object",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.migration_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.source_instrument_version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.target_instrument_version",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.source_assessment_id",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.source_sha256",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.historical_projection_sha256",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.migration_ruleset",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.migration_date",
+    "Type": "string",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.preservation_verified",
+    "Type": "boolean",
+    "Required": "YES",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.migration_warnings",
+    "Type": "array",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  },
+  {
+    "Field_ID": "$defs.migration_provenance.migration_warnings[]",
+    "Type": "string",
+    "Required": "NO",
+    "Controlled_Values": "",
+    "Description": "",
+    "Version": "v4.2"
+  }
+]

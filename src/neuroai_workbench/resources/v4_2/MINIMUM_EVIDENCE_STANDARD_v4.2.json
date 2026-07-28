@@ -1,0 +1,442 @@
+{
+  "release": "v4.2",
+  "universal": [
+    {
+      "item_id": "MEB-U01",
+      "title": "Exact system and configuration boundary",
+      "minimum_evidence": "Resolve every material hardware, software, firmware, model, data-pipeline, accessory, service, procedure and supplier component, including effective dates and configuration relationships.",
+      "requirement_ids": [
+        "NK-01-R01",
+        "NK-01-R02",
+        "NK-01-R05",
+        "NK-01-R06"
+      ],
+      "closure_test": "An exact configuration record and material-change rule exist; every evidence item and endpoint points to a configuration or epoch.",
+      "prohibited_if_absent": "No claim may transfer across unresolved versions or configurations.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U02",
+      "title": "Function, directionality, population, context and actors",
+      "minimum_evidence": "State recording, inference, intervention, actuation and closed-loop functions, with intended and excluded populations, settings, operators, decision-makers and affected third parties.",
+      "requirement_ids": [
+        "NK-01-R03",
+        "NK-01-R04"
+      ],
+      "closure_test": "All functions and actors are explicit and bounded to the assessed context.",
+      "prohibited_if_absent": "No capability or deployment inference outside the declared population and context.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U03",
+      "title": "Claim and source-state register",
+      "minimum_evidence": "Preserve exact claimant, wording, source location, evidence state, version, strongest supported claim and prohibited inference for every material claim.",
+      "requirement_ids": [
+        "NK-03-R01",
+        "NK-03-R02",
+        "NK-03-R06"
+      ],
+      "closure_test": "Every material claim has a source-state and bounded adjudication.",
+      "prohibited_if_absent": "No publication, authorization, company statement or media claim may substitute for another evidence state.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U04",
+      "title": "Endpoint, denominator, comparator and observation control",
+      "minimum_evidence": "Define endpoint, metric direction, aggregation level, denominator, comparator, observation period, uncertainty and protocol/version state.",
+      "requirement_ids": [
+        "NK-03-R03",
+        "NK-03-R05"
+      ],
+      "closure_test": "Each numerical claim can be reconstructed from an exact endpoint and denominator.",
+      "prohibited_if_absent": "No best-case, completer, post-hoc or participant-rated result may be presented as a population-wide primary endpoint.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U05",
+      "title": "Reproducibility and replay boundary",
+      "minimum_evidence": "State which layers can be independently reproduced: analysis, endpoint, model, online system, clinical workflow and deployment.",
+      "requirement_ids": [
+        "NK-03-R04"
+      ],
+      "closure_test": "Reproduction level, unavailable inputs and replay acceptance criteria are explicit.",
+      "prohibited_if_absent": "Public code or figures alone do not establish system reproduction.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U06",
+      "title": "Rights, autonomy, consent and cessation",
+      "minimum_evidence": "Document voluntariness, dynamic consent, withdrawal, user control, cessation, support needs and non-waivable rights.",
+      "requirement_ids": [
+        "NK-02-R01",
+        "NK-02-R02",
+        "NK-02-R03",
+        "NK-02-R04",
+        "NK-02-R05",
+        "NK-02-R06"
+      ],
+      "closure_test": "Participant authority and withdrawal consequences are operationally specified.",
+      "prohibited_if_absent": "Initial consent cannot authorize unlimited secondary use or eliminate continuing rights.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U07",
+      "title": "Multidimensional safety, burden and proportionality",
+      "minimum_evidence": "Record physical, psychological, cognitive, social, operational, caregiver and infrastructure burdens, alternatives, safety events, longitudinal follow-up and stop rules.",
+      "requirement_ids": [
+        "NK-04-R01",
+        "NK-04-R02",
+        "NK-04-R03",
+        "NK-04-R04",
+        "NK-04-R05",
+        "NK-04-R06"
+      ],
+      "closure_test": "A denominator-linked event ledger and benefit-risk decision exist for the exact scope.",
+      "prohibited_if_absent": "Capability continuity or authorization cannot substitute for safety adjudication.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U08",
+      "title": "Neural-data taxonomy and governance",
+      "minimum_evidence": "Classify raw neural data, features, labels, inferences, logs, derived models and linked personal data; specify purpose, minimization, access, participant rights, reuse and cross-border governance.",
+      "requirement_ids": [
+        "NK-05-R01",
+        "NK-05-R02",
+        "NK-05-R03",
+        "NK-05-R04",
+        "NK-05-R05",
+        "NK-05-R06"
+      ],
+      "closure_test": "Access, retention, reuse, withdrawal and repository controls are evidenced.",
+      "prohibited_if_absent": "A privacy mode or de-identification statement alone does not establish complete downstream control.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U09",
+      "title": "Cybersecurity, update and resilience dossier",
+      "minimum_evidence": "Provide threat model, secure-development baseline, vulnerability testing, update/rollback/recovery, incident forensics and supplier-cessation plan.",
+      "requirement_ids": [
+        "NK-06-R01",
+        "NK-06-R02",
+        "NK-06-R03",
+        "NK-06-R04",
+        "NK-06-R05",
+        "NK-06-R06"
+      ],
+      "closure_test": "Independent security evidence covers the exact configuration and operating environment.",
+      "prohibited_if_absent": "Absence of public incidents does not establish security.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U10",
+      "title": "AI and algorithmic assurance",
+      "minimum_evidence": "Document model and training provenance, signal-versus-prior contribution, calibration, abstention, robustness, human oversight, bias and representativeness.",
+      "requirement_ids": [
+        "NK-07-R01",
+        "NK-07-R02",
+        "NK-07-R03",
+        "NK-07-R04",
+        "NK-07-R05",
+        "NK-07-R06"
+      ],
+      "closure_test": "Ablations, uncertainty and distribution-shift limits are explicit.",
+      "prohibited_if_absent": "Fluent, clinically plausible or operationally useful output cannot be assumed to be faithful or equitable.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U11",
+      "title": "Participant and community governance",
+      "minimum_evidence": "Distinguish consultation, co-design, voting, veto, evidence-use authority, public engagement, epistemic plurality and dissent.",
+      "requirement_ids": [
+        "NK-08-R01",
+        "NK-08-R02",
+        "NK-08-R03",
+        "NK-08-R04",
+        "NK-08-R05",
+        "NK-08-R06"
+      ],
+      "closure_test": "Governance rights are documented separately from participation or satisfaction.",
+      "prohibited_if_absent": "Participation in research does not by itself establish governance authority.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U12",
+      "title": "Equity, accessibility and affordability",
+      "minimum_evidence": "Assess representativeness, disability access, usability, discrimination, affordability, continuity, resource-constrained settings and benefit sharing.",
+      "requirement_ids": [
+        "NK-09-R01",
+        "NK-09-R02",
+        "NK-09-R03",
+        "NK-09-R04",
+        "NK-09-R05",
+        "NK-09-R06"
+      ],
+      "closure_test": "Testing and access analysis cover materially affected groups and cost/dependency pathways.",
+      "prohibited_if_absent": "A successful selected cohort does not establish equitable access or non-discrimination.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U13",
+      "title": "Accountability, oversight and remedy",
+      "minimum_evidence": "Map accountable actors, independent oversight, traceable decisions, complaint and challenge routes, public transparency, and regulatory/ethics coordination.",
+      "requirement_ids": [
+        "NK-10-R01",
+        "NK-10-R02",
+        "NK-10-R03",
+        "NK-10-R04",
+        "NK-10-R05",
+        "NK-10-R06"
+      ],
+      "closure_test": "A person can identify who decides, contest the decision and obtain remedy.",
+      "prohibited_if_absent": "Institutional approval alone does not establish operational accountability.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U14",
+      "title": "Lifecycle, withdrawal and continuity",
+      "minimum_evidence": "Specify maintenance, support, deactivation, explantation where relevant, post-trial/post-market continuity, obsolescence, supplier exit, reversibility and reassessment triggers.",
+      "requirement_ids": [
+        "NK-11-R01",
+        "NK-11-R02",
+        "NK-11-R03",
+        "NK-11-R04",
+        "NK-11-R05",
+        "NK-11-R06"
+      ],
+      "closure_test": "Funding, ownership, support duration and transition duties are explicit.",
+      "prohibited_if_absent": "Short-term study support cannot be extrapolated to durable access.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U15",
+      "title": "Sensitive-context and prohibited-use gates",
+      "minimum_evidence": "Record current applicability and future-use gates for children, education, employment, consumer use, mental health/enhancement, dual use, surveillance and social control.",
+      "requirement_ids": [
+        "NK-12-R01",
+        "NK-12-R02",
+        "NK-12-R03",
+        "NK-12-R04",
+        "NK-12-R05",
+        "NK-12-R06"
+      ],
+      "closure_test": "Each sensitive context has an explicit reopening gate and prohibited-use analysis.",
+      "prohibited_if_absent": "Current research inapplicability does not erase future-use safeguards.",
+      "scope": "Universal"
+    },
+    {
+      "item_id": "MEB-U16",
+      "title": "Institutional capacity, monitoring and international coordination",
+      "minimum_evidence": "Define competent bodies, monitoring indicators, policy evaluation, environmental/supply-chain obligations and cross-jurisdiction interoperability.",
+      "requirement_ids": [
+        "NK-13-R01",
+        "NK-13-R02",
+        "NK-13-R03",
+        "NK-13-R04",
+        "NK-13-R05",
+        "NK-13-R06"
+      ],
+      "closure_test": "The responsible institution can monitor, reassess and coordinate across borders and lifecycle changes.",
+      "prohibited_if_absent": "A one-time assessment cannot substitute for continuing institutional capacity.",
+      "scope": "Universal"
+    }
+  ],
+  "profile_specific": [
+    {
+      "item_id": "MEB-G01",
+      "profile": "Generative neural decoding",
+      "title": "Signal-versus-prior contribution matrix",
+      "minimum_evidence": "Ablate neural signal, motor/task labels, decoder stages, corpus constraints and language-model prior with metric deltas and residual confounds.",
+      "closure_test": "Neural contribution is separately demonstrated; prior-only and shuffled/noise controls are reported."
+    },
+    {
+      "item_id": "MEB-G02",
+      "profile": "Generative neural decoding",
+      "title": "Task and ground-truth boundary",
+      "minimum_evidence": "Distinguish overt action, silent speech, attempted movement, inner speech, constrained prompts, known targets and naturalistic use.",
+      "closure_test": "Every endpoint declares the task state and ground-truth source."
+    },
+    {
+      "item_id": "MEB-G03",
+      "profile": "Generative neural decoding",
+      "title": "Generative fidelity and hallucination analysis",
+      "minimum_evidence": "Measure verbatim accuracy, semantic similarity, fluent-but-wrong outputs, calibration and abstention.",
+      "closure_test": "Faithfulness and plausibility are separately quantified."
+    },
+    {
+      "item_id": "MEB-G04",
+      "profile": "Generative neural decoding",
+      "title": "Latency and output-availability class",
+      "minimum_evidence": "Classify causal, incremental, asynchronous, batch and end-to-end latency.",
+      "closure_test": "No real-time claim exists without a controlled latency definition and measurement."
+    },
+    {
+      "item_id": "MEB-G05",
+      "profile": "Generative neural decoding",
+      "title": "Participant and session dependence",
+      "minimum_evidence": "Report participant-specific training, calibration, session drift and cross-participant transfer.",
+      "closure_test": "Generalization claims are bounded to tested participants and sessions."
+    },
+    {
+      "item_id": "MEB-G06",
+      "profile": "Generative neural decoding",
+      "title": "Distribution-shift testing",
+      "minimum_evidence": "Test unseen sentences, vocabulary, topics, recording days, devices and naturalistic conditions.",
+      "closure_test": "Out-of-distribution limits are measured and reported."
+    },
+    {
+      "item_id": "MEB-G07",
+      "profile": "Generative neural decoding",
+      "title": "Mental-state claim boundary",
+      "minimum_evidence": "Pre-register prohibited inferences concerning unrestricted thought reading, private inner speech and latent mental-state detection.",
+      "closure_test": "Public claims remain within the exact observed task and signal state."
+    },
+    {
+      "item_id": "MEB-G08",
+      "profile": "Generative neural decoding",
+      "title": "Paper-code-data-checkpoint reconciliation",
+      "minimum_evidence": "Map reported configuration to released code, dataset, checkpoints and environment.",
+      "closure_test": "Independent reproduction claims match the exact released assets."
+    },
+    {
+      "item_id": "MEB-A01",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Authorization and deployed-build graph",
+      "minimum_evidence": "Link legal authorization, labeling, supplement, device, firmware, clinician software, patient software and site build.",
+      "closure_test": "The deployed configuration is proven to fall within the exact authorization."
+    },
+    {
+      "item_id": "MEB-A02",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Control-law specification",
+      "minimum_evidence": "Document sensed biomarker, thresholds, control states, amplitude bounds, timing, clinician authority and prohibited configurations.",
+      "closure_test": "The controller cannot operate outside declared and tested bounds."
+    },
+    {
+      "item_id": "MEB-A03",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Fallback, override and emergency semantics",
+      "minimum_evidence": "Separate pause-to-fixed therapy, stop stimulation, clinician override, patient control and emergency recovery.",
+      "closure_test": "Every failure state has a safe, testable transition."
+    },
+    {
+      "item_id": "MEB-A04",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Protocol and endpoint versioning",
+      "minimum_evidence": "Link protocol-defined, amended, post-hoc, sensitivity and publication endpoints.",
+      "closure_test": "Regulatory and publication conclusions identify the exact endpoint state."
+    },
+    {
+      "item_id": "MEB-A05",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Denominator transition ledger",
+      "minimum_evidence": "Track enrollment, setup, exclusions, analysis sets, completers, preference, follow-up and exposure denominators.",
+      "closure_test": "No denominator is silently substituted for another."
+    },
+    {
+      "item_id": "MEB-A06",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Safety and setup-burden dossier",
+      "minimum_evidence": "Record adverse events, device effects, reprogramming, pauses, visits, caregiver/travel burden and comparative safety.",
+      "closure_test": "Benefit-risk includes operational burden and exposure-specific event denominators."
+    },
+    {
+      "item_id": "MEB-A07",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Biomarker and adaptation robustness",
+      "minimum_evidence": "Test signal availability, drift, artefact, medication/context effects and failure detection.",
+      "closure_test": "Adaptation remains safe under tested distribution shifts."
+    },
+    {
+      "item_id": "MEB-A08",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Software change and rollback evidence",
+      "minimum_evidence": "Provide change history, verification, cybersecurity review, rollback and field recovery for every build.",
+      "closure_test": "Current-build claims are not inferred from an older authorization baseline."
+    },
+    {
+      "item_id": "MEB-A09",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Postmarket denominator and vigilance",
+      "minimum_evidence": "Link complaints, MDRs, recalls and annual reports to model, build and exposure denominators.",
+      "closure_test": "Postmarket incidence is stated only with a valid denominator."
+    },
+    {
+      "item_id": "MEB-A10",
+      "profile": "Adaptive therapeutic stimulation",
+      "title": "Patient selection and consent evolution",
+      "minimum_evidence": "Document inclusion/exclusion, setup intolerance, preference, dynamic consent and authority over adaptive versus fixed therapy.",
+      "closure_test": "Selected-cohort benefit is not generalized to all labeled patients."
+    },
+    {
+      "item_id": "MEB-H01",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Configuration-epoch register",
+      "minimum_evidence": "Link implant state, decoder, UI, operating system, accessories, model and support arrangements to dated epochs.",
+      "closure_test": "Every endpoint and use claim points to an exact epoch."
+    },
+    {
+      "item_id": "MEB-H02",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Multi-axis independence profile",
+      "minimum_evidence": "Measure researcher presence, care-partner setup, daily-use autonomy, maintenance, recovery, transport and sponsor dependence.",
+      "closure_test": "Independent use is stated on each axis, not as one binary label."
+    },
+    {
+      "item_id": "MEB-H03",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Longitudinal use and downtime ledger",
+      "minimum_evidence": "Record use days, hours, failed sessions, downtime, recovery and reasons for non-use.",
+      "closure_test": "Availability and reliance are measured over the full observation period."
+    },
+    {
+      "item_id": "MEB-H04",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Performance-class separation",
+      "minimum_evidence": "Separate prompted ground-truth tasks, participant-rated naturalistic use, correction-dependent output and functional outcomes.",
+      "closure_test": "No participant-rated or corrected metric is presented as independent ground-truth accuracy."
+    },
+    {
+      "item_id": "MEB-H05",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Implant and signal-integrity evidence",
+      "minimum_evidence": "Track active electrodes, signal changes, pedestal/connector state, infection, device wear, explantation and adverse events.",
+      "closure_test": "Performance continuity cannot substitute for implant safety."
+    },
+    {
+      "item_id": "MEB-H06",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Calibration, retraining and update lineage",
+      "minimum_evidence": "Link each model update to training data, consent, privacy mode, performance change, rollback and failure recovery.",
+      "closure_test": "Continuous learning remains auditable and withdrawable."
+    },
+    {
+      "item_id": "MEB-H07",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Human-support and caregiver burden",
+      "minimum_evidence": "Measure setup time, training, error recovery, caregiver workload and contingency arrangements.",
+      "closure_test": "Home-use feasibility includes support burden."
+    },
+    {
+      "item_id": "MEB-H08",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Participant authority and co-design",
+      "minimum_evidence": "Separate consultation, feature requests, co-design, veto, data-use authority, privacy controls and dissent.",
+      "closure_test": "Co-design is not treated as formal governance unless authority is documented."
+    },
+    {
+      "item_id": "MEB-H09",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Post-trial continuity and dependency accrual",
+      "minimum_evidence": "Assess essential reliance, sponsor cessation, maintenance funding, replacement, explantation and transition.",
+      "closure_test": "Longitudinal benefit triggers stronger continuity obligations."
+    },
+    {
+      "item_id": "MEB-H10",
+      "profile": "Implanted assistive longitudinal home use",
+      "title": "Trial-wide safety separation",
+      "minimum_evidence": "Maintain participant-specific capability records separately from registered trial safety endpoints and denominators.",
+      "closure_test": "A single-participant success cannot establish trial-wide safety."
+    }
+  ],
+  "derived_from": "Three-pilot comparative calibration v4.1.6"
+}

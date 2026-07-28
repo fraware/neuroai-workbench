@@ -1,0 +1,546 @@
+Field_ID,Type,Required,Controlled_Values,Description,Version
+assessment_metadata,,YES,,,v4.2
+system_profile,,YES,,,v4.2
+profile_selection,,YES,,,v4.2
+claim_register,array,YES,,,v4.2
+claim_register[],,NO,,,v4.2
+evidence_register,array,YES,,,v4.2
+evidence_register[],,NO,,,v4.2
+endpoint_register,array,YES,,,v4.2
+endpoint_register[],,NO,,,v4.2
+requirement_findings,array,YES,,,v4.2
+requirement_findings[],,NO,,,v4.2
+gap_register,array,YES,,,v4.2
+gap_register[],,NO,,,v4.2
+assessment_notes,array,NO,,,v4.2
+assessment_notes[],string,NO,,,v4.2
+deployment_state,,YES,,,v4.2
+configuration_relationships,array,YES,,,v4.2
+configuration_relationships[],,NO,,,v4.2
+source_version_relationships,array,YES,,,v4.2
+source_version_relationships[],,NO,,,v4.2
+provenance_discrepancies,array,YES,,,v4.2
+provenance_discrepancies[],,NO,,,v4.2
+configuration_epochs,array,YES,,,v4.2
+configuration_epochs[],,NO,,,v4.2
+denominator_register,array,YES,,,v4.2
+denominator_register[],,NO,,,v4.2
+functional_contribution_register,array,YES,,,v4.2
+functional_contribution_register[],,NO,,,v4.2
+independence_assessment,array,YES,,,v4.2
+independence_assessment[],,NO,,,v4.2
+latency_register,array,YES,,,v4.2
+latency_register[],,NO,,,v4.2
+control_authority_register,array,YES,,,v4.2
+control_authority_register[],,NO,,,v4.2
+operational_burden_register,array,YES,,,v4.2
+operational_burden_register[],,NO,,,v4.2
+update_lineage_register,array,YES,,,v4.2
+update_lineage_register[],,NO,,,v4.2
+participant_authority_register,array,YES,,,v4.2
+participant_authority_register[],,NO,,,v4.2
+postmarket_exposure_register,array,YES,,,v4.2
+postmarket_exposure_register[],,NO,,,v4.2
+reproducibility_register,array,YES,,,v4.2
+reproducibility_register[],,NO,,,v4.2
+decision_register,array,YES,,,v4.2
+decision_register[],,NO,,,v4.2
+legacy_bounded_decision,,NO,,,v4.2
+migration_provenance,,NO,,,v4.2
+$defs.assessment_metadata,object,NO,,,v4.2
+$defs.assessment_metadata.assessment_id,string,YES,,,v4.2
+$defs.assessment_metadata.instrument_version,,YES,,,v4.2
+$defs.assessment_metadata.title,string,YES,,,v4.2
+$defs.assessment_metadata.assessment_status,string,YES,DRAFT | IN PROGRESS | EVIDENCE FROZEN | DECISION READY | CLOSED | REOPENED,,v4.2
+$defs.assessment_metadata.assessment_purpose,string,YES,,,v4.2
+$defs.assessment_metadata.evidence_cutoff,string,YES,,,v4.2
+$defs.assessment_metadata.evidence_freeze_id,string,NO,,,v4.2
+$defs.assessment_metadata.jurisdictions,array,NO,,,v4.2
+$defs.assessment_metadata.jurisdictions[],string,NO,,,v4.2
+$defs.assessment_metadata.assessors,array,NO,,,v4.2
+$defs.assessment_metadata.assessors[],,NO,,,v4.2
+$defs.assessment_metadata.public_private_state,string,YES,PUBLIC EVIDENCE ONLY | PUBLIC EVIDENCE WITH CONTROLLED PRIVATE GAP REGISTER | PRIVATE EVIDENCE AUTHORIZED | SYNTHETIC ONLY,,v4.2
+$defs.assessment_metadata.source_corpus_version,string,NO,,,v4.2
+$defs.assessment_metadata.limitations,array,NO,,,v4.2
+$defs.assessment_metadata.limitations[],string,NO,,,v4.2
+$defs.assessment_metadata.migrated_from_version,string,NO,,,v4.2
+$defs.assessment_metadata.migration_id,string,NO,,,v4.2
+$defs.actor,object,NO,,,v4.2
+$defs.actor.actor_id,string,YES,,,v4.2
+$defs.actor.name_or_role,string,YES,,,v4.2
+$defs.actor.organization,string,NO,,,v4.2
+$defs.actor.responsibility,string,YES,,,v4.2
+$defs.actor.accountability_state,string,NO,,,v4.2
+$defs.actor.source_or_basis,string,NO,,,v4.2
+$defs.component,object,NO,,,v4.2
+$defs.component.component_id,string,YES,,,v4.2
+$defs.component.component_type,string,YES,HARDWARE | SOFTWARE | MODEL | FIRMWARE | DATA PIPELINE | ACCESSORY | EXTERNAL SERVICE | PROCEDURE | OTHER,,v4.2
+$defs.component.name,string,YES,,,v4.2
+$defs.component.version,string,YES,,,v4.2
+$defs.component.effective_period,string,YES,,,v4.2
+$defs.component.supplier_or_owner,string,NO,,,v4.2
+$defs.component.dependency,string,NO,,,v4.2
+$defs.component.evidence_ids,array,NO,,,v4.2
+$defs.component.evidence_ids[],string,NO,,,v4.2
+$defs.system_profile,object,NO,,,v4.2
+$defs.system_profile.system_id,string,YES,,,v4.2
+$defs.system_profile.system_name,string,YES,,,v4.2
+$defs.system_profile.system_family,string,YES,,,v4.2
+$defs.system_profile.configuration_id,string,YES,,,v4.2
+$defs.system_profile.configuration_effective_period,string,NO,,,v4.2
+$defs.system_profile.components,array,YES,,,v4.2
+$defs.system_profile.components[],,NO,,,v4.2
+$defs.system_profile.classification,object,YES,,,v4.2
+$defs.system_profile.classification.sc_01,object,YES,,,v4.2
+$defs.system_profile.classification.sc_01.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_01.values[],string,NO,No direct interface | Non-invasive | Minimally invasive | Temporary invasive | Implanted,,v4.2
+$defs.system_profile.classification.sc_01.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_01.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_02,object,YES,,,v4.2
+$defs.system_profile.classification.sc_02.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_02.values[],string,NO,Record | Infer | Actuate | Stimulate/modulate | Closed-loop,,v4.2
+$defs.system_profile.classification.sc_02.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_02.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_03,object,YES,,,v4.2
+$defs.system_profile.classification.sc_03.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_03.values[],string,NO,Research measurement | Diagnostic | Therapeutic | Assistive | Enhancement | Monitoring/profiling | Control/communication,,v4.2
+$defs.system_profile.classification.sc_03.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_03.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_04,object,YES,,,v4.2
+$defs.system_profile.classification.sc_04.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_04.values[],string,NO,Direct neural | Indirect neural | Non-neural enabling mental inference | Multimodal | Derived/model output,,v4.2
+$defs.system_profile.classification.sc_04.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_04.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_05,object,YES,,,v4.2
+$defs.system_profile.classification.sc_05.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_05.values[],string,NO,None | Signal processing | Predictive inference | Generative reconstruction | Adaptive control | Autonomous decision,,v4.2
+$defs.system_profile.classification.sc_05.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_05.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_06,object,YES,,,v4.2
+$defs.system_profile.classification.sc_06.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_06.values[],string,NO,Ephemeral | Session-based | Longitudinal | Permanent implant | Persistent model/data representation,,v4.2
+$defs.system_profile.classification.sc_06.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_06.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_07,object,YES,,,v4.2
+$defs.system_profile.classification.sc_07.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_07.values[],string,NO,Fully reversible | Operationally reversible | Clinically burdensome | Partially irreversible | Unknown,,v4.2
+$defs.system_profile.classification.sc_07.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_07.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_08,object,YES,,,v4.2
+$defs.system_profile.classification.sc_08.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_08.values[],string,NO,User initiated | Clinician supervised | Operator controlled | Automated | Closed-loop autonomous,,v4.2
+$defs.system_profile.classification.sc_08.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_08.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_09,object,YES,,,v4.2
+$defs.system_profile.classification.sc_09.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_09.values[],string,NO,Research | Clinical | Home/community | Consumer | Education | Workplace | Justice/security | Defence,,v4.2
+$defs.system_profile.classification.sc_09.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_09.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_10,object,YES,,,v4.2
+$defs.system_profile.classification.sc_10.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_10.values[],string,NO,General adult | Person with disability | Child/adolescent | Older person | Mental-health condition | Diminished capacity | Worker/student | Other vulnerable context,,v4.2
+$defs.system_profile.classification.sc_10.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_10.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_11,object,YES,,,v4.2
+$defs.system_profile.classification.sc_11.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_11.values[],string,NO,Concept | Bench | Preclinical | Early feasibility | Controlled clinical | Authorized use | Post-market,,v4.2
+$defs.system_profile.classification.sc_11.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_11.rationale,string,YES,,,v4.2
+$defs.system_profile.classification.sc_12,object,YES,,,v4.2
+$defs.system_profile.classification.sc_12.values,array,YES,,,v4.2
+$defs.system_profile.classification.sc_12.values[],string,NO,Offline/local | Connected | Cloud dependent | Third-party model/service | Essential supplier dependency | High-value cyber target,,v4.2
+$defs.system_profile.classification.sc_12.certainty,string,YES,CONFIRMED | PROVISIONAL | UNKNOWN,,v4.2
+$defs.system_profile.classification.sc_12.rationale,string,YES,,,v4.2
+$defs.system_profile.intended_uses,array,YES,,,v4.2
+$defs.system_profile.intended_uses[],string,NO,,,v4.2
+$defs.system_profile.excluded_uses,array,YES,,,v4.2
+$defs.system_profile.excluded_uses[],string,NO,,,v4.2
+$defs.system_profile.populations,array,YES,,,v4.2
+$defs.system_profile.populations[],string,NO,,,v4.2
+$defs.system_profile.contexts,array,YES,,,v4.2
+$defs.system_profile.contexts[],string,NO,,,v4.2
+$defs.system_profile.accountable_actors,array,YES,,,v4.2
+$defs.system_profile.accountable_actors[],,NO,,,v4.2
+$defs.system_profile.affected_third_parties,array,NO,,,v4.2
+$defs.system_profile.affected_third_parties[],string,NO,,,v4.2
+$defs.system_profile.lifecycle_state,string,YES,,,v4.2
+$defs.system_profile.material_dependencies,array,YES,,,v4.2
+$defs.system_profile.material_dependencies[],string,NO,,,v4.2
+$defs.system_profile.known_change_history,array,NO,,,v4.2
+$defs.system_profile.known_change_history[],string,NO,,,v4.2
+$defs.system_profile.unresolved_identity_questions,array,NO,,,v4.2
+$defs.system_profile.unresolved_identity_questions[],string,NO,,,v4.2
+$defs.profile_selection,object,NO,,,v4.2
+$defs.profile_selection.initial_profile_id,string,YES,AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6,,v4.2
+$defs.profile_selection.triggered_escalators,array,YES,,,v4.2
+$defs.profile_selection.triggered_escalators[],object,NO,,,v4.2
+$defs.profile_selection.triggered_escalators[].escalator_id,string,YES,ESC-01 | ESC-02 | ESC-03 | ESC-04 | ESC-05 | ESC-06 | ESC-07 | ESC-08,,v4.2
+$defs.profile_selection.triggered_escalators[].triggered,boolean,YES,,,v4.2
+$defs.profile_selection.triggered_escalators[].rationale,string,YES,,,v4.2
+$defs.profile_selection.final_profile_id,string,YES,AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6,,v4.2
+$defs.profile_selection.target_conformance_level,string,YES,CL-0 | CL-1 | CL-2 | CL-3 | CL-4 | CL-5,,v4.2
+$defs.profile_selection.mandatory_modules,array,YES,,,v4.2
+$defs.profile_selection.mandatory_modules[],string,NO,NK-01 | NK-02 | NK-03 | NK-04 | NK-05 | NK-06 | NK-07 | NK-08 | NK-09 | NK-10 | NK-11 | NK-12 | NK-13,,v4.2
+$defs.profile_selection.additional_gates,array,NO,,,v4.2
+$defs.profile_selection.additional_gates[],string,NO,,,v4.2
+$defs.profile_selection.selection_rationale,string,YES,,,v4.2
+$defs.profile_selection.unresolved_profile_questions,array,NO,,,v4.2
+$defs.profile_selection.unresolved_profile_questions[],string,NO,,,v4.2
+$defs.claim,object,NO,,,v4.2
+$defs.claim.claim_id,string,YES,,,v4.2
+$defs.claim.claim_text,string,YES,,,v4.2
+$defs.claim.claimant,string,YES,,,v4.2
+$defs.claim.claim_type,string,YES,CAPABILITY | PERFORMANCE | SAFETY | EFFECTIVENESS | AUTHORIZATION | DEPLOYMENT | PARTICIPANT EXPERIENCE | LIFECYCLE | PRIVACY | CYBERSECURITY | OTHER,,v4.2
+$defs.claim.claimed_scope,object,YES,,,v4.2
+$defs.claim.claimed_scope.system_and_version,string,NO,,,v4.2
+$defs.claim.claimed_scope.population,string,NO,,,v4.2
+$defs.claim.claimed_scope.context,string,NO,,,v4.2
+$defs.claim.claimed_scope.endpoint,string,NO,,,v4.2
+$defs.claim.claimed_scope.observation_window,string,NO,,,v4.2
+$defs.claim.claimed_scope.jurisdiction,string,NO,,,v4.2
+$defs.claim.evidence_ids,array,YES,,,v4.2
+$defs.claim.evidence_ids[],string,NO,,,v4.2
+$defs.claim.claim_status,string,YES,SUPPORTED WITHIN BOUNDED SCOPE | PARTIALLY SUPPORTED | UNSUPPORTED | CONTRADICTED | NOT REVIEWABLE | WITHDRAWN OR SUPERSEDED,,v4.2
+$defs.claim.strongest_supported_claim,string,YES,,,v4.2
+$defs.claim.prohibited_inferences,array,YES,,,v4.2
+$defs.claim.prohibited_inferences[],string,NO,,,v4.2
+$defs.claim.limitations,array,YES,,,v4.2
+$defs.claim.limitations[],string,NO,,,v4.2
+$defs.claim.required_evidence_to_change_status,array,NO,,,v4.2
+$defs.claim.required_evidence_to_change_status[],string,NO,,,v4.2
+$defs.claim.claimant_record_type,string,YES,PEER-REVIEWED PAPER | PREPRINT | REGULATORY AUTHORITY | TRIAL REGISTRY | SPONSOR OR INVESTIGATOR | MANUFACTURER | PROJECT PAGE | CORPORATE COMMUNICATION | MEDIA REPORT | PARTICIPANT STATEMENT | ASSESSOR-CONTROLLED CLAIM | INFERRED PUBLIC CLAIM | OTHER,,v4.2
+$defs.claim.verbatim_text,string,YES,,,v4.2
+$defs.claim.source_location,string,YES,,,v4.2
+$defs.claim.propagation_history,array,YES,,,v4.2
+$defs.claim.propagation_history[],string,NO,,,v4.2
+$defs.claim.current_applicability,string,YES,,,v4.2
+$defs.claim.future_use_gate,string,YES,CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED,,v4.2
+$defs.evidence,object,NO,,,v4.2
+$defs.evidence.evidence_id,string,YES,,,v4.2
+$defs.evidence.evidence_type,string,YES,PEER-REVIEWED STUDY | PREPRINT | TRIAL REGISTRY | REGULATORY AUTHORIZATION | SAFETY OR VIGILANCE RECORD | PARTICIPANT OR CAREGIVER EVIDENCE | METHOD OR TECHNICAL DOCUMENT | CYBERSECURITY RECORD | PATENT | POLICY OR NORMATIVE SOURCE | PROGRAMME OR PROCUREMENT RECORD | COMMERCIAL CLAIM | OTHER,,v4.2
+$defs.evidence.title,string,YES,,,v4.2
+$defs.evidence.source,string,YES,,,v4.2
+$defs.evidence.url_or_path,string,NO,,,v4.2
+$defs.evidence.identifiers,object,NO,,,v4.2
+$defs.evidence.evidence_state,string,YES,PRIMARY SOURCE VERIFIED | PRIMARY METADATA VERIFIED | CONTROLLED DISCOVERY RECORD | PARTICIPANT OR CAREGIVER EVIDENCE | REGULATORY RECORD | TRIAL REGISTRY | PREPRINT | PEER-REVIEWED PUBLICATION | PATENT RECORD | COMMERCIAL OR MEDIA CLAIM | PRIVATE EVIDENCE REQUIRED | NOT AVAILABLE,,v4.2
+$defs.evidence.system_and_version,string,YES,,,v4.2
+$defs.evidence.population,string,YES,,,v4.2
+$defs.evidence.function,string,YES,,,v4.2
+$defs.evidence.endpoint,string,YES,,,v4.2
+$defs.evidence.observation_window,string,YES,,,v4.2
+$defs.evidence.controls_or_comparators,string,YES,,,v4.2
+$defs.evidence.result_or_record_content,string,NO,,,v4.2
+$defs.evidence.publication_or_record_state,string,YES,,,v4.2
+$defs.evidence.source_retrieval_state,string,YES,,,v4.2
+$defs.evidence.primary_or_secondary,string,NO,PRIMARY | SECONDARY | MIXED | UNKNOWN,,v4.2
+$defs.evidence.strongest_supported_claim,string,YES,,,v4.2
+$defs.evidence.prohibited_inferences,array,NO,,,v4.2
+$defs.evidence.prohibited_inferences[],string,NO,,,v4.2
+$defs.evidence.limitations,array,YES,,,v4.2
+$defs.evidence.limitations[],string,NO,,,v4.2
+$defs.evidence.checksum,string,NO,,,v4.2
+$defs.evidence.access_conditions,string,NO,,,v4.2
+$defs.evidence.access_state,string,YES,PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE,,v4.2
+$defs.evidence.known_holder,string,YES,,,v4.2
+$defs.evidence.retrieval_or_authorization_required,string,YES,,,v4.2
+$defs.evidence.reproducibility_tier,string,YES,R0 NONE | R1 FIGURES | R2 ANALYSIS | R3 ENDPOINTS | R4 MODEL | R5 ONLINE SYSTEM | R6 CLINICAL WORKFLOW,,v4.2
+$defs.endpoint,object,NO,,,v4.2
+$defs.endpoint.endpoint_id,string,YES,,,v4.2
+$defs.endpoint.population,string,YES,,,v4.2
+$defs.endpoint.system_and_version,string,YES,,,v4.2
+$defs.endpoint.endpoint,string,YES,,,v4.2
+$defs.endpoint.measurement_method,string,NO,,,v4.2
+$defs.endpoint.observation_window,string,YES,,,v4.2
+$defs.endpoint.comparator_or_control,string,YES,,,v4.2
+$defs.endpoint.result,string,YES,,,v4.2
+$defs.endpoint.uncertainty,string,YES,,,v4.2
+$defs.endpoint.null_adverse_or_burden_state,string,NO,,,v4.2
+$defs.endpoint.source_evidence_ids,array,YES,,,v4.2
+$defs.endpoint.source_evidence_ids[],string,NO,,,v4.2
+$defs.endpoint.transfer_limitations,array,NO,,,v4.2
+$defs.endpoint.transfer_limitations[],string,NO,,,v4.2
+$defs.endpoint.metric_direction,string,YES,HIGHER IS BETTER | LOWER IS BETTER | TARGET RANGE | DESCRIPTIVE | UNRESOLVED,,v4.2
+$defs.endpoint.aggregation_level,string,YES,PARTICIPANT | SESSION | SENTENCE | EVENT | SITE | COHORT | DEVICE | MODEL BUILD | EXPOSURE TIME | OTHER | UNRESOLVED,,v4.2
+$defs.endpoint.statistic_type,string,YES,MEAN | MEDIAN | BEST CASE | WORST CASE | PROPORTION | COUNT | RATE | CONFIDENCE LIMIT | RANGE | INDIVIDUAL VALUE | OTHER | UNRESOLVED,,v4.2
+$defs.endpoint.derivation,string,YES,,,v4.2
+$defs.endpoint.denominator_ids,array,YES,,,v4.2
+$defs.endpoint.denominator_ids[],string,NO,,,v4.2
+$defs.endpoint.protocol_state,string,YES,PROTOCOL-DEFINED | AMENDED | POST-HOC | SENSITIVITY | EXPLORATORY | PUBLICATION-DERIVED | OPERATIONAL | UNRESOLVED,,v4.2
+$defs.endpoint.ground_truth_state,string,YES,EXTERNAL OBSERVED TARGET | PROMPTED KNOWN TARGET | CLINICIAN-ADJUDICATED | PARTICIPANT-RATED | CORRECTION-DERIVED | NO INDEPENDENT GROUND TRUTH | UNRESOLVED,,v4.2
+$defs.endpoint.correction_timing,string,YES,NO CORRECTION | PRE-OUTPUT | INTERACTIVE | POST-OUTPUT | PARTICIPANT EDIT | CLINICIAN ADJUSTMENT | UNRESOLVED,,v4.2
+$defs.endpoint.configuration_epoch_ids,array,YES,,,v4.2
+$defs.endpoint.configuration_epoch_ids[],string,NO,,,v4.2
+$defs.requirement_finding,object,NO,,,v4.2
+$defs.requirement_finding.requirement_id,string,YES,NK-01-R01 | NK-01-R02 | NK-01-R03 | NK-01-R04 | NK-01-R05 | NK-01-R06 | NK-02-R01 | NK-02-R02 | NK-02-R03 | NK-02-R04 | NK-02-R05 | NK-02-R06 | NK-03-R01 | NK-03-R02 | NK-03-R03 | NK-03-R04 | NK-03-R05 | NK-03-R06 | NK-04-R01 | NK-04-R02 | NK-04-R03 | NK-04-R04 | NK-04-R05 | NK-04-R06 | NK-05-R01 | NK-05-R02 | NK-05-R03 | NK-05-R04 | NK-05-R05 | NK-05-R06 | NK-06-R01 | NK-06-R02 | NK-06-R03 | NK-06-R04 | NK-06-R05 | NK-06-R06 | NK-07-R01 | NK-07-R02 | NK-07-R03 | NK-07-R04 | NK-07-R05 | NK-07-R06 | NK-08-R01 | NK-08-R02 | NK-08-R03 | NK-08-R04 | NK-08-R05 | NK-08-R06 | NK-09-R01 | NK-09-R02 | NK-09-R03 | NK-09-R04 | NK-09-R05 | NK-09-R06 | NK-10-R01 | NK-10-R02 | NK-10-R03 | NK-10-R04 | NK-10-R05 | NK-10-R06 | NK-11-R01 | NK-11-R02 | NK-11-R03 | NK-11-R04 | NK-11-R05 | NK-11-R06 | NK-12-R01 | NK-12-R02 | NK-12-R03 | NK-12-R04 | NK-12-R05 | NK-12-R06 | NK-13-R01 | NK-13-R02 | NK-13-R03 | NK-13-R04 | NK-13-R05 | NK-13-R06,,v4.2
+$defs.requirement_finding.module_id,string,YES,NK-01 | NK-02 | NK-03 | NK-04 | NK-05 | NK-06 | NK-07 | NK-08 | NK-09 | NK-10 | NK-11 | NK-12 | NK-13,,v4.2
+$defs.requirement_finding.priority,string,YES,P0 | P1 | P2,,v4.2
+$defs.requirement_finding.applicability,string,YES,APPLICABLE | NOT APPLICABLE WITH RATIONALE | UNCERTAIN — RESOLUTION REQUIRED,,v4.2
+$defs.requirement_finding.applicability_rationale,string,NO,,,v4.2
+$defs.requirement_finding.finding_status,string,YES,PASS | PARTIAL | FAIL | NOT ASSESSED,,v4.2
+$defs.requirement_finding.evidence_ids,array,YES,,,v4.2
+$defs.requirement_finding.evidence_ids[],string,NO,,,v4.2
+$defs.requirement_finding.finding,string,YES,,,v4.2
+$defs.requirement_finding.strongest_supported_claim,string,YES,,,v4.2
+$defs.requirement_finding.prohibited_inferences,array,YES,,,v4.2
+$defs.requirement_finding.prohibited_inferences[],string,NO,,,v4.2
+$defs.requirement_finding.evidence_gap,string,YES,,,v4.2
+$defs.requirement_finding.required_action,string,YES,,,v4.2
+$defs.requirement_finding.owner,string,NO,,,v4.2
+$defs.requirement_finding.target_date,"[""string"", ""null""]",NO,,,v4.2
+$defs.requirement_finding.reassessment_trigger,string,NO,,,v4.2
+$defs.requirement_finding.evidence_access_state,string,YES,PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE,,v4.2
+$defs.requirement_finding.future_use_gate_status,string,YES,CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED,,v4.2
+$defs.requirement_finding.historical_finding_preserved,boolean,YES,,,v4.2
+$defs.gap,object,NO,,,v4.2
+$defs.gap.gap_id,string,YES,,,v4.2
+$defs.gap.linked_requirement_ids,array,YES,,,v4.2
+$defs.gap.linked_requirement_ids[],string,NO,,,v4.2
+$defs.gap.linked_claim_ids,array,YES,,,v4.2
+$defs.gap.linked_claim_ids[],string,NO,,,v4.2
+$defs.gap.priority,string,YES,P0 | P1 | P2,,v4.2
+$defs.gap.missing_evidence,string,YES,,,v4.2
+$defs.gap.request_text,string,YES,,,v4.2
+$defs.gap.closure_criterion,string,YES,,,v4.2
+$defs.gap.responsible_actor,string,NO,,,v4.2
+$defs.gap.state,string,YES,OPEN | REQUEST READY | REQUEST ISSUED | PARTIAL RESPONSE | CLOSED | INAPPLICABLE,,v4.2
+$defs.gap.response_evidence_ids,array,NO,,,v4.2
+$defs.gap.response_evidence_ids[],string,NO,,,v4.2
+$defs.gap.remaining_limitation,string,NO,,,v4.2
+$defs.gap.evidence_access_state,string,NO,PUBLICLY RETRIEVED | PUBLIC METADATA ONLY | CONTROLLED PUBLIC EXTRACT | KNOWN PRIVATE RECORD REQUIRED | KNOWN REGULATOR-HELD RECORD | KNOWN MANUFACTURER-HELD RECORD | KNOWN SPONSOR-HELD RECORD | KNOWN SITE-HELD RECORD | PARTICIPANT-CONTROLLED RECORD | EXISTENCE UNKNOWN | EVALUATION NOT EXECUTED | NOT APPLICABLE,,v4.2
+$defs.bounded_decision,object,NO,,,v4.2
+$defs.bounded_decision.decision_id,string,YES,,,v4.2
+$defs.bounded_decision.decision_class,string,YES,PUBLIC EVIDENCE SUFFICIENT FOR BOUNDED CLAIM | PUBLIC EVIDENCE PARTIAL — PRIVATE EVIDENCE REQUIRED | INSUFFICIENT OR INADMISSIBLE EVIDENCE | PROHIBITED OR DISPROPORTIONATE USE | SYNTHETIC GOVERNANCE FINDING ONLY | NO DECISION — ASSESSMENT INCOMPLETE,,v4.2
+$defs.bounded_decision.system_and_version,string,YES,,,v4.2
+$defs.bounded_decision.profile_id,string,YES,AP-1 | AP-2 | AP-3 | AP-4 | AP-5 | AP-6,,v4.2
+$defs.bounded_decision.target_level,string,YES,CL-0 | CL-1 | CL-2 | CL-3 | CL-4 | CL-5,,v4.2
+$defs.bounded_decision.scope,object,YES,,,v4.2
+$defs.bounded_decision.scope.population,string,YES,,,v4.2
+$defs.bounded_decision.scope.context,string,YES,,,v4.2
+$defs.bounded_decision.scope.function,string,YES,,,v4.2
+$defs.bounded_decision.scope.jurisdiction,string,YES,,,v4.2
+$defs.bounded_decision.scope.evidence_freeze_id,string,YES,,,v4.2
+$defs.bounded_decision.strongest_supported_claim,string,YES,,,v4.2
+$defs.bounded_decision.prohibited_inferences,array,YES,,,v4.2
+$defs.bounded_decision.prohibited_inferences[],string,NO,,,v4.2
+$defs.bounded_decision.p0_nonconformities,array,YES,,,v4.2
+$defs.bounded_decision.p0_nonconformities[],string,NO,,,v4.2
+$defs.bounded_decision.p1_conditions,array,YES,,,v4.2
+$defs.bounded_decision.p1_conditions[],string,NO,,,v4.2
+$defs.bounded_decision.participant_conditions_and_dissent,array,NO,,,v4.2
+$defs.bounded_decision.participant_conditions_and_dissent[],string,NO,,,v4.2
+$defs.bounded_decision.jurisdictional_conflicts,array,NO,,,v4.2
+$defs.bounded_decision.jurisdictional_conflicts[],string,NO,,,v4.2
+$defs.bounded_decision.residual_risks,array,YES,,,v4.2
+$defs.bounded_decision.residual_risks[],string,NO,,,v4.2
+$defs.bounded_decision.exceptions,array,NO,,,v4.2
+$defs.bounded_decision.exceptions[],string,NO,,,v4.2
+$defs.bounded_decision.expiry,string,YES,,,v4.2
+$defs.bounded_decision.reopening_triggers,array,YES,,,v4.2
+$defs.bounded_decision.reopening_triggers[],string,NO,,,v4.2
+$defs.bounded_decision.signatures,array,NO,,,v4.2
+$defs.bounded_decision.signatures[],,NO,,,v4.2
+$defs.bounded_decision.decision_limitations,array,NO,,,v4.2
+$defs.bounded_decision.decision_limitations[],string,NO,,,v4.2
+$defs.deployment_state,object,NO,,,v4.2
+$defs.deployment_state.current_states,array,YES,,,v4.2
+$defs.deployment_state.current_states[],string,NO,RESEARCH | CLINICAL INVESTIGATIONAL | CLINICAL AUTHORIZED | HOME OR COMMUNITY | CONSUMER | WORKPLACE | EDUCATION | JUSTICE OR DETENTION | DEFENCE OR SECURITY | OTHER,,v4.2
+$defs.deployment_state.future_use_gates,array,YES,,,v4.2
+$defs.deployment_state.future_use_gates[],object,NO,,,v4.2
+$defs.deployment_state.future_use_gates[].state,string,YES,RESEARCH | CLINICAL INVESTIGATIONAL | CLINICAL AUTHORIZED | HOME OR COMMUNITY | CONSUMER | WORKPLACE | EDUCATION | JUSTICE OR DETENTION | DEFENCE OR SECURITY | OTHER,,v4.2
+$defs.deployment_state.future_use_gates[].gate_status,string,YES,CURRENTLY APPLICABLE | CURRENTLY INAPPLICABLE | REOPENING REQUIRED | PROHIBITED | UNRESOLVED,,v4.2
+$defs.deployment_state.future_use_gates[].rationale,string,YES,,,v4.2
+$defs.deployment_state.modifiers,array,YES,,,v4.2
+$defs.deployment_state.modifiers[],string,NO,,,v4.2
+$defs.configuration_relationship,object,NO,,,v4.2
+$defs.configuration_relationship.relationship_id,string,YES,,,v4.2
+$defs.configuration_relationship.from_configuration,string,YES,,,v4.2
+$defs.configuration_relationship.to_configuration,string,YES,,,v4.2
+$defs.configuration_relationship.relationship_type,string,YES,SAME | SUBSET | SUPERSET | ALTERNATE | SUPERSEDED | SUCCESSOR | DERIVED FROM | APPLIES TO | INCONSISTENT WITH | UNRESOLVED,,v4.2
+$defs.configuration_relationship.basis,string,YES,,,v4.2
+$defs.configuration_relationship.evidence_ids,array,YES,,,v4.2
+$defs.configuration_relationship.evidence_ids[],string,NO,,,v4.2
+$defs.configuration_relationship.limitations,array,NO,,,v4.2
+$defs.configuration_relationship.limitations[],string,NO,,,v4.2
+$defs.source_version_relationship,object,NO,,,v4.2
+$defs.source_version_relationship.relationship_id,string,YES,,,v4.2
+$defs.source_version_relationship.from_source_id,string,YES,,,v4.2
+$defs.source_version_relationship.to_source_id,string,YES,,,v4.2
+$defs.source_version_relationship.relationship_type,string,YES,SAME | SUBSET | SUPERSET | ALTERNATE | SUPERSEDED | SUCCESSOR | DERIVED FROM | APPLIES TO | INCONSISTENT WITH | UNRESOLVED,,v4.2
+$defs.source_version_relationship.authority_state,string,YES,AUTHORITATIVE FOR THIS CLAIM | SUPPORTING | HISTORICAL | SUPERSEDED | CONFLICTING | UNRESOLVED,,v4.2
+$defs.source_version_relationship.basis,string,YES,,,v4.2
+$defs.source_version_relationship.affected_claim_ids,array,NO,,,v4.2
+$defs.source_version_relationship.affected_claim_ids[],string,NO,,,v4.2
+$defs.provenance_discrepancy,object,NO,,,v4.2
+$defs.provenance_discrepancy.discrepancy_id,string,YES,,,v4.2
+$defs.provenance_discrepancy.observed_pointer,string,YES,,,v4.2
+$defs.provenance_discrepancy.adjudicated_identity,string,YES,,,v4.2
+$defs.provenance_discrepancy.authoritative_source_ids,array,YES,,,v4.2
+$defs.provenance_discrepancy.authoritative_source_ids[],string,NO,,,v4.2
+$defs.provenance_discrepancy.status,string,YES,,,v4.2
+$defs.provenance_discrepancy.propagation_controls,array,YES,,,v4.2
+$defs.provenance_discrepancy.propagation_controls[],string,NO,,,v4.2
+$defs.provenance_discrepancy.limitations,array,NO,,,v4.2
+$defs.provenance_discrepancy.limitations[],string,NO,,,v4.2
+$defs.configuration_epoch,object,NO,,,v4.2
+$defs.configuration_epoch.epoch_id,string,YES,,,v4.2
+$defs.configuration_epoch.configuration_id,string,YES,,,v4.2
+$defs.configuration_epoch.start,string,YES,,,v4.2
+$defs.configuration_epoch.end,string,YES,,,v4.2
+$defs.configuration_epoch.material_changes,array,YES,,,v4.2
+$defs.configuration_epoch.material_changes[],string,NO,,,v4.2
+$defs.configuration_epoch.endpoint_ids,array,YES,,,v4.2
+$defs.configuration_epoch.endpoint_ids[],string,NO,,,v4.2
+$defs.configuration_epoch.evidence_ids,array,YES,,,v4.2
+$defs.configuration_epoch.evidence_ids[],string,NO,,,v4.2
+$defs.configuration_epoch.limitations,array,NO,,,v4.2
+$defs.configuration_epoch.limitations[],string,NO,,,v4.2
+$defs.denominator,object,NO,,,v4.2
+$defs.denominator.denominator_id,string,YES,,,v4.2
+$defs.denominator.denominator_type,string,YES,,,v4.2
+$defs.denominator.population_definition,string,YES,,,v4.2
+$defs.denominator.value_state,string,YES,,,v4.2
+$defs.denominator.value,,YES,,,v4.2
+$defs.denominator.time_window,string,YES,,,v4.2
+$defs.denominator.configuration_id,string,YES,,,v4.2
+$defs.denominator.evidence_ids,array,YES,,,v4.2
+$defs.denominator.evidence_ids[],string,NO,,,v4.2
+$defs.denominator.transition_from_ids,array,NO,,,v4.2
+$defs.denominator.transition_from_ids[],string,NO,,,v4.2
+$defs.denominator.limitations,array,NO,,,v4.2
+$defs.denominator.limitations[],string,NO,,,v4.2
+$defs.functional_contribution,object,NO,,,v4.2
+$defs.functional_contribution.contribution_id,string,YES,,,v4.2
+$defs.functional_contribution.layer,string,YES,,,v4.2
+$defs.functional_contribution.target,string,YES,,,v4.2
+$defs.functional_contribution.comparator,string,YES,,,v4.2
+$defs.functional_contribution.metric_delta,string,YES,,,v4.2
+$defs.functional_contribution.uncertainty,string,YES,,,v4.2
+$defs.functional_contribution.residual_confounds,array,YES,,,v4.2
+$defs.functional_contribution.residual_confounds[],string,NO,,,v4.2
+$defs.functional_contribution.evidence_ids,array,YES,,,v4.2
+$defs.functional_contribution.evidence_ids[],string,NO,,,v4.2
+$defs.independence_axis,object,NO,,,v4.2
+$defs.independence_axis.independence_id,string,YES,,,v4.2
+$defs.independence_axis.axis,string,YES,,,v4.2
+$defs.independence_axis.state,string,YES,,,v4.2
+$defs.independence_axis.dependencies,array,YES,,,v4.2
+$defs.independence_axis.dependencies[],string,NO,,,v4.2
+$defs.independence_axis.evidence_ids,array,YES,,,v4.2
+$defs.independence_axis.evidence_ids[],string,NO,,,v4.2
+$defs.independence_axis.limitations,array,YES,,,v4.2
+$defs.independence_axis.limitations[],string,NO,,,v4.2
+$defs.latency_record,object,NO,,,v4.2
+$defs.latency_record.latency_id,string,YES,,,v4.2
+$defs.latency_record.latency_class,string,YES,CAUSAL STREAMING | INCREMENTAL | ASYNCHRONOUS WINDOW | BATCH | CLOSED-LOOP CONTROL | OFFLINE ANALYSIS | UNRESOLVED,,v4.2
+$defs.latency_record.measurement_start,string,YES,,,v4.2
+$defs.latency_record.measurement_end,string,YES,,,v4.2
+$defs.latency_record.value,,YES,,,v4.2
+$defs.latency_record.units,string,YES,,,v4.2
+$defs.latency_record.output_availability,string,YES,,,v4.2
+$defs.latency_record.evidence_ids,array,YES,,,v4.2
+$defs.latency_record.evidence_ids[],string,NO,,,v4.2
+$defs.latency_record.limitations,array,NO,,,v4.2
+$defs.latency_record.limitations[],string,NO,,,v4.2
+$defs.control_authority,object,NO,,,v4.2
+$defs.control_authority.control_id,string,YES,,,v4.2
+$defs.control_authority.actor_type,string,YES,PARTICIPANT | CAREGIVER | CLINICIAN | OPERATOR | SYSTEM | SPONSOR | MANUFACTURER | EMERGENCY AUTHORITY | OTHER,,v4.2
+$defs.control_authority.state_type,string,YES,PAUSE TO SAFE THERAPY | STOP OUTPUT | STOP STIMULATION | CLINICIAN OVERRIDE | PARTICIPANT OVERRIDE | EMERGENCY SHUTDOWN | DEGRADED MODE | RECOVERY | OTHER,,v4.2
+$defs.control_authority.trigger,string,YES,,,v4.2
+$defs.control_authority.transition,string,YES,,,v4.2
+$defs.control_authority.tested_state,string,YES,,,v4.2
+$defs.control_authority.evidence_ids,array,YES,,,v4.2
+$defs.control_authority.evidence_ids[],string,NO,,,v4.2
+$defs.control_authority.limitations,array,NO,,,v4.2
+$defs.control_authority.limitations[],string,NO,,,v4.2
+$defs.operational_burden,object,NO,,,v4.2
+$defs.operational_burden.burden_id,string,YES,,,v4.2
+$defs.operational_burden.burden_type,string,YES,,,v4.2
+$defs.operational_burden.actor,string,YES,,,v4.2
+$defs.operational_burden.frequency,string,YES,,,v4.2
+$defs.operational_burden.duration_or_load,string,YES,,,v4.2
+$defs.operational_burden.outcome_or_access_effect,string,YES,,,v4.2
+$defs.operational_burden.evidence_ids,array,YES,,,v4.2
+$defs.operational_burden.evidence_ids[],string,NO,,,v4.2
+$defs.operational_burden.limitations,array,NO,,,v4.2
+$defs.operational_burden.limitations[],string,NO,,,v4.2
+$defs.update_lineage,object,NO,,,v4.2
+$defs.update_lineage.update_id,string,YES,,,v4.2
+$defs.update_lineage.configuration_before,string,YES,,,v4.2
+$defs.update_lineage.configuration_after,string,YES,,,v4.2
+$defs.update_lineage.change_type,string,YES,,,v4.2
+$defs.update_lineage.source_data_ids,array,YES,,,v4.2
+$defs.update_lineage.source_data_ids[],string,NO,,,v4.2
+$defs.update_lineage.consent_state,string,YES,,,v4.2
+$defs.update_lineage.privacy_state,string,YES,,,v4.2
+$defs.update_lineage.withdrawal_effect,string,YES,,,v4.2
+$defs.update_lineage.evidence_ids,array,YES,,,v4.2
+$defs.update_lineage.evidence_ids[],string,NO,,,v4.2
+$defs.update_lineage.limitations,array,NO,,,v4.2
+$defs.update_lineage.limitations[],string,NO,,,v4.2
+$defs.participant_authority,object,NO,,,v4.2
+$defs.participant_authority.authority_id,string,YES,,,v4.2
+$defs.participant_authority.power,string,YES,CONSULTATION | CO-DESIGN | VOTING | VETO | EVIDENCE-USE CONTROL | DATA-WITHDRAWAL CONTROL | SYSTEM CESSATION CONTROL | DISSENT | REMEDY | NONE DOCUMENTED,,v4.2
+$defs.participant_authority.holder,string,YES,,,v4.2
+$defs.participant_authority.scope,string,YES,,,v4.2
+$defs.participant_authority.exercised_state,string,YES,,,v4.2
+$defs.participant_authority.evidence_ids,array,YES,,,v4.2
+$defs.participant_authority.evidence_ids[],string,NO,,,v4.2
+$defs.participant_authority.limitations,array,NO,,,v4.2
+$defs.participant_authority.limitations[],string,NO,,,v4.2
+$defs.postmarket_exposure,object,NO,,,v4.2
+$defs.postmarket_exposure.exposure_id,string,YES,,,v4.2
+$defs.postmarket_exposure.configuration_id,string,YES,,,v4.2
+$defs.postmarket_exposure.jurisdiction,string,YES,,,v4.2
+$defs.postmarket_exposure.time_window,string,YES,,,v4.2
+$defs.postmarket_exposure.exposure_denominator_state,string,YES,,,v4.2
+$defs.postmarket_exposure.exposure_denominator,,YES,,,v4.2
+$defs.postmarket_exposure.event_ids,array,YES,,,v4.2
+$defs.postmarket_exposure.event_ids[],string,NO,,,v4.2
+$defs.postmarket_exposure.evidence_ids,array,YES,,,v4.2
+$defs.postmarket_exposure.evidence_ids[],string,NO,,,v4.2
+$defs.postmarket_exposure.limitations,array,NO,,,v4.2
+$defs.postmarket_exposure.limitations[],string,NO,,,v4.2
+$defs.reproducibility_record,object,NO,,,v4.2
+$defs.reproducibility_record.reproducibility_id,string,YES,,,v4.2
+$defs.reproducibility_record.tier,string,YES,R0 NONE | R1 FIGURES | R2 ANALYSIS | R3 ENDPOINTS | R4 MODEL | R5 ONLINE SYSTEM | R6 CLINICAL WORKFLOW,,v4.2
+$defs.reproducibility_record.state,string,YES,,,v4.2
+$defs.reproducibility_record.artifacts,array,YES,,,v4.2
+$defs.reproducibility_record.artifacts[],string,NO,,,v4.2
+$defs.reproducibility_record.independent_execution_state,string,YES,,,v4.2
+$defs.reproducibility_record.evidence_ids,array,YES,,,v4.2
+$defs.reproducibility_record.evidence_ids[],string,NO,,,v4.2
+$defs.reproducibility_record.limitations,array,NO,,,v4.2
+$defs.reproducibility_record.limitations[],string,NO,,,v4.2
+$defs.typed_decision,object,NO,,,v4.2
+$defs.typed_decision.decision_id,string,YES,,,v4.2
+$defs.typed_decision.decision_object_type,string,YES,CLAIM ADJUDICATION | LEGAL OR REGULATORY AUTHORIZATION | CONFORMANCE DECISION | PROHIBITED-USE DECISION | REOPENING DECISION,,v4.2
+$defs.typed_decision.authority,string,YES,,,v4.2
+$defs.typed_decision.authority_basis,string,YES,,,v4.2
+$defs.typed_decision.decision_state,string,YES,SUPPORTED WITHIN BOUNDED SCOPE | PARTIALLY SUPPORTED | UNSUPPORTED | CONTRADICTED | AUTHORIZED WITHIN BOUNDED SCOPE | NOT AUTHORIZED | AUTHORIZATION NOT ASSESSED | NOT APPLICABLE | CONFORMS FOR BOUNDED SCOPE | CONDITIONAL CONFORMANCE | NO CONFORMANCE DECISION — BLOCKED | PROHIBITED OR DISPROPORTIONATE USE | ASSESSMENT INCOMPLETE | REOPENED,,v4.2
+$defs.typed_decision.scope,object,YES,,,v4.2
+$defs.typed_decision.evidence_threshold,string,YES,,,v4.2
+$defs.typed_decision.evidence_ids,array,YES,,,v4.2
+$defs.typed_decision.evidence_ids[],string,NO,,,v4.2
+$defs.typed_decision.strongest_supported_claim,string,YES,,,v4.2
+$defs.typed_decision.prohibited_inferences,array,YES,,,v4.2
+$defs.typed_decision.prohibited_inferences[],string,NO,,,v4.2
+$defs.typed_decision.conditions,array,YES,,,v4.2
+$defs.typed_decision.conditions[],string,NO,,,v4.2
+$defs.typed_decision.expiry,string,YES,,,v4.2
+$defs.typed_decision.reopening_triggers,array,YES,,,v4.2
+$defs.typed_decision.reopening_triggers[],string,NO,,,v4.2
+$defs.typed_decision.linked_legacy_decision_id,string,NO,,,v4.2
+$defs.typed_decision.limitations,array,NO,,,v4.2
+$defs.typed_decision.limitations[],string,NO,,,v4.2
+$defs.migration_provenance,object,NO,,,v4.2
+$defs.migration_provenance.migration_id,string,YES,,,v4.2
+$defs.migration_provenance.source_instrument_version,string,YES,,,v4.2
+$defs.migration_provenance.target_instrument_version,string,YES,,,v4.2
+$defs.migration_provenance.source_assessment_id,string,YES,,,v4.2
+$defs.migration_provenance.source_sha256,string,YES,,,v4.2
+$defs.migration_provenance.historical_projection_sha256,string,YES,,,v4.2
+$defs.migration_provenance.migration_ruleset,string,YES,,,v4.2
+$defs.migration_provenance.migration_date,string,YES,,,v4.2
+$defs.migration_provenance.preservation_verified,boolean,YES,,,v4.2
+$defs.migration_provenance.migration_warnings,array,NO,,,v4.2
+$defs.migration_provenance.migration_warnings[],string,NO,,,v4.2

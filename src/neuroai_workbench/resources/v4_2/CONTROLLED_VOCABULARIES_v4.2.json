@@ -1,0 +1,272 @@
+{
+  "assessment_status": [
+    "DRAFT",
+    "IN PROGRESS",
+    "EVIDENCE FROZEN",
+    "DECISION READY",
+    "CLOSED",
+    "REOPENED"
+  ],
+  "applicability": [
+    "APPLICABLE",
+    "NOT APPLICABLE WITH RATIONALE",
+    "UNCERTAIN — RESOLUTION REQUIRED"
+  ],
+  "finding_status": [
+    "PASS",
+    "PARTIAL",
+    "FAIL",
+    "NOT ASSESSED"
+  ],
+  "evidence_access_state": [
+    "PUBLICLY RETRIEVED",
+    "PUBLIC METADATA ONLY",
+    "CONTROLLED PUBLIC EXTRACT",
+    "KNOWN PRIVATE RECORD REQUIRED",
+    "KNOWN REGULATOR-HELD RECORD",
+    "KNOWN MANUFACTURER-HELD RECORD",
+    "KNOWN SPONSOR-HELD RECORD",
+    "KNOWN SITE-HELD RECORD",
+    "PARTICIPANT-CONTROLLED RECORD",
+    "EXISTENCE UNKNOWN",
+    "EVALUATION NOT EXECUTED",
+    "NOT APPLICABLE"
+  ],
+  "evidence_state": [
+    "PRIMARY SOURCE VERIFIED",
+    "PRIMARY METADATA VERIFIED",
+    "CONTROLLED DISCOVERY RECORD",
+    "PARTICIPANT OR CAREGIVER EVIDENCE",
+    "REGULATORY RECORD",
+    "TRIAL REGISTRY",
+    "PREPRINT",
+    "PEER-REVIEWED PUBLICATION",
+    "PATENT RECORD",
+    "COMMERCIAL OR MEDIA CLAIM",
+    "PRIVATE EVIDENCE REQUIRED",
+    "NOT AVAILABLE"
+  ],
+  "claim_status": [
+    "SUPPORTED WITHIN BOUNDED SCOPE",
+    "PARTIALLY SUPPORTED",
+    "UNSUPPORTED",
+    "CONTRADICTED",
+    "NOT REVIEWABLE",
+    "WITHDRAWN OR SUPERSEDED"
+  ],
+  "claimant_record_type": [
+    "PEER-REVIEWED PAPER",
+    "PREPRINT",
+    "REGULATORY AUTHORITY",
+    "TRIAL REGISTRY",
+    "SPONSOR OR INVESTIGATOR",
+    "MANUFACTURER",
+    "PROJECT PAGE",
+    "CORPORATE COMMUNICATION",
+    "MEDIA REPORT",
+    "PARTICIPANT STATEMENT",
+    "ASSESSOR-CONTROLLED CLAIM",
+    "INFERRED PUBLIC CLAIM",
+    "OTHER"
+  ],
+  "decision_object_type": [
+    "CLAIM ADJUDICATION",
+    "LEGAL OR REGULATORY AUTHORIZATION",
+    "CONFORMANCE DECISION",
+    "PROHIBITED-USE DECISION",
+    "REOPENING DECISION"
+  ],
+  "decision_state": [
+    "SUPPORTED WITHIN BOUNDED SCOPE",
+    "PARTIALLY SUPPORTED",
+    "UNSUPPORTED",
+    "CONTRADICTED",
+    "AUTHORIZED WITHIN BOUNDED SCOPE",
+    "NOT AUTHORIZED",
+    "AUTHORIZATION NOT ASSESSED",
+    "NOT APPLICABLE",
+    "CONFORMS FOR BOUNDED SCOPE",
+    "CONDITIONAL CONFORMANCE",
+    "NO CONFORMANCE DECISION — BLOCKED",
+    "PROHIBITED OR DISPROPORTIONATE USE",
+    "ASSESSMENT INCOMPLETE",
+    "REOPENED"
+  ],
+  "relationship_type": [
+    "SAME",
+    "SUBSET",
+    "SUPERSET",
+    "ALTERNATE",
+    "SUPERSEDED",
+    "SUCCESSOR",
+    "DERIVED FROM",
+    "APPLIES TO",
+    "INCONSISTENT WITH",
+    "UNRESOLVED"
+  ],
+  "source_authority_state": [
+    "AUTHORITATIVE FOR THIS CLAIM",
+    "SUPPORTING",
+    "HISTORICAL",
+    "SUPERSEDED",
+    "CONFLICTING",
+    "UNRESOLVED"
+  ],
+  "endpoint_protocol_state": [
+    "PROTOCOL-DEFINED",
+    "AMENDED",
+    "POST-HOC",
+    "SENSITIVITY",
+    "EXPLORATORY",
+    "PUBLICATION-DERIVED",
+    "OPERATIONAL",
+    "UNRESOLVED"
+  ],
+  "metric_direction": [
+    "HIGHER IS BETTER",
+    "LOWER IS BETTER",
+    "TARGET RANGE",
+    "DESCRIPTIVE",
+    "UNRESOLVED"
+  ],
+  "aggregation_level": [
+    "PARTICIPANT",
+    "SESSION",
+    "SENTENCE",
+    "EVENT",
+    "SITE",
+    "COHORT",
+    "DEVICE",
+    "MODEL BUILD",
+    "EXPOSURE TIME",
+    "OTHER",
+    "UNRESOLVED"
+  ],
+  "statistic_type": [
+    "MEAN",
+    "MEDIAN",
+    "BEST CASE",
+    "WORST CASE",
+    "PROPORTION",
+    "COUNT",
+    "RATE",
+    "CONFIDENCE LIMIT",
+    "RANGE",
+    "INDIVIDUAL VALUE",
+    "OTHER",
+    "UNRESOLVED"
+  ],
+  "ground_truth_state": [
+    "EXTERNAL OBSERVED TARGET",
+    "PROMPTED KNOWN TARGET",
+    "CLINICIAN-ADJUDICATED",
+    "PARTICIPANT-RATED",
+    "CORRECTION-DERIVED",
+    "NO INDEPENDENT GROUND TRUTH",
+    "UNRESOLVED"
+  ],
+  "correction_timing": [
+    "NO CORRECTION",
+    "PRE-OUTPUT",
+    "INTERACTIVE",
+    "POST-OUTPUT",
+    "PARTICIPANT EDIT",
+    "CLINICIAN ADJUSTMENT",
+    "UNRESOLVED"
+  ],
+  "latency_class": [
+    "CAUSAL STREAMING",
+    "INCREMENTAL",
+    "ASYNCHRONOUS WINDOW",
+    "BATCH",
+    "CLOSED-LOOP CONTROL",
+    "OFFLINE ANALYSIS",
+    "UNRESOLVED"
+  ],
+  "deployment_state": [
+    "RESEARCH",
+    "CLINICAL INVESTIGATIONAL",
+    "CLINICAL AUTHORIZED",
+    "HOME OR COMMUNITY",
+    "CONSUMER",
+    "WORKPLACE",
+    "EDUCATION",
+    "JUSTICE OR DETENTION",
+    "DEFENCE OR SECURITY",
+    "OTHER"
+  ],
+  "gate_state": [
+    "CURRENTLY APPLICABLE",
+    "CURRENTLY INAPPLICABLE",
+    "REOPENING REQUIRED",
+    "PROHIBITED",
+    "UNRESOLVED"
+  ],
+  "authority_power": [
+    "CONSULTATION",
+    "CO-DESIGN",
+    "VOTING",
+    "VETO",
+    "EVIDENCE-USE CONTROL",
+    "DATA-WITHDRAWAL CONTROL",
+    "SYSTEM CESSATION CONTROL",
+    "DISSENT",
+    "REMEDY",
+    "NONE DOCUMENTED"
+  ],
+  "control_actor_type": [
+    "PARTICIPANT",
+    "CAREGIVER",
+    "CLINICIAN",
+    "OPERATOR",
+    "SYSTEM",
+    "SPONSOR",
+    "MANUFACTURER",
+    "EMERGENCY AUTHORITY",
+    "OTHER"
+  ],
+  "control_state_type": [
+    "PAUSE TO SAFE THERAPY",
+    "STOP OUTPUT",
+    "STOP STIMULATION",
+    "CLINICIAN OVERRIDE",
+    "PARTICIPANT OVERRIDE",
+    "EMERGENCY SHUTDOWN",
+    "DEGRADED MODE",
+    "RECOVERY",
+    "OTHER"
+  ],
+  "reproducibility_tier": [
+    "R0 NONE",
+    "R1 FIGURES",
+    "R2 ANALYSIS",
+    "R3 ENDPOINTS",
+    "R4 MODEL",
+    "R5 ONLINE SYSTEM",
+    "R6 CLINICAL WORKFLOW"
+  ],
+  "public_private_state": [
+    "PUBLIC EVIDENCE ONLY",
+    "PUBLIC EVIDENCE WITH CONTROLLED PRIVATE GAP REGISTER",
+    "PRIVATE EVIDENCE AUTHORIZED",
+    "SYNTHETIC ONLY"
+  ],
+  "priority": [
+    "P0",
+    "P1",
+    "P2"
+  ],
+  "gap_state": [
+    "OPEN",
+    "REQUEST READY",
+    "REQUEST ISSUED",
+    "PARTIAL RESPONSE",
+    "CLOSED",
+    "INAPPLICABLE"
+  ],
+  "yes_no_unknown": [
+    "YES",
+    "NO",
+    "UNKNOWN"
+  ]
+}

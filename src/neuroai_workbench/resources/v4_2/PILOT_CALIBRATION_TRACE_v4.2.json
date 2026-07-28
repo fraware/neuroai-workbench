@@ -1,0 +1,400 @@
+{
+  "release": "v4.1.6",
+  "raw_observations": [
+    {
+      "source_id": "IF-01",
+      "pilot": "Brain2Qwerty",
+      "observation": "The bounded_decision object can express a bounded claim decision or a system-conformance decision, but does not explicitly separate the two.",
+      "effect": "The Brain2Qwerty scientific claim is supportable while CL-3 conformance remains blocked.",
+      "candidate_change": "Add decision_object_type and separate claim_adjudication from conformance_decision."
+    },
+    {
+      "source_id": "IF-02",
+      "pilot": "Brain2Qwerty",
+      "observation": "AP-4 combines consumer, commercial, mental-state inference, and generative decoding states.",
+      "effect": "A research-only generative decoder triggers AP-4 even without consumer or commercial deployment.",
+      "candidate_change": "Introduce AP-4 subprofiles or explicit deployment-state modifiers."
+    },
+    {
+      "source_id": "IF-03",
+      "pilot": "Brain2Qwerty",
+      "observation": "Finding statuses do not distinguish unavailable public evidence from evaluated nonconformance.",
+      "effect": "NOT ASSESSED carries both access gaps and genuinely unexecuted evaluations.",
+      "candidate_change": "Add INSUFFICIENT PUBLIC EVIDENCE and PRIVATE RECORD REQUIRED states."
+    },
+    {
+      "source_id": "IF-04",
+      "pilot": "Brain2Qwerty",
+      "observation": "The endpoint object lacks explicit fields for metric direction, aggregation unit, derivation, and best-case versus mean status.",
+      "effect": "The 78% word-accuracy statement is derived from best-participant WER 0.22 and requires manual boundary text.",
+      "candidate_change": "Add metric_direction, aggregation_level, statistic_type, derivation, and denominator fields."
+    },
+    {
+      "source_id": "IF-05",
+      "pilot": "Brain2Qwerty",
+      "observation": "The evidence model does not directly encode paper-to-code-to-checkpoint configuration relationships.",
+      "effect": "The released TinyLlama/rank-2 default and paper-best Qwen3-4B/rank-128 state require narrative reconciliation.",
+      "candidate_change": "Add configuration_relationship objects with SAME, SUBSET, ALTERNATE, SUPERSEDED, and UNRESOLVED relations."
+    },
+    {
+      "source_id": "IF-06",
+      "pilot": "Brain2Qwerty",
+      "observation": "Signal-versus-prior decomposition is a requirement but lacks a structured contribution matrix.",
+      "effect": "Neural, motor, CTC, sentence-corpus, participant, and LLM contributions must be expressed in free text.",
+      "candidate_change": "Add a contribution-control matrix with ablation target, comparator, metric delta, uncertainty, and residual confounds."
+    },
+    {
+      "source_id": "IF-07",
+      "pilot": "Brain2Qwerty",
+      "observation": "“Real-time” has no controlled latency taxonomy.",
+      "effect": "Asynchronous whole-sentence operation is easily confused with causal low-latency streaming.",
+      "candidate_change": "Add causal, incremental, asynchronous, batch, end-to-end latency, and output-availability fields."
+    },
+    {
+      "source_id": "IF-08",
+      "pilot": "Brain2Qwerty",
+      "observation": "The claim register does not explicitly label corporate, paper, project-page, media, and inferred-public claims as distinct claimant states.",
+      "effect": "Claim reconciliation requires careful use of claimant and evidence-state prose.",
+      "candidate_change": "Add claimant_record_type and verbatim/source-location fields."
+    },
+    {
+      "source_id": "IF-09",
+      "pilot": "Brain2Qwerty",
+      "observation": "Research-scope inapplicability and prohibited future-use safeguards can appear logically inconsistent.",
+      "effect": "Sectoral rows are inapplicable to the exact study but remain essential reopening gates.",
+      "candidate_change": "Separate current applicability from future-use gate status."
+    },
+    {
+      "source_id": "IF-10",
+      "pilot": "Brain2Qwerty",
+      "observation": "The instrument has no dedicated source-version reconciliation object.",
+      "effect": "V1 arXiv and final Nature numerical differences require manual version controls.",
+      "candidate_change": "Add source_version_relationship and authoritative-result-state fields."
+    },
+    {
+      "source_id": "CAL-ADBS-01",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Regulatory-decision object",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Separate legal authorization, evidence of effectiveness and universal conformance as different decisions with different authorities."
+    },
+    {
+      "source_id": "CAL-ADBS-02",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Authorization baseline versus deployed build",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Add explicit version relationships among supplement, labeling, firmware, software build, site configuration and later maintenance supplement."
+    },
+    {
+      "source_id": "CAL-ADBS-03",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Trial-identity integrity",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Make registry-pointer discrepancies first-class provenance objects with adjudication and propagation controls."
+    },
+    {
+      "source_id": "CAL-ADBS-04",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Endpoint versioning",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Represent protocol-defined, amended, post-hoc, sensitivity and publication endpoints as linked but distinct objects."
+    },
+    {
+      "source_id": "CAL-ADBS-05",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Denominator transitions",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Track enrollment, setup, excluded mode, full-analysis-set, completer, preference, long-term and postmarket denominators without implicit substitution."
+    },
+    {
+      "source_id": "CAL-ADBS-06",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Fallback and override semantics",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Distinguish pause-to-safe-therapy, stop-stimulation, clinician override, patient authority and emergency state."
+    },
+    {
+      "source_id": "CAL-ADBS-07",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Operational burden",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Add structured setup visits, pauses, reprogramming, caregiver dependence, travel and follow-up load as outcome and access variables."
+    },
+    {
+      "source_id": "CAL-ADBS-08",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Public absence versus private existence",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Represent evidence known to be regulator-held or manufacturer-held separately from evidence whose existence is unknown."
+    },
+    {
+      "source_id": "CAL-ADBS-09",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Postmarket denominator control",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Add a model/build/exposure denominator object linked to complaints, MDRs, recalls and annual reports."
+    },
+    {
+      "source_id": "CAL-ADBS-10",
+      "pilot": "FDA adaptive DBS",
+      "observation": "Component-specific restriction",
+      "effect": "Observed during authorization, endpoint and lifecycle reconciliation.",
+      "candidate_change": "Permit prohibited configurations to attach directly to the exact system boundary and decision."
+    },
+    {
+      "source_id": "CAL-T15-01",
+      "pilot": "BrainGate2 T15",
+      "observation": "The instrument needs a formal distinction between researcher-free operation, care-partner-independent operation and infrastructure-independent operation.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add a multi-axis independence object covering setup, daily use, maintenance, recovery, transport and sponsor support."
+    },
+    {
+      "source_id": "CAL-T15-02",
+      "pilot": "BrainGate2 T15",
+      "observation": "A longitudinal case can contain many materially different configurations under one participant label.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add configuration epochs and mandatory endpoint-to-epoch links."
+    },
+    {
+      "source_id": "CAL-T15-03",
+      "pilot": "BrainGate2 T15",
+      "observation": "Naturalistic participant-rated accuracy and ground-truth copy-task accuracy require separate endpoint classes.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add ground-truth provenance, correction timing and participant-rating semantics."
+    },
+    {
+      "source_id": "CAL-T15-04",
+      "pilot": "BrainGate2 T15",
+      "observation": "Effective capability depends on corrections, gaze, care partners and language priors, not only the neural decoder.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add functional contribution decomposition across neural, model, UI and human support layers."
+    },
+    {
+      "source_id": "CAL-T15-05",
+      "pilot": "BrainGate2 T15",
+      "observation": "Continuous recalibration turns personal-use data governance into an operational system property.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add model-update lineage linked to consent, privacy mode, retention and withdrawal."
+    },
+    {
+      "source_id": "CAL-T15-06",
+      "pilot": "BrainGate2 T15",
+      "observation": "Participant co-design is not equivalent to formal governance authority.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    },
+    {
+      "source_id": "CAL-T15-07",
+      "pilot": "BrainGate2 T15",
+      "observation": "Performance stability cannot stand in for implant safety or device-wear evidence.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add an explicit prohibition on substituting capability continuity for safety endpoints."
+    },
+    {
+      "source_id": "CAL-T15-08",
+      "pilot": "BrainGate2 T15",
+      "observation": "Essential assistive benefit increases the severity of post-trial continuity obligations.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add dependency-accrual and reliance-transition triggers."
+    },
+    {
+      "source_id": "CAL-T15-09",
+      "pilot": "BrainGate2 T15",
+      "observation": "Workplace use can occur inside a research/home case without an institutional deployment.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add incidental sensitive-context exposure and employer data-boundary fields."
+    },
+    {
+      "source_id": "CAL-T15-10",
+      "pilot": "BrainGate2 T15",
+      "observation": "Public reproduction assets can reproduce figures without reproducing the system.",
+      "effect": "Observed during longitudinal participant-specific home-use execution.",
+      "candidate_change": "Add reproducibility tiers for analysis, endpoint, model, online system and clinical workflow."
+    }
+  ],
+  "consolidated_changes": [
+    {
+      "change_id": "V42-C01",
+      "priority": "P0",
+      "title": "Separate claim adjudication, authorization and conformance decisions",
+      "source_observation_ids": [
+        "IF-01",
+        "CAL-ADBS-01"
+      ],
+      "required_change": "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "acceptance_test": "The same case can support a bounded claim or legal authorization while system conformance remains blocked."
+    },
+    {
+      "change_id": "V42-C02",
+      "priority": "P1",
+      "title": "Add deployment-state modifiers and future-use gates",
+      "source_observation_ids": [
+        "IF-02",
+        "IF-09",
+        "CAL-T15-09"
+      ],
+      "required_change": "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "acceptance_test": "A research system is not misclassified as a deployed consumer or institutional system."
+    },
+    {
+      "change_id": "V42-C03",
+      "priority": "P0",
+      "title": "Expand evidence availability and access states",
+      "source_observation_ids": [
+        "IF-03",
+        "CAL-ADBS-08"
+      ],
+      "required_change": "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "acceptance_test": "Missing public evidence is never represented as proof of conformity or failure."
+    },
+    {
+      "change_id": "V42-C04",
+      "priority": "P0",
+      "title": "Strengthen endpoint, denominator, ground-truth and correction semantics",
+      "source_observation_ids": [
+        "IF-04",
+        "CAL-ADBS-04",
+        "CAL-ADBS-05",
+        "CAL-T15-03"
+      ],
+      "required_change": "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "acceptance_test": "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class."
+    },
+    {
+      "change_id": "V42-C05",
+      "priority": "P0",
+      "title": "Create configuration, version, source and epoch relationship graph",
+      "source_observation_ids": [
+        "IF-05",
+        "IF-10",
+        "CAL-ADBS-02",
+        "CAL-T15-02"
+      ],
+      "required_change": "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "acceptance_test": "Every claim and endpoint resolves to an exact configuration and source version."
+    },
+    {
+      "change_id": "V42-C06",
+      "priority": "P0",
+      "title": "Add functional-contribution and multi-axis independence objects",
+      "source_observation_ids": [
+        "IF-06",
+        "CAL-T15-01",
+        "CAL-T15-04"
+      ],
+      "required_change": "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "acceptance_test": "Capability and independence claims identify every material contributor and dependency."
+    },
+    {
+      "change_id": "V42-C07",
+      "priority": "P1",
+      "title": "Add controlled latency and output-availability taxonomy",
+      "source_observation_ids": [
+        "IF-07"
+      ],
+      "required_change": "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "acceptance_test": "Real-time claims use a defined and measured latency class."
+    },
+    {
+      "change_id": "V42-C08",
+      "priority": "P1",
+      "title": "Strengthen claimant and public-claim provenance",
+      "source_observation_ids": [
+        "IF-08"
+      ],
+      "required_change": "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "acceptance_test": "Corporate, paper, project-page, media and inferred claims remain distinct."
+    },
+    {
+      "change_id": "V42-C09",
+      "priority": "P0",
+      "title": "Add trial and regulatory provenance-integrity objects",
+      "source_observation_ids": [
+        "CAL-ADBS-03"
+      ],
+      "required_change": "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "acceptance_test": "Incorrect links cannot silently corrupt trial-publication-regulatory graphs."
+    },
+    {
+      "change_id": "V42-C10",
+      "priority": "P0",
+      "title": "Formalize fallback, override, cessation and emergency states",
+      "source_observation_ids": [
+        "CAL-ADBS-06"
+      ],
+      "required_change": "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "acceptance_test": "Every hazardous or degraded state has an auditable safe transition."
+    },
+    {
+      "change_id": "V42-C11",
+      "priority": "P1",
+      "title": "Make operational burden a structured outcome and access variable",
+      "source_observation_ids": [
+        "CAL-ADBS-07"
+      ],
+      "required_change": "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "acceptance_test": "Benefit and access claims include the work required to operate the system."
+    },
+    {
+      "change_id": "V42-C12",
+      "priority": "P0",
+      "title": "Add postmarket exposure denominators and component restrictions",
+      "source_observation_ids": [
+        "CAL-ADBS-09",
+        "CAL-ADBS-10"
+      ],
+      "required_change": "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "acceptance_test": "Postmarket rates and restrictions remain configuration-specific."
+    },
+    {
+      "change_id": "V42-C13",
+      "priority": "P0",
+      "title": "Link model-update lineage to consent and neural-data governance",
+      "source_observation_ids": [
+        "CAL-T15-05"
+      ],
+      "required_change": "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal.",
+      "acceptance_test": "Continuous learning remains traceable and consent-bounded."
+    },
+    {
+      "change_id": "V42-C14",
+      "priority": "P0",
+      "title": "Represent participant authority as distinct governance powers",
+      "source_observation_ids": [
+        "CAL-T15-06"
+      ],
+      "required_change": "Separate consultation, co-design, voting, veto, evidence-use control and dissent.",
+      "acceptance_test": "Participation or satisfaction cannot be mistaken for governance authority."
+    },
+    {
+      "change_id": "V42-C15",
+      "priority": "P0",
+      "title": "Prohibit substitution of capability continuity for safety evidence",
+      "source_observation_ids": [
+        "CAL-T15-07"
+      ],
+      "required_change": "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "acceptance_test": "Longitudinal function cannot be cited as proof of safety."
+    },
+    {
+      "change_id": "V42-C16",
+      "priority": "P0",
+      "title": "Add dependency-accrual and continuity triggers",
+      "source_observation_ids": [
+        "CAL-T15-08"
+      ],
+      "required_change": "Increase continuity obligations when participants rely on an investigational or supplier-dependent function.",
+      "acceptance_test": "Essential reliance triggers funded transition, support and cessation duties."
+    },
+    {
+      "change_id": "V42-C17",
+      "priority": "P1",
+      "title": "Add tiered reproducibility states",
+      "source_observation_ids": [
+        "CAL-T15-10"
+      ],
+      "required_change": "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows.",
+      "acceptance_test": "Public analysis code cannot be represented as full-system reproduction."
+    }
+  ]
+}

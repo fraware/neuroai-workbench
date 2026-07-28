@@ -1,0 +1,2210 @@
+[
+  {
+    "Requirement_ID": "NK-01-R01",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Exact system boundary",
+    "Normative_Requirement": "The accountable actor shall identify the exact hardware, software, model, firmware, data pipeline, accessories, external services, and operational dependencies within the assurance boundary.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify exact system boundary against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-01-R02",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Configuration and version identity",
+    "Normative_Requirement": "Every evidence item and decision shall identify the exact configuration and effective period to which it applies.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify configuration and version identity against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-01-R03",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Function and directionality",
+    "Normative_Requirement": "The system profile shall distinguish recording, inference, intervention, actuation, and closed-loop feedback, including any mental-state inference.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify function and directionality against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-01-R04",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Population, context, and actor scope",
+    "Normative_Requirement": "The assurance case shall state the intended and excluded populations, settings, users, operators, decision-makers, and affected third parties.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify population, context, and actor scope against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-01-R05",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Lifecycle and dependency map",
+    "Normative_Requirement": "The assurance case shall map design, research, deployment, maintenance, updates, financing, monitoring, withdrawal, disposal, and supplier-dependency states.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify lifecycle and dependency map against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-01-R06",
+    "Module_ID": "NK-01",
+    "Module": "System identity, scope, and lifecycle",
+    "Requirement_Title": "Material-change control",
+    "Normative_Requirement": "A material change in configuration, function, population, context, data, model, control authority, or supplier shall trigger re-screening and a scoped reassessment.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "7–17, 20–21, 55–58, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify material-change control against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02",
+      "V42-C05"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system.",
+      "Every claim and endpoint resolves to an exact configuration and source version."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R01",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "Rights and integrity analysis",
+    "Normative_Requirement": "The assessor shall identify potential effects on dignity, autonomy, freedom of thought, mental privacy, identity, agency, and mental and physical integrity.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify rights and integrity analysis against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R02",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "Voluntariness and coercion control",
+    "Normative_Requirement": "The deployment shall demonstrate that participation, use, refusal, and withdrawal are free from explicit and implicit coercion or penalty.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify voluntariness and coercion control against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R03",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "Dynamic consent",
+    "Normative_Requirement": "Consent or assent shall be prior, affirmative, understandable, accessible, documented, revisitable, and responsive to material changes.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify dynamic consent against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R04",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "Control and cessation",
+    "Normative_Requirement": "The person shall have accessible mechanisms to pause, disable, withdraw, or request cessation, subject only to a documented lawful and proportionate exception.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify control and cessation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R05",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "Relational autonomy and support",
+    "Normative_Requirement": "The assurance case shall account for caregivers, families, communities, dependency relationships, and supported decision-making where relevant.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify relational autonomy and support against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-02-R06",
+    "Module_ID": "NK-02",
+    "Module": "Human rights, autonomy, consent, and mental integrity",
+    "Requirement_Title": "No rights waiver by consent",
+    "Normative_Requirement": "Consent shall not be treated as sufficient justification for disproportionate, unlawful, manipulative, or structurally coercive use.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "24, 39–46, 55–58, 63–65, 75–76",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify no rights waiver by consent against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R01",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Claim registry",
+    "Normative_Requirement": "Every public, clinical, scientific, operational, and policy claim shall be registered with its exact subject, predicate, scope, endpoint, evidence, uncertainty, and prohibited inference.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify claim registry against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R02",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Evidence hierarchy and state",
+    "Normative_Requirement": "Evidence shall be classified by source, design, publication state, independence, participant scope, endpoint relationship, and lifecycle currency.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify evidence hierarchy and state against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R03",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Endpoint and observation control",
+    "Normative_Requirement": "Primary, secondary, exploratory, mechanistic, usability, and demonstration outcomes shall remain distinct and retain their observation windows and denominators.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify endpoint and observation control against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R04",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Reproducibility and replay",
+    "Normative_Requirement": "Methods, data, code, models, parameters, calibration, and environment information shall be sufficient for independent reproduction or an explained bounded limitation.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify reproducibility and replay against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R05",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Negative and null evidence",
+    "Normative_Requirement": "Null results, failed replications, adverse outcomes, missing endpoints, withdrawals, and unresolved discrepancies shall remain visible in the evidence state.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify negative and null evidence against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-03-R06",
+    "Module_ID": "NK-03",
+    "Module": "Scientific evidence, claim control, and reproducibility",
+    "Requirement_Title": "Prohibited inference discipline",
+    "Normative_Requirement": "The decision shall state what cannot be inferred across participants, versions, contexts, endpoints, publication states, or system families.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "21(d), 36–37, 42, 57–58, 77, 80, 104–116, 134",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify prohibited inference discipline against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C04",
+      "V42-C05",
+      "V42-C07",
+      "V42-C08",
+      "V42-C17"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Add claimant record type, verbatim wording, source location, publication state and propagation history.",
+      "Distinguish reproducibility of figures, analysis, endpoints, models, online systems and clinical workflows."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Real-time claims use a defined and measured latency class.",
+      "Corporate, paper, project-page, media and inferred claims remain distinct.",
+      "Public analysis code cannot be represented as full-system reproduction."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R01",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Multidimensional harm model",
+    "Normative_Requirement": "The benefit-risk assessment shall include physical, neurological, mental, social, economic, cultural, political, environmental, and third-party harms.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify multidimensional harm model against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R02",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Proportionality and alternatives",
+    "Normative_Requirement": "The intended benefit, less intrusive alternatives, exposure, reversibility, evidence maturity, and affected population shall support the proposed use.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify proportionality and alternatives against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R03",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Safety event ledger",
+    "Normative_Requirement": "Adverse events, device effects, incidents, near misses, complaints, and clinically significant observations shall be recorded at participant and configuration level.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify safety event ledger against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R04",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Longitudinal follow-up",
+    "Normative_Requirement": "The monitoring plan shall address delayed, cumulative, adaptive, and post-withdrawal effects for a period justified by the intervention and population.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify longitudinal follow-up against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R05",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Stop and escalation rules",
+    "Normative_Requirement": "Predefined thresholds shall trigger pause, safe state, clinical response, regulator or ethics notification, reassessment, or closure.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify stop and escalation rules against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-04-R06",
+    "Module_ID": "NK-04",
+    "Module": "Safety, benefit-risk, proportionality, and clinical vigilance",
+    "Requirement_Title": "Independent benefit-risk adjudication",
+    "Normative_Requirement": "Benefit-risk conclusions shall be reviewed independently and shall preserve unresolved objections and participant-defined harms.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "39–42, 55–58, 80(c), 104–109, 113, 153",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify independent benefit-risk adjudication against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C04",
+      "V42-C10",
+      "V42-C11",
+      "V42-C15"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add metric direction, aggregation, denominator, protocol state, ground-truth source, correction timing and participant-rating fields.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every quantitative claim is reconstructable and cannot silently change denominator or endpoint class.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Benefit and access claims include the work required to operate the system.",
+      "Longitudinal function cannot be cited as proof of safety."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R01",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "Data taxonomy",
+    "Normative_Requirement": "The system shall classify direct neural data, indirect neural data, non-neural data enabling mental-state inference, derived features, model outputs, metadata, and linkage identifiers.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify data taxonomy against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R02",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "Purpose limitation and minimization",
+    "Normative_Requirement": "Collection, processing, retention, transfer, and reuse shall be limited to necessary, specified, legitimate, and proportionate purposes.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify purpose limitation and minimization against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R03",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "Access and compartment control",
+    "Normative_Requirement": "Neural, participant-identifiable, inference, and security-sensitive data shall use role-, purpose-, participant-, domain-, and time-bounded access.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify access and compartment control against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R04",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "Data subject and participant rights",
+    "Normative_Requirement": "People shall receive accessible information and mechanisms for access, correction, objection, portability, deletion where applicable, and incidental-finding preferences.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify data subject and participant rights against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R05",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "AI training and secondary use",
+    "Normative_Requirement": "Training, fine-tuning, benchmarking, model improvement, or secondary analytics shall require an explicit legal, ethical, and consent basis and a separate evidence record.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify ai training and secondary use against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-05-R06",
+    "Module_ID": "NK-05",
+    "Module": "Neural data, mental privacy, and data governance",
+    "Requirement_Title": "Cross-border and repository governance",
+    "Normative_Requirement": "Transfers and repositories shall document jurisdiction, safeguards, interoperability, access tiers, retention, incident duties, and accountable custodians.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "43–50, 80(d), 82–92, 124–131, 133, 140",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify cross-border and repository governance against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R01",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Threat model",
+    "Normative_Requirement": "The assurance case shall identify assets, adversaries, misuse, safety-security interactions, trust boundaries, dependencies, and plausible attack paths.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify threat model against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R02",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Secure-by-design baseline",
+    "Normative_Requirement": "Hardware, software, communications, keys, updates, authentication, authorization, logging, and data storage shall implement a justified secure baseline.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify secure-by-design baseline against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R03",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Vulnerability and red-team evidence",
+    "Normative_Requirement": "The system shall maintain vulnerability intake, triage, remediation, disclosure, regression, penetration, and adversarial-test evidence.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify vulnerability and red-team evidence against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R04",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Update, rollback, and recovery",
+    "Normative_Requirement": "Updates shall be authenticated, authorized, tested, interruptible without unsafe partial state, and reversible through a verified recovery path.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify update, rollback, and recovery against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R05",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Incident response and forensics",
+    "Normative_Requirement": "The operator shall demonstrate detection, containment, evidence preservation, communication, recovery, participant support, and lessons learned.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify incident response and forensics against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-06-R06",
+    "Module_ID": "NK-06",
+    "Module": "Cybersecurity, resilience, and secure repositories",
+    "Requirement_Title": "Resilience and supplier cessation",
+    "Normative_Requirement": "The assurance case shall address outages, key loss, service withdrawal, component obsolescence, vendor failure, data export, and continuity of essential support.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "58, 88–95, 106–109, 113",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify resilience and supplier cessation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C03",
+      "V42-C10",
+      "V42-C12"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Distinguish insufficient public evidence, private record required, evidence known to exist, evaluation not executed and demonstrated nonconformance.",
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Missing public evidence is never represented as proof of conformity or failure.",
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R01",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Model and training provenance",
+    "Normative_Requirement": "The assurance case shall identify model architecture, version, training and evaluation data provenance, preprocessing, labels, objectives, and external dependencies.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify model and training provenance against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R02",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Signal-versus-prior decomposition",
+    "Normative_Requirement": "For generative or high-prior outputs, evaluation shall quantify the contribution of neural information relative to linguistic, behavioral, demographic, contextual, and model priors.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify signal-versus-prior decomposition against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R03",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Calibration, abstention, and uncertainty",
+    "Normative_Requirement": "The system shall measure calibration, uncertainty, rejection, abstention, confidence communication, and error detection appropriate to the decision context.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify calibration, abstention, and uncertainty against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R04",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Robustness and distribution shift",
+    "Normative_Requirement": "Evaluation shall include participant, session, device, context, temporal, language, demographic, and out-of-distribution changes relevant to intended use.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify robustness and distribution shift against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R05",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Human oversight and automation boundary",
+    "Normative_Requirement": "The assurance case shall define who can override, confirm, interpret, act on, or stop model outputs and which actions cannot be automated.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify human oversight and automation boundary against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-07-R06",
+    "Module_ID": "NK-07",
+    "Module": "AI, algorithmic, and generative-model assurance",
+    "Requirement_Title": "Bias and representativeness",
+    "Normative_Requirement": "Model development and evaluation shall identify representation gaps, differential error, accessibility effects, and mitigation across relevant populations.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "17, 51, 58, 92, 114",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify bias and representativeness against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C05",
+      "V42-C06",
+      "V42-C07",
+      "V42-C13"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add SAME, SUBSET, ALTERNATE, SUPERSEDED and UNRESOLVED relations across paper, code, checkpoint, device, software build, labeling and longitudinal epochs.",
+      "Represent neural, algorithmic, UI, human-support and infrastructure contributions, plus independence across setup, use, maintenance, recovery and transport.",
+      "Represent causal, incremental, asynchronous, batch and end-to-end latency with measurement points.",
+      "Connect each retraining or update event to source data, privacy state, participant authority, retention and withdrawal."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every claim and endpoint resolves to an exact configuration and source version.",
+      "Capability and independence claims identify every material contributor and dependency.",
+      "Real-time claims use a defined and measured latency class.",
+      "Continuous learning remains traceable and consent-bounded."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R01",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Participant governance",
+    "Normative_Requirement": "Participants and end users shall have structured roles in design, evidence interpretation, benefit and harm definition, monitoring, and change review.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify participant governance against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R02",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Voting representation",
+    "Normative_Requirement": "High-risk assurance decisions shall include independent voting participant or affected-community representation.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify voting representation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R03",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Participant-controlled evidence use",
+    "Normative_Requirement": "Participants shall control recording, quotation, attribution, public use, and correction of their experiential evidence.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify participant-controlled evidence use against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R04",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Community and public engagement",
+    "Normative_Requirement": "Affected communities shall receive accessible information and meaningful opportunities to influence policy and deployment decisions.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify community and public engagement against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R05",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Epistemic plurality",
+    "Normative_Requirement": "The evidence process shall include lived experience, disability expertise, cultural knowledge, local context, and interdisciplinary scientific knowledge.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify epistemic plurality against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-08-R06",
+    "Module_ID": "NK-08",
+    "Module": "Participant, community, and epistemic governance",
+    "Requirement_Title": "Dissent preservation",
+    "Normative_Requirement": "Participant, community, reviewer, or assessor dissent shall remain visible through resolution and in the final decision when unresolved.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "31–33, 53, 59–62, 69, 76–80, 98–100, 149–151, 164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify dissent preservation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R01",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Equity impact assessment",
+    "Normative_Requirement": "The assurance case shall identify who receives benefits, burdens, access, exclusion, cost, support, surveillance, and decision risk.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify equity impact assessment against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R02",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Accessibility and usability",
+    "Normative_Requirement": "Products, consent, controls, support, complaints, and review processes shall be accessible to relevant disabilities, languages, cultures, ages, and literacy levels.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify accessibility and usability against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R03",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Non-discrimination testing",
+    "Normative_Requirement": "The system shall test and monitor differential performance, treatment, access, stigma, and exclusion across relevant protected and underserved groups.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify non-discrimination testing against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R04",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Affordability and continuity",
+    "Normative_Requirement": "The assurance case shall assess price, reimbursement, maintenance, connectivity, clinical support, caregiver burden, and long-term access.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify affordability and continuity against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R05",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Resource-constrained deployment",
+    "Normative_Requirement": "Deployment in resource-constrained settings shall not rely on absent infrastructure, expertise, emergency response, data protection, or post-use support.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify resource-constrained deployment against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-09-R06",
+    "Module_ID": "NK-09",
+    "Module": "Equity, accessibility, non-discrimination, and global justice",
+    "Requirement_Title": "Benefit sharing and capacity",
+    "Normative_Requirement": "Research and deployment shall support local capacity, fair partnerships, knowledge access, and equitable sharing of benefits and burdens.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "27–33, 51–54, 59–69, 81, 101–103, 142–155",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify benefit sharing and capacity against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C11",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Record setup, calibration, pauses, reprogramming, travel, caregiver and follow-up burdens.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Benefit and access claims include the work required to operate the system.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R01",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Accountability map",
+    "Normative_Requirement": "The assurance case shall name accountable legal, clinical, technical, data, security, ethics, participant-support, and decision actors.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify accountability map against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R02",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Independent oversight",
+    "Normative_Requirement": "Material claims and high-risk deployments shall be subject to independent, multidisciplinary, pluralistic, and conflict-managed review.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify independent oversight against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R03",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Traceable decision",
+    "Normative_Requirement": "Every decision shall link evidence, findings, objections, conditions, exceptions, residual risks, signatories, scope, and expiry.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify traceable decision against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R04",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Complaint, challenge, and remedy",
+    "Normative_Requirement": "Accessible routes shall exist for questions, correction, complaint, whistleblowing, appeal, remedy, and protection from retaliation.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify complaint, challenge, and remedy against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R05",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Public transparency",
+    "Normative_Requirement": "A bounded public summary shall accurately state objectives, uses, evidence, limitations, risks, governance, incidents suitable for disclosure, and prohibited inferences.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify public transparency against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-10-R06",
+    "Module_ID": "NK-10",
+    "Module": "Accountability, independent oversight, remedy, and public transparency",
+    "Requirement_Title": "Regulatory and ethics coordination",
+    "Normative_Requirement": "Regulator, ethics, data-protection, safety, cybersecurity, and sectoral oversight records shall be coordinated without collapsing distinct authorities.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "33, 36–37, 55–58, 75–80, 109, 116, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify regulatory and ethics coordination against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C01",
+      "V42-C09",
+      "V42-C14"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Add typed decision objects with distinct authority, scope, evidence threshold and reopening rules.",
+      "Represent registry-pointer discrepancies, adjudicated identities, authoritative source and propagation controls.",
+      "Separate consultation, co-design, voting, veto, evidence-use control and dissent."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "The same case can support a bounded claim or legal authorization while system conformance remains blocked.",
+      "Incorrect links cannot silently corrupt trial-publication-regulatory graphs.",
+      "Participation or satisfaction cannot be mistaken for governance authority."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R01",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Support and maintenance plan",
+    "Normative_Requirement": "The operator shall define maintenance, calibration, consumables, software support, clinical support, training, and responsible contacts.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify support and maintenance plan against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R02",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Withdrawal and deactivation",
+    "Normative_Requirement": "The assurance case shall define safe cessation, deactivation, removal, data disposition, and restoration of alternative support.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify withdrawal and deactivation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R03",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Post-trial and post-market continuity",
+    "Normative_Requirement": "The sponsor or operator shall define access, funding, care, repair, data, and support obligations after study or market transitions.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify post-trial and post-market continuity against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R04",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Obsolescence and supplier exit",
+    "Normative_Requirement": "The assurance case shall address unsupported components, acquisitions, insolvency, discontinued services, and transfer to a successor.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify obsolescence and supplier exit against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R05",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Reversibility and residual effects",
+    "Normative_Requirement": "The decision shall distinguish technical reversibility, clinical reversibility, data persistence, model persistence, behavioral effects, and social dependency.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify reversibility and residual effects against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-11-R06",
+    "Module_ID": "NK-11",
+    "Module": "Lifecycle continuity, withdrawal, post-trial support, and reversibility",
+    "Requirement_Title": "Lifecycle trigger reassessment",
+    "Normative_Requirement": "Withdrawal, ownership change, major incident, support reduction, material update, or participant request shall reopen the assurance decision.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "7, 80(c), 106–109, 113, 139, 153, 156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify lifecycle trigger reassessment against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C10",
+      "V42-C12",
+      "V42-C15",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Represent patient, clinician, system and emergency authority with tested state transitions.",
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Add an explicit cross-object rule separating performance, implant integrity, adverse events and trial safety.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Every hazardous or degraded state has an auditable safe transition.",
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Longitudinal function cannot be cited as proof of safety.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R01",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Children and adolescents",
+    "Normative_Requirement": "Use involving children shall demonstrate best interests, developmentally appropriate consent or assent, heightened evidence, strict oversight, and justified purpose.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify children and adolescents against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R02",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Education",
+    "Normative_Requirement": "Educational deployment shall exclude coercion, performance evaluation, punitive use, and non-therapeutic optimization without a justified evidence and rights basis.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify education against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R03",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Employment",
+    "Normative_Requirement": "Workplace use shall be voluntary, lawful, necessary, non-punitive, non-profiling, transparent, and independently governed under conditions of power imbalance.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify employment against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R04",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Consumer and commercial use",
+    "Normative_Requirement": "Consumer claims, labels, consent, data sharing, manipulation, addiction, multifunctional devices, and medical-like claims shall receive explicit control.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify consumer and commercial use against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R05",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Mental health and enhancement",
+    "Normative_Requirement": "Mental-health and enhancement applications shall receive heightened scrutiny for identity, agency, stigma, equity, reversibility, and realistic expectations.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify mental health and enhancement against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-12-R06",
+    "Module_ID": "NK-12",
+    "Module": "Sectoral and vulnerable-context safeguards",
+    "Requirement_Title": "Dual use, security, and social control",
+    "Normative_Requirement": "The assurance case shall prohibit torture, coercive conformity, arbitrary mental-state surveillance, manipulative political use, and unlawful social control.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "63–65, 75–80, 118–156",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify dual use, security, and social control against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C02"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Separate technical function from research, clinical, consumer, workplace and other deployment states; preserve future-use gates."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "A research system is not misclassified as a deployed consumer or institutional system."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R01",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "National coordinating body",
+    "Normative_Requirement": "A Member State implementation model shall designate a coordinating body with authority across health, research, data, cybersecurity, consumer, labour, education, and human-rights domains.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify national coordinating body against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R02",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "Institutional capacity and competence",
+    "Normative_Requirement": "Roles shall have defined competence, independence, training, resources, and authority suitable for the risk and lifecycle stage.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify institutional capacity and competence against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R03",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "Monitoring and indicators",
+    "Normative_Requirement": "Programmes shall maintain quantitative and qualitative indicators covering capability, evidence, harms, access, incidents, remedy, and implementation performance.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify monitoring and indicators against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R04",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "Policy effectiveness evaluation",
+    "Normative_Requirement": "Policies, incentives, oversight mechanisms, and programmes shall be evaluated ex ante and ex post against defined objectives and unintended effects.",
+    "Priority": "P0",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify policy effectiveness evaluation against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P0 failure blocks the affected assurance claim or deployment scope.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R05",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "Environmental and supply-chain responsibility",
+    "Normative_Requirement": "The assurance case shall address material extraction, energy, storage, emissions, waste, recycling, disposal, and affected communities.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify environmental and supply-chain responsibility against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  },
+  {
+    "Requirement_ID": "NK-13-R06",
+    "Module_ID": "NK-13",
+    "Module": "Sustainability, institutional capacity, monitoring, and international cooperation",
+    "Requirement_Title": "International cooperation and interoperability",
+    "Normative_Requirement": "Actors shall support interoperable reporting, cross-border safeguards, shared learning, standards alignment, and cooperation with civil society and scientific organizations.",
+    "Priority": "P1",
+    "UNESCO_Paragraphs": "33–35, 80, 112, 123, 157–164",
+    "Required_Evidence": "Exact system record; primary evidence; method or procedure; finding; accountable owner; limitation; decision linkage",
+    "Conformance_Test": "Verify international cooperation and interoperability against the exact system, evidence freeze, applicable profile, and decision scope.",
+    "Nonconformance_Effect": "P1 gap requires a condition, remediation, or justified inapplicability.",
+    "Kernel_Version": "v4.2",
+    "Normative_Text_Change": "NONE — v4.0 normative text preserved",
+    "Calibration_Change_IDs": [
+      "V42-C12",
+      "V42-C16"
+    ],
+    "Calibrated_Implementation_Constraints": [
+      "Link vigilance events to model/build/exposure denominators and attach prohibited configurations to exact system boundaries.",
+      "Increase continuity obligations when participants rely on an investigational or supplier-dependent function."
+    ],
+    "Calibrated_Acceptance_Tests": [
+      "Postmarket rates and restrictions remain configuration-specific.",
+      "Essential reliance triggers funded transition, support and cessation duties."
+    ]
+  }
+]

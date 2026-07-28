@@ -1,0 +1,2960 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/neuroai/v4.2/universal-assessment.schema.json",
+  "title": "Pilot-Calibrated Universal NeuroAI Assessment",
+  "description": "Pilot-calibrated v4.2 assessment structure preserving 78 normative requirements and adding typed decisions, evidence access, configuration/version/epoch relations, endpoint/denominator semantics, functional contributions, independence, latency, control authority, burden, update lineage, participant authority, postmarket exposure, and reproducibility tiers.",
+  "type": "object",
+  "required": [
+    "assessment_metadata",
+    "system_profile",
+    "deployment_state",
+    "profile_selection",
+    "claim_register",
+    "evidence_register",
+    "configuration_relationships",
+    "source_version_relationships",
+    "provenance_discrepancies",
+    "configuration_epochs",
+    "denominator_register",
+    "endpoint_register",
+    "functional_contribution_register",
+    "independence_assessment",
+    "latency_register",
+    "control_authority_register",
+    "operational_burden_register",
+    "update_lineage_register",
+    "participant_authority_register",
+    "postmarket_exposure_register",
+    "reproducibility_register",
+    "requirement_findings",
+    "gap_register",
+    "decision_register"
+  ],
+  "properties": {
+    "assessment_metadata": {
+      "$ref": "#/$defs/assessment_metadata"
+    },
+    "system_profile": {
+      "$ref": "#/$defs/system_profile"
+    },
+    "profile_selection": {
+      "$ref": "#/$defs/profile_selection"
+    },
+    "claim_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "evidence_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "endpoint_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/endpoint"
+      }
+    },
+    "requirement_findings": {
+      "type": "array",
+      "minItems": 78,
+      "items": {
+        "$ref": "#/$defs/requirement_finding"
+      }
+    },
+    "gap_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gap"
+      }
+    },
+    "assessment_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deployment_state": {
+      "$ref": "#/$defs/deployment_state"
+    },
+    "configuration_relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/configuration_relationship"
+      }
+    },
+    "source_version_relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source_version_relationship"
+      }
+    },
+    "provenance_discrepancies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provenance_discrepancy"
+      }
+    },
+    "configuration_epochs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/configuration_epoch"
+      }
+    },
+    "denominator_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/denominator"
+      }
+    },
+    "functional_contribution_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/functional_contribution"
+      }
+    },
+    "independence_assessment": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/independence_axis"
+      }
+    },
+    "latency_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/latency_record"
+      }
+    },
+    "control_authority_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/control_authority"
+      }
+    },
+    "operational_burden_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/operational_burden"
+      }
+    },
+    "update_lineage_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/update_lineage"
+      }
+    },
+    "participant_authority_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/participant_authority"
+      }
+    },
+    "postmarket_exposure_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/postmarket_exposure"
+      }
+    },
+    "reproducibility_register": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reproducibility_record"
+      }
+    },
+    "decision_register": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/typed_decision"
+      }
+    },
+    "legacy_bounded_decision": {
+      "$ref": "#/$defs/bounded_decision"
+    },
+    "migration_provenance": {
+      "$ref": "#/$defs/migration_provenance"
+    }
+  },
+  "$defs": {
+    "assessment_metadata": {
+      "type": "object",
+      "required": [
+        "assessment_id",
+        "instrument_version",
+        "title",
+        "assessment_status",
+        "evidence_cutoff",
+        "assessment_purpose",
+        "public_private_state"
+      ],
+      "properties": {
+        "assessment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instrument_version": {
+          "const": "v4.2"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assessment_status": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "IN PROGRESS",
+            "EVIDENCE FROZEN",
+            "DECISION READY",
+            "CLOSED",
+            "REOPENED"
+          ]
+        },
+        "assessment_purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_cutoff": {
+          "type": "string",
+          "format": "date"
+        },
+        "evidence_freeze_id": {
+          "type": "string"
+        },
+        "jurisdictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assessors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actor"
+          }
+        },
+        "public_private_state": {
+          "type": "string",
+          "enum": [
+            "PUBLIC EVIDENCE ONLY",
+            "PUBLIC EVIDENCE WITH CONTROLLED PRIVATE GAP REGISTER",
+            "PRIVATE EVIDENCE AUTHORIZED",
+            "SYNTHETIC ONLY"
+          ]
+        },
+        "source_corpus_version": {
+          "type": "string"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "migrated_from_version": {
+          "type": "string"
+        },
+        "migration_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "actor_id",
+        "name_or_role",
+        "responsibility"
+      ],
+      "properties": {
+        "actor_id": {
+          "type": "string"
+        },
+        "name_or_role": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "responsibility": {
+          "type": "string"
+        },
+        "accountability_state": {
+          "type": "string"
+        },
+        "source_or_basis": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "component": {
+      "type": "object",
+      "required": [
+        "component_id",
+        "component_type",
+        "name",
+        "version",
+        "effective_period"
+      ],
+      "properties": {
+        "component_id": {
+          "type": "string"
+        },
+        "component_type": {
+          "type": "string",
+          "enum": [
+            "HARDWARE",
+            "SOFTWARE",
+            "MODEL",
+            "FIRMWARE",
+            "DATA PIPELINE",
+            "ACCESSORY",
+            "EXTERNAL SERVICE",
+            "PROCEDURE",
+            "OTHER"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "effective_period": {
+          "type": "string"
+        },
+        "supplier_or_owner": {
+          "type": "string"
+        },
+        "dependency": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "system_profile": {
+      "type": "object",
+      "required": [
+        "system_id",
+        "system_name",
+        "configuration_id",
+        "system_family",
+        "components",
+        "classification",
+        "intended_uses",
+        "excluded_uses",
+        "populations",
+        "contexts",
+        "accountable_actors",
+        "lifecycle_state",
+        "material_dependencies"
+      ],
+      "properties": {
+        "system_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_effective_period": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "classification": {
+          "type": "object",
+          "required": [
+            "sc_01",
+            "sc_02",
+            "sc_03",
+            "sc_04",
+            "sc_05",
+            "sc_06",
+            "sc_07",
+            "sc_08",
+            "sc_09",
+            "sc_10",
+            "sc_11",
+            "sc_12"
+          ],
+          "properties": {
+            "sc_01": {
+              "title": "Interface",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "No direct interface",
+                      "Non-invasive",
+                      "Minimally invasive",
+                      "Temporary invasive",
+                      "Implanted"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_02": {
+              "title": "Directionality",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Record",
+                      "Infer",
+                      "Actuate",
+                      "Stimulate/modulate",
+                      "Closed-loop"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_03": {
+              "title": "Claimed function",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Research measurement",
+                      "Diagnostic",
+                      "Therapeutic",
+                      "Assistive",
+                      "Enhancement",
+                      "Monitoring/profiling",
+                      "Control/communication"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_04": {
+              "title": "Data class",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Direct neural",
+                      "Indirect neural",
+                      "Non-neural enabling mental inference",
+                      "Multimodal",
+                      "Derived/model output"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_05": {
+              "title": "AI role",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "None",
+                      "Signal processing",
+                      "Predictive inference",
+                      "Generative reconstruction",
+                      "Adaptive control",
+                      "Autonomous decision"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_06": {
+              "title": "Persistence",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Ephemeral",
+                      "Session-based",
+                      "Longitudinal",
+                      "Permanent implant",
+                      "Persistent model/data representation"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_07": {
+              "title": "Reversibility",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Fully reversible",
+                      "Operationally reversible",
+                      "Clinically burdensome",
+                      "Partially irreversible",
+                      "Unknown"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_08": {
+              "title": "Control architecture",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "User initiated",
+                      "Clinician supervised",
+                      "Operator controlled",
+                      "Automated",
+                      "Closed-loop autonomous"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_09": {
+              "title": "Context",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Research",
+                      "Clinical",
+                      "Home/community",
+                      "Consumer",
+                      "Education",
+                      "Workplace",
+                      "Justice/security",
+                      "Defence"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_10": {
+              "title": "Population",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "General adult",
+                      "Person with disability",
+                      "Child/adolescent",
+                      "Older person",
+                      "Mental-health condition",
+                      "Diminished capacity",
+                      "Worker/student",
+                      "Other vulnerable context"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_11": {
+              "title": "Evidence maturity",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Concept",
+                      "Bench",
+                      "Preclinical",
+                      "Early feasibility",
+                      "Controlled clinical",
+                      "Authorized use",
+                      "Post-market"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "sc_12": {
+              "title": "Dependency and exposure",
+              "type": "object",
+              "required": [
+                "values",
+                "certainty",
+                "rationale"
+              ],
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "Offline/local",
+                      "Connected",
+                      "Cloud dependent",
+                      "Third-party model/service",
+                      "Essential supplier dependency",
+                      "High-value cyber target"
+                    ]
+                  }
+                },
+                "certainty": {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "PROVISIONAL",
+                    "UNKNOWN"
+                  ]
+                },
+                "rationale": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "intended_uses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded_uses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "populations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "contexts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "accountable_actors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/actor"
+          }
+        },
+        "affected_third_parties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lifecycle_state": {
+          "type": "string"
+        },
+        "material_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "known_change_history": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unresolved_identity_questions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile_selection": {
+      "type": "object",
+      "required": [
+        "initial_profile_id",
+        "triggered_escalators",
+        "final_profile_id",
+        "target_conformance_level",
+        "mandatory_modules",
+        "selection_rationale"
+      ],
+      "properties": {
+        "initial_profile_id": {
+          "type": "string",
+          "enum": [
+            "AP-1",
+            "AP-2",
+            "AP-3",
+            "AP-4",
+            "AP-5",
+            "AP-6"
+          ]
+        },
+        "triggered_escalators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "escalator_id",
+              "triggered",
+              "rationale"
+            ],
+            "properties": {
+              "escalator_id": {
+                "type": "string",
+                "enum": [
+                  "ESC-01",
+                  "ESC-02",
+                  "ESC-03",
+                  "ESC-04",
+                  "ESC-05",
+                  "ESC-06",
+                  "ESC-07",
+                  "ESC-08"
+                ]
+              },
+              "triggered": {
+                "type": "boolean"
+              },
+              "rationale": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "final_profile_id": {
+          "type": "string",
+          "enum": [
+            "AP-1",
+            "AP-2",
+            "AP-3",
+            "AP-4",
+            "AP-5",
+            "AP-6"
+          ]
+        },
+        "target_conformance_level": {
+          "type": "string",
+          "enum": [
+            "CL-0",
+            "CL-1",
+            "CL-2",
+            "CL-3",
+            "CL-4",
+            "CL-5"
+          ]
+        },
+        "mandatory_modules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "NK-01",
+              "NK-02",
+              "NK-03",
+              "NK-04",
+              "NK-05",
+              "NK-06",
+              "NK-07",
+              "NK-08",
+              "NK-09",
+              "NK-10",
+              "NK-11",
+              "NK-12",
+              "NK-13"
+            ]
+          }
+        },
+        "additional_gates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selection_rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unresolved_profile_questions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "claim_text",
+        "claimant",
+        "claim_type",
+        "claimed_scope",
+        "evidence_ids",
+        "claim_status",
+        "strongest_supported_claim",
+        "prohibited_inferences",
+        "limitations",
+        "claimant_record_type",
+        "verbatim_text",
+        "source_location",
+        "propagation_history",
+        "current_applicability",
+        "future_use_gate"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string"
+        },
+        "claim_text": {
+          "type": "string"
+        },
+        "claimant": {
+          "type": "string"
+        },
+        "claim_type": {
+          "type": "string",
+          "enum": [
+            "CAPABILITY",
+            "PERFORMANCE",
+            "SAFETY",
+            "EFFECTIVENESS",
+            "AUTHORIZATION",
+            "DEPLOYMENT",
+            "PARTICIPANT EXPERIENCE",
+            "LIFECYCLE",
+            "PRIVACY",
+            "CYBERSECURITY",
+            "OTHER"
+          ]
+        },
+        "claimed_scope": {
+          "type": "object",
+          "properties": {
+            "system_and_version": {
+              "type": "string"
+            },
+            "population": {
+              "type": "string"
+            },
+            "context": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "observation_window": {
+              "type": "string"
+            },
+            "jurisdiction": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claim_status": {
+          "type": "string",
+          "enum": [
+            "SUPPORTED WITHIN BOUNDED SCOPE",
+            "PARTIALLY SUPPORTED",
+            "UNSUPPORTED",
+            "CONTRADICTED",
+            "NOT REVIEWABLE",
+            "WITHDRAWN OR SUPERSEDED"
+          ]
+        },
+        "strongest_supported_claim": {
+          "type": "string"
+        },
+        "prohibited_inferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_evidence_to_change_status": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claimant_record_type": {
+          "type": "string",
+          "enum": [
+            "PEER-REVIEWED PAPER",
+            "PREPRINT",
+            "REGULATORY AUTHORITY",
+            "TRIAL REGISTRY",
+            "SPONSOR OR INVESTIGATOR",
+            "MANUFACTURER",
+            "PROJECT PAGE",
+            "CORPORATE COMMUNICATION",
+            "MEDIA REPORT",
+            "PARTICIPANT STATEMENT",
+            "ASSESSOR-CONTROLLED CLAIM",
+            "INFERRED PUBLIC CLAIM",
+            "OTHER"
+          ]
+        },
+        "verbatim_text": {
+          "type": "string"
+        },
+        "source_location": {
+          "type": "string"
+        },
+        "propagation_history": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "current_applicability": {
+          "type": "string"
+        },
+        "future_use_gate": {
+          "type": "string",
+          "enum": [
+            "CURRENTLY APPLICABLE",
+            "CURRENTLY INAPPLICABLE",
+            "REOPENING REQUIRED",
+            "PROHIBITED",
+            "UNRESOLVED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "evidence_type",
+        "title",
+        "source",
+        "evidence_state",
+        "system_and_version",
+        "population",
+        "function",
+        "endpoint",
+        "observation_window",
+        "controls_or_comparators",
+        "publication_or_record_state",
+        "source_retrieval_state",
+        "strongest_supported_claim",
+        "limitations",
+        "access_state",
+        "known_holder",
+        "retrieval_or_authorization_required",
+        "reproducibility_tier"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type": "string",
+          "enum": [
+            "PEER-REVIEWED STUDY",
+            "PREPRINT",
+            "TRIAL REGISTRY",
+            "REGULATORY AUTHORIZATION",
+            "SAFETY OR VIGILANCE RECORD",
+            "PARTICIPANT OR CAREGIVER EVIDENCE",
+            "METHOD OR TECHNICAL DOCUMENT",
+            "CYBERSECURITY RECORD",
+            "PATENT",
+            "POLICY OR NORMATIVE SOURCE",
+            "PROGRAMME OR PROCUREMENT RECORD",
+            "COMMERCIAL CLAIM",
+            "OTHER"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "url_or_path": {
+          "type": "string"
+        },
+        "identifiers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "evidence_state": {
+          "type": "string",
+          "enum": [
+            "PRIMARY SOURCE VERIFIED",
+            "PRIMARY METADATA VERIFIED",
+            "CONTROLLED DISCOVERY RECORD",
+            "PARTICIPANT OR CAREGIVER EVIDENCE",
+            "REGULATORY RECORD",
+            "TRIAL REGISTRY",
+            "PREPRINT",
+            "PEER-REVIEWED PUBLICATION",
+            "PATENT RECORD",
+            "COMMERCIAL OR MEDIA CLAIM",
+            "PRIVATE EVIDENCE REQUIRED",
+            "NOT AVAILABLE"
+          ]
+        },
+        "system_and_version": {
+          "type": "string"
+        },
+        "population": {
+          "type": "string"
+        },
+        "function": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "observation_window": {
+          "type": "string"
+        },
+        "controls_or_comparators": {
+          "type": "string"
+        },
+        "result_or_record_content": {
+          "type": "string"
+        },
+        "publication_or_record_state": {
+          "type": "string"
+        },
+        "source_retrieval_state": {
+          "type": "string"
+        },
+        "primary_or_secondary": {
+          "type": "string",
+          "enum": [
+            "PRIMARY",
+            "SECONDARY",
+            "MIXED",
+            "UNKNOWN"
+          ]
+        },
+        "strongest_supported_claim": {
+          "type": "string"
+        },
+        "prohibited_inferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "checksum": {
+          "type": "string"
+        },
+        "access_conditions": {
+          "type": "string"
+        },
+        "access_state": {
+          "type": "string",
+          "enum": [
+            "PUBLICLY RETRIEVED",
+            "PUBLIC METADATA ONLY",
+            "CONTROLLED PUBLIC EXTRACT",
+            "KNOWN PRIVATE RECORD REQUIRED",
+            "KNOWN REGULATOR-HELD RECORD",
+            "KNOWN MANUFACTURER-HELD RECORD",
+            "KNOWN SPONSOR-HELD RECORD",
+            "KNOWN SITE-HELD RECORD",
+            "PARTICIPANT-CONTROLLED RECORD",
+            "EXISTENCE UNKNOWN",
+            "EVALUATION NOT EXECUTED",
+            "NOT APPLICABLE"
+          ]
+        },
+        "known_holder": {
+          "type": "string"
+        },
+        "retrieval_or_authorization_required": {
+          "type": "string"
+        },
+        "reproducibility_tier": {
+          "type": "string",
+          "enum": [
+            "R0 NONE",
+            "R1 FIGURES",
+            "R2 ANALYSIS",
+            "R3 ENDPOINTS",
+            "R4 MODEL",
+            "R5 ONLINE SYSTEM",
+            "R6 CLINICAL WORKFLOW"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "endpoint": {
+      "type": "object",
+      "required": [
+        "endpoint_id",
+        "population",
+        "system_and_version",
+        "endpoint",
+        "observation_window",
+        "comparator_or_control",
+        "result",
+        "uncertainty",
+        "source_evidence_ids",
+        "metric_direction",
+        "aggregation_level",
+        "statistic_type",
+        "derivation",
+        "denominator_ids",
+        "protocol_state",
+        "ground_truth_state",
+        "correction_timing",
+        "configuration_epoch_ids"
+      ],
+      "properties": {
+        "endpoint_id": {
+          "type": "string"
+        },
+        "population": {
+          "type": "string"
+        },
+        "system_and_version": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "measurement_method": {
+          "type": "string"
+        },
+        "observation_window": {
+          "type": "string"
+        },
+        "comparator_or_control": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        },
+        "uncertainty": {
+          "type": "string"
+        },
+        "null_adverse_or_burden_state": {
+          "type": "string"
+        },
+        "source_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transfer_limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metric_direction": {
+          "type": "string",
+          "enum": [
+            "HIGHER IS BETTER",
+            "LOWER IS BETTER",
+            "TARGET RANGE",
+            "DESCRIPTIVE",
+            "UNRESOLVED"
+          ]
+        },
+        "aggregation_level": {
+          "type": "string",
+          "enum": [
+            "PARTICIPANT",
+            "SESSION",
+            "SENTENCE",
+            "EVENT",
+            "SITE",
+            "COHORT",
+            "DEVICE",
+            "MODEL BUILD",
+            "EXPOSURE TIME",
+            "OTHER",
+            "UNRESOLVED"
+          ]
+        },
+        "statistic_type": {
+          "type": "string",
+          "enum": [
+            "MEAN",
+            "MEDIAN",
+            "BEST CASE",
+            "WORST CASE",
+            "PROPORTION",
+            "COUNT",
+            "RATE",
+            "CONFIDENCE LIMIT",
+            "RANGE",
+            "INDIVIDUAL VALUE",
+            "OTHER",
+            "UNRESOLVED"
+          ]
+        },
+        "derivation": {
+          "type": "string"
+        },
+        "denominator_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "protocol_state": {
+          "type": "string",
+          "enum": [
+            "PROTOCOL-DEFINED",
+            "AMENDED",
+            "POST-HOC",
+            "SENSITIVITY",
+            "EXPLORATORY",
+            "PUBLICATION-DERIVED",
+            "OPERATIONAL",
+            "UNRESOLVED"
+          ]
+        },
+        "ground_truth_state": {
+          "type": "string",
+          "enum": [
+            "EXTERNAL OBSERVED TARGET",
+            "PROMPTED KNOWN TARGET",
+            "CLINICIAN-ADJUDICATED",
+            "PARTICIPANT-RATED",
+            "CORRECTION-DERIVED",
+            "NO INDEPENDENT GROUND TRUTH",
+            "UNRESOLVED"
+          ]
+        },
+        "correction_timing": {
+          "type": "string",
+          "enum": [
+            "NO CORRECTION",
+            "PRE-OUTPUT",
+            "INTERACTIVE",
+            "POST-OUTPUT",
+            "PARTICIPANT EDIT",
+            "CLINICIAN ADJUSTMENT",
+            "UNRESOLVED"
+          ]
+        },
+        "configuration_epoch_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "requirement_finding": {
+      "type": "object",
+      "required": [
+        "requirement_id",
+        "module_id",
+        "priority",
+        "applicability",
+        "finding_status",
+        "evidence_ids",
+        "finding",
+        "strongest_supported_claim",
+        "prohibited_inferences",
+        "evidence_gap",
+        "required_action",
+        "evidence_access_state",
+        "future_use_gate_status",
+        "historical_finding_preserved"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "enum": [
+            "NK-01-R01",
+            "NK-01-R02",
+            "NK-01-R03",
+            "NK-01-R04",
+            "NK-01-R05",
+            "NK-01-R06",
+            "NK-02-R01",
+            "NK-02-R02",
+            "NK-02-R03",
+            "NK-02-R04",
+            "NK-02-R05",
+            "NK-02-R06",
+            "NK-03-R01",
+            "NK-03-R02",
+            "NK-03-R03",
+            "NK-03-R04",
+            "NK-03-R05",
+            "NK-03-R06",
+            "NK-04-R01",
+            "NK-04-R02",
+            "NK-04-R03",
+            "NK-04-R04",
+            "NK-04-R05",
+            "NK-04-R06",
+            "NK-05-R01",
+            "NK-05-R02",
+            "NK-05-R03",
+            "NK-05-R04",
+            "NK-05-R05",
+            "NK-05-R06",
+            "NK-06-R01",
+            "NK-06-R02",
+            "NK-06-R03",
+            "NK-06-R04",
+            "NK-06-R05",
+            "NK-06-R06",
+            "NK-07-R01",
+            "NK-07-R02",
+            "NK-07-R03",
+            "NK-07-R04",
+            "NK-07-R05",
+            "NK-07-R06",
+            "NK-08-R01",
+            "NK-08-R02",
+            "NK-08-R03",
+            "NK-08-R04",
+            "NK-08-R05",
+            "NK-08-R06",
+            "NK-09-R01",
+            "NK-09-R02",
+            "NK-09-R03",
+            "NK-09-R04",
+            "NK-09-R05",
+            "NK-09-R06",
+            "NK-10-R01",
+            "NK-10-R02",
+            "NK-10-R03",
+            "NK-10-R04",
+            "NK-10-R05",
+            "NK-10-R06",
+            "NK-11-R01",
+            "NK-11-R02",
+            "NK-11-R03",
+            "NK-11-R04",
+            "NK-11-R05",
+            "NK-11-R06",
+            "NK-12-R01",
+            "NK-12-R02",
+            "NK-12-R03",
+            "NK-12-R04",
+            "NK-12-R05",
+            "NK-12-R06",
+            "NK-13-R01",
+            "NK-13-R02",
+            "NK-13-R03",
+            "NK-13-R04",
+            "NK-13-R05",
+            "NK-13-R06"
+          ]
+        },
+        "module_id": {
+          "type": "string",
+          "enum": [
+            "NK-01",
+            "NK-02",
+            "NK-03",
+            "NK-04",
+            "NK-05",
+            "NK-06",
+            "NK-07",
+            "NK-08",
+            "NK-09",
+            "NK-10",
+            "NK-11",
+            "NK-12",
+            "NK-13"
+          ]
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "P0",
+            "P1",
+            "P2"
+          ]
+        },
+        "applicability": {
+          "type": "string",
+          "enum": [
+            "APPLICABLE",
+            "NOT APPLICABLE WITH RATIONALE",
+            "UNCERTAIN — RESOLUTION REQUIRED"
+          ]
+        },
+        "applicability_rationale": {
+          "type": "string"
+        },
+        "finding_status": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "PARTIAL",
+            "FAIL",
+            "NOT ASSESSED"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "finding": {
+          "type": "string"
+        },
+        "strongest_supported_claim": {
+          "type": "string"
+        },
+        "prohibited_inferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_gap": {
+          "type": "string"
+        },
+        "required_action": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "target_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "reassessment_trigger": {
+          "type": "string"
+        },
+        "evidence_access_state": {
+          "type": "string",
+          "enum": [
+            "PUBLICLY RETRIEVED",
+            "PUBLIC METADATA ONLY",
+            "CONTROLLED PUBLIC EXTRACT",
+            "KNOWN PRIVATE RECORD REQUIRED",
+            "KNOWN REGULATOR-HELD RECORD",
+            "KNOWN MANUFACTURER-HELD RECORD",
+            "KNOWN SPONSOR-HELD RECORD",
+            "KNOWN SITE-HELD RECORD",
+            "PARTICIPANT-CONTROLLED RECORD",
+            "EXISTENCE UNKNOWN",
+            "EVALUATION NOT EXECUTED",
+            "NOT APPLICABLE"
+          ]
+        },
+        "future_use_gate_status": {
+          "type": "string",
+          "enum": [
+            "CURRENTLY APPLICABLE",
+            "CURRENTLY INAPPLICABLE",
+            "REOPENING REQUIRED",
+            "PROHIBITED",
+            "UNRESOLVED"
+          ]
+        },
+        "historical_finding_preserved": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gap": {
+      "type": "object",
+      "required": [
+        "gap_id",
+        "linked_requirement_ids",
+        "linked_claim_ids",
+        "priority",
+        "missing_evidence",
+        "request_text",
+        "closure_criterion",
+        "state"
+      ],
+      "properties": {
+        "gap_id": {
+          "type": "string"
+        },
+        "linked_requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "linked_claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "P0",
+            "P1",
+            "P2"
+          ]
+        },
+        "missing_evidence": {
+          "type": "string"
+        },
+        "request_text": {
+          "type": "string"
+        },
+        "closure_criterion": {
+          "type": "string"
+        },
+        "responsible_actor": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "REQUEST READY",
+            "REQUEST ISSUED",
+            "PARTIAL RESPONSE",
+            "CLOSED",
+            "INAPPLICABLE"
+          ]
+        },
+        "response_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remaining_limitation": {
+          "type": "string"
+        },
+        "evidence_access_state": {
+          "type": "string",
+          "enum": [
+            "PUBLICLY RETRIEVED",
+            "PUBLIC METADATA ONLY",
+            "CONTROLLED PUBLIC EXTRACT",
+            "KNOWN PRIVATE RECORD REQUIRED",
+            "KNOWN REGULATOR-HELD RECORD",
+            "KNOWN MANUFACTURER-HELD RECORD",
+            "KNOWN SPONSOR-HELD RECORD",
+            "KNOWN SITE-HELD RECORD",
+            "PARTICIPANT-CONTROLLED RECORD",
+            "EXISTENCE UNKNOWN",
+            "EVALUATION NOT EXECUTED",
+            "NOT APPLICABLE"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "bounded_decision": {
+      "type": "object",
+      "required": [
+        "decision_id",
+        "decision_class",
+        "system_and_version",
+        "profile_id",
+        "target_level",
+        "scope",
+        "strongest_supported_claim",
+        "prohibited_inferences",
+        "p0_nonconformities",
+        "p1_conditions",
+        "residual_risks",
+        "expiry",
+        "reopening_triggers"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "decision_class": {
+          "type": "string",
+          "enum": [
+            "PUBLIC EVIDENCE SUFFICIENT FOR BOUNDED CLAIM",
+            "PUBLIC EVIDENCE PARTIAL — PRIVATE EVIDENCE REQUIRED",
+            "INSUFFICIENT OR INADMISSIBLE EVIDENCE",
+            "PROHIBITED OR DISPROPORTIONATE USE",
+            "SYNTHETIC GOVERNANCE FINDING ONLY",
+            "NO DECISION — ASSESSMENT INCOMPLETE"
+          ]
+        },
+        "system_and_version": {
+          "type": "string"
+        },
+        "profile_id": {
+          "type": "string",
+          "enum": [
+            "AP-1",
+            "AP-2",
+            "AP-3",
+            "AP-4",
+            "AP-5",
+            "AP-6"
+          ]
+        },
+        "target_level": {
+          "type": "string",
+          "enum": [
+            "CL-0",
+            "CL-1",
+            "CL-2",
+            "CL-3",
+            "CL-4",
+            "CL-5"
+          ]
+        },
+        "scope": {
+          "type": "object",
+          "required": [
+            "population",
+            "context",
+            "function",
+            "jurisdiction",
+            "evidence_freeze_id"
+          ],
+          "properties": {
+            "population": {
+              "type": "string"
+            },
+            "context": {
+              "type": "string"
+            },
+            "function": {
+              "type": "string"
+            },
+            "jurisdiction": {
+              "type": "string"
+            },
+            "evidence_freeze_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "strongest_supported_claim": {
+          "type": "string"
+        },
+        "prohibited_inferences": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "p0_nonconformities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "p1_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "participant_conditions_and_dissent": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "jurisdictional_conflicts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "residual_risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expiry": {
+          "type": "string"
+        },
+        "reopening_triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actor"
+          }
+        },
+        "decision_limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "deployment_state": {
+      "type": "object",
+      "required": [
+        "current_states",
+        "future_use_gates",
+        "modifiers"
+      ],
+      "properties": {
+        "current_states": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "RESEARCH",
+              "CLINICAL INVESTIGATIONAL",
+              "CLINICAL AUTHORIZED",
+              "HOME OR COMMUNITY",
+              "CONSUMER",
+              "WORKPLACE",
+              "EDUCATION",
+              "JUSTICE OR DETENTION",
+              "DEFENCE OR SECURITY",
+              "OTHER"
+            ]
+          }
+        },
+        "future_use_gates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "state",
+              "gate_status",
+              "rationale"
+            ],
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": [
+                  "RESEARCH",
+                  "CLINICAL INVESTIGATIONAL",
+                  "CLINICAL AUTHORIZED",
+                  "HOME OR COMMUNITY",
+                  "CONSUMER",
+                  "WORKPLACE",
+                  "EDUCATION",
+                  "JUSTICE OR DETENTION",
+                  "DEFENCE OR SECURITY",
+                  "OTHER"
+                ]
+              },
+              "gate_status": {
+                "type": "string",
+                "enum": [
+                  "CURRENTLY APPLICABLE",
+                  "CURRENTLY INAPPLICABLE",
+                  "REOPENING REQUIRED",
+                  "PROHIBITED",
+                  "UNRESOLVED"
+                ]
+              },
+              "rationale": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "modifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "configuration_relationship": {
+      "type": "object",
+      "required": [
+        "relationship_id",
+        "from_configuration",
+        "to_configuration",
+        "relationship_type",
+        "basis",
+        "evidence_ids"
+      ],
+      "properties": {
+        "relationship_id": {
+          "type": "string"
+        },
+        "from_configuration": {
+          "type": "string"
+        },
+        "to_configuration": {
+          "type": "string"
+        },
+        "relationship_type": {
+          "type": "string",
+          "enum": [
+            "SAME",
+            "SUBSET",
+            "SUPERSET",
+            "ALTERNATE",
+            "SUPERSEDED",
+            "SUCCESSOR",
+            "DERIVED FROM",
+            "APPLIES TO",
+            "INCONSISTENT WITH",
+            "UNRESOLVED"
+          ]
+        },
+        "basis": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "source_version_relationship": {
+      "type": "object",
+      "required": [
+        "relationship_id",
+        "from_source_id",
+        "to_source_id",
+        "relationship_type",
+        "authority_state",
+        "basis"
+      ],
+      "properties": {
+        "relationship_id": {
+          "type": "string"
+        },
+        "from_source_id": {
+          "type": "string"
+        },
+        "to_source_id": {
+          "type": "string"
+        },
+        "relationship_type": {
+          "type": "string",
+          "enum": [
+            "SAME",
+            "SUBSET",
+            "SUPERSET",
+            "ALTERNATE",
+            "SUPERSEDED",
+            "SUCCESSOR",
+            "DERIVED FROM",
+            "APPLIES TO",
+            "INCONSISTENT WITH",
+            "UNRESOLVED"
+          ]
+        },
+        "authority_state": {
+          "type": "string",
+          "enum": [
+            "AUTHORITATIVE FOR THIS CLAIM",
+            "SUPPORTING",
+            "HISTORICAL",
+            "SUPERSEDED",
+            "CONFLICTING",
+            "UNRESOLVED"
+          ]
+        },
+        "basis": {
+          "type": "string"
+        },
+        "affected_claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance_discrepancy": {
+      "type": "object",
+      "required": [
+        "discrepancy_id",
+        "observed_pointer",
+        "adjudicated_identity",
+        "authoritative_source_ids",
+        "status",
+        "propagation_controls"
+      ],
+      "properties": {
+        "discrepancy_id": {
+          "type": "string"
+        },
+        "observed_pointer": {
+          "type": "string"
+        },
+        "adjudicated_identity": {
+          "type": "string"
+        },
+        "authoritative_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "propagation_controls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "configuration_epoch": {
+      "type": "object",
+      "required": [
+        "epoch_id",
+        "configuration_id",
+        "start",
+        "end",
+        "material_changes",
+        "endpoint_ids",
+        "evidence_ids"
+      ],
+      "properties": {
+        "epoch_id": {
+          "type": "string"
+        },
+        "configuration_id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        },
+        "material_changes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "endpoint_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "denominator": {
+      "type": "object",
+      "required": [
+        "denominator_id",
+        "denominator_type",
+        "population_definition",
+        "value_state",
+        "value",
+        "time_window",
+        "configuration_id",
+        "evidence_ids"
+      ],
+      "properties": {
+        "denominator_id": {
+          "type": "string"
+        },
+        "denominator_type": {
+          "type": "string"
+        },
+        "population_definition": {
+          "type": "string"
+        },
+        "value_state": {
+          "type": "string"
+        },
+        "value": {},
+        "time_window": {
+          "type": "string"
+        },
+        "configuration_id": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transition_from_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "functional_contribution": {
+      "type": "object",
+      "required": [
+        "contribution_id",
+        "layer",
+        "target",
+        "comparator",
+        "metric_delta",
+        "uncertainty",
+        "residual_confounds",
+        "evidence_ids"
+      ],
+      "properties": {
+        "contribution_id": {
+          "type": "string"
+        },
+        "layer": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "comparator": {
+          "type": "string"
+        },
+        "metric_delta": {
+          "type": "string"
+        },
+        "uncertainty": {
+          "type": "string"
+        },
+        "residual_confounds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "independence_axis": {
+      "type": "object",
+      "required": [
+        "independence_id",
+        "axis",
+        "state",
+        "dependencies",
+        "evidence_ids",
+        "limitations"
+      ],
+      "properties": {
+        "independence_id": {
+          "type": "string"
+        },
+        "axis": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "latency_record": {
+      "type": "object",
+      "required": [
+        "latency_id",
+        "latency_class",
+        "measurement_start",
+        "measurement_end",
+        "value",
+        "units",
+        "output_availability",
+        "evidence_ids"
+      ],
+      "properties": {
+        "latency_id": {
+          "type": "string"
+        },
+        "latency_class": {
+          "type": "string",
+          "enum": [
+            "CAUSAL STREAMING",
+            "INCREMENTAL",
+            "ASYNCHRONOUS WINDOW",
+            "BATCH",
+            "CLOSED-LOOP CONTROL",
+            "OFFLINE ANALYSIS",
+            "UNRESOLVED"
+          ]
+        },
+        "measurement_start": {
+          "type": "string"
+        },
+        "measurement_end": {
+          "type": "string"
+        },
+        "value": {},
+        "units": {
+          "type": "string"
+        },
+        "output_availability": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "control_authority": {
+      "type": "object",
+      "required": [
+        "control_id",
+        "actor_type",
+        "state_type",
+        "trigger",
+        "transition",
+        "tested_state",
+        "evidence_ids"
+      ],
+      "properties": {
+        "control_id": {
+          "type": "string"
+        },
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "PARTICIPANT",
+            "CAREGIVER",
+            "CLINICIAN",
+            "OPERATOR",
+            "SYSTEM",
+            "SPONSOR",
+            "MANUFACTURER",
+            "EMERGENCY AUTHORITY",
+            "OTHER"
+          ]
+        },
+        "state_type": {
+          "type": "string",
+          "enum": [
+            "PAUSE TO SAFE THERAPY",
+            "STOP OUTPUT",
+            "STOP STIMULATION",
+            "CLINICIAN OVERRIDE",
+            "PARTICIPANT OVERRIDE",
+            "EMERGENCY SHUTDOWN",
+            "DEGRADED MODE",
+            "RECOVERY",
+            "OTHER"
+          ]
+        },
+        "trigger": {
+          "type": "string"
+        },
+        "transition": {
+          "type": "string"
+        },
+        "tested_state": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "operational_burden": {
+      "type": "object",
+      "required": [
+        "burden_id",
+        "burden_type",
+        "actor",
+        "frequency",
+        "duration_or_load",
+        "outcome_or_access_effect",
+        "evidence_ids"
+      ],
+      "properties": {
+        "burden_id": {
+          "type": "string"
+        },
+        "burden_type": {
+          "type": "string"
+        },
+        "actor": {
+          "type": "string"
+        },
+        "frequency": {
+          "type": "string"
+        },
+        "duration_or_load": {
+          "type": "string"
+        },
+        "outcome_or_access_effect": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "update_lineage": {
+      "type": "object",
+      "required": [
+        "update_id",
+        "configuration_before",
+        "configuration_after",
+        "change_type",
+        "source_data_ids",
+        "consent_state",
+        "privacy_state",
+        "withdrawal_effect",
+        "evidence_ids"
+      ],
+      "properties": {
+        "update_id": {
+          "type": "string"
+        },
+        "configuration_before": {
+          "type": "string"
+        },
+        "configuration_after": {
+          "type": "string"
+        },
+        "change_type": {
+          "type": "string"
+        },
+        "source_data_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "consent_state": {
+          "type": "string"
+        },
+        "privacy_state": {
+          "type": "string"
+        },
+        "withdrawal_effect": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "participant_authority": {
+      "type": "object",
+      "required": [
+        "authority_id",
+        "power",
+        "holder",
+        "scope",
+        "exercised_state",
+        "evidence_ids"
+      ],
+      "properties": {
+        "authority_id": {
+          "type": "string"
+        },
+        "power": {
+          "type": "string",
+          "enum": [
+            "CONSULTATION",
+            "CO-DESIGN",
+            "VOTING",
+            "VETO",
+            "EVIDENCE-USE CONTROL",
+            "DATA-WITHDRAWAL CONTROL",
+            "SYSTEM CESSATION CONTROL",
+            "DISSENT",
+            "REMEDY",
+            "NONE DOCUMENTED"
+          ]
+        },
+        "holder": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "exercised_state": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "postmarket_exposure": {
+      "type": "object",
+      "required": [
+        "exposure_id",
+        "configuration_id",
+        "jurisdiction",
+        "time_window",
+        "exposure_denominator_state",
+        "exposure_denominator",
+        "event_ids",
+        "evidence_ids"
+      ],
+      "properties": {
+        "exposure_id": {
+          "type": "string"
+        },
+        "configuration_id": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "time_window": {
+          "type": "string"
+        },
+        "exposure_denominator_state": {
+          "type": "string"
+        },
+        "exposure_denominator": {},
+        "event_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "reproducibility_record": {
+      "type": "object",
+      "required": [
+        "reproducibility_id",
+        "tier",
+        "state",
+        "artifacts",
+        "independent_execution_state",
+        "evidence_ids"
+      ],
+      "properties": {
+        "reproducibility_id": {
+          "type": "string"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "R0 NONE",
+            "R1 FIGURES",
+            "R2 ANALYSIS",
+            "R3 ENDPOINTS",
+            "R4 MODEL",
+            "R5 ONLINE SYSTEM",
+            "R6 CLINICAL WORKFLOW"
+          ]
+        },
+        "state": {
+          "type": "string"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "independent_execution_state": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "typed_decision": {
+      "type": "object",
+      "required": [
+        "decision_id",
+        "decision_object_type",
+        "authority",
+        "authority_basis",
+        "decision_state",
+        "scope",
+        "evidence_threshold",
+        "evidence_ids",
+        "strongest_supported_claim",
+        "prohibited_inferences",
+        "conditions",
+        "expiry",
+        "reopening_triggers"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "decision_object_type": {
+          "type": "string",
+          "enum": [
+            "CLAIM ADJUDICATION",
+            "LEGAL OR REGULATORY AUTHORIZATION",
+            "CONFORMANCE DECISION",
+            "PROHIBITED-USE DECISION",
+            "REOPENING DECISION"
+          ]
+        },
+        "authority": {
+          "type": "string"
+        },
+        "authority_basis": {
+          "type": "string"
+        },
+        "decision_state": {
+          "type": "string",
+          "enum": [
+            "SUPPORTED WITHIN BOUNDED SCOPE",
+            "PARTIALLY SUPPORTED",
+            "UNSUPPORTED",
+            "CONTRADICTED",
+            "AUTHORIZED WITHIN BOUNDED SCOPE",
+            "NOT AUTHORIZED",
+            "AUTHORIZATION NOT ASSESSED",
+            "NOT APPLICABLE",
+            "CONFORMS FOR BOUNDED SCOPE",
+            "CONDITIONAL CONFORMANCE",
+            "NO CONFORMANCE DECISION — BLOCKED",
+            "PROHIBITED OR DISPROPORTIONATE USE",
+            "ASSESSMENT INCOMPLETE",
+            "REOPENED"
+          ]
+        },
+        "scope": {
+          "type": "object"
+        },
+        "evidence_threshold": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strongest_supported_claim": {
+          "type": "string"
+        },
+        "prohibited_inferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expiry": {
+          "type": "string"
+        },
+        "reopening_triggers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "linked_legacy_decision_id": {
+          "type": "string"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "migration_provenance": {
+      "type": "object",
+      "required": [
+        "migration_id",
+        "source_instrument_version",
+        "target_instrument_version",
+        "source_assessment_id",
+        "source_sha256",
+        "historical_projection_sha256",
+        "migration_ruleset",
+        "migration_date",
+        "preservation_verified"
+      ],
+      "properties": {
+        "migration_id": {
+          "type": "string"
+        },
+        "source_instrument_version": {
+          "type": "string"
+        },
+        "target_instrument_version": {
+          "type": "string"
+        },
+        "source_assessment_id": {
+          "type": "string"
+        },
+        "source_sha256": {
+          "type": "string"
+        },
+        "historical_projection_sha256": {
+          "type": "string"
+        },
+        "migration_ruleset": {
+          "type": "string"
+        },
+        "migration_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "preservation_verified": {
+          "type": "boolean"
+        },
+        "migration_warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

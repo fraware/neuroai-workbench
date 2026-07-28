@@ -1,0 +1,170 @@
+[
+  {
+    "Dimension_ID": "SC-01",
+    "Dimension": "Interface",
+    "Allowed_Values": [
+      "No direct interface",
+      "Non-invasive",
+      "Minimally invasive",
+      "Temporary invasive",
+      "Implanted"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-02",
+    "Dimension": "Directionality",
+    "Allowed_Values": [
+      "Record",
+      "Infer",
+      "Actuate",
+      "Stimulate/modulate",
+      "Closed-loop"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-03",
+    "Dimension": "Claimed function",
+    "Allowed_Values": [
+      "Research measurement",
+      "Diagnostic",
+      "Therapeutic",
+      "Assistive",
+      "Enhancement",
+      "Monitoring/profiling",
+      "Control/communication"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-04",
+    "Dimension": "Data class",
+    "Allowed_Values": [
+      "Direct neural",
+      "Indirect neural",
+      "Non-neural enabling mental inference",
+      "Multimodal",
+      "Derived/model output"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-05",
+    "Dimension": "AI role",
+    "Allowed_Values": [
+      "None",
+      "Signal processing",
+      "Predictive inference",
+      "Generative reconstruction",
+      "Adaptive control",
+      "Autonomous decision"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-06",
+    "Dimension": "Persistence",
+    "Allowed_Values": [
+      "Ephemeral",
+      "Session-based",
+      "Longitudinal",
+      "Permanent implant",
+      "Persistent model/data representation"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-07",
+    "Dimension": "Reversibility",
+    "Allowed_Values": [
+      "Fully reversible",
+      "Operationally reversible",
+      "Clinically burdensome",
+      "Partially irreversible",
+      "Unknown"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-08",
+    "Dimension": "Control architecture",
+    "Allowed_Values": [
+      "User initiated",
+      "Clinician supervised",
+      "Operator controlled",
+      "Automated",
+      "Closed-loop autonomous"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-09",
+    "Dimension": "Context",
+    "Allowed_Values": [
+      "Research",
+      "Clinical",
+      "Home/community",
+      "Consumer",
+      "Education",
+      "Workplace",
+      "Justice/security",
+      "Defence"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-10",
+    "Dimension": "Population",
+    "Allowed_Values": [
+      "General adult",
+      "Person with disability",
+      "Child/adolescent",
+      "Older person",
+      "Mental-health condition",
+      "Diminished capacity",
+      "Worker/student",
+      "Other vulnerable context"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-11",
+    "Dimension": "Evidence maturity",
+    "Allowed_Values": [
+      "Concept",
+      "Bench",
+      "Preclinical",
+      "Early feasibility",
+      "Controlled clinical",
+      "Authorized use",
+      "Post-market"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  },
+  {
+    "Dimension_ID": "SC-12",
+    "Dimension": "Dependency and exposure",
+    "Allowed_Values": [
+      "Offline/local",
+      "Connected",
+      "Cloud dependent",
+      "Third-party model/service",
+      "Essential supplier dependency",
+      "High-value cyber target"
+    ],
+    "Required": true,
+    "Escalation_Rule": "Select all applicable values; uncertainty or multiple high-risk values increases assurance intensity."
+  }
+]
