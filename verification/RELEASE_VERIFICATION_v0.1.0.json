@@ -1,0 +1,536 @@
+{
+  "release": "v0.1.0",
+  "generated_at": "2026-07-28T14:46:46Z",
+  "controlled_determination": "REFERENCE WORKBENCH IMPLEMENTATION COMPLETE; SUITABLE FOR CONTROLLED LOCAL TECHNICAL PILOTS; PRODUCTION SECURITY, INSTITUTIONAL ADOPTION, SUBSTANTIVE EVIDENCE VALIDITY AND SYSTEM CONFORMANCE REMAIN OUTSIDE SOFTWARE VERIFICATION.",
+  "checks_total": 51,
+  "checks_passed": 51,
+  "checks_failed": 0,
+  "pytest": "53 passed in 9.87s",
+  "reference_cases": [
+    "PILOT-01_BrainGate2_T15_v4.2.json",
+    "PILOT-02_FDA_Adaptive_DBS_v4.2.json",
+    "PILOT-05_Brain2Qwerty_v4.2.json"
+  ],
+  "withheld_claims": [
+    "UNESCO endorsement or official-methodology status",
+    "Legal or regulatory authorization",
+    "Clinical safety or effectiveness",
+    "Production-grade cybersecurity",
+    "Evidence authenticity or methodological adequacy",
+    "Completed system conformance"
+  ],
+  "checks": [
+    {
+      "check_id": "CHK-001",
+      "name": "Required file README.md",
+      "status": "PASS",
+      "detail": 4933
+    },
+    {
+      "check_id": "CHK-002",
+      "name": "Required file LICENSE",
+      "status": "PASS",
+      "detail": 11358
+    },
+    {
+      "check_id": "CHK-003",
+      "name": "Required file NOTICE",
+      "status": "PASS",
+      "detail": 628
+    },
+    {
+      "check_id": "CHK-004",
+      "name": "Required file SECURITY.md",
+      "status": "PASS",
+      "detail": 1126
+    },
+    {
+      "check_id": "CHK-005",
+      "name": "Required file THREAT_MODEL.md",
+      "status": "PASS",
+      "detail": 1703
+    },
+    {
+      "check_id": "CHK-006",
+      "name": "Required file DATA_GOVERNANCE.md",
+      "status": "PASS",
+      "detail": 1192
+    },
+    {
+      "check_id": "CHK-007",
+      "name": "Required file pyproject.toml",
+      "status": "PASS",
+      "detail": 1645
+    },
+    {
+      "check_id": "CHK-008",
+      "name": "Required file src/neuroai_workbench/cli.py",
+      "status": "PASS",
+      "detail": 10092
+    },
+    {
+      "check_id": "CHK-009",
+      "name": "Required file src/neuroai_workbench/server.py",
+      "status": "PASS",
+      "detail": 12451
+    },
+    {
+      "check_id": "CHK-010",
+      "name": "Required file src/neuroai_workbench/static/index.html",
+      "status": "PASS",
+      "detail": 6761
+    },
+    {
+      "check_id": "CHK-011",
+      "name": "Required file src/neuroai_workbench/resources/v4_2/UNIVERSAL_NEUROAI_ASSESSMENT_SCHEMA_v4.2.json",
+      "status": "PASS",
+      "detail": 72586
+    },
+    {
+      "check_id": "CHK-012",
+      "name": "Kernel contains 78 requirements",
+      "status": "PASS",
+      "detail": 78
+    },
+    {
+      "check_id": "CHK-013",
+      "name": "Kernel IDs unique",
+      "status": "PASS",
+      "detail": 78
+    },
+    {
+      "check_id": "CHK-014",
+      "name": "Blank assessment validates",
+      "status": "PASS",
+      "detail": {
+        "schema_version": "v4.2",
+        "valid": true,
+        "schema_issues": [],
+        "semantic_issues": [],
+        "warnings": [
+          {
+            "severity": "WARNING",
+            "code": "NO-EVIDENCE-FREEZE",
+            "path": "/assessment_metadata/evidence_freeze_id",
+            "message": "No evidence freeze ID is assigned."
+          }
+        ],
+        "counts": {
+          "claims": 0,
+          "evidence_objects": 0,
+          "endpoints": 0,
+          "gaps": 0,
+          "decisions": 2,
+          "requirements": 78,
+          "applicable": 0,
+          "uncertain": 78,
+          "not_applicable": 0,
+          "pass": 0,
+          "partial": 0,
+          "fail": 0,
+          "not_assessed": 78,
+          "p0_blockers": 52
+        },
+        "boundary": "A valid report confirms schema and configured semantic controls only. It does not establish evidentiary truth, legal authorization, ethical acceptability, or system conformance."
+      }
+    },
+    {
+      "check_id": "CHK-015",
+      "name": "Blank assessment reports 52 mechanical P0 blockers",
+      "status": "PASS",
+      "detail": {
+        "claims": 0,
+        "evidence_objects": 0,
+        "endpoints": 0,
+        "gaps": 0,
+        "decisions": 2,
+        "requirements": 78,
+        "applicable": 0,
+        "uncertain": 78,
+        "not_applicable": 0,
+        "pass": 0,
+        "partial": 0,
+        "fail": 0,
+        "not_assessed": 78,
+        "p0_blockers": 52
+      }
+    },
+    {
+      "check_id": "CHK-016",
+      "name": "Reference case validates: PILOT-01_BrainGate2_T15_v4.2.json",
+      "status": "PASS",
+      "detail": {
+        "schema_version": "v4.2",
+        "valid": true,
+        "schema_issues": [],
+        "semantic_issues": [],
+        "warnings": [],
+        "counts": {
+          "claims": 12,
+          "evidence_objects": 12,
+          "endpoints": 13,
+          "gaps": 14,
+          "decisions": 3,
+          "requirements": 78,
+          "applicable": 72,
+          "uncertain": 0,
+          "not_applicable": 6,
+          "pass": 17,
+          "partial": 41,
+          "fail": 0,
+          "not_assessed": 20,
+          "p0_blockers": 14
+        },
+        "boundary": "A valid report confirms schema and configured semantic controls only. It does not establish evidentiary truth, legal authorization, ethical acceptability, or system conformance."
+      }
+    },
+    {
+      "check_id": "CHK-017",
+      "name": "Reference count PILOT-01_BrainGate2_T15_v4.2.json pass",
+      "status": "PASS",
+      "detail": 17
+    },
+    {
+      "check_id": "CHK-018",
+      "name": "Reference count PILOT-01_BrainGate2_T15_v4.2.json partial",
+      "status": "PASS",
+      "detail": 41
+    },
+    {
+      "check_id": "CHK-019",
+      "name": "Reference count PILOT-01_BrainGate2_T15_v4.2.json fail",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "check_id": "CHK-020",
+      "name": "Reference count PILOT-01_BrainGate2_T15_v4.2.json not_assessed",
+      "status": "PASS",
+      "detail": 20
+    },
+    {
+      "check_id": "CHK-021",
+      "name": "Reference count PILOT-01_BrainGate2_T15_v4.2.json p0_blockers",
+      "status": "PASS",
+      "detail": 14
+    },
+    {
+      "check_id": "CHK-022",
+      "name": "Reference case validates: PILOT-02_FDA_Adaptive_DBS_v4.2.json",
+      "status": "PASS",
+      "detail": {
+        "schema_version": "v4.2",
+        "valid": true,
+        "schema_issues": [],
+        "semantic_issues": [],
+        "warnings": [
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/37",
+            "message": "PASS has no linked evidence object."
+          },
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/52",
+            "message": "PASS has no linked evidence object."
+          },
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/66",
+            "message": "PASS has no linked evidence object."
+          },
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/67",
+            "message": "PASS has no linked evidence object."
+          },
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/68",
+            "message": "PASS has no linked evidence object."
+          },
+          {
+            "severity": "WARNING",
+            "code": "PASS-WITHOUT-EVIDENCE",
+            "path": "/requirement_findings/70",
+            "message": "PASS has no linked evidence object."
+          }
+        ],
+        "counts": {
+          "claims": 10,
+          "evidence_objects": 15,
+          "endpoints": 8,
+          "gaps": 12,
+          "decisions": 3,
+          "requirements": 78,
+          "applicable": 72,
+          "uncertain": 0,
+          "not_applicable": 6,
+          "pass": 25,
+          "partial": 41,
+          "fail": 0,
+          "not_assessed": 12,
+          "p0_blockers": 9
+        },
+        "boundary": "A valid report confirms schema and configured semantic controls only. It does not establish evidentiary truth, legal authorization, ethical acceptability, or system conformance."
+      }
+    },
+    {
+      "check_id": "CHK-023",
+      "name": "Reference count PILOT-02_FDA_Adaptive_DBS_v4.2.json pass",
+      "status": "PASS",
+      "detail": 25
+    },
+    {
+      "check_id": "CHK-024",
+      "name": "Reference count PILOT-02_FDA_Adaptive_DBS_v4.2.json partial",
+      "status": "PASS",
+      "detail": 41
+    },
+    {
+      "check_id": "CHK-025",
+      "name": "Reference count PILOT-02_FDA_Adaptive_DBS_v4.2.json fail",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "check_id": "CHK-026",
+      "name": "Reference count PILOT-02_FDA_Adaptive_DBS_v4.2.json not_assessed",
+      "status": "PASS",
+      "detail": 12
+    },
+    {
+      "check_id": "CHK-027",
+      "name": "Reference count PILOT-02_FDA_Adaptive_DBS_v4.2.json p0_blockers",
+      "status": "PASS",
+      "detail": 9
+    },
+    {
+      "check_id": "CHK-028",
+      "name": "Reference case validates: PILOT-05_Brain2Qwerty_v4.2.json",
+      "status": "PASS",
+      "detail": {
+        "schema_version": "v4.2",
+        "valid": true,
+        "schema_issues": [],
+        "semantic_issues": [],
+        "warnings": [],
+        "counts": {
+          "claims": 8,
+          "evidence_objects": 10,
+          "endpoints": 6,
+          "gaps": 12,
+          "decisions": 3,
+          "requirements": 78,
+          "applicable": 71,
+          "uncertain": 0,
+          "not_applicable": 7,
+          "pass": 14,
+          "partial": 35,
+          "fail": 4,
+          "not_assessed": 25,
+          "p0_blockers": 19
+        },
+        "boundary": "A valid report confirms schema and configured semantic controls only. It does not establish evidentiary truth, legal authorization, ethical acceptability, or system conformance."
+      }
+    },
+    {
+      "check_id": "CHK-029",
+      "name": "Reference count PILOT-05_Brain2Qwerty_v4.2.json pass",
+      "status": "PASS",
+      "detail": 14
+    },
+    {
+      "check_id": "CHK-030",
+      "name": "Reference count PILOT-05_Brain2Qwerty_v4.2.json partial",
+      "status": "PASS",
+      "detail": 35
+    },
+    {
+      "check_id": "CHK-031",
+      "name": "Reference count PILOT-05_Brain2Qwerty_v4.2.json fail",
+      "status": "PASS",
+      "detail": 4
+    },
+    {
+      "check_id": "CHK-032",
+      "name": "Reference count PILOT-05_Brain2Qwerty_v4.2.json not_assessed",
+      "status": "PASS",
+      "detail": 25
+    },
+    {
+      "check_id": "CHK-033",
+      "name": "Reference count PILOT-05_Brain2Qwerty_v4.2.json p0_blockers",
+      "status": "PASS",
+      "detail": 19
+    },
+    {
+      "check_id": "CHK-034",
+      "name": "No remote assets in index.html",
+      "status": "PASS",
+      "detail": "offline-only"
+    },
+    {
+      "check_id": "CHK-035",
+      "name": "No remote assets in app.js",
+      "status": "PASS",
+      "detail": "offline-only"
+    },
+    {
+      "check_id": "CHK-036",
+      "name": "No remote assets in styles.css",
+      "status": "PASS",
+      "detail": "offline-only"
+    },
+    {
+      "check_id": "CHK-037",
+      "name": "Migration validates",
+      "status": "PASS",
+      "detail": {
+        "migration_id": "MIG-PILOT-02-FDA-ADBS-v4.1.4-v4.2",
+        "source_instrument_version": "v4.1.2",
+        "target_instrument_version": "v4.2",
+        "source_assessment_id": "PILOT-02-FDA-ADBS-v4.1.4",
+        "source_sha256": "231530ddc4d2d2444f44e8898bd66e265de90b94c51e3a159c8f5d07812c5e70",
+        "historical_projection_sha256": "231530ddc4d2d2444f44e8898bd66e265de90b94c51e3a159c8f5d07812c5e70",
+        "migration_ruleset": "MIGRATION-v4.1.2-to-v4.2",
+        "migration_date": "2026-07-28",
+        "preservation_verified": true,
+        "migration_warnings": [
+          "Generic migration leaves calibrated structured objects unresolved."
+        ]
+      }
+    },
+    {
+      "check_id": "CHK-038",
+      "name": "Migration preserves historical findings",
+      "status": "PASS",
+      "detail": "78 finding states"
+    },
+    {
+      "check_id": "CHK-039",
+      "name": "Migration preserves legacy decision",
+      "status": "PASS",
+      "detail": "bounded decision exact"
+    },
+    {
+      "check_id": "CHK-040",
+      "name": "Created case validates",
+      "status": "PASS",
+      "detail": "CASE-VERIFY"
+    },
+    {
+      "check_id": "CHK-041",
+      "name": "Evidence registered",
+      "status": "PASS",
+      "detail": {
+        "evidence_id": "EV-001",
+        "original_filename": "evidence.txt",
+        "stored_filename": "4d8a5c24c7509237e152a14a49a1adab789df7dd2126d51dfcd2749bf396d822.txt",
+        "sha256": "4d8a5c24c7509237e152a14a49a1adab789df7dd2126d51dfcd2749bf396d822",
+        "size_bytes": 25,
+        "media_type": "text/plain",
+        "title": "Release evidence",
+        "evidence_type": "OTHER",
+        "source": "LOCAL FILE",
+        "added_at": "2026-07-28T14:46:32Z",
+        "actor": "release-verifier"
+      }
+    },
+    {
+      "check_id": "CHK-042",
+      "name": "Evidence digest verifies",
+      "status": "PASS",
+      "detail": {
+        "evidence_id": "EV-001",
+        "original_filename": "evidence.txt",
+        "stored_filename": "4d8a5c24c7509237e152a14a49a1adab789df7dd2126d51dfcd2749bf396d822.txt",
+        "sha256": "4d8a5c24c7509237e152a14a49a1adab789df7dd2126d51dfcd2749bf396d822",
+        "size_bytes": 25,
+        "media_type": "text/plain",
+        "title": "Release evidence",
+        "evidence_type": "OTHER",
+        "source": "LOCAL FILE",
+        "added_at": "2026-07-28T14:46:32Z",
+        "actor": "release-verifier"
+      }
+    },
+    {
+      "check_id": "CHK-043",
+      "name": "Event chain verifies",
+      "status": "PASS",
+      "detail": "event chain"
+    },
+    {
+      "check_id": "CHK-044",
+      "name": "Snapshot created",
+      "status": "PASS",
+      "detail": {
+        "snapshot_id": "20260728T144632Z-release",
+        "created_at": "2026-07-28T14:46:32Z",
+        "assessment_sha256": "5da2b3a57bbf03e92b2ec862c737ae3c5f7158b2c41dbdf5db87b42b749c47e5",
+        "event_chain": {
+          "valid": true,
+          "event_count": 3,
+          "head_hash": "58196bf7f0ed8320868a30223ea669aee0a8f25a34842880e5f7cc440d90e73a",
+          "errors": [],
+          "boundary": "Hash-chain validity detects log alteration; it does not prove that recorded statements are true or complete."
+        }
+      }
+    },
+    {
+      "check_id": "CHK-045",
+      "name": "Controlled bundle verifies",
+      "status": "PASS",
+      "detail": {
+        "output": "/tmp/neuroai-release-4w9pibr3/case.zip",
+        "sha256": "6d8fea58fa826243fcf06ce4e12119dc2f1708b153f5011cbced48e355005ebf",
+        "size_bytes": 11338,
+        "validation_valid": true,
+        "evidence_valid": true,
+        "event_chain_valid": true
+      }
+    },
+    {
+      "check_id": "CHK-046",
+      "name": "Controlled bundle ZIP integrity",
+      "status": "PASS",
+      "detail": 8
+    },
+    {
+      "check_id": "CHK-047",
+      "name": "HTTP health endpoint",
+      "status": "PASS",
+      "detail": "http://127.0.0.1:42083"
+    },
+    {
+      "check_id": "CHK-048",
+      "name": "HTTP case endpoint",
+      "status": "PASS",
+      "detail": "http://127.0.0.1:42083"
+    },
+    {
+      "check_id": "CHK-049",
+      "name": "HTTP validation endpoint",
+      "status": "PASS",
+      "detail": "http://127.0.0.1:42083"
+    },
+    {
+      "check_id": "CHK-050",
+      "name": "Python compilation",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "check_id": "CHK-051",
+      "name": "Pytest suite",
+      "status": "PASS",
+      "detail": ".....................................................                    [100%]\n53 passed in 9.87s\n"
+    }
+  ]
+}
