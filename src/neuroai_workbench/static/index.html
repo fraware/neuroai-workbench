@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NeuroAI Evidence and Decision Workbench</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>NeuroAI Evidence and Decision Workbench</h1>
+      <p>Offline-first reference implementation for the v4.2 universal assessment instrument.</p>
+    </div>
+    <div class="boundary">Software validation does not establish substantive conformance.</div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-actions">
+        <button id="createCase">New case</button>
+        <label class="button secondary" for="importCase">Import JSON</label>
+        <input id="importCase" type="file" accept="application/json,.json" hidden>
+      </div>
+      <div id="workspaceState" class="small muted">Loading workspace…</div>
+      <h2>Cases</h2>
+      <div id="caseList" class="case-list"></div>
+    </aside>
+
+    <main class="main">
+      <section id="emptyState" class="empty-state">
+        <h2>Select or create a case</h2>
+        <p>The workbench stores assessment JSON, evidence bytes, snapshots and a hash-chained event log in the local workspace.</p>
+      </section>
+
+      <section id="caseView" hidden>
+        <div class="case-heading">
+          <div>
+            <h2 id="caseTitle"></h2>
+            <div id="caseMeta" class="muted"></div>
+          </div>
+          <div class="toolbar">
+            <button id="validateCase">Validate</button>
+            <button id="snapshotCase" class="secondary">Snapshot</button>
+            <button id="bundleCase" class="secondary">Export bundle</button>
+          </div>
+        </div>
+
+        <nav class="tabs" aria-label="Case views">
+          <button data-tab="summary" class="active">Summary</button>
+          <button data-tab="requirements">Requirements</button>
+          <button data-tab="evidence">Evidence</button>
+          <button data-tab="decisions">Decisions</button>
+          <button data-tab="json">JSON</button>
+          <button data-tab="events">Event log</button>
+        </nav>
+
+        <div id="toast" class="toast" hidden></div>
+
+        <section id="tab-summary" class="tab-panel">
+          <div id="summaryCards" class="cards"></div>
+          <div class="two-column">
+            <article class="panel">
+              <h3>Validation state</h3>
+              <div id="validationState"></div>
+            </article>
+            <article class="panel">
+              <h3>P0 blockers</h3>
+              <div id="p0Blockers"></div>
+            </article>
+          </div>
+          <article class="panel">
+            <h3>Controlled decision objects</h3>
+            <div id="summaryDecisions"></div>
+          </article>
+        </section>
+
+        <section id="tab-requirements" class="tab-panel" hidden>
+          <div class="filterbar">
+            <input id="requirementSearch" type="search" placeholder="Search requirement ID, title or finding">
+            <select id="statusFilter">
+              <option value="">All statuses</option>
+              <option>PASS</option><option>PARTIAL</option><option>FAIL</option><option>NOT ASSESSED</option>
+            </select>
+            <select id="priorityFilter">
+              <option value="">All priorities</option><option>P0</option><option>P1</option><option>P2</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table id="requirementsTable"><thead><tr>
+            <th>ID</th><th>Module</th><th>Priority</th><th>Applicability</th><th>Status</th><th>Finding</th><th>Evidence</th>
+          </tr></thead><tbody></tbody></table></div>
+        </section>
+
+        <section id="tab-evidence" class="tab-panel" hidden>
+          <div class="two-column">
+            <article class="panel">
+              <h3>Register local evidence bytes</h3>
+              <form id="evidenceForm">
+                <label>File<input id="evidenceFile" type="file" required></label>
+                <label>Title<input id="evidenceTitle" required></label>
+                <label>Evidence type<select id="evidenceType">
+                  <option>OTHER</option><option>PEER-REVIEWED STUDY</option><option>PREPRINT</option>
+                  <option>TRIAL REGISTRY</option><option>REGULATORY AUTHORIZATION</option>
+                  <option>SAFETY OR VIGILANCE RECORD</option><option>PARTICIPANT OR CAREGIVER EVIDENCE</option>
+                  <option>METHOD OR TECHNICAL DOCUMENT</option><option>CYBERSECURITY RECORD</option>
+                  <option>POLICY OR NORMATIVE SOURCE</option><option>COMMERCIAL CLAIM</option>
+                </select></label>
+                <label>Source<input id="evidenceSource" value="LOCAL FILE"></label>
+                <button type="submit">Register and link</button>
+              </form>
+            </article>
+            <article class="panel">
+              <h3>Digest verification</h3>
+              <div id="evidenceVerification"></div>
+            </article>
+          </div>
+          <div class="table-wrap"><table id="evidenceTable"><thead><tr>
+            <th>ID</th><th>Title</th><th>File</th><th>Bytes</th><th>SHA-256</th><th>Added</th>
+          </tr></thead><tbody></tbody></table></div>
+        </section>
+
+        <section id="tab-decisions" class="tab-panel" hidden>
+          <div id="decisionList"></div>
+        </section>
+
+        <section id="tab-json" class="tab-panel" hidden>
+          <div class="toolbar json-toolbar">
+            <button id="formatJson" class="secondary">Format</button>
+            <button id="saveJson">Save JSON</button>
+            <label><input id="requireValidSave" type="checkbox"> Require valid assessment</label>
+          </div>
+          <textarea id="jsonEditor" spellcheck="false" aria-label="Assessment JSON editor"></textarea>
+        </section>
+
+        <section id="tab-events" class="tab-panel" hidden>
+          <div id="eventVerification"></div>
+          <div class="table-wrap"><table id="eventsTable"><thead><tr>
+            <th>Seq</th><th>Time</th><th>Actor</th><th>Action</th><th>Hash</th>
+          </tr></thead><tbody></tbody></table></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="newCaseDialog">
+    <form method="dialog" id="newCaseForm">
+      <h2>Create case</h2>
+      <label>Case ID<input id="newCaseId" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}" required></label>
+      <label>Title<input id="newCaseTitle" required></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default">Create</button></div>
+    </form>
+  </dialog>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
