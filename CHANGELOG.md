@@ -1,3 +1,8 @@
+## 0.2.0
+
+- Added controlled offline observatory mode.
+- Added six observatory unit tests and a CLI integration test.
+
 # Changelog
 
 ## 0.1.0 — 2026-07-28

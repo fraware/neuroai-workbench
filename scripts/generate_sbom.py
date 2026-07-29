@@ -15,14 +15,14 @@ def main() -> int:
         "spdxVersion": "SPDX-2.3",
         "dataLicense": "CC0-1.0",
         "SPDXID": "SPDXRef-DOCUMENT",
-        "name": "neuroai-workbench-v0.1.0",
-        "documentNamespace": "https://github.com/fraware/neuroai-workbench/releases/tag/v0.1.0/sbom",
+        "name": "neuroai-workbench-v0.2.0",
+        "documentNamespace": "https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.0/sbom",
         "creationInfo": {"created": utc_now(), "creators": ["Tool: neuroai-workbench-release-builder"]},
         "packages": [
             {
                 "name": "neuroai-workbench",
                 "SPDXID": "SPDXRef-Package-Workbench",
-                "versionInfo": "0.1.0",
+                "versionInfo": "0.2.0",
                 "downloadLocation": "NOASSERTION",
                 "licenseConcluded": "Apache-2.0",
                 "licenseDeclared": "Apache-2.0",

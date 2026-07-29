@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "title": "UNESCO NeuroAI Evidence-Depth and Observatory Integration",
+    "version": "v1.4",
+    "phase": "PHASE_IIIB",
+    "evidence_cutoff": "2026-07-29",
+    "status": "COMPLETE WITHIN DECLARED SOURCE UNIVERSES; GLOBAL COMPLETENESS AND EXTERNAL APPRAISAL NOT CLAIMED",
+    "north_star": "A global NeuroAI observatory and evidence-and-decision infrastructure that maps the ecosystem, evaluates exact systems, exposes unresolved evidence and supports bounded institutional action."
+  },
+  "valid": true,
+  "counts": {
+    "organizations": 223,
+    "organization_resolution": 26,
+    "regional_expansion": 13,
+    "capital_and_ownership_events": 5,
+    "representative_model_records": 13,
+    "model_and_dataset_registry": 5,
+    "trial_site_relationships": 7,
+    "participant_authority_relationships": 6,
+    "supplier_dependency_relationships": 9,
+    "sources": 224
+  },
+  "coverage": {
+    "organization_records_total_including_legacy": 217,
+    "active_nonlegacy_organization_denominator": 153,
+    "current_verified_active_nonlegacy": 150,
+    "remaining_partial_active_nonlegacy": 3,
+    "verification_rate": 0.9804,
+    "reclassified_nonorganization_provenance_nodes": 6,
+    "historical_archived_organizations": 1,
+    "regional_expansion_records": 13,
+    "capital_and_ownership_events": 5,
+    "model_records_inherited": 13,
+    "model_dataset_registry_objects": 5,
+    "trial_site_relationships": 7,
+    "participant_authority_relationships": 6,
+    "supplier_dependency_relationships": 9,
+    "source_records": 224
+  },
+  "exit_condition_states": {
+    "all_26_phase_iiia_open_records_adjudicated": "PASS",
+    "at_least_90_percent_active_nonlegacy_current_verified": "PASS",
+    "multilingual_regional_expansion_executed_under_frozen_source_universe": "PASS",
+    "event_level_capital_and_ownership_layer_created": "PASS",
+    "model_and_dataset_source_universe_registry_created": "PASS",
+    "trial_site_relationships_require_explicit_sources": "PASS",
+    "participant_authority_relationships_typed_and_bounded": "PASS",
+    "supplier_dependencies_typed_without_inferred_contracts": "PASS",
+    "offline_workbench_observatory_integration": "PENDING_SOFTWARE_BUILD",
+    "global_market_completeness": "NOT_CLAIMED"
+  },
+  "boundaries": [
+    "Counts apply only to declared source universes.",
+    "Company announcements remain company evidence unless independently corroborated.",
+    "Organization, financing, site and software records do not establish conformance."
+  ]
+}

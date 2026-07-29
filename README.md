@@ -92,7 +92,7 @@ See [`docs/architecture.md`](docs/architecture.md), [`THREAT_MODEL.md`](THREAT_M
 
 ## Repository status
 
-`v0.1.0` is a release candidate for public technical review. It is suitable for controlled local pilots and reproducible assessment workflows. It has not received UNESCO endorsement, regulator approval, clinical validation, penetration testing, or independent production-security review.
+`v0.2.0` is a release candidate for public technical review. It is suitable for controlled local pilots and reproducible assessment workflows. It has not received UNESCO endorsement, regulator approval, clinical validation, penetration testing, or independent production-security review.
 
 ## Governance and contribution
 
@@ -105,3 +105,8 @@ See [`docs/architecture.md`](docs/architecture.md), [`THREAT_MODEL.md`](THREAT_M
 ## License
 
 Apache License 2.0. The incorporated v4.2 assessment resources retain their controlled provenance and are distributed here as part of the reference implementation. See `NOTICE` and `docs/evidence-boundary.md`.
+
+
+## Observatory integration
+
+Version 0.2.0 adds controlled landscape-release import, validation, summary and unresolved-queue commands. See `docs/observatory.md`. Observatory mechanics do not establish scientific validity, authorization, deployment approval or conformance.

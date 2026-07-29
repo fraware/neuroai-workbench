@@ -25,4 +25,17 @@ def test_cli_workspace_lifecycle(tmp_path: Path):
 
 def test_cli_version():
     result = run("--version")
-    assert "0.1.0" in result.stdout
+    assert "0.2.0" in result.stdout
+
+
+def test_cli_observatory_commands(tmp_path: Path):
+    example = Path(__file__).parents[1] / "examples" / "observatory" / "evidence_depth_release_v1.4.json"
+    verify = run("observatory-verify", str(example))
+    assert json.loads(verify.stdout)["valid"] is True
+    summary = json.loads(run("observatory-summary", "--release", str(example)).stdout)
+    assert summary["coverage"]["verification_rate"] > 0.9
+    workspace = tmp_path / "workspace"
+    run("init", str(workspace))
+    run("observatory-import", str(workspace), str(example))
+    imported = json.loads(run("observatory-summary", "--workspace", str(workspace), "--version", "v1.4").stdout)
+    assert imported["metadata"]["version"] == "v1.4"

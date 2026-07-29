@@ -1,0 +1,19 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "counts": {
+    "organizations": 223,
+    "organization_resolution": 26,
+    "regional_expansion": 13,
+    "capital_and_ownership_events": 5,
+    "representative_model_records": 13,
+    "model_and_dataset_registry": 5,
+    "trial_site_relationships": 7,
+    "participant_authority_relationships": 6,
+    "supplier_dependency_relationships": 9,
+    "sources": 224
+  },
+  "canonical_sha256": "17186755e36c6dbba6d2b7f3cfd59d89fddf74e5b008a76c6ecb049fb928b6bf",
+  "boundary": "Mechanical validation does not establish scientific validity, authorization, deployment approval or system conformance."
+}

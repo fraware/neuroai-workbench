@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neuroai-workbench"
-version = "0.1.0"
-description = "Offline-first evidence and decision workbench for the v4.2 universal NeuroAI assessment instrument"
+version = "0.2.0"
+description = "Offline-first assessment and observatory workbench for controlled NeuroAI evidence and decision records"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"

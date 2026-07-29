@@ -1,0 +1,22 @@
+{
+  "release": "v0.2.0",
+  "python_requires": ">=3.10",
+  "runtime_dependencies": [
+    {
+      "name": "jsonschema",
+      "version": "4.26.0",
+      "purpose": "Draft 2020-12 schema validation"
+    }
+  ],
+  "development_dependencies": [
+    {
+      "name": "pytest",
+      "version": "9.1.1",
+      "purpose": "Unit and integration tests"
+    }
+  ],
+  "build_environment": {
+    "python": "3.13.5"
+  },
+  "boundary": "Dependency provenance does not establish production security or substantive assessment validity."
+}

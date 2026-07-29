@@ -13,3 +13,6 @@ build/
 workspaces/
 *.zip
 *.tar.gz
+
+release/
+verification/RELEASE_ARTIFACTS_v0.2.0.json

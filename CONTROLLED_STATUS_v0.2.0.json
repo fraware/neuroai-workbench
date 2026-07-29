@@ -1,0 +1,14 @@
+{
+  "release": "v0.2.0",
+  "status": "COMPLETE FOR CONTROLLED LOCAL ASSESSMENT AND OBSERVATORY PILOTS; REMOTE PUBLICATION, PRODUCTION SECURITY AND SUBSTANTIVE CONFORMANCE NOT EXECUTED",
+  "tests_passed": 60,
+  "observatory_release": "v1.4",
+  "withheld_claims": [
+    "Global completeness",
+    "Scientific validity",
+    "Legal or regulatory authorization",
+    "Production-grade cybersecurity",
+    "System conformance",
+    "UNESCO endorsement"
+  ]
+}

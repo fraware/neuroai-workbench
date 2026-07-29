@@ -15,6 +15,7 @@ from neuroai_workbench.evidence import add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.events import verify_chain
 from neuroai_workbench.exporter import export_case_bundle
 from neuroai_workbench.migration import migrate_v4_1_2
+from neuroai_workbench.observatory import load_release, validate_release, summarize_release, queue_release
 from neuroai_workbench.resource_loader import read_resource_bytes
 from neuroai_workbench.server import WorkbenchHTTPServer
 from neuroai_workbench.util import load_json, sha256_file, utc_now
@@ -32,7 +33,7 @@ def http_json(url: str):
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--ci", action="store_true")
-    parser.add_argument("--output", type=Path, default=ROOT / "verification/RELEASE_VERIFICATION_v0.1.0.json")
+    parser.add_argument("--output", type=Path, default=ROOT / "verification/RELEASE_VERIFICATION_v0.2.0.json")
     args = parser.parse_args()
     checks = []
 
@@ -45,6 +46,7 @@ def main() -> int:
         "README.md", "LICENSE", "NOTICE", "SECURITY.md", "THREAT_MODEL.md", "DATA_GOVERNANCE.md",
         "pyproject.toml", "src/neuroai_workbench/cli.py", "src/neuroai_workbench/server.py",
         "src/neuroai_workbench/static/index.html", "src/neuroai_workbench/resources/v4_2/UNIVERSAL_NEUROAI_ASSESSMENT_SCHEMA_v4.2.json",
+        "src/neuroai_workbench/observatory.py", "docs/observatory.md", "examples/observatory/evidence_depth_release_v1.4.json",
     ]
     for rel in required:
         path = ROOT / rel
@@ -69,6 +71,14 @@ def main() -> int:
         check(f"Reference case validates: {name}", report.valid, report.to_dict())
         for key, expected in counts.items():
             check(f"Reference count {name} {key}", report.counts[key] == expected, report.counts[key])
+
+    observatory_release = load_release(ROOT / "examples/observatory/evidence_depth_release_v1.4.json")
+    observatory_report = validate_release(observatory_release)
+    check("Observatory example validates", observatory_report["valid"], observatory_report)
+    observatory_summary = summarize_release(observatory_release)
+    check("Observatory verification rate above 90 percent", observatory_summary["coverage"]["verification_rate"] >= 0.90, observatory_summary["coverage"])
+    observatory_queue = queue_release(observatory_release)
+    check("Observatory unresolved organization queue preserved", observatory_queue["counts"]["organizations"] == 3, observatory_queue)
 
     html_assets = [ROOT / "src/neuroai_workbench/static/index.html", ROOT / "src/neuroai_workbench/static/app.js", ROOT / "src/neuroai_workbench/static/styles.css"]
     for path in html_assets:
@@ -118,7 +128,7 @@ def main() -> int:
         test_summary = "Executed separately by CI job"
 
     report = {
-        "release": "v0.1.0",
+        "release": "v0.2.0",
         "generated_at": utc_now(),
         "controlled_determination": "REFERENCE WORKBENCH IMPLEMENTATION COMPLETE; SUITABLE FOR CONTROLLED LOCAL TECHNICAL PILOTS; PRODUCTION SECURITY, INSTITUTIONAL ADOPTION, SUBSTANTIVE EVIDENCE VALIDITY AND SYSTEM CONFORMANCE REMAIN OUTSIDE SOFTWARE VERIFICATION.",
         "checks_total": len(checks),

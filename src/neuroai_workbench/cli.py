@@ -15,6 +15,7 @@ from .events import verify_chain
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .migration import migrate_file
+from .observatory import import_release, load_imported_release, load_release, queue_release, summarize_release, validate_release
 from .server import serve
 from .util import atomic_write_json, sha256_file
 from .validation import validate_assessment
@@ -133,6 +134,28 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("source")
     p.add_argument("output")
 
+    p = sub.add_parser("observatory-import", help="Import and mechanically validate a controlled observatory release")
+    p.add_argument("workspace")
+    p.add_argument("release")
+
+    p = sub.add_parser("observatory-verify", help="Validate an observatory release JSON file")
+    p.add_argument("release")
+    p.add_argument("--out")
+
+    p = sub.add_parser("observatory-summary", help="Summarize a release file or imported workspace release")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--release")
+    source.add_argument("--version")
+    p.add_argument("--workspace")
+    p.add_argument("--out")
+
+    p = sub.add_parser("observatory-queue", help="Show unresolved organization and source records")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--release")
+    source.add_argument("--version")
+    p.add_argument("--workspace")
+    p.add_argument("--out")
+
     p = sub.add_parser("compare", help="Compare v4.2 assessments without creating new findings")
     p.add_argument("assessments", nargs="+")
     p.add_argument("--labels", nargs="*")
@@ -207,6 +230,21 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "migrate":
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
+        elif args.command == "observatory-import":
+            emit(import_release(Path(args.workspace), Path(args.release)))
+        elif args.command == "observatory-verify":
+            report = validate_release(load_release(Path(args.release)))
+            emit(report, Path(args.out) if args.out else None)
+            return 0 if report["valid"] else 1
+        elif args.command in {"observatory-summary", "observatory-queue"}:
+            if args.release:
+                release = load_release(Path(args.release))
+            else:
+                if not args.workspace:
+                    raise ValueError("--workspace is required with --version")
+                release = load_imported_release(Path(args.workspace), args.version)
+            value = summarize_release(release) if args.command == "observatory-summary" else queue_release(release)
+            emit(value, Path(args.out) if args.out else None)
         elif args.command == "compare":
             labels = args.labels or [Path(path).stem for path in args.assessments]
             if len(labels) != len(args.assessments):
