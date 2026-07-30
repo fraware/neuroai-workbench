@@ -15,6 +15,7 @@
 - Structured disagreement, disposition, and resolution records.
 - Protected-evidence metadata exchange without raw-byte transfer.
 - Human-readable decision and evidence-gap reports.
+- Controlled prompt-package export, candidate-response import, field-level human disposition, and AI-assistance provenance under ADR 0005.
 - Internationalization architecture and accessibility evaluation.
 - PRIMA v4.2 reference migration.
 - Observatory v1.7 import and successor-state support.
