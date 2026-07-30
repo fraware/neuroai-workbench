@@ -15,6 +15,7 @@ flowchart LR
   Core --> Events[Hash-chained event log]
   Core --> Reviews[Attributed review records]
   Core --> Assistance[Model-assistance exchange records]
+  Core --> Custodian[Protected-evidence metadata exchange]
   Core --> Reports[Deterministic reports]
   Core --> Snapshots[Snapshots and controlled bundles]
   Adapter[Programme adapter] --> Cases
@@ -32,6 +33,7 @@ flowchart LR
 - `programme_adapter.py` maps controlled programme assessment records into the native v4.2 object model and emits explicit loss information.
 - `observatory.py` validates and imports full baselines and compact successor snapshots without overwriting predecessors.
 - `review.py` records claimed local review assignments, statements, disagreements, and human dispositions without mutating assessments or authenticating identities.
+- `exchange.py` creates minimum-necessary evidence-custodian requests and records out-of-band holder responses without transferring evidence bytes.
 - `assistance.py` records bounded provider-neutral model requests, candidate responses, hashes, and human dispositions without calling a provider or granting decision authority.
 - `reports.py` renders deterministic assessment, evidence-gap, and review projections from stored records.
 - `server.py` exposes the local HTTP API and static application.
@@ -57,6 +59,9 @@ workspace/
         requests/*.json
         responses/*.json
         dispositions/*.json
+      exchanges/
+        requests/*.json
+        responses/*.json
       snapshots/<timestamp-label>/
       exports/
   observatory/
@@ -64,7 +69,7 @@ workspace/
   tmp/
 ```
 
-Review and assistance records are append-oriented sidecar records. A statement, disposition, or model response does not edit `assessment.json`. A later accepted change must pass through an ordinary human-controlled assessment edit with its own provenance.
+Review, assistance, and protected-evidence exchange records are append-oriented sidecar records. A statement, disposition, or model response does not edit `assessment.json`. A later accepted change must pass through an ordinary human-controlled assessment edit with its own provenance.
 
 ## Trust boundaries
 

@@ -26,6 +26,7 @@ The workbench preserves exact system boundaries, typed evidence states, requirem
 - Loss-aware conversion from programme completed-assessment records into the native v4.2 object model.
 - Deterministic human-readable Markdown assessment, evidence-gap, and review reports.
 - Attributable local review assignments, immutable agreement/disagreement statements, scoped human dispositions, and tamper verification.
+- Protected-evidence metadata requests and out-of-band custodian-response records with no evidence-byte transfer.
 - Provider-neutral GPT assistance request, response, disposition, and integrity records with no direct model API call or automatic assessment mutation.
 
 ## Quick start
@@ -73,6 +74,10 @@ neuroai-workbench report \
 ## Collaborative review
 
 The local reference workflow records claimed reviewer identities, typed roles, scoped assignments, agreement or disagreement statements, and human dispositions as separate integrity-addressed records. It does not authenticate a person or institution, and no review record edits the assessment automatically. See [collaborative review](docs/reference/review.md).
+
+## Protected-evidence metadata exchange
+
+The workbench can prepare a minimum-necessary custodian request and record an out-of-band response without transporting evidence bytes or local paths. A request does not create a disclosure duty or establish receipt. See [protected-evidence exchange](docs/reference/evidence-exchange.md).
 
 ## Controlled GPT assistance
 

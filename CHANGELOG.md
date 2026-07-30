@@ -9,6 +9,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 
 - Collaborative review assignments, immutable disagreements, human dispositions, and integrity verification.
 - Deterministic review and evidence-gap reports.
+- Protected-evidence metadata requests, custodian-response records, path and secret guards, and exchange integrity verification.
 
 - Loss-aware programme completed-assessment adapter with a checked-in native PRIMA v4.2.1 reference case.
 - Compact observatory v1.7 successor validation, import, summary, and reopening queue.

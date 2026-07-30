@@ -23,6 +23,7 @@
 12. Review disagreement is deleted, rewritten or hidden after disposition.
 13. Sensitive context or credentials are included in a model request, or a provider response attempts prompt injection or unsupported evidence attribution.
 14. A model response or human disposition is applied automatically and silently changes the assessment.
+15. A metadata exchange leaks a local path, credential, participant detail, or protected evidence excerpt, or overstates an out-of-band reference as verified receipt.
 
 ## Implemented controls
 
@@ -40,6 +41,7 @@
 - Review-role scope checks and explicit local-identity and authority boundaries.
 - Provider-neutral model-assistance records with selected context, credential-pattern guards, evidence-reference checks, hashes and mandatory human disposition.
 - No automatic assessment mutation from review or model-assistance records.
+- Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
 
 ## Residual risks
 

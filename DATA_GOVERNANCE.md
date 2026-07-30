@@ -31,3 +31,9 @@ A disposition records how a local workflow handled a statement. It does not edit
 ## Model-assistance records
 
 The default workflow exports selected structured context and imports a candidate response. Requests, responses and human dispositions are hashed and attributable to the recorded provider and model identifiers. The workbench does not contact a provider by default. Any provider integration must define lawful basis, user opt-in, data classification, redaction, provider retention, provider training use, geographic processing, incident response and deletion requirements.
+
+## Protected-evidence metadata exchange
+
+The exchange workflow records the minimum structured metadata required to request controlled evidence from a lawful custodian. It excludes evidence bytes, local paths, credentials and access tokens. Public URLs may be retained; non-public access locations must remain outside the workbench request.
+
+A holder response may record access conditions, a non-secret holder reference and an optional supplied digest. The workbench marks every out-of-band material `NOT_VERIFIED_BY_WORKBENCH`. Receipt, transfer, authentication and substantive appraisal require a separate authorized evidence workflow.

@@ -42,3 +42,20 @@ neuroai-workbench gap-report --assessment assessment.json --output gaps.md
 ```
 
 Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings.
+
+## Protected-evidence metadata exchange
+
+```bash
+neuroai-workbench exchange-create WORKSPACE CASE \
+  --evidence-id EV-PR-001 --gap-id GAP-PR-001 \
+  --recipient "Evidence custodian" \
+  --purpose "Resolve a controlled evidence gap" \
+  --requested-material "Access protocol and immutable digest"
+
+neuroai-workbench exchange-record WORKSPACE CASE REQUEST_ID AVAILABLE_UNDER_CONDITIONS \
+  --holder "Evidence custodian" --materials-json materials.json
+neuroai-workbench exchange-verify WORKSPACE CASE REQUEST_ID
+neuroai-workbench exchange-report WORKSPACE CASE REQUEST_ID --output exchange.md
+```
+
+These commands exchange metadata and holder representations only. They do not transport evidence bytes, create disclosure duties, grant access, or verify material held outside the workbench.

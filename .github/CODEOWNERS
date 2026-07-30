@@ -12,6 +12,7 @@
 /src/neuroai_workbench/reports.py @fraware
 /src/neuroai_workbench/events.py @fraware
 /src/neuroai_workbench/evidence.py @fraware
+/src/neuroai_workbench/exchange.py @fraware
 /SECURITY.md @fraware
 /THREAT_MODEL.md @fraware
 /.github/ @fraware

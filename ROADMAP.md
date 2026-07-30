@@ -18,12 +18,12 @@ Implemented foundations:
 - PRIMA v4.2 reference adaptation with explicit loss boundaries.
 - Observatory v1.7 compact-successor validation, import, summary, and reopening queue.
 - Role-aware local review assignments, immutable agreement/disagreement statements, scoped human dispositions, integrity verification, and deterministic review and evidence-gap reports.
+- Protected-evidence metadata requests and out-of-band holder-response records without raw-byte transfer.
 
 Remaining release scope:
 
 - Authenticated institutional reviewer identity and delegated-authority integration in a separate deployment profile.
 - Assignment revocation, supersession, appeal, and assessment-change application workflows.
-- Protected-evidence metadata exchange without raw-byte transfer.
 - Field-level application of accepted draft suggestions through ordinary human-controlled edits.
 - Internationalization architecture and accessibility evaluation.
 

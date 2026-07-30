@@ -83,6 +83,7 @@ Changes to these surfaces require domain or security review beyond ordinary code
 - `src/neuroai_workbench/programme_adapter.py`
 - `src/neuroai_workbench/assistance.py`
 - `src/neuroai_workbench/review.py`
+- `src/neuroai_workbench/exchange.py`
 - `src/neuroai_workbench/reports.py`
 - `src/neuroai_workbench/evidence.py`
 - `src/neuroai_workbench/events.py`
@@ -133,3 +134,7 @@ Changes to review assignments, statements, dispositions, or reports must demonst
 - record and event-chain tampering is detected;
 - private evidence and credentials remain outside free-text fixtures and prompts;
 - any later application of an accepted proposal is a separate human-controlled assessment edit.
+
+## Protected-evidence exchange review
+
+Changes to custodian requests or response records must demonstrate that no evidence bytes, local paths, credentials, private excerpts, or access tokens enter the exchange package; every evidence and gap ID resolves; response state and material references are consistent; out-of-band material remains `NOT_VERIFIED_BY_WORKBENCH`; tampering is detected; and no exchange record mutates the assessment.
