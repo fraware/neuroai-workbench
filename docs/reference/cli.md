@@ -20,6 +20,12 @@ Use `neuroai-workbench <command> --help` for complete arguments.
 | `events-verify` | Verify the event hash chain. |
 | `bundle` | Create a controlled ZIP export. |
 | `migrate` | Additively migrate v4.1.2 to v4.2. |
+| `programme-adapt` | Convert a programme completed-assessment record into native v4.2 with an adapter report. |
+| `report` | Render a deterministic Markdown assessment report. |
+| `assist-request` | Create a bounded provider-neutral model-assistance request. |
+| `assist-record` | Validate and record a structured model response. |
+| `assist-dispose` | Record human acceptance, partial use, rejection, or pending review. |
+| `assist-verify` | Verify assistance request, response, and disposition hashes and references. |
 | `compare` | Compare existing finding states across cases. |
 
 Every command that reports validity includes a boundary statement. Scripts must preserve that statement in downstream reporting.

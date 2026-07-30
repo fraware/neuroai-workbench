@@ -11,14 +11,20 @@
 
 ## v0.3.0 — collaborative assessment operations
 
+Implemented foundations:
+
+- Deterministic human-readable assessment reports.
+- Controlled prompt-package export, candidate-response import, human disposition, and AI-assistance provenance under ADR 0005.
+- PRIMA v4.2 reference adaptation with explicit loss boundaries.
+- Observatory v1.7 compact-successor validation, import, summary, and reopening queue.
+
+Remaining release scope:
+
 - Role-aware review assignments.
-- Structured disagreement, disposition, and resolution records.
+- Structured disagreement, disposition, and resolution records for assessment findings.
 - Protected-evidence metadata exchange without raw-byte transfer.
-- Human-readable decision and evidence-gap reports.
-- Controlled prompt-package export, candidate-response import, field-level human disposition, and AI-assistance provenance under ADR 0005.
+- Field-level application of accepted draft suggestions through ordinary human-controlled edits.
 - Internationalization architecture and accessibility evaluation.
-- PRIMA v4.2 reference migration.
-- Observatory v1.7 import and successor-state support.
 
 ## v0.4.0 — institutional pilot architecture
 
