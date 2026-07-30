@@ -1,17 +1,18 @@
-
 {
   "name": "neuroai-workbench",
   "description": "Offline-first Python reference workbench for controlled NeuroAI assessment and observatory records",
   "setup": [
-    "python -m venv .venv",
-    ".venv/bin/python -m pip install -e .[dev]"
+    "python -m pip install --upgrade pip",
+    "python -m pip install -e .[dev]"
   ],
-  "test": ".venv/bin/python -m pytest",
+  "test": "python -m pytest",
   "quality": "make quality",
   "verify": "make verify",
   "notes": [
+    "Commands use the active Python environment and work on Windows, macOS, and Linux.",
     "Use synthetic or explicitly public fixtures only.",
     "Do not expose local workspaces or credentials to background agents.",
-    "Do not add remote model calls or analytics to the default application."
+    "The default application performs no external model call or analytics request.",
+    "Model suggestions are untrusted drafts until a human disposition record exists."
   ]
 }

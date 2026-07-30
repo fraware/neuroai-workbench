@@ -1,0 +1,12 @@
+---
+description: Controlled language-model assistance and provenance requirements
+globs: ["src/neuroai_workbench/assistance.py", "docs/reference/assistance.md", "tests/unit/test_assistance.py", "examples/assistance/**"]
+alwaysApply: false
+---
+- Treat every model output as an untrusted proposal, never as evidence, a finding, a conformance decision, or release approval.
+- Do not mutate an assessment directly from model output. Require a separate attributable human disposition record.
+- Send only explicitly selected structured public or synthetic context. Do not send registered evidence bytes, private participant data, credentials, confidential regulator material, or protected security findings.
+- Record exact provider, model identifier, request hash, context hash, response hash, limitations, warnings, and human disposition.
+- Reject unknown evidence identifiers and detect record tampering.
+- Keep provider execution outside the default offline workbench until a separate ADR, threat-model update, data-governance review, and explicit opt-in deployment profile exist.
+- Tests must cover secret-pattern blocking, malformed outputs, unknown references, tampering, and non-mutation of the assessment.
