@@ -9,6 +9,12 @@ from pathlib import Path
 from typing import Any, cast
 
 from . import __version__
+from .assistance import (
+    create_assistance_request,
+    dispose_assistance_response,
+    record_assistance_response,
+    verify_assistance_record,
+)
 from .comparison import compare_assessments
 from .events import verify_chain
 from .evidence import add_evidence_file, verify_evidence_files
@@ -23,6 +29,8 @@ from .observatory import (
     summarize_release,
     validate_release,
 )
+from .programme_adapter import adapt_programme_file
+from .reports import write_assessment_markdown
 from .server import serve
 from .util import sha256_file
 from .validation import validate_assessment
@@ -164,6 +172,53 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--workspace")
     p.add_argument("--out")
 
+    p = sub.add_parser("programme-adapt", help="Adapt a programme completed-assessment JSON object into native v4.2")
+    p.add_argument("source")
+    p.add_argument("output")
+    p.add_argument("--report")
+
+    p = sub.add_parser("report", help="Render a deterministic Markdown decision report")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--assessment")
+    source.add_argument("--case-id")
+    p.add_argument("--workspace")
+    p.add_argument("--output", required=True)
+
+    p = sub.add_parser("assist-request", help="Create a controlled provider-neutral model-assistance request")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("task_type")
+    p.add_argument("--prompt", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--requirement-id", action="append", default=[])
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-record", help="Record and validate a model response without mutating the assessment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("response")
+    p.add_argument("--provider", required=True)
+    p.add_argument("--model", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-dispose", help="Record a human disposition for a model response")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("disposition")
+    p.add_argument("--notes", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-verify", help="Verify request, response, and disposition integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--out")
+
     p = sub.add_parser("compare", help="Compare v4.2 assessments without creating new findings")
     p.add_argument("assessments", nargs="+")
     p.add_argument("--labels", nargs="*")
@@ -252,6 +307,52 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "migrate":
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
+        elif args.command == "programme-adapt":
+            result = adapt_programme_file(
+                Path(args.source),
+                Path(args.output),
+                Path(args.report) if args.report else None,
+            )
+            emit(result.report)
+            return 0 if result.report["validation"]["valid"] else 1
+        elif args.command == "report":
+            emit(write_assessment_markdown(_load_input(args), Path(args.output)))
+        elif args.command == "assist-request":
+            result = create_assistance_request(
+                _workspace(args.workspace),
+                args.case_id,
+                args.task_type,
+                args.prompt,
+                evidence_ids=args.evidence_id,
+                requirement_ids=args.requirement_id,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-record":
+            result = record_assistance_response(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                Path(args.response),
+                provider=args.provider,
+                model=args.model,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-dispose":
+            result = dispose_assistance_response(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                args.disposition,
+                args.notes,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-verify":
+            result = verify_assistance_record(_workspace(args.workspace), args.case_id, args.request_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
         elif args.command == "observatory-import":
             emit(import_release(Path(args.workspace), Path(args.release)))
         elif args.command == "observatory-verify":

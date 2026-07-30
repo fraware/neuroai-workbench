@@ -1,0 +1,46 @@
+{
+  "adapter": "programme-adapter/1",
+  "source_format": "UNESCO_NEUROAI_COMPLETED_ASSESSMENT",
+  "source_sha256": "7086974e43e13d934fb55f70f8a4a6a9835dd20f5dbc99f8eb17874a1253a434",
+  "assessment_id": "PRIMA-PUBLIC-2026-001",
+  "preserved_counts": {
+    "claims": 14,
+    "evidence_objects": 15,
+    "endpoints": 11,
+    "denominators": 8,
+    "requirement_findings": 78,
+    "gaps": 22,
+    "decisions": 4,
+    "safety_event_notes": 11
+  },
+  "validation": {
+    "schema_version": "v4.2",
+    "valid": true,
+    "schema_issues": [],
+    "semantic_issues": [],
+    "warnings": [],
+    "counts": {
+      "claims": 14,
+      "evidence_objects": 15,
+      "endpoints": 11,
+      "gaps": 22,
+      "decisions": 4,
+      "requirements": 78,
+      "applicable": 71,
+      "uncertain": 0,
+      "not_applicable": 7,
+      "pass": 15,
+      "partial": 42,
+      "fail": 0,
+      "not_assessed": 21,
+      "p0_blockers": 11
+    },
+    "boundary": "A valid report confirms schema and configured semantic controls only. It does not establish evidentiary truth, legal authorization, ethical acceptability, or system conformance."
+  },
+  "loss_boundaries": [
+    "Source-register rows are consolidated into native evidence records and provenance identifiers.",
+    "Standalone safety-event rows are retained as deterministic assessment notes.",
+    "No model-generated content is introduced by this adapter."
+  ],
+  "boundary": "Adaptation preserves a source assessment in the workbench object model; it does not constitute independent appraisal or endorsement."
+}

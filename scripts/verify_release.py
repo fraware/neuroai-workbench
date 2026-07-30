@@ -13,14 +13,22 @@ from pathlib import Path
 from typing import Any
 
 from neuroai_workbench import __version__
+from neuroai_workbench.assistance import (
+    create_assistance_request,
+    dispose_assistance_response,
+    record_assistance_response,
+    verify_assistance_record,
+)
 from neuroai_workbench.events import verify_chain
 from neuroai_workbench.evidence import add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.exporter import export_case_bundle
 from neuroai_workbench.migration import migrate_v4_1_2
 from neuroai_workbench.observatory import load_release, queue_release, summarize_release, validate_release
+from neuroai_workbench.programme_adapter import adapt_programme_assessment
+from neuroai_workbench.reports import render_assessment_markdown
 from neuroai_workbench.resource_loader import read_resource_bytes
 from neuroai_workbench.server import WorkbenchHTTPServer
-from neuroai_workbench.util import load_json, utc_now
+from neuroai_workbench.util import load_json, sha256_file, utc_now
 from neuroai_workbench.validation import EXPECTED_REQUIREMENTS, validate_assessment
 from neuroai_workbench.workspace import Workspace
 
@@ -71,9 +79,15 @@ def main() -> int:
         "docs/reference/observatory.md",
         "src/neuroai_workbench/cli.py",
         "src/neuroai_workbench/server.py",
+        "src/neuroai_workbench/programme_adapter.py",
+        "src/neuroai_workbench/assistance.py",
+        "src/neuroai_workbench/reports.py",
         "src/neuroai_workbench/static/index.html",
         "src/neuroai_workbench/resources/v4_2/UNIVERSAL_NEUROAI_ASSESSMENT_SCHEMA_v4.2.json",
         "examples/observatory/evidence_depth_release_v1.4.json",
+        "examples/observatory/canonical_successor_snapshot_v1.7.json",
+        "examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json",
+        "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
     ]
     for rel in required:
         path = ROOT / rel
@@ -121,6 +135,13 @@ def main() -> int:
             "not_assessed": 25,
             "p0_blockers": 19,
         },
+        "PRIMA_Controlled_Assessment_v4.2.1.native.json": {
+            "pass": 15,
+            "partial": 42,
+            "fail": 0,
+            "not_assessed": 21,
+            "p0_blockers": 11,
+        },
     }
     for name, counts in expected_counts.items():
         assessment = load_json(ROOT / "examples/assessments" / name)
@@ -143,6 +164,33 @@ def main() -> int:
         "Observatory unresolved organization queue preserved",
         observatory_queue["counts"]["organizations"] == 3,
         observatory_queue,
+    )
+
+    successor_release = load_release(ROOT / "examples/observatory/canonical_successor_snapshot_v1.7.json")
+    successor_report = validate_release(successor_release)
+    check("Compact v1.7 successor validates", successor_report["valid"], successor_report)
+    check(
+        "Compact v1.7 successor preserves four completed assessments",
+        successor_report["counts"].get("completed_system_assessments") == 4,
+        successor_report["counts"],
+    )
+    successor_queue = queue_release(successor_release)
+    check(
+        "Compact successor retains open reopening conditions",
+        any(item.get("object") == "PRIMA observatory system record" for item in successor_queue.get("reopening_queue", [])),
+        successor_queue,
+    )
+
+    programme_source = load_json(ROOT / "examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json")
+    adapted = adapt_programme_assessment(programme_source)
+    check("PRIMA programme adapter validates", adapted.report["validation"]["valid"], adapted.report)
+    checked_in_prima = load_json(ROOT / "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json")
+    check("PRIMA checked-in projection is deterministic", adapted.assessment == checked_in_prima, adapted.report)
+    prima_markdown = render_assessment_markdown(checked_in_prima)
+    check(
+        "Deterministic report preserves decision boundary",
+        "They do not establish evidentiary truth" in prima_markdown and "CL-4" in prima_markdown,
+        len(prima_markdown),
     )
 
     html_assets = [
@@ -223,6 +271,68 @@ def main() -> int:
             server.shutdown()
             server.server_close()
             thread.join(timeout=5)
+
+        workspace.import_case(
+            ROOT / "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
+            case_id="PRIMA-VERIFY",
+            actor="release-verifier",
+        )
+        before_assistance = sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json")
+        request = create_assistance_request(
+            workspace,
+            "PRIMA-VERIFY",
+            "DRAFT_FINDING",
+            "Draft bounded wording for NK-01-R01 using only the selected evidence.",
+            evidence_ids=["EV-PR-001"],
+            requirement_ids=["NK-01-R01"],
+            actor="release-verifier",
+        )["request"]
+        response_path = Path(tmp) / "model-output.json"
+        response_path.write_text(
+            json.dumps(
+                {
+                    "task_type": "DRAFT_FINDING",
+                    "summary": "Draft supplied for human review.",
+                    "suggestions": [
+                        {
+                            "target_path": "/requirement_findings/NK-01-R01/finding",
+                            "proposed_text": "The bounded public record supports the trial configuration only.",
+                            "evidence_ids": ["EV-PR-001"],
+                            "confidence": "MEDIUM",
+                            "limitations": [
+                                "No current commercial configuration or conformance conclusion follows."
+                            ],
+                        }
+                    ],
+                    "warnings": ["Human review required."],
+                }
+            ),
+            encoding="utf-8",
+        )
+        record_assistance_response(
+            workspace,
+            "PRIMA-VERIFY",
+            request["request_id"],
+            response_path,
+            provider="release-verification",
+            model="provider-neutral-test",
+            actor="release-verifier",
+        )
+        dispose_assistance_response(
+            workspace,
+            "PRIMA-VERIFY",
+            request["request_id"],
+            "REJECTED",
+            "Verification-only response; no assessment mutation.",
+            actor="release-verifier",
+        )
+        assistance_report = verify_assistance_record(workspace, "PRIMA-VERIFY", request["request_id"])
+        check("Controlled model-assistance record verifies", assistance_report["valid"], assistance_report)
+        check(
+            "Model-assistance lifecycle does not mutate assessment",
+            sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json") == before_assistance,
+            before_assistance,
+        )
 
     compile_result = subprocess.run(
         [sys.executable, "-m", "compileall", "-q", str(ROOT / "src"), str(ROOT / "scripts")]

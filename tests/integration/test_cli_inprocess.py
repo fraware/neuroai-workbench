@@ -141,3 +141,88 @@ def test_cli_failure_paths(tmp_path: Path, capsys, monkeypatch):
     monkeypatch.setattr(cli, "serve", fake_serve)
     assert cli.main(["serve", str(workspace), "--port", "9999", "--allow-network"]) == 0
     assert called["allow_network"] is True
+
+
+def test_cli_programme_adapter_report_assistance_and_successor(tmp_path: Path, capsys):
+    repo = Path(__file__).resolve().parents[2]
+    programme_source = repo / "examples" / "programme" / "PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json"
+    successor = repo / "examples" / "observatory" / "canonical_successor_snapshot_v1.7.json"
+    adapted = tmp_path / "prima-native.json"
+    adapter_report = tmp_path / "adapter-report.json"
+
+    assert cli.main(["programme-adapt", str(programme_source), str(adapted), "--report", str(adapter_report)]) == 0
+    assert parse_stdout(capsys)["validation"]["valid"] is True
+    assert adapted.is_file()
+
+    report = tmp_path / "prima.md"
+    assert cli.main(["report", "--assessment", str(adapted), "--output", str(report)]) == 0
+    assert parse_stdout(capsys)["sha256"]
+    assert "PRIMA Controlled Public-Evidence Assessment" in report.read_text(encoding="utf-8")
+
+    workspace = tmp_path / "workspace"
+    assert cli.main(["init", str(workspace)]) == 0
+    capsys.readouterr()
+    assert cli.main(["case-import", str(workspace), str(adapted), "--case-id", "prima"]) == 0
+    capsys.readouterr()
+
+    request_out = tmp_path / "request.json"
+    assert cli.main([
+        "assist-request",
+        str(workspace),
+        "prima",
+        "DRAFT_FINDING",
+        "--prompt",
+        "Draft bounded wording for the selected requirement.",
+        "--evidence-id",
+        "EV-PR-001",
+        "--requirement-id",
+        "NK-01-R01",
+        "--out",
+        str(request_out),
+    ]) == 0
+    request_id = json.loads(request_out.read_text(encoding="utf-8"))["request"]["request_id"]
+
+    model_output = tmp_path / "model-output.json"
+    model_output.write_text(json.dumps({
+        "task_type": "DRAFT_FINDING",
+        "summary": "Draft supplied for human review.",
+        "suggestions": [{
+            "target_path": "/requirement_findings/NK-01-R01/finding",
+            "proposed_text": "The bounded public record supports the trial configuration only.",
+            "evidence_ids": ["EV-PR-001"],
+            "confidence": "MEDIUM",
+            "limitations": ["No current commercial configuration conclusion follows."],
+        }],
+        "warnings": ["Human review required."],
+    }), encoding="utf-8")
+    assert cli.main([
+        "assist-record",
+        str(workspace),
+        "prima",
+        request_id,
+        str(model_output),
+        "--provider",
+        "manual",
+        "--model",
+        "gpt-compatible-test",
+    ]) == 0
+    parse_stdout(capsys)
+    assert cli.main([
+        "assist-dispose",
+        str(workspace),
+        "prima",
+        request_id,
+        "REJECTED",
+        "--notes",
+        "Rejected during test; no assessment change.",
+    ]) == 0
+    parse_stdout(capsys)
+    assert cli.main(["assist-verify", str(workspace), "prima", request_id]) == 0
+    assert parse_stdout(capsys)["valid"] is True
+
+    assert cli.main(["observatory-verify", str(successor)]) == 0
+    assert parse_stdout(capsys)["release_kind"] == "COMPACT_SUCCESSOR_SNAPSHOT"
+    assert cli.main(["observatory-import", str(workspace), str(successor)]) == 0
+    parse_stdout(capsys)
+    assert cli.main(["observatory-summary", "--workspace", str(workspace), "--version", "v1.7"]) == 0
+    assert parse_stdout(capsys)["counts"]["completed_system_assessments"] == 4

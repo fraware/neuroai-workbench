@@ -50,3 +50,31 @@ def test_import_round_trip(tmp_path: Path):
     assert Path(result["target"]).is_dir()
     loaded = load_imported_release(tmp_path, "v1.4")
     assert loaded["metadata"]["version"] == "v1.4"
+
+SUCCESSOR = Path(__file__).parents[2] / "examples" / "observatory" / "canonical_successor_snapshot_v1.7.json"
+
+
+def test_compact_successor_validates_and_summarizes():
+    release = load_release(SUCCESSOR)
+    report = validate_release(release)
+    assert report["valid"] is True
+    assert report["release_kind"] == "COMPACT_SUCCESSOR_SNAPSHOT"
+    assert report["counts"]["organizations"] == 153
+    summary = summarize_release(release)
+    assert summary["metadata"]["version"] == "v1.7"
+    assert summary["baseline_reference"]["immutable"] is True
+    assert summary["reopening_decision_states"]["PRIMA observatory system record"] == "REOPENING_EXECUTED_RECORD_UPDATED_OPEN_CONDITIONS"
+
+
+def test_compact_successor_queue_retains_open_conditions():
+    queue = queue_release(load_release(SUCCESSOR))
+    assert queue["counts"]["reopening_decisions"] == 2
+    assert any(item["object"] == "PRIMA observatory system record" for item in queue["reopening_queue"])
+
+
+def test_compact_successor_rejects_bad_baseline_hash():
+    release = load_release(SUCCESSOR)
+    release["baseline_reference"]["canonical_sha256"] = "bad"
+    report = validate_release(release)
+    assert report["valid"] is False
+    assert any(item["code"] == "BASELINE_SHA256_REQUIRED" for item in report["errors"])
