@@ -6,6 +6,10 @@
 /src/neuroai_workbench/resources/v4_2/ @fraware
 /src/neuroai_workbench/validation.py @fraware
 /src/neuroai_workbench/migration.py @fraware
+/src/neuroai_workbench/programme_adapter.py @fraware
+/src/neuroai_workbench/review.py @fraware
+/src/neuroai_workbench/assistance.py @fraware
+/src/neuroai_workbench/reports.py @fraware
 /src/neuroai_workbench/events.py @fraware
 /src/neuroai_workbench/evidence.py @fraware
 /SECURITY.md @fraware

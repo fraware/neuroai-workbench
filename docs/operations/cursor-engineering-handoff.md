@@ -69,7 +69,7 @@ Requirements:
 
 ### Subsequent product work
 
-- Issue #6 decomposes collaborative assessment operations into separate issues and PRs.
+- Issue #6 reviews and decomposes the collaborative assignment, disagreement, disposition, review-report, and gap-report foundation into separate follow-on issues and PRs.
 - Issue #9 defines the separate institutional deployment architecture.
 - Issue #10 commissions independent methodological, security, and accessibility review.
 
@@ -82,6 +82,8 @@ Changes to these surfaces require domain or security review beyond ordinary code
 - `src/neuroai_workbench/migration.py`
 - `src/neuroai_workbench/programme_adapter.py`
 - `src/neuroai_workbench/assistance.py`
+- `src/neuroai_workbench/review.py`
+- `src/neuroai_workbench/reports.py`
 - `src/neuroai_workbench/evidence.py`
 - `src/neuroai_workbench/events.py`
 - `src/neuroai_workbench/server.py`
@@ -118,3 +120,16 @@ A Cursor task is complete only when the draft PR contains:
 - security and data-governance statement;
 - explicit confirmation that no private evidence or credential entered the branch;
 - unresolved risks and follow-up issues.
+
+## Collaborative-review review
+
+Changes to review assignments, statements, dispositions, or reports must demonstrate that:
+
+- reviewer identity and role remain explicitly unauthenticated in the local reference profile;
+- disagreement and abstention records remain visible after disposition;
+- only a covering recorded decision role can create a disposition;
+- statements and dispositions never mutate `assessment.json`;
+- evidence references resolve to the assessment register;
+- record and event-chain tampering is detected;
+- private evidence and credentials remain outside free-text fixtures and prompts;
+- any later application of an accepted proposal is a separate human-controlled assessment edit.

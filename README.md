@@ -24,7 +24,8 @@ The workbench preserves exact system boundaries, typed evidence states, requirem
 - Controlled full-baseline and compact-successor observatory import, validation, summary, and reopening queues.
 - Four public reference assessments covering Brain2Qwerty, FDA adaptive DBS, BrainGate2 T15, and PRIMA.
 - Loss-aware conversion from programme completed-assessment records into the native v4.2 object model.
-- Deterministic human-readable Markdown decision reports.
+- Deterministic human-readable Markdown assessment, evidence-gap, and review reports.
+- Attributable local review assignments, immutable agreement/disagreement statements, scoped human dispositions, and tamper verification.
 - Provider-neutral GPT assistance request, response, disposition, and integrity records with no direct model API call or automatic assessment mutation.
 
 ## Quick start
@@ -69,6 +70,10 @@ neuroai-workbench report \
   --output artifacts/PRIMA.md
 ```
 
+## Collaborative review
+
+The local reference workflow records claimed reviewer identities, typed roles, scoped assignments, agreement or disagreement statements, and human dispositions as separate integrity-addressed records. It does not authenticate a person or institution, and no review record edits the assessment automatically. See [collaborative review](docs/reference/review.md).
+
 ## Controlled GPT assistance
 
 The default workbench makes no external model call. It exports bounded structured requests, validates imported candidate responses, records exact provider and model identifiers, requires human disposition, and preserves assessment bytes unchanged. See [controlled model assistance](docs/reference/assistance.md).
@@ -105,7 +110,7 @@ neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 
 ## Repository status
 
-`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The `agent/v0.3.0-foundations` branch adds reviewed foundations for PRIMA, observatory v1.7, deterministic reports, and controlled provider-neutral GPT assistance without changing the normative v4.2 kernel. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
+`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The `agent/v0.3.0-foundations` branch adds review-ready foundations for PRIMA, observatory v1.7, deterministic reports, attributable collaborative review, and controlled provider-neutral GPT assistance without changing the normative v4.2 kernel. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
 
 ## License
 

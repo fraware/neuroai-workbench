@@ -29,3 +29,16 @@ Use `neuroai-workbench <command> --help` for complete arguments.
 | `compare` | Compare existing finding states across cases. |
 
 Every command that reports validity includes a boundary statement. Scripts must preserve that statement in downstream reporting.
+
+## Collaborative review
+
+```bash
+neuroai-workbench review-assign WORKSPACE CASE REVIEWER DOMAIN_REVIEWER --scope FINDING:NK-01-R01 --actor lead-assessor
+neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGREE --rationale "Bound the claim" --evidence-id EV-PR-001
+neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED --rationale "Edit separately" --actor lead-assessor
+neuroai-workbench review-verify WORKSPACE CASE
+neuroai-workbench review-report WORKSPACE CASE --output review.md
+neuroai-workbench gap-report --assessment assessment.json --output gaps.md
+```
+
+Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings.
