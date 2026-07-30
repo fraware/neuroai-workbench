@@ -271,3 +271,70 @@ def test_cli_review_workflow_and_gap_report(tmp_path: Path, capsys):
     assert cli.main(["gap-report", "--assessment", str(assessment), "--output", str(gap_report)]) == 0
     assert parse_stdout(capsys)["sha256"]
     assert "Evidence-gap and closure-request report" in gap_report.read_text(encoding="utf-8")
+
+
+def test_cli_protected_evidence_exchange(tmp_path: Path, capsys):
+    repo = Path(__file__).resolve().parents[2]
+    assessment = repo / "examples" / "assessments" / "PRIMA_Controlled_Assessment_v4.2.1.native.json"
+    workspace = tmp_path / "workspace"
+    assert cli.main(["init", str(workspace)]) == 0
+    capsys.readouterr()
+    assert cli.main(["case-import", str(workspace), str(assessment), "--case-id", "prima-exchange"]) == 0
+    capsys.readouterr()
+
+    assert cli.main([
+        "exchange-create",
+        str(workspace),
+        "prima-exchange",
+        "--evidence-id",
+        "EV-PR-001",
+        "--gap-id",
+        "GAP-PR-001",
+        "--recipient",
+        "PRIMA evidence custodian",
+        "--purpose",
+        "Request controlled access metadata.",
+        "--requested-material",
+        "Access procedure and immutable file digest",
+        "--constraint",
+        "No participant-level data should be transmitted through the workbench.",
+        "--actor",
+        "lead-1",
+    ]) == 0
+    request = parse_stdout(capsys)["request"]
+    request_id = request["request_id"]
+    assert request["evidence_bytes_included"] is False
+
+    materials = tmp_path / "materials.json"
+    materials.write_text(json.dumps([{
+        "evidence_id": "EV-PR-001",
+        "holder_reference": "custodian-record-2026-001",
+        "sha256": "b" * 64,
+    }]), encoding="utf-8")
+    assert cli.main([
+        "exchange-record",
+        str(workspace),
+        "prima-exchange",
+        request_id,
+        "AVAILABLE_UNDER_CONDITIONS",
+        "--holder",
+        "PRIMA evidence custodian",
+        "--condition",
+        "Independent review agreement required",
+        "--materials-json",
+        str(materials),
+        "--notes",
+        "Evidence remains with the holder.",
+        "--actor",
+        "lead-1",
+    ]) == 0
+    assert parse_stdout(capsys)["response"]["evidence_bytes_received"] is False
+    assert cli.main(["exchange-verify", str(workspace), "prima-exchange", request_id]) == 0
+    assert parse_stdout(capsys)["valid"] is True
+
+    report = tmp_path / "exchange.md"
+    assert cli.main([
+        "exchange-report", str(workspace), "prima-exchange", request_id, "--output", str(report)
+    ]) == 0
+    assert parse_stdout(capsys)["sha256"]
+    assert "metadata and holder representations only" in report.read_text(encoding="utf-8")

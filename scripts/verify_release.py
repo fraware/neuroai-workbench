@@ -21,6 +21,12 @@ from neuroai_workbench.assistance import (
 )
 from neuroai_workbench.events import verify_chain
 from neuroai_workbench.evidence import add_evidence_bytes, verify_evidence_files
+from neuroai_workbench.exchange import (
+    create_exchange_request,
+    record_exchange_response,
+    render_exchange_markdown,
+    verify_exchange_record,
+)
 from neuroai_workbench.exporter import export_case_bundle
 from neuroai_workbench.migration import migrate_v4_1_2
 from neuroai_workbench.observatory import load_release, queue_release, summarize_release, validate_release
@@ -83,6 +89,7 @@ def main() -> int:
         ".cursor/environment.json",
         "docs/architecture/overview.md",
         "docs/governance/evidence-boundary.md",
+        "docs/reference/evidence-exchange.md",
         "docs/reference/observatory.md",
         "docs/reference/review.md",
         "docs/operations/cursor-engineering-handoff.md",
@@ -90,6 +97,7 @@ def main() -> int:
         "src/neuroai_workbench/server.py",
         "src/neuroai_workbench/programme_adapter.py",
         "src/neuroai_workbench/assistance.py",
+        "src/neuroai_workbench/exchange.py",
         "src/neuroai_workbench/reports.py",
         "src/neuroai_workbench/review.py",
         "src/neuroai_workbench/static/index.html",
@@ -396,6 +404,51 @@ def main() -> int:
             "Review report preserves disagreement and disposition",
             "DISAGREE" in review_markdown and "PARTIALLY_ACCEPTED" in review_markdown,
             len(review_markdown),
+        )
+        before_exchange = sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json")
+        exchange_request = create_exchange_request(
+            workspace,
+            "PRIMA-VERIFY",
+            ["EV-PR-001"],
+            recipient="PRIMA evidence custodian",
+            purpose="Request controlled access metadata for the unresolved evidence gap.",
+            requested_materials=["Access procedure and immutable digest"],
+            gap_ids=["GAP-PR-001"],
+            disclosure_constraints=["No participant-level data through the workbench."],
+            actor="lead-assessor",
+        )["request"]
+        record_exchange_response(
+            workspace,
+            "PRIMA-VERIFY",
+            exchange_request["request_id"],
+            "AVAILABLE_UNDER_CONDITIONS",
+            holder="PRIMA evidence custodian",
+            conditions=["Independent review agreement required"],
+            materials=[{
+                "evidence_id": "EV-PR-001",
+                "holder_reference": "custodian-record-2026-001",
+                "sha256": "a" * 64,
+            }],
+            notes="Evidence remains with the holder.",
+            actor="lead-assessor",
+        )
+        exchange_report = verify_exchange_record(
+            workspace, "PRIMA-VERIFY", exchange_request["request_id"]
+        )
+        check("Protected-evidence metadata exchange verifies", exchange_report["valid"], exchange_report)
+        check(
+            "Protected-evidence exchange does not mutate assessment",
+            sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json") == before_exchange,
+            before_exchange,
+        )
+        exchange_markdown = render_exchange_markdown(
+            workspace, "PRIMA-VERIFY", exchange_request["request_id"]
+        )
+        check(
+            "Exchange report preserves no-byte and no-receipt boundaries",
+            "does not include evidence bytes" in exchange_markdown
+            and "AVAILABLE_UNDER_CONDITIONS" in exchange_markdown,
+            len(exchange_markdown),
         )
 
     compile_result = subprocess.run(

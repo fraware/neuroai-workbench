@@ -18,6 +18,12 @@ from .assistance import (
 from .comparison import compare_assessments
 from .events import verify_chain
 from .evidence import add_evidence_file, verify_evidence_files
+from .exchange import (
+    create_exchange_request,
+    record_exchange_response,
+    render_exchange_markdown,
+    verify_exchange_record,
+)
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .migration import migrate_file
@@ -275,6 +281,43 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("case_id")
     p.add_argument("--output", required=True)
 
+    p = sub.add_parser("exchange-create", help="Create a protected-evidence metadata request without evidence bytes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--evidence-id", action="append", required=True)
+    p.add_argument("--gap-id", action="append", default=[])
+    p.add_argument("--recipient", required=True)
+    p.add_argument("--purpose", required=True)
+    p.add_argument("--requested-material", action="append", required=True)
+    p.add_argument("--authorized-use", default="ASSESSMENT_REVIEW_ONLY")
+    p.add_argument("--constraint", action="append", default=[])
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-record", help="Record an out-of-band holder response without importing bytes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("response_state")
+    p.add_argument("--holder", required=True)
+    p.add_argument("--condition", action="append", default=[])
+    p.add_argument("--materials-json")
+    p.add_argument("--notes")
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-verify", help="Verify evidence-exchange metadata and boundary integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-report", help="Render a deterministic protected-evidence exchange report")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--output", required=True)
+
     p = sub.add_parser("compare", help="Compare v4.2 assessments without creating new findings")
     p.add_argument("assessments", nargs="+")
     p.add_argument("--labels", nargs="*")
@@ -420,6 +463,58 @@ def main(argv: list[str] | None = None) -> int:
                 "output": str(output),
                 "sha256": sha256_file(output),
                 "boundary": "The review report attributes local records and creates no assessment or authority change.",
+            })
+        elif args.command == "exchange-create":
+            emit(
+                create_exchange_request(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.evidence_id,
+                    recipient=args.recipient,
+                    purpose=args.purpose,
+                    requested_materials=args.requested_material,
+                    gap_ids=args.gap_id,
+                    authorized_use=args.authorized_use,
+                    disclosure_constraints=args.constraint,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "exchange-record":
+            materials = []
+            if args.materials_json:
+                materials = json.loads(Path(args.materials_json).read_text(encoding="utf-8"))
+                if not isinstance(materials, list):
+                    raise ValueError("--materials-json must contain a JSON list")
+            emit(
+                record_exchange_response(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.request_id,
+                    args.response_state,
+                    holder=args.holder,
+                    conditions=args.condition,
+                    materials=materials,
+                    notes=args.notes,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "exchange-verify":
+            result = verify_exchange_record(_workspace(args.workspace), args.case_id, args.request_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
+        elif args.command == "exchange-report":
+            output = Path(args.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(
+                render_exchange_markdown(_workspace(args.workspace), args.case_id, args.request_id),
+                encoding="utf-8",
+            )
+            emit({
+                "output": str(output),
+                "sha256": sha256_file(output),
+                "boundary": "The exchange report contains metadata only and does not establish evidence receipt.",
             })
         elif args.command == "assist-request":
             result = create_assistance_request(
