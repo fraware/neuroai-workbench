@@ -1,0 +1,10 @@
+---
+description: Reproducible release and provenance requirements
+globs: [".github/workflows/release.yml", "scripts/**", "CHANGELOG.md", "RELEASE_NOTES_*.md", "CONTROLLED_STATUS_*.json"]
+alwaysApply: false
+---
+- Build releases only from a clean tagged commit.
+- Ensure tag, package version, workspace version, release notes, and controlled status agree.
+- Generate distributions, SBOM, checksums, verification output, and Git bundle in CI.
+- Keep generated release artifacts outside source control.
+- Preserve failed checks and withheld claims in release records.

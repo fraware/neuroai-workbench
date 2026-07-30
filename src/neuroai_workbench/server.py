@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import logging
 import mimetypes
-import os
 import tempfile
 import urllib.parse
 from http import HTTPStatus
@@ -12,6 +11,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
+from . import __version__
 from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
 from .events import load_events, verify_chain
 from .exporter import export_case_bundle
@@ -34,7 +34,7 @@ class WorkbenchHTTPServer(ThreadingHTTPServer):
 
 
 class WorkbenchRequestHandler(BaseHTTPRequestHandler):
-    server_version = "NeuroAIWorkbench/0.1.0"
+    server_version = f"NeuroAIWorkbench/{__version__}"
 
     @property
     def workspace(self) -> Workspace:
@@ -121,7 +121,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
             if segments == ["api", "health"]:
                 self._send_json({
                     "status": "ok",
-                    "version": "0.1.0",
+                    "version": __version__,
                     "workspace": str(self.workspace.root),
                     "bind_boundary": "This development server is intended for local trusted use only.",
                 })
@@ -159,7 +159,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 if len(segments) == 4 and segments[3] == "bundle":
                     with tempfile.TemporaryDirectory(prefix="neuroai-bundle-") as tmp:
                         output = Path(tmp) / f"{case_id}.zip"
-                        result = export_case_bundle(self.workspace, case_id, output)
+                        export_case_bundle(self.workspace, case_id, output)
                         self._send_bytes(output.read_bytes(), "application/zip", filename=f"{case_id}-controlled-bundle.zip")
                     return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
@@ -252,10 +252,22 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
             self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
 
 
-def serve(workspace: Workspace, host: str = "127.0.0.1", port: int = 8765) -> None:
-    if host not in {"127.0.0.1", "localhost", "::1"}:
+def serve(
+    workspace: Workspace,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    *,
+    allow_network: bool = False,
+) -> None:
+    loopback_hosts = {"127.0.0.1", "localhost", "::1"}
+    if host not in loopback_hosts and not allow_network:
+        raise ValueError(
+            "Refusing non-loopback binding without explicit --allow-network. "
+            "The reference server has no authentication or TLS."
+        )
+    if host not in loopback_hosts:
         LOGGER.warning(
-            "Binding to %s exposes a server with no authentication or TLS. Use only inside a separately secured environment.",
+            "Non-loopback binding enabled explicitly for %s. Use only inside a separately secured environment.",
             host,
         )
     server = WorkbenchHTTPServer((host, port), workspace)

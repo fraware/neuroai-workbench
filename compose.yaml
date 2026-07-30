@@ -1,7 +1,7 @@
 services:
   workbench:
     build: .
-    command: ["serve", "/workspace", "--host", "0.0.0.0", "--port", "8765"]
+    command: ["serve", "/workspace", "--host", "0.0.0.0", "--port", "8765", "--allow-network"]
     ports:
       - "127.0.0.1:8765:8765"
     volumes:

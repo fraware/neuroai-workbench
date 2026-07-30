@@ -55,6 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("workspace")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--allow-network", action="store_true")
 
     p = sub.add_parser("case-create", help="Create a blank v4.2 case")
     p.add_argument("workspace")
@@ -194,7 +195,7 @@ def main(argv: list[str] | None = None) -> int:
                 result["cases"] = workspace.list_cases()
             emit(result)
         elif args.command == "serve":
-            serve(_workspace(args.workspace), host=args.host, port=args.port)
+            serve(_workspace(args.workspace), host=args.host, port=args.port, allow_network=args.allow_network)
         elif args.command == "case-create":
             emit(_workspace(args.workspace).create_case(args.case_id, args.title, actor=args.actor))
         elif args.command == "case-import":

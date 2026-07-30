@@ -1,28 +1,31 @@
-## 0.2.0
-
-- Added controlled offline observatory mode.
-- Added six observatory unit tests and a CLI integration test.
 
 # Changelog
 
+All notable changes are recorded here. Release integrity does not establish substantive evidence validity, institutional adoption, or system conformance.
+
+## 0.2.1 — stabilization candidate
+
+### Changed
+
+- Centralized package and workspace version identity.
+- Reorganized documentation, examples, and tests for maintainable public development.
+- Removed generated build, release, cache, SBOM, and verification artifacts from source control.
+- Added repository hygiene and version-consistency gates.
+- Added AI-agent and Cursor operating rules that preserve assessment and evidence boundaries.
+- Expanded CI into quality, test-matrix, packaging, container, release-verification, and security gates.
+- Added reproducible tagged-release workflow with checksums, SBOM generation, Git bundle creation, and provenance attestation.
+- Updated security support, release status, and roadmap language.
+
+### Unchanged
+
+- The v4.2 instrument remains at 78 requirements.
+- Normative requirement meaning, conformance semantics, and historical assessment findings are unchanged.
+
+## 0.2.0
+
+- Added controlled offline observatory mode.
+- Added observatory validation, summary, queue, and CLI coverage.
+
 ## 0.1.0 — 2026-07-28
 
-### Added
-
-- Offline-first multi-case workspace.
-- v4.2 schema and semantic validation.
-- All 78 normative requirement controls.
-- Evidence-byte registry and SHA-256 verification.
-- Hash-chained event history.
-- Controlled snapshots and ZIP exports.
-- Additive v4.1.2 migration.
-- Cross-case comparison.
-- Local browser interface and CLI.
-- Brain2Qwerty, FDA adaptive DBS and BrainGate2 T15 reference cases.
-- Security, data-governance, governance and deployment documentation.
-- GitHub CI and CodeQL workflows.
-- SBOM and dependency-provenance records.
-
-### Withheld claims
-
-This release has not received institutional endorsement, production-security assessment, clinical validation, regulator approval, or an independent conformance determination.
+- Added the offline-first workspace, v4.2 validation, evidence registry, event history, snapshots, bundles, migration, comparison, browser UI, CLI, public reference cases, governance documents, CI, and release controls.

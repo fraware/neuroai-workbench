@@ -1,0 +1,46 @@
+
+name: Bounded engineering task
+description: Define one implementation task for a human or coding agent.
+title: "[task] "
+labels: [engineering, triage]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include protected data, credentials, private evidence, or exploit details.
+  - type: textarea
+    id: objective
+    attributes:
+      label: Bounded objective
+      description: One outcome that can be reviewed in one pull request.
+    validations:
+      required: true
+  - type: textarea
+    id: invariant
+    attributes:
+      label: Governing invariant
+      description: Identify the evidence, authority, normative, migration, or security boundary.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Required tests
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Change risk
+      options:
+        - Low-risk documentation or maintenance
+        - Behavioral software change
+        - Security-boundary change
+        - Assessment-kernel or migration change
+    validations:
+      required: true

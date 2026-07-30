@@ -8,7 +8,7 @@ import pytest
 from neuroai_workbench.workspace import Workspace
 
 REPO = Path(__file__).resolve().parents[1]
-EXAMPLES = REPO / "examples"
+EXAMPLES = REPO / "examples" / "assessments"
 
 
 @pytest.fixture

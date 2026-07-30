@@ -1,0 +1,10 @@
+---
+description: Protected evidence and fixture requirements
+globs: ["examples/**", "tests/**", "src/neuroai_workbench/evidence.py", "src/neuroai_workbench/exporter.py"]
+alwaysApply: false
+---
+- Use synthetic or explicitly public fixtures only.
+- Never commit private neural data, participant records, credentials, confidential regulator files, or decryption material.
+- Treat exports and backups as protected copies.
+- Hash identity does not establish authenticity, relevance, or methodological adequacy.
+- Preserve evidence-holder, access-state, and authorization metadata when extending the model.

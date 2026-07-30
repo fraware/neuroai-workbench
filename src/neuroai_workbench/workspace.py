@@ -6,6 +6,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from . import __version__
 from .errors import WorkspaceError
 from .events import append_event, verify_chain
 from .resource_loader import read_resource_bytes
@@ -34,7 +35,7 @@ class Workspace:
         (root / "tmp").mkdir()
         atomic_write_json(workspace.meta_path, {
             "workspace_version": "1",
-            "workbench_version": "0.1.0",
+            "workbench_version": __version__,
             "name": name,
             "created_at": utc_now(),
             "instrument_version": "v4.2",

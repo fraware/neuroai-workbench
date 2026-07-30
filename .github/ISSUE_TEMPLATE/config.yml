@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Private security report
+  - name: Security report
     url: https://github.com/fraware/neuroai-workbench/security/advisories/new
-    about: Report vulnerabilities or protected-data exposure privately.
+    about: Report a suspected vulnerability privately.

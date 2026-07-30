@@ -1,0 +1,9 @@
+---
+description: Offline web-interface constraints
+globs: ["src/neuroai_workbench/static/**", "src/neuroai_workbench/server.py"]
+alwaysApply: false
+---
+- Use no remote JavaScript, CSS, fonts, analytics, telemetry, or model calls.
+- Maintain Content Security Policy and defensive HTTP headers.
+- Preserve keyboard usability, semantic HTML, readable contrast, and explicit validation boundaries.
+- The UI may display assessor-entered findings; it must not claim to independently prove them.
