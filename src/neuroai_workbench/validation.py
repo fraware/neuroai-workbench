@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -7,7 +8,6 @@ from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .resource_loader import read_resource_bytes
-import json
 
 
 @dataclass(frozen=True)
