@@ -35,6 +35,30 @@ ID_FIELDS = {
 FULL_RELEASE = "FULL_OBSERVATORY_RELEASE"
 COMPACT_SUCCESSOR = "COMPACT_SUCCESSOR_SNAPSHOT"
 
+KNOWN_REOPENING_DECISIONS = frozenset(
+    {
+        "NO_REOPENING_TRIGGER_IDENTIFIED",
+        "UPDATE_REQUIRED_NO_ASSESSMENT_REOPEN",
+        "METADATA_UPDATE_ONLY",
+        "REOPEN_REQUIRED",
+        "REOPENING_EXECUTED_RECORD_UPDATED_OPEN_CONDITIONS",
+        "REOPENING_EXECUTED_CONDITIONS_CLOSED",
+        "ASSESSMENT_REOPEN_DECLINED",
+    }
+)
+
+ALLOWED_REOPENING_TRANSITIONS = frozenset(
+    {
+        ("REOPEN_REQUIRED", "REOPENING_EXECUTED_RECORD_UPDATED_OPEN_CONDITIONS"),
+        ("REOPEN_REQUIRED", "REOPENING_EXECUTED_CONDITIONS_CLOSED"),
+        ("REOPEN_REQUIRED", "ASSESSMENT_REOPEN_DECLINED"),
+        ("REOPENING_EXECUTED_RECORD_UPDATED_OPEN_CONDITIONS", "REOPENING_EXECUTED_CONDITIONS_CLOSED"),
+        ("NO_REOPENING_TRIGGER_IDENTIFIED", "REOPEN_REQUIRED"),
+        ("UPDATE_REQUIRED_NO_ASSESSMENT_REOPEN", "REOPEN_REQUIRED"),
+        ("METADATA_UPDATE_ONLY", "REOPEN_REQUIRED"),
+    }
+)
+
 
 def load_release(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -58,6 +82,40 @@ def _ids(records: list[dict[str, Any]], field: str) -> list[str]:
         if isinstance(value, str):
             values.append(value)
     return values
+
+def _parse_iso_date(value: Any) -> str | None:
+    if not isinstance(value, str) or len(value) < 10:
+        return None
+    candidate = value[:10]
+    if len(candidate) == 10 and candidate[4] == "-" and candidate[7] == "-":
+        return candidate
+    return None
+
+
+def verify_baseline_bytes(value: dict[str, Any], baseline_path: Path) -> list[dict[str, Any]]:
+    """Verify compact-successor baseline_reference.canonical_sha256 against stored baseline bytes."""
+    errors: list[dict[str, Any]] = []
+    if release_kind(value) != COMPACT_SUCCESSOR:
+        return errors
+    baseline = value.get("baseline_reference", {})
+    expected = baseline.get("canonical_sha256") if isinstance(baseline, dict) else None
+    if not isinstance(expected, str) or len(expected) != 64:
+        errors.append({"code": "BASELINE_SHA256_REQUIRED", "path": "baseline_reference.canonical_sha256"})
+        return errors
+    if not baseline_path.is_file():
+        errors.append({"code": "BASELINE_BYTES_UNAVAILABLE", "path": str(baseline_path)})
+        return errors
+    observed = sha256_file(baseline_path)
+    if observed != expected:
+        errors.append(
+            {
+                "code": "BASELINE_SHA256_MISMATCH",
+                "path": "baseline_reference.canonical_sha256",
+                "expected": expected,
+                "observed": observed,
+            }
+        )
+    return errors
 
 
 def _validate_full_release(value: dict[str, Any]) -> dict[str, Any]:
@@ -148,13 +206,22 @@ def _validate_compact_successor(value: dict[str, Any]) -> dict[str, Any]:
         if not metadata.get(field):
             errors.append({"code": "METADATA_FIELD_REQUIRED", "path": f"metadata.{field}"})
 
-    for field in ("baseline_reference", "baseline_counts", "delta_counts", "successor_effective_counts", "delta", "provenance"):
+    for field in (
+        "baseline_reference",
+        "baseline_counts",
+        "delta_counts",
+        "successor_effective_counts",
+        "delta",
+        "provenance",
+    ):
         if not isinstance(value.get(field), dict):
             errors.append({"code": "OBJECT_REQUIRED", "path": field})
     if not isinstance(value.get("reopening_decisions"), list):
         errors.append({"code": "LIST_REQUIRED", "path": "reopening_decisions"})
 
-    counts = value.get("successor_effective_counts", {}) if isinstance(value.get("successor_effective_counts"), dict) else {}
+    counts = (
+        value.get("successor_effective_counts", {}) if isinstance(value.get("successor_effective_counts"), dict) else {}
+    )
     for key, count in counts.items():
         if not isinstance(count, int) or count < 0:
             errors.append({"code": "NONNEGATIVE_INTEGER_REQUIRED", "path": f"successor_effective_counts.{key}"})
@@ -179,14 +246,78 @@ def _validate_compact_successor(value: dict[str, Any]) -> dict[str, Any]:
             decision_ids.append(decision_id)
         if not decision.get("object") or not decision.get("decision"):
             errors.append({"code": "DECISION_FIELDS_REQUIRED", "path": f"reopening_decisions[{index}]"})
+        decision_state = decision.get("decision")
+        if isinstance(decision_state, str) and decision_state not in KNOWN_REOPENING_DECISIONS:
+            errors.append(
+                {
+                    "code": "UNSUPPORTED_REOPENING_STATE",
+                    "path": f"reopening_decisions[{index}].decision",
+                    "decision": decision_state,
+                }
+            )
     duplicates = sorted({item for item in decision_ids if decision_ids.count(item) > 1})
     if duplicates:
         errors.append({"code": "DUPLICATE_IDENTIFIER", "path": "reopening_decisions", "identifiers": duplicates})
+
+    transition = None
+    assessment_delta = value.get("assessment_successor_delta")
+    if isinstance(assessment_delta, dict):
+        transition = assessment_delta.get("reopening_transition")
+    if isinstance(transition, dict):
+        predecessor_state = transition.get("predecessor_state")
+        successor_state = transition.get("successor_state")
+        if predecessor_state and successor_state:
+            pair = (predecessor_state, successor_state)
+            if pair not in ALLOWED_REOPENING_TRANSITIONS and predecessor_state != successor_state:
+                errors.append(
+                    {
+                        "code": "UNSUPPORTED_REOPENING_TRANSITION",
+                        "path": "assessment_successor_delta.reopening_transition",
+                        "predecessor_state": predecessor_state,
+                        "successor_state": successor_state,
+                    }
+                )
+
+    effective = _parse_iso_date(metadata.get("effective_as_of"))
+    delta = value.get("delta", {}) if isinstance(value.get("delta"), dict) else {}
+    event_dates: list[str] = []
+    attributable_missing: list[str] = []
+    for section, records in delta.items():
+        if not isinstance(records, list):
+            continue
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                continue
+            event_date = _parse_iso_date(record.get("event_date"))
+            if event_date:
+                event_dates.append(event_date)
+                if effective and event_date > effective:
+                    errors.append(
+                        {
+                            "code": "INVALID_TEMPORAL_ORDER",
+                            "path": f"delta.{section}[{index}].event_date",
+                            "event_date": event_date,
+                            "effective_as_of": effective,
+                        }
+                    )
+            source_ids = record.get("source_ids")
+            if not (isinstance(source_ids, list) and any(isinstance(item, str) and item for item in source_ids)):
+                attributable_missing.append(f"delta.{section}[{index}]")
+    if attributable_missing:
+        warnings.append(
+            {
+                "code": "DELTA_ATTRIBUTABILITY_INCOMPLETE",
+                "paths": attributable_missing,
+                "detail": "Delta records should retain source_ids for attributability relative to the v1.6 refresh lineage.",
+            }
+        )
 
     predecessor = metadata.get("predecessor")
     predecessor_reference = value.get("predecessor_reference", {})
     if predecessor and not isinstance(predecessor_reference, dict):
         warnings.append({"code": "PREDECESSOR_REFERENCE_UNAVAILABLE"})
+    elif isinstance(predecessor_reference, dict) and predecessor_reference.get("immutable") is not True:
+        warnings.append({"code": "PREDECESSOR_NOT_DECLARED_IMMUTABLE", "path": "predecessor_reference.immutable"})
 
     return {
         "valid": not errors,
@@ -196,9 +327,12 @@ def _validate_compact_successor(value: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def validate_release(value: dict[str, Any]) -> dict[str, Any]:
+def validate_release(value: dict[str, Any], *, baseline_path: Path | None = None) -> dict[str, Any]:
     kind = release_kind(value)
     core = _validate_compact_successor(value) if kind == COMPACT_SUCCESSOR else _validate_full_release(value)
+    if kind == COMPACT_SUCCESSOR and baseline_path is not None:
+        core["errors"].extend(verify_baseline_bytes(value, baseline_path))
+        core["valid"] = not core["errors"]
     return {
         **core,
         "release_kind": kind,
@@ -218,7 +352,9 @@ def summarize_release(value: dict[str, Any]) -> dict[str, Any]:
             "baseline_reference": value.get("baseline_reference", {}),
             "delta_counts": value.get("delta_counts", {}),
             "reopening_decision_states": {
-                item.get("object"): item.get("decision") for item in value.get("reopening_decisions", []) if isinstance(item, dict)
+                item.get("object"): item.get("decision")
+                for item in value.get("reopening_decisions", [])
+                if isinstance(item, dict)
             },
             "boundaries": [
                 "A compact successor snapshot records changed state and lineage; it does not replace the detailed immutable baseline.",
@@ -297,16 +433,44 @@ def queue_release(value: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _release_store_path(workspace: Path, version: str) -> Path:
+    return workspace / "observatory" / "releases" / version / "release.json"
+
+
+def _resolve_baseline_path(workspace: Path, value: dict[str, Any]) -> Path | None:
+    """Prefer an already-imported immutable baseline (v1.4) when verifying successors."""
+    candidates = [
+        _release_store_path(workspace, "v1.4"),
+        workspace / "observatory" / "baseline" / "release.json",
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    return None
+
+
 def import_release(workspace: Path, release_path: Path) -> dict[str, Any]:
     value = load_release(release_path)
-    report = validate_release(value)
+    baseline_path = _resolve_baseline_path(workspace, value) if release_kind(value) == COMPACT_SUCCESSOR else None
+    report = validate_release(value, baseline_path=baseline_path)
     if not report["valid"]:
         raise ValueError("Observatory release failed validation")
     version = value["metadata"]["version"]
     target = workspace / "observatory" / "releases" / version
     target.mkdir(parents=True, exist_ok=True)
     output = target / "release.json"
-    atomic_write_json(output, value)
+    if output.is_file():
+        existing = load_release(output)
+        existing_digest = sha256_bytes(canonical_json_bytes(existing))
+        incoming_digest = sha256_bytes(canonical_json_bytes(value))
+        if existing_digest != incoming_digest:
+            raise ValueError(
+                f"Refusing to overwrite observatory release {version!r}: historical snapshots are immutable. "
+                "Import a distinct successor version instead of mutating stored bytes."
+            )
+        # Idempotent re-import of identical content is allowed.
+    else:
+        atomic_write_json(output, value)
     evidence_cutoff = value["metadata"].get("evidence_cutoff") or value["metadata"].get("effective_as_of")
     manifest = {
         "version": version,
@@ -316,6 +480,7 @@ def import_release(workspace: Path, release_path: Path) -> dict[str, Any]:
         "source_sha256": sha256_file(release_path),
         "stored_sha256": sha256_file(output),
         "validation": report,
+        "overwrite_prevented": True,
         "boundary": "Import records local bytes and validation state; it does not endorse the source release.",
     }
     atomic_write_json(target / "manifest.json", manifest)
@@ -323,7 +488,7 @@ def import_release(workspace: Path, release_path: Path) -> dict[str, Any]:
 
 
 def load_imported_release(workspace: Path, version: str) -> dict[str, Any]:
-    path = workspace / "observatory" / "releases" / version / "release.json"
+    path = _release_store_path(workspace, version)
     if not path.is_file():
         raise FileNotFoundError(f"Unknown observatory release {version}")
     return load_release(path)

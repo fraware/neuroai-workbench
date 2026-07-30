@@ -4467,7 +4467,10 @@
     "preservation_verified": true,
     "migration_warnings": [
       "Programme-only source, safety-event, and packaging fields are represented through evidence records, notes, and provenance.",
-      "The adapter does not re-appraise evidence or upgrade any finding, claim, authorization, or conformance state."
+      "The adapter does not re-appraise evidence or upgrade any finding, claim, authorization, or conformance state.",
+      "Native gap_register.linked_requirement_ids are empty because the programme source gaps do not carry requirement links.",
+      "Classification sc_01–sc_12 values are provisional adapter projections and require human domain confirmation.",
+      "preservation_verified is computed from mechanical identifier/status reconciliation only; detailed checks are in the adapter report."
     ]
   }
 }

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import mimetypes
+import sys
 import tempfile
 import urllib.parse
 from http import HTTPStatus
@@ -28,10 +29,20 @@ MAX_JSON_BODY = 110 * 1024 * 1024
 class WorkbenchHTTPServer(ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
+    request_queue_size = 32
 
     def __init__(self, server_address: tuple[str, int], workspace: Workspace):
         super().__init__(server_address, WorkbenchRequestHandler)
         self.workspace = workspace
+
+    def handle_error(self, request: Any, client_address: Any) -> None:
+        # Windows clients often reset loopback connections after Connection: close;
+        # do not treat that transport teardown as an unhandled server failure.
+        exc = sys.exc_info()[1]
+        if isinstance(exc, (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, TimeoutError)):
+            LOGGER.debug("Client connection closed from %s: %s", client_address, exc)
+            return
+        super().handle_error(request, client_address)
 
 
 class WorkbenchRequestHandler(BaseHTTPRequestHandler):
@@ -53,6 +64,10 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("Cache-Control", "no-store")
+        # Avoid Windows keep-alive races with ThreadingHTTPServer during integration tests
+        # and ordinary local use; loopback binding controls remain unchanged.
+        self.send_header("Connection", "close")
+        self.close_connection = True
         self.send_header(
             "Content-Security-Policy",
             "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
@@ -65,7 +80,12 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
-        self.wfile.write(data)
+        try:
+            self.wfile.write(data)
+            self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            # Client disconnected; do not escalate into the request thread.
+            return
 
     def _send_bytes(self, data: bytes, content_type: str, status: int = 200, filename: str | None = None) -> None:
         self.send_response(status)
@@ -75,7 +95,11 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
         if filename:
             self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
         self.end_headers()
-        self.wfile.write(data)
+        try:
+            self.wfile.write(data)
+            self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            return
 
     def _read_json(self) -> dict[str, Any]:
         raw_length = self.headers.get("Content-Length", "0")
@@ -203,6 +227,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 case_id = str(body.get("case_id") or assessment.get("assessment_metadata", {}).get("assessment_id", ""))
                 with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
                     json.dump(assessment, handle, ensure_ascii=False)
+                    handle.flush()
                     temp_path = Path(handle.name)
                 try:
                     imported = self.workspace.import_case(
@@ -244,8 +269,8 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
     def do_PUT(self) -> None:  # noqa: N802
         try:
             segments = self._segments()
+            body = self._read_json()
             if len(segments) == 4 and segments[:2] == ["api", "cases"] and segments[3] == "assessment":
-                body = self._read_json()
                 assessment = body.get("assessment")
                 if not isinstance(assessment, dict):
                     raise ValueError("assessment must be a JSON object")
@@ -265,8 +290,8 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
     def do_DELETE(self) -> None:  # noqa: N802
         try:
             segments = self._segments()
+            body = self._read_json()
             if len(segments) == 3 and segments[:2] == ["api", "cases"]:
-                body = self._read_json()
                 case_id = ensure_identifier(segments[2], "case ID")
                 self.workspace.delete_case(case_id, str(body.get("confirmation", "")))
                 self._send_json({"deleted": case_id})

@@ -23,3 +23,10 @@ neuroai-workbench observatory-queue --release examples/observatory/canonical_suc
 ```
 
 A compact successor does not replace the detailed v1.4 baseline. It records lineage and changed state.
+
+## Immutability and adversarial checks
+
+- Re-importing a different payload for an already-stored version is rejected. Identical content may be re-imported idempotently.
+- Compact successors may verify `baseline_reference.canonical_sha256` against stored v1.4 bytes when that baseline has already been imported.
+- Validation rejects invalid temporal order (delta `event_date` after `effective_as_of`), unknown reopening decision states, and unsupported reopening transitions.
+- Delta records should retain `source_ids` for attributability; missing attribution is warned, not silently accepted as authoritative.

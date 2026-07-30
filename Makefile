@@ -15,6 +15,7 @@ quality:
 	$(PYTHON) -m compileall -q src scripts
 	$(PYTHON) scripts/check_repository_hygiene.py
 	$(PYTHON) scripts/check_version_consistency.py
+	$(PYTHON) scripts/agent_eval_harness.py
 
 test:
 	$(PYTHON) -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-fail-under=90

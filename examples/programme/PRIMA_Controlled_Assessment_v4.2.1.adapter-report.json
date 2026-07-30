@@ -13,6 +13,31 @@
     "decisions": 4,
     "safety_event_notes": 11
   },
+  "preservation": {
+    "checks": {
+      "requirement_ids_count_78": true,
+      "requirement_ids_unique": true,
+      "requirement_ids_equal": true,
+      "finding_status_preserved": true,
+      "no_missing_evidence_converted_to_fail": true,
+      "claims_count_preserved": true,
+      "evidence_count_preserved": true,
+      "gaps_count_preserved": true,
+      "decisions_count_preserved": true,
+      "historical_finding_flag_set": true
+    },
+    "preservation_verified": true,
+    "status_mismatches": [],
+    "source_fail_count": 0,
+    "native_fail_count": 0,
+    "boundary": "preservation_verified is a mechanical reconciliation of identifiers and finding statuses; it does not establish scientific truth, authorization, conformance, or independent re-appraisal."
+  },
+  "no_reappraisal": {
+    "reappraisal_performed": false,
+    "finding_status_upgrades_forbidden": true,
+    "missing_evidence_to_fail_forbidden": true,
+    "statement": "Adaptation projects source determinations into the native object model only. It does not re-weigh evidence, change requirement meanings, or convert unresolved gaps into FAIL."
+  },
   "validation": {
     "schema_version": "v4.2",
     "valid": true,
@@ -40,6 +65,9 @@
   "loss_boundaries": [
     "Source-register rows are consolidated into native evidence records and provenance identifiers.",
     "Standalone safety-event rows are retained as deterministic assessment notes.",
+    "Native gap_register.linked_requirement_ids remain [] because programme gaps_and_requests lack linked requirement IDs.",
+    "Classification sc_01–sc_12 values are provisional hardcoded projections pending domain confirmation.",
+    "Unmatched programme claim_state strings map to NOT REVIEWABLE rather than supported-within-scope.",
     "No model-generated content is introduced by this adapter."
   ],
   "boundary": "Adaptation preserves a source assessment in the workbench object model; it does not constitute independent appraisal or endorsement."
