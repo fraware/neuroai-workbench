@@ -25,3 +25,15 @@ def test_report_is_deterministic_and_bounded(tmp_path: Path) -> None:
     assert output.read_text(encoding="utf-8") == first
     assert result["bytes"] == len(first.encode("utf-8"))
     assert len(result["sha256"]) == 64
+
+
+def test_gap_report_is_deterministic_and_bounded() -> None:
+    from neuroai_workbench.reports import render_gap_markdown
+
+    assessment = json.loads(EXAMPLE.read_text(encoding="utf-8"))
+    first = render_gap_markdown(assessment)
+    second = render_gap_markdown(assessment)
+    assert first == second
+    assert "Evidence-gap and closure-request report" in first
+    assert "creates no disclosure duty" in first
+    assert assessment["gap_register"][0]["gap_id"] in first

@@ -226,3 +226,48 @@ def test_cli_programme_adapter_report_assistance_and_successor(tmp_path: Path, c
     parse_stdout(capsys)
     assert cli.main(["observatory-summary", "--workspace", str(workspace), "--version", "v1.7"]) == 0
     assert parse_stdout(capsys)["counts"]["completed_system_assessments"] == 4
+
+
+def test_cli_review_workflow_and_gap_report(tmp_path: Path, capsys):
+    repo = Path(__file__).resolve().parents[2]
+    assessment = repo / "examples" / "assessments" / "PRIMA_Controlled_Assessment_v4.2.1.native.json"
+    workspace = tmp_path / "workspace"
+    assert cli.main(["init", str(workspace)]) == 0
+    capsys.readouterr()
+    assert cli.main(["case-import", str(workspace), str(assessment), "--case-id", "prima-review"]) == 0
+    capsys.readouterr()
+
+    assert cli.main([
+        "review-assign", str(workspace), "prima-review", "reviewer-1", "DOMAIN_REVIEWER",
+        "--scope", "FINDING:NK-01-R01", "--actor", "lead-1",
+    ]) == 0
+    assert parse_stdout(capsys)["assignment"]["role"] == "DOMAIN_REVIEWER"
+    assert cli.main([
+        "review-assign", str(workspace), "prima-review", "lead-1", "LEAD_ASSESSOR",
+        "--scope", "ASSESSMENT:*", "--actor", "lead-1",
+    ]) == 0
+    capsys.readouterr()
+
+    assert cli.main([
+        "review-submit", str(workspace), "prima-review", "reviewer-1", "FINDING", "NK-01-R01", "DISAGREE",
+        "--rationale", "The claim should remain bounded to the assessed configuration.",
+        "--evidence-id", "EV-PR-001", "--proposed-change", "Narrow the finding wording.",
+    ]) == 0
+    statement_id = parse_stdout(capsys)["statement"]["statement_id"]
+    assert cli.main([
+        "review-dispose", str(workspace), "prima-review", statement_id, "PARTIALLY_ACCEPTED",
+        "--rationale", "Record the disagreement and review the assessment separately.", "--actor", "lead-1",
+    ]) == 0
+    capsys.readouterr()
+    assert cli.main(["review-verify", str(workspace), "prima-review"]) == 0
+    assert parse_stdout(capsys)["valid"] is True
+
+    review_report = tmp_path / "review.md"
+    assert cli.main(["review-report", str(workspace), "prima-review", "--output", str(review_report)]) == 0
+    assert parse_stdout(capsys)["sha256"]
+    assert "PARTIALLY_ACCEPTED" in review_report.read_text(encoding="utf-8")
+
+    gap_report = tmp_path / "gaps.md"
+    assert cli.main(["gap-report", "--assessment", str(assessment), "--output", str(gap_report)]) == 0
+    assert parse_stdout(capsys)["sha256"]
+    assert "Evidence-gap and closure-request report" in gap_report.read_text(encoding="utf-8")

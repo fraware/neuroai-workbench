@@ -30,7 +30,14 @@ from .observatory import (
     validate_release,
 )
 from .programme_adapter import adapt_programme_file
-from .reports import write_assessment_markdown
+from .reports import write_assessment_markdown, write_gap_markdown
+from .review import (
+    create_review_assignment,
+    dispose_review_statement,
+    render_review_markdown,
+    submit_review_statement,
+    verify_review_records,
+)
 from .server import serve
 from .util import sha256_file
 from .validation import validate_assessment
@@ -219,6 +226,55 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("request_id")
     p.add_argument("--out")
 
+    p = sub.add_parser("gap-report", help="Render a deterministic evidence-gap and closure-request report")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--assessment")
+    source.add_argument("--case-id")
+    p.add_argument("--workspace")
+    p.add_argument("--output", required=True)
+
+    p = sub.add_parser("review-assign", help="Record an attributable local review assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("role")
+    p.add_argument("--scope", action="append", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-submit", help="Submit an immutable review statement or disagreement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("target_type")
+    p.add_argument("target_id")
+    p.add_argument("position")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--condition", action="append", default=[])
+    p.add_argument("--proposed-change")
+    p.add_argument("--actor")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-dispose", help="Record an authorized human disposition for a review statement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("statement_id")
+    p.add_argument("disposition")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-verify", help="Verify review records, role linkage, and event-chain integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-report", help="Render a deterministic Markdown review and disagreement report")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--output", required=True)
+
     p = sub.add_parser("compare", help="Compare v4.2 assessments without creating new findings")
     p.add_argument("assessments", nargs="+")
     p.add_argument("--labels", nargs="*")
@@ -317,6 +373,54 @@ def main(argv: list[str] | None = None) -> int:
             return 0 if result.report["validation"]["valid"] else 1
         elif args.command == "report":
             emit(write_assessment_markdown(_load_input(args), Path(args.output)))
+        elif args.command == "gap-report":
+            emit(write_gap_markdown(_load_input(args), Path(args.output)))
+        elif args.command == "review-assign":
+            emit(create_review_assignment(
+                _workspace(args.workspace),
+                args.case_id,
+                args.reviewer_id,
+                args.role,
+                args.scope,
+                actor=args.actor,
+            ), Path(args.out) if args.out else None)
+        elif args.command == "review-submit":
+            emit(submit_review_statement(
+                _workspace(args.workspace),
+                args.case_id,
+                args.reviewer_id,
+                args.target_type,
+                args.target_id,
+                args.position,
+                args.rationale,
+                evidence_ids=args.evidence_id,
+                conditions=args.condition,
+                proposed_change=args.proposed_change,
+                actor=args.actor,
+            ), Path(args.out) if args.out else None)
+        elif args.command == "review-dispose":
+            emit(dispose_review_statement(
+                _workspace(args.workspace),
+                args.case_id,
+                args.statement_id,
+                args.disposition,
+                args.rationale,
+                actor=args.actor,
+            ), Path(args.out) if args.out else None)
+        elif args.command == "review-verify":
+            result = verify_review_records(_workspace(args.workspace), args.case_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
+        elif args.command == "review-report":
+            output = Path(args.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            text = render_review_markdown(_workspace(args.workspace), args.case_id)
+            output.write_text(text, encoding="utf-8")
+            emit({
+                "output": str(output),
+                "sha256": sha256_file(output),
+                "boundary": "The review report attributes local records and creates no assessment or authority change.",
+            })
         elif args.command == "assist-request":
             result = create_assistance_request(
                 _workspace(args.workspace),

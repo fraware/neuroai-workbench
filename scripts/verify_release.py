@@ -25,8 +25,15 @@ from neuroai_workbench.exporter import export_case_bundle
 from neuroai_workbench.migration import migrate_v4_1_2
 from neuroai_workbench.observatory import load_release, queue_release, summarize_release, validate_release
 from neuroai_workbench.programme_adapter import adapt_programme_assessment
-from neuroai_workbench.reports import render_assessment_markdown
+from neuroai_workbench.reports import render_assessment_markdown, render_gap_markdown
 from neuroai_workbench.resource_loader import read_resource_bytes
+from neuroai_workbench.review import (
+    create_review_assignment,
+    dispose_review_statement,
+    render_review_markdown,
+    submit_review_statement,
+    verify_review_records,
+)
 from neuroai_workbench.server import WorkbenchHTTPServer
 from neuroai_workbench.util import load_json, sha256_file, utc_now
 from neuroai_workbench.validation import EXPECTED_REQUIREMENTS, validate_assessment
@@ -77,11 +84,14 @@ def main() -> int:
         "docs/architecture/overview.md",
         "docs/governance/evidence-boundary.md",
         "docs/reference/observatory.md",
+        "docs/reference/review.md",
+        "docs/operations/cursor-engineering-handoff.md",
         "src/neuroai_workbench/cli.py",
         "src/neuroai_workbench/server.py",
         "src/neuroai_workbench/programme_adapter.py",
         "src/neuroai_workbench/assistance.py",
         "src/neuroai_workbench/reports.py",
+        "src/neuroai_workbench/review.py",
         "src/neuroai_workbench/static/index.html",
         "src/neuroai_workbench/resources/v4_2/UNIVERSAL_NEUROAI_ASSESSMENT_SCHEMA_v4.2.json",
         "examples/observatory/evidence_depth_release_v1.4.json",
@@ -187,10 +197,16 @@ def main() -> int:
     checked_in_prima = load_json(ROOT / "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json")
     check("PRIMA checked-in projection is deterministic", adapted.assessment == checked_in_prima, adapted.report)
     prima_markdown = render_assessment_markdown(checked_in_prima)
+    prima_gap_markdown = render_gap_markdown(checked_in_prima)
     check(
         "Deterministic report preserves decision boundary",
         "They do not establish evidentiary truth" in prima_markdown and "CL-4" in prima_markdown,
         len(prima_markdown),
+    )
+    check(
+        "Deterministic gap report preserves closure boundary",
+        "creates no disclosure duty" in prima_gap_markdown and "GAP-PR-001" in prima_gap_markdown,
+        len(prima_gap_markdown),
     )
 
     html_assets = [
@@ -332,6 +348,54 @@ def main() -> int:
             "Model-assistance lifecycle does not mutate assessment",
             sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json") == before_assistance,
             before_assistance,
+        )
+        before_review = sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json")
+        create_review_assignment(
+            workspace,
+            "PRIMA-VERIFY",
+            "domain-reviewer",
+            "DOMAIN_REVIEWER",
+            ["FINDING:NK-01-R01"],
+            actor="lead-assessor",
+        )
+        create_review_assignment(
+            workspace,
+            "PRIMA-VERIFY",
+            "lead-assessor",
+            "LEAD_ASSESSOR",
+            ["ASSESSMENT:*"],
+            actor="lead-assessor",
+        )
+        review_statement = submit_review_statement(
+            workspace,
+            "PRIMA-VERIFY",
+            "domain-reviewer",
+            "FINDING",
+            "NK-01-R01",
+            "DISAGREE",
+            "The wording should remain bounded to the assessed configuration.",
+            evidence_ids=["EV-PR-001"],
+        )["statement"]
+        dispose_review_statement(
+            workspace,
+            "PRIMA-VERIFY",
+            review_statement["statement_id"],
+            "PARTIALLY_ACCEPTED",
+            "Record the disagreement; any assessment edit remains a separate human action.",
+            actor="lead-assessor",
+        )
+        review_report = verify_review_records(workspace, "PRIMA-VERIFY")
+        check("Collaborative review record verifies", review_report["valid"], review_report)
+        check(
+            "Review lifecycle does not mutate assessment",
+            sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json") == before_review,
+            before_review,
+        )
+        review_markdown = render_review_markdown(workspace, "PRIMA-VERIFY")
+        check(
+            "Review report preserves disagreement and disposition",
+            "DISAGREE" in review_markdown and "PARTIALLY_ACCEPTED" in review_markdown,
+            len(review_markdown),
         )
 
     compile_result = subprocess.run(

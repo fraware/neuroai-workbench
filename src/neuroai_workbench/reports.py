@@ -215,3 +215,50 @@ def write_assessment_markdown(assessment: dict[str, Any], output: Path) -> dict[
         "bytes": len(text.encode("utf-8")),
         "boundary": "The report is a deterministic projection of the assessment record; it creates no new finding or authority.",
     }
+
+
+def render_gap_markdown(assessment: dict[str, Any]) -> str:
+    validation = validate_assessment(assessment).to_dict()
+    metadata = assessment.get("assessment_metadata", {})
+    gaps = assessment.get("gap_register", [])
+    findings = assessment.get("requirement_findings", [])
+    finding_by_gap: dict[str, list[str]] = defaultdict(list)
+    for finding in findings:
+        gap_id = finding.get("gap_id")
+        if gap_id:
+            finding_by_gap[str(gap_id)].append(str(finding.get("requirement_id")))
+    lines = [
+        f"# Evidence-gap and closure-request report: {_escape(metadata.get('assessment_id'))}",
+        "",
+        (
+            "> This deterministic report restates recorded gaps. It does not determine that evidence exists, "
+            "creates no disclosure duty, and does not change an assessment."
+        ),
+        "",
+        f"- Evidence cutoff: `{_escape(metadata.get('evidence_cutoff'))}`",
+        f"- Assessment SHA-256: `{sha256_bytes(canonical_json_bytes(assessment))}`",
+        f"- Mechanical validation: `{'VALID' if validation['valid'] else 'INVALID'}`",
+        f"- Recorded gaps: {len(gaps)}",
+        "",
+        "| Gap | Priority | State | Related requirements | Missing evidence | Holder | Closure criterion |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for gap in gaps:
+        gap_id = str(gap.get("gap_id"))
+        lines.append(
+            f"| {_escape(gap_id)} | {_escape(gap.get('priority'))} | {_escape(gap.get('state'))} | "
+            f"{_escape(', '.join(finding_by_gap.get(gap_id, [])))} | {_escape(gap.get('missing_evidence'))} | "
+            f"{_escape(gap.get('evidence_holder'))} | {_escape(gap.get('closure_criterion'))} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def write_gap_markdown(assessment: dict[str, Any], output: Path) -> dict[str, Any]:
+    text = render_gap_markdown(assessment)
+    atomic_write_bytes(output, text.encode("utf-8"))
+    return {
+        "output": str(output),
+        "sha256": sha256_bytes(text.encode("utf-8")),
+        "bytes": len(text.encode("utf-8")),
+        "boundary": "The gap report is a deterministic projection and creates no disclosure duty or assessment change.",
+    }
