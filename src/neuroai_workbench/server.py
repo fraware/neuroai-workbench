@@ -17,6 +17,7 @@ from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .resource_loader import read_resource_bytes
+from .util import ensure_identifier
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -140,7 +141,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 )
                 return
             if len(segments) >= 3 and segments[:2] == ["api", "cases"]:
-                case_id = segments[2]
+                case_id = ensure_identifier(segments[2], "case ID")
                 if len(segments) == 4 and segments[3] == "assessment":
                     self._send_json(self.workspace.load_case(case_id))
                     return
@@ -169,10 +170,12 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     return
                 if len(segments) == 4 and segments[3] == "bundle":
                     with tempfile.TemporaryDirectory(prefix="neuroai-bundle-") as tmp:
-                        output = Path(tmp) / f"{case_id}.zip"
+                        output = Path(tmp) / "controlled-bundle.zip"
                         export_case_bundle(self.workspace, case_id, output)
                         self._send_bytes(
-                            output.read_bytes(), "application/zip", filename=f"{case_id}-controlled-bundle.zip"
+                            output.read_bytes(),
+                            "application/zip",
+                            filename=f"{case_id}-controlled-bundle.zip",
                         )
                     return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
@@ -210,7 +213,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(imported, HTTPStatus.CREATED)
                 return
             if len(segments) >= 4 and segments[:2] == ["api", "cases"]:
-                case_id = segments[2]
+                case_id = ensure_identifier(segments[2], "case ID")
                 action = segments[3]
                 if action == "snapshot":
                     self._send_json(
@@ -247,7 +250,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 if not isinstance(assessment, dict):
                     raise ValueError("assessment must be a JSON object")
                 report = self.workspace.save_case(
-                    segments[2],
+                    ensure_identifier(segments[2], "case ID"),
                     assessment,
                     actor=str(body.get("actor", "web-user")),
                     require_valid=bool(body.get("require_valid", False)),
@@ -264,8 +267,9 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
             segments = self._segments()
             if len(segments) == 3 and segments[:2] == ["api", "cases"]:
                 body = self._read_json()
-                self.workspace.delete_case(segments[2], str(body.get("confirmation", "")))
-                self._send_json({"deleted": segments[2]})
+                case_id = ensure_identifier(segments[2], "case ID")
+                self.workspace.delete_case(case_id, str(body.get("confirmation", "")))
+                self._send_json({"deleted": case_id})
                 return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
         except Exception as exc:
