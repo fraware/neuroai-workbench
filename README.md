@@ -1,32 +1,28 @@
+
 # NeuroAI Evidence and Decision Workbench
 
-An offline-first, open-source reference implementation for the **v4.2 Pilot-Calibrated Universal NeuroAI Assessment Instrument**.
+An offline-first, open-source reference implementation for the **v4.2 Pilot-Calibrated Universal NeuroAI Assessment Instrument** and its controlled observatory workflow.
 
-The workbench helps assessment teams preserve exact system boundaries, evidence states, requirement findings, prohibited inferences, decision authority, reopening triggers, and controlled provenance across NeuroAI cases. It is designed for research, regulatory preparation, institutional review, public-interest auditing, participant-governance workflows, and capacity building.
+The workbench preserves exact system boundaries, typed evidence states, requirement findings, prohibited inferences, decision authority, reopening triggers, and controlled provenance across NeuroAI cases. It is intended for public-interest assessment, research review, regulatory preparation, institutional pilots, participant-governance workflows, and reproducible evidence operations.
 
 > **Controlled boundary**
 >
-> Passing schema checks, semantic checks, digest checks, event-chain checks, or software tests does **not** establish scientific truth, legal authorization, ethical acceptability, clinical safety, deployment readiness, or system conformance. Those conclusions require evidence and a competent authority.
+> Schema validity, semantic validity, file-digest integrity, event-chain integrity, or passing software tests do not establish scientific truth, legal authorization, ethical acceptability, clinical safety, deployment readiness, or system conformance. Those conclusions require substantive evidence and a named competent authority.
 
-## Why this exists
+## Capabilities
 
-NeuroAI assessments often collapse distinct states into a single label. A system can demonstrate a bounded capability without satisfying deployment requirements. A competent authority can authorize an exact configuration without establishing every current-build, cybersecurity, participant-governance, equity, or continuity control. Public evidence can be incomplete without proving nonconformance.
-
-The workbench preserves these distinctions in executable workflows.
-
-## Implemented capabilities
-
-- Full JSON Schema Draft 2020-12 validation for the v4.2 assessment model.
-- Semantic checks for all 78 normative requirement IDs, cross-register references, decision separation, evidence-freeze controls, and controlled findings.
-- Local workspace and multi-case management.
-- Local evidence-byte preservation with SHA-256 verification.
-- Hash-chained append-only event logs.
-- Controlled snapshots and case ZIP bundles.
-- Additive migration from v4.1.2 to v4.2.
-- Cross-case comparison that preserves source findings.
-- Browser interface for summaries, requirements, evidence, decisions, JSON editing, validation, snapshots, exports, and event review.
-- CLI suitable for CI, reproducibility and institutional automation.
-- Three migrated reference cases: Brain2Qwerty, FDA adaptive DBS, and BrainGate2 T15.
+- JSON Schema Draft 2020-12 and semantic validation for the v4.2 assessment model.
+- Exact coverage of all 78 normative requirement identifiers.
+- Local multi-case workspaces with atomic JSON writes.
+- Content-addressed evidence preservation and SHA-256 verification.
+- Append-only hash-chained event records.
+- Controlled snapshots and case bundles.
+- Additive v4.1.2-to-v4.2 migration that preserves historical findings.
+- Cross-case comparison without generating new substantive findings.
+- Offline browser interface with no remote assets or analytics.
+- CLI workflows suitable for CI and institutional automation.
+- Controlled landscape-release import, validation, summary, and unresolved queues.
+- Three public reference assessments covering Brain2Qwerty, FDA adaptive DBS, and BrainGate2 T15.
 
 ## Quick start
 
@@ -43,13 +39,13 @@ neuroai-workbench serve workspaces/demo
 
 Open `http://127.0.0.1:8765`.
 
-The server binds to localhost by default. It has no user authentication or TLS and must not be exposed directly to untrusted networks.
+The reference server binds to localhost by default. It has no authentication, authorization, multi-tenant isolation, or TLS and must not be exposed directly to an untrusted network.
 
-## Import a completed v4.2 case
+## Import a completed assessment
 
 ```bash
 neuroai-workbench case-import workspaces/demo \
-  examples/PILOT-02_FDA_Adaptive_DBS_v4.2.json
+  examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json
 
 neuroai-workbench validate \
   --workspace workspaces/demo \
@@ -67,46 +63,29 @@ neuroai-workbench evidence-add workspaces/demo CASE-001 report.pdf \
 neuroai-workbench evidence-verify workspaces/demo CASE-001
 ```
 
-File registration establishes byte identity and controlled custody inside the workspace. It does not establish the file’s authenticity, relevance, methodological quality, or decision weight.
+Byte registration establishes local identity and custody. It does not establish authenticity, relevance, methodological adequacy, or decision weight.
 
-## Controlled case bundle
+## Controlled bundle
 
 ```bash
 neuroai-workbench snapshot workspaces/demo CASE-001 --label evidence-freeze
-neuroai-workbench bundle workspaces/demo CASE-001 exports/CASE-001.zip
+neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 ```
 
-A bundle contains the assessment, evidence index and bytes, event log, snapshots, and a machine-generated verification manifest.
+## Engineering entry points
 
-## Architecture
-
-The workbench uses a dependency-minimal architecture:
-
-- Python 3.10 or later.
-- `jsonschema` for Draft 2020-12 validation.
-- Python’s `ThreadingHTTPServer` for the local application.
-- Vanilla HTML, CSS and JavaScript with no remote assets.
-- Filesystem-backed controlled workspaces.
-
-See [`docs/architecture.md`](docs/architecture.md), [`THREAT_MODEL.md`](THREAT_MODEL.md), and [`DATA_GOVERNANCE.md`](DATA_GOVERNANCE.md).
+- [`AGENTS.md`](AGENTS.md) defines mandatory invariants for humans and coding agents.
+- [Architecture](docs/architecture/overview.md)
+- [Evidence and decision boundary](docs/governance/evidence-boundary.md)
+- [Threat model](THREAT_MODEL.md)
+- [Data governance](DATA_GOVERNANCE.md)
+- [Contribution protocol](CONTRIBUTING.md)
+- [Release process](docs/operations/release-process.md)
 
 ## Repository status
 
-`v0.2.0` is a release candidate for public technical review. It is suitable for controlled local pilots and reproducible assessment workflows. It has not received UNESCO endorsement, regulator approval, clinical validation, penetration testing, or independent production-security review.
-
-## Governance and contribution
-
-- [Contribution guide](CONTRIBUTING.md)
-- [Governance](GOVERNANCE.md)
-- [Security policy](SECURITY.md)
-- [Code of conduct](CODE_OF_CONDUCT.md)
-- [Roadmap](ROADMAP.md)
+`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
 
 ## License
 
-Apache License 2.0. The incorporated v4.2 assessment resources retain their controlled provenance and are distributed here as part of the reference implementation. See `NOTICE` and `docs/evidence-boundary.md`.
-
-
-## Observatory integration
-
-Version 0.2.0 adds controlled landscape-release import, validation, summary and unresolved-queue commands. See `docs/observatory.md`. Observatory mechanics do not establish scientific validity, authorization, deployment approval or conformance.
+Apache License 2.0. Incorporated v4.2 resources retain their controlled provenance. See [`NOTICE`](NOTICE) and the [evidence boundary](docs/governance/evidence-boundary.md).

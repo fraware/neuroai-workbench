@@ -1,24 +1,127 @@
+
 name: CI
+
 on:
   push:
+    branches: [main]
   pull_request:
+  merge_group:
+
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .[dev]
+      - run: python -m ruff format --check .
+      - run: python -m ruff check .
+      - run: python -m mypy src/neuroai_workbench
+      - run: python -m compileall -q src scripts
+      - run: python scripts/check_repository_hygiene.py
+      - run: python scripts/check_version_consistency.py
+
+  tests:
+    name: tests-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e .[dev]
-      - run: python -m compileall -q src
-      - run: python -m pytest
-      - run: python scripts/verify_release.py --ci
+      - run: python -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+      - if: matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: error
+
+  package:
+    name: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - run: python -m pip install --force-reinstall dist/*.whl
+      - run: neuroai-workbench --version
+      - run: neuroai-workbench doctor
+      - run: python scripts/check_package_contents.py dist/*.whl
+      - uses: actions/upload-artifact@v7
+        with:
+          name: python-distributions
+          path: dist/
+          if-no-files-found: error
+
+  release-verification:
+    name: release-verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .[dev]
+      - run: mkdir -p artifacts
+      - run: python scripts/verify_release.py --ci --output artifacts/RELEASE_VERIFICATION.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-verification
+          path: artifacts/RELEASE_VERIFICATION.json
+          if-no-files-found: error
+
+  container:
+    name: container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build --tag neuroai-workbench:ci .
+      - run: mkdir -p "$RUNNER_TEMP/workspace" && chmod 0777 "$RUNNER_TEMP/workspace"
+      - run: |
+          docker run -d --rm --name neuroai-workbench-ci \
+            -p 127.0.0.1:8765:8765 \
+            -v "$RUNNER_TEMP/workspace:/workspace" \
+            neuroai-workbench:ci
+      - run: |
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:8765/api/health && exit 0
+            sleep 1
+          done
+          docker logs neuroai-workbench-ci
+          exit 1
+      - run: curl --fail --silent http://127.0.0.1:8765/ | grep -q "NeuroAI Evidence and Decision Workbench"
+      - if: always()
+        run: docker stop neuroai-workbench-ci || true

@@ -1,3 +1,4 @@
+
 # Contributing
 
 ## Development setup
@@ -6,23 +7,29 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .[dev]
-pytest
+make quality
+make test
 ```
 
-## Pull-request requirements
+Read `AGENTS.md` and the applicable `.cursor/rules/` files before changing code or controlled resources.
 
+## Pull-request contract
+
+- Link one bounded issue.
 - State the exact problem and affected controlled objects.
+- Identify whether schema, migration, evidence, authority, security, or normative semantics changed.
 - Add tests for every behavior change.
-- Preserve all 78 requirement IDs unless the proposal is explicitly a major-version instrument change.
-- Provide migration and regression fixtures for schema changes.
+- Preserve all 78 requirement identifiers unless the proposal is explicitly a major instrument change.
+- Provide migration and regression fixtures for model changes.
 - Update the threat model when the attack surface changes.
-- Do not add remote analytics, telemetry or third-party assets to the offline interface.
+- Do not add remote analytics, telemetry, model calls, or third-party assets to the offline interface.
 - Do not describe validation as certification or conformance.
+- Do not commit generated artifacts or protected information.
 
-## Commit style
+## Commit and branch style
 
-Use imperative, scoped commits such as `validation: reject dangling denominator links`.
+Use `agent/<bounded-objective>` for agent branches. Use imperative, scoped commits such as `workspace: centralize version metadata`.
 
 ## Sensitive material
 
-Never commit private neural data, participant records, confidential regulatory files, security findings or credentials. Use synthetic fixtures and controlled metadata.
+Never commit private neural data, participant records, confidential regulatory files, protected security findings, credentials, tokens, keys, or decryption material. Use synthetic or explicitly public fixtures.

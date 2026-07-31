@@ -3,20 +3,21 @@ from __future__ import annotations
 import json
 import logging
 import mimetypes
-import os
 import tempfile
 import urllib.parse
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
+from . import __version__
 from .events import load_events, verify_chain
+from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .resource_loader import read_resource_bytes
+from .util import ensure_identifier
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -34,11 +35,14 @@ class WorkbenchHTTPServer(ThreadingHTTPServer):
 
 
 class WorkbenchRequestHandler(BaseHTTPRequestHandler):
-    server_version = "NeuroAIWorkbench/0.1.0"
+    server_version = f"NeuroAIWorkbench/{__version__}"
 
     @property
     def workspace(self) -> Workspace:
-        return self.server.workspace  # type: ignore[attr-defined]
+        server = self.server
+        if not isinstance(server, WorkbenchHTTPServer):
+            raise TypeError("Workbench handler requires WorkbenchHTTPServer")
+        return server.workspace
 
     def log_message(self, fmt: str, *args: Any) -> None:
         safe = " ".join(str(arg).replace("\n", " ").replace("\r", " ") for arg in args)
@@ -119,21 +123,25 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 self._static("/".join(segments))
                 return
             if segments == ["api", "health"]:
-                self._send_json({
-                    "status": "ok",
-                    "version": "0.1.0",
-                    "workspace": str(self.workspace.root),
-                    "bind_boundary": "This development server is intended for local trusted use only.",
-                })
+                self._send_json(
+                    {
+                        "status": "ok",
+                        "version": __version__,
+                        "workspace": str(self.workspace.root),
+                        "bind_boundary": "This development server is intended for local trusted use only.",
+                    }
+                )
                 return
             if segments == ["api", "cases"]:
                 self._send_json({"cases": self.workspace.list_cases()})
                 return
             if segments == ["api", "resources", "kernel"]:
-                self._send_bytes(read_resource_bytes("KERNEL_REQUIREMENTS_v4.2.json"), "application/json; charset=utf-8")
+                self._send_bytes(
+                    read_resource_bytes("KERNEL_REQUIREMENTS_v4.2.json"), "application/json; charset=utf-8"
+                )
                 return
             if len(segments) >= 3 and segments[:2] == ["api", "cases"]:
-                case_id = segments[2]
+                case_id = ensure_identifier(segments[2], "case ID")
                 if len(segments) == 4 and segments[3] == "assessment":
                     self._send_json(self.workspace.load_case(case_id))
                     return
@@ -145,22 +153,30 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     return
                 if len(segments) == 4 and segments[3] == "events":
                     case_path = self.workspace.case_path(case_id)
-                    self._send_json({
-                        "verification": verify_chain(case_path / "events.jsonl"),
-                        "events": load_events(case_path / "events.jsonl"),
-                    })
+                    self._send_json(
+                        {
+                            "verification": verify_chain(case_path / "events.jsonl"),
+                            "events": load_events(case_path / "events.jsonl"),
+                        }
+                    )
                     return
                 if len(segments) == 4 and segments[3] == "evidence":
-                    self._send_json({
-                        "objects": list_evidence_files(self.workspace, case_id),
-                        "verification": verify_evidence_files(self.workspace, case_id),
-                    })
+                    self._send_json(
+                        {
+                            "objects": list_evidence_files(self.workspace, case_id),
+                            "verification": verify_evidence_files(self.workspace, case_id),
+                        }
+                    )
                     return
                 if len(segments) == 4 and segments[3] == "bundle":
                     with tempfile.TemporaryDirectory(prefix="neuroai-bundle-") as tmp:
-                        output = Path(tmp) / f"{case_id}.zip"
-                        result = export_case_bundle(self.workspace, case_id, output)
-                        self._send_bytes(output.read_bytes(), "application/zip", filename=f"{case_id}-controlled-bundle.zip")
+                        output = Path(tmp) / "controlled-bundle.zip"
+                        export_case_bundle(self.workspace, case_id, output)
+                        self._send_bytes(
+                            output.read_bytes(),
+                            "application/zip",
+                            filename=f"{case_id}-controlled-bundle.zip",
+                        )
                     return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
         except Exception as exc:
@@ -180,24 +196,31 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(assessment, HTTPStatus.CREATED)
                 return
             if segments == ["api", "import"]:
-                assessment = body.get("assessment")
-                if not isinstance(assessment, dict):
+                assessment_value: Any = body.get("assessment")
+                if not isinstance(assessment_value, dict):
                     raise ValueError("assessment must be a JSON object")
+                assessment = cast(dict[str, Any], assessment_value)
                 case_id = str(body.get("case_id") or assessment.get("assessment_metadata", {}).get("assessment_id", ""))
                 with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
                     json.dump(assessment, handle, ensure_ascii=False)
                     temp_path = Path(handle.name)
                 try:
-                    imported = self.workspace.import_case(temp_path, case_id=case_id, actor=str(body.get("actor", "web-user")))
+                    imported = self.workspace.import_case(
+                        temp_path, case_id=case_id, actor=str(body.get("actor", "web-user"))
+                    )
                 finally:
                     temp_path.unlink(missing_ok=True)
                 self._send_json(imported, HTTPStatus.CREATED)
                 return
             if len(segments) >= 4 and segments[:2] == ["api", "cases"]:
-                case_id = segments[2]
+                case_id = ensure_identifier(segments[2], "case ID")
                 action = segments[3]
                 if action == "snapshot":
-                    self._send_json(self.workspace.snapshot(case_id, actor=str(body.get("actor", "web-user")), label=str(body.get("label", "snapshot"))))
+                    self._send_json(
+                        self.workspace.snapshot(
+                            case_id, actor=str(body.get("actor", "web-user")), label=str(body.get("label", "snapshot"))
+                        )
+                    )
                     return
                 if action == "evidence":
                     record = add_evidence_base64(
@@ -227,7 +250,8 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 if not isinstance(assessment, dict):
                     raise ValueError("assessment must be a JSON object")
                 report = self.workspace.save_case(
-                    segments[2], assessment,
+                    ensure_identifier(segments[2], "case ID"),
+                    assessment,
                     actor=str(body.get("actor", "web-user")),
                     require_valid=bool(body.get("require_valid", False)),
                 )
@@ -243,8 +267,9 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
             segments = self._segments()
             if len(segments) == 3 and segments[:2] == ["api", "cases"]:
                 body = self._read_json()
-                self.workspace.delete_case(segments[2], str(body.get("confirmation", "")))
-                self._send_json({"deleted": segments[2]})
+                case_id = ensure_identifier(segments[2], "case ID")
+                self.workspace.delete_case(case_id, str(body.get("confirmation", "")))
+                self._send_json({"deleted": case_id})
                 return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
         except Exception as exc:
@@ -252,10 +277,22 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
             self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
 
 
-def serve(workspace: Workspace, host: str = "127.0.0.1", port: int = 8765) -> None:
-    if host not in {"127.0.0.1", "localhost", "::1"}:
+def serve(
+    workspace: Workspace,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    *,
+    allow_network: bool = False,
+) -> None:
+    loopback_hosts = {"127.0.0.1", "localhost", "::1"}
+    if host not in loopback_hosts and not allow_network:
+        raise ValueError(
+            "Refusing non-loopback binding without explicit --allow-network. "
+            "The reference server has no authentication or TLS."
+        )
+    if host not in loopback_hosts:
         LOGGER.warning(
-            "Binding to %s exposes a server with no authentication or TLS. Use only inside a separately secured environment.",
+            "Non-loopback binding enabled explicitly for %s. Use only inside a separately secured environment.",
             host,
         )
     server = WorkbenchHTTPServer((host, port), workspace)

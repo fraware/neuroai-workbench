@@ -2,8 +2,8 @@ cff-version: 1.2.0
 title: NeuroAI Evidence and Decision Workbench
 message: Please cite this software and the applicable v4.2 instrument release.
 type: software
-version: 0.1.0
-date-released: 2026-07-28
+version: 0.2.1
+date-released: 2026-07-30
 license: Apache-2.0
 repository-code: https://github.com/fraware/neuroai-workbench
 abstract: Offline-first reference implementation for controlled evidence, requirement and decision workflows under the v4.2 universal NeuroAI assessment instrument.

@@ -1,12 +1,20 @@
+
 version: 2
 updates:
   - package-ecosystem: pip
-    directory: /
+    directory: "/"
     schedule:
-      interval: monthly
+      interval: weekly
+      day: monday
     open-pull-requests-limit: 5
+    labels: [dependencies, python]
+    groups:
+      development-tools:
+        dependency-type: development
   - package-ecosystem: github-actions
-    directory: /
+    directory: "/"
     schedule:
-      interval: monthly
+      interval: weekly
+      day: monday
     open-pull-requests-limit: 5
+    labels: [dependencies, github-actions]

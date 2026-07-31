@@ -9,15 +9,16 @@ from neuroai_workbench.util import sha256_file
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("root", type=Path, nargs="?", default=Path.cwd())
-    parser.add_argument("--output", type=Path, default=Path("SHA256SUMS.txt"))
+    parser.add_argument("root", type=Path)
+    parser.add_argument("output", type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
-    output = args.output if args.output.is_absolute() else root / args.output
-    rows = []
+    output = args.output.resolve()
+    rows: list[str] = []
     for path in sorted(root.rglob("*")):
-        if path.is_file() and path != output and ".git" not in path.parts:
+        if path.is_file() and path.resolve() != output and ".git" not in path.parts:
             rows.append(f"{sha256_file(path)}  {path.relative_to(root).as_posix()}")
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(rows) + "\n", encoding="utf-8")
     print(f"{len(rows)} files -> {output}")
     return 0

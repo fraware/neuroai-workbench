@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import copy
 import json
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
+from . import __version__
 from .errors import WorkspaceError
 from .events import append_event, verify_chain
 from .resource_loader import read_resource_bytes
@@ -23,7 +23,7 @@ class Workspace:
         self.cases_dir = self.root / "cases"
 
     @classmethod
-    def initialize(cls, root: Path, name: str = "NeuroAI assessment workspace") -> "Workspace":
+    def initialize(cls, root: Path, name: str = "NeuroAI assessment workspace") -> Workspace:
         root = root.resolve()
         root.mkdir(parents=True, exist_ok=True)
         workspace = cls(root)
@@ -32,18 +32,21 @@ class Workspace:
         (root / "cases").mkdir()
         (root / "exports").mkdir()
         (root / "tmp").mkdir()
-        atomic_write_json(workspace.meta_path, {
-            "workspace_version": "1",
-            "workbench_version": "0.1.0",
-            "name": name,
-            "created_at": utc_now(),
-            "instrument_version": "v4.2",
-            "boundary": "This workspace stores evidence and assessment records. Software state does not establish substantive conformance.",
-        })
+        atomic_write_json(
+            workspace.meta_path,
+            {
+                "workspace_version": "1",
+                "workbench_version": __version__,
+                "name": name,
+                "created_at": utc_now(),
+                "instrument_version": "v4.2",
+                "boundary": "This workspace stores evidence and assessment records. Software state does not establish substantive conformance.",
+            },
+        )
         return workspace
 
     @classmethod
-    def open(cls, root: Path) -> "Workspace":
+    def open(cls, root: Path) -> Workspace:
         workspace = cls(root)
         if not workspace.meta_path.is_file():
             raise WorkspaceError(f"No {WORKSPACE_FILE} found at {root}")
@@ -54,7 +57,7 @@ class Workspace:
 
     @property
     def metadata(self) -> dict[str, Any]:
-        return load_json(self.meta_path)
+        return cast(dict[str, Any], load_json(self.meta_path))
 
     def case_path(self, case_id: str) -> Path:
         ensure_identifier(case_id, "case ID")
@@ -73,19 +76,21 @@ class Workspace:
                 meta = assessment.get("assessment_metadata", {})
                 system = assessment.get("system_profile", {})
                 report = validate_assessment(assessment)
-                rows.append({
-                    "case_id": path.name,
-                    "assessment_id": meta.get("assessment_id"),
-                    "title": meta.get("title"),
-                    "status": meta.get("assessment_status"),
-                    "system_name": system.get("system_name"),
-                    "configuration_id": system.get("configuration_id"),
-                    "valid": report.valid,
-                    "schema_errors": len(report.schema_issues),
-                    "semantic_errors": len(report.semantic_issues),
-                    "p0_blockers": report.counts.get("p0_blockers", 0),
-                    "assessment_sha256": sha256_file(assessment_path),
-                })
+                rows.append(
+                    {
+                        "case_id": path.name,
+                        "assessment_id": meta.get("assessment_id"),
+                        "title": meta.get("title"),
+                        "status": meta.get("assessment_status"),
+                        "system_name": system.get("system_name"),
+                        "configuration_id": system.get("configuration_id"),
+                        "valid": report.valid,
+                        "schema_errors": len(report.schema_issues),
+                        "semantic_errors": len(report.semantic_issues),
+                        "p0_blockers": report.counts.get("p0_blockers", 0),
+                        "assessment_sha256": sha256_file(assessment_path),
+                    }
+                )
             except Exception as exc:  # preserve discoverability of a damaged case
                 rows.append({"case_id": path.name, "valid": False, "error": str(exc)})
         return rows
@@ -103,14 +108,19 @@ class Workspace:
         assessment["system_profile"]["system_id"] = f"SYSTEM-{case_id}"
         atomic_write_json(path / CASE_FILE, assessment)
         atomic_write_json(path / "evidence/index.json", {"version": "1", "objects": []})
-        append_event(path / "events.jsonl", "CASE_CREATED", actor, {
-            "case_id": case_id,
-            "assessment_sha256": sha256_file(path / CASE_FILE),
-        })
-        return assessment
+        append_event(
+            path / "events.jsonl",
+            "CASE_CREATED",
+            actor,
+            {
+                "case_id": case_id,
+                "assessment_sha256": sha256_file(path / CASE_FILE),
+            },
+        )
+        return cast(dict[str, Any], assessment)
 
     def import_case(self, source: Path, case_id: str | None = None, actor: str = "local-user") -> dict[str, Any]:
-        assessment = load_json(source)
+        assessment = cast(dict[str, Any], load_json(source))
         report = validate_assessment(assessment)
         if not report.valid:
             raise WorkspaceError(f"Assessment is invalid: {json.dumps(report.to_dict(), ensure_ascii=False)}")
@@ -123,20 +133,27 @@ class Workspace:
         (path / "exports").mkdir()
         atomic_write_json(path / CASE_FILE, assessment)
         atomic_write_json(path / "evidence/index.json", {"version": "1", "objects": []})
-        append_event(path / "events.jsonl", "CASE_IMPORTED", actor, {
-            "case_id": resolved_id,
-            "source_name": source.name,
-            "assessment_sha256": sha256_file(path / CASE_FILE),
-        })
+        append_event(
+            path / "events.jsonl",
+            "CASE_IMPORTED",
+            actor,
+            {
+                "case_id": resolved_id,
+                "source_name": source.name,
+                "assessment_sha256": sha256_file(path / CASE_FILE),
+            },
+        )
         return assessment
 
     def load_case(self, case_id: str) -> dict[str, Any]:
         path = self.case_path(case_id) / CASE_FILE
         if not path.is_file():
             raise WorkspaceError(f"Unknown case {case_id!r}")
-        return load_json(path)
+        return cast(dict[str, Any], load_json(path))
 
-    def save_case(self, case_id: str, assessment: dict[str, Any], actor: str = "local-user", require_valid: bool = False) -> dict[str, Any]:
+    def save_case(
+        self, case_id: str, assessment: dict[str, Any], actor: str = "local-user", require_valid: bool = False
+    ) -> dict[str, Any]:
         path = self.case_path(case_id)
         if not path.is_dir():
             raise WorkspaceError(f"Unknown case {case_id!r}")
@@ -147,13 +164,18 @@ class Workspace:
         before = sha256_file(target) if target.exists() else None
         atomic_write_json(target, assessment)
         after = sha256_file(target)
-        append_event(path / "events.jsonl", "ASSESSMENT_SAVED", actor, {
-            "before_sha256": before,
-            "after_sha256": after,
-            "valid": report.valid,
-            "schema_errors": len(report.schema_issues),
-            "semantic_errors": len(report.semantic_issues),
-        })
+        append_event(
+            path / "events.jsonl",
+            "ASSESSMENT_SAVED",
+            actor,
+            {
+                "before_sha256": before,
+                "after_sha256": after,
+                "valid": report.valid,
+                "schema_errors": len(report.schema_issues),
+                "semantic_errors": len(report.semantic_issues),
+            },
+        )
         return report.to_dict()
 
     def snapshot(self, case_id: str, actor: str = "local-user", label: str = "snapshot") -> dict[str, Any]:

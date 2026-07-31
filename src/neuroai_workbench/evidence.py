@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import base64
 import mimetypes
-import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from .events import append_event
-from .util import atomic_write_json, ensure_identifier, load_json, sha256_bytes, sha256_file, utc_now
-from .workspace import CASE_FILE, Workspace
+from .util import atomic_write_json, load_json, sha256_bytes, sha256_file, utc_now
+from .workspace import Workspace
 
 
 def _index_path(case_path: Path) -> Path:
@@ -17,7 +16,10 @@ def _index_path(case_path: Path) -> Path:
 
 def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, Any]]:
     index = load_json(_index_path(workspace.case_path(case_id)))
-    return index.get("objects", [])
+    objects = index.get("objects", [])
+    if not isinstance(objects, list):
+        return []
+    return cast(list[dict[str, Any]], objects)
 
 
 def _next_evidence_id(assessment: dict[str, Any]) -> str:
@@ -76,34 +78,38 @@ def add_evidence_bytes(
 
     if link_to_assessment:
         config = assessment.get("system_profile", {}).get("configuration_id", "UNRESOLVED")
-        assessment.setdefault("evidence_register", []).append({
-            "evidence_id": evidence_id,
-            "evidence_type": evidence_type,
-            "title": title,
-            "source": source,
-            "url_or_path": f"evidence/objects/{stored_name}",
-            "identifiers": {"sha256": digest, "original_filename": safe_name},
-            "evidence_state": "CONTROLLED DISCOVERY RECORD",
-            "system_and_version": config,
-            "population": "UNRESOLVED",
-            "function": "UNRESOLVED",
-            "endpoint": "UNRESOLVED",
-            "observation_window": "UNRESOLVED",
-            "controls_or_comparators": "UNRESOLVED",
-            "result_or_record_content": "File registered; substantive appraisal not executed.",
-            "publication_or_record_state": "LOCAL CONTROLLED RECORD",
-            "source_retrieval_state": "LOCAL BYTES PRESERVED",
-            "primary_or_secondary": "UNKNOWN",
-            "strongest_supported_claim": "The named file bytes were registered with the stated SHA-256 digest.",
-            "prohibited_inferences": ["File registration does not establish substantive validity, relevance, authenticity, or conformance."],
-            "limitations": ["Substantive appraisal and provenance verification remain unresolved."],
-            "checksum": digest,
-            "access_conditions": "Local workspace access controls apply.",
-            "access_state": "CONTROLLED PUBLIC EXTRACT",
-            "known_holder": actor,
-            "retrieval_or_authorization_required": "No additional retrieval is required for the preserved bytes; appraisal remains required.",
-            "reproducibility_tier": "R0 NONE",
-        })
+        assessment.setdefault("evidence_register", []).append(
+            {
+                "evidence_id": evidence_id,
+                "evidence_type": evidence_type,
+                "title": title,
+                "source": source,
+                "url_or_path": f"evidence/objects/{stored_name}",
+                "identifiers": {"sha256": digest, "original_filename": safe_name},
+                "evidence_state": "CONTROLLED DISCOVERY RECORD",
+                "system_and_version": config,
+                "population": "UNRESOLVED",
+                "function": "UNRESOLVED",
+                "endpoint": "UNRESOLVED",
+                "observation_window": "UNRESOLVED",
+                "controls_or_comparators": "UNRESOLVED",
+                "result_or_record_content": "File registered; substantive appraisal not executed.",
+                "publication_or_record_state": "LOCAL CONTROLLED RECORD",
+                "source_retrieval_state": "LOCAL BYTES PRESERVED",
+                "primary_or_secondary": "UNKNOWN",
+                "strongest_supported_claim": "The named file bytes were registered with the stated SHA-256 digest.",
+                "prohibited_inferences": [
+                    "File registration does not establish substantive validity, relevance, authenticity, or conformance."
+                ],
+                "limitations": ["Substantive appraisal and provenance verification remain unresolved."],
+                "checksum": digest,
+                "access_conditions": "Local workspace access controls apply.",
+                "access_state": "CONTROLLED PUBLIC EXTRACT",
+                "known_holder": actor,
+                "retrieval_or_authorization_required": "No additional retrieval is required for the preserved bytes; appraisal remains required.",
+                "reproducibility_tier": "R0 NONE",
+            }
+        )
         workspace.save_case(case_id, assessment, actor=actor)
 
     append_event(case / "events.jsonl", "EVIDENCE_ADDED", actor, record)
@@ -114,7 +120,9 @@ def add_evidence_file(workspace: Workspace, case_id: str, path: Path, **kwargs: 
     return add_evidence_bytes(workspace, case_id, path.name, path.read_bytes(), **kwargs)
 
 
-def add_evidence_base64(workspace: Workspace, case_id: str, filename: str, content_b64: str, **kwargs: Any) -> dict[str, Any]:
+def add_evidence_base64(
+    workspace: Workspace, case_id: str, filename: str, content_b64: str, **kwargs: Any
+) -> dict[str, Any]:
     try:
         data = base64.b64decode(content_b64, validate=True)
     except Exception as exc:
@@ -130,14 +138,16 @@ def verify_evidence_files(workspace: Workspace, case_id: str) -> dict[str, Any]:
         path = case / "evidence/objects" / record["stored_filename"]
         exists = path.is_file()
         actual = sha256_file(path) if exists else None
-        results.append({
-            "evidence_id": record["evidence_id"],
-            "path": str(path.relative_to(case)),
-            "exists": exists,
-            "expected_sha256": record["sha256"],
-            "actual_sha256": actual,
-            "valid": exists and actual == record["sha256"],
-        })
+        results.append(
+            {
+                "evidence_id": record["evidence_id"],
+                "path": str(path.relative_to(case)),
+                "exists": exists,
+                "expected_sha256": record["sha256"],
+                "actual_sha256": actual,
+                "valid": exists and actual == record["sha256"],
+            }
+        )
     return {
         "valid": all(row["valid"] for row in results),
         "object_count": len(results),

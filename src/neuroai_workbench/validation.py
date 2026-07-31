@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -7,7 +8,6 @@ from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .resource_loader import read_resource_bytes
-import json
 
 
 @dataclass(frozen=True)
@@ -67,10 +67,14 @@ def semantic_issues(instance: dict[str, Any]) -> tuple[list[Issue], list[Issue]]
     findings = instance.get("requirement_findings", [])
     requirement_ids = [str(row.get("requirement_id", "")) for row in findings]
     if len(requirement_ids) != 78 or set(requirement_ids) != EXPECTED_REQUIREMENTS or _duplicates(requirement_ids):
-        errors.append(Issue(
-            "ERROR", "REQ-COVERAGE", "/requirement_findings",
-            "requirement_findings must contain every one of the 78 v4.2 requirement IDs exactly once.",
-        ))
+        errors.append(
+            Issue(
+                "ERROR",
+                "REQ-COVERAGE",
+                "/requirement_findings",
+                "requirement_findings must contain every one of the 78 v4.2 requirement IDs exactly once.",
+            )
+        )
 
     registers: dict[str, tuple[list[dict[str, Any]], str]] = {
         "claim": (instance.get("claim_register", []), "claim_id"),
@@ -97,28 +101,72 @@ def semantic_issues(instance: dict[str, Any]) -> tuple[list[Issue], list[Issue]]
     for index, claim in enumerate(instance.get("claim_register", [])):
         missing = set(claim.get("evidence_ids", [])) - evidence
         if missing:
-            errors.append(Issue("ERROR", "DANGLING-EVIDENCE", f"/claim_register/{index}/evidence_ids", f"Unknown evidence IDs: {sorted(missing)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-EVIDENCE",
+                    f"/claim_register/{index}/evidence_ids",
+                    f"Unknown evidence IDs: {sorted(missing)}",
+                )
+            )
 
     for index, endpoint in enumerate(instance.get("endpoint_register", [])):
         missing_evidence = set(endpoint.get("source_evidence_ids", [])) - evidence
         missing_denominators = set(endpoint.get("denominator_ids", [])) - denominators
         missing_epochs = set(endpoint.get("configuration_epoch_ids", [])) - epochs
         if missing_evidence:
-            errors.append(Issue("ERROR", "DANGLING-EVIDENCE", f"/endpoint_register/{index}/source_evidence_ids", f"Unknown evidence IDs: {sorted(missing_evidence)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-EVIDENCE",
+                    f"/endpoint_register/{index}/source_evidence_ids",
+                    f"Unknown evidence IDs: {sorted(missing_evidence)}",
+                )
+            )
         if missing_denominators:
-            errors.append(Issue("ERROR", "DANGLING-DENOMINATOR", f"/endpoint_register/{index}/denominator_ids", f"Unknown denominator IDs: {sorted(missing_denominators)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-DENOMINATOR",
+                    f"/endpoint_register/{index}/denominator_ids",
+                    f"Unknown denominator IDs: {sorted(missing_denominators)}",
+                )
+            )
         if missing_epochs:
-            errors.append(Issue("ERROR", "DANGLING-EPOCH", f"/endpoint_register/{index}/configuration_epoch_ids", f"Unknown epoch IDs: {sorted(missing_epochs)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-EPOCH",
+                    f"/endpoint_register/{index}/configuration_epoch_ids",
+                    f"Unknown epoch IDs: {sorted(missing_epochs)}",
+                )
+            )
 
     for index, finding in enumerate(findings):
         path = f"/requirement_findings/{index}"
         missing = set(finding.get("evidence_ids", [])) - evidence
         if missing:
-            errors.append(Issue("ERROR", "DANGLING-EVIDENCE", path + "/evidence_ids", f"Unknown evidence IDs: {sorted(missing)}"))
-        if finding.get("applicability") == "NOT APPLICABLE WITH RATIONALE" and not str(finding.get("applicability_rationale", "")).strip():
-            errors.append(Issue("ERROR", "MISSING-RATIONALE", path + "/applicability_rationale", "Inapplicability requires a non-empty rationale."))
+            errors.append(
+                Issue("ERROR", "DANGLING-EVIDENCE", path + "/evidence_ids", f"Unknown evidence IDs: {sorted(missing)}")
+            )
+        if (
+            finding.get("applicability") == "NOT APPLICABLE WITH RATIONALE"
+            and not str(finding.get("applicability_rationale", "")).strip()
+        ):
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "MISSING-RATIONALE",
+                    path + "/applicability_rationale",
+                    "Inapplicability requires a non-empty rationale.",
+                )
+            )
         if finding.get("finding_status") in {"PASS", "PARTIAL", "FAIL"} and not str(finding.get("finding", "")).strip():
-            errors.append(Issue("ERROR", "MISSING-FINDING", path + "/finding", "A substantive finding status requires finding text."))
+            errors.append(
+                Issue(
+                    "ERROR", "MISSING-FINDING", path + "/finding", "A substantive finding status requires finding text."
+                )
+            )
         if finding.get("finding_status") == "PASS" and not finding.get("evidence_ids"):
             warnings.append(Issue("WARNING", "PASS-WITHOUT-EVIDENCE", path, "PASS has no linked evidence object."))
 
@@ -127,33 +175,93 @@ def semantic_issues(instance: dict[str, Any]) -> tuple[list[Issue], list[Issue]]
         missing_req = set(gap.get("linked_requirement_ids", [])) - requirements
         missing_claim = set(gap.get("linked_claim_ids", [])) - claims
         if missing_req:
-            errors.append(Issue("ERROR", "DANGLING-REQUIREMENT", path + "/linked_requirement_ids", f"Unknown requirement IDs: {sorted(missing_req)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-REQUIREMENT",
+                    path + "/linked_requirement_ids",
+                    f"Unknown requirement IDs: {sorted(missing_req)}",
+                )
+            )
         if missing_claim:
-            errors.append(Issue("ERROR", "DANGLING-CLAIM", path + "/linked_claim_ids", f"Unknown claim IDs: {sorted(missing_claim)}"))
+            errors.append(
+                Issue(
+                    "ERROR", "DANGLING-CLAIM", path + "/linked_claim_ids", f"Unknown claim IDs: {sorted(missing_claim)}"
+                )
+            )
 
     decisions = instance.get("decision_register", [])
     decision_types = {row.get("decision_object_type") for row in decisions}
     if "CLAIM ADJUDICATION" not in decision_types:
-        errors.append(Issue("ERROR", "DECISION-SEPARATION", "/decision_register", "A CLAIM ADJUDICATION object is required."))
+        errors.append(
+            Issue("ERROR", "DECISION-SEPARATION", "/decision_register", "A CLAIM ADJUDICATION object is required.")
+        )
     if "CONFORMANCE DECISION" not in decision_types:
-        errors.append(Issue("ERROR", "DECISION-SEPARATION", "/decision_register", "A CONFORMANCE DECISION object, including a blocked state, is required."))
+        errors.append(
+            Issue(
+                "ERROR",
+                "DECISION-SEPARATION",
+                "/decision_register",
+                "A CONFORMANCE DECISION object, including a blocked state, is required.",
+            )
+        )
     for index, decision in enumerate(decisions):
         path = f"/decision_register/{index}"
         if not str(decision.get("authority", "")).strip() or not str(decision.get("authority_basis", "")).strip():
-            errors.append(Issue("ERROR", "DECISION-AUTHORITY", path, "Decision authority and authority basis are required."))
+            errors.append(
+                Issue("ERROR", "DECISION-AUTHORITY", path, "Decision authority and authority basis are required.")
+            )
         if not decision.get("prohibited_inferences"):
-            errors.append(Issue("ERROR", "DECISION-BOUNDARY", path + "/prohibited_inferences", "At least one prohibited inference is required."))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DECISION-BOUNDARY",
+                    path + "/prohibited_inferences",
+                    "At least one prohibited inference is required.",
+                )
+            )
         if not decision.get("reopening_triggers"):
-            errors.append(Issue("ERROR", "DECISION-REOPENING", path + "/reopening_triggers", "At least one reopening trigger is required."))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DECISION-REOPENING",
+                    path + "/reopening_triggers",
+                    "At least one reopening trigger is required.",
+                )
+            )
         unknown_evidence = set(decision.get("evidence_ids", [])) - evidence
         if unknown_evidence:
-            errors.append(Issue("ERROR", "DANGLING-EVIDENCE", path + "/evidence_ids", f"Unknown evidence IDs: {sorted(unknown_evidence)}"))
+            errors.append(
+                Issue(
+                    "ERROR",
+                    "DANGLING-EVIDENCE",
+                    path + "/evidence_ids",
+                    f"Unknown evidence IDs: {sorted(unknown_evidence)}",
+                )
+            )
 
     metadata = instance.get("assessment_metadata", {})
     if not str(metadata.get("evidence_freeze_id", "")).strip():
-        warnings.append(Issue("WARNING", "NO-EVIDENCE-FREEZE", "/assessment_metadata/evidence_freeze_id", "No evidence freeze ID is assigned."))
-    if metadata.get("assessment_status") in {"EVIDENCE FROZEN", "DECISION READY", "CLOSED"} and not str(metadata.get("evidence_freeze_id", "")).strip():
-        errors.append(Issue("ERROR", "FREEZE-REQUIRED", "/assessment_metadata/evidence_freeze_id", "This assessment status requires an evidence freeze ID."))
+        warnings.append(
+            Issue(
+                "WARNING",
+                "NO-EVIDENCE-FREEZE",
+                "/assessment_metadata/evidence_freeze_id",
+                "No evidence freeze ID is assigned.",
+            )
+        )
+    if (
+        metadata.get("assessment_status") in {"EVIDENCE FROZEN", "DECISION READY", "CLOSED"}
+        and not str(metadata.get("evidence_freeze_id", "")).strip()
+    ):
+        errors.append(
+            Issue(
+                "ERROR",
+                "FREEZE-REQUIRED",
+                "/assessment_metadata/evidence_freeze_id",
+                "This assessment status requires an evidence freeze ID.",
+            )
+        )
 
     return errors, warnings
 

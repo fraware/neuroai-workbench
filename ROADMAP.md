@@ -1,37 +1,41 @@
+
 # Roadmap
 
-## v0.1 — completed in this release
+## v0.2.1 — repository stabilization
 
-- Local workspace and case lifecycle.
-- v4.2 schema and semantic validation.
-- Evidence registry and digest verification.
-- Hash-chained events, snapshots and bundles.
-- Offline browser interface and CLI.
-- Additive migration and three reference cases.
+- Centralized version identity and release metadata.
+- Source-tree hygiene and reproducible build separation.
+- Branch-governance, CODEOWNERS, issue templates, and pull-request controls.
+- Cursor and AI-agent operating rules.
+- Distinct CI, package, container, security, and release-verification gates.
 
-## v0.2 — controlled pilot operations
+## v0.3.0 — collaborative assessment operations
 
 - Role-aware review assignments.
-- Structured disagreement and disposition records.
+- Structured disagreement, disposition, and resolution records.
 - Protected-evidence metadata exchange without raw-byte transfer.
-- Import/export adapters for institutional document stores.
-- Human-readable decision and gap reports.
-- Internationalisation and accessibility testing with users.
+- Human-readable decision and evidence-gap reports.
+- Controlled prompt-package export, candidate-response import, field-level human disposition, and AI-assistance provenance under ADR 0005.
+- Internationalization architecture and accessibility evaluation.
+- PRIMA v4.2 reference migration.
+- Observatory v1.7 import and successor-state support.
 
-## v0.3 — federated multi-institution pilots
+## v0.4.0 — institutional pilot architecture
 
-- Signed manifests and institutional key management.
-- Authenticated deployment profile.
-- Redaction and disclosure-control workflow.
-- Cross-institution evidence-request protocol.
-- Pluggable policy and jurisdiction packages.
+- Separate authenticated deployment profile.
+- Encryption-at-rest and institutional key-management design.
+- Signed manifests and disclosure-control workflows.
+- Federated evidence requests.
+- Backup, recovery, retention, deletion, and legal-hold controls.
+- Multi-institution pilot protocol and external security review.
 
 ## v1.0 readiness gates
 
 - Independent security assessment.
-- External usability evaluation.
+- External usability and accessibility evaluation.
 - Controlled multi-country pilot evidence.
 - Documented participant-governance review.
-- Stable API, migration support and long-term maintenance plan.
+- Stable API and migration policy.
+- Long-term maintenance and incident-response capacity.
 
-The roadmap does not imply institutional adoption or funding.
+The roadmap does not imply funding, institutional adoption, regulatory recognition, or UNESCO endorsement.
