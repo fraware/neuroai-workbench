@@ -115,7 +115,7 @@ neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 
 ## Repository status
 
-`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The `agent/v0.3.0-foundations` branch adds review-ready foundations for PRIMA, observatory v1.7, deterministic reports, attributable collaborative review, and controlled provider-neutral GPT assistance without changing the normative v4.2 kernel. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
+`main` tracks unreleased package version `0.3.0.dev0` (v0.3 foundations merged; not a tagged release). Published stabilization remains `v0.2.1`. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
 
 ## License
 

@@ -9,6 +9,15 @@ from .events import append_event
 from .util import atomic_write_bytes, atomic_write_json, load_json, safe_join, sha256_bytes, sha256_file, utc_now
 from .workspace import Workspace
 
+_REQUIRED_INDEX_FIELDS = (
+    "evidence_id",
+    "original_filename",
+    "stored_filename",
+    "sha256",
+    "size_bytes",
+    "title",
+)
+
 
 def _index_path(case_path: Path) -> Path:
     return case_path / "evidence/index.json"
@@ -18,12 +27,74 @@ def _objects_root(case_path: Path) -> Path:
     return case_path / "evidence" / "objects"
 
 
-def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, Any]]:
-    index = load_json(_index_path(workspace.case_path(case_id)))
-    objects = index.get("objects", [])
+def _index_error(code: str, message: str, **extra: Any) -> dict[str, Any]:
+    payload: dict[str, Any] = {"code": code, "message": message}
+    payload.update(extra)
+    return payload
+
+
+def _load_evidence_index(case_path: Path) -> tuple[list[dict[str, Any]] | None, list[dict[str, Any]]]:
+    """Load evidence index objects or return structured index errors.
+
+    Distinguishes missing, unreadable, schema-invalid, and record-invalid indexes.
+    An empty objects list is valid.
+    """
+    path = _index_path(case_path)
+    if not path.is_file():
+        return None, [_index_error("INDEX_MISSING", "Evidence index file is missing")]
+    try:
+        index = load_json(path)
+    except (OSError, ValueError, TypeError) as exc:
+        return None, [_index_error("INDEX_UNREADABLE", f"Evidence index could not be parsed: {exc}")]
+    if not isinstance(index, dict):
+        return None, [_index_error("INDEX_SCHEMA_INVALID", "Evidence index root must be a JSON object")]
+    if "objects" not in index:
+        return [], []
+    objects = index.get("objects")
     if not isinstance(objects, list):
-        return []
-    return cast(list[dict[str, Any]], objects)
+        return None, [
+            _index_error(
+                "INDEX_SCHEMA_INVALID",
+                "Evidence index objects must be a list",
+                path="objects",
+            )
+        ]
+    errors: list[dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
+    for idx, item in enumerate(objects):
+        if not isinstance(item, dict):
+            errors.append(
+                _index_error(
+                    "INDEX_RECORD_INVALID",
+                    "Evidence index record must be an object",
+                    path=f"objects[{idx}]",
+                )
+            )
+            continue
+        missing = [field for field in _REQUIRED_INDEX_FIELDS if field not in item]
+        if missing:
+            errors.append(
+                _index_error(
+                    "INDEX_RECORD_INVALID",
+                    f"Evidence index record missing required fields: {', '.join(missing)}",
+                    path=f"objects[{idx}]",
+                    fields=missing,
+                )
+            )
+            continue
+        records.append(cast(dict[str, Any], item))
+    if errors:
+        return None, errors
+    return records, []
+
+
+def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, Any]]:
+    records, errors = _load_evidence_index(workspace.case_path(case_id))
+    if errors:
+        codes = ", ".join(sorted({str(item.get("code")) for item in errors}))
+        raise ValueError(f"Evidence index is invalid ({codes})")
+    assert records is not None
+    return records
 
 
 def _stored_filename_for(digest: str, original_filename: str) -> str:
@@ -54,7 +125,9 @@ def _validate_stored_filename(record: dict[str, Any]) -> str | None:
 def _next_evidence_id(assessment: dict[str, Any], index: dict[str, Any] | None = None) -> str:
     used = {row.get("evidence_id") for row in assessment.get("evidence_register", [])}
     if index is not None:
-        used |= {row.get("evidence_id") for row in index.get("objects", [])}
+        objects = index.get("objects", [])
+        if isinstance(objects, list):
+            used |= {row.get("evidence_id") for row in objects if isinstance(row, dict)}
     counter = 1
     while f"EV-{counter:03d}" in used:
         counter += 1
@@ -93,6 +166,12 @@ def add_evidence_bytes(
         atomic_write_bytes(target, data)
     index_path = _index_path(case)
     index = load_json(index_path)
+    if not isinstance(index, dict):
+        raise ValueError("Evidence index root must be a JSON object")
+    if "objects" not in index:
+        index["objects"] = []
+    if not isinstance(index.get("objects"), list):
+        raise ValueError("Evidence index objects must be a list")
     assessment = workspace.load_case(case_id)
     evidence_id = _next_evidence_id(assessment, index)
     record = {
@@ -168,7 +247,16 @@ def add_evidence_base64(
 def verify_evidence_files(workspace: Workspace, case_id: str) -> dict[str, Any]:
     case = workspace.case_path(case_id)
     objects_root = _objects_root(case)
-    records = list_evidence_files(workspace, case_id)
+    records, index_errors = _load_evidence_index(case)
+    if index_errors:
+        return {
+            "valid": False,
+            "object_count": 0,
+            "results": [],
+            "errors": index_errors,
+            "boundary": "Digest verification establishes byte identity only; it does not establish evidence quality or authenticity.",
+        }
+    assert records is not None
     results: list[dict[str, Any]] = []
     for record in records:
         filename_error = _validate_stored_filename(record)
@@ -247,5 +335,6 @@ def verify_evidence_files(workspace: Workspace, case_id: str) -> dict[str, Any]:
         "valid": all(row["valid"] for row in results),
         "object_count": len(results),
         "results": results,
+        "errors": [],
         "boundary": "Digest verification establishes byte identity only; it does not establish evidence quality or authenticity.",
     }

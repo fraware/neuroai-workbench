@@ -79,15 +79,27 @@ def release_kind(value: dict[str, Any]) -> str:
     return FULL_RELEASE
 
 
-def _ids(records: list[dict[str, Any]], field: str) -> list[str]:
+def _collect_identifiers(records: list[Any], field: str, list_key: str) -> tuple[list[str], list[dict[str, Any]]]:
+    """Return valid string IDs and per-row errors for missing or non-string identifiers."""
     values: list[str] = []
-    for record in records:
+    errors: list[dict[str, Any]] = []
+    for index, record in enumerate(records):
+        path = f"{list_key}[{index}].{field}"
         if not isinstance(record, dict):
+            errors.append({"code": "MISSING_IDENTIFIER", "path": path})
+            continue
+        if field not in record or record.get(field) is None:
+            errors.append({"code": "MISSING_IDENTIFIER", "path": path})
             continue
         value = record.get(field)
-        if isinstance(value, str):
-            values.append(value)
-    return values
+        if not isinstance(value, str):
+            errors.append({"code": "INVALID_IDENTIFIER", "path": path})
+            continue
+        if not value:
+            errors.append({"code": "MISSING_IDENTIFIER", "path": path})
+            continue
+        values.append(value)
+    return values, errors
 
 
 def _parse_iso_date(value: Any) -> str | None:
@@ -144,11 +156,9 @@ def _validate_full_release(value: dict[str, Any]) -> dict[str, Any]:
     counts: dict[str, int] = {}
     for key, field in ID_FIELDS.items():
         records = value[key]
-        ids = _ids(records, field)
-        missing = [i for i, identifier in enumerate(ids) if not identifier]
-        if missing:
-            errors.append({"code": "IDENTIFIER_REQUIRED", "path": key, "rows": missing})
-        duplicates = sorted({identifier for identifier in ids if identifier and ids.count(identifier) > 1})
+        ids, id_errors = _collect_identifiers(records, field, key)
+        errors.extend(id_errors)
+        duplicates = sorted({identifier for identifier in ids if ids.count(identifier) > 1})
         if duplicates:
             errors.append({"code": "DUPLICATE_IDENTIFIER", "path": key, "identifiers": duplicates})
         counts[key] = len(records)
@@ -158,6 +168,8 @@ def _validate_full_release(value: dict[str, Any]) -> dict[str, Any]:
         if key == "sources":
             continue
         for index, record in enumerate(value[key]):
+            if not isinstance(record, dict):
+                continue
             for source_id in record.get("source_ids", []):
                 if source_id not in source_ids:
                     errors.append(
@@ -168,9 +180,13 @@ def _validate_full_release(value: dict[str, Any]) -> dict[str, Any]:
                         }
                     )
 
-    organization_ids = {record["organization_id"] for record in value["organizations"] if record.get("organization_id")}
+    organization_ids = {
+        record["organization_id"]
+        for record in value["organizations"]
+        if isinstance(record, dict) and record.get("organization_id")
+    }
     for index, record in enumerate(value["organization_resolution"]):
-        if record.get("organization_id") not in organization_ids:
+        if not isinstance(record, dict) or record.get("organization_id") not in organization_ids:
             errors.append(
                 {
                     "code": "UNRESOLVED_ORGANIZATION_REFERENCE",
@@ -178,7 +194,7 @@ def _validate_full_release(value: dict[str, Any]) -> dict[str, Any]:
                 }
             )
     for index, record in enumerate(value["regional_expansion"]):
-        if record.get("organization_id") not in organization_ids:
+        if not isinstance(record, dict) or record.get("organization_id") not in organization_ids:
             errors.append(
                 {"code": "UNRESOLVED_ORGANIZATION_REFERENCE", "path": f"regional_expansion[{index}].organization_id"}
             )
@@ -247,8 +263,13 @@ def _validate_compact_successor(value: dict[str, Any]) -> dict[str, Any]:
             errors.append({"code": "OBJECT_REQUIRED", "path": f"reopening_decisions[{index}]"})
             continue
         decision_id = decision.get("decision_id")
-        if not decision_id:
-            errors.append({"code": "IDENTIFIER_REQUIRED", "path": f"reopening_decisions[{index}].decision_id"})
+        if not isinstance(decision_id, str) or not decision_id:
+            code = (
+                "INVALID_IDENTIFIER"
+                if decision_id is not None and not isinstance(decision_id, str)
+                else "MISSING_IDENTIFIER"
+            )
+            errors.append({"code": code, "path": f"reopening_decisions[{index}].decision_id"})
         else:
             decision_ids.append(decision_id)
         if not decision.get("object") or not decision.get("decision"):

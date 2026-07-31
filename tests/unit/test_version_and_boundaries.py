@@ -77,7 +77,8 @@ def test_observatory_invalid_shapes_and_import_errors(tmp_path: Path):
     validation = validate_release(broken)
     assert validation["valid"] is False
     codes = {row["code"] for row in validation["errors"]}
-    assert {"IDENTIFIER_REQUIRED", "UNRESOLVED_SOURCE_REFERENCE", "VERIFICATION_RATE_MISMATCH"} <= codes
+    assert {"MISSING_IDENTIFIER", "UNRESOLVED_SOURCE_REFERENCE", "VERIFICATION_RATE_MISMATCH"} <= codes
+    assert any(row.get("path") == "sources[0].source_id" for row in validation["errors"])
 
     invalid_path = tmp_path / "invalid-release.json"
     invalid_path.write_text(json.dumps(broken))

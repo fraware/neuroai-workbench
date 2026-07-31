@@ -133,6 +133,26 @@ def test_all_http_routes_and_errors(live_server, example_assessment):
     assert not workspace.case_path("CASE-001").exists()
 
 
+def test_server_request_body_guards(live_server):
+    base, _workspace = live_server
+    status, _, raw = request(base + "/api/cases", "POST", body=["not", "object"])
+    assert status == 400
+    assert b"error" in raw.lower()
+
+    status, _, _ = request(base + "/missing-asset.js")
+    assert status == 404
+
+    req = urllib.request.Request(
+        base + "/api/cases",
+        data=b"{not-json",
+        method="POST",
+        headers={"Content-Type": "application/json", "Content-Length": "9", "Connection": "close"},
+    )
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT_SECONDS)
+    assert exc.value.code == 400
+
+
 def test_network_binding_requires_explicit_opt_in(workspace, monkeypatch):
     with pytest.raises(ValueError, match="Refusing non-loopback"):
         serve(workspace, host="0.0.0.0", port=0)
