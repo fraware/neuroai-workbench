@@ -29,5 +29,10 @@ def test_three_pilot_comparison_has_expected_common_controls():
     assert report["case_count"] == 3
     assert report["common_pass"] == ["NK-01-R03", "NK-01-R04", "NK-03-R03", "NK-03-R06"]
     assert set(report["universal_p0_evidence_voids"]) == {
-        "NK-05-R03", "NK-06-R03", "NK-08-R02", "NK-08-R04", "NK-09-R03", "NK-09-R04"
+        "NK-05-R03",
+        "NK-06-R03",
+        "NK-08-R02",
+        "NK-08-R04",
+        "NK-09-R03",
+        "NK-09-R04",
     }

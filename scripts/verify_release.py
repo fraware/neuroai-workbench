@@ -13,14 +13,14 @@ from pathlib import Path
 from typing import Any
 
 from neuroai_workbench import __version__
-from neuroai_workbench.evidence import add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.events import verify_chain
+from neuroai_workbench.evidence import add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.exporter import export_case_bundle
 from neuroai_workbench.migration import migrate_v4_1_2
 from neuroai_workbench.observatory import load_release, queue_release, summarize_release, validate_release
 from neuroai_workbench.resource_loader import read_resource_bytes
 from neuroai_workbench.server import WorkbenchHTTPServer
-from neuroai_workbench.util import load_json, sha256_file, utc_now
+from neuroai_workbench.util import load_json, utc_now
 from neuroai_workbench.validation import EXPECTED_REQUIREMENTS, validate_assessment
 from neuroai_workbench.workspace import Workspace
 
@@ -175,7 +175,11 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="neuroai-release-") as tmp:
         workspace = Workspace.initialize(Path(tmp) / "workspace", name="Release verification")
-        check("Workspace records package version", workspace.metadata["workbench_version"] == __version__, workspace.metadata)
+        check(
+            "Workspace records package version",
+            workspace.metadata["workbench_version"] == __version__,
+            workspace.metadata,
+        )
         case = workspace.create_case("CASE-VERIFY", "Release verification case", actor="release-verifier")
         check("Created case validates", validate_assessment(case).valid, "CASE-VERIFY")
         evidence = add_evidence_bytes(
@@ -188,7 +192,11 @@ def main() -> int:
         )
         check("Evidence registered", evidence["sha256"] != "", evidence)
         check("Evidence digest verifies", verify_evidence_files(workspace, "CASE-VERIFY")["valid"], evidence)
-        check("Event chain verifies", verify_chain(workspace.case_path("CASE-VERIFY") / "events.jsonl")["valid"], "event chain")
+        check(
+            "Event chain verifies",
+            verify_chain(workspace.case_path("CASE-VERIFY") / "events.jsonl")["valid"],
+            "event chain",
+        )
         snapshot = workspace.snapshot("CASE-VERIFY", actor="release-verifier", label="release")
         check("Snapshot created", bool(snapshot["assessment_sha256"]), snapshot)
         bundle = Path(tmp) / "case.zip"
@@ -216,7 +224,9 @@ def main() -> int:
             server.server_close()
             thread.join(timeout=5)
 
-    compile_result = subprocess.run([sys.executable, "-m", "compileall", "-q", str(ROOT / "src"), str(ROOT / "scripts")])
+    compile_result = subprocess.run(
+        [sys.executable, "-m", "compileall", "-q", str(ROOT / "src"), str(ROOT / "scripts")]
+    )
     check("Python compilation", compile_result.returncode == 0, compile_result.returncode)
     if not args.ci:
         pytest_result = subprocess.run(

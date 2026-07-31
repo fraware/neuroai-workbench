@@ -12,8 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
-from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
 from .events import load_events, verify_chain
+from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .resource_loader import read_resource_bytes
@@ -119,18 +119,22 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 self._static("/".join(segments))
                 return
             if segments == ["api", "health"]:
-                self._send_json({
-                    "status": "ok",
-                    "version": __version__,
-                    "workspace": str(self.workspace.root),
-                    "bind_boundary": "This development server is intended for local trusted use only.",
-                })
+                self._send_json(
+                    {
+                        "status": "ok",
+                        "version": __version__,
+                        "workspace": str(self.workspace.root),
+                        "bind_boundary": "This development server is intended for local trusted use only.",
+                    }
+                )
                 return
             if segments == ["api", "cases"]:
                 self._send_json({"cases": self.workspace.list_cases()})
                 return
             if segments == ["api", "resources", "kernel"]:
-                self._send_bytes(read_resource_bytes("KERNEL_REQUIREMENTS_v4.2.json"), "application/json; charset=utf-8")
+                self._send_bytes(
+                    read_resource_bytes("KERNEL_REQUIREMENTS_v4.2.json"), "application/json; charset=utf-8"
+                )
                 return
             if len(segments) >= 3 and segments[:2] == ["api", "cases"]:
                 case_id = segments[2]
@@ -145,22 +149,28 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     return
                 if len(segments) == 4 and segments[3] == "events":
                     case_path = self.workspace.case_path(case_id)
-                    self._send_json({
-                        "verification": verify_chain(case_path / "events.jsonl"),
-                        "events": load_events(case_path / "events.jsonl"),
-                    })
+                    self._send_json(
+                        {
+                            "verification": verify_chain(case_path / "events.jsonl"),
+                            "events": load_events(case_path / "events.jsonl"),
+                        }
+                    )
                     return
                 if len(segments) == 4 and segments[3] == "evidence":
-                    self._send_json({
-                        "objects": list_evidence_files(self.workspace, case_id),
-                        "verification": verify_evidence_files(self.workspace, case_id),
-                    })
+                    self._send_json(
+                        {
+                            "objects": list_evidence_files(self.workspace, case_id),
+                            "verification": verify_evidence_files(self.workspace, case_id),
+                        }
+                    )
                     return
                 if len(segments) == 4 and segments[3] == "bundle":
                     with tempfile.TemporaryDirectory(prefix="neuroai-bundle-") as tmp:
                         output = Path(tmp) / f"{case_id}.zip"
                         export_case_bundle(self.workspace, case_id, output)
-                        self._send_bytes(output.read_bytes(), "application/zip", filename=f"{case_id}-controlled-bundle.zip")
+                        self._send_bytes(
+                            output.read_bytes(), "application/zip", filename=f"{case_id}-controlled-bundle.zip"
+                        )
                     return
             self._send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
         except Exception as exc:
@@ -188,7 +198,9 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     json.dump(assessment, handle, ensure_ascii=False)
                     temp_path = Path(handle.name)
                 try:
-                    imported = self.workspace.import_case(temp_path, case_id=case_id, actor=str(body.get("actor", "web-user")))
+                    imported = self.workspace.import_case(
+                        temp_path, case_id=case_id, actor=str(body.get("actor", "web-user"))
+                    )
                 finally:
                     temp_path.unlink(missing_ok=True)
                 self._send_json(imported, HTTPStatus.CREATED)
@@ -197,7 +209,11 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 case_id = segments[2]
                 action = segments[3]
                 if action == "snapshot":
-                    self._send_json(self.workspace.snapshot(case_id, actor=str(body.get("actor", "web-user")), label=str(body.get("label", "snapshot"))))
+                    self._send_json(
+                        self.workspace.snapshot(
+                            case_id, actor=str(body.get("actor", "web-user")), label=str(body.get("label", "snapshot"))
+                        )
+                    )
                     return
                 if action == "evidence":
                     record = add_evidence_base64(
@@ -227,7 +243,8 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 if not isinstance(assessment, dict):
                     raise ValueError("assessment must be a JSON object")
                 report = self.workspace.save_case(
-                    segments[2], assessment,
+                    segments[2],
+                    assessment,
                     actor=str(body.get("actor", "web-user")),
                     require_valid=bool(body.get("require_valid", False)),
                 )

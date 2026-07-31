@@ -10,14 +10,16 @@ def compare_assessments(cases: list[tuple[str, dict[str, Any]]]) -> dict[str, An
     for case_id, assessment in cases:
         findings = assessment.get("requirement_findings", [])
         status = Counter(row.get("finding_status") for row in findings)
-        summaries.append({
-            "case_id": case_id,
-            "assessment_id": assessment.get("assessment_metadata", {}).get("assessment_id"),
-            "system_name": assessment.get("system_profile", {}).get("system_name"),
-            "profile": assessment.get("profile_selection", {}).get("final_profile_id"),
-            "target_level": assessment.get("profile_selection", {}).get("target_conformance_level"),
-            "status_counts": dict(status),
-        })
+        summaries.append(
+            {
+                "case_id": case_id,
+                "assessment_id": assessment.get("assessment_metadata", {}).get("assessment_id"),
+                "system_name": assessment.get("system_profile", {}).get("system_name"),
+                "profile": assessment.get("profile_selection", {}).get("final_profile_id"),
+                "target_level": assessment.get("profile_selection", {}).get("target_conformance_level"),
+                "status_counts": dict(status),
+            }
+        )
         for row in findings:
             matrix[row["requirement_id"]][case_id] = {
                 "module_id": row.get("module_id"),
@@ -38,7 +40,10 @@ def compare_assessments(cases: list[tuple[str, dict[str, Any]]]) -> dict[str, An
             common_pass.append(requirement_id)
         if all(status == "PARTIAL" for status in statuses):
             common_partial.append(requirement_id)
-        if all(row["priority"] == "P0" and row["applicability"] == "APPLICABLE" and row["finding_status"] == "NOT ASSESSED" for row in rows):
+        if all(
+            row["priority"] == "P0" and row["applicability"] == "APPLICABLE" and row["finding_status"] == "NOT ASSESSED"
+            for row in rows
+        ):
             universal_voids.append(requirement_id)
     return {
         "case_count": len(cases),

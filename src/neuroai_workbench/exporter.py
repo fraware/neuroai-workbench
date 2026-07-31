@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import json
 import zipfile
 from pathlib import Path
 from typing import Any
 
-from .events import verify_chain
 from . import __version__
+from .events import verify_chain
 from .evidence import verify_evidence_files
 from .util import atomic_write_json, sha256_file, utc_now
 from .validation import validate_assessment

@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from neuroai_workbench.errors import WorkspaceError
-from neuroai_workbench.validation import validate_assessment
 
 
 def test_create_and_list_case(workspace):

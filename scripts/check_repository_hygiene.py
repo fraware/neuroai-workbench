@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 from __future__ import annotations
 
@@ -40,16 +39,12 @@ EXECUTABLES = {
 
 
 def tracked_files() -> list[str]:
-    result = subprocess.run(
-        ["git", "ls-files"], cwd=ROOT, check=True, text=True, capture_output=True
-    )
+    result = subprocess.run(["git", "ls-files"], cwd=ROOT, check=True, text=True, capture_output=True)
     return [line for line in result.stdout.splitlines() if line]
 
 
 def executable_paths() -> set[str]:
-    result = subprocess.run(
-        ["git", "ls-files", "--stage"], cwd=ROOT, check=True, text=True, capture_output=True
-    )
+    result = subprocess.run(["git", "ls-files", "--stage"], cwd=ROOT, check=True, text=True, capture_output=True)
     paths: set[str] = set()
     for line in result.stdout.splitlines():
         mode, _, _, path = line.split(maxsplit=3)

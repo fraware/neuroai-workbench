@@ -7,8 +7,13 @@ from neuroai_workbench.validation import validate_assessment
 def test_add_evidence_bytes_and_link(workspace):
     workspace.create_case("CASE-001", "Example case")
     record = add_evidence_bytes(
-        workspace, "CASE-001", "record.txt", b"controlled bytes\n",
-        title="Controlled record", evidence_type="OTHER", source="Test source",
+        workspace,
+        "CASE-001",
+        "record.txt",
+        b"controlled bytes\n",
+        title="Controlled record",
+        evidence_type="OTHER",
+        source="Test source",
     )
     assert record["evidence_id"] == "EV-001"
     assessment = workspace.load_case("CASE-001")

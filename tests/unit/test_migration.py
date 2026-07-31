@@ -16,7 +16,9 @@ def test_v4_1_2_migration_is_valid_and_additive():
     assert migrated["assessment_metadata"]["instrument_version"] == "v4.2"
     assert migrated["assessment_metadata"]["migrated_from_version"] == "v4.1.2"
     assert migrated["legacy_bounded_decision"] == source["bounded_decision"]
-    assert [row["finding_status"] for row in migrated["requirement_findings"]] == [row["finding_status"] for row in source["requirement_findings"]]
+    assert [row["finding_status"] for row in migrated["requirement_findings"]] == [
+        row["finding_status"] for row in source["requirement_findings"]
+    ]
     assert validate_assessment(migrated).valid
 
 

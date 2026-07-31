@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from neuroai_workbench import cli
 
 
@@ -47,10 +45,23 @@ def test_cli_inprocess_full_lifecycle(tmp_path: Path, capsys):
 
     evidence_file = tmp_path / "evidence.txt"
     evidence_file.write_text("controlled bytes\n")
-    assert cli.main([
-        "evidence-add", str(workspace), "CASE-001", str(evidence_file),
-        "--title", "Evidence", "--type", "OTHER", "--source", "TEST",
-    ]) == 0
+    assert (
+        cli.main(
+            [
+                "evidence-add",
+                str(workspace),
+                "CASE-001",
+                str(evidence_file),
+                "--title",
+                "Evidence",
+                "--type",
+                "OTHER",
+                "--source",
+                "TEST",
+            ]
+        )
+        == 0
+    )
     evidence = parse_stdout(capsys)
     assert evidence["evidence_id"] == "EV-001"
 
@@ -82,12 +93,21 @@ def test_cli_import_migrate_compare_and_observatory(tmp_path: Path, capsys):
     assert parse_stdout(capsys)["sha256"]
 
     compare_out = tmp_path / "compare.json"
-    assert cli.main([
-        "compare",
-        str(examples / "PILOT-01_BrainGate2_T15_v4.2.json"),
-        str(examples / "PILOT-02_FDA_Adaptive_DBS_v4.2.json"),
-        "--labels", "BrainGate", "aDBS", "--out", str(compare_out),
-    ]) == 0
+    assert (
+        cli.main(
+            [
+                "compare",
+                str(examples / "PILOT-01_BrainGate2_T15_v4.2.json"),
+                str(examples / "PILOT-02_FDA_Adaptive_DBS_v4.2.json"),
+                "--labels",
+                "BrainGate",
+                "aDBS",
+                "--out",
+                str(compare_out),
+            ]
+        )
+        == 0
+    )
     assert len(json.loads(compare_out.read_text())["cases"]) == 2
 
     release = repo / "examples" / "observatory" / "evidence_depth_release_v1.4.json"

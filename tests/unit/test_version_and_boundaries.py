@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 
 from neuroai_workbench import __version__
-from neuroai_workbench.evidence import add_evidence_base64, add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.events import append_event, verify_chain
+from neuroai_workbench.evidence import add_evidence_base64, add_evidence_bytes, verify_evidence_files
 from neuroai_workbench.metrics import summarize
 from neuroai_workbench.observatory import import_release, load_imported_release, load_release, validate_release
 from neuroai_workbench.resource_loader import read_resource_bytes, resource_path

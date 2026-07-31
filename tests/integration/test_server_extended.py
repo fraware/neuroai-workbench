@@ -5,7 +5,6 @@ import json
 import threading
 import urllib.error
 import urllib.request
-from pathlib import Path
 
 import pytest
 
@@ -66,11 +65,15 @@ def test_all_http_routes_and_errors(live_server, example_assessment):
     status, _, raw = request(base + "/api/cases/CASE-001/snapshot", "POST", {"label": "freeze"})
     assert status == 200 and json_body(raw)["assessment_sha256"]
 
-    status, _, raw = request(base + "/api/cases/CASE-001/evidence", "POST", {
-        "filename": "evidence.txt",
-        "content_base64": base64.b64encode(b"bytes").decode(),
-        "title": "Evidence",
-    })
+    status, _, raw = request(
+        base + "/api/cases/CASE-001/evidence",
+        "POST",
+        {
+            "filename": "evidence.txt",
+            "content_base64": base64.b64encode(b"bytes").decode(),
+            "title": "Evidence",
+        },
+    )
     assert status == 201 and json_body(raw)["evidence_id"] == "EV-001"
 
     assessment["assessment_metadata"]["assessment_purpose"] = "Updated over HTTP"

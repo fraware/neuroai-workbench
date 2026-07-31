@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 from __future__ import annotations
 
@@ -46,6 +45,7 @@ def main() -> int:
         errors.append(f"tag {args.tag!r} does not match {expected_tag!r}")
 
     from tempfile import TemporaryDirectory
+
     with TemporaryDirectory(prefix="neuroai-version-") as tmp:
         workspace = Workspace.initialize(Path(tmp) / "workspace")
         if workspace.metadata.get("workbench_version") != __version__:
