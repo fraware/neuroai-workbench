@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from . import __version__
 from .errors import WorkspaceError
@@ -57,7 +57,7 @@ class Workspace:
 
     @property
     def metadata(self) -> dict[str, Any]:
-        return load_json(self.meta_path)
+        return cast(dict[str, Any], load_json(self.meta_path))
 
     def case_path(self, case_id: str) -> Path:
         ensure_identifier(case_id, "case ID")
@@ -117,10 +117,10 @@ class Workspace:
                 "assessment_sha256": sha256_file(path / CASE_FILE),
             },
         )
-        return assessment
+        return cast(dict[str, Any], assessment)
 
     def import_case(self, source: Path, case_id: str | None = None, actor: str = "local-user") -> dict[str, Any]:
-        assessment = load_json(source)
+        assessment = cast(dict[str, Any], load_json(source))
         report = validate_assessment(assessment)
         if not report.valid:
             raise WorkspaceError(f"Assessment is invalid: {json.dumps(report.to_dict(), ensure_ascii=False)}")
@@ -149,7 +149,7 @@ class Workspace:
         path = self.case_path(case_id) / CASE_FILE
         if not path.is_file():
             raise WorkspaceError(f"Unknown case {case_id!r}")
-        return load_json(path)
+        return cast(dict[str, Any], load_json(path))
 
     def save_case(
         self, case_id: str, assessment: dict[str, Any], actor: str = "local-user", require_valid: bool = False

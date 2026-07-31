@@ -41,7 +41,14 @@ def load_release(path: Path) -> dict[str, Any]:
 
 
 def _ids(records: list[dict[str, Any]], field: str) -> list[str]:
-    return [record.get(field) for record in records if isinstance(record, dict)]
+    values: list[str] = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        value = record.get(field)
+        if isinstance(value, str):
+            values.append(value)
+    return values
 
 
 def validate_release(value: dict[str, Any]) -> dict[str, Any]:

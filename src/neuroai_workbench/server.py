@@ -9,7 +9,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from . import __version__
 from .events import load_events, verify_chain
@@ -38,7 +38,10 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
 
     @property
     def workspace(self) -> Workspace:
-        return self.server.workspace  # type: ignore[attr-defined]
+        server = self.server
+        if not isinstance(server, WorkbenchHTTPServer):
+            raise TypeError("Workbench handler requires WorkbenchHTTPServer")
+        return server.workspace
 
     def log_message(self, fmt: str, *args: Any) -> None:
         safe = " ".join(str(arg).replace("\n", " ").replace("\r", " ") for arg in args)
@@ -190,9 +193,10 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(assessment, HTTPStatus.CREATED)
                 return
             if segments == ["api", "import"]:
-                assessment = body.get("assessment")
-                if not isinstance(assessment, dict):
+                assessment_value: Any = body.get("assessment")
+                if not isinstance(assessment_value, dict):
                     raise ValueError("assessment must be a JSON object")
+                assessment = cast(dict[str, Any], assessment_value)
                 case_id = str(body.get("case_id") or assessment.get("assessment_metadata", {}).get("assessment_id", ""))
                 with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
                     json.dump(assessment, handle, ensure_ascii=False)

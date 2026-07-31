@@ -6,7 +6,7 @@ import logging
 import sys
 from importlib.metadata import version as package_version
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from . import __version__
 from .comparison import compare_assessments
@@ -174,7 +174,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _load_input(args: argparse.Namespace) -> dict[str, Any]:
     if args.assessment:
-        return json.loads(Path(args.assessment).read_text(encoding="utf-8"))
+        return cast(dict[str, Any], json.loads(Path(args.assessment).read_text(encoding="utf-8")))
     if not args.workspace:
         raise ValueError("--workspace is required with --case-id")
     return _workspace(args.workspace).load_case(args.case_id)
@@ -276,8 +276,8 @@ def main(argv: list[str] | None = None) -> int:
                 for label, path in zip(labels, args.assessments)
             ]
             for _, assessment in cases:
-                report = validate_assessment(assessment)
-                if not report.valid:
+                validation = validate_assessment(cast(dict[str, Any], assessment))
+                if not validation.valid:
                     raise ValueError("Every comparison input must be a valid v4.2 assessment")
             emit(compare_assessments(cases), Path(args.out) if args.out else None)
         else:

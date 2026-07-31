@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import mimetypes
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from .events import append_event
 from .util import atomic_write_json, load_json, sha256_bytes, sha256_file, utc_now
@@ -16,7 +16,10 @@ def _index_path(case_path: Path) -> Path:
 
 def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, Any]]:
     index = load_json(_index_path(workspace.case_path(case_id)))
-    return index.get("objects", [])
+    objects = index.get("objects", [])
+    if not isinstance(objects, list):
+        return []
+    return cast(list[dict[str, Any]], objects)
 
 
 def _next_evidence_id(assessment: dict[str, Any]) -> str:
