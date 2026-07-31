@@ -25,7 +25,7 @@ def test_cli_workspace_lifecycle(tmp_path: Path):
 
 def test_cli_version():
     result = run("--version")
-    assert "0.2.1" in result.stdout
+    assert "0.3.0.dev0" in result.stdout
 
 
 def test_cli_observatory_commands(tmp_path: Path):

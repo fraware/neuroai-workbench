@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import uuid
 from pathlib import Path
 from typing import Any, cast
 
@@ -18,7 +19,8 @@ TASK_TYPES = {
     "CHECK_CONSISTENCY",
     "DRAFT_REPORT_SECTION",
 }
-DISPOSITIONS = {"ACCEPTED_AS_DRAFT", "PARTIALLY_USED", "REJECTED", "PENDING_REVIEW"}
+DISPOSITIONS = {"ACCEPTED_AS_DRAFT", "PARTIALLY_USED", "REJECTED"}
+PENDING_REVIEW_STATE = "PENDING_REVIEW"
 SENSITIVE_PATTERNS = (
     ("PRIVATE_KEY", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
     ("AWS_ACCESS_KEY", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
@@ -139,16 +141,11 @@ def create_assistance_request(
             f"{json.dumps(context_findings, ensure_ascii=False)}"
         )
     assessment_path = workspace.case_path(case_id) / "assessment.json"
-    seed = canonical_json_bytes(
-        {
-            "case_id": case_id,
-            "task_type": task_type,
-            "prompt": prompt,
-            "assessment_sha256": sha256_file(assessment_path),
-            "context": context,
-        }
-    )
-    request_id = f"AI-{utc_now().replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
+    request_id = f"AI-{uuid.uuid4().hex}"
+    root = _case_assistance_dir(workspace, case_id)
+    output = root / "requests" / f"{request_id}.json"
+    if output.exists():
+        raise ValueError(f"An assistance request already exists for {request_id}")
     request = {
         "schema_version": ASSISTANCE_SCHEMA_VERSION,
         "request_id": request_id,
@@ -181,8 +178,6 @@ def create_assistance_request(
         "human_authority": "REQUIRED_FOR_ANY_USE",
     }
     request["request_sha256"] = _hash_record(request, "request_sha256")
-    root = _case_assistance_dir(workspace, case_id)
-    output = root / "requests" / f"{request_id}.json"
     atomic_write_json(output, request)
     append_event(
         workspace.case_path(case_id) / "events.jsonl",
@@ -269,6 +264,11 @@ def record_assistance_response(
     errors = _validate_model_output(output, assessment, request)
     if errors:
         raise ValueError(f"Model output failed contract validation: {json.dumps(errors, ensure_ascii=False)}")
+    output_sensitive = scan_sensitive_text(canonical_json_bytes(output).decode("utf-8"))
+    if output_sensitive:
+        raise ValueError(
+            f"Model output blocked by sensitive-data guard: {json.dumps(output_sensitive, ensure_ascii=False)}"
+        )
 
     response = {
         "schema_version": ASSISTANCE_SCHEMA_VERSION,
@@ -282,7 +282,7 @@ def record_assistance_response(
         "output": output,
         "output_sha256": sha256_bytes(canonical_json_bytes(output)),
         "contract_valid": True,
-        "disposition_state": "PENDING_REVIEW",
+        "disposition_state": PENDING_REVIEW_STATE,
         "boundary": "Recorded model output is an attributable suggestion only and cannot modify assessment findings or decisions without human action.",
     }
     response["response_sha256"] = _hash_record(response, "response_sha256")
@@ -316,6 +316,13 @@ def dispose_assistance_response(
 ) -> dict[str, Any]:
     if disposition not in DISPOSITIONS:
         raise ValueError(f"Unsupported disposition {disposition!r}")
+    request = load_assistance_request(workspace, case_id, request_id)
+    assessment_path = workspace.case_path(case_id) / "assessment.json"
+    if request.get("assessment_sha256") != sha256_file(assessment_path):
+        raise ValueError(
+            "ASSESSMENT_DRIFT: assistance request assessment_sha256 no longer matches the current assessment. "
+            "Create a new assist-request before recording a disposition."
+        )
     root = _case_assistance_dir(workspace, case_id)
     response_path = root / "responses" / f"{request_id}.json"
     if not response_path.is_file():
@@ -357,6 +364,9 @@ def verify_assistance_record(workspace: Workspace, case_id: str, request_id: str
     request = load_assistance_request(workspace, case_id, request_id)
     if request.get("request_sha256") != _hash_record(request, "request_sha256"):
         errors.append("request hash mismatch")
+    assessment_path = workspace.case_path(case_id) / "assessment.json"
+    if request.get("assessment_sha256") != sha256_file(assessment_path):
+        errors.append("ASSESSMENT_DRIFT")
     assessment = workspace.load_case(case_id)
     response_path = root / "responses" / f"{request_id}.json"
     disposition_path = root / "dispositions" / f"{request_id}.json"
@@ -374,6 +384,8 @@ def verify_assistance_record(workspace: Workspace, case_id: str, request_id: str
         disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
         if disposition.get("disposition_sha256") != _hash_record(disposition, "disposition_sha256"):
             errors.append("disposition hash mismatch")
+        if disposition.get("disposition") not in DISPOSITIONS:
+            errors.append("disposition is not a final allowed disposition")
         if response is None:
             errors.append("disposition exists without response")
         elif disposition.get("response_sha256") != response.get("response_sha256"):

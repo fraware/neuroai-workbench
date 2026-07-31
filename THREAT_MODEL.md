@@ -27,7 +27,7 @@
 
 ## Implemented controls
 
-- Localhost binding by default; non-loopback binding requires an explicit expert escape hatch.
+- Localhost binding by default in the CLI, Dockerfile `CMD`, and `compose.yaml`; non-loopback binding requires both `--allow-network` and `NEUROAI_ALLOW_NETWORK=1` (see `compose.network.yaml`). The network overlay is not an authenticated or TLS-terminated deployment.
 - No remote JavaScript, CSS, fonts or analytics.
 - Content Security Policy and defensive HTTP headers.
 - Controlled path resolution and case identifiers, including observatory release versions and evidence object basenames via `ensure_identifier` / `safe_join`.

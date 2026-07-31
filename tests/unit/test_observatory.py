@@ -196,3 +196,158 @@ def test_import_keeps_release_under_controlled_tree(tmp_path: Path):
     assert target == root / "v1.4"
     assert target.parent == root
     assert (target / "release.json").is_file()
+
+
+def test_missing_organization_id_reports_indexed_path():
+    value = load_release(EXAMPLE)
+    del value["organizations"][2]["organization_id"]
+    report = validate_release(value)
+    assert report["valid"] is False
+    assert any(
+        item["code"] == "MISSING_IDENTIFIER" and item["path"] == "organizations[2].organization_id"
+        for item in report["errors"]
+    )
+
+
+def test_null_organization_id_reports_indexed_path():
+    value = load_release(EXAMPLE)
+    value["organizations"][1]["organization_id"] = None
+    report = validate_release(value)
+    assert report["valid"] is False
+    assert any(
+        item["code"] == "MISSING_IDENTIFIER" and item["path"] == "organizations[1].organization_id"
+        for item in report["errors"]
+    )
+
+
+def test_numeric_organization_id_reports_invalid_identifier():
+    value = load_release(EXAMPLE)
+    value["organizations"][0]["organization_id"] = 42
+    report = validate_release(value)
+    assert report["valid"] is False
+    assert any(
+        item["code"] == "INVALID_IDENTIFIER" and item["path"] == "organizations[0].organization_id"
+        for item in report["errors"]
+    )
+
+
+def test_non_dict_organization_row_reports_missing_identifier():
+    value = load_release(EXAMPLE)
+    value["organizations"][3] = "not-an-object"
+    report = validate_release(value)
+    assert report["valid"] is False
+    assert any(
+        item["code"] == "MISSING_IDENTIFIER" and item["path"] == "organizations[3].organization_id"
+        for item in report["errors"]
+    )
+
+
+def test_compact_successor_validation_edge_cases():
+    release = load_release(SUCCESSOR)
+    release["metadata"] = "bad"
+    report = validate_release(release)
+    assert report["valid"] is False
+    assert any(item["code"] == "METADATA_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["delta"] = "bad"
+    report = validate_release(release)
+    assert report["valid"] is False
+    assert any(item["code"] == "OBJECT_REQUIRED" and item["path"] == "delta" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"] = "bad"
+    report = validate_release(release)
+    assert report["valid"] is False
+    assert any(item["code"] == "LIST_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["successor_effective_counts"]["organizations"] = -1
+    report = validate_release(release)
+    assert report["valid"] is False
+    assert any(item["code"] == "NONNEGATIVE_INTEGER_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["baseline_reference"]["immutable"] = False
+    report = validate_release(release)
+    assert any(item["code"] == "BASELINE_NOT_DECLARED_IMMUTABLE" for item in report["warnings"])
+
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"][0] = "bad"
+    report = validate_release(release)
+    assert any(item["code"] == "OBJECT_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"][0]["decision_id"] = 9
+    report = validate_release(release)
+    assert any(
+        item["code"] == "INVALID_IDENTIFIER" and item["path"] == "reopening_decisions[0].decision_id"
+        for item in report["errors"]
+    )
+
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"][0]["decision_id"] = ""
+    report = validate_release(release)
+    assert any(
+        item["code"] == "MISSING_IDENTIFIER" and item["path"] == "reopening_decisions[0].decision_id"
+        for item in report["errors"]
+    )
+
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"].append(dict(release["reopening_decisions"][0]))
+    report = validate_release(release)
+    assert any(item["code"] == "DUPLICATE_IDENTIFIER" for item in report["errors"])
+
+
+def test_full_release_org_reference_and_coverage_warning():
+    value = load_release(EXAMPLE)
+    value["organization_resolution"][0]["organization_id"] = "ORG-DOES-NOT-EXIST"
+    value["regional_expansion"][0]["organization_id"] = "ORG-DOES-NOT-EXIST"
+    value["coverage"]["v1_4_effective_counts"]["active_nonlegacy_organization_denominator"] = 0
+    report = validate_release(value)
+    assert report["valid"] is False
+    assert any(item["code"] == "UNRESOLVED_ORGANIZATION_REFERENCE" for item in report["errors"])
+    assert any(item["code"] == "COVERAGE_DENOMINATOR_UNAVAILABLE" for item in report["warnings"])
+
+
+def test_compact_successor_decision_fields_and_delta_paths():
+    release = load_release(SUCCESSOR)
+    release["reopening_decisions"][0]["object"] = ""
+    release["reopening_decisions"][0]["decision"] = ""
+    report = validate_release(release)
+    assert any(item["code"] == "DECISION_FIELDS_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    for field in ("title", "version", "effective_as_of", "status"):
+        release["metadata"][field] = ""
+    report = validate_release(release)
+    assert any(item["code"] == "METADATA_FIELD_REQUIRED" for item in report["errors"])
+
+    release = load_release(SUCCESSOR)
+    release["delta"]["regulatory_and_market_events"] = "not-a-list"
+    release["delta"]["other_events"] = [{"event_date": "not-a-date", "source_ids": []}, "skip-me"]
+    release["metadata"]["predecessor"] = "v1.6"
+    release["predecessor_reference"] = "bad"
+    report = validate_release(release)
+    assert any(item["code"] == "DELTA_ATTRIBUTABILITY_INCOMPLETE" for item in report["warnings"])
+    assert any(item["code"] == "PREDECESSOR_REFERENCE_UNAVAILABLE" for item in report["warnings"])
+
+    release = load_release(SUCCESSOR)
+    release["metadata"]["predecessor"] = "v1.6"
+    release["predecessor_reference"] = {"immutable": False}
+    report = validate_release(release)
+    assert any(item["code"] == "PREDECESSOR_NOT_DECLARED_IMMUTABLE" for item in report["warnings"])
+
+
+def test_verify_baseline_bytes_edge_cases(tmp_path: Path):
+    release = load_release(EXAMPLE)
+    assert verify_baseline_bytes(release, tmp_path / "missing.json") == []
+    release = load_release(SUCCESSOR)
+    assert any(
+        item["code"] == "BASELINE_BYTES_UNAVAILABLE"
+        for item in verify_baseline_bytes(release, tmp_path / "missing.json")
+    )
+    release["baseline_reference"]["canonical_sha256"] = "short"
+    assert any(
+        item["code"] == "BASELINE_SHA256_REQUIRED" for item in verify_baseline_bytes(release, tmp_path / "missing.json")
+    )

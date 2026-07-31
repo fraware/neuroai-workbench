@@ -1,0 +1,19 @@
+{
+  "release": "v0.3.0.dev0",
+  "state": "unreleased",
+  "status": "UNRELEASED DEVELOPMENT IDENTITY ON MAIN AFTER v0.3 FOUNDATIONS MERGE; NOT A TAGGED RELEASE",
+  "instrument_version": "v4.2",
+  "normative_requirements": 78,
+  "semantic_change_from_v0_2_1": false,
+  "published_stabilization_release": "v0.2.1",
+  "withheld_claims": [
+    "Global completeness",
+    "Scientific validity or evidence authenticity",
+    "Legal or regulatory authorization",
+    "Clinical safety or effectiveness",
+    "Production-grade cybersecurity",
+    "System conformance",
+    "UNESCO endorsement or official-methodology status",
+    "Release readiness of 0.3.0"
+  ]
+}

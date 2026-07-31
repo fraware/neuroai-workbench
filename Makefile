@@ -18,7 +18,8 @@ quality:
 	$(PYTHON) scripts/agent_eval_harness.py
 
 test:
-	$(PYTHON) -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-fail-under=90
+	$(PYTHON) -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-report=json --cov-fail-under=90
+	$(PYTHON) scripts/check_module_coverage.py --coverage-json coverage.json
 
 verify:
 	mkdir -p $(ARTIFACTS)
