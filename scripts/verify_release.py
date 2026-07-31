@@ -373,7 +373,7 @@ def main() -> int:
             "lead-assessor",
             "LEAD_ASSESSOR",
             ["ASSESSMENT:*"],
-            actor="lead-assessor",
+            actor="assigner-1",
         )
         review_statement = submit_review_statement(
             workspace,
