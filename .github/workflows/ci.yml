@@ -113,6 +113,7 @@ jobs:
       - run: mkdir -p "$RUNNER_TEMP/workspace" && chmod 0777 "$RUNNER_TEMP/workspace"
       - run: |
           docker run -d --rm --name neuroai-workbench-ci \
+            -e NEUROAI_ALLOW_NETWORK=1 \
             -p 127.0.0.1:8765:8765 \
             -v "$RUNNER_TEMP/workspace:/workspace" \
             neuroai-workbench:ci

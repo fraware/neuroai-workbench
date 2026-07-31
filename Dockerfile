@@ -8,6 +8,7 @@ RUN python -m pip install --no-cache-dir . \
     && mkdir -p /workspace \
     && chown workbench:workbench /workspace
 USER workbench
+ENV NEUROAI_ALLOW_NETWORK=1
 VOLUME ["/workspace"]
 EXPOSE 8765
 ENTRYPOINT ["neuroai-workbench-entrypoint"]
