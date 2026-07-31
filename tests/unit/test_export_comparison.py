@@ -23,7 +23,7 @@ def test_export_controlled_bundle(workspace, tmp_path: Path):
 
 def test_three_pilot_comparison_has_expected_common_controls():
     root = Path(__file__).resolve().parents[2] / "examples" / "assessments"
-    paths = sorted(root.glob("*.json"))
+    paths = sorted(root.glob("PILOT-*.json"))
     cases = [(path.stem, json.loads(path.read_text(encoding="utf-8"))) for path in paths]
     report = compare_assessments(cases)
     assert report["case_count"] == 3

@@ -6,12 +6,16 @@ from pathlib import Path
 from typing import Any, cast
 
 from .events import append_event
-from .util import atomic_write_json, load_json, sha256_bytes, sha256_file, utc_now
+from .util import atomic_write_bytes, atomic_write_json, load_json, safe_join, sha256_bytes, sha256_file, utc_now
 from .workspace import Workspace
 
 
 def _index_path(case_path: Path) -> Path:
     return case_path / "evidence/index.json"
+
+
+def _objects_root(case_path: Path) -> Path:
+    return case_path / "evidence" / "objects"
 
 
 def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, Any]]:
@@ -22,12 +26,39 @@ def list_evidence_files(workspace: Workspace, case_id: str) -> list[dict[str, An
     return cast(list[dict[str, Any]], objects)
 
 
-def _next_evidence_id(assessment: dict[str, Any]) -> str:
+def _stored_filename_for(digest: str, original_filename: str) -> str:
+    safe_name = Path(original_filename).name
+    suffix = "".join(Path(safe_name).suffixes)[-24:]
+    return digest + suffix
+
+
+def _validate_stored_filename(record: dict[str, Any]) -> str | None:
+    """Return an error message when stored_filename is unsafe or inconsistent."""
+    stored = record.get("stored_filename")
+    digest = record.get("sha256")
+    if not isinstance(stored, str) or not stored:
+        return "stored_filename missing or not a string"
+    if not isinstance(digest, str) or not digest:
+        return "sha256 missing or not a string"
+    if Path(stored).name != stored or stored in {".", ".."}:
+        return "stored_filename must be a plain basename"
+    if any(sep in stored for sep in ("/", "\\", ":")):
+        return "stored_filename contains path separators or drive markers"
+    original = str(record.get("original_filename") or "")
+    expected = _stored_filename_for(digest, original or stored)
+    if stored != expected:
+        return "stored_filename does not match digest plus permitted original suffix"
+    return None
+
+
+def _next_evidence_id(assessment: dict[str, Any], index: dict[str, Any] | None = None) -> str:
     used = {row.get("evidence_id") for row in assessment.get("evidence_register", [])}
-    index = 1
-    while f"EV-{index:03d}" in used:
-        index += 1
-    return f"EV-{index:03d}"
+    if index is not None:
+        used |= {row.get("evidence_id") for row in index.get("objects", [])}
+    counter = 1
+    while f"EV-{counter:03d}" in used:
+        counter += 1
+    return f"EV-{counter:03d}"
 
 
 def add_evidence_bytes(
@@ -51,15 +82,19 @@ def add_evidence_bytes(
         raise ValueError("Invalid evidence filename")
     digest = sha256_bytes(data)
     case = workspace.case_path(case_id)
-    suffix = "".join(Path(safe_name).suffixes)[-24:]
-    stored_name = digest + suffix
-    target = case / "evidence/objects" / stored_name
+    objects_root = _objects_root(case)
+    objects_root.mkdir(parents=True, exist_ok=True)
+    stored_name = _stored_filename_for(digest, safe_name)
+    try:
+        target = safe_join(objects_root, stored_name)
+    except ValueError as exc:
+        raise ValueError("Evidence object path escapes the controlled objects root") from exc
     if not target.exists():
-        target.write_bytes(data)
+        atomic_write_bytes(target, data)
     index_path = _index_path(case)
     index = load_json(index_path)
     assessment = workspace.load_case(case_id)
-    evidence_id = _next_evidence_id(assessment)
+    evidence_id = _next_evidence_id(assessment, index)
     record = {
         "evidence_id": evidence_id,
         "original_filename": safe_name,
@@ -104,7 +139,7 @@ def add_evidence_bytes(
                 "limitations": ["Substantive appraisal and provenance verification remain unresolved."],
                 "checksum": digest,
                 "access_conditions": "Local workspace access controls apply.",
-                "access_state": "CONTROLLED PUBLIC EXTRACT",
+                "access_state": "EVALUATION NOT EXECUTED",
                 "known_holder": actor,
                 "retrieval_or_authorization_required": "No additional retrieval is required for the preserved bytes; appraisal remains required.",
                 "reproducibility_tier": "R0 NONE",
@@ -132,16 +167,76 @@ def add_evidence_base64(
 
 def verify_evidence_files(workspace: Workspace, case_id: str) -> dict[str, Any]:
     case = workspace.case_path(case_id)
+    objects_root = _objects_root(case)
     records = list_evidence_files(workspace, case_id)
     results: list[dict[str, Any]] = []
     for record in records:
-        path = case / "evidence/objects" / record["stored_filename"]
+        filename_error = _validate_stored_filename(record)
+        path_display = f"evidence/objects/{record.get('stored_filename', '')}"
+        if filename_error:
+            results.append(
+                {
+                    "evidence_id": record.get("evidence_id"),
+                    "path": path_display,
+                    "exists": False,
+                    "expected_sha256": record.get("sha256"),
+                    "actual_sha256": None,
+                    "valid": False,
+                    "error": filename_error,
+                }
+            )
+            continue
+        try:
+            path = safe_join(objects_root, str(record["stored_filename"]))
+        except ValueError:
+            results.append(
+                {
+                    "evidence_id": record.get("evidence_id"),
+                    "path": path_display,
+                    "exists": False,
+                    "expected_sha256": record.get("sha256"),
+                    "actual_sha256": None,
+                    "valid": False,
+                    "error": "stored_filename escapes the controlled objects root",
+                }
+            )
+            continue
+        # Refuse to follow symlinks that escape the objects root.
+        if path.is_symlink():
+            try:
+                resolved = path.resolve()
+                if objects_root.resolve() not in resolved.parents and resolved != objects_root.resolve():
+                    results.append(
+                        {
+                            "evidence_id": record.get("evidence_id"),
+                            "path": str(path.relative_to(case)),
+                            "exists": False,
+                            "expected_sha256": record.get("sha256"),
+                            "actual_sha256": None,
+                            "valid": False,
+                            "error": "symlink escapes the controlled objects root",
+                        }
+                    )
+                    continue
+            except OSError:
+                results.append(
+                    {
+                        "evidence_id": record.get("evidence_id"),
+                        "path": str(path.relative_to(case)),
+                        "exists": False,
+                        "expected_sha256": record.get("sha256"),
+                        "actual_sha256": None,
+                        "valid": False,
+                        "error": "symlink could not be resolved safely",
+                    }
+                )
+                continue
         exists = path.is_file()
         actual = sha256_file(path) if exists else None
         results.append(
             {
                 "evidence_id": record["evidence_id"],
-                "path": str(path.relative_to(case)),
+                "path": str(path.relative_to(case)) if exists or path.exists() else path_display,
                 "exists": exists,
                 "expected_sha256": record["sha256"],
                 "actual_sha256": actual,

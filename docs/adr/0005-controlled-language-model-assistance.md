@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed for v0.3.0. No language-model integration is enabled in v0.2.1.
+Accepted for the v0.3.0 foundation. The implemented workbench uses offline request export and response import. No direct language-model API integration is enabled.
 
 ## Context
 
@@ -32,16 +32,20 @@ External-provider adapters require a separate data-flow review covering consent,
 
 ## Initial implementation shape
 
-The first implementation should use deterministic prompt-package export and response import instead of direct model API calls. The workbench should:
+The first implementation uses deterministic prompt-package export and response import instead of direct model API calls. The workbench now:
 
-1. export a bounded, redacted JSON prompt package;
-2. produce a human-readable prompt with explicit prohibited inferences;
-3. accept a structured candidate-response file;
-4. validate the response against a non-normative assistance schema;
-5. display field-level differences;
-6. require explicit human disposition before any assessment edit;
-7. append an attributable assistance event;
-8. preserve the original assessment and response artifacts.
+1. exports a bounded JSON request containing selected structured context;
+2. includes explicit prohibited inferences and a machine-readable output contract;
+3. accepts a structured candidate-response file;
+4. validates evidence references, confidence labels, target paths, and limitations;
+5. requires an explicit human disposition record;
+6. appends attributable request, response, and disposition events;
+7. preserves the original assessment and all assistance artifacts;
+8. performs no assessment mutation and no external network call;
+9. records `disclosure_policy: ATTESTATION_PLUS_SECRET_SCAN_ONLY` after scanning the prompt and full exported context JSON for obvious secret patterns;
+10. rejects response import when the request `assessment_sha256` no longer matches the current assessment.
+
+Field-level application of accepted drafts remains a separate future workflow and must use the ordinary controlled assessment-edit path. Field-level classification is required before any provider adapter; attestation plus secret scan is not proof that context is public or synthetic.
 
 ## Consequences
 

@@ -50,9 +50,24 @@ def test_save_and_snapshot(workspace):
     assessment["assessment_metadata"]["assessment_purpose"] = "Controlled test purpose"
     report = workspace.save_case("CASE-001", assessment, require_valid=True)
     assert report["valid"] is True
+    assert report["validation_state"] == "VALID"
+    assert report["persisted_as"] == "valid"
+    persistence = json.loads((workspace.case_path("CASE-001") / "persistence.json").read_text(encoding="utf-8"))
+    assert persistence["validation_state"] == "VALID"
     snapshot = workspace.snapshot("CASE-001", label="freeze")
     assert snapshot["assessment_sha256"]
     assert (workspace.case_path("CASE-001") / "snapshots" / snapshot["snapshot_id"] / "assessment.json").is_file()
+
+
+def test_draft_invalid_save_is_labeled(workspace):
+    assessment = workspace.create_case("CASE-001", "Example case")
+    assessment["requirement_findings"] = []
+    report = workspace.save_case("CASE-001", assessment, require_valid=False)
+    assert report["valid"] is False
+    assert report["validation_state"] == "DRAFT_INVALID"
+    assert report["persisted_as"] == "draft_invalid"
+    persistence = json.loads((workspace.case_path("CASE-001") / "persistence.json").read_text(encoding="utf-8"))
+    assert persistence["persisted_as"] == "draft_invalid"
 
 
 def test_delete_requires_exact_confirmation(workspace):

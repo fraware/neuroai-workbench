@@ -21,8 +21,13 @@ The workbench preserves exact system boundaries, typed evidence states, requirem
 - Cross-case comparison without generating new substantive findings.
 - Offline browser interface with no remote assets or analytics.
 - CLI workflows suitable for CI and institutional automation.
-- Controlled landscape-release import, validation, summary, and unresolved queues.
-- Three public reference assessments covering Brain2Qwerty, FDA adaptive DBS, and BrainGate2 T15.
+- Controlled full-baseline and compact-successor observatory import, validation, summary, and reopening queues.
+- Four public reference assessments covering Brain2Qwerty, FDA adaptive DBS, BrainGate2 T15, and PRIMA.
+- Loss-aware conversion from programme completed-assessment records into the native v4.2 object model.
+- Deterministic human-readable Markdown assessment, evidence-gap, and review reports.
+- Attributable local review assignments, immutable agreement/disagreement statements, scoped human dispositions, and tamper verification.
+- Protected-evidence metadata requests and out-of-band custodian-response records with no evidence-byte transfer.
+- Provider-neutral GPT assistance request, response, disposition, and integrity records with no direct model API call or automatic assessment mutation.
 
 ## Quick start
 
@@ -39,7 +44,7 @@ neuroai-workbench serve workspaces/demo
 
 Open `http://127.0.0.1:8765`.
 
-The reference server binds to localhost by default. It has no authentication, authorization, multi-tenant isolation, or TLS and must not be exposed directly to an untrusted network.
+The reference server binds to localhost by default. It has no authentication, authorization, multi-tenant isolation, or TLS and must not be exposed directly to an untrusted network. Non-loopback binding is an expert escape hatch that requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`; `/api/health` reports configuration status without returning absolute workspace paths.
 
 ## Import a completed assessment
 
@@ -51,6 +56,32 @@ neuroai-workbench validate \
   --workspace workspaces/demo \
   --case-id PILOT-02-FDA-ADBS-v4.1.4
 ```
+
+
+## Adapt the PRIMA programme record
+
+```bash
+neuroai-workbench programme-adapt \
+  examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json \
+  artifacts/PRIMA.native.json \
+  --report artifacts/PRIMA.adapter-report.json
+
+neuroai-workbench report \
+  --assessment artifacts/PRIMA.native.json \
+  --output artifacts/PRIMA.md
+```
+
+## Collaborative review
+
+The local reference workflow records claimed reviewer identities, typed roles, scoped assignments, agreement or disagreement statements, and human dispositions as separate integrity-addressed records. It does not authenticate a person or institution, and no review record edits the assessment automatically. See [collaborative review](docs/reference/review.md).
+
+## Protected-evidence metadata exchange
+
+The workbench can prepare a minimum-necessary custodian request and record an out-of-band response without transporting evidence bytes or local paths. A request does not create a disclosure duty or establish receipt. See [protected-evidence exchange](docs/reference/evidence-exchange.md).
+
+## Controlled GPT assistance
+
+The default workbench makes no external model call. It exports bounded structured requests, validates imported candidate responses, records exact provider and model identifiers, requires human disposition, and preserves assessment bytes unchanged. See [controlled model assistance](docs/reference/assistance.md).
 
 ## Register evidence bytes
 
@@ -84,7 +115,7 @@ neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 
 ## Repository status
 
-`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
+`v0.2.1` is the repository-stabilization candidate for controlled local technical pilots. The `agent/v0.3.0-foundations` branch adds review-ready foundations for PRIMA, observatory v1.7, deterministic reports, attributable collaborative review, and controlled provider-neutral GPT assistance without changing the normative v4.2 kernel. The v4.2 normative requirement semantics remain unchanged from v0.2.0. Production security, institutional adoption, substantive evidence validity, system conformance, regulatory authorization, clinical advice, and UNESCO endorsement remain outside the software release determination.
 
 ## License
 
