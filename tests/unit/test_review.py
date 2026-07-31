@@ -15,7 +15,6 @@ from neuroai_workbench.review import (
 )
 from neuroai_workbench.workspace import Workspace
 
-
 PRIMA = Path("examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json")
 
 
@@ -35,9 +34,7 @@ def test_review_lifecycle_is_attributable_and_non_mutating(tmp_path: Path) -> No
     create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
-    create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
-    )
+    create_review_assignment(workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1")
     statement = submit_review_statement(
         workspace,
         case_id,
@@ -110,12 +107,8 @@ def test_disposition_requires_decision_role_and_is_single_use(tmp_path: Path) ->
         dispose_review_statement(
             workspace, case_id, statement_id, "ACCEPTED", "Accepted after review.", actor="reviewer-1"
         )
-    create_review_assignment(
-        workspace, case_id, "lead-1", "DECISION_AUTHORITY", ["ASSESSMENT:*"], actor="assigner-1"
-    )
-    dispose_review_statement(
-        workspace, case_id, statement_id, "ACCEPTED", "Accepted after review.", actor="lead-1"
-    )
+    create_review_assignment(workspace, case_id, "lead-1", "DECISION_AUTHORITY", ["ASSESSMENT:*"], actor="assigner-1")
+    dispose_review_statement(workspace, case_id, statement_id, "ACCEPTED", "Accepted after review.", actor="lead-1")
     with pytest.raises(ValueError, match="already recorded"):
         dispose_review_statement(
             workspace, case_id, statement_id, "REJECTED", "A second disposition is forbidden.", actor="lead-1"
@@ -164,9 +157,7 @@ def test_review_statement_becomes_stale_without_becoming_invalid(tmp_path: Path)
     create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
-    submit_review_statement(
-        workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
-    )
+    submit_review_statement(workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written.")
 
     assessment["assessment_metadata"]["title"] = "Updated title after review"
     workspace.save_case(case_id, assessment, actor="lead-1", require_valid=True)
@@ -185,9 +176,7 @@ def test_dispose_refuses_stale_statement_hash(tmp_path: Path) -> None:
     create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
-    create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
-    )
+    create_review_assignment(workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1")
     statement_id = submit_review_statement(
         workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
     )["statement"]["statement_id"]
@@ -207,9 +196,7 @@ def test_dispose_refuses_stale_statement_hash(tmp_path: Path) -> None:
 def test_decision_role_self_assignment_is_refused(tmp_path: Path) -> None:
     workspace, case_id = _workspace(tmp_path)
     with pytest.raises(ValueError, match="Self-assignment"):
-        create_review_assignment(
-            workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1"
-        )
+        create_review_assignment(workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1")
     assignment = create_review_assignment(
         workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
     )
@@ -226,9 +213,7 @@ def test_review_input_and_integrity_error_branches(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="Review scope"):
         create_review_assignment(workspace, case_id, "reviewer-x", "OBSERVER", [], actor="lead-1")
     with pytest.raises(ValueError, match="Invalid actor ID"):
-        create_review_assignment(
-            workspace, case_id, "reviewer-x", "OBSERVER", ["ASSESSMENT:*"], actor="not valid"
-        )
+        create_review_assignment(workspace, case_id, "reviewer-x", "OBSERVER", ["ASSESSMENT:*"], actor="not valid")
     with pytest.raises(ValueError, match="Unsupported scope target type"):
         create_review_assignment(workspace, case_id, "reviewer-x", "OBSERVER", ["MODEL:*"], actor="lead-1")
     with pytest.raises(ValueError, match="Unknown finding target"):
@@ -238,9 +223,7 @@ def test_review_input_and_integrity_error_branches(tmp_path: Path) -> None:
         workspace, case_id, "reviewer-x", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
     with pytest.raises(ValueError, match="Unsupported review position"):
-        submit_review_statement(
-            workspace, case_id, "reviewer-x", "FINDING", finding_id, "MAYBE", "Rationale"
-        )
+        submit_review_statement(workspace, case_id, "reviewer-x", "FINDING", finding_id, "MAYBE", "Rationale")
     with pytest.raises(ValueError, match="must not be empty"):
         submit_review_statement(workspace, case_id, "reviewer-x", "FINDING", finding_id, "AGREE", " ")
     with pytest.raises(ValueError, match="actor must match"):
@@ -251,17 +234,11 @@ def test_review_input_and_integrity_error_branches(tmp_path: Path) -> None:
         submit_review_statement(workspace, case_id, "reviewer-x", "MODEL", finding_id, "AGREE", "Rationale")
 
     with pytest.raises(ValueError, match="Unsupported review disposition"):
-        dispose_review_statement(
-            workspace, case_id, "RS-NOT-THERE", "OVERRULED", "Rationale", actor="lead-1"
-        )
+        dispose_review_statement(workspace, case_id, "RS-NOT-THERE", "OVERRULED", "Rationale", actor="lead-1")
     with pytest.raises(ValueError, match="must not be empty"):
-        dispose_review_statement(
-            workspace, case_id, "RS-NOT-THERE", "DEFERRED", " ", actor="lead-1"
-        )
+        dispose_review_statement(workspace, case_id, "RS-NOT-THERE", "DEFERRED", " ", actor="lead-1")
     with pytest.raises(FileNotFoundError, match="Unknown review statement"):
-        dispose_review_statement(
-            workspace, case_id, "RS-NOT-THERE", "DEFERRED", "Rationale", actor="lead-1"
-        )
+        dispose_review_statement(workspace, case_id, "RS-NOT-THERE", "DEFERRED", "Rationale", actor="lead-1")
 
 
 def test_duplicate_timestamp_records_are_rejected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -282,9 +259,7 @@ def test_duplicate_timestamp_records_are_rejected(tmp_path: Path, monkeypatch: p
             actor="lead-1",
         )
 
-    submit_review_statement(
-        workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
-    )
+    submit_review_statement(workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written.")
     with pytest.raises(ValueError, match="identical review statement"):
         submit_review_statement(
             workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
@@ -297,9 +272,7 @@ def test_disposition_rejects_tampered_statement(tmp_path: Path) -> None:
     create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
-    create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
-    )
+    create_review_assignment(workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1")
     result = submit_review_statement(
         workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
     )
@@ -354,9 +327,7 @@ def test_review_verifier_reports_semantic_record_corruption(tmp_path: Path) -> N
     assignment = create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
-    create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
-    )
+    create_review_assignment(workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1")
     statement = submit_review_statement(
         workspace,
         case_id,

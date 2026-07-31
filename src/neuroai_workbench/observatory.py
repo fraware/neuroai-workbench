@@ -89,6 +89,7 @@ def _ids(records: list[dict[str, Any]], field: str) -> list[str]:
             values.append(value)
     return values
 
+
 def _parse_iso_date(value: Any) -> str | None:
     if not isinstance(value, str) or len(value) < 10:
         return None
@@ -442,9 +443,7 @@ def queue_release(value: dict[str, Any]) -> dict[str, Any]:
 def _ensure_observatory_version(version: str) -> str:
     safe = ensure_identifier(str(version), "observatory version")
     if _WINDOWS_RESERVED_NAME.fullmatch(safe):
-        raise ValueError(
-            f"Invalid observatory version {version!r}; Windows reserved device names are refused."
-        )
+        raise ValueError(f"Invalid observatory version {version!r}; Windows reserved device names are refused.")
     return safe
 
 

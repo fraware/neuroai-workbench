@@ -56,36 +56,40 @@ def render_assessment_markdown(assessment: dict[str, Any]) -> str:
     ]
 
     for decision in decisions:
-        lines.extend([
-            f"### {_escape(decision.get('decision_object_type'))}: {_escape(decision.get('decision_state'))}",
-            "",
-            _escape(decision.get("strongest_supported_claim")),
-            "",
-            "**Scope**",
-            "",
-            f"`{_escape(decision.get('scope'))}`",
-            "",
-            "**Conditions**",
-            "",
-            _bullets(decision.get("conditions", [])),
-            "",
-            "**Prohibited inferences**",
-            "",
-            _bullets(decision.get("prohibited_inferences", [])),
-            "",
-            "**Reopening triggers**",
-            "",
-            _bullets(decision.get("reopening_triggers", [])),
-            "",
-        ])
+        lines.extend(
+            [
+                f"### {_escape(decision.get('decision_object_type'))}: {_escape(decision.get('decision_state'))}",
+                "",
+                _escape(decision.get("strongest_supported_claim")),
+                "",
+                "**Scope**",
+                "",
+                f"`{_escape(decision.get('scope'))}`",
+                "",
+                "**Conditions**",
+                "",
+                _bullets(decision.get("conditions", [])),
+                "",
+                "**Prohibited inferences**",
+                "",
+                _bullets(decision.get("prohibited_inferences", [])),
+                "",
+                "**Reopening triggers**",
+                "",
+                _bullets(decision.get("reopening_triggers", [])),
+                "",
+            ]
+        )
 
     counts = summary["counts"]
-    lines.extend([
-        "## Assessment state",
-        "",
-        "| Measure | Count |",
-        "|---|---:|",
-    ])
+    lines.extend(
+        [
+            "## Assessment state",
+            "",
+            "| Measure | Count |",
+            "|---|---:|",
+        ]
+    )
     for label, key in (
         ("Claims", "claims"),
         ("Evidence objects", "evidence_objects"),
@@ -100,42 +104,46 @@ def render_assessment_markdown(assessment: dict[str, Any]) -> str:
     ):
         lines.append(f"| {label} | {counts.get(key, 0)} |")
 
-    lines.extend([
-        "",
-        f"Mechanical validation: `{'VALID' if validation['valid'] else 'INVALID'}`. Schema issues: {len(validation['schema_issues'])}. Semantic issues: {len(validation['semantic_issues'])}.",
-        "",
-        "## System boundary",
-        "",
-        f"**Family:** {_escape(system.get('system_family'))}",
-        "",
-        f"**Intended uses:**\n\n{_bullets(system.get('intended_uses', []))}",
-        "",
-        f"**Populations:**\n\n{_bullets(system.get('populations', []))}",
-        "",
-        f"**Contexts:**\n\n{_bullets(system.get('contexts', []))}",
-        "",
-        f"**Material dependencies:**\n\n{_bullets(system.get('material_dependencies', []))}",
-        "",
-        f"**Unresolved identity questions:**\n\n{_bullets(system.get('unresolved_identity_questions', []))}",
-        "",
-        "## Claim adjudication",
-        "",
-        "| Claim ID | Type | Status | Strongest supported claim |",
-        "|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            f"Mechanical validation: `{'VALID' if validation['valid'] else 'INVALID'}`. Schema issues: {len(validation['schema_issues'])}. Semantic issues: {len(validation['semantic_issues'])}.",
+            "",
+            "## System boundary",
+            "",
+            f"**Family:** {_escape(system.get('system_family'))}",
+            "",
+            f"**Intended uses:**\n\n{_bullets(system.get('intended_uses', []))}",
+            "",
+            f"**Populations:**\n\n{_bullets(system.get('populations', []))}",
+            "",
+            f"**Contexts:**\n\n{_bullets(system.get('contexts', []))}",
+            "",
+            f"**Material dependencies:**\n\n{_bullets(system.get('material_dependencies', []))}",
+            "",
+            f"**Unresolved identity questions:**\n\n{_bullets(system.get('unresolved_identity_questions', []))}",
+            "",
+            "## Claim adjudication",
+            "",
+            "| Claim ID | Type | Status | Strongest supported claim |",
+            "|---|---|---|---|",
+        ]
+    )
     for claim in claims:
         lines.append(
             f"| {_escape(claim.get('claim_id'))} | {_escape(claim.get('claim_type'))} | "
             f"{_escape(claim.get('claim_status'))} | {_escape(claim.get('strongest_supported_claim'))} |"
         )
 
-    lines.extend([
-        "",
-        "## Evidence register",
-        "",
-        "| Evidence ID | Type | State | Title | Strongest supported claim |",
-        "|---|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Evidence register",
+            "",
+            "| Evidence ID | Type | State | Title | Strongest supported claim |",
+            "|---|---|---|---|---|",
+        ]
+    )
     for item in evidence:
         lines.append(
             f"| {_escape(item.get('evidence_id'))} | {_escape(item.get('evidence_type'))} | "
@@ -143,13 +151,15 @@ def render_assessment_markdown(assessment: dict[str, Any]) -> str:
             f"{_escape(item.get('strongest_supported_claim'))} |"
         )
 
-    lines.extend([
-        "",
-        "## Endpoint register",
-        "",
-        "| Endpoint ID | Endpoint | Result | Denominator IDs | Boundary |",
-        "|---|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Endpoint register",
+            "",
+            "| Endpoint ID | Endpoint | Result | Denominator IDs | Boundary |",
+            "|---|---|---|---|---|",
+        ]
+    )
     for endpoint in endpoints:
         lines.append(
             f"| {_escape(endpoint.get('endpoint_id'))} | {_escape(endpoint.get('endpoint'))} | "
@@ -163,12 +173,14 @@ def render_assessment_markdown(assessment: dict[str, Any]) -> str:
     lines.extend(["", "## Requirement findings", ""])
     for module_id in sorted(by_module):
         rows = by_module[module_id]
-        lines.extend([
-            f"### {module_id}",
-            "",
-            "| Requirement | Priority | Applicability | Finding | Status | Required action |",
-            "|---|---|---|---|---|---|",
-        ])
+        lines.extend(
+            [
+                f"### {module_id}",
+                "",
+                "| Requirement | Priority | Applicability | Finding | Status | Required action |",
+                "|---|---|---|---|---|---|",
+            ]
+        )
         for row in rows:
             lines.append(
                 f"| {_escape(row.get('requirement_id'))} | {_escape(row.get('priority'))} | "
@@ -177,32 +189,36 @@ def render_assessment_markdown(assessment: dict[str, Any]) -> str:
             )
         lines.append("")
 
-    lines.extend([
-        "## Evidence gaps",
-        "",
-        "| Gap ID | Priority | State | Missing evidence | Closure criterion |",
-        "|---|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "## Evidence gaps",
+            "",
+            "| Gap ID | Priority | State | Missing evidence | Closure criterion |",
+            "|---|---|---|---|---|",
+        ]
+    )
     for gap in gaps:
         lines.append(
             f"| {_escape(gap.get('gap_id'))} | {_escape(gap.get('priority'))} | {_escape(gap.get('state'))} | "
             f"{_escape(gap.get('missing_evidence'))} | {_escape(gap.get('closure_criterion'))} |"
         )
 
-    lines.extend([
-        "",
-        "## Validation appendix",
-        "",
-        f"- Assessment canonical SHA-256: `{sha256_bytes(canonical_json_bytes(assessment))}`",
-        f"- Schema issues: {len(validation['schema_issues'])}",
-        f"- Semantic issues: {len(validation['semantic_issues'])}",
-        f"- Warnings: {len(validation['warnings'])}",
-        "",
-        "### Recorded limitations",
-        "",
-        _bullets(metadata.get("limitations", [])),
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Validation appendix",
+            "",
+            f"- Assessment canonical SHA-256: `{sha256_bytes(canonical_json_bytes(assessment))}`",
+            f"- Schema issues: {len(validation['schema_issues'])}",
+            f"- Semantic issues: {len(validation['semantic_issues'])}",
+            f"- Warnings: {len(validation['warnings'])}",
+            "",
+            "### Recorded limitations",
+            "",
+            _bullets(metadata.get("limitations", [])),
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 

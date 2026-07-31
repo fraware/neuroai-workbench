@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from .assistance import scan_sensitive_text
 from .events import append_event, verify_chain
@@ -61,11 +61,7 @@ def _assessment_index(assessment: dict[str, Any]) -> tuple[dict[str, dict[str, A
         for item in assessment.get("evidence_register", [])
         if item.get("evidence_id")
     }
-    gaps = {
-        str(item.get("gap_id")): item
-        for item in assessment.get("gap_register", [])
-        if item.get("gap_id")
-    }
+    gaps = {str(item.get("gap_id")): item for item in assessment.get("gap_register", []) if item.get("gap_id")}
     return evidence, gaps
 
 
@@ -139,9 +135,7 @@ def create_exchange_request(
     if not requested_materials:
         raise ValueError("At least one requested material is required")
     requested_materials = [_clean_text(value, "requested material") for value in requested_materials]
-    disclosure_constraints = [
-        _clean_text(value, "disclosure constraint") for value in (disclosure_constraints or [])
-    ]
+    disclosure_constraints = [_clean_text(value, "disclosure constraint") for value in (disclosure_constraints or [])]
 
     assessment = workspace.load_case(case_id)
     evidence, gaps = _assessment_index(assessment)
@@ -156,15 +150,17 @@ def create_exchange_request(
 
     assessment_path = workspace.case_path(case_id) / "assessment.json"
     created_at = utc_now()
-    seed = canonical_json_bytes({
-        "case_id": case_id,
-        "evidence_ids": selected_evidence_ids,
-        "gap_ids": selected_gap_ids,
-        "recipient": recipient,
-        "purpose": purpose,
-        "created_at": created_at,
-        "assessment_sha256": sha256_file(assessment_path),
-    })
+    seed = canonical_json_bytes(
+        {
+            "case_id": case_id,
+            "evidence_ids": selected_evidence_ids,
+            "gap_ids": selected_gap_ids,
+            "recipient": recipient,
+            "purpose": purpose,
+            "created_at": created_at,
+            "assessment_sha256": sha256_file(assessment_path),
+        }
+    )
     request_id = f"EX-{created_at.replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
     request = {
         "schema_version": EXCHANGE_SCHEMA_VERSION,
@@ -217,7 +213,7 @@ def load_exchange_request(workspace: Workspace, case_id: str, request_id: str) -
     path = _exchange_root(workspace, case_id) / "requests" / f"{request_id}.json"
     if not path.is_file():
         raise FileNotFoundError(f"Unknown evidence exchange request {request_id}")
-    return json.loads(path.read_text(encoding="utf-8"))
+    return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
 
 
 def record_exchange_response(
@@ -250,9 +246,7 @@ def record_exchange_response(
         raise ValueError(f"Response state {response_state} cannot include material references")
 
     normalized_materials: list[dict[str, Any]] = []
-    requested_ids = {
-        str(item.get("evidence_id")) for item in request.get("selected_evidence_metadata", [])
-    }
+    requested_ids = {str(item.get("evidence_id")) for item in request.get("selected_evidence_metadata", [])}
     for index, item in enumerate(materials):
         if not isinstance(item, dict):
             raise ValueError(f"materials[{index}] must be an object")
@@ -265,13 +259,15 @@ def record_exchange_response(
         digest = item.get("sha256")
         if digest is not None and (not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)):
             raise ValueError(f"materials[{index}].sha256 must be a lowercase SHA-256 hex digest")
-        normalized_materials.append({
-            "evidence_id": evidence_id,
-            "holder_reference": holder_reference,
-            "sha256": digest,
-            "bytes_received_by_workbench": False,
-            "verification_state": "NOT_VERIFIED_BY_WORKBENCH",
-        })
+        normalized_materials.append(
+            {
+                "evidence_id": evidence_id,
+                "holder_reference": holder_reference,
+                "sha256": digest,
+                "bytes_received_by_workbench": False,
+                "verification_state": "NOT_VERIFIED_BY_WORKBENCH",
+            }
+        )
 
     root = _exchange_root(workspace, case_id)
     output = root / "responses" / f"{request_id}.json"
@@ -404,15 +400,17 @@ def render_exchange_markdown(workspace: Workspace, case_id: str, request_id: str
     lines.extend(["", "## Requested materials", ""])
     lines.extend(f"- {value}" for value in request.get("requested_materials", []))
     if response:
-        lines.extend([
-            "",
-            "## Recorded response",
-            "",
-            f"- Holder: {response.get('holder')}",
-            f"- State: `{response.get('response_state')}`",
-            f"- Conditions: {', '.join(response.get('conditions', [])) or 'None recorded'}",
-            f"- Notes: {response.get('notes') or 'None recorded'}",
-        ])
+        lines.extend(
+            [
+                "",
+                "## Recorded response",
+                "",
+                f"- Holder: {response.get('holder')}",
+                f"- State: `{response.get('response_state')}`",
+                f"- Conditions: {', '.join(response.get('conditions', [])) or 'None recorded'}",
+                f"- Notes: {response.get('notes') or 'None recorded'}",
+            ]
+        )
     if verification["errors"]:
         lines.extend(["", "## Integrity errors", ""])
         lines.extend(f"- {value}" for value in verification["errors"])

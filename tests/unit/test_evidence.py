@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 
@@ -62,12 +61,8 @@ def test_empty_evidence_is_rejected(workspace):
 
 def test_unlinked_evidence_ids_allocate_from_index_and_register(workspace):
     workspace.create_case("CASE-001", "Example case")
-    first = add_evidence_bytes(
-        workspace, "CASE-001", "a.txt", b"one", title="A", link_to_assessment=False
-    )
-    second = add_evidence_bytes(
-        workspace, "CASE-001", "b.txt", b"two", title="B", link_to_assessment=False
-    )
+    first = add_evidence_bytes(workspace, "CASE-001", "a.txt", b"one", title="A", link_to_assessment=False)
+    second = add_evidence_bytes(workspace, "CASE-001", "b.txt", b"two", title="B", link_to_assessment=False)
     assert first["evidence_id"] == "EV-001"
     assert second["evidence_id"] == "EV-002"
 

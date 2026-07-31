@@ -68,11 +68,13 @@ def test_exchange_response_records_out_of_band_reference_without_mutation(tmp_pa
         "AVAILABLE_UNDER_CONDITIONS",
         holder="PRIMA evidence custodian",
         conditions=["Independent review agreement required"],
-        materials=[{
-            "evidence_id": "EV-PR-001",
-            "holder_reference": "custodian-record-2026-001",
-            "sha256": "a" * 64,
-        }],
+        materials=[
+            {
+                "evidence_id": "EV-PR-001",
+                "holder_reference": "custodian-record-2026-001",
+                "sha256": "a" * 64,
+            }
+        ],
         notes="Evidence remains with the holder and has not been transferred.",
         actor="lead-assessor",
     )
@@ -156,13 +158,9 @@ def test_exchange_rejects_unknown_records_sensitive_text_and_invalid_materials(t
     with pytest.raises(FileNotFoundError, match="Unknown evidence exchange request"):
         load_exchange_request(workspace, case_id, "EX-NOT-THERE")
     with pytest.raises(ValueError, match="Unsupported exchange response state"):
-        record_exchange_response(
-            workspace, case_id, request["request_id"], "RECEIVED", holder="Custodian"
-        )
+        record_exchange_response(workspace, case_id, request["request_id"], "RECEIVED", holder="Custodian")
     with pytest.raises(ValueError, match="requires at least one material"):
-        record_exchange_response(
-            workspace, case_id, request["request_id"], "PROVIDED_OUT_OF_BAND", holder="Custodian"
-        )
+        record_exchange_response(workspace, case_id, request["request_id"], "PROVIDED_OUT_OF_BAND", holder="Custodian")
     with pytest.raises(ValueError, match="cannot include material references"):
         record_exchange_response(
             workspace,
@@ -206,11 +204,13 @@ def test_exchange_rejects_unknown_records_sensitive_text_and_invalid_materials(t
             request["request_id"],
             "PROVIDED_OUT_OF_BAND",
             holder="Custodian",
-            materials=[{
-                "evidence_id": "EV-PR-001",
-                "holder_reference": "reference-1",
-                "sha256": "NOT-A-DIGEST",
-            }],
+            materials=[
+                {
+                    "evidence_id": "EV-PR-001",
+                    "holder_reference": "reference-1",
+                    "sha256": "NOT-A-DIGEST",
+                }
+            ],
         )
 
 
@@ -234,9 +234,7 @@ def test_exchange_detects_tampering_duplicate_response_and_stale_assessment(tmp_
         notes="The holder declined the request.",
     )
     with pytest.raises(ValueError, match="already recorded"):
-        record_exchange_response(
-            workspace, case_id, request["request_id"], "DECLINED", holder="Custodian"
-        )
+        record_exchange_response(workspace, case_id, request["request_id"], "DECLINED", holder="Custodian")
 
     assessment = workspace.load_case(case_id)
     assessment["assessment_metadata"]["title"] = "Updated after exchange request"
@@ -307,9 +305,7 @@ def test_exchange_response_rejects_tampered_request(tmp_path: Path) -> None:
     request["purpose"] = "Tampered purpose"
     path.write_text(json.dumps(request), encoding="utf-8")
     with pytest.raises(ValueError, match="request hash is invalid"):
-        record_exchange_response(
-            workspace, case_id, result["request"]["request_id"], "DECLINED", holder="Custodian"
-        )
+        record_exchange_response(workspace, case_id, result["request"]["request_id"], "DECLINED", holder="Custodian")
 
 
 def test_exchange_verifier_reports_boundary_corruption_and_event_tampering(tmp_path: Path) -> None:

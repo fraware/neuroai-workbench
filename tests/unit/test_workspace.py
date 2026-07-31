@@ -69,6 +69,7 @@ def test_draft_invalid_save_is_labeled(workspace):
     persistence = json.loads((workspace.case_path("CASE-001") / "persistence.json").read_text(encoding="utf-8"))
     assert persistence["persisted_as"] == "draft_invalid"
 
+
 def test_delete_requires_exact_confirmation(workspace):
     workspace.create_case("CASE-001", "Example case")
     with pytest.raises(WorkspaceError):

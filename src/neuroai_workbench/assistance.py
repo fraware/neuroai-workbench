@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from .events import append_event
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file, utc_now
@@ -37,7 +37,9 @@ def scan_sensitive_text(text: str) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     for code, pattern in SENSITIVE_PATTERNS:
         if pattern.search(text):
-            findings.append({"code": code, "message": f"Prompt contains a blocked {code.lower().replace('_', ' ')} pattern."})
+            findings.append(
+                {"code": code, "message": f"Prompt contains a blocked {code.lower().replace('_', ' ')} pattern."}
+            )
     return findings
 
 
@@ -68,7 +70,13 @@ def _selected_context(
         "assessment_metadata": assessment.get("assessment_metadata", {}),
         "system_identity": {
             key: assessment.get("system_profile", {}).get(key)
-            for key in ("system_id", "system_name", "system_family", "configuration_id", "configuration_effective_period")
+            for key in (
+                "system_id",
+                "system_name",
+                "system_family",
+                "configuration_id",
+                "configuration_effective_period",
+            )
         },
         "selected_evidence": [
             {
@@ -131,13 +139,15 @@ def create_assistance_request(
             f"{json.dumps(context_findings, ensure_ascii=False)}"
         )
     assessment_path = workspace.case_path(case_id) / "assessment.json"
-    seed = canonical_json_bytes({
-        "case_id": case_id,
-        "task_type": task_type,
-        "prompt": prompt,
-        "assessment_sha256": sha256_file(assessment_path),
-        "context": context,
-    })
+    seed = canonical_json_bytes(
+        {
+            "case_id": case_id,
+            "task_type": task_type,
+            "prompt": prompt,
+            "assessment_sha256": sha256_file(assessment_path),
+            "context": context,
+        }
+    )
     request_id = f"AI-{utc_now().replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
     request = {
         "schema_version": ASSISTANCE_SCHEMA_VERSION,
@@ -174,12 +184,17 @@ def create_assistance_request(
     root = _case_assistance_dir(workspace, case_id)
     output = root / "requests" / f"{request_id}.json"
     atomic_write_json(output, request)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "AI_ASSISTANCE_REQUEST_CREATED", actor, {
-        "request_id": request_id,
-        "task_type": task_type,
-        "request_sha256": request["request_sha256"],
-        "assessment_sha256": request["assessment_sha256"],
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "AI_ASSISTANCE_REQUEST_CREATED",
+        actor,
+        {
+            "request_id": request_id,
+            "task_type": task_type,
+            "request_sha256": request["request_sha256"],
+            "assessment_sha256": request["assessment_sha256"],
+        },
+    )
     return {"request": request, "path": str(output)}
 
 
@@ -188,7 +203,7 @@ def load_assistance_request(workspace: Workspace, case_id: str, request_id: str)
     path = _case_assistance_dir(workspace, case_id) / "requests" / f"{request_id}.json"
     if not path.is_file():
         raise FileNotFoundError(f"Unknown assistance request {request_id}")
-    return json.loads(path.read_text(encoding="utf-8"))
+    return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
 
 
 def _validate_model_output(output: Any, assessment: dict[str, Any], request: dict[str, Any]) -> list[str]:
@@ -276,12 +291,17 @@ def record_assistance_response(
     if path.exists():
         raise ValueError(f"A response is already recorded for {request_id}")
     atomic_write_json(path, response)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "AI_ASSISTANCE_RESPONSE_RECORDED", actor, {
-        "request_id": request_id,
-        "response_sha256": response["response_sha256"],
-        "provider": provider,
-        "model": model,
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "AI_ASSISTANCE_RESPONSE_RECORDED",
+        actor,
+        {
+            "request_id": request_id,
+            "response_sha256": response["response_sha256"],
+            "provider": provider,
+            "model": model,
+        },
+    )
     return {"response": response, "path": str(path)}
 
 
@@ -318,11 +338,16 @@ def dispose_assistance_response(
     if path.exists():
         raise ValueError(f"A disposition is already recorded for {request_id}")
     atomic_write_json(path, record)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "AI_ASSISTANCE_RESPONSE_DISPOSED", actor, {
-        "request_id": request_id,
-        "disposition": disposition,
-        "disposition_sha256": record["disposition_sha256"],
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "AI_ASSISTANCE_RESPONSE_DISPOSED",
+        actor,
+        {
+            "request_id": request_id,
+            "disposition": disposition,
+            "disposition_sha256": record["disposition_sha256"],
+        },
+    )
     return {"disposition": record, "path": str(path)}
 
 

@@ -418,49 +418,58 @@ def main(argv: list[str] | None = None) -> int:
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
         elif args.command == "programme-adapt":
-            result = adapt_programme_file(
+            adapted = adapt_programme_file(
                 Path(args.source),
                 Path(args.output),
                 Path(args.report) if args.report else None,
             )
-            emit(result.report)
-            return 0 if result.report["validation"]["valid"] else 1
+            emit(adapted.report)
+            return 0 if adapted.report["validation"]["valid"] else 1
         elif args.command == "report":
             emit(write_assessment_markdown(_load_input(args), Path(args.output)))
         elif args.command == "gap-report":
             emit(write_gap_markdown(_load_input(args), Path(args.output)))
         elif args.command == "review-assign":
-            emit(create_review_assignment(
-                _workspace(args.workspace),
-                args.case_id,
-                args.reviewer_id,
-                args.role,
-                args.scope,
-                actor=args.actor,
-            ), Path(args.out) if args.out else None)
+            emit(
+                create_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.reviewer_id,
+                    args.role,
+                    args.scope,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "review-submit":
-            emit(submit_review_statement(
-                _workspace(args.workspace),
-                args.case_id,
-                args.reviewer_id,
-                args.target_type,
-                args.target_id,
-                args.position,
-                args.rationale,
-                evidence_ids=args.evidence_id,
-                conditions=args.condition,
-                proposed_change=args.proposed_change,
-                actor=args.actor,
-            ), Path(args.out) if args.out else None)
+            emit(
+                submit_review_statement(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.reviewer_id,
+                    args.target_type,
+                    args.target_id,
+                    args.position,
+                    args.rationale,
+                    evidence_ids=args.evidence_id,
+                    conditions=args.condition,
+                    proposed_change=args.proposed_change,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "review-dispose":
-            emit(dispose_review_statement(
-                _workspace(args.workspace),
-                args.case_id,
-                args.statement_id,
-                args.disposition,
-                args.rationale,
-                actor=args.actor,
-            ), Path(args.out) if args.out else None)
+            emit(
+                dispose_review_statement(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.statement_id,
+                    args.disposition,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "review-verify":
             result = verify_review_records(_workspace(args.workspace), args.case_id)
             emit(result, Path(args.out) if args.out else None)
@@ -470,11 +479,13 @@ def main(argv: list[str] | None = None) -> int:
             output.parent.mkdir(parents=True, exist_ok=True)
             text = render_review_markdown(_workspace(args.workspace), args.case_id)
             output.write_text(text, encoding="utf-8")
-            emit({
-                "output": str(output),
-                "sha256": sha256_file(output),
-                "boundary": "The review report attributes local records and creates no assessment or authority change.",
-            })
+            emit(
+                {
+                    "output": str(output),
+                    "sha256": sha256_file(output),
+                    "boundary": "The review report attributes local records and creates no assessment or authority change.",
+                }
+            )
         elif args.command == "exchange-create":
             emit(
                 create_exchange_request(
@@ -522,11 +533,13 @@ def main(argv: list[str] | None = None) -> int:
                 render_exchange_markdown(_workspace(args.workspace), args.case_id, args.request_id),
                 encoding="utf-8",
             )
-            emit({
-                "output": str(output),
-                "sha256": sha256_file(output),
-                "boundary": "The exchange report contains metadata only and does not establish evidence receipt.",
-            })
+            emit(
+                {
+                    "output": str(output),
+                    "sha256": sha256_file(output),
+                    "boundary": "The exchange report contains metadata only and does not establish evidence receipt.",
+                }
+            )
         elif args.command == "assist-request":
             result = create_assistance_request(
                 _workspace(args.workspace),

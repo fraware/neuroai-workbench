@@ -118,14 +118,16 @@ def create_review_assignment(
         if target_id != "*":
             _validate_target(assessment, target_type, target_id)
 
-    seed = canonical_json_bytes({
-        "case_id": case_id,
-        "reviewer_id": reviewer_id,
-        "role": role,
-        "scope": sorted(set(scope)),
-        "actor": actor,
-        "assessment_sha256": sha256_file(workspace.case_path(case_id) / "assessment.json"),
-    })
+    seed = canonical_json_bytes(
+        {
+            "case_id": case_id,
+            "reviewer_id": reviewer_id,
+            "role": role,
+            "scope": sorted(set(scope)),
+            "actor": actor,
+            "assessment_sha256": sha256_file(workspace.case_path(case_id) / "assessment.json"),
+        }
+    )
     assignment_id = f"RA-{utc_now().replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
     record = {
         "schema_version": REVIEW_SCHEMA_VERSION,
@@ -140,8 +142,7 @@ def create_review_assignment(
         "assessment_sha256": sha256_file(workspace.case_path(case_id) / "assessment.json"),
         "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "identity_boundary": (
-            "The workbench records a claimed local identity and role; "
-            "it does not authenticate a person or institution."
+            "The workbench records a claimed local identity and role; it does not authenticate a person or institution."
         ),
     }
     record["assignment_sha256"] = _hash_record(record, "assignment_sha256")
@@ -150,12 +151,17 @@ def create_review_assignment(
     if output.exists():
         raise ValueError(f"An identical review assignment already exists for this timestamp: {assignment_id}")
     atomic_write_json(output, record)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "REVIEW_ASSIGNMENT_CREATED", actor, {
-        "assignment_id": assignment_id,
-        "reviewer_id": reviewer_id,
-        "role": role,
-        "assignment_sha256": record["assignment_sha256"],
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "REVIEW_ASSIGNMENT_CREATED",
+        actor,
+        {
+            "assignment_id": assignment_id,
+            "reviewer_id": reviewer_id,
+            "role": role,
+            "assignment_sha256": record["assignment_sha256"],
+        },
+    )
     return {"assignment": record, "path": str(output)}
 
 
@@ -196,15 +202,17 @@ def submit_review_statement(
         raise ValueError(f"Unknown evidence IDs: {', '.join(unknown)}")
 
     assessment_path = workspace.case_path(case_id) / "assessment.json"
-    seed = canonical_json_bytes({
-        "case_id": case_id,
-        "reviewer_id": reviewer_id,
-        "target_type": target_type,
-        "target_id": target_id,
-        "position": position,
-        "rationale": rationale,
-        "assessment_sha256": sha256_file(assessment_path),
-    })
+    seed = canonical_json_bytes(
+        {
+            "case_id": case_id,
+            "reviewer_id": reviewer_id,
+            "target_type": target_type,
+            "target_id": target_id,
+            "position": position,
+            "rationale": rationale,
+            "assessment_sha256": sha256_file(assessment_path),
+        }
+    )
     statement_id = f"RS-{utc_now().replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
     record = {
         "schema_version": REVIEW_SCHEMA_VERSION,
@@ -230,12 +238,17 @@ def submit_review_statement(
     if output.exists():
         raise ValueError(f"An identical review statement already exists for this timestamp: {statement_id}")
     atomic_write_json(output, record)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "REVIEW_STATEMENT_SUBMITTED", actor, {
-        "statement_id": statement_id,
-        "target": f"{target_type}:{target_id}",
-        "position": position,
-        "statement_sha256": record["statement_sha256"],
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "REVIEW_STATEMENT_SUBMITTED",
+        actor,
+        {
+            "statement_id": statement_id,
+            "target": f"{target_type}:{target_id}",
+            "position": position,
+            "statement_sha256": record["statement_sha256"],
+        },
+    )
     return {"statement": record, "path": str(output)}
 
 
@@ -295,17 +308,21 @@ def dispose_review_statement(
         "assessment_mutation": "NONE_PERFORMED_BY_DISPOSITION_RECORD",
         "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "authority_boundary": (
-            "This record attributes a local workflow decision; "
-            "it does not establish legal or institutional authority."
+            "This record attributes a local workflow decision; it does not establish legal or institutional authority."
         ),
     }
     record["disposition_sha256"] = _hash_record(record, "disposition_sha256")
     atomic_write_json(output, record)
-    append_event(workspace.case_path(case_id) / "events.jsonl", "REVIEW_STATEMENT_DISPOSED", actor, {
-        "statement_id": statement_id,
-        "disposition": disposition,
-        "disposition_sha256": record["disposition_sha256"],
-    })
+    append_event(
+        workspace.case_path(case_id) / "events.jsonl",
+        "REVIEW_STATEMENT_DISPOSED",
+        actor,
+        {
+            "statement_id": statement_id,
+            "disposition": disposition,
+            "disposition_sha256": record["disposition_sha256"],
+        },
+    )
     return {"disposition": record, "path": str(output)}
 
 
@@ -402,9 +419,7 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
     if not event_report["valid"]:
         errors.extend(f"event chain: {error}" for error in event_report["errors"])
     open_statement_count = sum(statement_id not in seen_dispositions for statement_id in statements)
-    stale_statement_count = sum(
-        item.get("assessment_sha256") != assessment_sha256 for item in records["statements"]
-    )
+    stale_statement_count = sum(item.get("assessment_sha256") != assessment_sha256 for item in records["statements"])
     return {
         "valid": not errors,
         "case_id": case_id,
@@ -457,13 +472,15 @@ def render_review_markdown(workspace: Workspace, case_id: str) -> str:
             f"| {item.get('assignment_id')} | {item.get('reviewer_id')} | {item.get('role')} | "
             f"{', '.join(item.get('scope', []))} | {item.get('state')} |"
         )
-    lines.extend([
-        "",
-        "## Statements and dispositions",
-        "",
-        "| Statement | Reviewer | Target | Position | Rationale | Disposition | Disposition rationale |",
-        "|---|---|---|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Statements and dispositions",
+            "",
+            "| Statement | Reviewer | Target | Position | Rationale | Disposition | Disposition rationale |",
+            "|---|---|---|---|---|---|---|",
+        ]
+    )
     for item in records["statements"]:
         disposition = dispositions.get(item.get("statement_id"), {})
         rationale = str(item.get("rationale", "")).replace("|", "\\|").replace("\n", " ")

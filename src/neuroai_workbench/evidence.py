@@ -174,54 +174,62 @@ def verify_evidence_files(workspace: Workspace, case_id: str) -> dict[str, Any]:
         filename_error = _validate_stored_filename(record)
         path_display = f"evidence/objects/{record.get('stored_filename', '')}"
         if filename_error:
-            results.append({
-                "evidence_id": record.get("evidence_id"),
-                "path": path_display,
-                "exists": False,
-                "expected_sha256": record.get("sha256"),
-                "actual_sha256": None,
-                "valid": False,
-                "error": filename_error,
-            })
+            results.append(
+                {
+                    "evidence_id": record.get("evidence_id"),
+                    "path": path_display,
+                    "exists": False,
+                    "expected_sha256": record.get("sha256"),
+                    "actual_sha256": None,
+                    "valid": False,
+                    "error": filename_error,
+                }
+            )
             continue
         try:
             path = safe_join(objects_root, str(record["stored_filename"]))
         except ValueError:
-            results.append({
-                "evidence_id": record.get("evidence_id"),
-                "path": path_display,
-                "exists": False,
-                "expected_sha256": record.get("sha256"),
-                "actual_sha256": None,
-                "valid": False,
-                "error": "stored_filename escapes the controlled objects root",
-            })
+            results.append(
+                {
+                    "evidence_id": record.get("evidence_id"),
+                    "path": path_display,
+                    "exists": False,
+                    "expected_sha256": record.get("sha256"),
+                    "actual_sha256": None,
+                    "valid": False,
+                    "error": "stored_filename escapes the controlled objects root",
+                }
+            )
             continue
         # Refuse to follow symlinks that escape the objects root.
         if path.is_symlink():
             try:
                 resolved = path.resolve()
                 if objects_root.resolve() not in resolved.parents and resolved != objects_root.resolve():
-                    results.append({
+                    results.append(
+                        {
+                            "evidence_id": record.get("evidence_id"),
+                            "path": str(path.relative_to(case)),
+                            "exists": False,
+                            "expected_sha256": record.get("sha256"),
+                            "actual_sha256": None,
+                            "valid": False,
+                            "error": "symlink escapes the controlled objects root",
+                        }
+                    )
+                    continue
+            except OSError:
+                results.append(
+                    {
                         "evidence_id": record.get("evidence_id"),
                         "path": str(path.relative_to(case)),
                         "exists": False,
                         "expected_sha256": record.get("sha256"),
                         "actual_sha256": None,
                         "valid": False,
-                        "error": "symlink escapes the controlled objects root",
-                    })
-                    continue
-            except OSError:
-                results.append({
-                    "evidence_id": record.get("evidence_id"),
-                    "path": str(path.relative_to(case)),
-                    "exists": False,
-                    "expected_sha256": record.get("sha256"),
-                    "actual_sha256": None,
-                    "valid": False,
-                    "error": "symlink could not be resolved safely",
-                })
+                        "error": "symlink could not be resolved safely",
+                    }
+                )
                 continue
         exists = path.is_file()
         actual = sha256_file(path) if exists else None

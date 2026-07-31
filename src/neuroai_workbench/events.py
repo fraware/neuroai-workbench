@@ -3,9 +3,10 @@ from __future__ import annotations
 import json
 import os
 import time
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 from .util import atomic_write_bytes, canonical_json_bytes, sha256_bytes, utc_now
 
@@ -64,7 +65,7 @@ def _exclusive_lock(lock_path: Path, timeout: float = _LOCK_TIMEOUT_SECONDS) -> 
         try:
             fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
             try:
-                os.write(fd, f"{os.getpid()}\n".encode("utf-8"))
+                os.write(fd, f"{os.getpid()}\n".encode())
                 yield
             finally:
                 os.close(fd)
@@ -75,9 +76,7 @@ def _exclusive_lock(lock_path: Path, timeout: float = _LOCK_TIMEOUT_SECONDS) -> 
             return
         except FileExistsError:
             if time.monotonic() >= deadline:
-                raise TimeoutError(
-                    f"Could not acquire event-chain lock at {lock_path} within {timeout}s"
-                ) from None
+                raise TimeoutError(f"Could not acquire event-chain lock at {lock_path} within {timeout}s") from None
             time.sleep(_LOCK_POLL_SECONDS)
 
 

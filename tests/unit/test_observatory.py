@@ -20,7 +20,6 @@ EXAMPLE = Path(__file__).parents[2] / "examples" / "observatory" / "evidence_dep
 SUCCESSOR = Path(__file__).parents[2] / "examples" / "observatory" / "canonical_successor_snapshot_v1.7.json"
 
 
-
 def test_example_validates():
     release = load_release(EXAMPLE)
     report = validate_release(release)

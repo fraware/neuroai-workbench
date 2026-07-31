@@ -195,7 +195,10 @@ def main() -> int:
     successor_queue = queue_release(successor_release)
     check(
         "Compact successor retains open reopening conditions",
-        any(item.get("object") == "PRIMA observatory system record" for item in successor_queue.get("reopening_queue", [])),
+        any(
+            item.get("object") == "PRIMA observatory system record"
+            for item in successor_queue.get("reopening_queue", [])
+        ),
         successor_queue,
     )
 
@@ -323,9 +326,7 @@ def main() -> int:
                             "proposed_text": "The bounded public record supports the trial configuration only.",
                             "evidence_ids": ["EV-PR-001"],
                             "confidence": "MEDIUM",
-                            "limitations": [
-                                "No current commercial configuration or conformance conclusion follows."
-                            ],
+                            "limitations": ["No current commercial configuration or conformance conclusion follows."],
                         }
                     ],
                     "warnings": ["Human review required."],
@@ -424,26 +425,24 @@ def main() -> int:
             "AVAILABLE_UNDER_CONDITIONS",
             holder="PRIMA evidence custodian",
             conditions=["Independent review agreement required"],
-            materials=[{
-                "evidence_id": "EV-PR-001",
-                "holder_reference": "custodian-record-2026-001",
-                "sha256": "a" * 64,
-            }],
+            materials=[
+                {
+                    "evidence_id": "EV-PR-001",
+                    "holder_reference": "custodian-record-2026-001",
+                    "sha256": "a" * 64,
+                }
+            ],
             notes="Evidence remains with the holder.",
             actor="lead-assessor",
         )
-        exchange_report = verify_exchange_record(
-            workspace, "PRIMA-VERIFY", exchange_request["request_id"]
-        )
+        exchange_report = verify_exchange_record(workspace, "PRIMA-VERIFY", exchange_request["request_id"])
         check("Protected-evidence metadata exchange verifies", exchange_report["valid"], exchange_report)
         check(
             "Protected-evidence exchange does not mutate assessment",
             sha256_file(workspace.case_path("PRIMA-VERIFY") / "assessment.json") == before_exchange,
             before_exchange,
         )
-        exchange_markdown = render_exchange_markdown(
-            workspace, "PRIMA-VERIFY", exchange_request["request_id"]
-        )
+        exchange_markdown = render_exchange_markdown(workspace, "PRIMA-VERIFY", exchange_request["request_id"])
         check(
             "Exchange report preserves no-byte and no-receipt boundaries",
             "does not include evidence bytes" in exchange_markdown
