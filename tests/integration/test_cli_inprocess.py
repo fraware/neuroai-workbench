@@ -15,7 +15,7 @@ def parse_stdout(capsys):
 def test_cli_inprocess_full_lifecycle(tmp_path: Path, capsys):
     workspace = tmp_path / "workspace"
     assert cli.main(["init", str(workspace), "--name", "In-process workspace"]) == 0
-    assert parse_stdout(capsys)["metadata"]["workbench_version"] == "0.2.1"
+    assert parse_stdout(capsys)["metadata"]["workbench_version"] == "0.3.0.dev0"
 
     assert cli.main(["doctor", "--workspace", str(workspace)]) == 0
     assert parse_stdout(capsys)["cases"] == []

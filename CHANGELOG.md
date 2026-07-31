@@ -3,7 +3,7 @@
 
 All notable changes are recorded here. Release integrity does not establish substantive evidence validity, institutional adoption, or system conformance.
 
-## Unreleased — v0.3.0 foundations
+## Unreleased — 0.3.0.dev0
 
 ### Added
 
@@ -16,6 +16,15 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Deterministic Markdown assessment reports.
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
+
+### Changed
+
+- Package identity on `main` is unreleased `0.3.0.dev0`; published stabilization remains `v0.2.1`.
+- Container and compose defaults bind loopback without `NEUROAI_ALLOW_NETWORK`; network exposure requires `compose.network.yaml`.
+- Evidence index verification fails closed on malformed `objects` (`INDEX_SCHEMA_INVALID` and related codes).
+- Assistance dispose/verify detect assessment drift; request IDs use UUID4 with collision refusal; final dispositions exclude `PENDING_REVIEW`; model output is secret-scanned before persist.
+- Observatory identifier validation reports missing/non-string IDs per row with indexed paths.
+- CI adds per-module coverage floors, SHA-pinned Actions, `pip-audit`, and hashed install constraints.
 
 ### Boundaries
 

@@ -4,11 +4,11 @@ The workbench supports a provider-neutral, offline exchange protocol for languag
 
 ## Lifecycle
 
-1. `assist-request` creates a bounded JSON request containing selected public or synthetic structured context, explicit prohibited inferences, and an output contract.
+1. `assist-request` creates a bounded JSON request with a UUID-based `request_id`, selected public or synthetic structured context, explicit prohibited inferences, and an output contract. Creating a request refuses to overwrite an existing request file.
 2. An operator submits that request to an approved model outside the workbench.
-3. `assist-record` validates and stores the structured response with provider, model, request hash, and output hash.
-4. `assist-dispose` records a human disposition without changing the assessment.
-5. `assist-verify` verifies request, response, and disposition linkage.
+3. `assist-record` validates the structured response, scans model output for blocked secret patterns, and stores it with provider, model, request hash, and output hash. Response `disposition_state` remains `PENDING_REVIEW` until a disposition file exists.
+4. `assist-dispose` records a final human disposition (`ACCEPTED_AS_DRAFT`, `PARTIALLY_USED`, or `REJECTED`) without changing the assessment. Dispose and verify both reject assessment hash drift against the request (`ASSESSMENT_DRIFT`).
+5. `assist-verify` verifies request, response, and disposition linkage, including assessment hash currency.
 
 ```bash
 neuroai-workbench assist-request ./workspace CASE-001 DRAFT_FINDING \
@@ -35,4 +35,4 @@ A model response is a candidate suggestion. It cannot assign applicability, chan
 
 The request generator includes selected structured summaries only. It does not include registered evidence bytes. Obvious credential and secret patterns are scanned across the prompt and the full exported context JSON. The request records `disclosure_policy: ATTESTATION_PLUS_SECRET_SCAN_ONLY`; this is not field-level classification or proof that context is public or synthetic. Protected neural, clinical, participant, regulator-held, security-sensitive, or private evidence remains outside this workflow unless a separately approved institutional deployment profile supplies lawful and technically enforced controls.
 
-Recording a response requires the request `assessment_sha256` to match the current assessment. After an assessment edit, create a new assistance request before importing a model response.
+Recording a response, disposing a response, and verifying an assistance record all require the request `assessment_sha256` to match the current assessment. After an assessment edit, create a new assistance request before importing or disposing a model response. Model output is scanned with the same sensitive-text guard used for prompts and context; findings reject persistence.

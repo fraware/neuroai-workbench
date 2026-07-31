@@ -1,0 +1,14 @@
+# Explicit non-loopback profile. Requires a separate threat review, reverse-proxy
+# authentication, TLS, and access controls — none of which the reference image provides.
+#
+# Usage:
+#   docker compose -f compose.yaml -f compose.network.yaml up --build
+#
+# See docs/operations/deployment.md and THREAT_MODEL.md.
+services:
+  workbench:
+    command: ["serve", "/workspace", "--host", "0.0.0.0", "--port", "8765", "--allow-network"]
+    environment:
+      NEUROAI_ALLOW_NETWORK: "1"
+    ports:
+      - "127.0.0.1:8765:8765"
