@@ -35,7 +35,7 @@ jobs:
       - run: git bundle create "artifacts/neuroai-workbench-${GITHUB_REF_NAME}.bundle" --all
       - run: cp dist/* artifacts/
       - run: python scripts/generate_sha256_manifest.py artifacts artifacts/SHA256SUMS.txt
-      - uses: actions/attest@v4
+      - uses: actions/attest@v4.2.0
         with:
           subject-path: "artifacts/*"
       - uses: actions/upload-artifact@v7
