@@ -160,10 +160,28 @@ class Workspace:
         report = validate_assessment(assessment)
         if require_valid and not report.valid:
             raise WorkspaceError("Assessment failed the required validation gate")
+        validation_state = "VALID" if report.valid else "DRAFT_INVALID"
+        persisted_as = "valid" if report.valid else "draft_invalid"
         target = path / CASE_FILE
         before = sha256_file(target) if target.exists() else None
         atomic_write_json(target, assessment)
         after = sha256_file(target)
+        # Case-level sidecar keeps draft/valid visibility without mutating normative assessment schema.
+        atomic_write_json(
+            path / "persistence.json",
+            {
+                "validation_state": validation_state,
+                "persisted_as": persisted_as,
+                "require_valid": require_valid,
+                "assessment_sha256": after,
+                "updated_at": utc_now(),
+                "actor": actor,
+                "boundary": (
+                    "validation_state records schema/semantic gate outcome only; "
+                    "it does not establish substantive truth or conformance."
+                ),
+            },
+        )
         append_event(
             path / "events.jsonl",
             "ASSESSMENT_SAVED",
@@ -172,11 +190,16 @@ class Workspace:
                 "before_sha256": before,
                 "after_sha256": after,
                 "valid": report.valid,
+                "validation_state": validation_state,
+                "persisted_as": persisted_as,
                 "schema_errors": len(report.schema_issues),
                 "semantic_errors": len(report.semantic_issues),
             },
         )
-        return report.to_dict()
+        result = report.to_dict()
+        result["validation_state"] = validation_state
+        result["persisted_as"] = persisted_as
+        return result
 
     def snapshot(self, case_id: str, actor: str = "local-user", label: str = "snapshot") -> dict[str, Any]:
         case = self.case_path(case_id)

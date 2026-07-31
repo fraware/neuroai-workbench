@@ -17,6 +17,10 @@ PROHIBITED_PARTS = {
     "workspaces",
 }
 PROHIBITED_SUFFIXES = {".pyc", ".pyo", ".whl", ".zip", ".bundle", ".docx", ".xlsx"}
+PROHIBITED_TRACKED_PREFIXES = ("bootstrap/",)
+PROHIBITED_TRACKED_FILES = {
+    ".github/workflows/bootstrap-canonical-history.yml",
+}
 REQUIRED = {
     "AGENTS.md",
     "README.md",
@@ -62,6 +66,8 @@ def main() -> int:
             errors.append(f"generated path is tracked: {rel}")
         if path.suffix.lower() in PROHIBITED_SUFFIXES:
             errors.append(f"prohibited generated or binary artifact is tracked: {rel}")
+        if rel in PROHIBITED_TRACKED_FILES or any(rel.startswith(prefix) for prefix in PROHIBITED_TRACKED_PREFIXES):
+            errors.append(f"stale bootstrap scaffolding must not ship on product branches: {rel}")
         absolute = ROOT / rel
         if absolute.is_file() and absolute.stat().st_size > 5 * 1024 * 1024:
             errors.append(f"tracked file exceeds 5 MiB source limit: {rel}")

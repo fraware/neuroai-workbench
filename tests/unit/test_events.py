@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
+from neuroai_workbench import events
 from neuroai_workbench.events import append_event, verify_chain
 
 
@@ -35,3 +38,22 @@ def test_event_chain_detects_truncation_link(workspace):
     path.write_text(lines[1] + "\n", encoding="utf-8")
     report = verify_chain(path)
     assert not report["valid"]
+
+
+def test_event_append_uses_exclusive_lock(workspace, tmp_path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(events, "_LOCK_TIMEOUT_SECONDS", 0.05)
+    monkeypatch.setattr(events, "_LOCK_POLL_SECONDS", 0.01)
+    workspace.create_case("CASE-001", "Example case")
+    path = workspace.case_path("CASE-001") / "events.jsonl"
+    lock_path = path.with_suffix(path.suffix + ".lock")
+    lock_path.write_text("held", encoding="utf-8")
+    try:
+        with pytest.raises(TimeoutError, match="event-chain lock"):
+            append_event(path, "BLOCKED", "tester", {})
+    finally:
+        lock_path.unlink(missing_ok=True)
+    event = append_event(path, "AFTER_LOCK", "tester", {"ok": True})
+    assert event["action"] == "AFTER_LOCK"
+    with events._exclusive_lock(tmp_path / "other.lock"):
+        assert (tmp_path / "other.lock").is_file()
+    assert not (tmp_path / "other.lock").exists()

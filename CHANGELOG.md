@@ -3,6 +3,26 @@
 
 All notable changes are recorded here. Release integrity does not establish substantive evidence validity, institutional adoption, or system conformance.
 
+## Unreleased — v0.3.0 foundations
+
+### Added
+
+- Collaborative review assignments, immutable disagreements, human dispositions, and integrity verification.
+- Deterministic review and evidence-gap reports.
+- Protected-evidence metadata requests, custodian-response records, path and secret guards, and exchange integrity verification.
+
+- Loss-aware programme completed-assessment adapter with a checked-in native PRIMA v4.2.1 reference case.
+- Compact observatory v1.7 successor validation, import, summary, and reopening queue.
+- Deterministic Markdown assessment reports.
+- Provider-neutral model-assistance request, response, disposition, and integrity records.
+- Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
+
+### Boundaries
+
+- No direct external model API call is enabled.
+- Model output cannot mutate an assessment or exercise decision authority.
+- The 78-requirement v4.2 kernel and historical pilot findings remain unchanged.
+
 ## 0.2.1 — stabilization candidate
 
 ### Changed

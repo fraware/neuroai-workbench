@@ -3,15 +3,28 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 from importlib.metadata import version as package_version
 from pathlib import Path
 from typing import Any, cast
 
 from . import __version__
+from .assistance import (
+    create_assistance_request,
+    dispose_assistance_response,
+    record_assistance_response,
+    verify_assistance_record,
+)
 from .comparison import compare_assessments
 from .events import verify_chain
 from .evidence import add_evidence_file, verify_evidence_files
+from .exchange import (
+    create_exchange_request,
+    record_exchange_response,
+    render_exchange_markdown,
+    verify_exchange_record,
+)
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .migration import migrate_file
@@ -22,6 +35,15 @@ from .observatory import (
     queue_release,
     summarize_release,
     validate_release,
+)
+from .programme_adapter import adapt_programme_file
+from .reports import write_assessment_markdown, write_gap_markdown
+from .review import (
+    create_review_assignment,
+    dispose_review_statement,
+    render_review_markdown,
+    submit_review_statement,
+    verify_review_records,
 )
 from .server import serve
 from .util import sha256_file
@@ -62,7 +84,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("workspace")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8765)
-    p.add_argument("--allow-network", action="store_true")
+    p.add_argument(
+        "--allow-network",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
 
     p = sub.add_parser("case-create", help="Create a blank v4.2 case")
     p.add_argument("workspace")
@@ -164,6 +190,139 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--workspace")
     p.add_argument("--out")
 
+    p = sub.add_parser("programme-adapt", help="Adapt a programme completed-assessment JSON object into native v4.2")
+    p.add_argument("source")
+    p.add_argument("output")
+    p.add_argument("--report")
+
+    p = sub.add_parser("report", help="Render a deterministic Markdown decision report")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--assessment")
+    source.add_argument("--case-id")
+    p.add_argument("--workspace")
+    p.add_argument("--output", required=True)
+
+    p = sub.add_parser("assist-request", help="Create a controlled provider-neutral model-assistance request")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("task_type")
+    p.add_argument("--prompt", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--requirement-id", action="append", default=[])
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-record", help="Record and validate a model response without mutating the assessment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("response")
+    p.add_argument("--provider", required=True)
+    p.add_argument("--model", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-dispose", help="Record a human disposition for a model response")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("disposition")
+    p.add_argument("--notes", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("assist-verify", help="Verify request, response, and disposition integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--out")
+
+    p = sub.add_parser("gap-report", help="Render a deterministic evidence-gap and closure-request report")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--assessment")
+    source.add_argument("--case-id")
+    p.add_argument("--workspace")
+    p.add_argument("--output", required=True)
+
+    p = sub.add_parser("review-assign", help="Record an attributable local review assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("role")
+    p.add_argument("--scope", action="append", required=True)
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-submit", help="Submit an immutable review statement or disagreement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("target_type")
+    p.add_argument("target_id")
+    p.add_argument("position")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--condition", action="append", default=[])
+    p.add_argument("--proposed-change")
+    p.add_argument("--actor")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-dispose", help="Record an authorized human disposition for a review statement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("statement_id")
+    p.add_argument("disposition")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-verify", help="Verify review records, role linkage, and event-chain integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-report", help="Render a deterministic Markdown review and disagreement report")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--output", required=True)
+
+    p = sub.add_parser("exchange-create", help="Create a protected-evidence metadata request without evidence bytes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--evidence-id", action="append", required=True)
+    p.add_argument("--gap-id", action="append", default=[])
+    p.add_argument("--recipient", required=True)
+    p.add_argument("--purpose", required=True)
+    p.add_argument("--requested-material", action="append", required=True)
+    p.add_argument("--authorized-use", default="ASSESSMENT_REVIEW_ONLY")
+    p.add_argument("--constraint", action="append", default=[])
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-record", help="Record an out-of-band holder response without importing bytes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("response_state")
+    p.add_argument("--holder", required=True)
+    p.add_argument("--condition", action="append", default=[])
+    p.add_argument("--materials-json")
+    p.add_argument("--notes")
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-verify", help="Verify evidence-exchange metadata and boundary integrity")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--out")
+
+    p = sub.add_parser("exchange-report", help="Render a deterministic protected-evidence exchange report")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--output", required=True)
+
     p = sub.add_parser("compare", help="Compare v4.2 assessments without creating new findings")
     p.add_argument("assessments", nargs="+")
     p.add_argument("--labels", nargs="*")
@@ -202,7 +361,13 @@ def main(argv: list[str] | None = None) -> int:
                 result["cases"] = workspace.list_cases()
             emit(result)
         elif args.command == "serve":
-            serve(_workspace(args.workspace), host=args.host, port=args.port, allow_network=args.allow_network)
+            allow_network = bool(args.allow_network)
+            if allow_network and os.environ.get("NEUROAI_ALLOW_NETWORK") != "1":
+                raise SystemExit(
+                    "Non-loopback binding requires both --allow-network and NEUROAI_ALLOW_NETWORK=1. "
+                    "The reference server has no authentication or TLS."
+                )
+            serve(_workspace(args.workspace), host=args.host, port=args.port, allow_network=allow_network)
         elif args.command == "case-create":
             emit(_workspace(args.workspace).create_case(args.case_id, args.title, actor=args.actor))
         elif args.command == "case-import":
@@ -252,6 +417,165 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "migrate":
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
+        elif args.command == "programme-adapt":
+            adapted = adapt_programme_file(
+                Path(args.source),
+                Path(args.output),
+                Path(args.report) if args.report else None,
+            )
+            emit(adapted.report)
+            return 0 if adapted.report["validation"]["valid"] else 1
+        elif args.command == "report":
+            emit(write_assessment_markdown(_load_input(args), Path(args.output)))
+        elif args.command == "gap-report":
+            emit(write_gap_markdown(_load_input(args), Path(args.output)))
+        elif args.command == "review-assign":
+            emit(
+                create_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.reviewer_id,
+                    args.role,
+                    args.scope,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-submit":
+            emit(
+                submit_review_statement(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.reviewer_id,
+                    args.target_type,
+                    args.target_id,
+                    args.position,
+                    args.rationale,
+                    evidence_ids=args.evidence_id,
+                    conditions=args.condition,
+                    proposed_change=args.proposed_change,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-dispose":
+            emit(
+                dispose_review_statement(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.statement_id,
+                    args.disposition,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-verify":
+            result = verify_review_records(_workspace(args.workspace), args.case_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
+        elif args.command == "review-report":
+            output = Path(args.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            text = render_review_markdown(_workspace(args.workspace), args.case_id)
+            output.write_text(text, encoding="utf-8")
+            emit(
+                {
+                    "output": str(output),
+                    "sha256": sha256_file(output),
+                    "boundary": "The review report attributes local records and creates no assessment or authority change.",
+                }
+            )
+        elif args.command == "exchange-create":
+            emit(
+                create_exchange_request(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.evidence_id,
+                    recipient=args.recipient,
+                    purpose=args.purpose,
+                    requested_materials=args.requested_material,
+                    gap_ids=args.gap_id,
+                    authorized_use=args.authorized_use,
+                    disclosure_constraints=args.constraint,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "exchange-record":
+            materials = []
+            if args.materials_json:
+                materials = json.loads(Path(args.materials_json).read_text(encoding="utf-8"))
+                if not isinstance(materials, list):
+                    raise ValueError("--materials-json must contain a JSON list")
+            emit(
+                record_exchange_response(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.request_id,
+                    args.response_state,
+                    holder=args.holder,
+                    conditions=args.condition,
+                    materials=materials,
+                    notes=args.notes,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "exchange-verify":
+            result = verify_exchange_record(_workspace(args.workspace), args.case_id, args.request_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
+        elif args.command == "exchange-report":
+            output = Path(args.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(
+                render_exchange_markdown(_workspace(args.workspace), args.case_id, args.request_id),
+                encoding="utf-8",
+            )
+            emit(
+                {
+                    "output": str(output),
+                    "sha256": sha256_file(output),
+                    "boundary": "The exchange report contains metadata only and does not establish evidence receipt.",
+                }
+            )
+        elif args.command == "assist-request":
+            result = create_assistance_request(
+                _workspace(args.workspace),
+                args.case_id,
+                args.task_type,
+                args.prompt,
+                evidence_ids=args.evidence_id,
+                requirement_ids=args.requirement_id,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-record":
+            result = record_assistance_response(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                Path(args.response),
+                provider=args.provider,
+                model=args.model,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-dispose":
+            result = dispose_assistance_response(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                args.disposition,
+                args.notes,
+                actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-verify":
+            result = verify_assistance_record(_workspace(args.workspace), args.case_id, args.request_id)
+            emit(result, Path(args.out) if args.out else None)
+            return 0 if result["valid"] else 1
         elif args.command == "observatory-import":
             emit(import_release(Path(args.workspace), Path(args.release)))
         elif args.command == "observatory-verify":

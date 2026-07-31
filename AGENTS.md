@@ -15,6 +15,9 @@ This repository implements evidence and decision infrastructure. It does not det
 8. Keep the default application local and offline-first. Do not introduce remote assets, telemetry, analytics, external model calls, or network exposure without a separate reviewed architecture.
 9. Add tests for every behavioral change and adversarial tests for every integrity or security boundary change.
 10. Update documentation, threat analysis, data-governance controls, and release verification when the affected boundary changes.
+11. Treat reviewer names and roles as claimed local workflow identities unless an external authenticated deployment explicitly establishes otherwise. Preserve disagreement and abstention records; never erase dissent through a convenience edit.
+12. Keep protected-evidence exchange metadata-only. A request or holder response must never imply evidence receipt, custody, authenticity, completeness, disclosure duty, or decision weight.
+13. Treat model output as an untrusted draft. Record provider, model, selected context, hashes, and human disposition; never grant a model authority to alter findings, dispositions, conformance, security acceptance, or releases.
 
 ## Required task protocol
 
@@ -48,3 +51,5 @@ make package
 - Do not edit normative JSON resources as an incidental refactor.
 - Do not commit generated wheels, source distributions, bundles, SBOMs, coverage output, caches, or release-verification output.
 - Do not expose protected workspaces to background agents or third-party services.
+- Do not describe local review-role records as authentication, legal delegation, institutional authority, or identity proof.
+- Do not apply a model suggestion or review disposition by editing historical records in place.
