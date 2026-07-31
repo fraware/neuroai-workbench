@@ -986,7 +986,7 @@
       "identifiers": {
         "programme_source_ids": "SRC-PR-005"
       },
-      "evidence_state": "PRIMARY SOURCE VERIFIED",
+      "evidence_state": "REGULATORY RECORD",
       "system_and_version": "Trial configuration described in the NEJM publication plus historical public manual; exact 2026 CE-marked commercial models and software remain unresolved.",
       "population": "Adults at least 60 years old with bilateral geographic atrophy due to AMD, profound study-eye central vision loss and qualifying anatomy in the pivotal study; exact CE-authorized indication remains unresolved.",
       "function": "External camera image capture and processing followed by near-infrared projection to a subretinal photovoltaic array that electrically stimulates remaining retinal cells.",
@@ -1018,7 +1018,7 @@
       "identifiers": {
         "programme_source_ids": "SRC-PR-006"
       },
-      "evidence_state": "PRIMARY SOURCE VERIFIED",
+      "evidence_state": "NOT AVAILABLE",
       "system_and_version": "Trial configuration described in the NEJM publication plus historical public manual; exact 2026 CE-marked commercial models and software remain unresolved.",
       "population": "Adults at least 60 years old with bilateral geographic atrophy due to AMD, profound study-eye central vision loss and qualifying anatomy in the pivotal study; exact CE-authorized indication remains unresolved.",
       "function": "External camera image capture and processing followed by near-infrared projection to a subretinal photovoltaic array that electrically stimulates remaining retinal cells.",
@@ -1242,7 +1242,7 @@
       "identifiers": {
         "programme_source_ids": "SRC-PR-013"
       },
-      "evidence_state": "PRIMARY SOURCE VERIFIED",
+      "evidence_state": "PRIMARY METADATA VERIFIED",
       "system_and_version": "Trial configuration described in the NEJM publication plus historical public manual; exact 2026 CE-marked commercial models and software remain unresolved.",
       "population": "Adults at least 60 years old with bilateral geographic atrophy due to AMD, profound study-eye central vision loss and qualifying anatomy in the pivotal study; exact CE-authorized indication remains unresolved.",
       "function": "External camera image capture and processing followed by near-infrared projection to a subretinal photovoltaic array that electrically stimulates remaining retinal cells.",
@@ -1274,7 +1274,7 @@
       "identifiers": {
         "programme_source_ids": "SRC-PR-014"
       },
-      "evidence_state": "PRIMARY SOURCE VERIFIED",
+      "evidence_state": "REGULATORY RECORD",
       "system_and_version": "Trial configuration described in the NEJM publication plus historical public manual; exact 2026 CE-marked commercial models and software remain unresolved.",
       "population": "Adults at least 60 years old with bilateral geographic atrophy due to AMD, profound study-eye central vision loss and qualifying anatomy in the pivotal study; exact CE-authorized indication remains unresolved.",
       "function": "External camera image capture and processing followed by near-infrared projection to a subretinal photovoltaic array that electrically stimulates remaining retinal cells.",

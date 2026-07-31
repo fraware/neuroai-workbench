@@ -44,7 +44,7 @@ neuroai-workbench serve workspaces/demo
 
 Open `http://127.0.0.1:8765`.
 
-The reference server binds to localhost by default. It has no authentication, authorization, multi-tenant isolation, or TLS and must not be exposed directly to an untrusted network.
+The reference server binds to localhost by default. It has no authentication, authorization, multi-tenant isolation, or TLS and must not be exposed directly to an untrusted network. Non-loopback binding is an expert escape hatch that requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`; `/api/health` reports configuration status without returning absolute workspace paths.
 
 ## Import a completed assessment
 

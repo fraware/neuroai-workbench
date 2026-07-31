@@ -159,3 +159,41 @@ def test_successor_import_checks_imported_baseline(tmp_path: Path):
     result = import_release(tmp_path, SUCCESSOR)
     assert result["manifest"]["validation"]["valid"] is True
     assert result["manifest"]["release_kind"] == "COMPACT_SUCCESSOR_SNAPSHOT"
+
+
+@pytest.mark.parametrize(
+    "bad_version",
+    [
+        "../escape",
+        "..\\escape",
+        "/absolute",
+        "C:/Windows",
+        "C:\\Windows",
+        "",
+        ".",
+        "..",
+        "rel/with/slash",
+        "con",
+        "aux",
+        "nul.txt",
+        " ",
+        "version with spaces",
+        "v1.4/../../tmp",
+    ],
+)
+def test_import_and_load_reject_path_traversal_versions(tmp_path: Path, bad_version: str):
+    from neuroai_workbench.observatory import _release_store_path
+
+    with pytest.raises(ValueError):
+        _release_store_path(tmp_path, bad_version)
+    with pytest.raises((ValueError, FileNotFoundError)):
+        load_imported_release(tmp_path, bad_version)
+
+
+def test_import_keeps_release_under_controlled_tree(tmp_path: Path):
+    result = import_release(tmp_path, EXAMPLE)
+    target = Path(result["target"]).resolve()
+    root = (tmp_path / "observatory" / "releases").resolve()
+    assert target == root / "v1.4"
+    assert target.parent == root
+    assert (target / "release.json").is_file()

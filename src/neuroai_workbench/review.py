@@ -102,6 +102,11 @@ def create_review_assignment(
     ensure_identifier(actor, "actor ID")
     if role not in REVIEW_ROLES:
         raise ValueError(f"Unsupported review role {role!r}")
+    if role in DECISION_ROLES and actor == reviewer_id:
+        raise ValueError(
+            f"Self-assignment is refused for decision role {role!r}; "
+            "a distinct assigning actor is required under LOCAL_UNAUTHENTICATED_ATTRIBUTION."
+        )
     if not scope or not all(isinstance(item, str) and ":" in item for item in scope):
         raise ValueError("Review scope must contain typed entries such as ASSESSMENT:* or FINDING:REQ-ID")
 
@@ -133,6 +138,7 @@ def create_review_assignment(
         "assigned_by": actor,
         "assigned_at": utc_now(),
         "assessment_sha256": sha256_file(workspace.case_path(case_id) / "assessment.json"),
+        "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "identity_boundary": (
             "The workbench records a claimed local identity and role; "
             "it does not authenticate a person or institution."
@@ -257,6 +263,12 @@ def dispose_review_statement(
     statement = json.loads(statement_path.read_text(encoding="utf-8"))
     if statement.get("statement_sha256") != _hash_record(statement, "statement_sha256"):
         raise ValueError("Review statement hash is invalid")
+    current_assessment_sha256 = sha256_file(workspace.case_path(case_id) / "assessment.json")
+    if statement.get("assessment_sha256") != current_assessment_sha256:
+        raise ValueError(
+            "Review statement is stale: assessment_sha256 no longer matches the current assessment. "
+            "Submit a successor statement or reaffirmation against the current assessment before disposition."
+        )
     output = root / "dispositions" / f"{statement_id}.json"
     if output.exists():
         raise ValueError(f"A disposition is already recorded for {statement_id}")
@@ -281,6 +293,7 @@ def dispose_review_statement(
         "assignment_ids": sorted(item["assignment_id"] for item in assignments),
         "recorded_at": utc_now(),
         "assessment_mutation": "NONE_PERFORMED_BY_DISPOSITION_RECORD",
+        "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "authority_boundary": (
             "This record attributes a local workflow decision; "
             "it does not establish legal or institutional authority."

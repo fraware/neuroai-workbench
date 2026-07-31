@@ -4,7 +4,10 @@ import json
 from pathlib import Path
 
 from neuroai_workbench.programme_adapter import (
+    _access_state,
     _claim_status,
+    _decision_state,
+    _evidence_state,
     adapt_programme_assessment,
     detect_programme_assessment,
 )
@@ -80,6 +83,26 @@ def test_claim_status_unmatched_is_not_reviewable() -> None:
     assert _claim_status("") == "NOT REVIEWABLE"
     assert _claim_status("SUPPORTED_PRIMARY_STUDY") == "SUPPORTED WITHIN BOUNDED SCOPE"
     assert _claim_status("COMPANY_ANNOUNCEMENT_CORROBORATED") == "PARTIALLY SUPPORTED"
+
+
+def test_adapter_mappings_fail_closed_on_unknown_and_private_phrases() -> None:
+    assert _evidence_state({"evidence_class": "UNKNOWN_CLASS", "publication_state": ""}) == "NOT AVAILABLE"
+    assert _evidence_state({"evidence_class": "WEIRD_THING", "publication_state": "X"}) == "NOT AVAILABLE"
+    assert _access_state({"retrieval_state": "PRIVATE FULL RECORD"}) == "KNOWN PRIVATE RECORD REQUIRED"
+    assert _access_state({"retrieval_state": "PRIVATE_CONTENT_AVAILABLE"}) == "KNOWN PRIVATE RECORD REQUIRED"
+    assert _access_state({"retrieval_state": "MYSTERIOUS_STATE"}) == "EVALUATION NOT EXECUTED"
+    assert (
+        _decision_state({"decision_class": "CONFORMANCE", "decision": "WEIRD_CONFORMANCE"})
+        == "NO CONFORMANCE DECISION — BLOCKED"
+    )
+    assert (
+        _decision_state({"decision_class": "REGULATORY_STATE", "decision": "UNKNOWN_AUTH"})
+        == "AUTHORIZATION NOT ASSESSED"
+    )
+    assert (
+        _decision_state({"decision_class": "SYSTEM_ASSESSMENT", "decision": "WEIRD_CLAIM_LIKE"})
+        == "ASSESSMENT INCOMPLETE"
+    )
 
 
 def test_export_import_round_trip_preserves_governed_fields(tmp_path: Path) -> None:

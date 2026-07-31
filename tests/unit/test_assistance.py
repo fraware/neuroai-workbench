@@ -94,6 +94,33 @@ def test_sensitive_prompt_and_unknown_references_are_blocked(workspace) -> None:
         )
 
 
+def test_stale_assistance_response_is_rejected(workspace, tmp_path: Path) -> None:
+    _import_prima(workspace)
+    created = create_assistance_request(
+        workspace,
+        "prima",
+        "DRAFT_FINDING",
+        "Draft bounded wording.",
+        evidence_ids=["EV-PR-001"],
+        requirement_ids=["NK-01-R01"],
+    )
+    assert created["request"]["disclosure_policy"] == "ATTESTATION_PLUS_SECRET_SCAN_ONLY"
+    assessment = workspace.load_case("prima")
+    assessment["assessment_metadata"]["title"] = "Changed after request"
+    workspace.save_case("prima", assessment, actor="reviewer", require_valid=True)
+    response_file = tmp_path / "response.json"
+    response_file.write_text(json.dumps(_valid_output()), encoding="utf-8")
+    with pytest.raises(ValueError, match="stale"):
+        record_assistance_response(
+            workspace,
+            "prima",
+            created["request"]["request_id"],
+            response_file,
+            provider="manual",
+            model="test",
+        )
+
+
 def test_invalid_model_output_and_tampering_are_detected(workspace, tmp_path: Path) -> None:
     _import_prima(workspace)
     created = create_assistance_request(

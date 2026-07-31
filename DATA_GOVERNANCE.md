@@ -16,7 +16,7 @@ The workbench follows data minimisation and federated-evidence principles.
 
 ## Local evidence store
 
-Evidence bytes are content-addressed by SHA-256 and stored under the case directory. The workbench provides integrity checks, not encryption or authenticity verification.
+Evidence bytes are content-addressed by SHA-256 and stored under the case directory. Newly registered local files receive `access_state: EVALUATION NOT EXECUTED` and `publication_or_record_state: LOCAL CONTROLLED RECORD` so export and assistance workflows do not treat local bytes as a public extract without an explicit later classification. The workbench provides integrity checks, not encryption or authenticity verification.
 
 ## Deletion and retention
 

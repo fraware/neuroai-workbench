@@ -27,22 +27,23 @@
 
 ## Implemented controls
 
-- Localhost binding by default.
+- Localhost binding by default; non-loopback binding requires an explicit expert escape hatch.
 - No remote JavaScript, CSS, fonts or analytics.
 - Content Security Policy and defensive HTTP headers.
-- Controlled path resolution and case identifiers.
-- Atomic JSON writes.
-- SHA-256 evidence registration and verification.
-- Hash-chained event log.
-- Schema and semantic validation.
+- Controlled path resolution and case identifiers, including observatory release versions and evidence object basenames via `ensure_identifier` / `safe_join`.
+- Atomic JSON and evidence-object writes.
+- SHA-256 evidence registration and verification that refuses path-escaping index entries and escaping symlinks.
+- Hash-chained event log with a best-effort exclusive append lock for the single-writer local profile.
+- Schema and semantic validation with explicit `DRAFT_INVALID` / `VALID` persistence labeling.
 - Decision-object separation and explicit result boundaries.
+- Programme-adapter fail-closed mappings for unknown evidence, access, and decision states.
 - Reproducible tests, checksum manifests and Git history.
 - Integrity-addressed review assignments, statements and dispositions linked to the case event chain.
-- Review-role scope checks and explicit local-identity and authority boundaries.
-- Provider-neutral model-assistance records with selected context, credential-pattern guards, evidence-reference checks, hashes and mandatory human disposition.
+- Review-role scope checks, refusal of decision-role self-assignment, and explicit local-identity and authority boundaries (`LOCAL_UNAUTHENTICATED_ATTRIBUTION`).
+- Provider-neutral model-assistance records with selected context, credential-pattern guards over prompt and context, evidence-reference checks, stale-request rejection, hashes and mandatory human disposition.
 - No automatic assessment mutation from review or model-assistance records.
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
 
 ## Residual risks
 
-The application does not authenticate users or reviewers, verify institutional roles, encrypt files, isolate tenants, scan uploads, verify signatures, establish source authenticity, or prevent a privileged local actor from replacing an entire workspace and its backups. The model-assistance guard is a bounded structural control, not a complete secret detector, redaction system, prompt-injection defence or provider-security assessment. Production deployment and direct provider integration require separate architectures and independent review.
+The application does not authenticate users or reviewers, verify institutional roles, encrypt files, isolate tenants, scan uploads comprehensively, verify signatures, establish source authenticity, or prevent a privileged local actor from replacing an entire workspace and its backups. Concurrent multi-writer use of a shared workspace can still race despite the event append lock; transactional multi-step evidence registration remains incomplete (see ADR 0006 and ADR 0007). The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Production deployment and direct provider integration require separate architectures and independent review.

@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
-from .util import atomic_write_json, canonical_json_bytes, sha256_bytes, sha256_file
+from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, safe_join, sha256_bytes, sha256_file
+
+_WINDOWS_RESERVED_NAME = re.compile(
+    r"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\..*)?$",
+    re.IGNORECASE,
+)
 
 REQUIRED_LISTS = (
     "organizations",
@@ -433,8 +439,18 @@ def queue_release(value: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _ensure_observatory_version(version: str) -> str:
+    safe = ensure_identifier(str(version), "observatory version")
+    if _WINDOWS_RESERVED_NAME.fullmatch(safe):
+        raise ValueError(
+            f"Invalid observatory version {version!r}; Windows reserved device names are refused."
+        )
+    return safe
+
+
 def _release_store_path(workspace: Path, version: str) -> Path:
-    return workspace / "observatory" / "releases" / version / "release.json"
+    safe_version = _ensure_observatory_version(version)
+    return safe_join(workspace / "observatory" / "releases", safe_version) / "release.json"
 
 
 def _resolve_baseline_path(workspace: Path, value: dict[str, Any]) -> Path | None:
@@ -455,8 +471,8 @@ def import_release(workspace: Path, release_path: Path) -> dict[str, Any]:
     report = validate_release(value, baseline_path=baseline_path)
     if not report["valid"]:
         raise ValueError("Observatory release failed validation")
-    version = value["metadata"]["version"]
-    target = workspace / "observatory" / "releases" / version
+    version = _ensure_observatory_version(str(value["metadata"]["version"]))
+    target = safe_join(workspace / "observatory" / "releases", version)
     target.mkdir(parents=True, exist_ok=True)
     output = target / "release.json"
     if output.is_file():

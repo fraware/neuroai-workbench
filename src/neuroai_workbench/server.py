@@ -151,7 +151,7 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     {
                         "status": "ok",
                         "version": __version__,
-                        "workspace": str(self.workspace.root),
+                        "workspace_configured": True,
                         "bind_boundary": "This development server is intended for local trusted use only.",
                     }
                 )
@@ -312,7 +312,8 @@ def serve(
     loopback_hosts = {"127.0.0.1", "localhost", "::1"}
     if host not in loopback_hosts and not allow_network:
         raise ValueError(
-            "Refusing non-loopback binding without explicit --allow-network. "
+            "Refusing non-loopback binding without explicit allow_network. "
+            "Via CLI, set --allow-network and NEUROAI_ALLOW_NETWORK=1. "
             "The reference server has no authentication or TLS."
         )
     if host not in loopback_hosts:

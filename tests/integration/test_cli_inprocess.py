@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from neuroai_workbench import cli
 
 
@@ -139,8 +141,12 @@ def test_cli_failure_paths(tmp_path: Path, capsys, monkeypatch):
         called.update(host=host, port=port, allow_network=allow_network, root=ws.root)
 
     monkeypatch.setattr(cli, "serve", fake_serve)
+    monkeypatch.setenv("NEUROAI_ALLOW_NETWORK", "1")
     assert cli.main(["serve", str(workspace), "--port", "9999", "--allow-network"]) == 0
     assert called["allow_network"] is True
+    monkeypatch.delenv("NEUROAI_ALLOW_NETWORK", raising=False)
+    with pytest.raises(SystemExit, match="NEUROAI_ALLOW_NETWORK"):
+        cli.main(["serve", str(workspace), "--port", "9999", "--allow-network"])
 
 
 def test_cli_programme_adapter_report_assistance_and_successor(tmp_path: Path, capsys):
@@ -287,7 +293,7 @@ def test_cli_review_workflow_and_gap_report(tmp_path: Path, capsys):
                 "--scope",
                 "ASSESSMENT:*",
                 "--actor",
-                "lead-1",
+                "assigner-1",
             ]
         )
         == 0

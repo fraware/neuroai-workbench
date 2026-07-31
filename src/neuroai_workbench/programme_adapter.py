@@ -139,26 +139,35 @@ def _evidence_state(record: dict[str, Any]) -> str:
         return "TRIAL REGISTRY"
     if "PREPRINT" in text:
         return "PREPRINT"
-    if "REGULATORY" in text or "CERTIFICATE" in text:
+    if any(token in text for token in ("REGULATORY", "REGULATOR", "CERTIFICATE", "LEGAL")):
         return "REGULATORY RECORD"
     if "PATENT" in text:
         return "PATENT RECORD"
     if "PARTICIPANT" in text or "CAREGIVER" in text:
         return "PARTICIPANT OR CAREGIVER EVIDENCE"
-    if "COMPANY" in text or "MEDIA" in text or "COMMERCIAL" in text:
+    if "COMPANY" in text or "MEDIA" in text or "COMMERCIAL" in text or "PRESS" in text:
         return "COMMERCIAL OR MEDIA CLAIM"
-    return "PRIMARY SOURCE VERIFIED"
+    if "DISCOVERY" in text:
+        return "CONTROLLED DISCOVERY RECORD"
+    if "METADATA" in text:
+        return "PRIMARY METADATA VERIFIED"
+    if "PRIVATE" in text and "REQUIRED" in text:
+        return "PRIVATE EVIDENCE REQUIRED"
+    # Unknown programme classes must not upgrade to primary-source verification.
+    return "NOT AVAILABLE"
 
 
 def _access_state(record: dict[str, Any]) -> str:
     text = _text(record.get("retrieval_state"), "").upper()
+    # PRIVATE must win over FULL/CONTENT tokens embedded in compound phrases.
+    if "PRIVATE" in text:
+        return "KNOWN PRIVATE RECORD REQUIRED"
     if "METADATA" in text and "CONTENT" not in text:
         return "PUBLIC METADATA ONLY"
     if any(token in text for token in ("RETRIEVED", "CONTENT", "FULL")):
         return "PUBLICLY RETRIEVED"
-    if "PRIVATE" in text:
-        return "KNOWN PRIVATE RECORD REQUIRED"
-    return "CONTROLLED PUBLIC EXTRACT"
+    # Unknown retrieval states remain unevaluated; never claim a public extract.
+    return "EVALUATION NOT EXECUTED"
 
 
 def _primary_state(raw: str) -> str:
@@ -221,22 +230,29 @@ def _decision_state(record: dict[str, Any]) -> str:
     kind = _decision_type(_text(record.get("decision_class"), ""))
     decision = _text(record.get("decision"), "").upper()
     if kind == "CONFORMANCE DECISION":
-        if "NOT_ESTABLISHED" in decision or "BLOCK" in decision:
+        if "NOT_ESTABLISHED" in decision or "BLOCK" in decision or "INCOMPLETE" in decision:
             return "NO CONFORMANCE DECISION — BLOCKED"
         if "CONDITIONAL" in decision:
             return "CONDITIONAL CONFORMANCE"
-        return "CONFORMS FOR BOUNDED SCOPE"
+        if "CONFORMS" in decision or "CONFORMANCE_ESTABLISHED" in decision:
+            return "CONFORMS FOR BOUNDED SCOPE"
+        return "NO CONFORMANCE DECISION — BLOCKED"
     if kind == "LEGAL OR REGULATORY AUTHORIZATION":
-        if "NOT_AUTH" in decision or "HUD_ONLY" in decision:
+        if "NOT_AUTH" in decision or "HUD_ONLY" in decision or "NOT ASSESSED" in decision:
             return "AUTHORIZATION NOT ASSESSED"
-        return "AUTHORIZED WITHIN BOUNDED SCOPE"
+        if "AUTHORIZED" in decision or "AUTHORISED" in decision:
+            return "AUTHORIZED WITHIN BOUNDED SCOPE"
+        return "AUTHORIZATION NOT ASSESSED"
     if kind == "REOPENING DECISION":
         return "REOPENED"
-    if "UNSUPPORTED" in decision:
+    if "UNSUPPORTED" in decision or "CONTRADICT" in decision:
         return "UNSUPPORTED"
-    if "PARTIAL" in decision or "BOUNDED" in decision:
+    if "PARTIAL" in decision:
+        return "PARTIALLY SUPPORTED"
+    if "BOUNDED" in decision or "SUPPORTED" in decision:
         return "SUPPORTED WITHIN BOUNDED SCOPE"
-    return "PARTIALLY SUPPORTED"
+    # Unknown claim-like decision strings must not upgrade to supported/partial.
+    return "ASSESSMENT INCOMPLETE"
 
 
 def _classification(system: dict[str, Any], raw: dict[str, Any]) -> dict[str, Any]:
@@ -711,6 +727,8 @@ def adapt_programme_assessment(value: dict[str, Any]) -> AdapterResult:
             "Native gap_register.linked_requirement_ids remain [] because programme gaps_and_requests lack linked requirement IDs.",
             "Classification sc_01–sc_12 values are provisional hardcoded projections pending domain confirmation.",
             "Unmatched programme claim_state strings map to NOT REVIEWABLE rather than supported-within-scope.",
+            "Unmatched evidence classes map to NOT AVAILABLE; unknown retrieval states map to EVALUATION NOT EXECUTED.",
+            "Unmatched conformance or regulatory decisions map to blocked or not-assessed states rather than conforming or authorized.",
             "No model-generated content is introduced by this adapter.",
         ],
         "boundary": "Adaptation preserves a source assessment in the workbench object model; it does not constitute independent appraisal or endorsement.",

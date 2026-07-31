@@ -39,6 +39,9 @@ The adapter report lists loss boundaries, including:
 - native `gap_register.linked_requirement_ids` left empty because programme `gaps_and_requests` do not carry requirement links;
 - classification `sc_01`–`sc_12` values as **provisional** hardcoded projections pending human domain confirmation;
 - unmatched programme `claim_state` strings mapped to `NOT REVIEWABLE` (not silently treated as supported-within-scope);
+- unmatched evidence classes mapped to `NOT AVAILABLE` (not upgraded to primary-source verified);
+- unknown retrieval states mapped to `EVALUATION NOT EXECUTED`; `PRIVATE` tokens checked before `FULL`/`CONTENT`;
+- unmatched conformance decisions mapped to `NO CONFORMANCE DECISION — BLOCKED`; unmatched regulatory decisions to `AUTHORIZATION NOT ASSESSED`; unmatched claim-like decisions to `ASSESSMENT INCOMPLETE`;
 - no model-generated content.
 
 Adaptation does not re-appraise evidence, upgrade a finding, establish authorization, or create conformance.

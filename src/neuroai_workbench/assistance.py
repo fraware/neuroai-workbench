@@ -124,6 +124,12 @@ def create_assistance_request(
     assessment = workspace.load_case(case_id)
     validation = validate_assessment(assessment).to_dict()
     context = _selected_context(assessment, evidence_ids or [], requirement_ids or [])
+    context_findings = scan_sensitive_text(json.dumps(context, ensure_ascii=False, sort_keys=True))
+    if context_findings:
+        raise ValueError(
+            f"Selected assistance context blocked by sensitive-data guard: "
+            f"{json.dumps(context_findings, ensure_ascii=False)}"
+        )
     assessment_path = workspace.case_path(case_id) / "assessment.json"
     seed = canonical_json_bytes({
         "case_id": case_id,
@@ -160,6 +166,7 @@ def create_assistance_request(
             "Return suggestions only. Do not claim to modify the assessment or exercise decision authority.",
         ],
         "data_attestation": "PUBLIC_OR_SYNTHETIC_STRUCTURED_CONTEXT_ONLY",
+        "disclosure_policy": "ATTESTATION_PLUS_SECRET_SCAN_ONLY",
         "network_execution": "NOT_PERFORMED_BY_WORKBENCH",
         "human_authority": "REQUIRED_FOR_ANY_USE",
     }
@@ -235,6 +242,13 @@ def record_assistance_response(
     request = load_assistance_request(workspace, case_id, request_id)
     if request.get("request_sha256") != _hash_record(request, "request_sha256"):
         raise ValueError("Assistance request hash is invalid")
+    assessment_path = workspace.case_path(case_id) / "assessment.json"
+    current_assessment_sha256 = sha256_file(assessment_path)
+    if request.get("assessment_sha256") != current_assessment_sha256:
+        raise ValueError(
+            "Assistance request is stale: assessment_sha256 no longer matches the current assessment. "
+            "Create a new assist-request against the current assessment before recording a response."
+        )
     output = json.loads(response_file.read_text(encoding="utf-8"))
     assessment = workspace.load_case(case_id)
     errors = _validate_model_output(output, assessment, request)

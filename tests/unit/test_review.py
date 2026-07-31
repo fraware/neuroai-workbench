@@ -36,7 +36,7 @@ def test_review_lifecycle_is_attributable_and_non_mutating(tmp_path: Path) -> No
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
     create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1"
+        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
     )
     statement = submit_review_statement(
         workspace,
@@ -111,7 +111,7 @@ def test_disposition_requires_decision_role_and_is_single_use(tmp_path: Path) ->
             workspace, case_id, statement_id, "ACCEPTED", "Accepted after review.", actor="reviewer-1"
         )
     create_review_assignment(
-        workspace, case_id, "lead-1", "DECISION_AUTHORITY", ["ASSESSMENT:*"], actor="lead-1"
+        workspace, case_id, "lead-1", "DECISION_AUTHORITY", ["ASSESSMENT:*"], actor="assigner-1"
     )
     dispose_review_statement(
         workspace, case_id, statement_id, "ACCEPTED", "Accepted after review.", actor="lead-1"
@@ -176,6 +176,44 @@ def test_review_statement_becomes_stale_without_becoming_invalid(tmp_path: Path)
     assert report["counts"]["stale_statements"] == 1
     assert any("assessment has changed" in warning for warning in report["warnings"])
     assert "earlier assessment hash: 1" in render_review_markdown(workspace, case_id)
+
+
+def test_dispose_refuses_stale_statement_hash(tmp_path: Path) -> None:
+    workspace, case_id = _workspace(tmp_path)
+    assessment = workspace.load_case(case_id)
+    finding_id = assessment["requirement_findings"][0]["requirement_id"]
+    create_review_assignment(
+        workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
+    )
+    create_review_assignment(
+        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
+    )
+    statement_id = submit_review_statement(
+        workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
+    )["statement"]["statement_id"]
+    assessment["assessment_metadata"]["title"] = "Updated after statement"
+    workspace.save_case(case_id, assessment, actor="lead-1", require_valid=True)
+    with pytest.raises(ValueError, match="stale"):
+        dispose_review_statement(
+            workspace,
+            case_id,
+            statement_id,
+            "ACCEPTED",
+            "Should be refused.",
+            actor="lead-1",
+        )
+
+
+def test_decision_role_self_assignment_is_refused(tmp_path: Path) -> None:
+    workspace, case_id = _workspace(tmp_path)
+    with pytest.raises(ValueError, match="Self-assignment"):
+        create_review_assignment(
+            workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1"
+        )
+    assignment = create_review_assignment(
+        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
+    )
+    assert assignment["assignment"]["authority_profile"] == "LOCAL_UNAUTHENTICATED_ATTRIBUTION"
 
 
 def test_review_input_and_integrity_error_branches(tmp_path: Path) -> None:
@@ -260,7 +298,7 @@ def test_disposition_rejects_tampered_statement(tmp_path: Path) -> None:
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
     create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1"
+        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
     )
     result = submit_review_statement(
         workspace, case_id, "reviewer-1", "FINDING", finding_id, "AGREE", "Supported as written."
@@ -317,7 +355,7 @@ def test_review_verifier_reports_semantic_record_corruption(tmp_path: Path) -> N
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"
     )
     create_review_assignment(
-        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="lead-1"
+        workspace, case_id, "lead-1", "LEAD_ASSESSOR", ["ASSESSMENT:*"], actor="assigner-1"
     )
     statement = submit_review_statement(
         workspace,

@@ -41,9 +41,11 @@ The first implementation uses deterministic prompt-package export and response i
 5. requires an explicit human disposition record;
 6. appends attributable request, response, and disposition events;
 7. preserves the original assessment and all assistance artifacts;
-8. performs no assessment mutation and no external network call.
+8. performs no assessment mutation and no external network call;
+9. records `disclosure_policy: ATTESTATION_PLUS_SECRET_SCAN_ONLY` after scanning the prompt and full exported context JSON for obvious secret patterns;
+10. rejects response import when the request `assessment_sha256` no longer matches the current assessment.
 
-Field-level application of accepted drafts remains a separate future workflow and must use the ordinary controlled assessment-edit path.
+Field-level application of accepted drafts remains a separate future workflow and must use the ordinary controlled assessment-edit path. Field-level classification is required before any provider adapter; attestation plus secret scan is not proof that context is public or synthetic.
 
 ## Consequences
 

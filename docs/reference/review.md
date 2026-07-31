@@ -4,7 +4,7 @@ The workbench can record local reviewer assignments, review statements, disagree
 
 ## Boundary
 
-The reference workflow records a claimed reviewer identifier and role. It does not authenticate a person, verify an institutional appointment, or confer legal or scientific decision authority. Authentication belongs to a separate institutional deployment architecture.
+The reference workflow records a claimed reviewer identifier and role under `authority_profile: LOCAL_UNAUTHENTICATED_ATTRIBUTION`. It does not authenticate a person, verify an institutional appointment, or confer legal or scientific decision authority. Authentication belongs to a separate institutional deployment architecture. Self-assignment of `LEAD_ASSESSOR` or `DECISION_AUTHORITY` is refused so a distinct assigning actor is recorded within that local profile.
 
 ## Roles
 
@@ -18,7 +18,7 @@ Statements are immutable records. They do not edit the assessment.
 
 ## Dispositions
 
-A lead assessor or decision authority with a covering assignment can record an accepted, partially accepted, rejected, or deferred disposition. A disposition is also immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review.
+A lead assessor or decision authority with a covering assignment can record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is also immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review.
 
 ## Integrity
 

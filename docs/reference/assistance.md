@@ -33,4 +33,6 @@ A model response is a candidate suggestion. It cannot assign applicability, chan
 
 ## Data boundary
 
-The request generator includes selected structured summaries only. It does not include registered evidence bytes. Obvious credential and secret patterns are blocked. Protected neural, clinical, participant, regulator-held, security-sensitive, or private evidence remains outside this workflow unless a separately approved institutional deployment profile supplies lawful and technically enforced controls.
+The request generator includes selected structured summaries only. It does not include registered evidence bytes. Obvious credential and secret patterns are scanned across the prompt and the full exported context JSON. The request records `disclosure_policy: ATTESTATION_PLUS_SECRET_SCAN_ONLY`; this is not field-level classification or proof that context is public or synthetic. Protected neural, clinical, participant, regulator-held, security-sensitive, or private evidence remains outside this workflow unless a separately approved institutional deployment profile supplies lawful and technically enforced controls.
+
+Recording a response requires the request `assessment_sha256` to match the current assessment. After an assessment edit, create a new assistance request before importing a model response.
