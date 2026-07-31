@@ -41,7 +41,14 @@ def load_release(path: Path) -> dict[str, Any]:
 
 
 def _ids(records: list[dict[str, Any]], field: str) -> list[str]:
-    return [record.get(field) for record in records if isinstance(record, dict)]
+    values: list[str] = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        value = record.get(field)
+        if isinstance(value, str):
+            values.append(value)
+    return values
 
 
 def validate_release(value: dict[str, Any]) -> dict[str, Any]:
@@ -79,15 +86,28 @@ def validate_release(value: dict[str, Any]) -> dict[str, Any]:
         for index, record in enumerate(value[key]):
             for source_id in record.get("source_ids", []):
                 if source_id not in source_ids:
-                    errors.append({"code": "UNRESOLVED_SOURCE_REFERENCE", "path": f"{key}[{index}].source_ids", "source_id": source_id})
+                    errors.append(
+                        {
+                            "code": "UNRESOLVED_SOURCE_REFERENCE",
+                            "path": f"{key}[{index}].source_ids",
+                            "source_id": source_id,
+                        }
+                    )
 
     organization_ids = {record["organization_id"] for record in value["organizations"] if record.get("organization_id")}
     for index, record in enumerate(value["organization_resolution"]):
         if record.get("organization_id") not in organization_ids:
-            errors.append({"code": "UNRESOLVED_ORGANIZATION_REFERENCE", "path": f"organization_resolution[{index}].organization_id"})
+            errors.append(
+                {
+                    "code": "UNRESOLVED_ORGANIZATION_REFERENCE",
+                    "path": f"organization_resolution[{index}].organization_id",
+                }
+            )
     for index, record in enumerate(value["regional_expansion"]):
         if record.get("organization_id") not in organization_ids:
-            errors.append({"code": "UNRESOLVED_ORGANIZATION_REFERENCE", "path": f"regional_expansion[{index}].organization_id"})
+            errors.append(
+                {"code": "UNRESOLVED_ORGANIZATION_REFERENCE", "path": f"regional_expansion[{index}].organization_id"}
+            )
 
     coverage = value.get("coverage", {}).get("v1_4_effective_counts", {})
     denominator = coverage.get("active_nonlegacy_organization_denominator")
@@ -130,12 +150,28 @@ def summarize_release(value: dict[str, Any]) -> dict[str, Any]:
 
 def queue_release(value: dict[str, Any]) -> dict[str, Any]:
     org_queue = [
-        {"organization_id": item.get("organization_id"), "name": item.get("canonical_name"), "verification_state": item.get("verification_state")}
+        {
+            "organization_id": item.get("organization_id"),
+            "name": item.get("canonical_name"),
+            "verification_state": item.get("verification_state"),
+        }
         for item in value.get("organizations", [])
-        if item.get("verification_state") not in {"CURRENT_VERIFIED", "CURRENT_VERIFIED_RESCOPED", "CURRENT_VERIFIED_CORRECTED", "LEGACY_ONLY", "NON_ORGANIZATION_PROVENANCE_NODE", "HISTORICAL_ARCHIVED"}
+        if item.get("verification_state")
+        not in {
+            "CURRENT_VERIFIED",
+            "CURRENT_VERIFIED_RESCOPED",
+            "CURRENT_VERIFIED_CORRECTED",
+            "LEGACY_ONLY",
+            "NON_ORGANIZATION_PROVENANCE_NODE",
+            "HISTORICAL_ARCHIVED",
+        }
     ]
     source_queue = [
-        {"source_id": item.get("source_id"), "title": item.get("title"), "verification_state": item.get("verification_state")}
+        {
+            "source_id": item.get("source_id"),
+            "title": item.get("title"),
+            "verification_state": item.get("verification_state"),
+        }
         for item in value.get("sources", [])
         if item.get("verification_state") not in {"CURRENT_VERIFIED", "HISTORICAL_INPUT"}
     ]

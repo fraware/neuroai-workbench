@@ -1,26 +1,45 @@
+
 PYTHON ?= python
 WORKSPACE ?= workspaces/demo
+ARTIFACTS ?= artifacts
 
-.PHONY: install test verify demo serve build clean
+.PHONY: install quality test verify demo serve package audit clean
+
 install:
 	$(PYTHON) -m pip install -e .[dev]
 
+quality:
+	$(PYTHON) -m ruff format --check .
+	$(PYTHON) -m ruff check .
+	$(PYTHON) -m mypy src/neuroai_workbench
+	$(PYTHON) -m compileall -q src scripts
+	$(PYTHON) scripts/check_repository_hygiene.py
+	$(PYTHON) scripts/check_version_consistency.py
+
 test:
-	$(PYTHON) -m pytest
+	$(PYTHON) -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-fail-under=90
 
 verify:
-	$(PYTHON) scripts/verify_release.py
+	mkdir -p $(ARTIFACTS)
+	$(PYTHON) scripts/verify_release.py --output $(ARTIFACTS)/RELEASE_VERIFICATION.json
+
+package:
+	rm -rf build dist
+	$(PYTHON) -m build
+	$(PYTHON) -m twine check dist/*
+
+audit:
+	$(PYTHON) -m pip_audit
 
 demo:
 	rm -rf $(WORKSPACE)
 	neuroai-workbench init $(WORKSPACE) --name "NeuroAI demo workspace"
-	neuroai-workbench case-import $(WORKSPACE) examples/PILOT-02_FDA_Adaptive_DBS_v4.2.json
+	neuroai-workbench case-import $(WORKSPACE) examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json
 
 serve:
 	neuroai-workbench serve $(WORKSPACE)
 
-build:
-	$(PYTHON) -m build
-
 clean:
-	rm -rf build dist .pytest_cache src/*.egg-info
+	rm -rf artifacts build dist .coverage .pytest_cache htmlcov src/*.egg-info workspaces
+	find . -type d -name __pycache__ -prune -exec rm -rf {} +
+	find . -type f -name '*.py[co]' -delete

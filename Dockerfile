@@ -11,4 +11,4 @@ USER workbench
 VOLUME ["/workspace"]
 EXPOSE 8765
 ENTRYPOINT ["neuroai-workbench-entrypoint"]
-CMD ["serve", "/workspace", "--host", "0.0.0.0", "--port", "8765"]
+CMD ["serve", "/workspace", "--host", "0.0.0.0", "--port", "8765", "--allow-network"]

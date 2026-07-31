@@ -27,74 +27,100 @@ def migrate_v4_1_2(source: dict[str, Any]) -> dict[str, Any]:
     output["assessment_metadata"]["migration_id"] = f"MIG-{assessment_id}-v4.2"
     output["deployment_state"] = copy.deepcopy(BLANK["deployment_state"])
     for claim in output["claim_register"]:
-        claim.update({
-            "claimant_record_type": "ASSESSOR-CONTROLLED CLAIM",
-            "verbatim_text": claim.get("claim_text", ""),
-            "source_location": "See linked evidence object.",
-            "propagation_history": [],
-            "current_applicability": "CURRENT ASSESSED SCOPE",
-            "future_use_gate": "REOPENING REQUIRED",
-        })
+        claim.update(
+            {
+                "claimant_record_type": "ASSESSOR-CONTROLLED CLAIM",
+                "verbatim_text": claim.get("claim_text", ""),
+                "source_location": "See linked evidence object.",
+                "propagation_history": [],
+                "current_applicability": "CURRENT ASSESSED SCOPE",
+                "future_use_gate": "REOPENING REQUIRED",
+            }
+        )
     for evidence in output["evidence_register"]:
-        evidence.update({
-            "access_state": "PUBLICLY RETRIEVED" if evidence.get("evidence_state") != "PRIVATE EVIDENCE REQUIRED" else "KNOWN PRIVATE RECORD REQUIRED",
-            "known_holder": "",
-            "retrieval_or_authorization_required": "Resolve controlled access when required.",
-            "reproducibility_tier": "R1 FIGURES",
-        })
+        evidence.update(
+            {
+                "access_state": "PUBLICLY RETRIEVED"
+                if evidence.get("evidence_state") != "PRIVATE EVIDENCE REQUIRED"
+                else "KNOWN PRIVATE RECORD REQUIRED",
+                "known_holder": "",
+                "retrieval_or_authorization_required": "Resolve controlled access when required.",
+                "reproducibility_tier": "R1 FIGURES",
+            }
+        )
     output["configuration_relationships"] = []
     output["source_version_relationships"] = []
     output["provenance_discrepancies"] = []
-    output["configuration_epochs"] = [{
-        "epoch_id": "EPOCH-01",
-        "configuration_id": output["system_profile"]["configuration_id"],
-        "start": output["system_profile"].get("configuration_effective_period", "UNRESOLVED"),
-        "end": "OPEN OR UNRESOLVED",
-        "material_changes": ["Migration did not infer additional epochs."],
-        "endpoint_ids": [row["endpoint_id"] for row in output["endpoint_register"]],
-        "evidence_ids": [row["evidence_id"] for row in output["evidence_register"]],
-        "limitations": ["Resolve material epochs from controlled records."],
-    }]
+    output["configuration_epochs"] = [
+        {
+            "epoch_id": "EPOCH-01",
+            "configuration_id": output["system_profile"]["configuration_id"],
+            "start": output["system_profile"].get("configuration_effective_period", "UNRESOLVED"),
+            "end": "OPEN OR UNRESOLVED",
+            "material_changes": ["Migration did not infer additional epochs."],
+            "endpoint_ids": [row["endpoint_id"] for row in output["endpoint_register"]],
+            "evidence_ids": [row["evidence_id"] for row in output["evidence_register"]],
+            "limitations": ["Resolve material epochs from controlled records."],
+        }
+    ]
     output["denominator_register"] = []
     for index, endpoint in enumerate(output["endpoint_register"], 1):
         denominator_id = f"DEN-{index:02d}"
-        output["denominator_register"].append({
-            "denominator_id": denominator_id,
-            "denominator_type": "ENDPOINT-SPECIFIC",
-            "population_definition": endpoint.get("population", "UNRESOLVED"),
-            "value_state": "UNRESOLVED",
-            "value": "UNRESOLVED",
-            "time_window": endpoint.get("observation_window", ""),
-            "configuration_id": endpoint.get("system_and_version", output["system_profile"]["configuration_id"]),
-            "evidence_ids": endpoint.get("source_evidence_ids", []),
-            "transition_from_ids": [],
-            "limitations": ["Migration does not invent a denominator."],
-        })
-        endpoint.update({
-            "metric_direction": "UNRESOLVED",
-            "aggregation_level": "UNRESOLVED",
-            "statistic_type": "UNRESOLVED",
-            "derivation": "Preserve source result.",
-            "denominator_ids": [denominator_id],
-            "protocol_state": "UNRESOLVED",
-            "ground_truth_state": "UNRESOLVED",
-            "correction_timing": "UNRESOLVED",
-            "configuration_epoch_ids": ["EPOCH-01"],
-        })
+        output["denominator_register"].append(
+            {
+                "denominator_id": denominator_id,
+                "denominator_type": "ENDPOINT-SPECIFIC",
+                "population_definition": endpoint.get("population", "UNRESOLVED"),
+                "value_state": "UNRESOLVED",
+                "value": "UNRESOLVED",
+                "time_window": endpoint.get("observation_window", ""),
+                "configuration_id": endpoint.get("system_and_version", output["system_profile"]["configuration_id"]),
+                "evidence_ids": endpoint.get("source_evidence_ids", []),
+                "transition_from_ids": [],
+                "limitations": ["Migration does not invent a denominator."],
+            }
+        )
+        endpoint.update(
+            {
+                "metric_direction": "UNRESOLVED",
+                "aggregation_level": "UNRESOLVED",
+                "statistic_type": "UNRESOLVED",
+                "derivation": "Preserve source result.",
+                "denominator_ids": [denominator_id],
+                "protocol_state": "UNRESOLVED",
+                "ground_truth_state": "UNRESOLVED",
+                "correction_timing": "UNRESOLVED",
+                "configuration_epoch_ids": ["EPOCH-01"],
+            }
+        )
     for finding in output["requirement_findings"]:
-        finding.update({
-            "evidence_access_state": "NOT APPLICABLE" if finding["applicability"] == "NOT APPLICABLE WITH RATIONALE" else "EVALUATION NOT EXECUTED" if finding["finding_status"] == "NOT ASSESSED" else "CONTROLLED PUBLIC EXTRACT",
-            "future_use_gate_status": "REOPENING REQUIRED" if finding["applicability"] == "NOT APPLICABLE WITH RATIONALE" else "CURRENTLY APPLICABLE",
-            "historical_finding_preserved": True,
-        })
+        finding.update(
+            {
+                "evidence_access_state": "NOT APPLICABLE"
+                if finding["applicability"] == "NOT APPLICABLE WITH RATIONALE"
+                else "EVALUATION NOT EXECUTED"
+                if finding["finding_status"] == "NOT ASSESSED"
+                else "CONTROLLED PUBLIC EXTRACT",
+                "future_use_gate_status": "REOPENING REQUIRED"
+                if finding["applicability"] == "NOT APPLICABLE WITH RATIONALE"
+                else "CURRENTLY APPLICABLE",
+                "historical_finding_preserved": True,
+            }
+        )
     for gap in output["gap_register"]:
         gap["evidence_access_state"] = "KNOWN PRIVATE RECORD REQUIRED"
     legacy = output.pop("bounded_decision")
     output["legacy_bounded_decision"] = copy.deepcopy(legacy)
     for key in [
-        "functional_contribution_register", "independence_assessment", "latency_register",
-        "control_authority_register", "operational_burden_register", "update_lineage_register",
-        "participant_authority_register", "postmarket_exposure_register", "reproducibility_register",
+        "functional_contribution_register",
+        "independence_assessment",
+        "latency_register",
+        "control_authority_register",
+        "operational_burden_register",
+        "update_lineage_register",
+        "participant_authority_register",
+        "postmarket_exposure_register",
+        "reproducibility_register",
     ]:
         output[key] = []
     output["decision_register"] = [

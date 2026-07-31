@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from .util import atomic_write_bytes, canonical_json_bytes, sha256_bytes, utc_now
 

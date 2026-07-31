@@ -1,5 +1,6 @@
-# Verification records
 
-`RELEASE_VERIFICATION_v0.1.0.json` records controlled repository, reference-case, migration, workspace, evidence, event-chain, API and test checks.
+# Release verification
 
-Release archives and package artifacts have separate adjacent SHA-256 records. Digest identity and software-test success do not establish production security or substantive conformance.
+Release-verification records are generated into `artifacts/` by `scripts/verify_release.py` and uploaded by CI. They are intentionally excluded from source control.
+
+Historical verification records remain attached to their original controlled release archives. Regenerating a report does not rewrite those historical records.

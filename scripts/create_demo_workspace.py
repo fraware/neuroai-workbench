@@ -14,9 +14,10 @@ def main() -> int:
     args = parser.parse_args()
     if args.output.exists() and args.replace:
         import shutil
+
         shutil.rmtree(args.output)
     workspace = Workspace.initialize(args.output, name="NeuroAI v4.2 reference workspace")
-    examples = Path(__file__).resolve().parents[1] / "examples"
+    examples = Path(__file__).resolve().parents[1] / "examples" / "assessments"
     for path in sorted(examples.glob("*.json")):
         workspace.import_case(path, actor="release-builder")
     workspace.create_case("CASE-TEMPLATE", "Blank controlled assessment template", actor="release-builder")

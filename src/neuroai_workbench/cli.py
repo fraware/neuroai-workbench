@@ -6,18 +6,25 @@ import logging
 import sys
 from importlib.metadata import version as package_version
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from . import __version__
 from .comparison import compare_assessments
-from .evidence import add_evidence_file, verify_evidence_files
 from .events import verify_chain
+from .evidence import add_evidence_file, verify_evidence_files
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .migration import migrate_file
-from .observatory import import_release, load_imported_release, load_release, queue_release, summarize_release, validate_release
+from .observatory import (
+    import_release,
+    load_imported_release,
+    load_release,
+    queue_release,
+    summarize_release,
+    validate_release,
+)
 from .server import serve
-from .util import atomic_write_json, sha256_file
+from .util import sha256_file
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -55,6 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("workspace")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--allow-network", action="store_true")
 
     p = sub.add_parser("case-create", help="Create a blank v4.2 case")
     p.add_argument("workspace")
@@ -166,7 +174,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _load_input(args: argparse.Namespace) -> dict[str, Any]:
     if args.assessment:
-        return json.loads(Path(args.assessment).read_text(encoding="utf-8"))
+        return cast(dict[str, Any], json.loads(Path(args.assessment).read_text(encoding="utf-8")))
     if not args.workspace:
         raise ValueError("--workspace is required with --case-id")
     return _workspace(args.workspace).load_case(args.case_id)
@@ -194,7 +202,7 @@ def main(argv: list[str] | None = None) -> int:
                 result["cases"] = workspace.list_cases()
             emit(result)
         elif args.command == "serve":
-            serve(_workspace(args.workspace), host=args.host, port=args.port)
+            serve(_workspace(args.workspace), host=args.host, port=args.port, allow_network=args.allow_network)
         elif args.command == "case-create":
             emit(_workspace(args.workspace).create_case(args.case_id, args.title, actor=args.actor))
         elif args.command == "case-import":
@@ -205,7 +213,11 @@ def main(argv: list[str] | None = None) -> int:
             emit(_workspace(args.workspace).load_case(args.case_id), Path(args.out) if args.out else None)
         elif args.command == "case-save":
             assessment = json.loads(Path(args.assessment).read_text(encoding="utf-8"))
-            emit(_workspace(args.workspace).save_case(args.case_id, assessment, actor=args.actor, require_valid=args.require_valid))
+            emit(
+                _workspace(args.workspace).save_case(
+                    args.case_id, assessment, actor=args.actor, require_valid=args.require_valid
+                )
+            )
         elif args.command == "validate":
             report = validate_assessment(_load_input(args)).to_dict()
             emit(report, Path(args.out) if args.out else None)
@@ -215,18 +227,28 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "snapshot":
             emit(_workspace(args.workspace).snapshot(args.case_id, actor=args.actor, label=args.label))
         elif args.command == "evidence-add":
-            emit(add_evidence_file(
-                _workspace(args.workspace), args.case_id, Path(args.file), title=args.title,
-                evidence_type=args.type, source=args.source, actor=args.actor,
-                link_to_assessment=not args.store_only,
-            ))
+            emit(
+                add_evidence_file(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    Path(args.file),
+                    title=args.title,
+                    evidence_type=args.type,
+                    source=args.source,
+                    actor=args.actor,
+                    link_to_assessment=not args.store_only,
+                )
+            )
         elif args.command == "evidence-verify":
             emit(verify_evidence_files(_workspace(args.workspace), args.case_id), Path(args.out) if args.out else None)
         elif args.command == "events-verify":
             workspace = _workspace(args.workspace)
             emit(verify_chain(workspace.case_path(args.case_id) / "events.jsonl"), Path(args.out) if args.out else None)
         elif args.command == "bundle":
-            emit(export_case_bundle(_workspace(args.workspace), args.case_id, Path(args.output)), Path(args.out) if args.out else None)
+            emit(
+                export_case_bundle(_workspace(args.workspace), args.case_id, Path(args.output)),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "migrate":
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
@@ -249,10 +271,13 @@ def main(argv: list[str] | None = None) -> int:
             labels = args.labels or [Path(path).stem for path in args.assessments]
             if len(labels) != len(args.assessments):
                 raise ValueError("--labels must have the same length as assessments")
-            cases = [(label, json.loads(Path(path).read_text(encoding="utf-8"))) for label, path in zip(labels, args.assessments)]
+            cases = [
+                (label, json.loads(Path(path).read_text(encoding="utf-8")))
+                for label, path in zip(labels, args.assessments)
+            ]
             for _, assessment in cases:
-                report = validate_assessment(assessment)
-                if not report.valid:
+                validation = validate_assessment(cast(dict[str, Any], assessment))
+                if not validation.valid:
                     raise ValueError("Every comparison input must be a valid v4.2 assessment")
             emit(compare_assessments(cases), Path(args.out) if args.out else None)
         else:

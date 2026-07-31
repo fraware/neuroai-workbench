@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import json
 import zipfile
 from pathlib import Path
 from typing import Any
 
+from . import __version__
 from .events import verify_chain
 from .evidence import verify_evidence_files
 from .util import atomic_write_json, sha256_file, utc_now
@@ -22,7 +22,7 @@ def export_case_bundle(workspace: Workspace, case_id: str, output: Path) -> dict
     chain = verify_chain(case / "events.jsonl")
     manifest = {
         "bundle_version": "1",
-        "workbench_version": "0.1.0",
+        "workbench_version": __version__,
         "case_id": case_id,
         "created_at": utc_now(),
         "assessment_sha256": sha256_file(case / CASE_FILE),

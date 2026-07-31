@@ -1,0 +1,10 @@
+---
+description: Python implementation requirements
+globs: ["**/*.py", "pyproject.toml"]
+alwaysApply: false
+---
+- Support every Python version declared in `pyproject.toml`.
+- Use explicit types, pathlib, atomic writes, bounded inputs, and deterministic serialization.
+- Keep the dependency surface small and justify every runtime dependency.
+- Do not commit generated files, caches, build outputs, or local workspaces.
+- Add or update tests before considering implementation complete.

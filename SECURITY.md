@@ -1,19 +1,20 @@
+
 # Security policy
 
-## Supported version
+## Supported versions
 
-Security fixes are applied to the current `0.1.x` line during the pilot period.
+Security fixes are applied to the current `0.2.x` line during the controlled pilot period. Earlier lines are retained for provenance and are not supported for new deployments.
 
 ## Reporting
 
-Do not disclose vulnerabilities involving private neural data, participant records, credentials, or unreleased assessment evidence in a public issue. Contact the maintainers through the repository’s private security-advisory channel after publication.
+Do not disclose vulnerabilities involving private neural data, participant records, credentials, unreleased assessment evidence, or exploitable deployment details in a public issue. Use the repository's private security-advisory channel.
 
-## Trust boundary
+## Reference-server boundary
 
-The reference server is intended for local trusted use. It has no built-in authentication, authorization, multi-tenant isolation, TLS termination, secrets manager, malware scanner, content disarm, or encrypted evidence store.
+The bundled server is intended for local trusted use. It has no built-in authentication, authorization, multi-tenant isolation, TLS termination, secrets manager, malware scanner, content disarm, or encrypted evidence store.
 
-Default binding is `127.0.0.1`. Binding to another interface requires a separately secured reverse proxy, identity layer, encrypted storage, host hardening, audit controls, backup policy, and an independent security review.
+Default binding is `127.0.0.1`. Any non-local deployment requires a separate architecture with identity, encrypted transport and storage, host hardening, audit controls, backup and recovery, retention, incident response, and independent review.
 
-## Security claims explicitly withheld
+## Security claims withheld
 
-A passing test suite, valid event chain, valid file digest, or clean dependency scan does not establish that a deployment is secure. Vulnerability testing and red-team evidence remain separate assessment objects under v4.2.
+Passing tests, valid hashes, a valid event chain, a dependency scan, or a clean CodeQL run does not establish that a deployment is secure. Those results are bounded technical evidence only.

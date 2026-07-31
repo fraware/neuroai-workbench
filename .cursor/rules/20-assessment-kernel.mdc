@@ -1,0 +1,10 @@
+---
+description: Controls for normative v4.2 resources and validation semantics
+globs: ["src/neuroai_workbench/resources/v4_2/**", "src/neuroai_workbench/validation.py", "src/neuroai_workbench/migration.py"]
+alwaysApply: false
+---
+- Preserve all 78 requirement identifiers and their meanings.
+- Any normative change requires a dedicated ADR, migration analysis, domain review, and explicit version decision.
+- Preserve historical finding states during migration.
+- Validation may check structure and internal consistency; it must not generate substantive conformance.
+- Add regression fixtures for every schema or migration change.
