@@ -29,6 +29,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Collector source-type adapters (HTML, JSON API, XML/RSS/Atom, clinical/regulatory registry stub, controlled authenticated download stub), plan-driven scheduler consuming `neuroai-monitor plan` output, quarantine approval gate before monitoring handoff, credential-leak refusal, kill switches, and architecture tests forbidding direct monitoring snapshot or adjudication calls from the collector package.
 - Layered entity resolver proposals (`NEW_ENTITY`, `EXISTING_ENTITY`, `AMBIGUOUS`, `DUPLICATE_CANDIDATE`), exact-ID auto-confirm only, human disposition records, blinded benchmark stub, and adversarial refusal of automatic fuzzy merge under `neuroai_workbench.entities.resolver`.
 - Default-off extraction provider adapters, offline benchmark comparison across at least two explicitly enabled test-only configurations, immutable human disposition records, and adversarial refusal of disabled providers, network endpoints, and aggregate-score selection for extraction evaluation.
+- Shadow refresh evaluation scaffolding: synthetic 25-source cohort fixture, freeze manifest schema, go/no-go metrics schema, computation stubs, and non-canonical artifact marking (`SHADOW_EVALUATION_NOT_CANONICAL`). Live refresh over real sources remains blocked pending human approval and dependent workstreams.
 
 ### Changed
 

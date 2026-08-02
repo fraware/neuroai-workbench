@@ -68,6 +68,7 @@ neuroai_workbench = [
   "resources/extraction/*",
   "resources/entities/*",
   "resources/delta/*",
+  "resources/shadow_refresh/*",
 ]
 
 [tool.pytest.ini_options]
