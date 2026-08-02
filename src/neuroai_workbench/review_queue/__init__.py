@@ -392,9 +392,7 @@ def claim_lease(
     if current is not None:
         holder = str(current["reviewer_profile_id"])
         if holder != reviewer_profile_id:
-            raise ValueError(
-                f"Item {item_id!r} is already leased to profile {holder!r}; lease stealing is refused"
-            )
+            raise ValueError(f"Item {item_id!r} is already leased to profile {holder!r}; lease stealing is refused")
         raise ValueError(f"Profile {reviewer_profile_id!r} already holds an active lease on {item_id!r}")
 
     claimed_at = utc_now()
