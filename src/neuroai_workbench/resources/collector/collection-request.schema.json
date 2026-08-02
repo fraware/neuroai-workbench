@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/collection-request-1.0.json",
+  "type": "object",
+  "required": [
+    "request_id",
+    "source_id",
+    "monitor_id",
+    "requested_url",
+    "requested_at",
+    "registry_sha256",
+    "collector_version",
+    "configuration_hash",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "public_url": {
+      "type": "string",
+      "minLength": 1,
+      "allOf": [
+        {"pattern": "^https?://[^@\\s]+$"},
+        {"not": {"pattern": "//127\\."}},
+        {"not": {"pattern": "//10\\."}},
+        {"not": {"pattern": "//192\\.168\\."}},
+        {"not": {"pattern": "//172\\.(1[6-9]|2[0-9]|3[01])\\."}},
+        {"not": {"pattern": "//localhost([:/]|$)"}},
+        {"not": {"pattern": "//[^/]*\\.local([:/]|$)"}},
+        {"not": {"pattern": "//[^/]*\\.internal([:/]|$)"}}
+      ]
+    },
+    "timestamp_with_timezone": {
+      "type": "string",
+      "minLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "properties": {
+    "request_id": {"type": "string", "pattern": "^CREQ-[0-9a-f]{32}$"},
+    "source_id": {"type": "string", "minLength": 1},
+    "monitor_id": {"type": "string", "minLength": 1},
+    "requested_url": {"$ref": "#/$defs/public_url"},
+    "requested_at": {"$ref": "#/$defs/timestamp_with_timezone"},
+    "registry_sha256": {"$ref": "#/$defs/sha256"},
+    "collector_version": {"type": "string", "minLength": 1},
+    "configuration_hash": {"$ref": "#/$defs/sha256"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

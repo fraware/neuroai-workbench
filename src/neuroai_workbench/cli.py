@@ -28,6 +28,7 @@ from .exchange import (
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .migration import migrate_file
+from .migration_ops.verification import write_migration_verification
 from .observatory import (
     import_release,
     load_imported_release,
@@ -46,7 +47,7 @@ from .review import (
     verify_review_records,
 )
 from .server import serve
-from .util import sha256_file
+from .util import sha256_file, utc_now
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -167,6 +168,23 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("migrate", help="Migrate a v4.1.2 assessment additively to v4.2")
     p.add_argument("source")
     p.add_argument("output")
+
+    p = sub.add_parser(
+        "governing-inputs-verify",
+        help="Build governing-input migration verification from archive inventory and public fixtures",
+    )
+    p.add_argument(
+        "--repo-root",
+        type=Path,
+        default=Path("."),
+        help="Repository root containing migration/ inventory and examples/",
+    )
+    p.add_argument("--inventory", type=Path)
+    p.add_argument("--ambiguities", type=Path)
+    p.add_argument("--output", type=Path, default=Path("migration/MIGRATION_VERIFICATION.json"))
+    p.add_argument("--recorded-at", default="2026-08-02T14:00:00Z")
+    p.add_argument("--now", action="store_true")
+    p.add_argument("--out")
 
     p = sub.add_parser("observatory-import", help="Import and mechanically validate a controlled observatory release")
     p.add_argument("workspace")
@@ -417,6 +435,16 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "migrate":
             migrate_file(Path(args.source), Path(args.output))
             emit({"output": args.output, "sha256": sha256_file(Path(args.output))})
+        elif args.command == "governing-inputs-verify":
+            recorded_at = utc_now() if args.now else args.recorded_at
+            document = write_migration_verification(
+                Path(args.repo_root),
+                Path(args.output),
+                inventory_path=Path(args.inventory) if args.inventory else None,
+                ambiguities_path=Path(args.ambiguities) if args.ambiguities else None,
+                recorded_at=recorded_at,
+            )
+            emit(document, Path(args.out) if args.out else None)
         elif args.command == "programme-adapt":
             adapted = adapt_programme_file(
                 Path(args.source),
