@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/source-monitor-registry-1.0.json",
+  "type": "object",
+  "required": ["metadata", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["title", "version", "status", "record_count", "boundary"],
+      "additionalProperties": true,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "source_release": {"type": "string"},
+        "status": {"type": "string", "minLength": 1},
+        "record_count": {"type": "integer", "minimum": 0},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "monitor_id", "source_id", "url", "publisher", "source_class", "cadence",
+          "baseline_evidence_state", "baseline_verification_state", "baseline_claim_boundary",
+          "network_access_required", "current_status", "next_action"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "monitor_id": {"type": "string", "minLength": 1},
+          "source_id": {"type": "string", "minLength": 1},
+          "url": {"type": "string", "minLength": 1},
+          "publisher": {"type": "string", "minLength": 1},
+          "source_class": {"type": "string", "minLength": 1},
+          "cadence": {"enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "ANNUAL", "MANUAL"]},
+          "last_successful_retrieval": {"type": ["string", "null"]},
+          "baseline_evidence_state": {"type": "string", "minLength": 1},
+          "baseline_verification_state": {"type": "string", "minLength": 1},
+          "baseline_claim_boundary": {"type": "string", "minLength": 1},
+          "network_access_required": {"type": "boolean"},
+          "current_status": {"type": "string", "minLength": 1},
+          "next_action": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

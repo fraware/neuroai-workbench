@@ -42,6 +42,7 @@ dev = [
 
 [project.scripts]
 neuroai-workbench = "neuroai_workbench.cli:main"
+neuroai-monitor = "neuroai_workbench.monitoring_cli:main"
 
 [project.urls]
 Documentation = "https://github.com/fraware/neuroai-workbench/tree/main/docs"
@@ -62,6 +63,7 @@ where = ["src"]
 neuroai_workbench = [
   "static/*",
   "resources/v4_2/*",
+  "resources/operations/*",
 ]
 
 [tool.pytest.ini_options]

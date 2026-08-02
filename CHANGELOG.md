@@ -16,6 +16,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Deterministic Markdown assessment reports.
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
+- Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
 
 ### Changed
 
@@ -31,6 +32,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - No direct external model API call is enabled.
 - Model output cannot mutate an assessment or exercise decision authority.
 - The 78-requirement v4.2 kernel and historical pilot findings remain unchanged.
+- Monitoring operations are alpha, offline-first, and non-authoritative for substantive NeuroAI findings, regulatory authorization, clinical value, or conformance.
 
 ## 0.2.1 — stabilization candidate
 

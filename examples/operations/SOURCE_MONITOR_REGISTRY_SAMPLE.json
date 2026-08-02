@@ -1,0 +1,47 @@
+[
+  {
+    "monitor_id": "MON-SAMPLE-001",
+    "source_id": "SRC-SAMPLE-001",
+    "url": "https://www.fda.gov/medical-devices",
+    "publisher": "U.S. Food and Drug Administration",
+    "source_class": "REGULATORY_RECORD",
+    "cadence": "WEEKLY",
+    "last_successful_retrieval": "2026-07-29",
+    "baseline_evidence_state": "CURRENT_SOURCE_RETRIEVED",
+    "baseline_verification_state": "CURRENT_VERIFIED",
+    "baseline_claim_boundary": "Regulatory records control authorization facts within their exact jurisdiction and record scope.",
+    "network_access_required": true,
+    "current_status": "BASELINE_REGISTERED",
+    "next_action": "RETRIEVE_AND_COMPARE"
+  },
+  {
+    "monitor_id": "MON-SAMPLE-002",
+    "source_id": "SRC-SAMPLE-002",
+    "url": "https://clinicaltrials.gov/",
+    "publisher": "ClinicalTrials.gov",
+    "source_class": "CLINICAL_TRIAL_REGISTRY",
+    "cadence": "WEEKLY",
+    "last_successful_retrieval": "2026-07-29",
+    "baseline_evidence_state": "CURRENT_SOURCE_RETRIEVED",
+    "baseline_verification_state": "CURRENT_VERIFIED",
+    "baseline_claim_boundary": "Trial registration establishes registered protocol and status fields, not positive results or clinical effectiveness.",
+    "network_access_required": true,
+    "current_status": "BASELINE_REGISTERED",
+    "next_action": "RETRIEVE_AND_COMPARE"
+  },
+  {
+    "monitor_id": "MON-SAMPLE-003",
+    "source_id": "SRC-SAMPLE-003",
+    "url": "controlled-inputs/PILOT-01_COMPLETED_ASSESSMENT_v4.2.json",
+    "publisher": "Controlled project input",
+    "source_class": "CONTROLLED_LOCAL_INPUT",
+    "cadence": "QUARTERLY",
+    "last_successful_retrieval": "2026-07-29",
+    "baseline_evidence_state": "PUBLIC_RESEARCH_ARTIFACT",
+    "baseline_verification_state": "CURRENT_VERIFIED",
+    "baseline_claim_boundary": "A controlled local input is not independent appraisal or external consensus.",
+    "network_access_required": false,
+    "current_status": "BASELINE_REGISTERED",
+    "next_action": "MIGRATE_TO_CONTENT_ADDRESSED_OBJECT"
+  }
+]
