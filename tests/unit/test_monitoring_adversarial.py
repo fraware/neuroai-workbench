@@ -181,7 +181,7 @@ def test_snapshot_refuses_invalid_inputs_and_tampering(tmp_path: Path, monkeypat
         record_snapshot(workspace, "SRC-0001", b"new")
 
 
-def test_snapshot_manifest_conflict_is_immutable(tmp_path: Path) -> None:
+def test_repeated_capture_identity_and_manifest_immutability(tmp_path: Path) -> None:
     workspace = initialized_workspace(tmp_path)
     first = record_snapshot(
         workspace,
@@ -190,15 +190,23 @@ def test_snapshot_manifest_conflict_is_immutable(tmp_path: Path) -> None:
         media_type="text/plain",
         retrieved_at="2026-08-02T01:00:00Z",
     )
+    later = record_snapshot(
+        workspace,
+        "SRC-0001",
+        b"same-bytes",
+        media_type="text/plain",
+        retrieved_at="2026-08-02T02:00:00Z",
+    )
+    assert first["snapshot_id"] != later["snapshot_id"]
+    assert first["sha256"] == later["sha256"]
     with pytest.raises(ValueError, match="different metadata"):
         record_snapshot(
             workspace,
             "SRC-0001",
             b"same-bytes",
-            media_type="text/plain",
-            retrieved_at="2026-08-02T02:00:00Z",
+            media_type="application/octet-stream",
+            retrieved_at="2026-08-02T01:00:00Z",
         )
-    assert first["snapshot_id"]
 
 
 def test_candidate_and_adjudication_tamper_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

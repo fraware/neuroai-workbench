@@ -294,3 +294,69 @@ def test_monitoring_status_summarizes_operational_state(tmp_path: Path) -> None:
     assert status["source_count"] == 2
     assert status["sources_checked"] == 1
     assert status["pending_candidate_count"] == 0
+
+
+def test_repeated_unchanged_capture_is_distinct_and_content_deduplicated(tmp_path: Path) -> None:
+    workspace = initialize(tmp_path)
+    first = record_snapshot(
+        workspace,
+        "SRC-0001",
+        b"same-bytes",
+        media_type="text/plain",
+        retrieved_at="2026-08-02T01:00:00Z",
+    )
+    later = record_snapshot(
+        workspace,
+        "SRC-0001",
+        b"same-bytes",
+        media_type="text/plain",
+        retrieved_at="2026-08-02T02:00:00Z",
+    )
+    assert first["snapshot_id"] != later["snapshot_id"]
+    assert first["sha256"] == later["sha256"]
+    assert (
+        compare_snapshots(
+            workspace,
+            "SRC-0001",
+            first["snapshot_id"],
+            later["snapshot_id"],
+        )["classification"]
+        == "NO_CHANGE"
+    )
+    with pytest.raises(ValueError, match="different metadata"):
+        record_snapshot(
+            workspace,
+            "SRC-0001",
+            b"same-bytes",
+            media_type="application/octet-stream",
+            retrieved_at="2026-08-02T01:00:00Z",
+        )
+
+
+def test_snapshot_size_url_timezone_and_filename_controls(tmp_path: Path) -> None:
+    from neuroai_workbench import monitoring
+
+    workspace = initialize(tmp_path)
+    with pytest.raises(ValueError, match="ingestion limit"):
+        record_snapshot(workspace, "SRC-0001", b"x" * (monitoring.MAX_SNAPSHOT_BYTES + 1))
+    with pytest.raises(ValueError, match="explicit timezone"):
+        record_snapshot(workspace, "SRC-0001", b"content", retrieved_at="2026-08-02T01:00:00")
+    with pytest.raises(ValueError, match="retrieval_url is invalid"):
+        record_snapshot(
+            workspace,
+            "SRC-0001",
+            b"content",
+            retrieval_url="http://127.0.0.1/private",
+        )
+    with pytest.raises(ValueError, match="basename"):
+        record_snapshot(
+            workspace,
+            "SRC-0001",
+            b"content",
+            original_filename="/tmp/private.txt",
+        )
+
+    records = small_registry()
+    records[0]["url"] = "http://127.0.0.1/private"
+    result = validate_source_registry(records)
+    assert any(item["code"] == "INVALID_PUBLIC_URL" for item in result["errors"])

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ipaddress
 import json
 from datetime import date, datetime, timedelta, timezone
 from importlib.resources import files
@@ -52,10 +53,43 @@ REOPENING_EFFECTS = frozenset(
     }
 )
 
+MAX_SNAPSHOT_BYTES = 10 * 1024 * 1024
+
 MONITORING_BOUNDARY = (
     "Monitoring records identify retrieval and change candidates only. They do not establish scientific validity, "
     "regulatory status, clinical effectiveness, conformance, or an assessment decision without human adjudication."
 )
+
+
+def _public_url_error(value: str) -> str | None:
+    parsed = urlparse(value)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return "URL must use http or https and include a hostname"
+    if parsed.username or parsed.password:
+        return "URL must not contain embedded credentials"
+    hostname = parsed.hostname.lower().rstrip(".")
+    if hostname == "localhost" or hostname.endswith((".localhost", ".local", ".internal")):
+        return "URL must not target a local or internal hostname"
+    try:
+        address = ipaddress.ip_address(hostname)
+    except ValueError:
+        return None
+    if not address.is_global:
+        return "URL must not target a private, loopback, link-local, reserved, multicast, or unspecified address"
+    return None
+
+
+def _normalize_retrieved_at(value: str | None) -> tuple[str, str]:
+    raw = value or utc_now()
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("retrieved_at must be an ISO-8601 timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError("retrieved_at must include an explicit timezone")
+    normalized = parsed.astimezone(timezone.utc)
+    timestamp_id = normalized.strftime("%Y%m%dT%H%M%S%fZ")
+    return normalized.isoformat().replace("+00:00", "Z"), timestamp_id
 
 
 def _schema(name: str) -> dict[str, Any]:
@@ -148,10 +182,7 @@ def validate_source_registry(value: Any) -> dict[str, Any]:
         url = record.get("url")
         if isinstance(url, str):
             parsed = urlparse(url)
-            is_public_url = parsed.scheme in {"http", "https"} and bool(parsed.hostname)
-            if is_public_url and not parsed.username and not parsed.password:
-                pass
-            elif record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not parsed.scheme:
+            if record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not parsed.scheme:
                 warnings.append(
                     {
                         "code": "NON_PORTABLE_LOCAL_REFERENCE",
@@ -161,7 +192,16 @@ def validate_source_registry(value: Any) -> dict[str, Any]:
                     }
                 )
             else:
-                errors.append({"code": "INVALID_PUBLIC_URL", "path": f"{path}.url", "value": url})
+                url_error = _public_url_error(url)
+                if url_error:
+                    errors.append(
+                        {
+                            "code": "INVALID_PUBLIC_URL",
+                            "path": f"{path}.url",
+                            "value": url,
+                            "message": url_error,
+                        }
+                    )
 
         last_retrieval = record.get("last_successful_retrieval")
         if isinstance(last_retrieval, str):
@@ -392,16 +432,21 @@ def record_snapshot(
 ) -> dict[str, Any]:
     if not data:
         raise ValueError("A successful snapshot cannot contain zero bytes")
+    if len(data) > MAX_SNAPSHOT_BYTES:
+        raise ValueError(f"Snapshot exceeds the {MAX_SNAPSHOT_BYTES}-byte local ingestion limit")
     registry, state = _load_registry_and_state(workspace)
     source = _registry_record(registry, source_id)
-    retrieved = retrieved_at or utc_now()
-    try:
-        datetime.fromisoformat(retrieved.replace("Z", "+00:00"))
-    except ValueError as exc:
-        raise ValueError("retrieved_at must be an ISO-8601 timestamp") from exc
+    retrieved, timestamp_id = _normalize_retrieved_at(retrieved_at)
+    retrieval_reference = retrieval_url or str(source["url"])
+    if source.get("source_class") != "CONTROLLED_LOCAL_INPUT":
+        url_error = _public_url_error(retrieval_reference)
+        if url_error:
+            raise ValueError(f"retrieval_url is invalid: {url_error}")
+    if original_filename is not None and Path(original_filename).name != original_filename:
+        raise ValueError("original_filename must be a basename without directory components")
 
     digest = sha256_bytes(data)
-    snapshot_id = f"SNAP-{source_id}-{digest[:16]}"
+    snapshot_id = f"SNAP-{source_id}-{timestamp_id}-{digest[:12]}"
     snapshot_root = safe_join(_monitoring_root(workspace) / "snapshots", source_id)
     content_path = safe_join(snapshot_root, f"{digest}.bin")
     manifest_path = safe_join(snapshot_root, f"{snapshot_id}.json")
@@ -411,7 +456,7 @@ def record_snapshot(
         "source_id": source_id,
         "monitor_id": source["monitor_id"],
         "retrieved_at": retrieved,
-        "retrieval_url": retrieval_url or source["url"],
+        "retrieval_url": retrieval_reference,
         "media_type": media_type,
         "size_bytes": len(data),
         "sha256": digest,
