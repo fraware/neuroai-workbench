@@ -30,13 +30,30 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
+          def replace_region(text: str, start_marker: str, end_marker: str, replacement: str) -> str:
+              start = text.index(start_marker)
+              end = text.index(end_marker, start)
+              return text[:start] + replacement + text[end:]
+
+          def replace_function(text: str, names: tuple[str, ...], replacement: str) -> str:
+              positions = [(text.find(f"def {name}("), name) for name in names]
+              positions = [(position, name) for position, name in positions if position >= 0]
+              if not positions:
+                  raise SystemExit(f"none of the expected functions were found: {names}")
+              start, _ = min(positions)
+              next_function = text.find("\ndef ", start + 1)
+              end = len(text) if next_function < 0 else next_function + 1
+              return text[:start] + replacement.rstrip() + "\n\n" + text[end:]
+
           module = Path("src/neuroai_workbench/monitoring.py")
           text = module.read_text(encoding="utf-8")
-          text = text.replace("import json\nfrom datetime", "import ipaddress\nimport json\nfrom datetime")
-          text = text.replace("MONITORING_BOUNDARY = (", "MAX_SNAPSHOT_BYTES = 10 * 1024 * 1024\n\nMONITORING_BOUNDARY = (")
-          helpers = '''
-
-          def _public_url_error(value: str) -> str | None:
+          text = text.replace("import json\nfrom datetime", "import ipaddress\nimport json\nfrom datetime", 1)
+          text = text.replace(
+              "MONITORING_BOUNDARY = (",
+              "MAX_SNAPSHOT_BYTES = 10 * 1024 * 1024\n\nMONITORING_BOUNDARY = (",
+              1,
+          )
+          helpers = '''def _public_url_error(value: str) -> str | None:
               parsed = urlparse(value)
               if parsed.scheme not in {"http", "https"} or not parsed.hostname:
                   return "URL must use http or https and include a hostname"
@@ -65,65 +82,44 @@ jobs:
               normalized = parsed.astimezone(timezone.utc)
               timestamp_id = normalized.strftime("%Y%m%dT%H%M%S%fZ")
               return normalized.isoformat().replace("+00:00", "Z"), timestamp_id
+
+
           '''
-          text = text.replace("\ndef _schema(name: str)", helpers + "\n\ndef _schema(name: str)")
-          old_url = '''        if isinstance(url, str):
-              parsed = urlparse(url)
-              is_public_url = parsed.scheme in {"http", "https"} and bool(parsed.hostname)
-              if is_public_url and not parsed.username and not parsed.password:
-                  pass
-              elif record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not parsed.scheme:
-                  warnings.append(
-                      {
-                          "code": "NON_PORTABLE_LOCAL_REFERENCE",
-                          "path": f"{path}.url",
-                          "value": url,
-                          "message": "Legacy local path retained as provenance; migrate it to a content-addressed workspace object.",
-                      }
-                  )
-              else:
-                  errors.append({"code": "INVALID_PUBLIC_URL", "path": f"{path}.url", "value": url})
-          '''
-          new_url = '''        if isinstance(url, str):
-              parsed = urlparse(url)
-              if record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not parsed.scheme:
-                  warnings.append(
-                      {
-                          "code": "NON_PORTABLE_LOCAL_REFERENCE",
-                          "path": f"{path}.url",
-                          "value": url,
-                          "message": "Legacy local path retained as provenance; migrate it to a content-addressed workspace object.",
-                      }
-                  )
-              else:
-                  url_error = _public_url_error(url)
-                  if url_error:
-                      errors.append(
+          text = text.replace("def _schema(name: str)", helpers + "def _schema(name: str)", 1)
+
+          url_block = '''        url = record.get("url")
+              if isinstance(url, str):
+                  parsed = urlparse(url)
+                  if record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not parsed.scheme:
+                      warnings.append(
                           {
-                              "code": "INVALID_PUBLIC_URL",
+                              "code": "NON_PORTABLE_LOCAL_REFERENCE",
                               "path": f"{path}.url",
                               "value": url,
-                              "message": url_error,
+                              "message": "Legacy local path retained as provenance; migrate it to a content-addressed workspace object.",
                           }
                       )
-          '''
-          if old_url not in text:
-              raise SystemExit("expected URL validation block not found")
-          text = text.replace(old_url, new_url)
-          old_snapshot = '''    if not data:
-              raise ValueError("A successful snapshot cannot contain zero bytes")
-              registry, state = _load_registry_and_state(workspace)
-              source = _registry_record(registry, source_id)
-              retrieved = retrieved_at or utc_now()
-              try:
-                  datetime.fromisoformat(retrieved.replace("Z", "+00:00"))
-              except ValueError as exc:
-                  raise ValueError("retrieved_at must be an ISO-8601 timestamp") from exc
+                  else:
+                      url_error = _public_url_error(url)
+                      if url_error:
+                          errors.append(
+                              {
+                                  "code": "INVALID_PUBLIC_URL",
+                                  "path": f"{path}.url",
+                                  "value": url,
+                                  "message": url_error,
+                              }
+                          )
 
-              digest = sha256_bytes(data)
-              snapshot_id = f"SNAP-{source_id}-{digest[:16]}"
           '''
-          new_snapshot = '''    if not data:
+          text = replace_region(
+              text,
+              '        url = record.get("url")\n',
+              '        last_retrieval = record.get("last_successful_retrieval")\n',
+              url_block,
+          )
+
+          snapshot_block = '''    if not data:
               raise ValueError("A successful snapshot cannot contain zero bytes")
               if len(data) > MAX_SNAPSHOT_BYTES:
                   raise ValueError(f"Snapshot exceeds the {MAX_SNAPSHOT_BYTES}-byte local ingestion limit")
@@ -141,33 +137,25 @@ jobs:
               digest = sha256_bytes(data)
               snapshot_id = f"SNAP-{source_id}-{timestamp_id}-{digest[:12]}"
           '''
-          if old_snapshot not in text:
-              raise SystemExit("expected snapshot block not found")
-          text = text.replace(old_snapshot, new_snapshot)
-          text = text.replace('"retrieval_url": retrieval_url or source["url"],', '"retrieval_url": retrieval_reference,')
+          text = replace_region(
+              text,
+              '    if not data:\n        raise ValueError("A successful snapshot cannot contain zero bytes")\n',
+              '    snapshot_root = safe_join(_monitoring_root(workspace) / "snapshots", source_id)\n',
+              snapshot_block,
+          )
+          text = text.replace('"retrieval_url": retrieval_url or source["url"],', '"retrieval_url": retrieval_reference,', 1)
           module.write_text(text, encoding="utf-8")
 
-          for test_path in [Path("tests/unit/test_monitoring.py"), Path("tests/unit/test_monitoring_adversarial.py")]:
-              tests = test_path.read_text(encoding="utf-8")
-              tests = tests.replace(
-                  'def test_snapshot_manifest_conflict_is_refused(tmp_path: Path) -> None:',
-                  'def test_repeated_unchanged_capture_is_distinct_and_manifest_conflict_is_refused(tmp_path: Path) -> None:',
+          original_test = '''def test_repeated_unchanged_capture_is_distinct_and_manifest_conflict_is_refused(tmp_path: Path) -> None:
+              workspace = initialize(tmp_path)
+              first = record_snapshot(
+                  workspace,
+                  "SRC-0001",
+                  b"same-bytes",
+                  media_type="text/plain",
+                  retrieved_at="2026-08-02T01:00:00Z",
               )
-              tests = tests.replace(
-                  'def test_snapshot_manifest_conflict_is_immutable(tmp_path: Path) -> None:',
-                  'def test_repeated_capture_identity_and_manifest_immutability(tmp_path: Path) -> None:',
-              )
-              old_body = '''    with pytest.raises(ValueError, match="different metadata"):
-                  record_snapshot(
-                      workspace,
-                      "SRC-0001",
-                      b"same-bytes",
-                      media_type="text/plain",
-                      retrieved_at="2026-08-02T02:00:00Z",
-                  )
-              assert first["snapshot_id"]
-          '''
-              new_body = '''    later = record_snapshot(
+              later = record_snapshot(
                   workspace,
                   "SRC-0001",
                   b"same-bytes",
@@ -176,6 +164,12 @@ jobs:
               )
               assert first["snapshot_id"] != later["snapshot_id"]
               assert first["sha256"] == later["sha256"]
+              assert compare_snapshots(
+                  workspace,
+                  "SRC-0001",
+                  first["snapshot_id"],
+                  later["snapshot_id"],
+              )["classification"] == "NO_CHANGE"
               with pytest.raises(ValueError, match="different metadata"):
                   record_snapshot(
                       workspace,
@@ -185,12 +179,13 @@ jobs:
                       retrieved_at="2026-08-02T01:00:00Z",
                   )
           '''
-              if old_body not in tests:
-                  raise SystemExit(f"expected snapshot conflict body not found in {test_path}")
-              test_path.write_text(tests.replace(old_body, new_body), encoding="utf-8")
-
-          test_path = Path("tests/unit/test_monitoring.py")
-          tests = test_path.read_text(encoding="utf-8")
+          path = Path("tests/unit/test_monitoring.py")
+          tests = path.read_text(encoding="utf-8")
+          tests = replace_function(
+              tests,
+              ("test_snapshot_manifest_conflict_is_refused",),
+              original_test,
+          )
           if "test_snapshot_size_url_timezone_and_filename_controls" not in tests:
               tests += '''
 
@@ -222,7 +217,20 @@ jobs:
               result = validate_source_registry(records)
               assert any(item["code"] == "INVALID_PUBLIC_URL" for item in result["errors"])
           '''
-          test_path.write_text(tests, encoding="utf-8")
+          path.write_text(tests, encoding="utf-8")
+
+          adversarial_test = original_test.replace(
+              "test_repeated_unchanged_capture_is_distinct_and_manifest_conflict_is_refused",
+              "test_repeated_capture_identity_and_manifest_immutability",
+          ).replace("workspace = initialize(tmp_path)", "workspace = initialized_workspace(tmp_path)")
+          path = Path("tests/unit/test_monitoring_adversarial.py")
+          tests = path.read_text(encoding="utf-8")
+          tests = replace_function(
+              tests,
+              ("test_snapshot_manifest_conflict_is_immutable",),
+              adversarial_test,
+          )
+          path.write_text(tests, encoding="utf-8")
           PY
       - run: python -m ruff format src/neuroai_workbench/monitoring.py tests/unit/test_monitoring.py tests/unit/test_monitoring_adversarial.py
       - run: python -m ruff check src/neuroai_workbench/monitoring.py tests/unit/test_monitoring.py tests/unit/test_monitoring_adversarial.py
