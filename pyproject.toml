@@ -65,6 +65,9 @@ neuroai_workbench = [
   "resources/v4_2/*",
   "resources/operations/*",
   "resources/collector/*",
+  "resources/extraction/*",
+  "resources/entities/*",
+  "resources/delta/*",
 ]
 
 [tool.pytest.ini_options]

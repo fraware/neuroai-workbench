@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/resolution-proposal-1.0.json",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "created_at",
+    "created_by",
+    "raw_mention",
+    "normalized_form",
+    "resolution_state",
+    "match_layer",
+    "candidate_entity_ids",
+    "candidate_identifiers",
+    "alias_evidence",
+    "confidence",
+    "auto_confirmed",
+    "automatic_mutation_performed",
+    "status",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "proposal_id": {"type": "string", "pattern": "^RES-[0-9a-f]{32}$"},
+    "created_at": {"type": "string", "minLength": 10},
+    "created_by": {"type": "string", "minLength": 1},
+    "raw_mention": {"type": "string", "minLength": 1},
+    "normalized_form": {"type": "string", "minLength": 1},
+    "source_capture_ref": {"type": ["string", "null"]},
+    "resolution_state": {
+      "enum": ["NEW_ENTITY", "EXISTING_ENTITY", "AMBIGUOUS", "DUPLICATE_CANDIDATE"]
+    },
+    "match_layer": {
+      "enum": [
+        "EXACT_ENTITY_ID",
+        "EXACT_ALIAS_ID",
+        "EXACT_IDENTIFIER",
+        "NORMALIZED_NAME",
+        "NO_MATCH"
+      ]
+    },
+    "candidate_entity_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "candidate_identifiers": {"type": "array", "items": {"type": "object"}},
+    "alias_evidence": {"type": "array", "items": {"type": "object"}},
+    "confidence": {"enum": ["CERTAIN", "HIGH", "MEDIUM", "LOW", "NONE"]},
+    "ambiguity_reason": {"type": ["string", "null"]},
+    "model_provenance": {"type": ["object", "null"]},
+    "auto_confirmed": {"type": "boolean"},
+    "automatic_mutation_performed": {"const": false},
+    "status": {"enum": ["AUTO_CONFIRMED", "PENDING_HUMAN_DISPOSITION", "DISPOSITION_RECORDED"]},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
