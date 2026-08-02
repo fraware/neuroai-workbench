@@ -39,6 +39,19 @@ def observatory_v1_4_lineage(value: dict[str, Any], source_sha256: str) -> str:
     return digest_payload(payload)
 
 
+def observatory_v1_6_lineage(value: dict[str, Any], source_sha256: str) -> str:
+    metadata = value.get("metadata", {})
+    payload = {
+        "family": "OBSERVATORY_V1_6",
+        "version": metadata.get("version"),
+        "release_id": metadata.get("release_id") or value.get("delta_id") or value.get("refresh_id"),
+        "predecessor": metadata.get("predecessor"),
+        "source_sha256": source_sha256,
+        "top_level_keys": sorted(value.keys()),
+    }
+    return digest_payload(payload)
+
+
 def observatory_v1_7_lineage(value: dict[str, Any], source_sha256: str) -> str:
     metadata = value.get("metadata", {})
     baseline = value.get("baseline_reference", {})

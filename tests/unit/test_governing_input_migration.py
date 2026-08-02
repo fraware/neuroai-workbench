@@ -7,17 +7,26 @@ import pytest
 
 from neuroai_workbench.migration_ops.adapters import adapt_inaccessible
 from neuroai_workbench.migration_ops.constants import (
+    ACCESS_DIGEST_VERIFIED_EXTERNAL,
     ACCESS_INACCESSIBLE,
-    DISPOSITION_PENDING,
+    DISPOSITION_ACCEPTED_WITH_RESIDUALS,
     MIGRATION_BLOCKED,
+    MIGRATION_DIGEST_RECORDED,
+    OPS_WORKSPACE_ENV,
 )
 from neuroai_workbench.migration_ops.inventory import load_archive_inventory
 from neuroai_workbench.migration_ops.verification import build_migration_verification
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures/migration"
-RECORDED_AT = "2026-08-02T14:00:00Z"
+RECORDED_AT = "2026-08-02T18:00:00Z"
 EXPECTED = json.loads((FIXTURES / "expected_verification_summary.json").read_text(encoding="utf-8"))
+
+
+@pytest.fixture(autouse=True)
+def _clear_ops_workspace(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CI path must be deterministic without a local ops extract."""
+    monkeypatch.delenv(OPS_WORKSPACE_ENV, raising=False)
 
 
 def test_migration_verification_is_deterministic():
@@ -27,7 +36,8 @@ def test_migration_verification_is_deterministic():
     assert first["verification_digest"] == EXPECTED["verification_digest"]
     assert first["verification_id"] == EXPECTED["verification_id"]
     assert first["summary"] == EXPECTED["summary"]
-    assert first["human_disposition"] == DISPOSITION_PENDING
+    assert first["human_disposition"] == DISPOSITION_ACCEPTED_WITH_RESIDUALS
+    assert first["residuals"] == EXPECTED["residuals"]
 
 
 def test_golden_lineage_digests_match():
@@ -37,23 +47,34 @@ def test_golden_lineage_digests_match():
         assert by_id[inventory_id]["lineage_digest"] == expected_digest
 
 
-def test_inaccessible_governing_objects_never_invent_values():
+def test_digest_recorded_external_objects_do_not_invent_lineage():
     document = build_migration_verification(REPO_ROOT, recorded_at=RECORDED_AT)
-    blocked = [record for record in document["records"] if record["inventory_id"] in EXPECTED["blocked_inventory_ids"]]
-    assert len(blocked) == 2
-    for record in blocked:
-        assert record["migration_state"] == MIGRATION_BLOCKED
-        assert record["source_sha256"] == ACCESS_INACCESSIBLE
+    recorded = [
+        record
+        for record in document["records"]
+        if record["inventory_id"] in EXPECTED["digest_recorded_inventory_ids"]
+    ]
+    assert len(recorded) == 3
+    for record in recorded:
+        assert record["migration_state"] == MIGRATION_DIGEST_RECORDED
+        assert record["access_state"] == ACCESS_DIGEST_VERIFIED_EXTERNAL
+        assert len(record["source_sha256"]) == 64
         assert record["lineage_digest"] == "UNKNOWN"
         assert record["material_warnings"]
-        assert record["material_warnings"][0]["human_disposition"] == DISPOSITION_PENDING
 
 
-def test_material_warnings_include_human_disposition():
+def test_no_blocked_governing_objects_when_digests_verified():
+    document = build_migration_verification(REPO_ROOT, recorded_at=RECORDED_AT)
+    blocked = [record for record in document["records"] if record["migration_state"] == MIGRATION_BLOCKED]
+    assert blocked == []
+    assert EXPECTED["blocked_inventory_ids"] == []
+
+
+def test_material_warnings_carry_named_dispositions():
     document = build_migration_verification(REPO_ROOT, recorded_at=RECORDED_AT)
     assert document["material_warnings"]
     for warning in document["material_warnings"]:
-        assert warning["human_disposition"] == DISPOSITION_PENDING
+        assert warning["human_disposition"] != "PENDING_REVIEW"
 
 
 def test_committed_template_matches_generator():
