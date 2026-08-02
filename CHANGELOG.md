@@ -3,14 +3,13 @@
 
 All notable changes are recorded here. Release integrity does not establish substantive evidence validity, institutional adoption, or system conformance.
 
-## Unreleased — 0.3.0.dev0
+## Unreleased â€” 0.3.0.dev0
 
 ### Added
 
 - Collaborative review assignments, immutable disagreements, human dispositions, and integrity verification.
 - Deterministic review and evidence-gap reports.
 - Protected-evidence metadata requests, custodian-response records, path and secret guards, and exchange integrity verification.
-
 - Loss-aware programme completed-assessment adapter with a checked-in native PRIMA v4.2.1 reference case.
 - Compact observatory v1.7 successor validation, import, summary, and reopening queue.
 - Deterministic Markdown assessment reports.
@@ -25,6 +24,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Append-only observatory monitoring review queue: rebuildable projections over candidates and adjudications, local named reviewer profiles, exclusive leases, and immutable multi-opinion records that never mutate canonical monitoring data.
 - Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
 - Offline extraction contract, disclosure policy, preregistered benchmark stubs, citation-required field validation, and protected disclosure refusal for bounded model-assisted observatory source extraction.
+- Collector source-type adapters (HTML, JSON API, XML/RSS/Atom, clinical/regulatory registry stub, controlled authenticated download stub), plan-driven scheduler consuming `neuroai-monitor plan` output, quarantine approval gate before monitoring handoff, credential-leak refusal, kill switches, and architecture tests forbidding direct monitoring snapshot or adjudication calls from the collector package.
 - Default-off extraction provider adapters, offline benchmark comparison across at least two explicitly enabled test-only configurations, immutable human disposition records, and adversarial refusal of disabled providers, network endpoints, and aggregate-score selection for extraction evaluation.
 
 ### Changed
@@ -47,7 +47,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Extraction contract validation establishes schema and disclosure controls only; it does not execute external providers, score live benchmarks, or mutate canonical observatory state.
 - Extraction evaluation scores synthetic benchmark stubs with test-only offline providers only; scores do not establish provider superiority or release authority.
 
-## 0.2.1 — stabilization candidate
+## 0.2.1 â€” stabilization candidate
 
 ### Changed
 
@@ -70,6 +70,6 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Added controlled offline observatory mode.
 - Added observatory validation, summary, queue, and CLI coverage.
 
-## 0.1.0 — 2026-07-28
+## 0.1.0 â€” 2026-07-28
 
 - Added the offline-first workspace, v4.2 validation, evidence registry, event history, snapshots, bundles, migration, comparison, browser UI, CLI, public reference cases, governance documents, CI, and release controls.
