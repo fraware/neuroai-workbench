@@ -36,8 +36,32 @@ def test_workbook_includes_release_identity() -> None:
         return
     workbook = load_workbook(__import__("io").BytesIO(payload))
     assert "verification" in workbook.sheetnames
+    assert "verification1" not in workbook.sheetnames
     flat = [item for row in workbook["verification"].iter_rows(values_only=True) for item in row]
     assert query["release_sha256"] in flat
+
+
+def test_full_depth_projection_has_richer_columns() -> None:
+    summary = query_release(FULL, depth="summary", limit=None)
+    full = query_release(FULL, depth="full", limit=None)
+    assert set(summary["rows"]["organizations"][0]) == {
+        "organization_id",
+        "canonical_name",
+        "verification_state",
+    }
+    assert {"roles", "aliases", "countries", "evidence_state", "claim_boundary"} <= set(
+        full["rows"]["organizations"][0]
+    )
+    assert {"url", "evidence_state", "claim_boundary"} <= set(full["rows"]["sources"][0])
+
+
+def test_full_depth_compact_includes_delta_and_reopening_detail() -> None:
+    full = query_release(COMPACT, depth="full", limit=None)
+    assert full["rows"]["reopening_decisions"]
+    assert "basis" in full["rows"]["reopening_decisions"][0]
+    assert "required_actions" in full["rows"]["reopening_decisions"][0]
+    assert full["rows"]["delta_records"]
+    assert "delta_section" in full["rows"]["delta_records"][0]
 
 
 def test_query_preview_limit_and_release_unbounded() -> None:
@@ -51,13 +75,29 @@ def test_query_preview_limit_and_release_unbounded() -> None:
 
 
 def test_generate_publication_set_writes_workbook(tmp_path: Path) -> None:
-    report = generate_publication_set(COMPACT, tmp_path, limit=None)
+    report = generate_publication_set(COMPACT, tmp_path, limit=None, depth="full")
     workbook_path = tmp_path / "analytical-workbook.xlsx"
     assert workbook_path.is_file()
     assert report["products"]["analytical_workbook"]["sha256"]
-    assert report["release_sha256"] == query_release(COMPACT, limit=None)["release_sha256"]
+    assert report["release_sha256"] == query_release(COMPACT, depth="full", limit=None)["release_sha256"]
     assert (tmp_path / "current-state-report.docx").is_file()
     assert (tmp_path / "current-state-report.pdf").is_file()
+    try:
+        from openpyxl import load_workbook
+    except ImportError:
+        return
+    workbook = load_workbook(workbook_path)
+    assert "verification" in workbook.sheetnames
+    assert "verification1" not in workbook.sheetnames
+
+
+def test_generate_publication_set_rejects_summary_or_limited() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="depth='full'"):
+        generate_publication_set(COMPACT, Path("."), depth="summary", limit=None)
+    with pytest.raises(ValueError, match="limit=None"):
+        generate_publication_set(COMPACT, Path("."), depth="full", limit=50)
 
 
 def test_write_workbook_matches_render(tmp_path: Path) -> None:

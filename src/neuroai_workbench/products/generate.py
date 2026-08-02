@@ -16,11 +16,19 @@ def generate_publication_set(
     output_dir: Path,
     *,
     limit: int | None = None,
+    depth: str = "full",
 ) -> dict[str, Any]:
-    """Generate workbook, narrative, dashboard, docx, and PDF products from a canonical release."""
+    """Generate workbook, narrative, dashboard, docx, and PDF products from a canonical release.
+
+    Publication builds require full-depth unbounded projections.
+    """
+    if depth != "full":
+        raise ValueError("generate_publication_set requires depth='full'")
+    if limit is not None:
+        raise ValueError("generate_publication_set requires limit=None for unbounded publication projections")
     output_dir.mkdir(parents=True, exist_ok=True)
-    query = query_release(release_path, limit=limit)
-    workbook_name = "analytical-workbook.xlsx" if query.get("limit") is None else "analytical-workbook.xlsx"
+    query = query_release(release_path, depth="full", limit=None)
+    workbook_name = "analytical-workbook.xlsx"
     workbook = write_analytical_workbook_bundle(query, output_dir / workbook_name)
     narrative = write_narrative_markdown(query, output_dir / "current-state-report.md")
     dashboard = write_dashboard_html(query, output_dir / "observatory-dashboard.html")

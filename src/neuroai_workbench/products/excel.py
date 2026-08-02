@@ -49,12 +49,14 @@ def _render_native_xlsx(query: dict[str, Any]) -> bytes | None:
         worksheet.append(fieldnames)
         for row in rows:
             worksheet.append([row.get(key, "") for key in fieldnames])
-    verification = workbook.create_sheet(title="verification")
-    verification.append(["field", "value"])
-    verification.append(["release_sha256", query["release_sha256"]])
+    # Merge format metadata into the existing verification projection sheet.
+    # Never create a second "verification" sheet (openpyxl would rename it verification1).
+    if "verification" in workbook.sheetnames:
+        verification = workbook["verification"]
+    else:
+        verification = workbook.create_sheet(title="verification")
+        verification.append(["field", "value"])
     verification.append(["format", "openpyxl-native-xlsx"])
-    for claim in query["withheld_claims"]:
-        verification.append(["withheld_claim", claim])
     buffer = io.BytesIO()
     workbook.save(buffer)
     return buffer.getvalue()
