@@ -7,7 +7,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
