@@ -119,12 +119,42 @@ def build_capture_diff(workspace: Path, candidate: dict[str, Any]) -> dict[str, 
 
 def adjudication_fields() -> list[dict[str, Any]]:
     return [
-        {"name": "decision", "label": "Decision", "control": "select", "required": True, "options": sorted(ADJUDICATION_DECISIONS)},
-        {"name": "change_class", "label": "Change class", "control": "text", "required": False, "help": "Required when decision is ACCEPT."},
-        {"name": "materiality", "label": "Materiality", "control": "select", "required": True, "options": sorted(MATERIALITY_STATES)},
-        {"name": "reopening_effect", "label": "Reopening effect", "control": "select", "required": True, "options": sorted(REOPENING_EFFECTS)},
+        {
+            "name": "decision",
+            "label": "Decision",
+            "control": "select",
+            "required": True,
+            "options": sorted(ADJUDICATION_DECISIONS),
+        },
+        {
+            "name": "change_class",
+            "label": "Change class",
+            "control": "text",
+            "required": False,
+            "help": "Required when decision is ACCEPT.",
+        },
+        {
+            "name": "materiality",
+            "label": "Materiality",
+            "control": "select",
+            "required": True,
+            "options": sorted(MATERIALITY_STATES),
+        },
+        {
+            "name": "reopening_effect",
+            "label": "Reopening effect",
+            "control": "select",
+            "required": True,
+            "options": sorted(REOPENING_EFFECTS),
+        },
         {"name": "rationale", "label": "Rationale", "control": "textarea", "required": True},
-        {"name": "decided_by", "label": "Decided by (local profile)", "control": "profile", "required": True, "help": IDENTITY_BOUNDARY},
+        {
+            "name": "decided_by",
+            "label": "Decided by (local profile)",
+            "control": "profile",
+            "required": True,
+            "help": IDENTITY_BOUNDARY,
+        },
     ]
 
 
@@ -132,7 +162,13 @@ def reviewer_profile_fields() -> list[dict[str, Any]]:
     return [
         {"name": "profile_id", "label": "Profile ID", "control": "text", "required": True},
         {"name": "display_name", "label": "Display name", "control": "text", "required": True},
-        {"name": "roles", "label": "Roles", "control": "checkbox-group", "required": True, "options": sorted(QUEUE_ROLES)},
+        {
+            "name": "roles",
+            "label": "Roles",
+            "control": "checkbox-group",
+            "required": True,
+            "options": sorted(QUEUE_ROLES),
+        },
     ]
 
 
@@ -221,7 +257,7 @@ def render_capture_preview_html(capture_diff: dict[str, Any]) -> str:
     if capture_diff.get("mode") == "single_snapshot":
         return (
             f'<pre class="capture-preview" data-sandbox="text-only">'
-            f'{escape_html(capture_diff.get("preview_text", ""))}</pre>'
+            f"{escape_html(capture_diff.get('preview_text', ''))}</pre>"
         )
     body = "".join(
         f'<span class="diff-{escape_html(line.get("kind", "context"))}">{escape_html(line.get("text", ""))}</span>\n'

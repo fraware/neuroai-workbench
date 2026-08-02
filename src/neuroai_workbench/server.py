@@ -17,9 +17,8 @@ from .events import load_events, verify_chain
 from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_files
 from .exporter import export_case_bundle
 from .metrics import summarize
-from .resource_loader import read_resource_bytes
-from .util import ensure_identifier
 from .monitoring import adjudicate_change_candidate
+from .resource_loader import read_resource_bytes
 from .review_queue import (
     claim_lease,
     initialize_review_queue,
@@ -37,6 +36,7 @@ from .review_ui import (
     queue_item_detail,
     reviewer_profile_fields,
 )
+from .util import ensure_identifier
 from .validation import validate_assessment
 from .workspace import Workspace
 

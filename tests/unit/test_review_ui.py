@@ -21,7 +21,6 @@ from neuroai_workbench.review_ui import (
 )
 from neuroai_workbench.util import atomic_write_json
 
-
 XSS_PAYLOAD = '<script>alert("xss")</script><img src=x onerror=alert(1)>'
 
 
