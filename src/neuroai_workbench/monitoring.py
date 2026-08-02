@@ -798,3 +798,111 @@ def monitoring_status(workspace: Path) -> dict[str, Any]:
         "run_versions": runs,
         "boundary": MONITORING_BOUNDARY,
     }
+
+
+def build_source_health_report(
+    workspace: Path,
+    *,
+    as_of: str | date | None = None,
+    plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Structured source-health report from registry, state, and due-source plan.
+
+    Records operational retrieval posture only. Does not establish substantive validity.
+    """
+    registry, state = _load_registry_and_state(workspace)
+    as_of_day = _parse_day(as_of)
+    effective_plan = plan or plan_monitoring_run(workspace, as_of=as_of_day)
+    due_ids = {item["source_id"] for item in effective_plan.get("due", [])}
+    manual_ids = {item["source_id"] for item in effective_plan.get("manual", [])}
+    not_due_ids = {item["source_id"] for item in effective_plan.get("not_due", [])}
+    overdue_by_id = {
+        item["source_id"]: int(item.get("overdue_days") or 0)
+        for item in effective_plan.get("due", [])
+        if isinstance(item, dict)
+    }
+
+    source_state = state.get("sources", {})
+    if not isinstance(source_state, dict):
+        raise ValueError("Monitoring state sources must be an object")
+
+    rows: list[dict[str, Any]] = []
+    class_counts: dict[str, int] = {}
+    failure_class_counts: dict[str, int] = {}
+    obsolete_count = 0
+    controlled_local_count = 0
+
+    for record in registry["sources"]:
+        if not isinstance(record, dict):
+            continue
+        source_id = str(record["source_id"])
+        monitor_id = str(record["monitor_id"])
+        source_class = str(record.get("source_class", "UNKNOWN"))
+        class_counts[source_class] = class_counts.get(source_class, 0) + 1
+        state_record = source_state.get(source_id, {})
+        if not isinstance(state_record, dict):
+            state_record = {}
+        last_retrieval = state_record.get("last_checked") or record.get("last_successful_retrieval")
+        failure_class = state_record.get("last_failure_class") or record.get("last_failure_class") or "NONE"
+        if not isinstance(failure_class, str):
+            failure_class = "NONE"
+        failure_class_counts[failure_class] = failure_class_counts.get(failure_class, 0) + 1
+        status_flags = record.get("status_flags") if isinstance(record.get("status_flags"), list) else []
+        obsolete = bool(
+            record.get("obsolete")
+            or record.get("withdrawn")
+            or any(flag in {"OBSOLETE", "WITHDRAWN"} for flag in status_flags if isinstance(flag, str))
+        )
+        if obsolete:
+            obsolete_count += 1
+        controlled_local = source_class == "CONTROLLED_LOCAL_INPUT"
+        if controlled_local:
+            controlled_local_count += 1
+        if source_id in due_ids:
+            schedule_state = "OVERDUE" if overdue_by_id.get(source_id, 0) > 0 else "DUE"
+        elif source_id in manual_ids:
+            schedule_state = "MANUAL"
+        elif source_id in not_due_ids:
+            schedule_state = "NOT_DUE"
+        else:
+            schedule_state = "UNPLANNED"
+        rows.append(
+            {
+                "monitor_id": monitor_id,
+                "source_id": source_id,
+                "source_class": source_class,
+                "schedule_state": schedule_state,
+                "overdue_days": overdue_by_id.get(source_id, 0),
+                "last_retrieval": last_retrieval,
+                "failure_class": failure_class,
+                "obsolete_or_withdrawn": obsolete,
+                "controlled_local_warning": controlled_local,
+            }
+        )
+
+    rows.sort(key=lambda item: (item["schedule_state"], -int(item["overdue_days"]), item["source_id"]))
+    planned_ids = due_ids | manual_ids | not_due_ids
+    registry_ids = {str(item["source_id"]) for item in registry["sources"] if isinstance(item, dict)}
+    silent_drop = sorted(registry_ids - planned_ids)
+    report = {
+        "schema_version": "1.0",
+        "as_of": as_of_day.isoformat(),
+        "registry_sha256": state["registry_sha256"],
+        "plan_id": effective_plan.get("plan_id"),
+        "counts": {
+            "sources": len(rows),
+            "due": len(due_ids),
+            "manual": len(manual_ids),
+            "not_due": len(not_due_ids),
+            "overdue": sum(1 for item in rows if item["schedule_state"] == "OVERDUE"),
+            "obsolete_or_withdrawn": obsolete_count,
+            "controlled_local": controlled_local_count,
+            "silent_drop": len(silent_drop),
+        },
+        "source_class_counts": dict(sorted(class_counts.items())),
+        "failure_class_counts": dict(sorted(failure_class_counts.items())),
+        "silent_drop_source_ids": silent_drop,
+        "sources": rows,
+        "boundary": MONITORING_BOUNDARY,
+    }
+    return report
