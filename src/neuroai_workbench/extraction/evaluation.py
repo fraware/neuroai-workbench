@@ -316,9 +316,12 @@ def run_bounded_offline_evaluation(
     *,
     manifest: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    from .providers import default_offline_evaluation_configs
+    from .providers import contract_fake_offline_configs
 
-    selected = configs or default_offline_evaluation_configs(enabled=True)
+    # Annotation-oracle comparison uses contract fake-offline fixtures only.
+    # Captured-response-replay remains the primary lane in default_offline_evaluation_configs
+    # and is exercised when callers supply captured responses.
+    selected = configs or contract_fake_offline_configs(enabled=True)
     try:
         return compare_provider_configs(selected, manifest=manifest)
     except ProviderExecutionRefusedError as error:

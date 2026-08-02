@@ -54,7 +54,9 @@ def test_tampered_disposition_is_detected(tmp_path: Path) -> None:
     capture = load_fixture_stub(str(fixture["capture_stub"]))
     annotation = load_fixture_stub(str(fixture["annotation_stub"]))
     request = build_extraction_request_from_capture(capture)
-    provider = resolve_provider(default_offline_evaluation_configs()[0])
+    provider = resolve_provider(
+        next(item for item in default_offline_evaluation_configs() if item.provider_id == "fake-offline")
+    )
     response = provider.extract(request, annotation=annotation)
 
     record_extraction_request(tmp_path, request)
@@ -88,7 +90,9 @@ def test_response_without_request_is_refused(tmp_path: Path) -> None:
     capture = load_fixture_stub(str(fixture["capture_stub"]))
     annotation = load_fixture_stub(str(fixture["annotation_stub"]))
     request = build_extraction_request_from_capture(capture)
-    provider = resolve_provider(default_offline_evaluation_configs()[0])
+    provider = resolve_provider(
+        next(item for item in default_offline_evaluation_configs() if item.provider_id == "fake-offline")
+    )
     response = provider.extract(request, annotation=annotation)
 
     with pytest.raises(ValueError, match="No extraction request recorded"):
