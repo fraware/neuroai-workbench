@@ -50,18 +50,23 @@ Software scaffolding can validate records and compute rehearsal metrics. It cann
 
 ## Cohort definition
 
-The checked-in cohort fixture `examples/shadow_refresh/SHADOW_REFRESH_COHORT_v202608.json` defines 25 synthetic/public source identifiers covering:
+Frozen shadow cohorts are **reviewed exact `source_id` manifests**. Regex discovery is an optional helper only and cannot write the freeze artifact.
 
-- PRIMA / Science Corporation;
+- Synthetic rehearsal fixture: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_v202608.json` (25 synthetic URLs under `https://synthetic.example/neuroai/shadow/...`).
+- Reviewed ops-bound freeze: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_REVIEWED_v202608.json` (25 exact registry IDs with human `coverage_label`, `selection_rationale`, `reviewer`, and `reviewed_at`).
+
+Each member requires `source_id`, `coverage_label` (equal to `cohort_category`), and review provenance. Categories cover:
+
+- PRIMA / Science Corporation (not Meta research pages);
 - Synchron;
 - Paradromics;
 - Brain2Qwerty;
-- FDA adaptive DBS regulatory and trial records;
+- FDA adaptive DBS / neurological regulatory surfaces (not supplier neuromodulation pages);
 - BrainGate2 T15 publications and programme sources;
-- major clinical-trial registries;
+- registries and EU medical-device sector pages (not mislabeled as SAFETY_SUPPLIER);
 - ownership, funding, safety, and supplier-dependency categories.
 
-All URLs use the synthetic `https://synthetic.example/neuroai/shadow/...` namespace.
+`run_shadow_refresh.py` loads `--cohort-manifest` (defaulting to the reviewed ops or examples path). Use `--discover-only` to emit non-authoritative regex candidates.
 
 ## Configuration freeze
 
