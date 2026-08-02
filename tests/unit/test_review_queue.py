@@ -234,8 +234,8 @@ def test_expired_lease_ignored_and_reclaim_allowed(tmp_path: Path) -> None:
     lease_record = load_json(
         workspace / "observatory" / "review_queue" / "leases" / f"{lease['lease']['lease_id']}.json"
     )
-    expired = (_parse_timestamp(str(lease_record["expires_at"])) - timedelta(seconds=2)).isoformat().replace(
-        "+00:00", "Z"
+    expired = (
+        (_parse_timestamp(str(lease_record["expires_at"])) - timedelta(seconds=2)).isoformat().replace("+00:00", "Z")
     )
     lease_record["expires_at"] = expired
     lease_record["lease_sha256"] = _hash_record(lease_record, "lease_sha256")

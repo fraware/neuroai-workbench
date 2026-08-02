@@ -163,12 +163,14 @@ def test_double_release_refused(tmp_path: Path) -> None:
 def test_monitoring_records_unmodified_after_queue_operations(tmp_path: Path) -> None:
     workspace, item_id = setup_workspace(tmp_path)
     candidate_before = {
-        path.name: path.read_bytes() for path in (workspace / "observatory" / "monitoring" / "candidates").glob("*.json")
+        path.name: path.read_bytes()
+        for path in (workspace / "observatory" / "monitoring" / "candidates").glob("*.json")
     }
     claim_lease(workspace, item_id, "reviewer-a")
     submit_opinion(workspace, item_id, "reviewer-a", "ABSTAIN", "Insufficient context.")
     release_lease(workspace, list_queue_items(workspace)[0]["active_lease"]["lease_id"], "reviewer-a")
     candidate_after = {
-        path.name: path.read_bytes() for path in (workspace / "observatory" / "monitoring" / "candidates").glob("*.json")
+        path.name: path.read_bytes()
+        for path in (workspace / "observatory" / "monitoring" / "candidates").glob("*.json")
     }
     assert candidate_before == candidate_after
