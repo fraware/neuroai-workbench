@@ -121,6 +121,24 @@ def test_blinded_benchmark_stub_loads() -> None:
     assert len(stub["cases"]) == 5
 
 
+def test_public_annotated_subset_loads_and_runs_metrics(tmp_path: Path) -> None:
+    from neuroai_workbench.entities.benchmark import load_public_annotated_subset
+
+    subset = load_public_annotated_subset()
+    assert subset["benchmark_id"] == "ENTITY-RES-BENCH-PUBLIC-001"
+    assert len(subset["cases"]) >= 20
+    workspace = seed_entity_workspace(tmp_path)
+    # Write subset to temp path for run_blinded_benchmark.
+    path = tmp_path / "public-subset.json"
+    path.write_text(__import__("json").dumps(subset), encoding="utf-8")
+    report = run_blinded_benchmark(workspace, actor="tester", benchmark_path=path)
+    assert report["counts"]["total"] >= 20
+    assert "precision" in report["metrics"]
+    assert "recall" in report["metrics"]
+    assert "false_merge_count" in report["metrics"]
+    assert "human confirmation" in report["boundary"].lower() or "do not establish" in report["boundary"].lower()
+
+
 def test_blinded_benchmark_runs_on_synthetic_workspace(tmp_path: Path) -> None:
     workspace = seed_entity_workspace(tmp_path)
     report = run_blinded_benchmark(workspace, actor="tester")

@@ -1,0 +1,308 @@
+{
+  "benchmark_id": "ENTITY-RES-BENCH-PUBLIC-001",
+  "version": "1.0",
+  "status": "PUBLIC_REDISTRIBUTION_SAFE_SUBSET",
+  "case_count": 21,
+  "blinding": "Synthetic public mentions only; no private participant or protected registry strings.",
+  "boundary": "Public subset for CI metrics. Non-exact matches still require human confirmation. Not substantive entity truth.",
+  "cases": [
+    {
+      "case_id": "PUB-001",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha Holdings",
+        "source_capture_ref": "CAP-PUB-001",
+        "category": "rename"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-002",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha acquired unit",
+        "source_capture_ref": "CAP-PUB-002",
+        "category": "acquisition"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-003",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha Research Lab",
+        "source_capture_ref": "CAP-PUB-003",
+        "category": "parent_sub"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-004",
+      "input": {
+        "raw_mention": "Alpha Neural Lab",
+        "source_capture_ref": "CAP-PUB-004",
+        "category": "lab_collision"
+      },
+      "expected": {
+        "resolution_state": "AMBIGUOUS",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-005",
+      "input": {
+        "raw_mention": "Alpha Implant System",
+        "source_capture_ref": "CAP-PUB-005",
+        "category": "product_vs_company"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-006",
+      "input": {
+        "raw_mention": "Alpha University Trial Site",
+        "source_capture_ref": "CAP-PUB-006",
+        "category": "sponsor_vs_site"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-007",
+      "input": {
+        "raw_mention": "POA",
+        "source_capture_ref": "CAP-PUB-007",
+        "category": "abbr"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-008",
+      "input": {
+        "raw_mention": "Legacy Alpha Devices",
+        "source_capture_ref": "CAP-PUB-008",
+        "category": "historical_id"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-009",
+      "input": {
+        "raw_mention": "\u5408\u6210\u795e\u7ecf\u7ec4\u7ec7",
+        "source_capture_ref": "CAP-PUB-009",
+        "category": "cjk"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-010",
+      "input": {
+        "raw_mention": "\u0645\u0646\u0638\u0645\u0629 \u0623\u0644\u0641\u0627 \u0627\u0644\u0639\u0635\u0628\u064a\u0629",
+        "source_capture_ref": "CAP-PUB-010",
+        "category": "arabic"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-011",
+      "input": {
+        "raw_mention": "Pseudonym Org \u0391lpha",
+        "source_capture_ref": "CAP-PUB-011",
+        "category": "scripts_mixed"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-012",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha",
+        "source_capture_ref": "CAP-PUB-012",
+        "category": "exact_id",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-013",
+      "input": {
+        "raw_mention": "POA alias mention",
+        "source_capture_ref": "CAP-PUB-013",
+        "category": "alias",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-014",
+      "input": {
+        "raw_mention": "domain.org alpha",
+        "source_capture_ref": "CAP-PUB-014",
+        "category": "domain",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-015",
+      "input": {
+        "raw_mention": "Completely Novel Neuro Co",
+        "source_capture_ref": "CAP-PUB-015",
+        "category": "unknown"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-016",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices",
+        "source_capture_ref": "CAP-PUB-016",
+        "category": "false_merge_guard"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-017",
+      "input": {
+        "raw_mention": "Alpha BCI System v2",
+        "source_capture_ref": "CAP-PUB-017",
+        "category": "system_name"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-018",
+      "input": {
+        "raw_mention": "Alpha Neuro Fund I",
+        "source_capture_ref": "CAP-PUB-018",
+        "category": "funding_vehicle"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-019",
+      "input": {
+        "raw_mention": "Alpha Device Review Office",
+        "source_capture_ref": "CAP-PUB-019",
+        "category": "regulator_office"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-020",
+      "input": {
+        "raw_mention": "Alpha Component Supplier GmbH",
+        "source_capture_ref": "CAP-PUB-020",
+        "category": "supplier"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "PUB-021",
+      "input": {
+        "raw_mention": "Alpha University Hospital BCI Unit",
+        "source_capture_ref": "CAP-PUB-021",
+        "category": "hospital"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    }
+  ]
+}
