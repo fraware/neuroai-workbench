@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/monitoring-snapshot-manifest-1.0.json",
+  "type": "object",
+  "required": [
+    "snapshot_id", "source_id", "monitor_id", "retrieved_at", "retrieval_url", "media_type",
+    "size_bytes", "sha256", "normalized_text_sha256", "stored_path", "original_filename",
+    "evidence_state", "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "monitor_id": {"type": "string", "minLength": 1},
+    "retrieved_at": {"type": "string", "minLength": 10},
+    "retrieval_url": {"type": "string", "minLength": 1},
+    "media_type": {"type": "string", "minLength": 1},
+    "size_bytes": {"type": "integer", "minimum": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "normalized_text_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "stored_path": {"type": "string", "minLength": 1},
+    "original_filename": {"type": ["string", "null"]},
+    "evidence_state": {"const": "RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
