@@ -25,6 +25,8 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Append-only observatory monitoring review queue API over monitoring projections, with local named profiles, exclusive leases, immutable opinions, and integrity verification.
 - Accessible local monitoring review UI (`/review.html`) with rebuildable ops-health counts, sandboxed capture diffs, adjudication form scaffolding, and fixture-driven XSS tests.
 - Append-only observatory monitoring review queue: rebuildable projections over candidates and adjudications, local named reviewer profiles, exclusive leases, and immutable multi-opinion records that never mutate canonical monitoring data.
+- Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
+- Offline extraction contract, disclosure policy, preregistered benchmark stubs, citation-required field validation, and protected disclosure refusal for bounded model-assisted observatory source extraction.
 
 ### Changed
 
@@ -41,6 +43,8 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Model output cannot mutate an assessment or exercise decision authority.
 - The 78-requirement v4.2 kernel and historical pilot findings remain unchanged.
 - Monitoring operations are alpha, offline-first, and non-authoritative for substantive NeuroAI findings, regulatory authorization, clinical value, or conformance.
+- Entity registry resolution is exact-ID only; it does not merge entities on name similarity or establish substantive correspondence without human disposition in follow-on workflows.
+- Extraction contract validation establishes schema and disclosure controls only; it does not execute providers, score benchmarks, or mutate canonical observatory state.
 
 ## 0.2.1 — stabilization candidate
 

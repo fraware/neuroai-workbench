@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/extraction-benchmark-manifest-1.0.json",
+  "type": "object",
+  "required": ["schema_version", "benchmark_id", "status", "categories", "metrics", "stop_conditions", "fixtures", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "benchmark_id": {"type": "string", "pattern": "^BENCH-EXT-[0-9a-f]{32}$"},
+    "status": {"const": "PREREGISTERED"},
+    "preregistered_at": {"type": "string", "minLength": 10},
+    "categories": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["COMPANY_ANNOUNCEMENT", "REGULATORY_RECORD", "CLINICAL_TRIAL", "PUBLICATION", "OWNERSHIP_FUNDING", "SAFETY_WITHDRAWAL", "CONTRADICTORY_SOURCE"]}},
+    "metrics": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "stop_conditions": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "fixtures": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fixture"}},
+    "boundary": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "fixture": {
+      "type": "object",
+      "required": ["fixture_id", "category", "capture_stub", "annotation_stub"],
+      "additionalProperties": false,
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^FIX-[0-9a-f]{32}$"},
+        "category": {"type": "string"},
+        "capture_stub": {"type": "string", "minLength": 1},
+        "annotation_stub": {"type": "string", "minLength": 1},
+        "blinded": {"type": "boolean"}
+      }
+    }
+  }
+}
