@@ -20,6 +20,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Observatory storage boundaries, ADR-0009 five-store model, archive inventory schema/JSONL, unresolved-ambiguity register, and retention/access notes for phase-A migration (no byte moves).
 - Public data repository bootstrap scaffold (`templates/neuroai-observatory-data/`), deterministic manifest scripts, synthetic release descriptor, governance templates, and operator bootstrap documentation for `fraware/neuroai-observatory-data` (S2; no protected bytes).
 - Versioned governing-input migration adapters, lineage digests, archive inventory integration, and deterministic `MIGRATION_VERIFICATION.json` generation for public fixtures (#44 phase C).
+- Collector threat model, deployment-boundary ADR, and versioned collection/quarantine JSON schemas with adversarial contract tests. Retrieval contracts record provenance only; they do not establish authenticity or substantive truth.
 
 ### Changed
 
