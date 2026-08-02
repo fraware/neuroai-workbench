@@ -1,6 +1,6 @@
 # Independent review acceptance
 
-This document defines the human acceptance scaffolding for named independent reviews required before the workbench or an observatory successor release is presented as suitable for institutional pilots.
+This document defines optional human acceptance scaffolding for named independent reviews (issue #10). Independent review is a recommended follow-up for institutional-pilot readiness language. It is **not** a hard gate on observatory successor `AUTHORIZED` or `PUBLISHED` status.
 
 Software can record review dispositions. It cannot commission reviewers, authenticate identities, or authorize release.
 
@@ -10,9 +10,11 @@ Independent review acceptance records attribute a claimed local review outcome u
 
 Passing schema validation, hash verification, or disposition completeness does not establish institutional-pilot readiness, security acceptance, methodological correctness, or release authorization.
 
-## Required review tracks
+Successor release gates (`CANDIDATE` → `REVIEWED` → `AUTHORIZED` → `PUBLISHED`) remain separate. Named release-authority approval for `PUBLISHED` is distinct from optional #10 independent-review track completion. Incomplete independent-review tracks must not block technical authorization or publication when ordinary release gates are satisfied.
 
-Each track requires a named reviewer, documented scope, conflict-of-interest disclosure, findings register reference where applicable, and an append-only disposition record.
+## Recommended review tracks
+
+Each track, when commissioned, should have a named reviewer, documented scope, conflict-of-interest disclosure, findings register reference where applicable, and an append-only disposition record.
 
 | Track | Primary focus |
 |---|---|
@@ -30,7 +32,7 @@ Before commissioning reviewers:
 1. Freeze the review scope artifact and record its SHA-256 digest.
 2. Publish reviewer scope, independence criteria, and conflict-of-interest template.
 3. Confirm no readiness claim will be issued solely from internal or automated review.
-4. Identify residual human blockers that software cannot complete.
+4. Identify residual human follow-ups that software cannot complete.
 
 ## Security checklist
 
@@ -118,29 +120,30 @@ record_independent_review_disposition(
 
 Disposition records must keep `release_authorization_performed: false`. Release authorization remains a separate human decision outside this scaffold.
 
-## Acceptance gate
+## Optional completeness checklist
 
-Independent review acceptance is complete only when:
+Independent review acceptance for a frozen scope is considered complete when:
 
 1. All six review tracks have a valid, append-only disposition record for the frozen scope.
 2. Integrity verification passes without hash or schema errors.
 3. No track disposition is `REJECTED`, `DEFERRED`, or `INCOMPLETE`.
 4. Unresolved risks and conditions are tracked with owners and closure criteria.
-5. A separate authorized release decision is recorded through the ordinary release process.
 
-Software summary helpers may report track completeness. They must never set `release_authorization_performed` or `institutional_pilot_readiness_established` to true.
+This completeness status is optional documentation. It does **not** gate `AUTHORIZED` or `PUBLISHED` successor advancement. A separate authorized release decision is still recorded through the ordinary release process (schema, manifests, hashes, and named release authority).
 
-## Residual human blockers
+Software summary helpers may report track completeness via `incomplete_tracks`. They must never set `release_authorization_performed` or `institutional_pilot_readiness_established` to true, and they must report `release_gate_blocked: false`.
 
-The repository cannot complete the following without named human reviewers:
+## Residual human follow-ups
+
+The repository cannot complete the following without named human reviewers when those reviews are commissioned:
 
 - Commission and execute independent security testing beyond automated gates.
 - Conduct representative-user accessibility testing.
 - Obtain independent domain expert sign-off on substantive claim boundaries.
 - Obtain affected-community representative review where applicable.
-- Issue an authorized release or institutional-pilot readiness decision.
+- Issue an institutional-pilot readiness decision (distinct from successor `AUTHORIZED`/`PUBLISHED` release-control states).
 
-See issue #10 for the commissioning workflow and issue #34 for programme context.
+See issue #10 for the optional commissioning workflow and issue #34 for programme context.
 
 ## Appendix E — Withheld claims
 

@@ -16,7 +16,7 @@ Passing this drill establishes procedural readiness only. It does not prove that
 ## Preconditions
 
 - A published successor release or public artifact exists with recorded predecessor identity, checksums, and withheld-claims appendix.
-- Independent review disposition records exist or their absence is explicitly documented as a blocker.
+- Independent review disposition records may exist; their absence is not a withdrawal or republication blocker.
 - Incident route, evidence custodians, and decision authorities are named outside the application.
 
 ## Drill roles
@@ -59,7 +59,7 @@ Checklist:
 
 ## Phase 3 — Coordinate review tracks
 
-For each required track, record whether the withdrawal trigger affects prior independent review conclusions.
+For each review track that was commissioned, record whether the withdrawal trigger affects prior independent review conclusions.
 
 | Track | Drill question |
 |---|---|
@@ -107,17 +107,17 @@ Checklist:
 
 ## Phase 6 — Restore or supersede
 
-1. If republication is required, generate a new successor release from canonical records.
-2. Re-run independent review acceptance for the new scope before any institutional-pilot readiness language.
+1. If republication is required, generate a new successor release from canonical records through ordinary release gates (schema, manifests, hashes, named release authority).
+2. Optionally re-run independent review acceptance for the new scope before any institutional-pilot readiness language; #10 completion is not required for `AUTHORIZED` or `PUBLISHED`.
 3. Reconcile generated products mechanically against canonical records.
 4. Close the drill with an explicit statement of what was and was not established.
 
 Checklist:
 
 - [ ] New successor release preserves predecessor linkage.
-- [ ] Independent review tracks re-evaluated for the new scope.
+- [ ] Independent review tracks optionally re-evaluated for the new scope when commissioned.
 - [ ] Generated products reconcile with canonical records.
-- [ ] Drill closure statement lists residual human blockers.
+- [ ] Drill closure statement lists residual human follow-ups.
 
 ## Explicit non-establishments
 

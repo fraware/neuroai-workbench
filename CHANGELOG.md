@@ -39,6 +39,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Assistance dispose/verify detect assessment drift; request IDs use UUID4 with collision refusal; final dispositions exclude `PENDING_REVIEW`; model output is secret-scanned before persist.
 - Observatory identifier validation reports missing/non-string IDs per row with indexed paths.
 - CI adds per-module coverage floors, SHA-pinned Actions, `pip-audit`, and hashed install constraints.
+- Issue #10 independent-review track completeness is optional recommended follow-up; it no longer blocks successor `AUTHORIZED` or `PUBLISHED`. Summary field `blocking_tracks` renamed to `incomplete_tracks` with explicit `release_gate_blocked: false`. Named release-authority and technical release gates remain.
 
 ### Boundaries
 
