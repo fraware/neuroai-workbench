@@ -86,7 +86,6 @@ def main() -> int:
         "DATA_GOVERNANCE.md",
         "pyproject.toml",
         ".github/CODEOWNERS",
-        ".cursor/environment.json",
         "docs/architecture/overview.md",
         "docs/governance/evidence-boundary.md",
         "docs/reference/evidence-exchange.md",
