@@ -22,6 +22,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Versioned governing-input migration adapters, lineage digests, archive inventory integration, and deterministic `MIGRATION_VERIFICATION.json` generation for public fixtures (#44 phase C).
 - Collector threat model, deployment-boundary ADR, and versioned collection/quarantine JSON schemas with adversarial contract tests. Retrieval contracts record provenance only; they do not establish authenticity or substantive truth.
 - Hardened HTTP collector core (`neuroai_workbench.collector`) with DNS and redirect SSRF controls, DNS rebinding detection, timeouts, size and decompression-ratio limits, per-host rate limiting, conditional GET handling for unchanged captures, and quarantine-only writes validated against PR-05 schemas.
+- Append-only observatory monitoring review queue: rebuildable projections over candidates and adjudications, local named reviewer profiles, exclusive leases, and immutable multi-opinion records that never mutate canonical monitoring data.
 - Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
 
 ### Changed
