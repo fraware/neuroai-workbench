@@ -36,11 +36,14 @@ def test_bootstrap_fixture_manifest_verifies(generate_manifest, verify_manifest)
     fixtures = SCAFFOLD / "fixtures"
     manifest = SCAFFOLD / "releases" / "data-v0.0.1-bootstrap" / "SHA256SUMS.txt"
 
-    assert subprocess.run(
-        [sys.executable, str(SCRIPTS / "generate_manifest.py"), str(fixtures), str(manifest)],
-        cwd=ROOT,
-        check=False,
-    ).returncode == 0
+    assert (
+        subprocess.run(
+            [sys.executable, str(SCRIPTS / "generate_manifest.py"), str(fixtures), str(manifest)],
+            cwd=ROOT,
+            check=False,
+        ).returncode
+        == 0
+    )
 
     ok, errors = verify_manifest.verify_manifest(fixtures, manifest)
     assert ok, errors
