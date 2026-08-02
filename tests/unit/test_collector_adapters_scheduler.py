@@ -300,9 +300,7 @@ def test_scheduler_consumes_monitor_plan(tmp_path: Path, html_transport: FakeTra
     assert run["counts"]["total"] == len(plan["due"])
 
 
-def test_scheduler_policy_blocks_non_http_without_aborting_plan(
-    tmp_path: Path, html_transport: FakeTransport
-) -> None:
+def test_scheduler_policy_blocks_non_http_without_aborting_plan(tmp_path: Path, html_transport: FakeTransport) -> None:
     workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
     scheduler = _scheduler(tmp_path, html_transport)
     plan = {

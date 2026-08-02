@@ -44,10 +44,7 @@ class LocalContentAddressedAdapter:
                 return resolved
             except ValueError:
                 continue
-        raise ValueError(
-            "Local input path is outside allowlisted roots; "
-            "refusing broad filesystem crawl"
-        )
+        raise ValueError("Local input path is outside allowlisted roots; refusing broad filesystem crawl")
 
     def ingest_file(
         self,

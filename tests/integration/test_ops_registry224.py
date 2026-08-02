@@ -51,8 +51,7 @@ def test_plan_and_health_cover_all_monitor_ids(tmp_path: Path) -> None:
     local_ids = {
         str(item["source_id"])
         for item in registry["sources"]
-        if item.get("source_class") == "CONTROLLED_LOCAL_INPUT"
-        or item.get("network_access_required") is False
+        if item.get("source_class") == "CONTROLLED_LOCAL_INPUT" or item.get("network_access_required") is False
     }
     assert local_ids == {"SRC-14-045", "SRC-14-046", "SRC-14-047"}
     due_ids = {item["source_id"] for item in plan["due"]}
