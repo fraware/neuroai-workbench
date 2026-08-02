@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "title": "Observed live shadow cohort public metrics summary",
+    "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+    "run_id": "SHADOW-RUN-202608-e849bf8f9d28",
+    "evaluation_issue": "#43",
+    "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+  },
+  "cohort_size": 25,
+  "network_retrieval": "EXECUTED_LIVE_QUARANTINE_ONLY",
+  "recommendation": "NO_GO",
+  "live_collection_counts": {
+    "succeeded": 22,
+    "failed": 3,
+    "skipped": 0,
+    "total": 25
+  },
+  "capture_digest_count": 22,
+  "failed_source_ids": [
+    "SRC-0041",
+    "SRC-0115",
+    "SRC-14-007"
+  ],
+  "failure_classes_observed": [
+    "HTTP_ERROR"
+  ],
+  "capture_digests": [
+    {
+      "source_id": "SRC-0062",
+      "sha256": "e6049ba6d0665cdcbdba872140627d40236a26322813f2a193c5e4cd2b09bc3f",
+      "http_status": 200,
+      "size_bytes": 255069
+    },
+    {
+      "source_id": "SRC-0047",
+      "sha256": "2b290c4b11206708ae606bc54c15932e676e7f5cd90b4645165baf12e9061e19",
+      "http_status": 200,
+      "size_bytes": 96565
+    },
+    {
+      "source_id": "SRC-14-041",
+      "sha256": "a48139c7ae9ef32c8c6a2191e256a8a26b07b3ef48fe60c3af5c6131f5e0acb3",
+      "http_status": 200,
+      "size_bytes": 67561
+    },
+    {
+      "source_id": "SRC-0063",
+      "sha256": "173aa10643759c36b6102bd5cc3831aa6e3f34fc22814ea5cfc1b06313583f23",
+      "http_status": 200,
+      "size_bytes": 280993
+    },
+    {
+      "source_id": "SRC-14-032",
+      "sha256": "a5836ac23bc04fc4394a57a8da44f58ec94d6827d9d04ae26691057361fda95d",
+      "http_status": 200,
+      "size_bytes": 44570
+    },
+    {
+      "source_id": "SRC-0174",
+      "sha256": "60bb794a576c185e7aa475125eafd56dada89be5f76871b1ba39789189540f61",
+      "http_status": 200,
+      "size_bytes": 44811
+    },
+    {
+      "source_id": "SRC-0121",
+      "sha256": "995f9522a7a4d865f1b17f073dbc23c7587764adc89c5bcc3a6fedfbefd5900e",
+      "http_status": 200,
+      "size_bytes": 89070
+    },
+    {
+      "source_id": "SRC-0030",
+      "sha256": "c32f8d34967e890eb6bc26c7e53c8afb2ca00201df1413e115b4c5169ba6e15c",
+      "http_status": 200,
+      "size_bytes": 8487
+    },
+    {
+      "source_id": "SRC-14-039",
+      "sha256": "2574f3a8830188528d903588356f72500e33314c2ea7faafd3d48ae4377ec6c2",
+      "http_status": 200,
+      "size_bytes": 9186
+    },
+    {
+      "source_id": "SRC-0046",
+      "sha256": "77722ae1b539aa607046e729453551c96b303055dede6ce4ad2f2a0d628474f3",
+      "http_status": 200,
+      "size_bytes": 124298
+    },
+    {
+      "source_id": "SRC-0004",
+      "sha256": "1b31b42f9951eab399447fd5b32726f752a9ce88bcf48c86cf6c70dd2c72a5fc",
+      "http_status": 200,
+      "size_bytes": 40777
+    },
+    {
+      "source_id": "SRC-0038",
+      "sha256": "56c3c712fb45e241811a69ac20099842afa88129defd7540ae91d6fa399a20b9",
+      "http_status": 200,
+      "size_bytes": 202064
+    },
+    {
+      "source_id": "SRC-14-033",
+      "sha256": "731364dc29aab2cb7e94eecaec51974d1b04254df47411c66262385e91493fc2",
+      "http_status": 200,
+      "size_bytes": 98196
+    },
+    {
+      "source_id": "SRC-0013",
+      "sha256": "965946675eb13602814b2f4c4916f921ebf3292e0f4a17d97607a1b44d77967f",
+      "http_status": 200,
+      "size_bytes": 57292
+    },
+    {
+      "source_id": "SRC-0079",
+      "sha256": "66737b92269d7ebba6be832bc54fb9132863c188d23a3767f637c763d87bc84e",
+      "http_status": 200,
+      "size_bytes": 220746
+    },
+    {
+      "source_id": "SRC-0034",
+      "sha256": "bdc811633af6c0d1a389d3bb62bae02ce009dd43c740442a56ce90d349370d7f",
+      "http_status": 200,
+      "size_bytes": 129901
+    },
+    {
+      "source_id": "SRC-0045",
+      "sha256": "7aa0acb8f505e86a0fe3ea7f67eb123776ba51ad5bcc5770f9df9adcb8f76e23",
+      "http_status": 200,
+      "size_bytes": 123412
+    },
+    {
+      "source_id": "SRC-14-031",
+      "sha256": "c432837f1dcdb1942b9d4777910d44c373723b28a29c2ff9824ce42692cae97e",
+      "http_status": 200,
+      "size_bytes": 12939
+    },
+    {
+      "source_id": "SRC-0169",
+      "sha256": "fbb3384f6d687d54fe45ac33467e4901fefb29d512ad0460e7e8f974e52c3730",
+      "http_status": 200,
+      "size_bytes": 70938
+    },
+    {
+      "source_id": "SRC-0124",
+      "sha256": "817a9b55cdb6ed3649ab950e3aa1fe3f72e01a80bcb333ef76f44da707800bd6",
+      "http_status": 200,
+      "size_bytes": 63044
+    },
+    {
+      "source_id": "SRC-0040",
+      "sha256": "b961fd57ab676434da1fb3ae6df464a6c0016ecbc7eb20f62bf92ae65789857b",
+      "http_status": 200,
+      "size_bytes": 54592
+    },
+    {
+      "source_id": "SRC-0031",
+      "sha256": "e8db9b98c7daf141f62371829f11e08da3a0718f6328fd3a4e2e0e707267d1da",
+      "http_status": 200,
+      "size_bytes": 45066
+    }
+  ],
+  "withheld_claims": [
+    "Go/no-go metrics are rehearsal outputs only and do not authorize a canonical successor release.",
+    "Passing thresholds in a synthetic or shadow run does not establish operational readiness.",
+    "Human approval remains required before any live refresh over protected or archive sources.",
+    "Live capture digests prove retrieval bytes only; they do not establish substantive truth.",
+    "Protected capture bodies remain under the ops workspace and must not be committed to git."
+  ]
+}

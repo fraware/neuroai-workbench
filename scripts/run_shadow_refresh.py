@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Execute a non-canonical shadow refresh rehearsal against an ops workspace.
 
-Offline-first: plans monitoring and records observed plan/freeze metrics without
-network retrieval. Artifacts are always SHADOW_EVALUATION_NOT_CANONICAL.
+Offline-first by default: plans monitoring and records observed plan/freeze
+metrics without network retrieval. Optional ``--live`` collection requires
+``NEUROAI_LIVE_COLLECTION=1`` and writes quarantine-only under the ops run root.
+
+Artifacts are always SHADOW_EVALUATION_NOT_CANONICAL.
 
 Frozen cohorts must be loaded from a reviewed exact source_id manifest.
 Regex discovery remains available only as a non-authoritative helper and cannot
@@ -25,12 +28,15 @@ from neuroai_workbench.monitoring import (
     validate_source_registry,
 )
 from neuroai_workbench.shadow_refresh import (
+    LIVE_COLLECTION_ENV,
     SHADOW_EVALUATION_STATUS,
     SHADOW_REFRESH_BOUNDARY,
     bind_reviewed_cohort_to_registry,
     compute_go_no_go_metrics,
     discover_cohort_candidates,
     load_reviewed_cohort_manifest,
+    observed_run_results_from_live,
+    run_live_cohort_collection,
 )
 from neuroai_workbench.util import atomic_write_json, canonical_json_bytes, sha256_bytes, sha256_file, utc_now
 
@@ -177,6 +183,15 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Defaults to <ops>/runs/shadow-refresh-<month>/",
     )
+    parser.add_argument(
+        "--live",
+        action="store_true",
+        help=(
+            f"Execute allowlisted live HTTP collection for the reviewed cohort. "
+            f"Requires {LIVE_COLLECTION_ENV}=1. Quarantine-only; no monitoring handoff; "
+            "remains SHADOW_EVALUATION_NOT_CANONICAL."
+        ),
+    )
     args = parser.parse_args(argv)
 
     ops = args.ops_workspace or Path(os.environ.get(OPS_ENV, ""))
@@ -267,7 +282,42 @@ def main(argv: list[str] | None = None) -> int:
         run_id=run_id,
         evidence_cutoff=args.as_of,
     )
-    run_results = observed_run_results_from_plan(plan, run_id=run_id)
+
+    live_package: dict[str, Any] | None = None
+    network_retrieval = "NOT_EXECUTED_OFFLINE_FIRST"
+    if args.live:
+        if os.environ.get(LIVE_COLLECTION_ENV, "").strip() != "1":
+            sys.stderr.write(
+                f"ERROR --live requires {LIVE_COLLECTION_ENV}=1 "
+                "(CI and default runs remain network-free)\n"
+            )
+            return 2
+        quarantine_root = output_root / "captures" / "quarantine"
+        try:
+            live_package = run_live_cohort_collection(
+                plan=plan,
+                registry=registry,
+                registry_sha256=sha256_file(registry_path),
+                quarantine_root=quarantine_root,
+            )
+        except PermissionError as exc:
+            sys.stderr.write(f"ERROR {exc}\n")
+            return 2
+        except (ValueError, OSError, RuntimeError, TypeError, KeyError) as exc:
+            sys.stderr.write(f"ERROR live collection failed: {exc}\n")
+            return 1
+        network_retrieval = "EXECUTED_LIVE_QUARANTINE_ONLY"
+        run_results = observed_run_results_from_live(
+            live_package,
+            run_id=run_id,
+            planned_total=len(source_ids),
+        )
+        freeze["configuration_hashes"]["collector_sha256"] = str(
+            live_package["collector"]["configuration_hash"]
+        )
+    else:
+        run_results = observed_run_results_from_plan(plan, run_id=run_id)
+
     metrics = compute_go_no_go_metrics(
         run_results,
         generated_at=utc_now(),
@@ -277,10 +327,14 @@ def main(argv: list[str] | None = None) -> int:
         "cohort_size": len(source_ids),
         "cohort_manifest": str(cohort_path),
         "plan_counts": plan["counts"],
-        "network_retrieval": "NOT_EXECUTED_OFFLINE_FIRST",
+        "network_retrieval": network_retrieval,
+        "live_collection_env": LIVE_COLLECTION_ENV,
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,
     }
+    if live_package is not None:
+        observed_context["live_collection_counts"] = live_package["collection_run"]["counts"]
+        observed_context["capture_digest_count"] = len(live_package.get("capture_digests", []))
 
     atomic_write_json(output_root / "cohort.json", cohort_doc)
     atomic_write_json(output_root / "freeze_manifest.json", freeze)
@@ -288,6 +342,8 @@ def main(argv: list[str] | None = None) -> int:
     atomic_write_json(output_root / "run_results.json", run_results)
     atomic_write_json(output_root / "observed_context.json", observed_context)
     atomic_write_json(output_root / "go_no_go_metrics.json", metrics)
+    if live_package is not None:
+        atomic_write_json(output_root / "live_collection.json", live_package)
 
     public_summary = {
         "run_id": run_id,
@@ -296,11 +352,35 @@ def main(argv: list[str] | None = None) -> int:
         "source_ids": source_ids,
         "plan_counts": plan["counts"],
         "recommendation": metrics["evaluation"]["recommendation"],
-        "network_retrieval": "NOT_EXECUTED_OFFLINE_FIRST",
+        "network_retrieval": network_retrieval,
         "freeze_hashes": freeze["configuration_hashes"],
-        "withheld_claims": metrics["withheld_claims"],
+        "withheld_claims": list(metrics["withheld_claims"])
+        + [
+            "Live capture digests prove retrieval bytes only; they do not establish substantive truth.",
+            "Protected capture bodies remain under the ops workspace and must not be committed to git.",
+        ],
         "boundary": SHADOW_REFRESH_BOUNDARY,
     }
+    if live_package is not None:
+        public_summary["live_collection_counts"] = live_package["collection_run"]["counts"]
+        public_summary["capture_digest_count"] = len(live_package.get("capture_digests", []))
+        public_summary["capture_digests"] = [
+            {
+                "source_id": item.get("source_id"),
+                "sha256": item.get("sha256"),
+                "http_status": item.get("http_status"),
+                "size_bytes": item.get("size_bytes"),
+            }
+            for item in live_package.get("capture_digests", [])
+        ]
+        public_summary["failure_summaries"] = [
+            {
+                "source_id": item.get("source_id"),
+                "failure_class": item.get("failure_class"),
+                "http_status": item.get("http_status"),
+            }
+            for item in live_package.get("failure_summaries", [])
+        ]
     atomic_write_json(output_root / "public_metrics_summary.json", public_summary)
     json.dump(public_summary, sys.stdout, ensure_ascii=False, indent=2)
     sys.stdout.write("\n")
