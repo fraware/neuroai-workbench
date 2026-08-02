@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "manifest_id": "MANIFEST-PILOT-02-FDA-ADBS",
+    "assessment_id": "PILOT-02-FDA-ADBS-v4.1.4",
+    "manifest_version": "1.0",
+    "title": "FDA adaptive DBS pilot assessment dependency manifest",
+    "evidence_cutoff": "2026-07-28",
+    "evidence_freeze_id": "ADBS-S478-EF-2026-07-28-01",
+    "system_id": "FDA-P960009-S478",
+    "configuration_id": "P960009-S478-BASELINE-A610-5.0-PERCEPT-B35200-B35300",
+    "observatory_binding": "FDA adaptive DBS public-evidence pilot v4.1.4"
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ADBS-SYSTEM",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "SYSTEM",
+      "target_ref": "FDA-P960009-S478",
+      "target_label": "Activa/Percept/SenSight DBS with S478 adaptive programming feature",
+      "version_or_period": "FDA authorization baseline 2025-02-20",
+      "resolution_state": "RESOLVED",
+      "observatory_object_ref": "FDA adaptive DBS public-evidence pilot v4.1.4"
+    },
+    {
+      "dependency_id": "DEP-ADBS-CONFIG",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "CONFIGURATION",
+      "target_ref": "P960009-S478-BASELINE-A610-5.0-PERCEPT-B35200-B35300",
+      "target_label": "S478 authorized baseline with Percept B35200",
+      "version_or_period": "2025-02-20 baseline; S524 changes separately controlled",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-REG-FDA",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "REGULATORY_RECORD",
+      "target_ref": "P960009-S478",
+      "target_label": "FDA supplemental HDE authorization for S478 adaptive DBS",
+      "version_or_period": "2025-02-20",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-ORG-MEDTRONIC",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "ORGANIZATION",
+      "target_ref": "Medtronic",
+      "target_label": "Medtronic manufacturer and support context",
+      "version_or_period": "Authorization baseline",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-JUR-US",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "JURISDICTION",
+      "target_ref": "United States",
+      "target_label": "United States FDA jurisdiction",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-HW-INS",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "HARDWARE",
+      "target_ref": "COMP-01",
+      "target_label": "Percept PC implantable neurostimulator B35200",
+      "version_or_period": "S478 authorized baseline",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-SW-ALGO",
+      "dependency_role": "GAP_SUPPORTING",
+      "target_kind": "SOFTWARE",
+      "target_ref": "COMP-04",
+      "target_label": "S478 adaptive DBS algorithm and programming feature",
+      "version_or_period": "A610 v5.0 baseline",
+      "resolution_state": "PARTIAL",
+      "notes": "Later A610 v5.0 changes under S524 require separate boundary control."
+    },
+    {
+      "dependency_id": "DEP-ADBS-TRIAL",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "TRIAL",
+      "target_ref": "NCT04860930",
+      "target_label": "Supporting trial registry context",
+      "version_or_period": "Public registry state at cutoff",
+      "resolution_state": "PARTIAL"
+    },
+    {
+      "dependency_id": "DEP-ADBS-EVIDENCE-CUTOFF",
+      "dependency_role": "DECISION_SUPPORTING",
+      "target_kind": "EVIDENCE_CUTOFF",
+      "target_ref": "ADBS-S478-EF-2026-07-28-01",
+      "target_label": "Assessment evidence freeze",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-ADBS-OBS",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "OBSERVATORY_RELEASE",
+      "target_ref": "v1.6",
+      "target_label": "Observatory release context",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "RESOLVED"
+    }
+  ],
+  "withheld_claims": [
+    "Authorization scope, adverse-event denominators, and post-authorization change history require separate exact-version control.",
+    "FDA authorization record dependency does not establish clinical effectiveness or deployment conformance beyond the bounded pilot.",
+    "Research-site jurisdictions outside the United States remain contextual only."
+  ],
+  "boundary": "This manifest records typed dependencies for the exact S478 authorization baseline. Regulatory and conformance states remain separate."
+}
