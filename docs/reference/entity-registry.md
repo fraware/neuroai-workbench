@@ -14,6 +14,8 @@ Canonical entity records are never silently merged or deleted. Alias and identif
 
 Refused inputs include normalized-name matching, similarity thresholds, fuzzy match modes, and multiple simultaneous selectors.
 
+For layered resolution proposals, see [entity-resolver.md](entity-resolver.md).
+
 ## Related issues
 
 - #37 — controlled entity resolution and duplicate detection

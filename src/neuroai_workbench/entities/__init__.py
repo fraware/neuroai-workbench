@@ -1,5 +1,6 @@
-"""Controlled entity registry with exact-ID resolution only."""
+"""Controlled entity registry with exact-ID resolution and layered resolver proposals."""
 
+from .benchmark import load_blinded_benchmark_stub, run_blinded_benchmark
 from .errors import (
     AmbiguousResolutionError,
     EntityRegistryError,
@@ -24,26 +25,50 @@ from .registry import (
     resolve_exact,
     validate_registry,
 )
+from .resolver import (
+    CONFIDENCE_LEVELS,
+    DISPOSITION_DECISIONS,
+    MATCH_LAYERS,
+    PROPOSAL_STATES,
+    RESOLVER_BOUNDARY,
+    load_resolution_proposal,
+    normalize_mention,
+    propose_resolution,
+    record_resolution_disposition,
+    resolver_status,
+)
 
 __all__ = [
+    "CONFIDENCE_LEVELS",
+    "DISPOSITION_DECISIONS",
     "ENTITY_BOUNDARY",
     "ENTITY_TYPES",
     "EXACT_MATCH_MODES",
     "IDENTIFIER_SCHEMES",
+    "MATCH_LAYERS",
+    "PROPOSAL_STATES",
     "RESOLUTION_STATES",
+    "RESOLVER_BOUNDARY",
     "AmbiguousResolutionError",
     "EntityRegistryError",
     "FuzzyMergeRefusedError",
     "OverwriteRefusedError",
     "assert_record_immutable",
     "initialize_registry",
+    "load_blinded_benchmark_stub",
     "load_entity",
     "load_registry",
+    "load_resolution_proposal",
+    "normalize_mention",
+    "propose_resolution",
+    "record_resolution_disposition",
     "refuse_fuzzy_merge",
     "register_alias",
     "register_entity",
     "register_identifier",
     "registry_status",
     "resolve_exact",
+    "resolver_status",
+    "run_blinded_benchmark",
     "validate_registry",
 ]

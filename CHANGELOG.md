@@ -27,6 +27,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
 - Offline extraction contract, disclosure policy, preregistered benchmark stubs, citation-required field validation, and protected disclosure refusal for bounded model-assisted observatory source extraction.
 - Collector source-type adapters (HTML, JSON API, XML/RSS/Atom, clinical/regulatory registry stub, controlled authenticated download stub), plan-driven scheduler consuming `neuroai-monitor plan` output, quarantine approval gate before monitoring handoff, credential-leak refusal, kill switches, and architecture tests forbidding direct monitoring snapshot or adjudication calls from the collector package.
+- Layered entity resolver proposals (`NEW_ENTITY`, `EXISTING_ENTITY`, `AMBIGUOUS`, `DUPLICATE_CANDIDATE`), exact-ID auto-confirm only, human disposition records, blinded benchmark stub, and adversarial refusal of automatic fuzzy merge under `neuroai_workbench.entities.resolver`.
 
 ### Changed
 
@@ -45,6 +46,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Monitoring operations are alpha, offline-first, and non-authoritative for substantive NeuroAI findings, regulatory authorization, clinical value, or conformance.
 - Entity registry resolution is exact-ID only; it does not merge entities on name similarity or establish substantive correspondence without human disposition in follow-on workflows.
 - Extraction contract validation establishes schema and disclosure controls only; it does not execute providers, score benchmarks, or mutate canonical observatory state.
+- Layered resolver proposals never mutate the canonical registry automatically; non-exact matches require human disposition before any follow-on registration workflow.
 
 ## 0.2.1 â€” stabilization candidate
 
