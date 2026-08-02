@@ -247,7 +247,13 @@ def test_record_rejects_invalid_inputs(tmp_path: Path) -> None:
         )
     with pytest.raises(ValueError, match="reviewer_claim must be an object"):
         record_independent_review_disposition(
-            workspace, "SECURITY", "scope", scope_digest, "ACCEPTED", "not-a-object", "rationale"  # type: ignore[arg-type]
+            workspace,
+            "SECURITY",
+            "scope",
+            scope_digest,
+            "ACCEPTED",
+            "not-a-object",
+            "rationale",  # type: ignore[arg-type]
         )
 
 

@@ -9,7 +9,15 @@ from uuid import uuid4
 from jsonschema import Draft202012Validator
 
 from .events import append_event, verify_chain
-from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, sha256_file, utc_now
+from .util import (
+    atomic_write_json,
+    canonical_json_bytes,
+    ensure_identifier,
+    load_json,
+    sha256_bytes,
+    sha256_file,
+    utc_now,
+)
 from .workspace import Workspace
 
 OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
@@ -142,11 +150,7 @@ def record_independent_review_disposition(
                 else {}
             ),
             **(
-                {
-                    "conflict_of_interest_disclosure": str(
-                        reviewer_claim["conflict_of_interest_disclosure"]
-                    ).strip()
-                }
+                {"conflict_of_interest_disclosure": str(reviewer_claim["conflict_of_interest_disclosure"]).strip()}
                 if reviewer_claim.get("conflict_of_interest_disclosure")
                 else {}
             ),
