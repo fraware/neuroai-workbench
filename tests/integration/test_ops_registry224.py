@@ -42,11 +42,7 @@ def test_plan_and_health_cover_all_monitor_ids(tmp_path: Path) -> None:
     assert init["source_count"] == 224
 
     plan = plan_monitoring_run(workspace, as_of="2026-08-02")
-    planned_monitor_ids = {
-        item["monitor_id"]
-        for bucket in ("due", "manual", "not_due")
-        for item in plan[bucket]
-    }
+    planned_monitor_ids = {item["monitor_id"] for bucket in ("due", "manual", "not_due") for item in plan[bucket]}
     registry = load_source_registry(OPS_ROOT / REGISTRY_REL)
     expected_monitor_ids = {str(item["monitor_id"]) for item in registry["sources"]}
     assert planned_monitor_ids == expected_monitor_ids

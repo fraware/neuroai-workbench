@@ -27,9 +27,7 @@ pytestmark = pytest.mark.skipif(
 
 
 def test_ops_v16_files_match_inventory_digests() -> None:
-    assert (
-        sha256_file(OPS_ROOT / REFRESH) == "937b2fcd807392e64f946f88a89756cc91890cc6db9f98e519035725e46c7035"
-    )
+    assert sha256_file(OPS_ROOT / REFRESH) == "937b2fcd807392e64f946f88a89756cc91890cc6db9f98e519035725e46c7035"
     assert sha256_file(OPS_ROOT / DELTA) == "49ef4944e4dd7e5d4b3534926e41220a1493ef12d68965a7b6caa4431524b0c5"
     assert sha256_file(OPS_ROOT / V14) == "00985fa168b26c4e02df485895d728ee30191aea436b4e3956c60657e2ffc3be"
     assert sha256_file(OPS_ROOT / V17) == "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70"
