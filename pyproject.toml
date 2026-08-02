@@ -62,6 +62,7 @@ where = ["src"]
 neuroai_workbench = [
   "static/*",
   "resources/v4_2/*",
+  "resources/operations/*",
 ]
 
 [tool.pytest.ini_options]
