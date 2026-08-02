@@ -32,6 +32,10 @@
           "publisher",
           "source_class",
           "cohort_category",
+          "coverage_label",
+          "selection_rationale",
+          "reviewer",
+          "reviewed_at",
           "jurisdiction",
           "cadence",
           "baseline_claim_boundary"
@@ -56,6 +60,28 @@
               "SAFETY",
               "SUPPLIER_DEPENDENCY"
             ]
+          },
+          "coverage_label": {
+            "enum": [
+              "PRIMA_SCIENCE",
+              "SYNCHRON",
+              "PARADROMICS",
+              "BRAIN2QWERTY",
+              "FDA_ADBS",
+              "BRAINGATE2_T15",
+              "REGISTRY",
+              "OWNERSHIP_FUNDING",
+              "SAFETY",
+              "SUPPLIER_DEPENDENCY"
+            ],
+            "description": "Human-reviewed coverage label; must match cohort_category for frozen manifests."
+          },
+          "selection_rationale": {"type": "string", "minLength": 1},
+          "reviewer": {"type": "string", "minLength": 1},
+          "reviewed_at": {
+            "type": "string",
+            "minLength": 10,
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2}))?$"
           },
           "jurisdiction": {"type": "string", "minLength": 1},
           "cadence": {"enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "ANNUAL", "MANUAL"]},

@@ -3,6 +3,10 @@
 
 Offline-first: plans monitoring and records observed plan/freeze metrics without
 network retrieval. Artifacts are always SHADOW_EVALUATION_NOT_CANONICAL.
+
+Frozen cohorts must be loaded from a reviewed exact source_id manifest.
+Regex discovery remains available only as a non-authoritative helper and cannot
+write the freeze artifact.
 """
 
 from __future__ import annotations
@@ -10,7 +14,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -24,53 +27,14 @@ from neuroai_workbench.monitoring import (
 from neuroai_workbench.shadow_refresh import (
     SHADOW_EVALUATION_STATUS,
     SHADOW_REFRESH_BOUNDARY,
+    bind_reviewed_cohort_to_registry,
     compute_go_no_go_metrics,
+    discover_cohort_candidates,
+    load_reviewed_cohort_manifest,
 )
 from neuroai_workbench.util import atomic_write_json, canonical_json_bytes, sha256_bytes, sha256_file, utc_now
 
 OPS_ENV = "NEUROAI_OPS_WORKSPACE"
-CATEGORY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
-    ("PRIMA_SCIENCE", re.compile(r"prima|science\.xyz", re.I)),
-    ("SYNCHRON", re.compile(r"synchron|stentrode", re.I)),
-    ("PARADROMICS", re.compile(r"paradromics|connexus", re.I)),
-    ("BRAIN2QWERTY", re.compile(r"brain2qwerty", re.I)),
-    ("FDA_ADBS", re.compile(r"adaptive|dbs|deep.?brain|neuromodulation", re.I)),
-    ("BRAINGATE2", re.compile(r"braingate", re.I)),
-    ("REGISTRY", re.compile(r"clinicaltrials|fda\.gov|eudamed|registry", re.I)),
-    ("OWNERSHIP_FUNDING", re.compile(r"investor|funding|acquisition|ownership|tether", re.I)),
-    ("SAFETY_SUPPLIER", re.compile(r"safety|adverse|supplier|recall|heraeus|mfds", re.I)),
-]
-
-
-def _blob(record: dict[str, Any]) -> str:
-    return " ".join(str(record.get(key, "")) for key in ("publisher", "url", "source_id", "source_class", "monitor_id"))
-
-
-def select_cohort(registry: dict[str, Any], *, target_count: int = 25) -> list[dict[str, Any]]:
-    selected: list[dict[str, Any]] = []
-    used: set[str] = set()
-    for category, pattern in CATEGORY_PATTERNS:
-        hits = [
-            record
-            for record in registry["sources"]
-            if isinstance(record, dict) and record.get("source_id") not in used and pattern.search(_blob(record))
-        ]
-        for record in hits[:3]:
-            used.add(str(record["source_id"]))
-            selected.append({**record, "cohort_category": category})
-            if len(selected) >= target_count:
-                return selected
-    for record in registry["sources"]:
-        if len(selected) >= target_count:
-            break
-        if not isinstance(record, dict):
-            continue
-        source_id = str(record.get("source_id"))
-        if source_id in used:
-            continue
-        used.add(source_id)
-        selected.append({**record, "cohort_category": "DIVERSITY_PAD"})
-    return selected
 
 
 def build_freeze_manifest(
@@ -195,6 +159,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workbench-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--as-of", default="2026-08-02")
     parser.add_argument("--run-month", default="202608")
+    parser.add_argument(
+        "--cohort-manifest",
+        type=Path,
+        default=None,
+        help="Reviewed exact-ID cohort JSON (required for freeze/plan unless --discover-only)",
+    )
+    parser.add_argument(
+        "--discover-only",
+        action="store_true",
+        help="Emit non-authoritative regex discovery candidates; does not write freeze artifacts",
+    )
     parser.add_argument("--target-count", type=int, default=25)
     parser.add_argument(
         "--output-root",
@@ -220,36 +195,65 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.write("ERROR registry invalid\n")
         return 1
 
+    if args.discover_only:
+        candidates = discover_cohort_candidates(registry, target_count=args.target_count)
+        discovery_doc = {
+            "metadata": {
+                "title": "Non-authoritative shadow cohort discovery candidates",
+                "status": SHADOW_EVALUATION_STATUS,
+                "authoritative": False,
+                "source_count": len(candidates),
+                "boundary": (
+                    "Discovery candidates are regex-assisted suggestions only. "
+                    "They cannot be used as a freeze artifact without a reviewed exact-ID manifest."
+                ),
+            },
+            "candidates": [
+                {
+                    "source_id": item.get("source_id"),
+                    "publisher": item.get("publisher"),
+                    "url": item.get("url"),
+                    "discovery_category": item.get("discovery_category"),
+                    "authoritative": False,
+                }
+                for item in candidates
+            ],
+        }
+        atomic_write_json(output_root / "discovery_candidates.json", discovery_doc)
+        json.dump(discovery_doc, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+        return 0
+
+    default_manifest = (
+        args.workbench_root / "examples" / "shadow_refresh" / "SHADOW_REFRESH_COHORT_REVIEWED_v202608.json"
+    )
+    ops_manifest = ops / "04_REVIEW_QUEUE" / "SHADOW_REFRESH_COHORT_REVIEWED_v202608.json"
+    cohort_path = args.cohort_manifest
+    if cohort_path is None:
+        if ops_manifest.is_file():
+            cohort_path = ops_manifest
+        elif default_manifest.is_file():
+            cohort_path = default_manifest
+        else:
+            sys.stderr.write(
+                "ERROR reviewed cohort manifest required (--cohort-manifest). "
+                "Use --discover-only for non-authoritative regex candidates.\n"
+            )
+            return 2
+
+    try:
+        cohort_doc = load_reviewed_cohort_manifest(cohort_path)
+        bind_reviewed_cohort_to_registry(cohort_doc, registry)
+    except ValueError as exc:
+        sys.stderr.write(f"ERROR {exc}\n")
+        return 1
+
     if not (workspace / "observatory" / "monitoring" / "registry" / "registry.json").is_file():
         initialize_monitoring(workspace, registry_path, actor="shadow-refresh")
 
-    cohort_records = select_cohort(registry, target_count=args.target_count)
-    source_ids = [str(item["source_id"]) for item in cohort_records]
+    source_ids = [str(item["source_id"]) for item in cohort_doc["sources"]]
     plan = plan_monitoring_run(workspace, as_of=args.as_of, source_ids=source_ids)
 
-    cohort_doc = {
-        "metadata": {
-            "title": "Shadow refresh high-value source cohort (ops-derived)",
-            "cohort_id": f"SHADOW-COHORT-{args.run_month}",
-            "version": args.run_month,
-            "status": SHADOW_EVALUATION_STATUS,
-            "source_count": len(cohort_records),
-            "evaluation_issue": "#43",
-            "boundary": SHADOW_REFRESH_BOUNDARY,
-        },
-        "sources": [
-            {
-                "source_id": item["source_id"],
-                "monitor_id": item["monitor_id"],
-                "url": item.get("url"),
-                "publisher": item.get("publisher"),
-                "source_class": item.get("source_class"),
-                "cohort_category": item.get("cohort_category"),
-                "cadence": item.get("cadence"),
-            }
-            for item in cohort_records
-        ],
-    }
     run_id = f"SHADOW-RUN-{args.run_month}-{sha256_bytes(canonical_json_bytes(plan))[:12]}"
     freeze = build_freeze_manifest(
         registry_path=registry_path,
@@ -270,7 +274,8 @@ def main(argv: list[str] | None = None) -> int:
         generated_by="run_shadow_refresh.py",
     )
     observed_context = {
-        "cohort_size": len(cohort_records),
+        "cohort_size": len(source_ids),
+        "cohort_manifest": str(cohort_path),
         "plan_counts": plan["counts"],
         "network_retrieval": "NOT_EXECUTED_OFFLINE_FIRST",
         "status": SHADOW_EVALUATION_STATUS,
@@ -287,7 +292,7 @@ def main(argv: list[str] | None = None) -> int:
     public_summary = {
         "run_id": run_id,
         "status": SHADOW_EVALUATION_STATUS,
-        "cohort_size": len(cohort_records),
+        "cohort_size": len(source_ids),
         "source_ids": source_ids,
         "plan_counts": plan["counts"],
         "recommendation": metrics["evaluation"]["recommendation"],

@@ -20,7 +20,11 @@
       "jurisdiction": "US-EU",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Publication metadata and company statements do not establish population-wide clinical effectiveness.",
-      "related_system": "PRIMA retinal prosthesis"
+      "related_system": "PRIMA retinal prosthesis",
+      "coverage_label": "PRIMA_SCIENCE",
+      "selection_rationale": "Synthetic fixture member for PRIMA_SCIENCE coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-PRIMA-002",
@@ -32,7 +36,11 @@
       "jurisdiction": "EU",
       "cadence": "ANNUAL",
       "baseline_claim_boundary": "Single-group primary study results remain bounded to enrolled participants and stated endpoints.",
-      "related_system": "PRIMA retinal prosthesis"
+      "related_system": "PRIMA retinal prosthesis",
+      "coverage_label": "PRIMA_SCIENCE",
+      "selection_rationale": "Synthetic fixture member for PRIMA_SCIENCE coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-PRIMA-003",
@@ -44,7 +52,11 @@
       "jurisdiction": "EU",
       "cadence": "MONTHLY",
       "baseline_claim_boundary": "Regulatory notices control authorization facts within their exact jurisdiction and record scope.",
-      "related_system": "PRIMA retinal prosthesis"
+      "related_system": "PRIMA retinal prosthesis",
+      "coverage_label": "PRIMA_SCIENCE",
+      "selection_rationale": "Synthetic fixture member for PRIMA_SCIENCE coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SYNC-001",
@@ -56,7 +68,11 @@
       "jurisdiction": "US-AU",
       "cadence": "MONTHLY",
       "baseline_claim_boundary": "Company research pages are not independent appraisal or regulatory authorization.",
-      "related_system": "Synchron Stentrode"
+      "related_system": "Synchron Stentrode",
+      "coverage_label": "SYNCHRON",
+      "selection_rationale": "Synthetic fixture member for SYNCHRON coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SYNC-002",
@@ -68,7 +84,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Model registry entries describe declared artifacts, not verified deployment or clinical outcomes.",
-      "related_system": "Synchron model registry"
+      "related_system": "Synchron model registry",
+      "coverage_label": "SYNCHRON",
+      "selection_rationale": "Synthetic fixture member for SYNCHRON coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SYNC-003",
@@ -80,7 +100,11 @@
       "jurisdiction": "US",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Trial registration establishes registered protocol and status fields, not positive results.",
-      "related_system": "Synchron COMMAND trial"
+      "related_system": "Synchron COMMAND trial",
+      "coverage_label": "SYNCHRON",
+      "selection_rationale": "Synthetic fixture member for SYNCHRON coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-PARA-001",
@@ -92,7 +116,11 @@
       "jurisdiction": "US",
       "cadence": "MONTHLY",
       "baseline_claim_boundary": "Company milestones are not verified clinical or regulatory outcomes.",
-      "related_system": "Paradromics Connexus"
+      "related_system": "Paradromics Connexus",
+      "coverage_label": "PARADROMICS",
+      "selection_rationale": "Synthetic fixture member for PARADROMICS coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-PARA-002",
@@ -104,7 +132,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Preprints are provisional and not peer-reviewed substantiation.",
-      "related_system": "Paradromics Connect-One"
+      "related_system": "Paradromics Connect-One",
+      "coverage_label": "PARADROMICS",
+      "selection_rationale": "Synthetic fixture member for PARADROMICS coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-PARA-003",
@@ -116,7 +148,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Financing announcements do not establish product readiness or authorization.",
-      "related_system": "Paradromics Connexus"
+      "related_system": "Paradromics Connexus",
+      "coverage_label": "OWNERSHIP_FUNDING",
+      "selection_rationale": "Synthetic fixture member for OWNERSHIP_FUNDING coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-B2Q-001",
@@ -128,7 +164,11 @@
       "jurisdiction": "US-FR",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Research pages describe study artifacts within their exact population and task scope.",
-      "related_system": "Brain2Qwerty v2"
+      "related_system": "Brain2Qwerty v2",
+      "coverage_label": "BRAIN2QWERTY",
+      "selection_rationale": "Synthetic fixture member for BRAIN2QWERTY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-B2Q-002",
@@ -140,7 +180,11 @@
       "jurisdiction": "FR",
       "cadence": "ANNUAL",
       "baseline_claim_boundary": "Dataset custodianship metadata does not establish independent replication.",
-      "related_system": "Brain2Qwerty v2"
+      "related_system": "Brain2Qwerty v2",
+      "coverage_label": "BRAIN2QWERTY",
+      "selection_rationale": "Synthetic fixture member for BRAIN2QWERTY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-ADBS-001",
@@ -152,7 +196,11 @@
       "jurisdiction": "US",
       "cadence": "MONTHLY",
       "baseline_claim_boundary": "PMA summaries control labeled indications within their exact device identity and jurisdiction.",
-      "related_system": "FDA adaptive DBS"
+      "related_system": "FDA adaptive DBS",
+      "coverage_label": "FDA_ADBS",
+      "selection_rationale": "Synthetic fixture member for FDA_ADBS coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-ADBS-002",
@@ -164,7 +212,11 @@
       "jurisdiction": "US",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Clearance records do not establish clinical effectiveness beyond cleared intended use.",
-      "related_system": "FDA adaptive DBS"
+      "related_system": "FDA adaptive DBS",
+      "coverage_label": "FDA_ADBS",
+      "selection_rationale": "Synthetic fixture member for FDA_ADBS coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-ADBS-003",
@@ -176,7 +228,11 @@
       "jurisdiction": "US",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Registered trial status is not evidence of positive outcomes.",
-      "related_system": "FDA adaptive DBS"
+      "related_system": "FDA adaptive DBS",
+      "coverage_label": "FDA_ADBS",
+      "selection_rationale": "Synthetic fixture member for FDA_ADBS coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-BG2-001",
@@ -188,7 +244,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Participant-specific publications do not generalize to trial-wide safety or effectiveness.",
-      "related_system": "BrainGate2 T15"
+      "related_system": "BrainGate2 T15",
+      "coverage_label": "BRAINGATE2_T15",
+      "selection_rationale": "Synthetic fixture member for BRAINGATE2_T15 coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-BG2-002",
@@ -200,7 +260,11 @@
       "jurisdiction": "US",
       "cadence": "ANNUAL",
       "baseline_claim_boundary": "IDE records control investigational authorization within their exact study scope.",
-      "related_system": "BrainGate2 T15"
+      "related_system": "BrainGate2 T15",
+      "coverage_label": "BRAINGATE2_T15",
+      "selection_rationale": "Synthetic fixture member for BRAINGATE2_T15 coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-BG2-003",
@@ -212,7 +276,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Programme-maintained source records are not independent external verification.",
-      "related_system": "BrainGate2 T15"
+      "related_system": "BrainGate2 T15",
+      "coverage_label": "BRAINGATE2_T15",
+      "selection_rationale": "Synthetic fixture member for BRAINGATE2_T15 coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-REG-001",
@@ -224,7 +292,11 @@
       "jurisdiction": "US",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Registry metadata controls registered facts only.",
-      "related_system": "Cross-programme trial registry"
+      "related_system": "Cross-programme trial registry",
+      "coverage_label": "REGISTRY",
+      "selection_rationale": "Synthetic fixture member for REGISTRY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-REG-002",
@@ -236,7 +308,11 @@
       "jurisdiction": "EU",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "EU registry entries remain jurisdiction-bound.",
-      "related_system": "Cross-programme trial registry"
+      "related_system": "Cross-programme trial registry",
+      "coverage_label": "REGISTRY",
+      "selection_rationale": "Synthetic fixture member for REGISTRY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-REG-003",
@@ -248,7 +324,11 @@
       "jurisdiction": "UK",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Registry status fields are not outcome evidence.",
-      "related_system": "Cross-programme trial registry"
+      "related_system": "Cross-programme trial registry",
+      "coverage_label": "REGISTRY",
+      "selection_rationale": "Synthetic fixture member for REGISTRY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-OWN-001",
@@ -260,7 +340,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Ownership disclosures do not establish operational control or product readiness.",
-      "related_system": "PRIMA / Science Corporation"
+      "related_system": "PRIMA / Science Corporation",
+      "coverage_label": "OWNERSHIP_FUNDING",
+      "selection_rationale": "Synthetic fixture member for OWNERSHIP_FUNDING coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SAF-001",
@@ -272,7 +356,11 @@
       "jurisdiction": "US",
       "cadence": "MONTHLY",
       "baseline_claim_boundary": "Safety summaries remain bounded to reported events and stated populations.",
-      "related_system": "Cross-cohort safety monitoring"
+      "related_system": "Cross-cohort safety monitoring",
+      "coverage_label": "SAFETY",
+      "selection_rationale": "Synthetic fixture member for SAFETY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SAF-002",
@@ -284,7 +372,11 @@
       "jurisdiction": "US",
       "cadence": "WEEKLY",
       "baseline_claim_boundary": "Recall notices control stated device scope and jurisdiction only.",
-      "related_system": "Cross-cohort safety monitoring"
+      "related_system": "Cross-cohort safety monitoring",
+      "coverage_label": "SAFETY",
+      "selection_rationale": "Synthetic fixture member for SAFETY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SUP-001",
@@ -296,7 +388,11 @@
       "jurisdiction": "US-EU",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Supplier dependency claims do not establish supply continuity or quality assurance.",
-      "related_system": "Cross-cohort implant supply chain"
+      "related_system": "Cross-cohort implant supply chain",
+      "coverage_label": "SUPPLIER_DEPENDENCY",
+      "selection_rationale": "Synthetic fixture member for SUPPLIER_DEPENDENCY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     },
     {
       "source_id": "SRC-SHADOW-SUP-002",
@@ -308,7 +404,11 @@
       "jurisdiction": "US",
       "cadence": "QUARTERLY",
       "baseline_claim_boundary": "Vendor availability statements are not deployment authorization.",
-      "related_system": "Cross-cohort decode infrastructure"
+      "related_system": "Cross-cohort decode infrastructure",
+      "coverage_label": "SUPPLIER_DEPENDENCY",
+      "selection_rationale": "Synthetic fixture member for SUPPLIER_DEPENDENCY coverage rehearsal.",
+      "reviewer": "fixture-maintainer",
+      "reviewed_at": "2026-08-01T00:00:00Z"
     }
   ],
   "withheld_claims": [
