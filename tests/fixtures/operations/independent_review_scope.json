@@ -1,0 +1,10 @@
+{
+  "release": "v0.3.0.dev0",
+  "review_scope": "Independent review acceptance scaffold",
+  "boundary": "Synthetic fixture for disposition recording tests only.",
+  "withheld_claims": [
+    "Institutional-pilot readiness",
+    "Independent review completion",
+    "Release authorization"
+  ]
+}
