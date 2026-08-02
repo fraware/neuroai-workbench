@@ -1,0 +1,475 @@
+{
+  "schema_version": "1.0",
+  "ruleset": "GOVERNING-INPUT-MIGRATION-v1",
+  "recorded_at": "2026-08-02T14:00:00Z",
+  "boundary": "Governing-input migration records storage lineage, digests, and adapter outcomes only. It does not validate substantive claims, confer authorization, or establish conformance.",
+  "inventory_source": "migration/archive_inventory.jsonl",
+  "ambiguities_source": "migration/unresolved_ambiguities.json",
+  "records": [
+    {
+      "inventory_id": "INV-OBS-V14",
+      "family": "OBSERVATORY_V1_4",
+      "archive_key": "workbench/examples/observatory/evidence_depth_release_v1.4.json",
+      "workbench_path": "examples/observatory/evidence_depth_release_v1.4.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "observatory-v1.4-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "00985fa168b26c4e02df485895d728ee30191aea436b4e3956c60657e2ffc3be",
+      "size_bytes": 500105,
+      "lineage_digest": "60211dd0e5e43a2afcf1c243bb098fe64300df0cc50b19cf8fd51f1a4825068b",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "release_kind": "FULL_OBSERVATORY_RELEASE",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-OBS-V17",
+      "family": "OBSERVATORY_V1_7",
+      "archive_key": "workbench/examples/observatory/canonical_successor_snapshot_v1.7.json",
+      "workbench_path": "examples/observatory/canonical_successor_snapshot_v1.7.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "observatory-v1.7-adapter",
+      "adapter_version": "1",
+      "material_warnings": [
+        {
+          "warning_id": "WARN-OBS-V17-PREDECESSOR",
+          "code": "INACCESSIBLE_PREDECESSOR_DELTA",
+          "severity": "MATERIAL",
+          "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain INACCESSIBLE.",
+          "human_disposition": "PENDING_REVIEW"
+        }
+      ],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70",
+      "size_bytes": 13579,
+      "lineage_digest": "ab4670fa91f5e12a84f624c84c4540a3a78c89e38efea7ad3f6c6a65484a6f18",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "release_kind": "COMPACT_SUCCESSOR_SNAPSHOT",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-ASM-PRIMA",
+      "family": "ASSESSMENT_V4_2",
+      "archive_key": "workbench/examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
+      "workbench_path": "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "assessment-v4.2-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "59e9217dd092e3634962dc8e4fb4d605c63de7fff17969c32a1946541fc313e2",
+      "size_bytes": 280642,
+      "lineage_digest": "e2db32ebb83f9975829981dfd02fd6be05991041484d591076e4b4b8693d5f90",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "assessment_id": "PRIMA-PUBLIC-2026-001",
+        "instrument_version": "v4.2",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-ASM-BG2",
+      "family": "ASSESSMENT_V4_2",
+      "archive_key": "workbench/examples/assessments/PILOT-01_BrainGate2_T15_v4.2.json",
+      "workbench_path": "examples/assessments/PILOT-01_BrainGate2_T15_v4.2.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "assessment-v4.2-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "7bdab4dc5ed67fa11617daedbc0f310672654b388bdba3adce103d13950da0f7",
+      "size_bytes": 295001,
+      "lineage_digest": "15426547e5738c86f3ce91aeb0424896ab994ae2bf060d3473cf73cbdcd5278c",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "assessment_id": "PILOT-01-BRAINGATE2-T15-v4.1.5",
+        "instrument_version": "v4.2",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-ASM-ADBS",
+      "family": "ASSESSMENT_V4_2",
+      "archive_key": "workbench/examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json",
+      "workbench_path": "examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "assessment-v4.2-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "a0b4ff639c40e882f6d6e90e4104636e6991041b9bf9cf8d757a89e02187f93f",
+      "size_bytes": 250641,
+      "lineage_digest": "ff06be08ca43e5baadde8a8dab0ec6be2c1cf024fcd3f5374613adba653d810a",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "assessment_id": "PILOT-02-FDA-ADBS-v4.1.4",
+        "instrument_version": "v4.2",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-ASM-B2Q",
+      "family": "ASSESSMENT_V4_2",
+      "archive_key": "workbench/examples/assessments/PILOT-05_Brain2Qwerty_v4.2.json",
+      "workbench_path": "examples/assessments/PILOT-05_Brain2Qwerty_v4.2.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "assessment-v4.2-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "79110dcf5fd4661561cf7a26a64a29ef772b3335a2a48c1d754c1acb23065f1c",
+      "size_bytes": 237278,
+      "lineage_digest": "2fa797038331a0030a7311bcd6da287dd491ec4f5d9f3e3c888b6ca8027793f7",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "assessment_id": "PILOT-05-BRAIN2QWERTY-v4.1.3",
+        "instrument_version": "v4.2",
+        "issue_count": 0
+      }
+    },
+    {
+      "inventory_id": "INV-REG-SAMPLE",
+      "family": "SOURCE_REGISTRY",
+      "archive_key": "workbench/examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json",
+      "workbench_path": "examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json",
+      "governing": true,
+      "classification": "PUBLIC_SYNTHETIC",
+      "store_target": "SOFTWARE_REPO",
+      "adapter_id": "source-registry-adapter",
+      "adapter_version": "1",
+      "material_warnings": [
+        {
+          "warning_id": "WARN-REG-SAMPLE-ONLY",
+          "code": "INACCESSIBLE_FULL_REGISTRY",
+          "severity": "MATERIAL",
+          "message": "Only the synthetic SOURCE_MONITOR_REGISTRY sample is present; full v1.5 registry bytes remain INACCESSIBLE.",
+          "human_disposition": "PENDING_REVIEW"
+        }
+      ],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "7bbcd480a9d67df8e42fe6ffa39663d8bf6626cda94b4de33245fba2d7318c83",
+      "size_bytes": 2022,
+      "lineage_digest": "00e13550b0fc1901dbb4a865c6e81e3e9a466ea6f85954c272a17c3bedbb39b3",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "record_count": 3,
+        "warning_count": 1
+      }
+    },
+    {
+      "inventory_id": "INV-POL-MON",
+      "family": "POLICY",
+      "archive_key": "workbench/examples/operations/MONITORING_POLICY_v1.json",
+      "workbench_path": "examples/operations/MONITORING_POLICY_v1.json",
+      "governing": false,
+      "classification": "PUBLIC_SYNTHETIC",
+      "store_target": "SOFTWARE_REPO",
+      "adapter_id": "policy-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "935e364f2385a2c585571ac99de0bb9101438ac40d9701ab8e304fc236adbdf4",
+      "size_bytes": 970,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "SKIPPED",
+      "validation": {
+        "valid": true,
+        "reason": "Non-governing inventory object recorded but not migrated."
+      }
+    },
+    {
+      "inventory_id": "INV-POL-REOPEN",
+      "family": "POLICY",
+      "archive_key": "workbench/examples/operations/REOPENING_POLICY_v1.json",
+      "workbench_path": "examples/operations/REOPENING_POLICY_v1.json",
+      "governing": false,
+      "classification": "PUBLIC_SYNTHETIC",
+      "store_target": "SOFTWARE_REPO",
+      "adapter_id": "policy-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "9e7f4b7441f078dc44662c26ce957d8ba7498547054524f4710de3126764223e",
+      "size_bytes": 1032,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "SKIPPED",
+      "validation": {
+        "valid": true,
+        "reason": "Non-governing inventory object recorded but not migrated."
+      }
+    },
+    {
+      "inventory_id": "INV-PROG-PRIMA",
+      "family": "PROGRAMME_ADAPTER",
+      "archive_key": "workbench/examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json",
+      "workbench_path": "examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "SOFTWARE_REPO",
+      "adapter_id": "programme-adapter-input-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "55f0335a373e3513ad0c96d6a25e57a48f2b425ff6f83c4ca51494f43537924d",
+      "size_bytes": 199657,
+      "lineage_digest": "dcf1976eef4e401ffc8399e3f3178a1b2e2af260f19bbf7f18c344801d5dba2d",
+      "migration_state": "MIGRATED",
+      "validation": {
+        "valid": true,
+        "format": "UNESCO_NEUROAI_COMPLETED_ASSESSMENT",
+        "assessment_id": "PRIMA-PUBLIC-2026-001"
+      }
+    },
+    {
+      "inventory_id": "INV-PROG-REPORT",
+      "family": "PROGRAMME_ADAPTER",
+      "archive_key": "workbench/examples/programme/PRIMA_Controlled_Assessment_v4.2.1.adapter-report.json",
+      "workbench_path": "examples/programme/PRIMA_Controlled_Assessment_v4.2.1.adapter-report.json",
+      "governing": false,
+      "classification": "GENERATED",
+      "store_target": "GENERATED_ARTIFACTS",
+      "adapter_id": "programme-adapter-input-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "ACCESSIBLE",
+      "source_sha256": "118a0987588981f50efad7c3ba10ce9ed23755487ccf79c6513d9fa97f80d626",
+      "size_bytes": 3023,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "SKIPPED",
+      "validation": {
+        "valid": true,
+        "reason": "Non-governing inventory object recorded but not migrated."
+      }
+    },
+    {
+      "inventory_id": "INV-EXT-STARTER",
+      "family": "EXTERNAL_ARCHIVE",
+      "archive_key": "external/NeuroAI_Operations_Starter_v0.1.0.zip",
+      "workbench_path": null,
+      "governing": false,
+      "classification": "INACCESSIBLE",
+      "store_target": "IMMUTABLE_ARCHIVE",
+      "adapter_id": "external-archive-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "NOT_RECORDED",
+      "source_sha256": "NOT_RECORDED",
+      "size_bytes": 0,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "SKIPPED",
+      "validation": {
+        "valid": false,
+        "reason": "Declared starter archive digest from programme plan. Bytes are external and not committed; size_bytes 0 until local verify. Archive remains read-only for daily ops."
+      }
+    },
+    {
+      "inventory_id": "INV-EXT-V16-DELTA",
+      "family": "OBSERVATORY_V1_6",
+      "archive_key": "external/archive/observatory_v1.6_live_refresh_delta.json",
+      "workbench_path": null,
+      "governing": true,
+      "classification": "UNRESOLVED",
+      "store_target": "UNRESOLVED",
+      "adapter_id": "observatory-v1.6-inaccessible-adapter",
+      "adapter_version": "1",
+      "material_warnings": [
+        {
+          "warning_id": "WARN-INV-EXT-V16-DELTA",
+          "code": "INACCESSIBLE_GOVERNING_OBJECT",
+          "severity": "MATERIAL",
+          "message": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo.",
+          "human_disposition": "PENDING_REVIEW"
+        }
+      ],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "INACCESSIBLE",
+      "source_sha256": "INACCESSIBLE",
+      "size_bytes": 0,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "BLOCKED",
+      "validation": {
+        "valid": false,
+        "reason": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo."
+      }
+    },
+    {
+      "inventory_id": "INV-EXT-REG-V15",
+      "family": "SOURCE_REGISTRY",
+      "archive_key": "external/archive/SOURCE_MONITOR_REGISTRY_v1.5.json",
+      "workbench_path": null,
+      "governing": true,
+      "classification": "UNRESOLVED",
+      "store_target": "UNRESOLVED",
+      "adapter_id": "source-registry-adapter",
+      "adapter_version": "1",
+      "material_warnings": [
+        {
+          "warning_id": "WARN-INV-EXT-REG-V15",
+          "code": "INACCESSIBLE_GOVERNING_OBJECT",
+          "severity": "MATERIAL",
+          "message": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo.",
+          "human_disposition": "PENDING_REVIEW"
+        }
+      ],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "INACCESSIBLE",
+      "source_sha256": "INACCESSIBLE",
+      "size_bytes": 0,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "BLOCKED",
+      "validation": {
+        "valid": false,
+        "reason": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo."
+      }
+    },
+    {
+      "inventory_id": "INV-EXT-COMBINED-XLSX",
+      "family": "EXTERNAL_ARCHIVE",
+      "archive_key": "external/archive/combined_observatory_workbook.xlsx",
+      "workbench_path": null,
+      "governing": false,
+      "classification": "INACCESSIBLE",
+      "store_target": "GENERATED_ARTIFACTS",
+      "adapter_id": "external-archive-adapter",
+      "adapter_version": "1",
+      "material_warnings": [],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "INACCESSIBLE",
+      "source_sha256": "INACCESSIBLE",
+      "size_bytes": 0,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "SKIPPED",
+      "validation": {
+        "valid": false,
+        "reason": "Historical combined workbook treated as generated view / reconciliation target, never master database."
+      }
+    }
+  ],
+  "material_warnings": [
+    {
+      "warning_id": "WARN-OBS-V17-PREDECESSOR",
+      "code": "INACCESSIBLE_PREDECESSOR_DELTA",
+      "severity": "MATERIAL",
+      "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain INACCESSIBLE.",
+      "human_disposition": "PENDING_REVIEW"
+    },
+    {
+      "warning_id": "WARN-REG-SAMPLE-ONLY",
+      "code": "INACCESSIBLE_FULL_REGISTRY",
+      "severity": "MATERIAL",
+      "message": "Only the synthetic SOURCE_MONITOR_REGISTRY sample is present; full v1.5 registry bytes remain INACCESSIBLE.",
+      "human_disposition": "PENDING_REVIEW"
+    },
+    {
+      "warning_id": "WARN-INV-EXT-V16-DELTA",
+      "code": "INACCESSIBLE_GOVERNING_OBJECT",
+      "severity": "MATERIAL",
+      "message": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo.",
+      "human_disposition": "PENDING_REVIEW"
+    },
+    {
+      "warning_id": "WARN-INV-EXT-REG-V15",
+      "code": "INACCESSIBLE_GOVERNING_OBJECT",
+      "severity": "MATERIAL",
+      "message": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo.",
+      "human_disposition": "PENDING_REVIEW"
+    }
+  ],
+  "summary": {
+    "inventory_records": 15,
+    "governing_records": 10,
+    "accessible": 11,
+    "inaccessible": 4,
+    "migrated": 8,
+    "blocked": 2,
+    "skipped": 5,
+    "material_warnings": 4
+  },
+  "unresolved_ambiguities": {
+    "schema_version": "1.0",
+    "recorded_at": "2026-08-02T14:00:00Z",
+    "boundary": "Unresolved ambiguities record migration blockers. They do not imply substantive FAIL for assessments or authorization.",
+    "starter_zip": {
+      "declared_name": "NeuroAI_Operations_Starter_v0.1.0.zip",
+      "declared_sha256": "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0",
+      "local_status": "INACCESSIBLE",
+      "notes": "External artifact; not committed to neuroai-workbench. Phase A records the declared digest only."
+    },
+    "ambiguities": [
+      {
+        "ambiguity_id": "AMB-001",
+        "topic": "Full SOURCE_MONITOR_REGISTRY_v1.5.json",
+        "status": "INACCESSIBLE",
+        "impact": "Phase C registry migration blocked until archive object is available under read-only inventory.",
+        "related_inventory_ids": [
+          "INV-EXT-REG-V15",
+          "INV-REG-SAMPLE"
+        ]
+      },
+      {
+        "ambiguity_id": "AMB-002",
+        "topic": "Observatory v1.6 live-refresh and adjudicated delta",
+        "status": "INACCESSIBLE",
+        "impact": "Governing v1.6 family not present as public fixture; successor work must not invent delta fields.",
+        "related_inventory_ids": [
+          "INV-EXT-V16-DELTA"
+        ]
+      },
+      {
+        "ambiguity_id": "AMB-003",
+        "topic": "Combined Excel/Word master reconciliation corpus",
+        "status": "INACCESSIBLE",
+        "impact": "Record-count reconciliation against historical workbook deferred until archive verify; products remain generated views.",
+        "related_inventory_ids": [
+          "INV-EXT-COMBINED-XLSX"
+        ]
+      },
+      {
+        "ambiguity_id": "AMB-004",
+        "topic": "neuroai-observatory-data repository creation",
+        "status": "PENDING_ADMIN",
+        "impact": "Phase B requires org/user admin to create the public data repository with branch protection.",
+        "related_inventory_ids": []
+      }
+    ]
+  },
+  "human_disposition": "PENDING_REVIEW",
+  "verification_id": "MIG-VERIFY-CB923C16D6EA",
+  "verification_digest": "cb923c16d6ea01dd426c53c0023989bc734b273f053f09316df511c14a8c4887"
+}

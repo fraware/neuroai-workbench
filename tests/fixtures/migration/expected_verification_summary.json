@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-08-02T14:00:00Z",
+  "verification_id": "MIG-VERIFY-CB923C16D6EA",
+  "verification_digest": "cb923c16d6ea01dd426c53c0023989bc734b273f053f09316df511c14a8c4887",
+  "human_disposition": "PENDING_REVIEW",
+  "summary": {
+    "inventory_records": 15,
+    "governing_records": 10,
+    "accessible": 11,
+    "inaccessible": 4,
+    "migrated": 8,
+    "blocked": 2,
+    "skipped": 5,
+    "material_warnings": 4
+  },
+  "lineage_digests": {
+    "INV-OBS-V14": "60211dd0e5e43a2afcf1c243bb098fe64300df0cc50b19cf8fd51f1a4825068b",
+    "INV-OBS-V17": "ab4670fa91f5e12a84f624c84c4540a3a78c89e38efea7ad3f6c6a65484a6f18",
+    "INV-ASM-PRIMA": "e2db32ebb83f9975829981dfd02fd6be05991041484d591076e4b4b8693d5f90",
+    "INV-REG-SAMPLE": "00e13550b0fc1901dbb4a865c6e81e3e9a466ea6f85954c272a17c3bedbb39b3",
+    "INV-EXT-V16-DELTA": "UNKNOWN",
+    "INV-EXT-REG-V15": "UNKNOWN"
+  },
+  "blocked_inventory_ids": [
+    "INV-EXT-V16-DELTA",
+    "INV-EXT-REG-V15"
+  ]
+}
