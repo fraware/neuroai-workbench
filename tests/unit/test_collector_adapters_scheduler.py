@@ -300,6 +300,110 @@ def test_scheduler_consumes_monitor_plan(tmp_path: Path, html_transport: FakeTra
     assert run["counts"]["total"] == len(plan["due"])
 
 
+def test_scheduler_include_manual_sources_extends_due_items(tmp_path: Path, html_transport: FakeTransport) -> None:
+    workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
+    scheduler = _scheduler(
+        tmp_path,
+        html_transport,
+        scheduler_config=SchedulerConfig(include_manual_sources=True),
+    )
+    plan = {
+        "plan_id": "PLAN-MANUAL",
+        "as_of": "2026-08-02",
+        "due": [],
+        "manual": [
+            {
+                "monitor_id": "MON-SRC-0001",
+                "source_id": "SRC-0001",
+                "url": "https://registry.example.org/entry",
+            }
+        ],
+        "not_due": [],
+    }
+    run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)
+    assert run["counts"]["total"] == 1
+    assert run["outcomes"][0]["status"] == "RESULT"
+
+
+def test_scheduler_policy_blocks_schema_invalid_http_without_aborting(
+    tmp_path: Path, html_transport: FakeTransport
+) -> None:
+    workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
+    scheduler = _scheduler(tmp_path, html_transport)
+    plan = {
+        "plan_id": "PLAN-TEST-SCHEMA",
+        "as_of": "2026-08-02",
+        "due": [
+            {
+                "monitor_id": "MON-SRC-0001",
+                "source_id": "SRC-0001",
+                "url": "https://registry.example.org/entry",
+            },
+            {
+                "monitor_id": "MON-LOOP",
+                "source_id": "SRC-LOOP",
+                "url": "https://127.0.0.1/private",
+            },
+        ],
+        "manual": [],
+        "not_due": [],
+    }
+    source_index = {
+        **source_index,
+        "SRC-LOOP": {
+            "source_id": "SRC-LOOP",
+            "monitor_id": "MON-LOOP",
+            "source_class": "REGULATORY_RECORD",
+            "url": "https://127.0.0.1/private",
+        },
+    }
+    run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)
+    assert run["status"] == "COMPLETED"
+    by_id = {item["source_id"]: item for item in run["outcomes"]}
+    assert by_id["SRC-LOOP"]["status"] == "FAILURE"
+    assert by_id["SRC-LOOP"]["reason"] == "POLICY_BLOCK"
+    assert by_id["SRC-0001"]["status"] == "RESULT"
+
+
+def test_scheduler_policy_blocks_non_http_without_aborting_plan(tmp_path: Path, html_transport: FakeTransport) -> None:
+    workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
+    scheduler = _scheduler(tmp_path, html_transport)
+    plan = {
+        "plan_id": "PLAN-TEST",
+        "as_of": "2026-08-02",
+        "due": [
+            {
+                "monitor_id": "MON-SRC-0001",
+                "source_id": "SRC-0001",
+                "url": "https://registry.example.org/entry",
+            },
+            {
+                "monitor_id": "MON-BAD",
+                "source_id": "SRC-LOCAL-BAD",
+                "url": "/mnt/data/controlled/local.json",
+            },
+        ],
+        "manual": [],
+        "not_due": [],
+    }
+    source_index = {
+        **source_index,
+        "SRC-LOCAL-BAD": {
+            "source_id": "SRC-LOCAL-BAD",
+            "monitor_id": "MON-BAD",
+            "source_class": "CONTROLLED_LOCAL_INPUT",
+            "url": "/mnt/data/controlled/local.json",
+        },
+    }
+    run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)
+    assert run["status"] == "COMPLETED"
+    by_id = {item["source_id"]: item for item in run["outcomes"]}
+    assert by_id["SRC-LOCAL-BAD"]["status"] == "FAILURE"
+    assert by_id["SRC-LOCAL-BAD"]["reason"] == "POLICY_BLOCK"
+    assert by_id["SRC-0001"]["status"] == "RESULT"
+    assert len(html_transport.calls) == 1
+
+
 def test_collection_kill_switch(tmp_path: Path, html_transport: FakeTransport) -> None:
     workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
     scheduler = _scheduler(tmp_path, html_transport, scheduler_config=SchedulerConfig(collection_enabled=False))

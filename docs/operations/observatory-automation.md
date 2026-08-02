@@ -39,6 +39,8 @@ The initial operational state is seeded from the programme's controlled assets:
 
 The source registry may retain legacy `CONTROLLED_LOCAL_INPUT` paths as provenance. Those paths are reported as non-portable and should be migrated to content-addressed workspace objects before operational reuse.
 
+`CONTROLLED_LOCAL_INPUT` sources and any source with `network_access_required: false` are routed to the planner **manual** queue with reason `CONTROLLED_LOCAL_OR_NO_NETWORK`. They never appear in the HTTP collector `due` list, even when cadence would otherwise mark them due. Optional ingest uses `LocalContentAddressedAdapter` against an explicit allowlisted root to write quarantine objects by content hash; the workbench then records a monitoring snapshot separately. The collector package never calls monitoring write APIs. The scheduler also records a per-source `POLICY_BLOCK` outcome for any non-`http(s)` URL that reaches `run_plan`, without aborting the rest of the plan.
+
 ## Ops workspace (full 224-source registry)
 
 Set `NEUROAI_OPS_WORKSPACE` to the extracted Operations Starter root (directory containing `01_CONFIG/` and `05_RELEASES/`). The full registry is never committed to this software repository.
