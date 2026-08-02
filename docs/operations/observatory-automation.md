@@ -105,6 +105,10 @@ neuroai-monitor package workspaces/operations refresh-2026-08 \
   --out artifacts/refresh-package-result.json
 ```
 
+## Verification boundary
+
+The monitoring core has its own per-module coverage floor in addition to the repository-wide coverage gate. CI also exercises the dedicated command surface, package contents, release verifier, Python support matrix, static typing, CodeQL, dependency checks, and container build. Passing those gates establishes software behavior for the tested cases; it does not establish that a retrieved source is authentic, that an extracted claim is true, or that a human adjudication is substantively correct.
+
 ## Authority boundary
 
 Automation may:
