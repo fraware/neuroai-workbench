@@ -112,7 +112,7 @@ def generate_successor_candidate(
     baseline = predecessor.get("baseline_reference", {})
     baseline_sha256 = baseline.get("canonical_sha256") if isinstance(baseline, dict) else None
 
-    candidate_body = {
+    candidate_body: dict[str, Any] = {
         "metadata": {
             "title": f"NeuroAI observatory successor candidate {version}",
             "candidate_id": candidate_id,
