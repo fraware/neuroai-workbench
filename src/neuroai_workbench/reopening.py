@@ -262,7 +262,6 @@ def recommend_reopening(
         resolution_state = "UNRESOLVED" if unresolved else "RESOLVED"
     else:
         resolution_state = "NO_MATCH"
-    record = operation.get("record", {})
     rationale = (
         f"Matched {len(matches)} dependency record(s) for {assessment_id} under change class {change_class}."
         if matches
