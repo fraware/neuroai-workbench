@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/extraction-request-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version", "request_id", "created_at", "task_type", "capture_id", "content_sha256",
+    "selected_excerpts", "disclosure_policy", "disclosure_attestation", "context_sha256",
+    "request_sha256", "model_instructions", "data_attestation", "network_execution",
+    "human_authority", "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "request_id": {"type": "string", "pattern": "^EXT-[0-9a-f]{32}$"},
+    "created_at": {"type": "string", "minLength": 10},
+    "task_type": {"type": "string", "enum": ["EXTRACT_OBSERVATORY_SIGNALS", "EXTRACT_ENTITY_MENTIONS", "EXTRACT_EVENT_SIGNALS"]},
+    "capture_id": {"type": "string", "minLength": 1},
+    "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_state_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "selected_excerpts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/excerpt"}},
+    "disclosure_policy": {"type": "string", "minLength": 1},
+    "disclosure_attestation": {"$ref": "#/$defs/disclosure_attestation"},
+    "context_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "model_instructions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "data_attestation": {"const": "PUBLIC_OR_SYNTHETIC_SOURCE_EXCERPTS_ONLY"},
+    "network_execution": {"const": "NOT_PERFORMED_BY_WORKBENCH"},
+    "human_authority": {"const": "REQUIRED_FOR_ANY_USE"},
+    "boundary": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "excerpt": {
+      "type": "object",
+      "required": ["excerpt_id", "text", "start_offset", "end_offset", "excerpt_sha256", "disclosure_class"],
+      "additionalProperties": false,
+      "properties": {
+        "excerpt_id": {"type": "string", "pattern": "^EX-[0-9a-f]{32}$"},
+        "text": {"type": "string", "minLength": 1},
+        "start_offset": {"type": "integer", "minimum": 0},
+        "end_offset": {"type": "integer", "minimum": 1},
+        "excerpt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "disclosure_class": {"type": "string", "enum": ["PUBLIC_SYNTHETIC", "PUBLIC_SOURCE_EXCERPT"]}
+      }
+    },
+    "disclosure_attestation": {
+      "type": "object",
+      "required": ["attested_by", "attested_at", "protected_evidence_excluded", "field_classification_complete"],
+      "additionalProperties": false,
+      "properties": {
+        "attested_by": {"type": "string", "minLength": 1},
+        "attested_at": {"type": "string", "minLength": 10},
+        "protected_evidence_excluded": {"const": true},
+        "field_classification_complete": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["contract_version", "contract_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {"type": "string", "minLength": 1},
+        "contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "provider": {"type": "string"},
+        "model": {"type": "string"},
+        "endpoint_class": {"type": "string", "enum": ["OFFLINE_EXPORT", "MANUAL", "NOT_EXECUTED"]},
+        "system_prompt_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "user_prompt_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "decoding_parameters": {"type": "object"},
+        "retention_policy": {"type": "string"}
+      }
+    }
+  }
+}

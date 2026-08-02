@@ -2,7 +2,7 @@
 
 ## Separation of responsibilities
 
-The organized programme archive is immutable historical evidence. It is not the daily working directory.
+The organized programme archive is immutable historical evidence. It is not the daily working directory. Programme-wide storage roles are defined in [data-storage-boundaries.md](data-storage-boundaries.md) and [ADR-0009](../adr/0009-canonical-data-and-evidence-stores.md).
 
 The operational system has four stores:
 
