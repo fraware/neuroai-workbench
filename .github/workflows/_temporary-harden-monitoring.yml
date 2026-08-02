@@ -35,12 +35,10 @@ jobs:
               end = text.index(end_marker, start)
               return text[:start] + replacement + text[end:]
 
-          def replace_function(text: str, names: tuple[str, ...], replacement: str) -> str:
-              positions = [(text.find(f"def {name}("), name) for name in names]
-              positions = [(position, name) for position, name in positions if position >= 0]
-              if not positions:
-                  raise SystemExit(f"none of the expected functions were found: {names}")
-              start, _ = min(positions)
+          def replace_function(text: str, name: str, replacement: str) -> str:
+              start = text.find(f"def {name}(")
+              if start < 0:
+                  raise SystemExit(f"expected function not found: {name}")
               next_function = text.find("\ndef ", start + 1)
               end = len(text) if next_function < 0 else next_function + 1
               return text[:start] + replacement.rstrip() + "\n\n" + text[end:]
@@ -146,7 +144,11 @@ jobs:
           text = text.replace('"retrieval_url": retrieval_url or source["url"],', '"retrieval_url": retrieval_reference,', 1)
           module.write_text(text, encoding="utf-8")
 
-          original_test = '''def test_repeated_unchanged_capture_is_distinct_and_manifest_conflict_is_refused(tmp_path: Path) -> None:
+          regular_tests = Path("tests/unit/test_monitoring.py")
+          tests = regular_tests.read_text(encoding="utf-8")
+          tests += '''
+
+          def test_repeated_unchanged_capture_is_distinct_and_content_deduplicated(tmp_path: Path) -> None:
               workspace = initialize(tmp_path)
               first = record_snapshot(
                   workspace,
@@ -178,16 +180,7 @@ jobs:
                       media_type="application/octet-stream",
                       retrieved_at="2026-08-02T01:00:00Z",
                   )
-          '''
-          path = Path("tests/unit/test_monitoring.py")
-          tests = path.read_text(encoding="utf-8")
-          tests = replace_function(
-              tests,
-              ("test_snapshot_manifest_conflict_is_refused",),
-              original_test,
-          )
-          if "test_snapshot_size_url_timezone_and_filename_controls" not in tests:
-              tests += '''
+
 
           def test_snapshot_size_url_timezone_and_filename_controls(tmp_path: Path) -> None:
               from neuroai_workbench import monitoring
@@ -217,20 +210,39 @@ jobs:
               result = validate_source_registry(records)
               assert any(item["code"] == "INVALID_PUBLIC_URL" for item in result["errors"])
           '''
-          path.write_text(tests, encoding="utf-8")
+          regular_tests.write_text(tests, encoding="utf-8")
 
-          adversarial_test = original_test.replace(
-              "test_repeated_unchanged_capture_is_distinct_and_manifest_conflict_is_refused",
-              "test_repeated_capture_identity_and_manifest_immutability",
-          ).replace("workspace = initialize(tmp_path)", "workspace = initialized_workspace(tmp_path)")
-          path = Path("tests/unit/test_monitoring_adversarial.py")
-          tests = path.read_text(encoding="utf-8")
-          tests = replace_function(
-              tests,
-              ("test_snapshot_manifest_conflict_is_immutable",),
-              adversarial_test,
-          )
-          path.write_text(tests, encoding="utf-8")
+          adversarial_tests = Path("tests/unit/test_monitoring_adversarial.py")
+          tests = adversarial_tests.read_text(encoding="utf-8")
+          replacement = '''def test_repeated_capture_identity_and_manifest_immutability(tmp_path: Path) -> None:
+              workspace = initialized_workspace(tmp_path)
+              first = record_snapshot(
+                  workspace,
+                  "SRC-0001",
+                  b"same-bytes",
+                  media_type="text/plain",
+                  retrieved_at="2026-08-02T01:00:00Z",
+              )
+              later = record_snapshot(
+                  workspace,
+                  "SRC-0001",
+                  b"same-bytes",
+                  media_type="text/plain",
+                  retrieved_at="2026-08-02T02:00:00Z",
+              )
+              assert first["snapshot_id"] != later["snapshot_id"]
+              assert first["sha256"] == later["sha256"]
+              with pytest.raises(ValueError, match="different metadata"):
+                  record_snapshot(
+                      workspace,
+                      "SRC-0001",
+                      b"same-bytes",
+                      media_type="application/octet-stream",
+                      retrieved_at="2026-08-02T01:00:00Z",
+                  )
+          '''
+          tests = replace_function(tests, "test_snapshot_manifest_conflict_is_immutable", replacement)
+          adversarial_tests.write_text(tests, encoding="utf-8")
           PY
       - run: python -m ruff format src/neuroai_workbench/monitoring.py tests/unit/test_monitoring.py tests/unit/test_monitoring_adversarial.py
       - run: python -m ruff check src/neuroai_workbench/monitoring.py tests/unit/test_monitoring.py tests/unit/test_monitoring_adversarial.py
