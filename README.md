@@ -83,6 +83,23 @@ The workbench can prepare a minimum-necessary custodian request and record an ou
 
 The default workbench makes no external model call. It exports bounded structured requests, validates imported candidate responses, records exact provider and model identifiers, requires human disposition, and preserves assessment bytes unchanged. See [controlled model assistance](docs/reference/assistance.md).
 
+## Observatory monitoring operations
+
+The workbench can now operationalize the controlled v1.5 source monitor registry without crawling the network or making substantive claims automatically. It plans due source checks, records content-addressed source snapshots, compares captures, creates human-review change candidates, preserves immutable adjudications, and assembles a non-canonical refresh package with a reopening queue.
+
+```bash
+neuroai-monitor registry-validate \
+  examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
+
+neuroai-monitor init workspaces/operations \
+  examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
+
+neuroai-monitor plan workspaces/operations \
+  --out artifacts/monitor-plan.json
+```
+
+Network acquisition remains outside the default workbench. An approved collector captures source bytes; the workbench controls identity, comparison, review, and release preparation. See [observatory automation](docs/operations/observatory-automation.md) and [static archive to operational programme](docs/architecture/static-to-operational.md).
+
 ## Register evidence bytes
 
 ```bash
@@ -112,6 +129,8 @@ neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 - [Data governance](DATA_GOVERNANCE.md)
 - [Contribution protocol](CONTRIBUTING.md)
 - [Release process](docs/operations/release-process.md)
+- [Observatory automation](docs/operations/observatory-automation.md)
+- [Static archive to operational programme](docs/architecture/static-to-operational.md)
 
 ## Repository status
 

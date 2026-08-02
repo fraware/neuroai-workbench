@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "title": "NeuroAI observatory monitoring policy",
+    "version": "1.0",
+    "status": "CONTROLLED_POLICY_DRAFT"
+  },
+  "collection": {
+    "mode": "APPROVED_EXTERNAL_COLLECTOR",
+    "automatic_network_collection_in_workbench": false,
+    "maximum_object_bytes": 10485760,
+    "allowed_schemes": ["https", "http"],
+    "credentials_in_registry_prohibited": true,
+    "private_network_targets_prohibited": true,
+    "redirect_targets_require_revalidation": true,
+    "raw_snapshots_immutable": true
+  },
+  "cadence": {
+    "REGULATORY_RECORD": "WEEKLY",
+    "CLINICAL_TRIAL_REGISTRY": "WEEKLY",
+    "SAFETY_NOTICE": "DAILY",
+    "OFFICIAL_COMPANY_PAGE": "MONTHLY",
+    "OFFICIAL_PRODUCT_PAGE": "MONTHLY",
+    "PUBLICATION_DATABASE": "WEEKLY",
+    "PATENT_DATASET": "MONTHLY"
+  },
+  "decision_boundary": "Collection and mechanical comparison produce candidates only. Human adjudication controls substantive classification and assessment reopening."
+}

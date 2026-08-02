@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "title": "NeuroAI observatory reopening triage policy",
+    "version": "1.0",
+    "status": "NON_BINDING_TRIAGE_DEFAULTS"
+  },
+  "defaults": [
+    {
+      "change_class": "REGULATORY_OR_MARKET_EVENT",
+      "suggested_effect": "REVIEW_REQUIRED"
+    },
+    {
+      "change_class": "SAFETY_EVENT_OR_WITHDRAWAL",
+      "suggested_effect": "FULL_REASSESSMENT_REQUIRED"
+    },
+    {
+      "change_class": "CLINICAL_TRIAL_STATUS_CHANGE",
+      "suggested_effect": "REVIEW_REQUIRED"
+    },
+    {
+      "change_class": "MODEL_OR_SYSTEM_VERSION_CHANGE",
+      "suggested_effect": "PARTIAL_REASSESSMENT_REQUIRED"
+    },
+    {
+      "change_class": "OWNERSHIP_OR_SUPPLIER_DEPENDENCY_CHANGE",
+      "suggested_effect": "EVIDENCE_GAP_UPDATE"
+    },
+    {
+      "change_class": "GOVERNANCE_OR_LEADERSHIP_EVENT",
+      "suggested_effect": "METADATA_UPDATE_ONLY"
+    }
+  ],
+  "boundary": "Defaults support triage only. A named human reviewer must determine the actual effect for the exact affected records and assessments."
+}
