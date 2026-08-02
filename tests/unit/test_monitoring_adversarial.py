@@ -155,12 +155,7 @@ def test_snapshot_refuses_invalid_inputs_and_tampering(tmp_path: Path, monkeypat
         monitoring.load_snapshot(workspace, "SRC-0001", "SNAP-MISSING")
 
     manifest_path = (
-        workspace
-        / "observatory"
-        / "monitoring"
-        / "snapshots"
-        / "SRC-0001"
-        / f"{snapshot['snapshot_id']}.json"
+        workspace / "observatory" / "monitoring" / "snapshots" / "SRC-0001" / f"{snapshot['snapshot_id']}.json"
     )
     manifest = load_json(manifest_path)
     manifest["evidence_state"] = "UNSUPPORTED"
@@ -178,9 +173,9 @@ def test_snapshot_refuses_invalid_inputs_and_tampering(tmp_path: Path, monkeypat
     monkeypatch.setattr(
         monitoring,
         "_schema_errors",
-        lambda value, schema: [{"code": "forced"}]
-        if schema == monitoring.SNAPSHOT_SCHEMA
-        else original_schema_errors(value, schema),
+        lambda value, schema: (
+            [{"code": "forced"}] if schema == monitoring.SNAPSHOT_SCHEMA else original_schema_errors(value, schema)
+        ),
     )
     with pytest.raises(ValueError, match="Snapshot manifest failed validation"):
         record_snapshot(workspace, "SRC-0001", b"new")
@@ -228,9 +223,9 @@ def test_candidate_and_adjudication_tamper_paths(tmp_path: Path, monkeypatch: py
     monkeypatch.setattr(
         monitoring,
         "_schema_errors",
-        lambda value, schema: [{"code": "forced"}]
-        if schema == monitoring.CANDIDATE_SCHEMA
-        else original_schema_errors(value, schema),
+        lambda value, schema: (
+            [{"code": "forced"}] if schema == monitoring.CANDIDATE_SCHEMA else original_schema_errors(value, schema)
+        ),
     )
     with pytest.raises(ValueError, match="Change candidate failed validation"):
         create_change_candidate(workspace2, "SRC-0001", snapshot2["snapshot_id"])
@@ -261,9 +256,9 @@ def test_adjudication_rejects_invalid_inputs_and_schema(tmp_path: Path, monkeypa
     monkeypatch.setattr(
         monitoring,
         "_schema_errors",
-        lambda value, schema: [{"code": "forced"}]
-        if schema == monitoring.ADJUDICATION_SCHEMA
-        else original_schema_errors(value, schema),
+        lambda value, schema: (
+            [{"code": "forced"}] if schema == monitoring.ADJUDICATION_SCHEMA else original_schema_errors(value, schema)
+        ),
     )
     with pytest.raises(ValueError, match="adjudication failed validation"):
         adjudicate_change_candidate(
