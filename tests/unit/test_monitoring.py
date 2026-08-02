@@ -98,6 +98,17 @@ def test_registry_duplicate_and_unsafe_url_fail() -> None:
     assert "INVALID_PUBLIC_URL" in codes
 
 
+def test_registry_duplicate_retrieval_url_is_nonfatal_warning() -> None:
+    records = small_registry()
+    records[1]["url"] = "https://Example.org/regulatory/"
+    records[0]["url"] = "https://example.org/regulatory"
+    result = validate_source_registry(records)
+    assert result["valid"] is True
+    warnings = [item for item in result["warnings"] if item["code"] == "DUPLICATE_RETRIEVAL_URL"]
+    assert len(warnings) == 1
+    assert warnings[0]["identifiers"] == ["SRC-0001", "SRC-0002"]
+
+
 def test_initialize_is_idempotent_for_identical_registry(tmp_path: Path) -> None:
     registry = write_registry(tmp_path)
     workspace = tmp_path / "workspace"

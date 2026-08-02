@@ -300,6 +300,47 @@ def test_scheduler_consumes_monitor_plan(tmp_path: Path, html_transport: FakeTra
     assert run["counts"]["total"] == len(plan["due"])
 
 
+def test_scheduler_coalesces_duplicate_urls_to_one_http_fetch(tmp_path: Path, html_transport: FakeTransport) -> None:
+    workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
+    source_index = {
+        **source_index,
+        "SRC-DUP": {
+            "source_id": "SRC-DUP",
+            "monitor_id": "MON-DUP",
+            "source_class": "REGULATORY_RECORD",
+            "url": "https://registry.example.org/entry",
+        },
+    }
+    scheduler = _scheduler(tmp_path, html_transport)
+    plan = {
+        "plan_id": "PLAN-DEDUP",
+        "as_of": "2026-08-02",
+        "due": [
+            {
+                "monitor_id": "MON-SRC-0001",
+                "source_id": "SRC-0001",
+                "url": "https://registry.example.org/entry",
+            },
+            {
+                "monitor_id": "MON-DUP",
+                "source_id": "SRC-DUP",
+                "url": "HTTPS://Registry.Example.org/entry/",
+            },
+        ],
+        "manual": [],
+        "not_due": [],
+    }
+    run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)
+    assert len(html_transport.calls) == 1
+    assert run["counts"]["unique_retrievals"] == 1
+    assert run["counts"]["coalesced_source_count"] == 2
+    by_id = {item["source_id"]: item for item in run["outcomes"]}
+    assert by_id["SRC-0001"]["status"] == "RESULT"
+    assert by_id["SRC-DUP"]["status"] == "RESULT"
+    assert by_id["SRC-0001"]["record_id"] == by_id["SRC-DUP"]["record_id"]
+    assert by_id["SRC-0001"]["retrieval_target_id"] == by_id["SRC-DUP"]["retrieval_target_id"]
+
+
 def test_scheduler_include_manual_sources_extends_due_items(tmp_path: Path, html_transport: FakeTransport) -> None:
     workspace, source_index, registry_sha256 = _registry_with_classes(tmp_path)
     scheduler = _scheduler(

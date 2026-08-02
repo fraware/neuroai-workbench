@@ -221,6 +221,39 @@ def validate_source_registry(value: Any) -> dict[str, Any]:
     if duplicate_source_ids:
         errors.append({"code": "DUPLICATE_SOURCE_ID", "path": "sources", "identifiers": sorted(duplicate_source_ids)})
 
+    # Non-fatal: multiple logical sources may share one retrieval target URL.
+    from .collector.url_normalize import normalize_retrieval_url
+
+    url_groups: dict[str, list[str]] = {}
+    for record in sources:
+        if not isinstance(record, dict):
+            continue
+        url = record.get("url")
+        source_id = record.get("source_id")
+        if not isinstance(url, str) or not isinstance(source_id, str):
+            continue
+        if record.get("source_class") == "CONTROLLED_LOCAL_INPUT" and not urlparse(url).scheme:
+            continue
+        normalized = normalize_retrieval_url(url)
+        if not normalized.startswith(("http://", "https://")):
+            continue
+        url_groups.setdefault(normalized, []).append(source_id)
+    for normalized_url, identifiers in sorted(url_groups.items()):
+        unique_ids = sorted(set(identifiers))
+        if len(unique_ids) > 1:
+            warnings.append(
+                {
+                    "code": "DUPLICATE_RETRIEVAL_URL",
+                    "path": "sources",
+                    "normalized_url": normalized_url,
+                    "identifiers": unique_ids,
+                    "message": (
+                        "Multiple source_id values share one retrieval target; "
+                        "scheduler should fetch once and fan out linkages."
+                    ),
+                }
+            )
+
     declared_count = registry.get("metadata", {}).get("record_count")
     if isinstance(declared_count, int) and declared_count != len(sources):
         errors.append(

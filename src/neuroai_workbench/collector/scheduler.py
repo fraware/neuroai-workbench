@@ -16,6 +16,7 @@ from .handoff import prepare_monitoring_handoff
 from .http_client import HttpTransport
 from .ids import new_request_id
 from .schemas import REQUEST_SCHEMA, validate_or_raise
+from .url_normalize import group_plan_items_by_retrieval_target
 
 
 def _is_http_url(value: str) -> bool:
@@ -83,6 +84,7 @@ class CollectionScheduler:
         if self.scheduler_config.include_manual_sources:
             items.extend(plan.get("manual", []))
 
+        eligible: list[dict[str, Any]] = []
         outcomes: list[dict[str, Any]] = []
         for item in items:
             source_id = str(item["source_id"])
@@ -95,7 +97,6 @@ class CollectionScheduler:
                 continue
             requested_url = str(item.get("url") or source_record.get("url") or "")
             if not _is_http_url(requested_url):
-                # Defensive guard: never abort the whole plan for a non-HTTP local path.
                 outcomes.append(
                     {
                         "source_id": source_id,
@@ -120,38 +121,92 @@ class CollectionScheduler:
                     }
                 )
                 continue
+            eligible.append({**item, "url": requested_url})
+
+        groups = group_plan_items_by_retrieval_target(eligible, source_index=source_index)
+        retrieval_targets: list[dict[str, Any]] = []
+        unique_retrievals = 0
+        for group in groups:
+            primary_record = source_index[group.primary_source_id]
+            adapter = adapter_for_source(adapters, primary_record)
             try:
-                request = self.build_collection_request(item, registry_sha256=registry_sha256)
-            except (ValueError, TypeError, KeyError) as exc:
-                outcomes.append(
+                request = self.build_collection_request(
                     {
-                        "source_id": source_id,
-                        "status": "FAILURE",
-                        "reason": "POLICY_BLOCK",
-                        "failure_class": "POLICY_BLOCK",
-                        "message": f"Collection request rejected: {exc}",
+                        "source_id": group.primary_source_id,
+                        "monitor_id": group.primary_monitor_id,
+                        "url": group.normalized_url
+                        if group.normalized_url.startswith(("http://", "https://"))
+                        else group.requested_url,
+                    },
+                    registry_sha256=registry_sha256,
+                )
+            except (ValueError, TypeError, KeyError) as exc:
+                for source_id in group.source_ids:
+                    outcomes.append(
+                        {
+                            "source_id": source_id,
+                            "status": "FAILURE",
+                            "reason": "POLICY_BLOCK",
+                            "failure_class": "POLICY_BLOCK",
+                            "message": f"Collection request rejected: {exc}",
+                            "retrieval_target_id": group.retrieval_target_id,
+                        }
+                    )
+                retrieval_targets.append(
+                    {
+                        "retrieval_target_id": group.retrieval_target_id,
+                        "normalized_url": group.normalized_url,
+                        "source_ids": list(group.source_ids),
+                        "http_calls": 0,
+                        "status": "POLICY_BLOCK",
                     }
                 )
                 continue
+
             outcome = adapter.collect(request)
-            outcomes.append(
+            unique_retrievals += 1
+            record_id = outcome.record.get("result_id") or outcome.record.get("failure_id")
+            for source_id in group.source_ids:
+                outcomes.append(
+                    {
+                        "source_id": source_id,
+                        "adapter_id": adapter.adapter_id,
+                        "status": outcome.kind.upper(),
+                        "record_id": record_id,
+                        "retrieval_target_id": group.retrieval_target_id,
+                        "primary_source_id": group.primary_source_id,
+                    }
+                )
+            retrieval_targets.append(
                 {
-                    "source_id": source_id,
-                    "adapter_id": adapter.adapter_id,
+                    "retrieval_target_id": group.retrieval_target_id,
+                    "normalized_url": group.normalized_url,
+                    "source_ids": list(group.source_ids),
+                    "http_calls": 1,
                     "status": outcome.kind.upper(),
-                    "record_id": outcome.record.get("result_id") or outcome.record.get("failure_id"),
                 }
             )
 
         succeeded = sum(1 for item in outcomes if item["status"] == "RESULT")
         failed = sum(1 for item in outcomes if item["status"] == "FAILURE")
         skipped = sum(1 for item in outcomes if item["status"] == "SKIPPED")
+        coalesced_source_count = sum(len(group.source_ids) for group in groups if len(group.source_ids) > 1)
         return {
             "run_id": f"CRUN-{uuid4().hex}",
             "plan_id": plan.get("plan_id"),
             "as_of": plan.get("as_of"),
             "status": "COMPLETED",
-            "counts": {"succeeded": succeeded, "failed": failed, "skipped": skipped, "total": len(outcomes)},
+            "counts": {
+                "succeeded": succeeded,
+                "failed": failed,
+                "skipped": skipped,
+                "total": len(outcomes),
+                "unique_retrievals": unique_retrievals,
+                "retrieval_target_groups": len(groups),
+                "coalesced_source_count": coalesced_source_count,
+                "logical_sources": len(outcomes) - skipped,
+            },
+            "retrieval_targets": retrieval_targets,
             "outcomes": outcomes,
             "boundary": COLLECTOR_BOUNDARY,
         }
@@ -169,7 +224,17 @@ class CollectionScheduler:
             "as_of": plan.get("as_of"),
             "status": "KILLED",
             "kill_reason": reason,
-            "counts": {"succeeded": 0, "failed": 0, "skipped": 0, "total": 0},
+            "counts": {
+                "succeeded": 0,
+                "failed": 0,
+                "skipped": 0,
+                "total": 0,
+                "unique_retrievals": 0,
+                "retrieval_target_groups": 0,
+                "coalesced_source_count": 0,
+                "logical_sources": 0,
+            },
+            "retrieval_targets": [],
             "outcomes": [],
             "boundary": COLLECTOR_BOUNDARY,
         }
