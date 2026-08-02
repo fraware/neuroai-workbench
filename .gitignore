@@ -23,3 +23,7 @@ workspaces/
 *.bundle
 .env
 .env.*
+
+# Local Cursor IDE state (must not be published)
+.cursor/
+
