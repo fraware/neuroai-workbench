@@ -324,13 +324,16 @@ def validate_v16_v17_lineage(
                         }
                     )
 
-    baseline_counts = v17.get("baseline_counts") if isinstance(v17.get("baseline_counts"), dict) else {}
-    effective = v17.get("successor_effective_counts") if isinstance(v17.get("successor_effective_counts"), dict) else {}
-    assessment = (
-        v17.get("assessment_successor_delta", {}).get("source_delta", {})
-        if isinstance(v17.get("assessment_successor_delta"), dict)
-        else {}
-    )
+    baseline_raw = v17.get("baseline_counts")
+    baseline_counts: dict[str, Any] = baseline_raw if isinstance(baseline_raw, dict) else {}
+    effective_raw = v17.get("successor_effective_counts")
+    effective: dict[str, Any] = effective_raw if isinstance(effective_raw, dict) else {}
+    assessment_block = v17.get("assessment_successor_delta")
+    if isinstance(assessment_block, dict):
+        source_delta = assessment_block.get("source_delta")
+        assessment: dict[str, Any] = source_delta if isinstance(source_delta, dict) else {}
+    else:
+        assessment = {}
 
     baseline_sources = baseline_counts.get("source_records")
     if baseline_sources != expected_baseline_sources:
