@@ -33,6 +33,10 @@ The collector never calls monitoring adjudication APIs and never writes monitori
 - [ADR 0008 — Collector deployment boundary](../adr/0008-collector-deployment-boundary.md)
 - [Observatory automation operating model](observatory-automation.md)
 
+## Implementation
+
+The hardened HTTP collector core lives in `src/neuroai_workbench/collector/`. It performs registry-bound retrieval with injectable transports for offline unit tests, writes quarantine bytes and schema-validated provenance records, and never calls monitoring snapshot or adjudication APIs.
+
 ## Verification note
 
-Unit tests under `tests/unit/test_collector_schemas.py` validate closed-field contracts and reject adversarial payloads. Passing schema tests establishes structural behavior for the tested cases only; they do not establish retrieval safety in production or source authenticity.
+Unit tests under `tests/unit/test_collector_schemas.py` validate closed-field contracts and reject adversarial payloads. `tests/unit/test_collector_http.py` and `tests/unit/test_collector_adversarial.py` exercise SSRF, DNS rebinding, redirect abuse, archive bombs, timeouts, and conditional GET behavior without external network access. Passing tests establishes structural behavior for the tested cases only; they do not establish retrieval safety in production or source authenticity.
