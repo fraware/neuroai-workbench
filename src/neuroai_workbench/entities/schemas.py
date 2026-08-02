@@ -12,6 +12,8 @@ ALIAS_SCHEMA = "ALIAS.schema.json"
 IDENTIFIER_SCHEMA = "IDENTIFIER.schema.json"
 ENTITY_EVENT_SCHEMA = "ENTITY_EVENT.schema.json"
 REGISTRY_SCHEMA = "ENTITY_REGISTRY.schema.json"
+RESOLUTION_PROPOSAL_SCHEMA = "RESOLUTION_PROPOSAL.schema.json"
+RESOLUTION_DISPOSITION_SCHEMA = "RESOLUTION_DISPOSITION.schema.json"
 
 
 def _schema(name: str) -> dict[str, Any]:
@@ -51,3 +53,11 @@ def validate_entity_event(value: Any) -> list[dict[str, Any]]:
 
 def validate_registry_container(value: Any) -> list[dict[str, Any]]:
     return schema_errors(value, REGISTRY_SCHEMA)
+
+
+def validate_resolution_proposal(value: Any) -> list[dict[str, Any]]:
+    return schema_errors(value, RESOLUTION_PROPOSAL_SCHEMA)
+
+
+def validate_resolution_disposition(value: Any) -> list[dict[str, Any]]:
+    return schema_errors(value, RESOLUTION_DISPOSITION_SCHEMA)
