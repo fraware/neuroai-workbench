@@ -66,6 +66,42 @@ def test_gate_progression_candidate_to_published():
     assert len(published["release_gate"]["history"]) == 3
 
 
+def test_authorized_published_without_independent_review_dispositions():
+    """Successor AUTHORIZED/PUBLISHED must not require issue #10 independent-review tracks."""
+    import neuroai_workbench.successor as successor_mod
+
+    assert "independent_review" not in successor_mod.__dict__
+    assert "summarize_independent_review_acceptance" not in dir(successor_mod)
+
+    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-no-ind-review")
+    reviewed, _ = advance_release_gate(
+        candidate,
+        target_gate="REVIEWED",
+        authority_claim=AUTHORITY,
+        rationale="Technical checks recorded without independent-review dispositions.",
+    )
+    authorized, _ = advance_release_gate(
+        reviewed,
+        target_gate="AUTHORIZED",
+        authority_claim=AUTHORITY,
+        rationale="Programme authority claim without #10 track completeness.",
+    )
+    published, gate = advance_release_gate(
+        authorized,
+        target_gate="PUBLISHED",
+        authority_claim={
+            **AUTHORITY,
+            "name_or_role": "Named release authority",
+            "authority_basis": "Explicit release decision record",
+        },
+        rationale="Named release authority approves publication without #10 gate.",
+    )
+    assert authorized["metadata"]["status"] == "AUTHORIZED"
+    assert published["metadata"]["status"] == "PUBLISHED"
+    assert gate["automatic_publication_performed"] is False
+    assert "independent_review" not in json.dumps(published)
+
+
 def test_gate_advancement_cannot_skip():
     candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-skip")
     with pytest.raises(ValueError, match="sequentially"):

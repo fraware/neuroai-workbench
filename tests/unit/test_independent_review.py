@@ -67,9 +67,11 @@ def test_independent_review_disposition_is_append_only_and_non_authorizing(tmp_p
     summary = summarize_independent_review_acceptance(workspace)
     assert summary["release_authorization_performed"] is False
     assert summary["institutional_pilot_readiness_established"] is False
+    assert summary["release_gate_blocked"] is False
     assert summary["tracks_complete"] is False
     assert "SECURITY" in summary["latest_by_track"]
-    assert "METHODOLOGY" in summary["blocking_tracks"]
+    assert "METHODOLOGY" in summary["incomplete_tracks"]
+    assert "blocking_tracks" not in summary
 
     path = Path(result["path"])
     assert path.exists()
@@ -117,7 +119,8 @@ def test_all_review_tracks_can_be_recorded(tmp_path: Path) -> None:
     assert len(records) == 6
     summary = summarize_independent_review_acceptance(workspace)
     assert summary["tracks_complete"] is True
-    assert summary["blocking_tracks"] == []
+    assert summary["incomplete_tracks"] == []
+    assert summary["release_gate_blocked"] is False
     assert summary["release_authorization_performed"] is False
 
 
@@ -199,7 +202,7 @@ def test_scope_sha256_for_path_requires_existing_file(tmp_path: Path) -> None:
         scope_sha256_for_path(tmp_path / "missing.json")
 
 
-def test_rejected_track_blocks_acceptance_summary(tmp_path: Path) -> None:
+def test_rejected_track_marks_incomplete_without_blocking_release(tmp_path: Path) -> None:
     workspace = _workspace(tmp_path)
     scope_digest = scope_sha256_for_path(_scope_artifact(tmp_path))
     record_independent_review_disposition(
@@ -214,7 +217,9 @@ def test_rejected_track_blocks_acceptance_summary(tmp_path: Path) -> None:
     )
     summary = summarize_independent_review_acceptance(workspace)
     assert summary["tracks_complete"] is False
-    assert "SECURITY" in summary["blocking_tracks"]
+    assert "SECURITY" in summary["incomplete_tracks"]
+    assert summary["release_gate_blocked"] is False
+    assert summary["release_authorization_performed"] is False
 
 
 def test_record_rejects_invalid_inputs(tmp_path: Path) -> None:
