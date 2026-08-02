@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/review-queue-item-1.0.json",
+  "type": "object",
+  "required": [
+    "item_id",
+    "item_type",
+    "source_id",
+    "candidate_id",
+    "monitoring_record_sha256",
+    "queue_status",
+    "snapshot_ids",
+    "projection_version",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {"type": "string", "pattern": "^RQI-CAND-[0-9a-f]{32}$"},
+    "item_type": {"const": "CHANGE_CANDIDATE"},
+    "source_id": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+    "monitoring_record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "queue_status": {"enum": ["OPEN", "ADJUDICATED", "STALE"]},
+    "snapshot_ids": {"type": "array", "items": {"type": "string"}},
+    "adjudication_id": {"type": "string", "pattern": "^ADJ-[0-9a-f]{32}$"},
+    "adjudication_decision": {
+      "enum": ["ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"]
+    },
+    "stale_reason": {"type": "string", "minLength": 1},
+    "projection_version": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
