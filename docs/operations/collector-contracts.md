@@ -51,6 +51,8 @@ Source-type adapters wrap the HTTP collector core:
 
 `CollectionScheduler` consumes `neuroai-monitor plan` output, selects an adapter from registry `source_class` and URL shape, and writes quarantine records only. Kill switches can disable collection globally, per source, per adapter, or monitoring handoff. Runtime credentials for the authenticated download stub are supplied through a `CredentialProvider` outside collection records; embedded URL credentials are refused.
 
+Retrieval identity is distinct from source identity. The scheduler normalizes http(s) URLs and coalesces duplicate retrieval targets into one HTTP fetch, then fans out per-`source_id` outcomes sharing the same capture `record_id`. Run metrics report `unique_retrievals` versus logical source outcomes. Registry validation emits non-fatal `DUPLICATE_RETRIEVAL_URL` warnings when multiple sources share one normalized URL.
+
 Quarantine approval (`APPROVED_FOR_HANDOFF`) is required before `prepare_monitoring_handoff` returns bytes for a separate human-gated `record_snapshot` call. The collector package never invokes `record_snapshot`, change-candidate creation, or adjudication APIs.
 
 ## Verification note
