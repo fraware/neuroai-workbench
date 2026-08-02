@@ -25,6 +25,7 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
       - name: Extract and execute corrected hardening transformation
         run: |
           python - <<'PY'
