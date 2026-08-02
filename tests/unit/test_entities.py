@@ -36,7 +36,12 @@ def test_exact_resolution_paths(tmp_path: Path) -> None:
     workspace = seed_entity_workspace(tmp_path)
     assert resolve_exact(workspace, entity_id="ENT-SYNTH-ORG-001", actor="tester")["state"] == "EXISTING_ENTITY"
     assert resolve_exact(workspace, alias_id="ALIAS-SYNTH-001", actor="tester")["entity_id"] == "ENT-SYNTH-ORG-001"
-    assert resolve_exact(workspace, identifier_scheme="DOMAIN", identifier_value="synthetic-neuro.example.org", actor="tester")["entity_id"] == "ENT-SYNTH-ORG-001"
+    assert (
+        resolve_exact(
+            workspace, identifier_scheme="DOMAIN", identifier_value="synthetic-neuro.example.org", actor="tester"
+        )["entity_id"]
+        == "ENT-SYNTH-ORG-001"
+    )
     assert resolve_exact(workspace, alias_id="ALIAS-MISSING", actor="tester")["state"] == "UNRESOLVED"
 
 
@@ -45,7 +50,9 @@ def test_append_only_registration(tmp_path: Path) -> None:
     initialize_registry(workspace, actor="tester")
     register_entity(workspace, "MODEL", "Synthetic Decoder v1", entity_id="ENT-NEW-MODEL", actor="tester")
     register_alias(workspace, "ENT-NEW-MODEL", "SynDecoder", "ABBREVIATION", alias_id="ALIAS-NEW-001", actor="tester")
-    register_identifier(workspace, "ENT-NEW-MODEL", "CUSTOM", "syn-decoder-v1", identifier_id="ID-NEW-001", actor="tester")
+    register_identifier(
+        workspace, "ENT-NEW-MODEL", "CUSTOM", "syn-decoder-v1", identifier_id="ID-NEW-001", actor="tester"
+    )
     assert registry_status(workspace)["entity_count"] == 1
 
 
@@ -64,7 +71,9 @@ def test_overwrite_refusal(tmp_path: Path) -> None:
     with pytest.raises(OverwriteRefusedError):
         register_entity(workspace, "ORGANIZATION", "Duplicate Org", entity_id="ENT-SYNTH-ORG-001", actor="tester")
     with pytest.raises(OverwriteRefusedError):
-        register_alias(workspace, "ENT-SYNTH-ORG-001", "Other Name", "TRADE_NAME", alias_id="ALIAS-SYNTH-001", actor="tester")
+        register_alias(
+            workspace, "ENT-SYNTH-ORG-001", "Other Name", "TRADE_NAME", alias_id="ALIAS-SYNTH-001", actor="tester"
+        )
     entity = load_entity(workspace, "ENT-SYNTH-ORG-001")
     entity_path = workspace / "observatory" / "entities" / "records" / "ENT-SYNTH-ORG-001.json"
     atomic_write_json(entity_path, {**entity, "display_name": "Tampered Name"})
@@ -107,7 +116,12 @@ def test_registry_edge_cases(tmp_path: Path) -> None:
         load_entity(workspace, "ENT-W")
     with pytest.raises(FuzzyMergeRefusedError):
         refuse_fuzzy_merge(workspace, reason="only normalized", actor="tester")
-    assert resolve_exact(workspace, identifier_scheme="DOMAIN", identifier_value="missing.example.org", actor="tester")["state"] == "UNRESOLVED"
+    assert (
+        resolve_exact(workspace, identifier_scheme="DOMAIN", identifier_value="missing.example.org", actor="tester")[
+            "state"
+        ]
+        == "UNRESOLVED"
+    )
     with pytest.raises(ValueError, match="Unsupported entity_type"):
         register_entity(workspace, "INVALID", "Bad", entity_id="ENT-BAD", actor="tester")
     with pytest.raises(ValueError, match="display_name"):
