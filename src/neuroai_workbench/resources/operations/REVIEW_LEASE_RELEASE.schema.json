@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/review-lease-release-1.0.json",
+  "type": "object",
+  "required": [
+    "release_id",
+    "lease_id",
+    "item_id",
+    "reviewer_profile_id",
+    "released_at",
+    "release_reason",
+    "release_sha256",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "release_id": {"type": "string", "pattern": "^RLR-[0-9a-f]{32}$"},
+    "lease_id": {"type": "string", "pattern": "^RQL-[0-9a-f]{32}$"},
+    "item_id": {"type": "string", "pattern": "^RQI-CAND-[0-9a-f]{32}$"},
+    "reviewer_profile_id": {"type": "string", "minLength": 1},
+    "released_at": {"type": "string", "minLength": 10},
+    "release_reason": {"enum": ["RELEASED", "EXPIRED", "SUPERSEDED"]},
+    "release_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

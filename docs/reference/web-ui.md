@@ -10,6 +10,7 @@ The browser application is served by the Python process and uses no CDN, remote 
 - Typed decision records.
 - Full JSON editor with optional valid-save gate.
 - Hash-chain verification and event history.
+- Link to the observatory monitoring review UI at `/review.html` (see [review-ui.md](review-ui.md)).
 
 ## Network boundary
 

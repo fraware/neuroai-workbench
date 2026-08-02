@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Observatory monitoring review</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to review content</a>
+
+  <header class="topbar">
+    <div>
+      <h1>Observatory monitoring review</h1>
+      <p>Local workflow UI over rebuildable review-queue projections.</p>
+    </div>
+    <div class="boundary">Projections do not authenticate reviewers or establish substantive findings.</div>
+  </header>
+
+  <div class="layout review-layout">
+    <aside class="sidebar" aria-label="Review navigation">
+      <div class="sidebar-actions">
+        <a class="button secondary" href="/">Assessment workbench</a>
+        <button id="initReviewQueue" class="secondary">Init review queue</button>
+      </div>
+      <div id="reviewState" class="small muted" aria-live="polite">Loading review state…</div>
+
+      <section aria-labelledby="profile-heading">
+        <h2 id="profile-heading">Local reviewer profile</h2>
+        <p class="small muted">Claimed local attribution only; not an identity provider.</p>
+        <form id="profileForm">
+          <label>Profile ID<input id="profileId" name="profile_id" autocomplete="username" required pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}"></label>
+          <label>Display name<input id="profileDisplayName" name="display_name" autocomplete="name" required></label>
+          <fieldset>
+            <legend>Roles</legend>
+            <div id="profileRoles" class="role-grid"></div>
+          </fieldset>
+          <button type="submit">Save profile</button>
+        </form>
+        <div id="activeProfile" class="panel compact" hidden></div>
+      </section>
+
+      <section aria-labelledby="queue-heading">
+        <h2 id="queue-heading">Queue items</h2>
+        <div id="queueList" class="case-list" role="listbox" aria-label="Review queue items"></div>
+      </section>
+    </aside>
+
+    <main id="main-content" class="main">
+      <section id="reviewEmpty" class="empty-state">
+        <h2>Select a queue item</h2>
+        <p>Ops health counts and queue items are rebuilt from monitoring projections. They are not a second source of truth.</p>
+      </section>
+
+      <section id="reviewView" hidden>
+        <div class="case-heading">
+          <div>
+            <h2 id="itemTitle">Queue item</h2>
+            <div id="itemMeta" class="muted"></div>
+          </div>
+          <div class="toolbar">
+            <button id="claimLease">Claim lease</button>
+            <button id="releaseLease" class="secondary" hidden>Release lease</button>
+          </div>
+        </div>
+
+        <section aria-labelledby="ops-health-heading">
+          <h2 id="ops-health-heading">Ops health</h2>
+          <div id="opsHealthCards" class="cards" aria-live="polite"></div>
+        </section>
+
+        <div class="two-column">
+          <article class="panel">
+            <h3>Candidate summary</h3>
+            <p id="candidateSummary" class="capture-safe"></p>
+            <dl id="candidateMeta" class="meta-dl"></dl>
+          </article>
+          <article class="panel">
+            <h3>Capture diff</h3>
+            <p class="small muted">Untrusted capture bytes are rendered as escaped text only.</p>
+            <div id="captureDiff" class="capture-sandbox" aria-label="Sandboxed capture diff"></div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <h3>Review opinion</h3>
+          <form id="opinionForm">
+            <label>Position<select id="opinionPosition" required>
+              <option value="">Select position</option>
+              <option>SUPPORT</option><option>OPPOSE</option><option>DEFER</option>
+              <option>ABSTAIN</option><option>NEEDS_EVIDENCE</option>
+            </select></label>
+            <label>Rationale<textarea id="opinionRationale" required rows="3"></textarea></label>
+            <button type="submit">Submit opinion</button>
+          </form>
+          <div id="opinionList"></div>
+        </article>
+
+        <article class="panel">
+          <h3>Adjudication</h3>
+          <p class="small muted">Fields align with monitoring candidate adjudication schema concepts.</p>
+          <form id="adjudicationForm">
+            <div id="adjudicationFields" class="form-grid"></div>
+            <button type="submit">Record adjudication</button>
+          </form>
+        </article>
+      </section>
+
+      <div id="reviewToast" class="toast" role="status" aria-live="assertive" hidden></div>
+    </main>
+  </div>
+
+  <script src="review.js" defer></script>
+</body>
+</html>

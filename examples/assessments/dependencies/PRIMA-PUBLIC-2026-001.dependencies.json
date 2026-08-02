@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "manifest_id": "MANIFEST-PRIMA-PUBLIC-2026-001",
+    "assessment_id": "PRIMA-PUBLIC-2026-001",
+    "manifest_version": "1.0",
+    "title": "PRIMA controlled public-evidence assessment dependency manifest",
+    "evidence_cutoff": "2026-07-29",
+    "evidence_freeze_id": "PRIMA-EF-2026-07-29",
+    "system_id": "SYSTEM-PRIMA-PUBLIC-2026-001",
+    "configuration_id": "CONFIG-PRIMA-PUBLIC-2026-001",
+    "observatory_binding": "PRIMA observatory system record"
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PRIMA-SYSTEM",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "SYSTEM",
+      "target_ref": "SYSTEM-PRIMA-PUBLIC-2026-001",
+      "target_label": "PRIMA photovoltaic retinal implant system",
+      "version_or_period": "Public-evidence boundary through 2026-07-29",
+      "resolution_state": "RESOLVED",
+      "observatory_object_ref": "PRIMA retinal prosthesis"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-CONFIG",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "CONFIGURATION",
+      "target_ref": "CONFIG-PRIMA-PUBLIC-2026-001",
+      "target_label": "Trial-public configuration; commercial CE-marked configuration unresolved",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "PARTIAL",
+      "notes": "Commercial configuration, IFU, UDI, and notified-body certificate remain unresolved public evidence."
+    },
+    {
+      "dependency_id": "DEP-PRIMA-ORG-SCIENCE",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "ORGANIZATION",
+      "target_ref": "Science Corporation",
+      "target_label": "Science Corporation / La Science SAS",
+      "version_or_period": "Inherited from Pixium Vision",
+      "resolution_state": "RESOLVED",
+      "observatory_object_ref": "Science Corporation"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-JUR-EU",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "JURISDICTION",
+      "target_ref": "EU_EEA",
+      "target_label": "European Union / EEA regulatory and deployment context",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "PARTIAL",
+      "notes": "Company-announced CE mark and commercial launch; certificate and EUDAMED details unresolved."
+    },
+    {
+      "dependency_id": "DEP-PRIMA-JUR-US",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "JURISDICTION",
+      "target_ref": "US",
+      "target_label": "United States regulatory context",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "PARTIAL",
+      "notes": "HUD designations announced; HDE approval and marketing authorization not established."
+    },
+    {
+      "dependency_id": "DEP-PRIMA-REG-CE",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "REGULATORY_RECORD",
+      "target_ref": "REG-16-001",
+      "target_label": "CE mark and commercial launch announcement",
+      "version_or_period": "2026-07-22",
+      "resolution_state": "PARTIAL",
+      "observatory_object_ref": "REG-16-001"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-REG-HUD",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "REGULATORY_RECORD",
+      "target_ref": "REG-16-002",
+      "target_label": "Two HUD designations announced",
+      "version_or_period": "2026-07-22",
+      "resolution_state": "PARTIAL",
+      "observatory_object_ref": "REG-16-002"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-CMP-IMPLANT",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "HARDWARE",
+      "target_ref": "CMP-PR-001",
+      "target_label": "Subretinal photovoltaic implant",
+      "version_or_period": "TRIAL_CONFIGURATION_PUBLIC; COMMERCIAL_CONFIGURATION_ID_UNRESOLVED",
+      "resolution_state": "PARTIAL"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-CMP-SOFTWARE",
+      "dependency_role": "GAP_SUPPORTING",
+      "target_kind": "SOFTWARE",
+      "target_ref": "CMP-PR-004",
+      "target_label": "Embedded image-processing software",
+      "version_or_period": "FUNCTION_PUBLIC; PROVENANCE_UNRESOLVED",
+      "resolution_state": "UNKNOWN"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-EVIDENCE-CUTOFF",
+      "dependency_role": "DECISION_SUPPORTING",
+      "target_kind": "EVIDENCE_CUTOFF",
+      "target_ref": "PRIMA-EF-2026-07-29",
+      "target_label": "Assessment evidence freeze",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-OBS-V16",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "OBSERVATORY_RELEASE",
+      "target_ref": "v1.6",
+      "target_label": "Predecessor observatory release",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-SRC-PRIMARY",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "SOURCE_RECORD",
+      "target_ref": "SRC-16-001",
+      "target_label": "Primary CE-mark and launch source",
+      "version_or_period": "2026-07-22",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-PRIMA-REHAB",
+      "dependency_role": "GAP_SUPPORTING",
+      "target_kind": "INFRASTRUCTURE",
+      "target_ref": "CMP-PR-005",
+      "target_label": "Rehabilitation system and Bionic Vision Expert workflow",
+      "version_or_period": "MATERIAL_DEPENDENCY; CURRENT_PROTOCOL_AND_CAPACITY_UNRESOLVED",
+      "resolution_state": "INACCESSIBLE"
+    }
+  ],
+  "withheld_claims": [
+    "Commercial configuration identity, notified-body certificate, EUDAMED entry, and current IFU are not publicly resolved.",
+    "First commercial implantation is expected but not confirmed in primary evidence.",
+    "Dependency resolution does not establish regulatory authorization, clinical effectiveness, or conformance."
+  ],
+  "boundary": "This manifest records typed dependencies for the exact PRIMA public-evidence assessment boundary. UNKNOWN and INACCESSIBLE states preserve uncertainty without inferring failure."
+}

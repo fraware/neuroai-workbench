@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "manifest_id": "MANIFEST-PILOT-01-BRAINGATE2-T15",
+    "assessment_id": "PILOT-01-BRAINGATE2-T15-v4.1.5",
+    "manifest_version": "1.0",
+    "title": "BrainGate2 T15 pilot assessment dependency manifest",
+    "evidence_cutoff": "2026-07-28",
+    "evidence_freeze_id": "BG2-T15-EF-2026-07-28-01",
+    "system_id": "BRAINGATE2-T15",
+    "configuration_id": "BG2-T15-LONGITUDINAL-CHANGING-CONFIG-D25-D678",
+    "observatory_binding": "BrainGate2 T15 pilot v4.1.5"
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-BG2-SYSTEM",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "SYSTEM",
+      "target_ref": "BRAINGATE2-T15",
+      "target_label": "BrainGate2 T15 participant-specific longitudinal home BCI",
+      "version_or_period": "Implanted summer 2023; evidence through day 678",
+      "resolution_state": "RESOLVED",
+      "observatory_object_ref": "BrainGate2 T15 pilot v4.1.5"
+    },
+    {
+      "dependency_id": "DEP-BG2-CONFIG",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "CONFIGURATION",
+      "target_ref": "BG2-T15-LONGITUDINAL-CHANGING-CONFIG-D25-D678",
+      "target_label": "Changing longitudinal configuration with material updates through day 668",
+      "version_or_period": "Post-implant days 25-678",
+      "resolution_state": "PARTIAL",
+      "notes": "Exact serials, builds, and checkpoints remain partially unresolved."
+    },
+    {
+      "dependency_id": "DEP-BG2-PARTICIPANT",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "PARTICIPANT_POPULATION",
+      "target_ref": "T15",
+      "target_label": "Single participant T15 exact-version boundary",
+      "version_or_period": "Longitudinal home use",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-SUPPLIER-BLK",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "SUPPLIER",
+      "target_ref": "Blackrock Neurotech",
+      "target_label": "Utah arrays, pedestals, and Neuroplex headstages",
+      "version_or_period": "Longitudinal use",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-JUR-US",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "JURISDICTION",
+      "target_ref": "United States",
+      "target_label": "United States research context",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-HW-ARRAYS",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "HARDWARE",
+      "target_ref": "COMP-01",
+      "target_label": "Four Utah intracortical microelectrode arrays",
+      "version_or_period": "4 x 64 electrodes",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-SW-DECODER",
+      "dependency_role": "GAP_SUPPORTING",
+      "target_kind": "SOFTWARE",
+      "target_ref": "COMP-05",
+      "target_label": "Participant-specific decoder and language model stack",
+      "version_or_period": "Paper-reported state; exact builds unresolved",
+      "resolution_state": "UNKNOWN"
+    },
+    {
+      "dependency_id": "DEP-BG2-SUPPORT",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "INFRASTRUCTURE",
+      "target_ref": "COMP-02",
+      "target_label": "Daily care-partner connection and research-team support dependency",
+      "version_or_period": "Longitudinal home use",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-EVIDENCE-CUTOFF",
+      "dependency_role": "DECISION_SUPPORTING",
+      "target_kind": "EVIDENCE_CUTOFF",
+      "target_ref": "BG2-T15-EF-2026-07-28-01",
+      "target_label": "Assessment evidence freeze",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-BG2-OBS",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "OBSERVATORY_RELEASE",
+      "target_ref": "v1.6",
+      "target_label": "Observatory release context",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "RESOLVED"
+    }
+  ],
+  "withheld_claims": [
+    "Exact hardware serials, firmware builds, model checkpoints, and dependency versions by effective period remain unresolved.",
+    "Participant-specific boundaries do not generalize to other BrainGate2 participants or configurations.",
+    "Support dependency resolution does not establish independent commercial deployment readiness."
+  ],
+  "boundary": "This manifest records typed dependencies for the exact T15 participant-version boundary. Partial and unknown resolution states remain explicit."
+}

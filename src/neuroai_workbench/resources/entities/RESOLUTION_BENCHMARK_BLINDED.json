@@ -1,0 +1,73 @@
+{
+  "benchmark_id": "ENTITY-RES-BENCH-BLIND-001",
+  "version": "1.0",
+  "status": "SYNTHETIC_BLINDED_STUB",
+  "blinding": "Entity identifiers and display strings are pseudonymized. Expected states are declared without revealing production registry contents.",
+  "boundary": "Synthetic blinded benchmark stub for tests only.",
+  "cases": [
+    {
+      "case_id": "BLIND-001",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha",
+        "entity_id": "ENT-SYNTH-ORG-001",
+        "source_capture_ref": "CAP-BLIND-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true
+      }
+    },
+    {
+      "case_id": "BLIND-002",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha",
+        "alias_id": "ALIAS-SYNTH-001",
+        "source_capture_ref": "CAP-BLIND-002"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false
+      }
+    },
+    {
+      "case_id": "BLIND-003",
+      "input": {
+        "raw_mention": "Pseudonym Org Alpha",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-BLIND-003"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false
+      }
+    },
+    {
+      "case_id": "BLIND-004",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-BLIND-004"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false
+      }
+    },
+    {
+      "case_id": "BLIND-005",
+      "input": {
+        "raw_mention": "Novel Unregistered Entity LLC",
+        "source_capture_ref": "CAP-BLIND-005"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false
+      }
+    }
+  ]
+}
