@@ -15,6 +15,11 @@ def seed_entity_workspace(tmp_path: Path) -> Path:
     initialize_registry(workspace, seed=seed, actor="tester")
     for name in ("ENT-SYNTH-ORG-001.json", "ENT-SYNTH-SYS-001.json"):
         shutil.copy(FIXTURES / name, workspace / "observatory" / "entities" / "records" / name)
-    shutil.copy(FIXTURES / "ALIAS-SYNTH-001.json", workspace / "observatory" / "entities" / "aliases" / "ALIAS-SYNTH-001.json")
-    shutil.copy(FIXTURES / "ID-SYNTH-DOMAIN-001.json", workspace / "observatory" / "entities" / "identifiers" / "ID-SYNTH-DOMAIN-001.json")
+    shutil.copy(
+        FIXTURES / "ALIAS-SYNTH-001.json", workspace / "observatory" / "entities" / "aliases" / "ALIAS-SYNTH-001.json"
+    )
+    shutil.copy(
+        FIXTURES / "ID-SYNTH-DOMAIN-001.json",
+        workspace / "observatory" / "entities" / "identifiers" / "ID-SYNTH-DOMAIN-001.json",
+    )
     return workspace
