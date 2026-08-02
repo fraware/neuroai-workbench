@@ -383,5 +383,3 @@ def test_apply_operation_type_guard_branches() -> None:
             },
             predecessor,
         )
-
-
