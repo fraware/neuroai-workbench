@@ -67,6 +67,7 @@ neuroai_workbench = [
   "resources/collector/*",
   "resources/extraction/*",
   "resources/entities/*",
+  "resources/delta/*",
   "resources/shadow_refresh/*",
 ]
 
