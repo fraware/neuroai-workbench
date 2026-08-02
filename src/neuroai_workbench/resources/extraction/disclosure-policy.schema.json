@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/disclosure-policy-1.0.json",
+  "type": "object",
+  "required": ["schema_version", "policy_id", "default_deny_protected", "export_allowed_classes", "protected_classes", "scan_controls", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "policy_id": {"type": "string", "const": "EXTRACTION_DEFAULT_v1"},
+    "default_deny_protected": {"const": true},
+    "export_allowed_classes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["PUBLIC_SYNTHETIC", "PUBLIC_SOURCE_EXCERPT"]}},
+    "protected_classes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["PROTECTED_NEURAL", "PROTECTED_PARTICIPANT", "PROTECTED_REGULATOR", "PROTECTED_SECURITY", "PROTECTED_CLINICAL", "CREDENTIAL", "LOCAL_PATH"]}},
+    "scan_controls": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "prompt_injection_controls": {"type": "array", "items": {"type": "string"}},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
