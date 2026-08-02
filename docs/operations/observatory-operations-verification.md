@@ -16,7 +16,7 @@ This checklist applies to the controlled monitoring and refresh-candidate pipeli
 
 ## Substantive gates
 
-Software verification does not establish source authenticity, claim truth, scientific validity, regulatory status, clinical safety, conformance, or UNESCO endorsement. A canonical observatory successor still requires named domain review, reconciliation against the predecessor release, and an authorized release decision.
+Software verification does not establish source authenticity, claim truth, scientific validity, regulatory status, clinical safety, conformance, or UNESCO endorsement. A canonical observatory successor still requires reconciliation against the predecessor release and an authorized release decision with named release-authority approval. Issue #10 independent-review tracks remain optional recommended follow-up and do not block AUTHORIZED or PUBLISHED.
 
 ## Deferred architecture
 

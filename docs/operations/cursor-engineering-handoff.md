@@ -71,7 +71,7 @@ Requirements:
 
 - Issue #6 reviews and decomposes the collaborative assignment, disagreement, disposition, review-report, and gap-report foundation into separate follow-on issues and PRs.
 - Issue #9 defines the separate institutional deployment architecture.
-- Issue #10 commissions independent methodological, security, and accessibility review.
+- Issue #10 commissions optional independent methodological, security, and accessibility review (recommended follow-up; not a successor AUTHORIZED/PUBLISHED blocker).
 
 ## Review gates by file
 

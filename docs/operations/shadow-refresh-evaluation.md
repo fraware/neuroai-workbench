@@ -127,7 +127,8 @@ Live shadow refresh remains blocked pending:
 - observatory monitoring review queue (#36);
 - entity resolution (#37);
 - bounded model-assisted extraction (#38);
-- protected archive and network access approvals (#44);
-- independent security, accessibility, and methodological review (#10).
+- protected archive and network access approvals (#44).
+
+Independent security, accessibility, and methodological review (#10) is an optional recommended follow-up for institutional-pilot readiness language. It is not a release blocker for successor `AUTHORIZED` or `PUBLISHED` gates.
 
 Track residual blockers on [#43](https://github.com/fraware/neuroai-workbench/issues/43).

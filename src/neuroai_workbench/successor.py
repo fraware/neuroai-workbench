@@ -201,6 +201,12 @@ def advance_release_gate(
     actor: str = "local-user",
     verification_checks: list[str] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Advance a successor candidate one sequential release gate.
+
+    AUTHORIZED and PUBLISHED require named local authority claims and sequential
+    progression only. They do not require issue #10 independent-review disposition
+    completeness. Independent review remains optional follow-up documentation.
+    """
     if target_gate not in RELEASE_GATES or target_gate == "CANDIDATE":
         raise ValueError(f"Unsupported target gate {target_gate!r}")
     if not rationale.strip():

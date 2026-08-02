@@ -266,7 +266,7 @@ def summarize_independent_review_acceptance(workspace: Workspace) -> dict[str, A
         if current is None or str(item.get("recorded_at", "")) >= str(current.get("recorded_at", "")):
             latest_by_track[track] = item
 
-    blocking_tracks = sorted(
+    incomplete_tracks = sorted(
         track
         for track in REVIEW_TRACKS
         if track not in latest_by_track
@@ -274,8 +274,8 @@ def summarize_independent_review_acceptance(workspace: Workspace) -> dict[str, A
     )
     return {
         "integrity_valid": verification["valid"],
-        "tracks_complete": len(blocking_tracks) == 0,
-        "blocking_tracks": blocking_tracks,
+        "tracks_complete": len(incomplete_tracks) == 0,
+        "incomplete_tracks": incomplete_tracks,
         "latest_by_track": {
             track: {
                 "disposition_id": item.get("disposition_id"),
@@ -287,8 +287,11 @@ def summarize_independent_review_acceptance(workspace: Workspace) -> dict[str, A
         },
         "release_authorization_performed": False,
         "institutional_pilot_readiness_established": False,
+        "release_gate_blocked": False,
         "boundary": (
-            "Track completion and disposition integrity do not authorize release, establish pilot readiness, "
-            "or substitute for named human independent review."
+            "Independent review track completeness is optional documentation status only. "
+            "Incomplete tracks do not block AUTHORIZED or PUBLISHED successor release gates. "
+            "Disposition integrity still does not authorize release, establish pilot readiness, "
+            "or imply UNESCO, regulatory, clinical, or conformance authority."
         ),
     }
