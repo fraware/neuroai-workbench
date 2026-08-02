@@ -37,6 +37,22 @@ The collector never calls monitoring adjudication APIs and never writes monitori
 
 The hardened HTTP collector core lives in `src/neuroai_workbench/collector/`. It performs registry-bound retrieval with injectable transports for offline unit tests, writes quarantine bytes and schema-validated provenance records, and never calls monitoring snapshot or adjudication APIs.
 
+### Adapters and scheduler
+
+Source-type adapters wrap the HTTP collector core:
+
+| Adapter | Identifier | Typical source classes |
+| --- | --- | --- |
+| HTML page | `html` | Official company and product pages |
+| JSON API | `json_api` | Public JSON APIs and bibliographic metadata |
+| XML / RSS / Atom | `xml_feed` | Syndication and procedural guidance feeds |
+| Clinical / regulatory registry stub | `registry_stub` | Regulatory records and trial registries |
+| Controlled authenticated download stub | `auth_download` | `CONTROLLED_AUTHENTICATED_DOWNLOAD` |
+
+`CollectionScheduler` consumes `neuroai-monitor plan` output, selects an adapter from registry `source_class` and URL shape, and writes quarantine records only. Kill switches can disable collection globally, per source, per adapter, or monitoring handoff. Runtime credentials for the authenticated download stub are supplied through a `CredentialProvider` outside collection records; embedded URL credentials are refused.
+
+Quarantine approval (`APPROVED_FOR_HANDOFF`) is required before `prepare_monitoring_handoff` returns bytes for a separate human-gated `record_snapshot` call. The collector package never invokes `record_snapshot`, change-candidate creation, or adjudication APIs.
+
 ## Verification note
 
-Unit tests under `tests/unit/test_collector_schemas.py` validate closed-field contracts and reject adversarial payloads. `tests/unit/test_collector_http.py` and `tests/unit/test_collector_adversarial.py` exercise SSRF, DNS rebinding, redirect abuse, archive bombs, timeouts, and conditional GET behavior without external network access. Passing tests establishes structural behavior for the tested cases only; they do not establish retrieval safety in production or source authenticity.
+Unit tests under `tests/unit/test_collector_schemas.py` validate closed-field contracts and reject adversarial payloads. `tests/unit/test_collector_http.py` and `tests/unit/test_collector_adversarial.py` exercise SSRF, DNS rebinding, redirect abuse, archive bombs, timeouts, and conditional GET behavior without external network access. `tests/unit/test_collector_adapters_scheduler.py` exercises adapter selection, scheduler plan consumption, quarantine approval gating, credential refusal, kill switches, and architecture boundaries using mock transports only. Passing tests establishes structural behavior for the tested cases only; they do not establish retrieval safety in production or source authenticity.

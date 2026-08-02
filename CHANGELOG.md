@@ -19,6 +19,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
 - Collector threat model, deployment-boundary ADR, and versioned collection/quarantine JSON schemas with adversarial contract tests. Retrieval contracts record provenance only; they do not establish authenticity or substantive truth.
 - Hardened HTTP collector core (`neuroai_workbench.collector`) with DNS and redirect SSRF controls, DNS rebinding detection, timeouts, size and decompression-ratio limits, per-host rate limiting, conditional GET handling for unchanged captures, and quarantine-only writes validated against PR-05 schemas.
+- Collector source-type adapters (HTML, JSON API, XML/RSS/Atom, clinical/regulatory registry stub, controlled authenticated download stub), plan-driven scheduler consuming `neuroai-monitor plan` output, quarantine approval gate before monitoring handoff, credential-leak refusal, kill switches, and architecture tests forbidding direct monitoring snapshot or adjudication calls from the collector package.
 
 ### Changed
 
