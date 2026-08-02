@@ -8,7 +8,7 @@ from ..util import atomic_write_bytes, sha256_bytes
 
 def render_docx(query: dict[str, Any]) -> bytes | None:
     try:
-        from docx import Document  # type: ignore[import-untyped,import-not-found]
+        from docx import Document  # type: ignore
     except ImportError:
         return None
     document = Document()
