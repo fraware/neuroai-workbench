@@ -127,6 +127,68 @@ def test_plan_uses_cadence_and_baseline_date(tmp_path: Path) -> None:
     assert plan["due"][0]["overdue_days"] == 25
 
 
+def test_plan_routes_controlled_local_and_no_network_to_manual(tmp_path: Path) -> None:
+    records = small_registry()
+    records.append(
+        {
+            "monitor_id": "MON-SRC-0003",
+            "source_id": "SRC-0003",
+            "url": "controlled-inputs/local.json",
+            "publisher": "Controlled project input",
+            "source_class": "CONTROLLED_LOCAL_INPUT",
+            "cadence": "QUARTERLY",
+            "last_successful_retrieval": "2025-01-01",
+            "baseline_evidence_state": "PUBLIC_RESEARCH_ARTIFACT",
+            "baseline_verification_state": "CURRENT_VERIFIED",
+            "baseline_claim_boundary": "A controlled local input is not independent appraisal.",
+            "network_access_required": True,
+            "current_status": "BASELINE_REGISTERED",
+            "next_action": "MIGRATE_TO_CONTENT_ADDRESSED_OBJECT",
+        }
+    )
+    records.append(
+        {
+            "monitor_id": "MON-SRC-0004",
+            "source_id": "SRC-0004",
+            "url": "https://example.org/offline-only",
+            "publisher": "Offline-only publisher",
+            "source_class": "OFFICIAL_COMPANY_PAGE",
+            "cadence": "WEEKLY",
+            "last_successful_retrieval": "2025-01-01",
+            "baseline_evidence_state": "CURRENT_SOURCE_RETRIEVED",
+            "baseline_verification_state": "CURRENT_VERIFIED",
+            "baseline_claim_boundary": "Offline-only sources require manual ingest.",
+            "network_access_required": False,
+            "current_status": "BASELINE_REGISTERED",
+            "next_action": "MANUAL_RETRIEVE",
+        }
+    )
+    workspace = tmp_path / "workspace"
+    initialize_monitoring(workspace, write_registry(tmp_path, records), actor="tester")
+    plan = plan_monitoring_run(workspace, as_of="2026-10-28")
+    due_ids = {item["source_id"] for item in plan["due"]}
+    manual_by_id = {item["source_id"]: item for item in plan["manual"]}
+    assert "SRC-0003" not in due_ids
+    assert "SRC-0004" not in due_ids
+    assert manual_by_id["SRC-0003"]["manual_reason"] == "CONTROLLED_LOCAL_OR_NO_NETWORK"
+    assert manual_by_id["SRC-0004"]["manual_reason"] == "CONTROLLED_LOCAL_OR_NO_NETWORK"
+
+
+def test_sample_registry_local_never_due(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    initialize_monitoring(workspace, SAMPLE_REGISTRY, actor="tester")
+    plan = plan_monitoring_run(workspace, as_of="2026-10-28")
+    due_ids = {item["source_id"] for item in plan["due"]}
+    manual_ids = {item["source_id"] for item in plan["manual"]}
+    assert "SRC-SAMPLE-003" not in due_ids
+    assert "SRC-SAMPLE-003" in manual_ids
+    assert all(
+        item.get("manual_reason") == "CONTROLLED_LOCAL_OR_NO_NETWORK"
+        for item in plan["manual"]
+        if item["source_id"] == "SRC-SAMPLE-003"
+    )
+
+
 def test_source_health_reconciles_plan_without_silent_drop(tmp_path: Path) -> None:
     workspace = initialize(tmp_path)
     plan = plan_monitoring_run(workspace, as_of="2026-08-02")

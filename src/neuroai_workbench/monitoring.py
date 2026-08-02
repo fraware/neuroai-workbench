@@ -371,8 +371,15 @@ def plan_monitoring_run(
             "cadence": cadence,
             "last_checked": checked_day.isoformat() if checked_day else None,
             "next_action": record["next_action"],
+            "network_access_required": bool(record.get("network_access_required", True)),
         }
+        # Local / no-network sources never enter the HTTP collector due queue.
+        if record.get("source_class") == "CONTROLLED_LOCAL_INPUT" or record.get("network_access_required") is False:
+            item["manual_reason"] = "CONTROLLED_LOCAL_OR_NO_NETWORK"
+            manual.append(item)
+            continue
         if cadence_days is None:
+            item["manual_reason"] = "CADENCE_MANUAL"
             manual.append(item)
             continue
         due_on = checked_day + timedelta(days=cadence_days) if checked_day else as_of_day

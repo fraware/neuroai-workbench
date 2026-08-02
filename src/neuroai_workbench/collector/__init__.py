@@ -21,6 +21,7 @@ from .handoff import (
     prepare_monitoring_handoff,
     reject_quarantine_record,
 )
+from .local_adapter import LocalContentAddressedAdapter
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
@@ -36,6 +37,7 @@ __all__ = [
     "HtmlPageAdapter",
     "HttpCollector",
     "JsonApiAdapter",
+    "LocalContentAddressedAdapter",
     "MonitoringHandoffPayload",
     "PriorCapture",
     "SchedulerConfig",
