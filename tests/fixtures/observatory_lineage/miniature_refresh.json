@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "version": "v1.6-mini",
+    "baseline_version": "v1.4-mini",
+    "status": "CONTROLLED_REFRESH_FIXTURE"
+  },
+  "baseline": {
+    "canonical_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "immutable": true
+  },
+  "new_sources": [
+    {
+      "source_id": "SRC-N1",
+      "publisher": "A"
+    },
+    {
+      "source_id": "SRC-N2",
+      "publisher": "B"
+    }
+  ],
+  "change_candidates": [
+    {
+      "candidate_id": "C1",
+      "adjudication": "ACCEPT",
+      "source_ids": [
+        "SRC-N1"
+      ]
+    },
+    {
+      "candidate_id": "C2",
+      "adjudication": "ACCEPT_WITH_BOUNDARY",
+      "source_ids": [
+        "SRC-N2",
+        "SRC-B1"
+      ]
+    }
+  ],
+  "adjudicated_delta": {
+    "regulatory_and_market_events": [
+      {
+        "event_id": "REG-1",
+        "source_ids": [
+          "SRC-N1"
+        ]
+      }
+    ],
+    "capital_and_ownership_events": [
+      {
+        "event_id": "CAP-1",
+        "source_ids": [
+          "SRC-B1"
+        ]
+      }
+    ],
+    "model_records": [],
+    "supplier_dependency_relationships": [
+      {
+        "dependency_id": "SUP-1",
+        "source_ids": [
+          "SRC-N2"
+        ]
+      }
+    ],
+    "governance_and_leadership_events": []
+  },
+  "reopening_decisions": [
+    {
+      "decision_id": "ROP-1",
+      "decision": "REOPEN_REQUIRED",
+      "basis": [
+        "REG-1"
+      ],
+      "object": "system-a"
+    }
+  ],
+  "source_checks": [
+    {
+      "check_id": "CHK-1",
+      "source_id": "SRC-N1"
+    }
+  ]
+}

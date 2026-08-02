@@ -48,6 +48,8 @@ def test_ops_migration_verification_unblocks_registry_and_v16() -> None:
 
 
 def test_v17_predecessor_resolves_against_ops_v16() -> None:
+    from neuroai_workbench.observatory_lineage import validate_v16_package, validate_v16_v17_lineage
+
     v17 = load_json(OPS_ROOT / V17)
     report = validate_release(v17)
     assert report["valid"] is True
@@ -55,10 +57,16 @@ def test_v17_predecessor_resolves_against_ops_v16() -> None:
     assert metadata.get("predecessor") == "v1.6"
     predecessor_ref = v17.get("predecessor_reference", {})
     assert isinstance(predecessor_ref, dict)
-    # Refresh + delta packages load as dicts; presence is the lineage gate for ops extract.
-    assert (OPS_ROOT / REFRESH).is_file()
-    assert (OPS_ROOT / DELTA).is_file()
     refresh = load_json(OPS_ROOT / REFRESH)
     delta = load_json(OPS_ROOT / DELTA)
-    assert isinstance(refresh, dict) and refresh
-    assert isinstance(delta, dict) and delta
+    v14 = load_json(OPS_ROOT / V14)
+    assert validate_v16_package(refresh)["valid"] is True
+    assert validate_v16_package(delta)["valid"] is True
+    v14_ids = {str(item["source_id"]) for item in v14.get("sources", []) if isinstance(item, dict)}
+    lineage = validate_v16_v17_lineage(
+        refresh=refresh,
+        delta=delta,
+        v17=v17,
+        v14_source_ids=v14_ids,
+    )
+    assert lineage["valid"] is True, lineage["errors"]

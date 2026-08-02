@@ -190,6 +190,8 @@ def adapt_observatory_v1_4(path: Path, entry: dict[str, Any]) -> dict[str, Any]:
 
 
 def adapt_observatory_v1_6(path: Path, entry: dict[str, Any]) -> dict[str, Any]:
+    from ..observatory_lineage import validate_v16_package
+
     value = load_json(path)
     source_sha256 = sha256_file(path)
     expected = entry.get("sha256")
@@ -197,7 +199,8 @@ def adapt_observatory_v1_6(path: Path, entry: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(
             f"Ops object digest mismatch for {entry['inventory_id']}: expected {expected}, got {source_sha256}"
         )
-    # Compact delta packages may not be full observatory releases; validate when shape matches.
+    # Historical refresh/delta packages use dedicated lineage validators (fail-closed).
+    # Full observatory release shapes still use validate_release.
     report: dict[str, Any]
     if isinstance(value.get("metadata"), dict) and (
         "organizations" in value or value.get("metadata", {}).get("release_kind") or "baseline_reference" in value
@@ -207,12 +210,15 @@ def adapt_observatory_v1_6(path: Path, entry: dict[str, Any]) -> dict[str, Any]:
             "valid": report["valid"],
             "release_kind": report.get("release_kind", "OBSERVATORY_V1_6"),
             "issue_count": len(report.get("errors", [])),
+            "errors": report.get("errors", []),
         }
     else:
+        package_report = validate_v16_package(value)
         validation = {
-            "valid": isinstance(value, dict) and bool(value),
-            "release_kind": "OBSERVATORY_V1_6_PACKAGE",
-            "issue_count": 0 if isinstance(value, dict) and value else 1,
+            "valid": package_report["valid"],
+            "release_kind": package_report.get("release_kind", "UNKNOWN"),
+            "issue_count": int(package_report.get("issue_count") or len(package_report.get("errors") or [])),
+            "errors": package_report.get("errors", []),
         }
     record = _record_base(entry)
     record.update(
