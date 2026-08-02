@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/extraction-response-1.0.json",
+  "type": "object",
+  "required": ["schema_version", "request_id", "request_sha256", "task_type", "summary", "proposed_fields", "warnings", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "request_id": {"type": "string", "pattern": "^EXT-[0-9a-f]{32}$"},
+    "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task_type": {"type": "string", "enum": ["EXTRACT_OBSERVATORY_SIGNALS", "EXTRACT_ENTITY_MENTIONS", "EXTRACT_EVENT_SIGNALS"]},
+    "summary": {"type": "string", "minLength": 1},
+    "proposed_fields": {"type": "array", "items": {"$ref": "#/$defs/proposed_field"}},
+    "abstentions": {"type": "array", "items": {"$ref": "#/$defs/abstention"}},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "boundary": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "citation": {
+      "type": "object",
+      "required": ["excerpt_id", "excerpt_sha256", "supporting_text", "start_offset", "end_offset"],
+      "additionalProperties": false,
+      "properties": {
+        "excerpt_id": {"type": "string", "pattern": "^EX-[0-9a-f]{32}$"},
+        "excerpt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "supporting_text": {"type": "string", "minLength": 1},
+        "start_offset": {"type": "integer", "minimum": 0},
+        "end_offset": {"type": "integer", "minimum": 1}
+      }
+    },
+    "proposed_field": {
+      "type": "object",
+      "required": ["field_path", "field_type", "confidence", "limitations"],
+      "additionalProperties": false,
+      "properties": {
+        "field_path": {"type": "string", "minLength": 1},
+        "field_type": {"type": "string", "enum": ["ENTITY_MENTION", "DATE", "EVENT_TYPE", "RELATIONSHIP", "CHANGE_CLASS", "REOPENING_RELEVANCE", "REVIEW_QUESTION", "MISSING_EVIDENCE"]},
+        "value": {},
+        "confidence": {"type": "string", "enum": ["LOW", "MEDIUM", "HIGH"]},
+        "citation": {"$ref": "#/$defs/citation"},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "abstention": {
+      "type": "object",
+      "required": ["field_path", "field_type", "abstention_reason", "limitations"],
+      "additionalProperties": false,
+      "properties": {
+        "field_path": {"type": "string", "minLength": 1},
+        "field_type": {"type": "string", "enum": ["ENTITY_MENTION", "DATE", "EVENT_TYPE", "RELATIONSHIP", "CHANGE_CLASS", "REOPENING_RELEVANCE", "REVIEW_QUESTION", "MISSING_EVIDENCE"]},
+        "abstention_reason": {"type": "string", "minLength": 1},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
