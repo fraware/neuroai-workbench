@@ -122,6 +122,72 @@ def test_review_ui_static_and_api(monitoring_workspace):
             },
         )
         assert opinion["opinion"]["position"] == "NEEDS_EVIDENCE"
+
+        fields = request(base + "/api/review/fields")
+        assert "adjudication_fields" in fields
+
+        profile = request(
+            base + "/api/review/profiles",
+            "POST",
+            {
+                "profile_id": "reviewer-b",
+                "display_name": "Reviewer B",
+                "roles": ["MONITORING_REVIEWER"],
+                "actor": "tester",
+            },
+        )
+        assert profile["profile"]["profile_id"] == "reviewer-b"
+        assert profile["created"] is True
+
+        released = request(
+            base + f"/api/review/leases/{lease['lease']['lease_id']}/release",
+            "POST",
+            {"reviewer_profile_id": "reviewer-a", "reason": "RELEASED"},
+        )
+        assert released["release"]["lease_id"] == lease["lease"]["lease_id"]
+
+        # Re-claim before adjudication so lease state remains consistent with UI flow.
+        lease_again = request(
+            base + f"/api/review/queue/{item_id}/lease",
+            "POST",
+            {"reviewer_profile_id": "reviewer-a"},
+        )
+        assert lease_again["lease"]["item_id"] == item_id
+
+        adjudication = request(
+            base + f"/api/review/queue/{item_id}/adjudicate",
+            "POST",
+            {
+                "decision": "DEFER",
+                "rationale": "Deferred after markup-display verification; not a substantive determination.",
+                "change_class": "UNCLASSIFIED",
+                "materiality": "UNDETERMINED",
+                "reopening_effect": "UNDETERMINED",
+                "decided_by": "reviewer-a",
+            },
+        )
+        assert adjudication["decision"] == "DEFER"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+
+
+def test_review_queue_uninitialized_projection(tmp_path: Path):
+    from neuroai_workbench.workspace import Workspace
+
+    workspace = Workspace.initialize(tmp_path / "workspace")
+    server = WorkbenchHTTPServer(("127.0.0.1", 0), workspace)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        wait_until_ready(base)
+        queue = request(base + "/api/review/queue")
+        assert queue["initialized"] is False
+        assert queue["items"] == []
+        fields = request(base + "/api/review/fields")
+        assert "adjudication_fields" in fields
     finally:
         server.shutdown()
         server.server_close()
