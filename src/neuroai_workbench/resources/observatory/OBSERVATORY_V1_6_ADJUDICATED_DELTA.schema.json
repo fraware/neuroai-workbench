@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-v1-6-adjudicated-delta-1.0.json",
+  "type": "object",
+  "required": [
+    "regulatory_and_market_events",
+    "capital_and_ownership_events",
+    "model_records",
+    "supplier_dependency_relationships",
+    "governance_and_leadership_events"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "regulatory_and_market_events": {"type": "array"},
+    "capital_and_ownership_events": {"type": "array"},
+    "model_records": {"type": "array"},
+    "supplier_dependency_relationships": {"type": "array"},
+    "governance_and_leadership_events": {"type": "array"}
+  }
+}

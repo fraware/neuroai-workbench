@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "version": "v1.7-mini",
+    "predecessor": "v1.6-mini"
+  },
+  "delta": {
+    "regulatory_and_market_events": [
+      {
+        "event_id": "REG-1",
+        "source_ids": [
+          "SRC-N1"
+        ]
+      }
+    ],
+    "capital_and_ownership_events": [
+      {
+        "event_id": "CAP-1",
+        "source_ids": [
+          "SRC-B1"
+        ]
+      }
+    ],
+    "model_records": [],
+    "supplier_dependency_relationships": [
+      {
+        "dependency_id": "SUP-1",
+        "source_ids": [
+          "SRC-N2"
+        ]
+      }
+    ],
+    "governance_and_leadership_events": []
+  },
+  "delta_counts": {
+    "new_sources": 2,
+    "change_candidates": 2,
+    "regulatory_and_market_events": 1,
+    "capital_and_ownership_events": 1,
+    "model_records": 0,
+    "supplier_dependency_relationships": 1,
+    "governance_and_leadership_events": 0,
+    "reopening_decisions": 1
+  },
+  "baseline_counts": {
+    "source_records": 4,
+    "active_nonlegacy_organization_denominator": 3,
+    "capital_and_ownership_events": 1,
+    "supplier_dependency_relationships": 2
+  },
+  "assessment_successor_delta": {
+    "source_delta": {
+      "new_unique_source_records_relative_to_v1_6": 2
+    }
+  },
+  "successor_effective_counts": {
+    "organizations": 3,
+    "capital_and_ownership_events": 2,
+    "supplier_dependency_relationships": 3,
+    "source_records": 8
+  }
+}
