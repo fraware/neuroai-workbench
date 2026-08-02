@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from .delta.apply import apply_delta_from_paths
 from .delta.workspace import compile_delta_from_workspace
 from .monitoring import (
     adjudicate_change_candidate,
@@ -108,6 +109,14 @@ def build_parser() -> argparse.ArgumentParser:
     command.add_argument("--actor", default="cli-user")
     command.add_argument("--out")
 
+    command = sub.add_parser("delta-apply", help="Apply an adjudicated delta to produce a candidate successor")
+    command.add_argument("predecessor")
+    command.add_argument("delta")
+    command.add_argument("output_dir")
+    command.add_argument("--apply-id", required=True)
+    command.add_argument("--actor", default="cli-user")
+    command.add_argument("--out")
+
     command = sub.add_parser("status", help="Summarize monitoring state")
     command.add_argument("workspace")
     command.add_argument("--out")
@@ -168,6 +177,14 @@ def main(argv: list[str] | None = None) -> int:
                 Path(args.predecessor),
                 predecessor_release_id=args.predecessor_release_id,
                 operation_specs_path=Path(args.operation_specs) if args.operation_specs else None,
+                actor=args.actor,
+            )
+        elif args.command == "delta-apply":
+            result = apply_delta_from_paths(
+                Path(args.predecessor),
+                Path(args.delta),
+                Path(args.output_dir),
+                apply_id=args.apply_id,
                 actor=args.actor,
             )
         elif args.command == "status":
