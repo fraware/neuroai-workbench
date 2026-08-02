@@ -17,6 +17,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
 - Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
+- Independent review acceptance scaffold: append-only disposition schema, local disposition recording module, acceptance and withdrawal runbooks, and Appendix E withheld-claims language. Disposition records do not authorize release or establish institutional-pilot readiness.
 
 ### Changed
 
