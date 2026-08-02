@@ -15,9 +15,7 @@ SCHEMA_PATH = ROOT / "schema" / "archive-inventory.schema.json"
 INVENTORY_PATH = ROOT / "migration" / "archive_inventory.jsonl"
 AMBIGUITIES_PATH = ROOT / "migration" / "unresolved_ambiguities.json"
 
-BOUNDARY = (
-    "Inventory classifies storage lineage only; it does not validate substantive claims."
-)
+BOUNDARY = "Inventory classifies storage lineage only; it does not validate substantive claims."
 
 ABSOLUTE_PATH_RE = re.compile(r"^(?:[A-Za-z]:[\\/]|/|\\\\)")
 SECRET_RE = re.compile(
@@ -104,10 +102,7 @@ def test_inaccessible_external_objects_do_not_invent_hashes() -> None:
 def test_starter_zip_declared_digest_recorded() -> None:
     rows = {row["inventory_id"]: row for row in _load_inventory()}
     starter = rows["INV-EXT-STARTER"]
-    assert (
-        starter["sha256"]
-        == "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0"
-    )
+    assert starter["sha256"] == "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0"
     ambiguities = json.loads(AMBIGUITIES_PATH.read_text(encoding="utf-8"))
     assert ambiguities["starter_zip"]["local_status"] == "INACCESSIBLE"
     assert len(ambiguities["ambiguities"]) >= 4
