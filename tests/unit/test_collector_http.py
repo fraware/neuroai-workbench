@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from tests.unit.test_collector_schemas import CONFIG_HASH, valid_collection_request
 
 from neuroai_workbench.collector import CollectorConfig, HttpCollector, PriorCapture
 from neuroai_workbench.collector.dns import DnsGuard
@@ -16,6 +15,7 @@ from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpRequest
 from neuroai_workbench.collector.schemas import FAILURE_SCHEMA, RESULT_SCHEMA
 from neuroai_workbench.collector.schemas import validate_or_raise as validate_schema
+from tests.unit.test_collector_schemas import CONFIG_HASH, valid_collection_request
 
 GLOBAL_IP = "93.184.216.34"
 PRIVATE_IP = "192.168.1.10"

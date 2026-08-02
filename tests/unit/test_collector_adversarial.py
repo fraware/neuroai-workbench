@@ -4,7 +4,6 @@ import socket
 from pathlib import Path
 
 import pytest
-from tests.unit.test_collector_schemas import CONFIG_HASH, valid_collection_request
 
 from neuroai_workbench.collector import CollectorConfig, PriorCapture
 from neuroai_workbench.collector.dns import DnsGuard
@@ -14,6 +13,7 @@ from neuroai_workbench.collector.quarantine import build_quarantine_record, writ
 from neuroai_workbench.collector.rate_limit import RateLimiter
 from neuroai_workbench.collector.url_policy import public_url_error, validate_public_url
 from tests.unit.test_collector_http import GLOBAL_IP, FakeTransport, _collector, global_getaddrinfo
+from tests.unit.test_collector_schemas import CONFIG_HASH, valid_collection_request
 
 
 def test_public_url_error_cases() -> None:
