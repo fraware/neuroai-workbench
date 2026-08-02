@@ -17,6 +17,9 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
 - Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
+- Append-only observatory monitoring review queue API over monitoring projections, with local named profiles, exclusive leases, immutable opinions, and integrity verification.
+- Accessible local monitoring review UI (`/review.html`) with rebuildable ops-health counts, sandboxed capture diffs, adjudication form scaffolding, and fixture-driven XSS tests.
+- Public data repository bootstrap scaffold (`templates/neuroai-observatory-data/`), deterministic manifest scripts, synthetic release descriptor, governance templates, and operator bootstrap documentation for `fraware/neuroai-observatory-data` (S2; no protected bytes).
 
 ### Changed
 
