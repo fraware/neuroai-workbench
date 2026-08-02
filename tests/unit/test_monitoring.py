@@ -19,7 +19,7 @@ from neuroai_workbench.monitoring import (
 )
 from neuroai_workbench.util import atomic_write_json, load_json
 
-FULL_REGISTRY = Path(__file__).parents[2] / "examples" / "operations" / "SOURCE_MONITOR_REGISTRY_v1.5.json"
+SAMPLE_REGISTRY = Path(__file__).parents[2] / "examples" / "operations" / "SOURCE_MONITOR_REGISTRY_SAMPLE.json"
 
 
 def small_registry() -> list[dict[str, object]]:
@@ -70,11 +70,12 @@ def initialize(tmp_path: Path) -> Path:
     return workspace
 
 
-def test_full_v1_5_registry_validates() -> None:
-    registry = load_source_registry(FULL_REGISTRY)
+def test_sample_registry_validates_and_surfaces_local_reference() -> None:
+    registry = load_source_registry(SAMPLE_REGISTRY)
     result = validate_source_registry(registry)
     assert result["valid"] is True
-    assert result["counts"]["sources"] == 224
+    assert result["counts"]["sources"] == 3
+    assert any(item["code"] == "NON_PORTABLE_LOCAL_REFERENCE" for item in result["warnings"])
 
 
 def test_legacy_list_normalizes_without_mutating_records() -> None:
