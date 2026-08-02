@@ -9,7 +9,22 @@ This module provides:
 - versioned JSON Schema for typed delta operations (no unrestricted JSON Patch);
 - disposition registers for accepted, rejected, deferred, duplicate, needs-evidence, and unresolved candidates;
 - a deterministic compiler from refresh packages to adjudicated deltas;
-- fail-closed application onto an immutable predecessor (see PR-16).
+- fail-closed application onto an immutable predecessor (this module).
+
+## Application
+
+```python
+from neuroai_workbench.delta import apply_delta
+
+result = apply_delta(predecessor_release, adjudicated_delta, output_dir, apply_id="apply-2026-08-02")
+```
+
+Application writes:
+
+- `candidate-successor.json` — proposed successor (NON_CANONICAL);
+- `apply-manifest.json` — integrity record including delta and predecessor hashes.
+
+The predecessor object and file are never modified. Applying the same delta twice to the same output directory is explicitly rejected.
 
 ## Operation vocabulary
 
