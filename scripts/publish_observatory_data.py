@@ -8,7 +8,12 @@ import json
 import sys
 from pathlib import Path
 
-from neuroai_workbench.publish.data import build_publish_plan, publish_release, verify_publish_staging
+from neuroai_workbench.publish.data import (
+    AUTHORIZED_PUBLIC_RELEASE_SET,
+    build_publish_plan,
+    publish_release,
+    verify_publish_staging,
+)
 
 
 def main() -> int:
@@ -34,7 +39,19 @@ def main() -> int:
         "--fixtures",
         type=Path,
         default=None,
-        help="Approved synthetic fixture directory (defaults to scaffold fixtures/)",
+        help="Approved fixture directory (defaults to scaffold fixtures/ or authorized materialization)",
+    )
+    parser.add_argument(
+        "--release-set",
+        default="synthetic",
+        choices=("synthetic", AUTHORIZED_PUBLIC_RELEASE_SET),
+        help="synthetic CI fixtures, or authorized public governing set from NEUROAI_OPS_WORKSPACE",
+    )
+    parser.add_argument(
+        "--ops-workspace",
+        type=Path,
+        default=None,
+        help="Operations Starter extract root (defaults to NEUROAI_OPS_WORKSPACE)",
     )
     parser.add_argument(
         "--dry-run",
@@ -54,6 +71,8 @@ def main() -> int:
         target=args.target,
         fixture_dir=args.fixtures,
         dry_run=args.dry_run,
+        release_set=args.release_set,
+        ops_workspace=args.ops_workspace,
     )
 
     if args.verify_only:

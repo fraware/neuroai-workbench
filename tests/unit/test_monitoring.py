@@ -7,6 +7,7 @@ import pytest
 from neuroai_workbench.monitoring import (
     adjudicate_change_candidate,
     build_refresh_candidate,
+    build_source_health_report,
     compare_snapshots,
     create_change_candidate,
     initialize_monitoring,
@@ -124,6 +125,17 @@ def test_plan_uses_cadence_and_baseline_date(tmp_path: Path) -> None:
     assert plan["counts"] == {"due": 1, "manual": 0, "not_due": 1}
     assert plan["due"][0]["source_id"] == "SRC-0001"
     assert plan["due"][0]["overdue_days"] == 25
+
+
+def test_source_health_reconciles_plan_without_silent_drop(tmp_path: Path) -> None:
+    workspace = initialize(tmp_path)
+    plan = plan_monitoring_run(workspace, as_of="2026-08-02")
+    health = build_source_health_report(workspace, as_of="2026-08-02", plan=plan)
+    assert health["counts"]["sources"] == 2
+    assert health["counts"]["silent_drop"] == 0
+    assert health["counts"]["due"] == plan["counts"]["due"]
+    assert {item["source_id"] for item in health["sources"]} == {"SRC-0001", "SRC-0002"}
+    assert health["registry_sha256"] == monitoring_status(workspace)["registry_sha256"]
 
 
 def test_plan_rejects_unknown_source(tmp_path: Path) -> None:

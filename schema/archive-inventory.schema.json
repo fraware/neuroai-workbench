@@ -92,6 +92,12 @@
     "workbench_path": {
       "type": ["string", "null"]
     },
+    "ops_relpath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relative path under NEUROAI_OPS_WORKSPACE using forward slashes. Absolute paths are forbidden.",
+      "pattern": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$"
+    },
     "notes": {
       "type": "string"
     },

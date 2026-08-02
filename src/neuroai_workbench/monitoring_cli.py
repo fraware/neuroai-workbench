@@ -11,6 +11,7 @@ from .delta.workspace import compile_delta_from_workspace
 from .monitoring import (
     adjudicate_change_candidate,
     build_refresh_candidate,
+    build_source_health_report,
     compare_snapshots,
     create_change_candidate,
     initialize_monitoring,
@@ -120,6 +121,14 @@ def build_parser() -> argparse.ArgumentParser:
     command = sub.add_parser("status", help="Summarize monitoring state")
     command.add_argument("workspace")
     command.add_argument("--out")
+
+    command = sub.add_parser(
+        "source-health",
+        help="Emit structured source-health report (due/overdue/manual, failures, obsolete flags)",
+    )
+    command.add_argument("workspace")
+    command.add_argument("--as-of")
+    command.add_argument("--out")
     return parser
 
 
@@ -189,6 +198,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         elif args.command == "status":
             result = monitoring_status(Path(args.workspace))
+        elif args.command == "source-health":
+            result = build_source_health_report(Path(args.workspace), as_of=args.as_of)
         else:  # pragma: no cover - argparse prevents this path.
             parser.error("Unknown command")
         emit(result, Path(args.out) if args.out else None)

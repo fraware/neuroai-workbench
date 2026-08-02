@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "title": "Public redacted shadow cohort ID list",
+    "cohort_id": "SHADOW-COHORT-202608",
+    "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+    "evaluation_issue": "#43",
+    "boundary": "Public IDs and allowlisted URLs only. Does not authorize live crawl or canonical mutation."
+  },
+  "source_ids": [
+    "SRC-0034",
+    "SRC-0039",
+    "SRC-0046",
+    "SRC-0031",
+    "SRC-0045",
+    "SRC-0013",
+    "SRC-0047",
+    "SRC-0169",
+    "SRC-0038",
+    "SRC-0040",
+    "SRC-0004",
+    "SRC-0115",
+    "SRC-14-032",
+    "SRC-0121",
+    "SRC-0124",
+    "SRC-14-007"
+  ]
+}

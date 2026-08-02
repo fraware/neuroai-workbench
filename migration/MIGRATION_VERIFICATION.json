@@ -1,16 +1,18 @@
 {
   "schema_version": "1.0",
   "ruleset": "GOVERNING-INPUT-MIGRATION-v1",
-  "recorded_at": "2026-08-02T14:00:00Z",
+  "recorded_at": "2026-08-02T18:00:00Z",
   "boundary": "Governing-input migration records storage lineage, digests, and adapter outcomes only. It does not validate substantive claims, confer authorization, or establish conformance.",
   "inventory_source": "migration/archive_inventory.jsonl",
   "ambiguities_source": "migration/unresolved_ambiguities.json",
+  "decisions_source": "migration/MIGRATION_DECISIONS.jsonl",
   "records": [
     {
       "inventory_id": "INV-OBS-V14",
       "family": "OBSERVATORY_V1_4",
       "archive_key": "workbench/examples/observatory/evidence_depth_release_v1.4.json",
       "workbench_path": "examples/observatory/evidence_depth_release_v1.4.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -34,6 +36,7 @@
       "family": "OBSERVATORY_V1_7",
       "archive_key": "workbench/examples/observatory/canonical_successor_snapshot_v1.7.json",
       "workbench_path": "examples/observatory/canonical_successor_snapshot_v1.7.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -44,8 +47,9 @@
           "warning_id": "WARN-OBS-V17-PREDECESSOR",
           "code": "INACCESSIBLE_PREDECESSOR_DELTA",
           "severity": "MATERIAL",
-          "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain INACCESSIBLE.",
-          "human_disposition": "PENDING_REVIEW"
+          "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain unavailable to this verification run.",
+          "human_disposition": "ACCEPTED",
+          "decision_id": "DEC-WARN-OBS-V17-PREDECESSOR"
         }
       ],
       "human_disposition": "PENDING_REVIEW",
@@ -65,6 +69,7 @@
       "family": "ASSESSMENT_V4_2",
       "archive_key": "workbench/examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
       "workbench_path": "examples/assessments/PRIMA_Controlled_Assessment_v4.2.1.native.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -89,6 +94,7 @@
       "family": "ASSESSMENT_V4_2",
       "archive_key": "workbench/examples/assessments/PILOT-01_BrainGate2_T15_v4.2.json",
       "workbench_path": "examples/assessments/PILOT-01_BrainGate2_T15_v4.2.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -113,6 +119,7 @@
       "family": "ASSESSMENT_V4_2",
       "archive_key": "workbench/examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json",
       "workbench_path": "examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -137,6 +144,7 @@
       "family": "ASSESSMENT_V4_2",
       "archive_key": "workbench/examples/assessments/PILOT-05_Brain2Qwerty_v4.2.json",
       "workbench_path": "examples/assessments/PILOT-05_Brain2Qwerty_v4.2.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "PUBLIC_CANONICAL_DATA",
@@ -161,6 +169,7 @@
       "family": "SOURCE_REGISTRY",
       "archive_key": "workbench/examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json",
       "workbench_path": "examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_SYNTHETIC",
       "store_target": "SOFTWARE_REPO",
@@ -169,10 +178,11 @@
       "material_warnings": [
         {
           "warning_id": "WARN-REG-SAMPLE-ONLY",
-          "code": "INACCESSIBLE_FULL_REGISTRY",
+          "code": "CI_SAMPLE_REGISTRY",
           "severity": "MATERIAL",
-          "message": "Only the synthetic SOURCE_MONITOR_REGISTRY sample is present; full v1.5 registry bytes remain INACCESSIBLE.",
-          "human_disposition": "PENDING_REVIEW"
+          "message": "Synthetic SOURCE_MONITOR_REGISTRY sample used for CI; full v1.5 registry is INV-EXT-REG-V15 under ops workspace.",
+          "human_disposition": "ACCEPTED",
+          "decision_id": "DEC-WARN-REG-SAMPLE-ONLY"
         }
       ],
       "human_disposition": "PENDING_REVIEW",
@@ -192,6 +202,7 @@
       "family": "POLICY",
       "archive_key": "workbench/examples/operations/MONITORING_POLICY_v1.json",
       "workbench_path": "examples/operations/MONITORING_POLICY_v1.json",
+      "ops_relpath": null,
       "governing": false,
       "classification": "PUBLIC_SYNTHETIC",
       "store_target": "SOFTWARE_REPO",
@@ -214,6 +225,7 @@
       "family": "POLICY",
       "archive_key": "workbench/examples/operations/REOPENING_POLICY_v1.json",
       "workbench_path": "examples/operations/REOPENING_POLICY_v1.json",
+      "ops_relpath": null,
       "governing": false,
       "classification": "PUBLIC_SYNTHETIC",
       "store_target": "SOFTWARE_REPO",
@@ -236,6 +248,7 @@
       "family": "PROGRAMME_ADAPTER",
       "archive_key": "workbench/examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json",
       "workbench_path": "examples/programme/PRIMA_COMPLETED_ASSESSMENT_v4.2.1.programme.json",
+      "ops_relpath": null,
       "governing": true,
       "classification": "PUBLIC_REFERENCE",
       "store_target": "SOFTWARE_REPO",
@@ -259,6 +272,7 @@
       "family": "PROGRAMME_ADAPTER",
       "archive_key": "workbench/examples/programme/PRIMA_Controlled_Assessment_v4.2.1.adapter-report.json",
       "workbench_path": "examples/programme/PRIMA_Controlled_Assessment_v4.2.1.adapter-report.json",
+      "ops_relpath": null,
       "governing": false,
       "classification": "GENERATED",
       "store_target": "GENERATED_ARTIFACTS",
@@ -281,51 +295,88 @@
       "family": "EXTERNAL_ARCHIVE",
       "archive_key": "external/NeuroAI_Operations_Starter_v0.1.0.zip",
       "workbench_path": null,
+      "ops_relpath": null,
       "governing": false,
-      "classification": "INACCESSIBLE",
+      "classification": "HISTORICAL",
       "store_target": "IMMUTABLE_ARCHIVE",
       "adapter_id": "external-archive-adapter",
       "adapter_version": "1",
       "material_warnings": [],
       "human_disposition": "PENDING_REVIEW",
-      "access_state": "NOT_RECORDED",
-      "source_sha256": "NOT_RECORDED",
-      "size_bytes": 0,
+      "access_state": "DIGEST_VERIFIED_EXTERNAL",
+      "source_sha256": "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0",
+      "size_bytes": 221520,
       "lineage_digest": "UNKNOWN",
       "migration_state": "SKIPPED",
       "validation": {
-        "valid": false,
-        "reason": "Declared starter archive digest from programme plan. Bytes are external and not committed; size_bytes 0 until local verify. Archive remains read-only for daily ops."
+        "valid": true,
+        "reason": "Non-governing inventory object recorded but not migrated."
+      }
+    },
+    {
+      "inventory_id": "INV-EXT-V16-REFRESH",
+      "family": "OBSERVATORY_V1_6",
+      "archive_key": "external/archive/CANONICAL_LIVE_REFRESH_RELEASE_v1.6.json",
+      "workbench_path": null,
+      "ops_relpath": "05_RELEASES/historical/CANONICAL_LIVE_REFRESH_RELEASE_v1.6.json",
+      "governing": true,
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "observatory-v1.6-adapter",
+      "adapter_version": "1",
+      "material_warnings": [
+        {
+          "warning_id": "WARN-INV-EXT-V16-REFRESH-OPS",
+          "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
+          "severity": "MATERIAL",
+          "message": "Digest verified in inventory for INV-EXT-V16-REFRESH; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+          "human_disposition": "ACCEPTED",
+          "decision_id": "DEC-WARN-INV-EXT-V16-REFRESH-OPS"
+        }
+      ],
+      "human_disposition": "PENDING_REVIEW",
+      "access_state": "DIGEST_VERIFIED_EXTERNAL",
+      "source_sha256": "937b2fcd807392e64f946f88a89756cc91890cc6db9f98e519035725e46c7035",
+      "size_bytes": 26240,
+      "lineage_digest": "UNKNOWN",
+      "migration_state": "DIGEST_RECORDED",
+      "validation": {
+        "valid": true,
+        "reason": "Digest verified in inventory for INV-EXT-V16-REFRESH; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+        "ops_required": true
       }
     },
     {
       "inventory_id": "INV-EXT-V16-DELTA",
       "family": "OBSERVATORY_V1_6",
-      "archive_key": "external/archive/observatory_v1.6_live_refresh_delta.json",
+      "archive_key": "external/archive/ADJUDICATED_DELTA_v1.6.json",
       "workbench_path": null,
+      "ops_relpath": "05_RELEASES/historical/ADJUDICATED_DELTA_v1.6.json",
       "governing": true,
-      "classification": "UNRESOLVED",
-      "store_target": "UNRESOLVED",
-      "adapter_id": "observatory-v1.6-inaccessible-adapter",
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
+      "adapter_id": "observatory-v1.6-adapter",
       "adapter_version": "1",
       "material_warnings": [
         {
-          "warning_id": "WARN-INV-EXT-V16-DELTA",
-          "code": "INACCESSIBLE_GOVERNING_OBJECT",
+          "warning_id": "WARN-INV-EXT-V16-DELTA-OPS",
+          "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
           "severity": "MATERIAL",
-          "message": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo.",
-          "human_disposition": "PENDING_REVIEW"
+          "message": "Digest verified in inventory for INV-EXT-V16-DELTA; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+          "human_disposition": "ACCEPTED",
+          "decision_id": "DEC-WARN-INV-EXT-V16-DELTA-OPS"
         }
       ],
       "human_disposition": "PENDING_REVIEW",
-      "access_state": "INACCESSIBLE",
-      "source_sha256": "INACCESSIBLE",
-      "size_bytes": 0,
+      "access_state": "DIGEST_VERIFIED_EXTERNAL",
+      "source_sha256": "49ef4944e4dd7e5d4b3534926e41220a1493ef12d68965a7b6caa4431524b0c5",
+      "size_bytes": 4058,
       "lineage_digest": "UNKNOWN",
-      "migration_state": "BLOCKED",
+      "migration_state": "DIGEST_RECORDED",
       "validation": {
-        "valid": false,
-        "reason": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo."
+        "valid": true,
+        "reason": "Digest verified in inventory for INV-EXT-V16-DELTA; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+        "ops_required": true
       }
     },
     {
@@ -333,29 +384,32 @@
       "family": "SOURCE_REGISTRY",
       "archive_key": "external/archive/SOURCE_MONITOR_REGISTRY_v1.5.json",
       "workbench_path": null,
+      "ops_relpath": "01_CONFIG/source_monitor_registry_v1.5.json",
       "governing": true,
-      "classification": "UNRESOLVED",
-      "store_target": "UNRESOLVED",
+      "classification": "PUBLIC_REFERENCE",
+      "store_target": "PUBLIC_CANONICAL_DATA",
       "adapter_id": "source-registry-adapter",
       "adapter_version": "1",
       "material_warnings": [
         {
-          "warning_id": "WARN-INV-EXT-REG-V15",
-          "code": "INACCESSIBLE_GOVERNING_OBJECT",
+          "warning_id": "WARN-INV-EXT-REG-V15-OPS",
+          "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
           "severity": "MATERIAL",
-          "message": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo.",
-          "human_disposition": "PENDING_REVIEW"
+          "message": "Digest verified in inventory for INV-EXT-REG-V15; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+          "human_disposition": "ACCEPTED",
+          "decision_id": "DEC-WARN-INV-EXT-REG-V15-OPS"
         }
       ],
       "human_disposition": "PENDING_REVIEW",
-      "access_state": "INACCESSIBLE",
-      "source_sha256": "INACCESSIBLE",
-      "size_bytes": 0,
+      "access_state": "DIGEST_VERIFIED_EXTERNAL",
+      "source_sha256": "1d1f9774a3ad559792fa2bc7e459a4a65c6574ec14fa0b1501240bbb18dcc315",
+      "size_bytes": 167593,
       "lineage_digest": "UNKNOWN",
-      "migration_state": "BLOCKED",
+      "migration_state": "DIGEST_RECORDED",
       "validation": {
-        "valid": false,
-        "reason": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo."
+        "valid": true,
+        "reason": "Digest verified in inventory for INV-EXT-REG-V15; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+        "ops_required": true
       }
     },
     {
@@ -363,6 +417,7 @@
       "family": "EXTERNAL_ARCHIVE",
       "archive_key": "external/archive/combined_observatory_workbook.xlsx",
       "workbench_path": null,
+      "ops_relpath": null,
       "governing": false,
       "classification": "INACCESSIBLE",
       "store_target": "GENERATED_ARTIFACTS",
@@ -377,7 +432,7 @@
       "migration_state": "SKIPPED",
       "validation": {
         "valid": false,
-        "reason": "Historical combined workbook treated as generated view / reconciliation target, never master database."
+        "reason": "Historical combined workbook treated as generated view / reconciliation target, never master database. Not present in Operations Starter v0.1.0 (AMB-003 residual)."
       }
     }
   ],
@@ -386,57 +441,75 @@
       "warning_id": "WARN-OBS-V17-PREDECESSOR",
       "code": "INACCESSIBLE_PREDECESSOR_DELTA",
       "severity": "MATERIAL",
-      "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain INACCESSIBLE.",
-      "human_disposition": "PENDING_REVIEW"
+      "message": "Successor snapshot references predecessor v1.6; governing v1.6 delta bytes remain unavailable to this verification run.",
+      "human_disposition": "ACCEPTED",
+      "decision_id": "DEC-WARN-OBS-V17-PREDECESSOR"
     },
     {
       "warning_id": "WARN-REG-SAMPLE-ONLY",
-      "code": "INACCESSIBLE_FULL_REGISTRY",
+      "code": "CI_SAMPLE_REGISTRY",
       "severity": "MATERIAL",
-      "message": "Only the synthetic SOURCE_MONITOR_REGISTRY sample is present; full v1.5 registry bytes remain INACCESSIBLE.",
-      "human_disposition": "PENDING_REVIEW"
+      "message": "Synthetic SOURCE_MONITOR_REGISTRY sample used for CI; full v1.5 registry is INV-EXT-REG-V15 under ops workspace.",
+      "human_disposition": "ACCEPTED",
+      "decision_id": "DEC-WARN-REG-SAMPLE-ONLY"
     },
     {
-      "warning_id": "WARN-INV-EXT-V16-DELTA",
-      "code": "INACCESSIBLE_GOVERNING_OBJECT",
+      "warning_id": "WARN-INV-EXT-V16-REFRESH-OPS",
+      "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
       "severity": "MATERIAL",
-      "message": "Governing v1.6 live-refresh / adjudicated delta expected in external archive; not present in software repo.",
-      "human_disposition": "PENDING_REVIEW"
+      "message": "Digest verified in inventory for INV-EXT-V16-REFRESH; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+      "human_disposition": "ACCEPTED",
+      "decision_id": "DEC-WARN-INV-EXT-V16-REFRESH-OPS"
     },
     {
-      "warning_id": "WARN-INV-EXT-REG-V15",
-      "code": "INACCESSIBLE_GOVERNING_OBJECT",
+      "warning_id": "WARN-INV-EXT-V16-DELTA-OPS",
+      "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
       "severity": "MATERIAL",
-      "message": "Full 224-source v1.5 registry cited by operations docs; bytes not in public software repo.",
-      "human_disposition": "PENDING_REVIEW"
+      "message": "Digest verified in inventory for INV-EXT-V16-DELTA; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+      "human_disposition": "ACCEPTED",
+      "decision_id": "DEC-WARN-INV-EXT-V16-DELTA-OPS"
+    },
+    {
+      "warning_id": "WARN-INV-EXT-REG-V15-OPS",
+      "code": "OPS_WORKSPACE_REQUIRED_FOR_FULL_ADAPT",
+      "severity": "MATERIAL",
+      "message": "Digest verified in inventory for INV-EXT-REG-V15; set NEUROAI_OPS_WORKSPACE to adapt bytes. Bytes are not committed to the software repo.",
+      "human_disposition": "ACCEPTED",
+      "decision_id": "DEC-WARN-INV-EXT-REG-V15-OPS"
     }
   ],
   "summary": {
-    "inventory_records": 15,
-    "governing_records": 10,
-    "accessible": 11,
-    "inaccessible": 4,
+    "inventory_records": 16,
+    "governing_records": 11,
+    "accessible": 15,
+    "inaccessible": 1,
     "migrated": 8,
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 5,
-    "material_warnings": 4
+    "digest_recorded": 3,
+    "material_warnings": 5
   },
   "unresolved_ambiguities": {
     "schema_version": "1.0",
-    "recorded_at": "2026-08-02T14:00:00Z",
+    "recorded_at": "2026-08-02T18:00:00Z",
     "boundary": "Unresolved ambiguities record migration blockers. They do not imply substantive FAIL for assessments or authorization.",
     "starter_zip": {
       "declared_name": "NeuroAI_Operations_Starter_v0.1.0.zip",
       "declared_sha256": "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0",
-      "local_status": "INACCESSIBLE",
-      "notes": "External artifact; not committed to neuroai-workbench. Phase A records the declared digest only."
+      "size_bytes": 221520,
+      "local_status": "ACCESSIBLE",
+      "notes": "Verified locally under NEUROAI_OPS_WORKSPACE. External artifact; never committed to neuroai-workbench."
+    },
+    "ops_workspace": {
+      "env_var": "NEUROAI_OPS_WORKSPACE",
+      "notes": "Absolute path must not be hardcoded into committed JSON. Point at the extracted starter root containing 01_CONFIG/ and 05_RELEASES/."
     },
     "ambiguities": [
       {
         "ambiguity_id": "AMB-001",
         "topic": "Full SOURCE_MONITOR_REGISTRY_v1.5.json",
-        "status": "INACCESSIBLE",
-        "impact": "Phase C registry migration blocked until archive object is available under read-only inventory.",
+        "status": "RESOLVED_OPS_DIGEST_VERIFIED",
+        "impact": "Digest and size recorded; bytes accessible via NEUROAI_OPS_WORKSPACE ops_relpath. Public redistribution deferred to authorized data release.",
         "related_inventory_ids": [
           "INV-EXT-REG-V15",
           "INV-REG-SAMPLE"
@@ -445,9 +518,10 @@
       {
         "ambiguity_id": "AMB-002",
         "topic": "Observatory v1.6 live-refresh and adjudicated delta",
-        "status": "INACCESSIBLE",
-        "impact": "Governing v1.6 family not present as public fixture; successor work must not invent delta fields.",
+        "status": "RESOLVED_OPS_DIGEST_VERIFIED",
+        "impact": "v1.6 refresh and delta digests recorded; bytes accessible via NEUROAI_OPS_WORKSPACE. Public redistribution deferred to authorized data release.",
         "related_inventory_ids": [
+          "INV-EXT-V16-REFRESH",
           "INV-EXT-V16-DELTA"
         ]
       },
@@ -455,7 +529,7 @@
         "ambiguity_id": "AMB-003",
         "topic": "Combined Excel/Word master reconciliation corpus",
         "status": "INACCESSIBLE",
-        "impact": "Record-count reconciliation against historical workbook deferred until archive verify; products remain generated views.",
+        "impact": "Not present in Operations Starter v0.1.0. Record-count reconciliation against historical workbook deferred; products remain generated views reconciled to canonical JSON only.",
         "related_inventory_ids": [
           "INV-EXT-COMBINED-XLSX"
         ]
@@ -463,13 +537,17 @@
       {
         "ambiguity_id": "AMB-004",
         "topic": "neuroai-observatory-data repository creation",
-        "status": "PENDING_ADMIN",
-        "impact": "Phase B requires org/user admin to create the public data repository with branch protection.",
-        "related_inventory_ids": []
+        "status": "RESOLVED_REPO_EXISTS",
+        "impact": "Public data repository exists at https://github.com/fraware/neuroai-observatory-data. First authorized content release remains a separate Phase H action.",
+        "related_inventory_ids": [],
+        "url": "https://github.com/fraware/neuroai-observatory-data"
       }
     ]
   },
-  "human_disposition": "PENDING_REVIEW",
-  "verification_id": "MIG-VERIFY-CB923C16D6EA",
-  "verification_digest": "cb923c16d6ea01dd426c53c0023989bc734b273f053f09316df511c14a8c4887"
+  "residuals": [
+    "AMB-003"
+  ],
+  "human_disposition": "ACCEPTED_WITH_RESIDUALS",
+  "verification_id": "MIG-VERIFY-65F9B60FF997",
+  "verification_digest": "65f9b60ff997f53ae5507437ca4f93f8ab4e50575ad84b65c5bdb890214e1117"
 }

@@ -28,6 +28,12 @@ def test_monitoring_cli_lifecycle(tmp_path: Path) -> None:
     assert main(["plan", str(workspace), "--as-of", "2026-12-31", "--out", str(plan)]) == 0
     assert load_json(plan)["counts"]["due"] >= 2
 
+    health_out = tmp_path / "health.json"
+    assert main(["source-health", str(workspace), "--as-of", "2026-12-31", "--out", str(health_out)]) == 0
+    health = load_json(health_out)
+    assert health["counts"]["sources"] == 3
+    assert health["counts"]["silent_drop"] == 0
+
     first_file = tmp_path / "first.txt"
     first_file.write_text("alpha\n", encoding="utf-8")
     first_out = tmp_path / "first.json"

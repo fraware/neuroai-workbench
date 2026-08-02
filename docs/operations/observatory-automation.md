@@ -39,9 +39,33 @@ The initial operational state is seeded from the programme's controlled assets:
 
 The source registry may retain legacy `CONTROLLED_LOCAL_INPUT` paths as provenance. Those paths are reported as non-portable and should be migrated to content-addressed workspace objects before operational reuse.
 
+## Ops workspace (full 224-source registry)
+
+Set `NEUROAI_OPS_WORKSPACE` to the extracted Operations Starter root (directory containing `01_CONFIG/` and `05_RELEASES/`). The full registry is never committed to this software repository.
+
+```bash
+export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
+
+neuroai-monitor registry-validate \
+  "$NEUROAI_OPS_WORKSPACE/01_CONFIG/source_monitor_registry_v1.5.json"
+
+neuroai-monitor init "$NEUROAI_OPS_WORKSPACE/03_WORKBENCH" \
+  "$NEUROAI_OPS_WORKSPACE/01_CONFIG/source_monitor_registry_v1.5.json"
+
+neuroai-monitor plan "$NEUROAI_OPS_WORKSPACE/03_WORKBENCH" \
+  --as-of 2026-08-02 \
+  --out "$NEUROAI_OPS_WORKSPACE/04_REVIEW_QUEUE/ops-monitor-plan.json"
+
+neuroai-monitor source-health "$NEUROAI_OPS_WORKSPACE/03_WORKBENCH" \
+  --as-of 2026-08-02 \
+  --out "$NEUROAI_OPS_WORKSPACE/04_REVIEW_QUEUE/source-health.json"
+```
+
+Integration tests under `tests/integration/` skip unless `NEUROAI_OPS_WORKSPACE` is set. CI continues to use the three-record synthetic sample below.
+
 ## Commands
 
-Validate the exact legacy registry:
+Validate the CI sample registry:
 
 ```bash
 neuroai-monitor registry-validate \
@@ -61,6 +85,14 @@ Generate the due-source plan without making network requests:
 neuroai-monitor plan workspaces/operations \
   --as-of 2026-08-02 \
   --out artifacts/monitor-plan.json
+```
+
+Emit a structured source-health report (due/overdue/manual, failure class, obsolete/controlled-local flags):
+
+```bash
+neuroai-monitor source-health workspaces/operations \
+  --as-of 2026-08-02 \
+  --out artifacts/source-health.json
 ```
 
 Register bytes captured by an approved external collector:

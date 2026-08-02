@@ -1,41 +1,47 @@
 {
   "schema_version": "1.0",
-  "recorded_at": "2026-08-02T14:00:00Z",
+  "recorded_at": "2026-08-02T18:00:00Z",
   "boundary": "Unresolved ambiguities record migration blockers. They do not imply substantive FAIL for assessments or authorization.",
   "starter_zip": {
     "declared_name": "NeuroAI_Operations_Starter_v0.1.0.zip",
     "declared_sha256": "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0",
-    "local_status": "INACCESSIBLE",
-    "notes": "External artifact; not committed to neuroai-workbench. Phase A records the declared digest only."
+    "size_bytes": 221520,
+    "local_status": "ACCESSIBLE",
+    "notes": "Verified locally under NEUROAI_OPS_WORKSPACE. External artifact; never committed to neuroai-workbench."
+  },
+  "ops_workspace": {
+    "env_var": "NEUROAI_OPS_WORKSPACE",
+    "notes": "Absolute path must not be hardcoded into committed JSON. Point at the extracted starter root containing 01_CONFIG/ and 05_RELEASES/."
   },
   "ambiguities": [
     {
       "ambiguity_id": "AMB-001",
       "topic": "Full SOURCE_MONITOR_REGISTRY_v1.5.json",
-      "status": "INACCESSIBLE",
-      "impact": "Phase C registry migration blocked until archive object is available under read-only inventory.",
+      "status": "RESOLVED_OPS_DIGEST_VERIFIED",
+      "impact": "Digest and size recorded; bytes accessible via NEUROAI_OPS_WORKSPACE ops_relpath. Public redistribution deferred to authorized data release.",
       "related_inventory_ids": ["INV-EXT-REG-V15", "INV-REG-SAMPLE"]
     },
     {
       "ambiguity_id": "AMB-002",
       "topic": "Observatory v1.6 live-refresh and adjudicated delta",
-      "status": "INACCESSIBLE",
-      "impact": "Governing v1.6 family not present as public fixture; successor work must not invent delta fields.",
-      "related_inventory_ids": ["INV-EXT-V16-DELTA"]
+      "status": "RESOLVED_OPS_DIGEST_VERIFIED",
+      "impact": "v1.6 refresh and delta digests recorded; bytes accessible via NEUROAI_OPS_WORKSPACE. Public redistribution deferred to authorized data release.",
+      "related_inventory_ids": ["INV-EXT-V16-REFRESH", "INV-EXT-V16-DELTA"]
     },
     {
       "ambiguity_id": "AMB-003",
       "topic": "Combined Excel/Word master reconciliation corpus",
       "status": "INACCESSIBLE",
-      "impact": "Record-count reconciliation against historical workbook deferred until archive verify; products remain generated views.",
+      "impact": "Not present in Operations Starter v0.1.0. Record-count reconciliation against historical workbook deferred; products remain generated views reconciled to canonical JSON only.",
       "related_inventory_ids": ["INV-EXT-COMBINED-XLSX"]
     },
     {
       "ambiguity_id": "AMB-004",
       "topic": "neuroai-observatory-data repository creation",
-      "status": "PENDING_ADMIN",
-      "impact": "Phase B requires org/user admin to create the public data repository with branch protection.",
-      "related_inventory_ids": []
+      "status": "RESOLVED_REPO_EXISTS",
+      "impact": "Public data repository exists at https://github.com/fraware/neuroai-observatory-data. First authorized content release remains a separate Phase H action.",
+      "related_inventory_ids": [],
+      "url": "https://github.com/fraware/neuroai-observatory-data"
     }
   ]
 }

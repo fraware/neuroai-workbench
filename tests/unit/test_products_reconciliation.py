@@ -20,13 +20,14 @@ def test_narrative_and_dashboard_are_deterministic() -> None:
 
 
 def test_cross_format_reconciliation(tmp_path: Path) -> None:
-    query = query_release(COMPACT)
-    report = generate_publication_set(COMPACT, tmp_path)
+    query = query_release(COMPACT, limit=None)
+    report = generate_publication_set(COMPACT, tmp_path, limit=None)
     reconciliation = reconcile_formats(query, report["products"])
     assert reconciliation["reconciled"] is True
     assert reconciliation["checks"]["markdown_contains_release_hash"] is True
     assert reconciliation["checks"]["html_contains_release_hash"] is True
-    assert reconciliation["checks"]["pdf_stub_contains_release_hash"] is True
+    assert reconciliation["checks"]["pdf_contains_release_hash"] is True
+    assert reconciliation["checks"]["docx_exists"] is True
 
 
 def test_dashboard_includes_a11y_structure() -> None:

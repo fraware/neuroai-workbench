@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "schema" / "archive-inventory.schema.json"
 INVENTORY_PATH = ROOT / "migration" / "archive_inventory.jsonl"
 AMBIGUITIES_PATH = ROOT / "migration" / "unresolved_ambiguities.json"
+DECISIONS_PATH = ROOT / "migration" / "MIGRATION_DECISIONS.jsonl"
 
 BOUNDARY = "Inventory classifies storage lineage only; it does not validate substantive claims."
 
@@ -58,6 +59,7 @@ def test_governing_objects_present() -> None:
         "INV-ASM-B2Q",
         "INV-REG-SAMPLE",
         "INV-EXT-V16-DELTA",
+        "INV-EXT-V16-REFRESH",
         "INV-EXT-REG-V15",
     }
     assert required <= governing
@@ -88,23 +90,51 @@ def test_no_absolute_paths_or_secrets_in_public_inventory() -> None:
         if row.get("workbench_path"):
             assert ABSOLUTE_PATH_RE.search(row["workbench_path"]) is None
             assert not Path(row["workbench_path"]).is_absolute()
+        if row.get("ops_relpath"):
+            assert ABSOLUTE_PATH_RE.search(row["ops_relpath"]) is None
+            assert "\\" not in row["ops_relpath"]
+            assert not Path(row["ops_relpath"]).is_absolute()
         assert row["boundary"] == BOUNDARY
 
 
-def test_inaccessible_external_objects_do_not_invent_hashes() -> None:
+def test_external_digest_verified_objects_have_hashes() -> None:
     rows = {row["inventory_id"]: row for row in _load_inventory()}
-    for inv_id in ("INV-EXT-V16-DELTA", "INV-EXT-REG-V15", "INV-EXT-COMBINED-XLSX"):
-        assert rows[inv_id]["sha256"] in {"INACCESSIBLE", "NOT_YET_VERIFIED"}
-        assert rows[inv_id]["size_bytes"] == 0
+    for inv_id, expected_sha, expected_size in (
+        ("INV-EXT-REG-V15", "1d1f9774a3ad559792fa2bc7e459a4a65c6574ec14fa0b1501240bbb18dcc315", 167593),
+        ("INV-EXT-V16-REFRESH", "937b2fcd807392e64f946f88a89756cc91890cc6db9f98e519035725e46c7035", 26240),
+        ("INV-EXT-V16-DELTA", "49ef4944e4dd7e5d4b3534926e41220a1493ef12d68965a7b6caa4431524b0c5", 4058),
+    ):
+        assert rows[inv_id]["sha256"] == expected_sha
+        assert rows[inv_id]["size_bytes"] == expected_size
+        assert rows[inv_id]["ops_relpath"]
+    assert rows["INV-EXT-COMBINED-XLSX"]["sha256"] == "INACCESSIBLE"
+    assert rows["INV-EXT-COMBINED-XLSX"]["size_bytes"] == 0
 
 
-def test_starter_zip_declared_digest_recorded() -> None:
+def test_starter_zip_verified_locally() -> None:
     rows = {row["inventory_id"]: row for row in _load_inventory()}
     starter = rows["INV-EXT-STARTER"]
     assert starter["sha256"] == "7f9162bff65e3572a9d148ba2fb7ad86439a93ab111597a97861a82554a207b0"
+    assert starter["size_bytes"] == 221520
     ambiguities = json.loads(AMBIGUITIES_PATH.read_text(encoding="utf-8"))
-    assert ambiguities["starter_zip"]["local_status"] == "INACCESSIBLE"
-    assert len(ambiguities["ambiguities"]) >= 4
+    assert ambiguities["starter_zip"]["local_status"] == "ACCESSIBLE"
+    by_id = {item["ambiguity_id"]: item for item in ambiguities["ambiguities"]}
+    assert by_id["AMB-001"]["status"] == "RESOLVED_OPS_DIGEST_VERIFIED"
+    assert by_id["AMB-002"]["status"] == "RESOLVED_OPS_DIGEST_VERIFIED"
+    assert by_id["AMB-003"]["status"] == "INACCESSIBLE"
+    assert by_id["AMB-004"]["status"] == "RESOLVED_REPO_EXISTS"
+    assert "neuroai-observatory-data" in by_id["AMB-004"]["url"]
+
+
+def test_migration_decisions_close_material_items() -> None:
+    assert DECISIONS_PATH.is_file()
+    decisions = [json.loads(line) for line in DECISIONS_PATH.read_text(encoding="utf-8").splitlines() if line.strip()]
+    subjects = {item["subject_id"] for item in decisions}
+    assert "AMB-003" in subjects
+    assert "MIGRATION_VERIFICATION" in subjects
+    top = next(item for item in decisions if item["subject_id"] == "MIGRATION_VERIFICATION")
+    assert top["disposition"] == "ACCEPTED_WITH_RESIDUALS"
+    assert "AMB-003" in top["residuals"]
 
 
 def test_schema_rejects_absolute_archive_key_and_extra_properties() -> None:
@@ -122,5 +152,5 @@ def test_coverage_includes_all_roles_used() -> None:
     roles = {row["role"] for row in _load_inventory()}
     assert "CANONICAL_INPUT" in roles
     assert "GENERATED_VIEW" in roles
-    assert "UNRESOLVED" in roles
     assert "HISTORICAL_ONLY" in roles
+    assert "OPERATIONS_POLICY" in roles

@@ -91,3 +91,59 @@ def test_publish_is_deterministic_for_fixture_hashes(tmp_path: Path) -> None:
     manifest_a = (staging_a / "releases" / "data-v0.0.1-bootstrap" / "SHA256SUMS.txt").read_text(encoding="utf-8")
     manifest_b = (staging_b / "releases" / "data-v0.0.1-bootstrap" / "SHA256SUMS.txt").read_text(encoding="utf-8")
     assert manifest_a == manifest_b
+
+
+def test_authorized_public_release_set_requires_ops_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from neuroai_workbench.migration_ops.constants import OPS_WORKSPACE_ENV
+    from neuroai_workbench.publish.data import AUTHORIZED_PUBLIC_RELEASE_SET
+
+    monkeypatch.delenv(OPS_WORKSPACE_ENV, raising=False)
+    with pytest.raises(FileNotFoundError, match=OPS_WORKSPACE_ENV):
+        build_publish_plan(
+            release_tag="data-v0.1.0-public-governing",
+            staging_root=tmp_path / "staging",
+            target=SCAFFOLD,
+            release_set=AUTHORIZED_PUBLIC_RELEASE_SET,
+        )
+
+
+def test_authorized_public_release_set_publishes_from_explicit_ops(tmp_path: Path) -> None:
+    from neuroai_workbench.publish.data import AUTHORIZED_PUBLIC_RELEASE_SET
+
+    ops = tmp_path / "ops"
+    (ops / "01_CONFIG").mkdir(parents=True)
+    (ops / "05_RELEASES" / "historical").mkdir(parents=True)
+    (ops / "05_RELEASES" / "current").mkdir(parents=True)
+    mapping = {
+        "01_CONFIG/source_monitor_registry_v1.5.json": {"sources": []},
+        "05_RELEASES/historical/CANONICAL_EVIDENCE_DEPTH_AND_OBSERVATORY_RELEASE_v1.4.json": {
+            "metadata": {"version": "v1.4"}
+        },
+        "05_RELEASES/historical/CANONICAL_LIVE_REFRESH_RELEASE_v1.6.json": {"metadata": {"version": "v1.6"}},
+        "05_RELEASES/historical/ADJUDICATED_DELTA_v1.6.json": {"delta_id": "DELTA-V16"},
+        "05_RELEASES/current/CANONICAL_SUCCESSOR_SNAPSHOT_v1.7.json": {
+            "metadata": {"version": "v1.7", "predecessor": "v1.6"}
+        },
+    }
+    for rel, payload in mapping.items():
+        (ops / rel).write_text(json.dumps(payload), encoding="utf-8")
+
+    staging = tmp_path / "staging"
+    plan = build_publish_plan(
+        release_tag="data-v0.1.0-public-governing",
+        staging_root=staging,
+        target=SCAFFOLD,
+        release_set=AUTHORIZED_PUBLIC_RELEASE_SET,
+        ops_workspace=ops,
+    )
+    report = publish_release(plan, target=SCAFFOLD)
+    assert report["manifest_verified"] is True
+    assert report["descriptor"]["release_set"] == AUTHORIZED_PUBLIC_RELEASE_SET
+    records = staging / "releases" / "data-v0.1.0-public-governing" / "records"
+    assert (records / "source_monitor_registry_v1.5.json").is_file()
+    assert (records / "canonical_successor_snapshot_v1.7.json").is_file()
+    assert (records / "public_disposition_summary.json").is_file()
+    assert any("UNESCO" in claim for claim in report["descriptor"]["withheld_claims"])
+    verify = verify_publish_staging(plan, target=SCAFFOLD)
+    assert verify["manifest_verified"] is True
+    assert verify["descriptor_verified"] is True
