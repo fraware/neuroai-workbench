@@ -142,5 +142,5 @@ def test_xss_fixtures_do_not_render_raw_markup(payload: str) -> None:
         }
     )
     assert "<script" not in html.lower()
-    assert "onload=" not in html.lower()
+    assert "<svg" not in html.lower()
     assert payload not in html
