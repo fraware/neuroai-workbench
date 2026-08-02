@@ -21,10 +21,19 @@ def test_workbook_render_is_deterministic() -> None:
 
 
 def test_workbook_includes_release_identity() -> None:
-    from openpyxl import load_workbook
-
     query = query_release(COMPACT)
     payload = render_analytical_workbook_bundle(query)
+    try:
+        from openpyxl import load_workbook
+    except ImportError:
+        import io
+        import zipfile
+
+        with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+            assert "sheets/verification.csv" in archive.namelist()
+            verification = archive.read("sheets/verification.csv").decode("utf-8")
+            assert query["release_sha256"] in verification
+        return
     workbook = load_workbook(__import__("io").BytesIO(payload))
     assert "verification" in workbook.sheetnames
     flat = [item for row in workbook["verification"].iter_rows(values_only=True) for item in row]
@@ -58,7 +67,12 @@ def test_write_workbook_matches_render(tmp_path: Path) -> None:
     assert output.is_file()
     assert meta["bytes"] == output.stat().st_size
     assert meta["format"] in {"openpyxl-native-xlsx", "csv-in-zip-xlsx-fallback"}
-    # Native xlsx zip metadata is not bitwise-stable across writes; identity is verified via openpyxl load.
+    if meta["format"] == "csv-in-zip-xlsx-fallback":
+        import zipfile
+
+        with zipfile.ZipFile(output) as archive:
+            assert "sheets/verification.csv" in archive.namelist()
+        return
     from openpyxl import load_workbook
 
     workbook = load_workbook(output)
