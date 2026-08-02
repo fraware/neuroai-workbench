@@ -1,9 +1,0 @@
----
-description: Mandatory programme and authority boundaries
-alwaysApply: true
----
-- Preserve exact system, configuration, population, endpoint, context, jurisdiction, and evidence-freeze boundaries.
-- Keep capability, authorization, deployment, commercial availability, and conformance as separate typed states.
-- Never infer scientific truth from schema validity, hashes, tests, or event-chain validity.
-- Never convert unavailable public evidence into automatic failure.
-- State withheld claims whenever a change affects outward-facing language.
