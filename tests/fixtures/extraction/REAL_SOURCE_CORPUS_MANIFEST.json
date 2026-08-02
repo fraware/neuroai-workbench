@@ -1,0 +1,32 @@
+{
+  "corpus_id": "EXTRACTION-REAL-SOURCE-CORPUS-001",
+  "version": "1.0",
+  "status": "OFFLINE_ANNOTATED_FIXTURES",
+  "boundary": "Offline annotated excerpts for extraction evaluation only. Capture proves retrieval; extraction proposals require human disposition and do not establish substantive truth.",
+  "sources": [
+    {
+      "source_class": "REGULATORY_RECORD",
+      "fixture_id": "EXT-FIX-REG-001",
+      "notes": "Regulatory landing excerpt with citation offsets"
+    },
+    {
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "fixture_id": "EXT-FIX-TRIAL-001",
+      "notes": "Trial status fields only"
+    },
+    {
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "fixture_id": "EXT-FIX-PUB-001",
+      "notes": "Publication metadata bounded to stated population"
+    },
+    {
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "fixture_id": "EXT-FIX-CO-001",
+      "notes": "Company announcement; not regulatory authorization"
+    }
+  ],
+  "evaluation_lanes": {
+    "primary": "captured-response-replay",
+    "contract_only": "fake-offline"
+  }
+}

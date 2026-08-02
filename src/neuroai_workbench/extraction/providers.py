@@ -29,6 +29,7 @@ class ExtractionProviderConfig:
     enabled: bool = False
     profile: str = "baseline"
     endpoint_class: str = "NOT_EXECUTED"
+    notes: str = ""
 
 
 @runtime_checkable
@@ -209,28 +210,6 @@ class CapturedResponseReplayProvider:
         return response
 
 
-def default_offline_evaluation_configs(*, enabled: bool = True) -> list[ExtractionProviderConfig]:
-    """Return preregistered offline fake configs for bounded comparison."""
-    return [
-        ExtractionProviderConfig(
-            config_id="CFG-FAKE-BASELINE",
-            provider_id=FAKE_OFFLINE_PROVIDER_ID,
-            model_id="fake-offline-baseline-v1",
-            enabled=enabled,
-            profile="baseline",
-            endpoint_class="NOT_EXECUTED",
-        ),
-        ExtractionProviderConfig(
-            config_id="CFG-FAKE-CONSERVATIVE",
-            provider_id=FAKE_OFFLINE_PROVIDER_ID,
-            model_id="fake-offline-conservative-v1",
-            enabled=enabled,
-            profile="conservative",
-            endpoint_class="NOT_EXECUTED",
-        ),
-    ]
-
-
 def captured_replay_evaluation_config(*, enabled: bool = True) -> ExtractionProviderConfig:
     return ExtractionProviderConfig(
         config_id="CFG-CAPTURED-REPLAY",
@@ -239,7 +218,44 @@ def captured_replay_evaluation_config(*, enabled: bool = True) -> ExtractionProv
         enabled=enabled,
         profile="replay",
         endpoint_class="CAPTURED_REPLAY",
+        notes="Primary offline comparison lane using captured responses; not a live model call.",
     )
+
+
+def contract_fake_offline_configs(*, enabled: bool = True) -> list[ExtractionProviderConfig]:
+    """Fake-offline providers retained only as non-accuracy contract fixtures."""
+    return [
+        ExtractionProviderConfig(
+            config_id="CFG-FAKE-BASELINE",
+            provider_id=FAKE_OFFLINE_PROVIDER_ID,
+            model_id="fake-offline-baseline-v1",
+            enabled=enabled,
+            profile="baseline",
+            endpoint_class="NOT_EXECUTED",
+            notes="CONTRACT_FIXTURE_NON_ACCURACY",
+        ),
+        ExtractionProviderConfig(
+            config_id="CFG-FAKE-CONSERVATIVE",
+            provider_id=FAKE_OFFLINE_PROVIDER_ID,
+            model_id="fake-offline-conservative-v1",
+            enabled=enabled,
+            profile="conservative",
+            endpoint_class="NOT_EXECUTED",
+            notes="CONTRACT_FIXTURE_NON_ACCURACY",
+        ),
+    ]
+
+
+def default_offline_evaluation_configs(*, enabled: bool = True) -> list[ExtractionProviderConfig]:
+    """Return offline evaluation configs with captured-response-replay as the primary lane.
+
+    Fake-offline configs remain available as contract fixtures only and are labeled
+    non-accuracy. Live providers stay separately gated and default-off.
+    """
+    return [
+        captured_replay_evaluation_config(enabled=enabled),
+        *contract_fake_offline_configs(enabled=enabled),
+    ]
 
 
 def new_request_id() -> str:

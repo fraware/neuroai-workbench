@@ -23,9 +23,16 @@ from neuroai_workbench.extraction import (
 )
 
 
-def test_default_offline_evaluation_compares_two_configs() -> None:
+def _fake_offline_configs() -> list[ExtractionProviderConfig]:
+    return [item for item in default_offline_evaluation_configs() if item.provider_id == "fake-offline"]
+
+
+def test_default_offline_evaluation_includes_replay_primary_lane() -> None:
+    configs = default_offline_evaluation_configs()
+    assert configs[0].provider_id == "captured-response-replay"
+    assert all(item.notes == "CONTRACT_FIXTURE_NON_ACCURACY" for item in configs if item.provider_id == "fake-offline")
     report = run_bounded_offline_evaluation()
-    assert len(report["config_results"]) == 2
+    assert len(report["config_results"]) >= 2
     assert report["selection_refused"] is True
     assert report["recommended_config_id"] is None
     assert "aggregate score" in report["selection_refused_reason"]
@@ -33,8 +40,9 @@ def test_default_offline_evaluation_compares_two_configs() -> None:
 
 def test_baseline_and_conservative_profiles_differ_on_contradictory_fixture() -> None:
     manifest = load_benchmark_manifest()
-    baseline = run_config_against_benchmark(default_offline_evaluation_configs()[0], manifest=manifest)
-    conservative = run_config_against_benchmark(default_offline_evaluation_configs()[1], manifest=manifest)
+    fake = _fake_offline_configs()
+    baseline = run_config_against_benchmark(fake[0], manifest=manifest)
+    conservative = run_config_against_benchmark(fake[1], manifest=manifest)
     baseline_scores = {item["fixture_id"]: item["metrics"]["field_recall"] for item in baseline["fixture_results"]}
     conservative_scores = {
         item["fixture_id"]: item["metrics"]["abstention_rate"] for item in conservative["fixture_results"]
@@ -54,7 +62,7 @@ def test_disabled_provider_is_refused() -> None:
 
 
 def test_compare_requires_at_least_two_configs() -> None:
-    config = default_offline_evaluation_configs()[0]
+    config = _fake_offline_configs()[0]
     with pytest.raises(ValueError, match="At least two provider configurations"):
         compare_provider_configs([config])
 
@@ -65,7 +73,7 @@ def test_build_request_from_capture_and_score_fixture() -> None:
     capture = load_fixture_stub(str(fixture["capture_stub"]))
     annotation = load_fixture_stub(str(fixture["annotation_stub"]))
     request = build_extraction_request_from_capture(capture)
-    provider = resolve_provider(default_offline_evaluation_configs()[0])
+    provider = resolve_provider(_fake_offline_configs()[0])
     response = provider.extract(request, annotation=annotation)
     metrics = score_fixture_response(response, annotation, request)
     assert metrics["field_recall"] == 1.0
@@ -78,7 +86,7 @@ def test_extraction_disposition_records_are_immutable(tmp_path: Path) -> None:
     capture = load_fixture_stub(str(fixture["capture_stub"]))
     annotation = load_fixture_stub(str(fixture["annotation_stub"]))
     request = build_extraction_request_from_capture(capture)
-    provider = resolve_provider(default_offline_evaluation_configs()[0])
+    provider = resolve_provider(_fake_offline_configs()[0])
     response = provider.extract(request, annotation=annotation)
 
     record_extraction_request(tmp_path, request)
