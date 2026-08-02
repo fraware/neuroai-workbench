@@ -21,6 +21,12 @@ source registry
 
 The current implementation covers the first seven stages. Canonical successor generation remains a separately authorized release operation.
 
+## Capture and content identity
+
+A source capture and its downloaded bytes are separate integrity objects. Each retrieval receives an immutable timestamped capture identifier. The downloaded content is stored by SHA-256, so unchanged bytes retrieved on different dates are deduplicated while both retrieval events remain visible. This permits the system to record a successful no-change check without inventing a substantive update or overwriting prior monitoring history.
+
+Operational ingestion requires an explicit timezone, rejects path-bearing filenames and literal private-network targets, and enforces the controlled maximum object size. Redirect resolution, DNS rebinding protection, rate limits, robots and terms-of-use checks remain responsibilities of the separately approved collector.
+
 ## Canonical inputs
 
 The initial operational state is seeded from the programme's controlled assets:
