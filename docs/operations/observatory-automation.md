@@ -38,21 +38,21 @@ The source registry may retain legacy `CONTROLLED_LOCAL_INPUT` paths as provenan
 Validate the exact legacy registry:
 
 ```bash
-neuroai-workbench monitor-registry-validate \
+neuroai-monitor registry-validate \
   examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
 ```
 
 Initialize monitoring state inside a workbench workspace:
 
 ```bash
-neuroai-workbench monitor-init workspaces/operations \
+neuroai-monitor init workspaces/operations \
   examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
 ```
 
 Generate the due-source plan without making network requests:
 
 ```bash
-neuroai-workbench monitor-plan workspaces/operations \
+neuroai-monitor plan workspaces/operations \
   --as-of 2026-08-02 \
   --out artifacts/monitor-plan.json
 ```
@@ -60,7 +60,7 @@ neuroai-workbench monitor-plan workspaces/operations \
 Register bytes captured by an approved external collector:
 
 ```bash
-neuroai-workbench monitor-snapshot workspaces/operations SRC-0004 \
+neuroai-monitor snapshot workspaces/operations SRC-0004 \
   incoming/SRC-0004.html \
   --media-type text/html \
   --retrieved-at 2026-08-02T08:00:00Z
@@ -69,14 +69,14 @@ neuroai-workbench monitor-snapshot workspaces/operations SRC-0004 \
 Compare two immutable captures:
 
 ```bash
-neuroai-workbench monitor-diff workspaces/operations SRC-0004 \
+neuroai-monitor diff workspaces/operations SRC-0004 \
   SNAP-SRC-0004-OLD SNAP-SRC-0004-NEW
 ```
 
 Create a candidate only when the comparison requires review:
 
 ```bash
-neuroai-workbench monitor-candidate workspaces/operations SRC-0004 \
+neuroai-monitor candidate workspaces/operations SRC-0004 \
   SNAP-SRC-0004-NEW \
   --previous-snapshot-id SNAP-SRC-0004-OLD
 ```
@@ -84,7 +84,7 @@ neuroai-workbench monitor-candidate workspaces/operations SRC-0004 \
 Record the human decision:
 
 ```bash
-neuroai-workbench monitor-adjudicate workspaces/operations CAND-... ACCEPT \
+neuroai-monitor adjudicate workspaces/operations CAND-... ACCEPT \
   --change-class REGULATORY_OR_MARKET_EVENT \
   --materiality MATERIAL \
   --reopening-effect REVIEW_REQUIRED \
@@ -94,7 +94,7 @@ neuroai-workbench monitor-adjudicate workspaces/operations CAND-... ACCEPT \
 Build a review candidate package:
 
 ```bash
-neuroai-workbench monitor-package workspaces/operations refresh-2026-08 \
+neuroai-monitor package workspaces/operations refresh-2026-08 \
   --evidence-cutoff 2026-08-02 \
   --out artifacts/refresh-package-result.json
 ```
