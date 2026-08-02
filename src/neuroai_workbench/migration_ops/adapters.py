@@ -409,9 +409,7 @@ def adapt_inventory_entry(
             if family == FAMILY_OBSERVATORY_V1_4:
                 return adapt_observatory_v1_4(ops_path, entry)
             if family == FAMILY_OBSERVATORY_V1_7:
-                return adapt_observatory_v1_7(
-                    ops_path, entry, predecessor_v16_accessible=predecessor_v16_accessible
-                )
+                return adapt_observatory_v1_7(ops_path, entry, predecessor_v16_accessible=predecessor_v16_accessible)
         if _known_digest(entry):
             return adapt_digest_recorded(
                 entry,

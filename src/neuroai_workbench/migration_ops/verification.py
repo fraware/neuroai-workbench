@@ -140,9 +140,7 @@ def build_migration_verification(
         "boundary": BOUNDARY,
         "inventory_source": inventory_path.relative_to(repo_root).as_posix(),
         "ambiguities_source": ambiguities_path.relative_to(repo_root).as_posix(),
-        "decisions_source": (
-            decisions_path.relative_to(repo_root).as_posix() if decisions_path.is_file() else None
-        ),
+        "decisions_source": (decisions_path.relative_to(repo_root).as_posix() if decisions_path.is_file() else None),
         "records": records,
         "material_warnings": material_warnings,
         "summary": _summary(records),

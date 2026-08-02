@@ -50,9 +50,7 @@ def test_golden_lineage_digests_match():
 def test_digest_recorded_external_objects_do_not_invent_lineage():
     document = build_migration_verification(REPO_ROOT, recorded_at=RECORDED_AT)
     recorded = [
-        record
-        for record in document["records"]
-        if record["inventory_id"] in EXPECTED["digest_recorded_inventory_ids"]
+        record for record in document["records"] if record["inventory_id"] in EXPECTED["digest_recorded_inventory_ids"]
     ]
     assert len(recorded) == 3
     for record in recorded:

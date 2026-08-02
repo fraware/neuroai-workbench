@@ -128,9 +128,7 @@ def test_starter_zip_verified_locally() -> None:
 
 def test_migration_decisions_close_material_items() -> None:
     assert DECISIONS_PATH.is_file()
-    decisions = [
-        json.loads(line) for line in DECISIONS_PATH.read_text(encoding="utf-8").splitlines() if line.strip()
-    ]
+    decisions = [json.loads(line) for line in DECISIONS_PATH.read_text(encoding="utf-8").splitlines() if line.strip()]
     subjects = {item["subject_id"] for item in decisions}
     assert "AMB-003" in subjects
     assert "MIGRATION_VERIFICATION" in subjects
