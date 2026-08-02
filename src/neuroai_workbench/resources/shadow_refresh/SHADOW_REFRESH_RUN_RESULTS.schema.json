@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/shadow-refresh-run-results-1.0.json",
+  "type": "object",
+  "required": ["metadata", "run_id", "captures", "candidates", "entity_resolution", "review", "reopening", "provenance", "publication"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"const": "SHADOW_EVALUATION_NOT_CANONICAL"},
+        "title": {"type": "string", "minLength": 1}
+      }
+    },
+    "run_id": {"type": "string", "minLength": 1},
+    "captures": {
+      "type": "object",
+      "required": ["attempted", "succeeded", "failed", "unchanged", "changed"],
+      "additionalProperties": false,
+      "properties": {
+        "attempted": {"type": "integer", "minimum": 0},
+        "succeeded": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "unchanged": {"type": "integer", "minimum": 0},
+        "changed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "candidates": {
+      "type": "object",
+      "required": ["generated", "true_positives", "false_positives", "false_negatives", "unsupported"],
+      "additionalProperties": false,
+      "properties": {
+        "generated": {"type": "integer", "minimum": 0},
+        "true_positives": {"type": "integer", "minimum": 0},
+        "false_positives": {"type": "integer", "minimum": 0},
+        "false_negatives": {"type": "integer", "minimum": 0},
+        "unsupported": {"type": "integer", "minimum": 0}
+      }
+    },
+    "entity_resolution": {
+      "type": "object",
+      "required": ["decisions", "correct"],
+      "additionalProperties": false,
+      "properties": {
+        "decisions": {"type": "integer", "minimum": 0},
+        "correct": {"type": "integer", "minimum": 0}
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["sampled_candidates", "agreements", "disagreements", "total_adjudication_minutes"],
+      "additionalProperties": false,
+      "properties": {
+        "sampled_candidates": {"type": "integer", "minimum": 0},
+        "agreements": {"type": "integer", "minimum": 0},
+        "disagreements": {"type": "integer", "minimum": 0},
+        "total_adjudication_minutes": {"type": "number", "minimum": 0}
+      }
+    },
+    "model_assistance": {
+      "type": "object",
+      "required": ["minutes_saved", "errors_introduced"],
+      "additionalProperties": false,
+      "properties": {
+        "minutes_saved": {"type": "number", "minimum": 0},
+        "errors_introduced": {"type": "integer", "minimum": 0}
+      }
+    },
+    "reopening": {
+      "type": "object",
+      "required": ["recommended", "true_positives", "false_positives"],
+      "additionalProperties": false,
+      "properties": {
+        "recommended": {"type": "integer", "minimum": 0},
+        "true_positives": {"type": "integer", "minimum": 0},
+        "false_positives": {"type": "integer", "minimum": 0}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["complete_records", "total_records"],
+      "additionalProperties": false,
+      "properties": {
+        "complete_records": {"type": "integer", "minimum": 0},
+        "total_records": {"type": "integer", "minimum": 0}
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": ["reconciliation_errors"],
+      "additionalProperties": false,
+      "properties": {
+        "reconciliation_errors": {"type": "integer", "minimum": 0}
+      }
+    },
+    "cost_by_source_class": {
+      "type": "object",
+      "additionalProperties": {"type": "number", "minimum": 0}
+    }
+  }
+}

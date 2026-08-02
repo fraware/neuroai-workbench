@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/review-profile-1.0.json",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "display_name",
+    "roles",
+    "registered_at",
+    "registered_by",
+    "profile_sha256",
+    "authority_profile",
+    "identity_boundary",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "profile_id": {"type": "string", "minLength": 1},
+    "display_name": {"type": "string", "minLength": 1},
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "MONITORING_REVIEWER",
+          "ADJUDICATION_REVIEWER",
+          "LEAD_MONITORING_REVIEWER",
+          "OBSERVER"
+        ]
+      }
+    },
+    "registered_at": {"type": "string", "minLength": 10},
+    "registered_by": {"type": "string", "minLength": 1},
+    "profile_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_profile": {"const": "LOCAL_UNAUTHENTICATED_ATTRIBUTION"},
+    "identity_boundary": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

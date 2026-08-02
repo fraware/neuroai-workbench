@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/archive-inventory-entry-1.0.json",
+  "title": "Archive inventory entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "inventory_id",
+    "archive_key",
+    "role",
+    "sha256",
+    "size_bytes",
+    "classification",
+    "governing",
+    "store_target",
+    "recorded_at",
+    "boundary"
+  ],
+  "properties": {
+    "inventory_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^INV-[A-Za-z0-9._-]+$"
+    },
+    "archive_key": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relative archive or repository path key using forward slashes. Absolute paths and drive letters are forbidden.",
+      "pattern": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "CANONICAL_INPUT",
+        "NORMATIVE_RESOURCE",
+        "GENERATED_VIEW",
+        "RELEASE_EVIDENCE",
+        "HISTORICAL_ONLY",
+        "OPERATIONS_POLICY",
+        "UNRESOLVED"
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^([a-f0-9]{64}|NOT_YET_VERIFIED|INACCESSIBLE)$"
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "PUBLIC_SYNTHETIC",
+        "PUBLIC_REFERENCE",
+        "PROTECTED",
+        "GENERATED",
+        "HISTORICAL",
+        "INACCESSIBLE",
+        "UNRESOLVED"
+      ]
+    },
+    "governing": {
+      "type": "boolean"
+    },
+    "family": {
+      "type": "string",
+      "enum": [
+        "OBSERVATORY_V1_4",
+        "OBSERVATORY_V1_6",
+        "OBSERVATORY_V1_7",
+        "ASSESSMENT_V4_2",
+        "SOURCE_REGISTRY",
+        "POLICY",
+        "PROGRAMME_ADAPTER",
+        "COMPARISON",
+        "EXTERNAL_ARCHIVE",
+        "OTHER"
+      ]
+    },
+    "store_target": {
+      "type": "string",
+      "enum": [
+        "SOFTWARE_REPO",
+        "PUBLIC_CANONICAL_DATA",
+        "PROTECTED_EVIDENCE",
+        "GENERATED_ARTIFACTS",
+        "IMMUTABLE_ARCHIVE",
+        "UNRESOLVED"
+      ]
+    },
+    "workbench_path": {
+      "type": ["string", "null"]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "recorded_at": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/adjudicated-delta-1.0.json",
+  "type": "object",
+  "required": [
+    "metadata",
+    "predecessor",
+    "candidate_references",
+    "operations",
+    "disposition_registers",
+    "blocked_operations",
+    "reopening_decisions",
+    "withheld_claims",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "delta_id",
+        "version",
+        "generated_at",
+        "generated_by",
+        "status",
+        "refresh_package_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "delta_id": {"type": "string", "pattern": "^DELTA-[0-9a-f]{32}$"},
+        "version": {"const": "1.0"},
+        "generated_at": {"type": "string", "minLength": 10},
+        "generated_by": {"type": "string", "minLength": 1},
+        "status": {"const": "NON_CANONICAL"},
+        "refresh_package_version": {"type": "string", "minLength": 1},
+        "refresh_package_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "predecessor": {
+      "type": "object",
+      "required": ["release_id", "sha256", "source_registry_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "release_id": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "source_registry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "policy_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "candidate_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "source_id", "source_snapshot_ids", "current_snapshot_sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+          "adjudication_id": {"type": "string", "pattern": "^ADJ-[0-9a-f]{32}$"},
+          "source_id": {"type": "string", "minLength": 1},
+          "source_snapshot_ids": {"type": "array", "items": {"type": "string"}},
+          "current_snapshot_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "adjudication_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "disposition_registers": {
+      "type": "object",
+      "required": ["accepted", "rejected", "deferred", "duplicate", "needs_evidence", "unresolved"],
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {"$ref": "#/$defs/disposition_entries"},
+        "rejected": {"$ref": "#/$defs/disposition_entries"},
+        "deferred": {"$ref": "#/$defs/disposition_entries"},
+        "duplicate": {"$ref": "#/$defs/disposition_entries"},
+        "needs_evidence": {"$ref": "#/$defs/disposition_entries"},
+        "unresolved": {"$ref": "#/$defs/unresolved_entries"}
+      }
+    },
+    "blocked_operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "reason", "code"],
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+          "reason": {"type": "string", "minLength": 1},
+          "code": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "reopening_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "reopening_effect", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+          "assessment_id": {"type": "string"},
+          "reopening_effect": {"type": "string", "minLength": 1},
+          "rationale": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "withheld_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "boundary": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "disposition_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "decided_at", "decided_by", "decision", "adjudication_sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+          "adjudication_id": {"type": "string", "pattern": "^ADJ-[0-9a-f]{32}$"},
+          "decided_at": {"type": "string", "minLength": 10},
+          "decided_by": {"type": "string", "minLength": 1},
+          "decision": {"type": "string", "minLength": 1},
+          "change_class": {"type": "string"},
+          "materiality": {"type": "string"},
+          "reopening_effect": {"type": "string"},
+          "rationale": {"type": "string"},
+          "adjudication_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "unresolved_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+          "status": {"const": "PENDING_HUMAN_ADJUDICATION"},
+          "source_id": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

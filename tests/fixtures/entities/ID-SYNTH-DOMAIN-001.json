@@ -1,0 +1,12 @@
+{
+  "identifier_id": "ID-SYNTH-DOMAIN-001",
+  "entity_id": "ENT-SYNTH-ORG-001",
+  "scheme": "DOMAIN",
+  "value": "synthetic-neuro.example.org",
+  "status": "ACTIVE",
+  "registered_at": "2026-08-01T12:15:00Z",
+  "jurisdiction": null,
+  "evidence_ref": "SYNTHETIC-FIXTURE",
+  "predecessor_identifier_id": null,
+  "boundary": "Synthetic fixture for tests only."
+}
