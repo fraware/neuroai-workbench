@@ -17,7 +17,7 @@ PROHIBITED_PARTS = {
     "workspaces",
 }
 PROHIBITED_SUFFIXES = {".pyc", ".pyo", ".whl", ".zip", ".bundle", ".docx", ".xlsx"}
-PROHIBITED_TRACKED_PREFIXES = ("bootstrap/",)
+PROHIBITED_TRACKED_PREFIXES = ("bootstrap/", ".cursor/")
 PROHIBITED_TRACKED_FILES = {
     ".github/workflows/bootstrap-canonical-history.yml",
 }
@@ -28,8 +28,10 @@ REQUIRED = {
     "THREAT_MODEL.md",
     "DATA_GOVERNANCE.md",
     ".github/CODEOWNERS",
-    ".cursor/environment.json",
     "src/neuroai_workbench/resources/v4_2/KERNEL_REQUIREMENTS_v4.2.json",
+}
+REQUIRED_GITIGNORE_ENTRIES = {
+    ".cursor/",
 }
 EXECUTABLES = {
     "scripts/create_demo_workspace.py",
@@ -67,12 +69,20 @@ def main() -> int:
         if path.suffix.lower() in PROHIBITED_SUFFIXES:
             errors.append(f"prohibited generated or binary artifact is tracked: {rel}")
         if rel in PROHIBITED_TRACKED_FILES or any(rel.startswith(prefix) for prefix in PROHIBITED_TRACKED_PREFIXES):
-            errors.append(f"stale bootstrap scaffolding must not ship on product branches: {rel}")
+            if rel.startswith(".cursor/") or rel in {".cursor"}:
+                errors.append(f"local Cursor IDE path must not be tracked: {rel}")
+            else:
+                errors.append(f"stale bootstrap scaffolding must not ship on product branches: {rel}")
         absolute = ROOT / rel
         if absolute.is_file() and absolute.stat().st_size > 5 * 1024 * 1024:
             errors.append(f"tracked file exceeds 5 MiB source limit: {rel}")
     for rel in sorted(REQUIRED - set(files)):
         errors.append(f"required source file is missing: {rel}")
+    gitignore_text = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    gitignore_lines = {line.strip() for line in gitignore_text.splitlines()}
+    for entry in sorted(REQUIRED_GITIGNORE_ENTRIES):
+        if entry not in gitignore_lines:
+            errors.append(f"required .gitignore entry is missing: {entry}")
     executable = executable_paths()
     for rel in sorted(EXECUTABLES):
         if rel in files and rel not in executable:
