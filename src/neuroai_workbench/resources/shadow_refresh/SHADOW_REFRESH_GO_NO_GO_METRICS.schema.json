@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/shadow-refresh-go-no-go-metrics-1.0.json",
+  "type": "object",
+  "required": ["metadata", "run_id", "metrics", "thresholds", "evaluation", "withheld_claims", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["title", "generated_at", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "minLength": 10},
+        "status": {"const": "SHADOW_EVALUATION_NOT_CANONICAL"},
+        "generated_by": {"type": "string", "minLength": 1}
+      }
+    },
+    "run_id": {"type": "string", "minLength": 1},
+    "metrics": {
+      "type": "object",
+      "required": [
+        "retrieval_success_rate",
+        "retrieval_failure_rate",
+        "unchanged_capture_rate",
+        "changed_capture_rate",
+        "candidate_precision",
+        "candidate_recall",
+        "unsupported_candidate_rate",
+        "entity_resolution_precision",
+        "reviewer_agreement_rate",
+        "mean_adjudication_minutes_per_candidate",
+        "model_assistance_minutes_saved",
+        "model_assistance_errors_introduced",
+        "reopening_precision",
+        "reopening_false_positive_rate",
+        "provenance_closure_rate",
+        "publication_reconciliation_error_count",
+        "operational_cost_by_source_class"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "retrieval_success_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "retrieval_failure_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "unchanged_capture_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "changed_capture_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "candidate_precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "candidate_recall": {"type": "number", "minimum": 0, "maximum": 1},
+        "unsupported_candidate_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "entity_resolution_precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "reviewer_agreement_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "mean_adjudication_minutes_per_candidate": {"type": "number", "minimum": 0},
+        "model_assistance_minutes_saved": {"type": "number", "minimum": 0},
+        "model_assistance_errors_introduced": {"type": "integer", "minimum": 0},
+        "reopening_precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "reopening_false_positive_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "provenance_closure_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "publication_reconciliation_error_count": {"type": "integer", "minimum": 0},
+        "operational_cost_by_source_class": {
+          "type": "object",
+          "additionalProperties": {"type": "number", "minimum": 0}
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "required": [
+        "minimum_retrieval_success_rate",
+        "maximum_unsupported_candidate_rate",
+        "minimum_candidate_precision",
+        "minimum_reopening_precision",
+        "maximum_reopening_false_positive_rate",
+        "minimum_provenance_closure_rate",
+        "maximum_publication_reconciliation_errors"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "minimum_retrieval_success_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "maximum_unsupported_candidate_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "minimum_candidate_precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "minimum_reopening_precision": {"type": "number", "minimum": 0, "maximum": 1},
+        "maximum_reopening_false_positive_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "minimum_provenance_closure_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "maximum_publication_reconciliation_errors": {"type": "integer", "minimum": 0}
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "required": ["recommendation", "criteria_results"],
+      "additionalProperties": false,
+      "properties": {
+        "recommendation": {"enum": ["GO", "NO_GO", "INCOMPLETE"]},
+        "criteria_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "passed"],
+            "additionalProperties": false,
+            "properties": {
+              "criterion_id": {"type": "string", "minLength": 1},
+              "passed": {"type": "boolean"},
+              "detail": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "withheld_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
