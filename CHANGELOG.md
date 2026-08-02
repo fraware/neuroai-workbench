@@ -17,6 +17,12 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
 - Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
+- Observatory storage boundaries, ADR-0009 five-store model, archive inventory schema/JSONL, unresolved-ambiguity register, and retention/access notes for phase-A migration (no byte moves).
+- Public data repository bootstrap scaffold (`templates/neuroai-observatory-data/`), deterministic manifest scripts, synthetic release descriptor, governance templates, and operator bootstrap documentation for `fraware/neuroai-observatory-data` (S2; no protected bytes).
+- Versioned governing-input migration adapters, lineage digests, archive inventory integration, and deterministic `MIGRATION_VERIFICATION.json` generation for public fixtures (#44 phase C).
+- Collector threat model, deployment-boundary ADR, and versioned collection/quarantine JSON schemas with adversarial contract tests. Retrieval contracts record provenance only; they do not establish authenticity or substantive truth.
+- Hardened HTTP collector core (`neuroai_workbench.collector`) with DNS and redirect SSRF controls, DNS rebinding detection, timeouts, size and decompression-ratio limits, per-host rate limiting, conditional GET handling for unchanged captures, and quarantine-only writes validated against PR-05 schemas.
+- Append-only observatory monitoring review queue: rebuildable projections over candidates and adjudications, local named reviewer profiles, exclusive leases, and immutable multi-opinion records that never mutate canonical monitoring data.
 - Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
 - Offline extraction contract, disclosure policy, preregistered benchmark stubs, citation-required field validation, and protected disclosure refusal for bounded model-assisted observatory source extraction.
 - Default-off extraction provider adapters, offline benchmark comparison across at least two explicitly enabled test-only configurations, immutable human disposition records, and adversarial refusal of disabled providers, network endpoints, and aggregate-score selection for extraction evaluation.
@@ -37,6 +43,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - The 78-requirement v4.2 kernel and historical pilot findings remain unchanged.
 - Monitoring operations are alpha, offline-first, and non-authoritative for substantive NeuroAI findings, regulatory authorization, clinical value, or conformance.
 - Entity registry resolution is exact-ID only; it does not merge entities on name similarity or establish substantive correspondence without human disposition in follow-on workflows.
+- Extraction contract validation establishes schema and disclosure controls only; it does not execute providers, score benchmarks, or mutate canonical observatory state.
 - Extraction contract validation establishes schema and disclosure controls only; it does not execute external providers, score live benchmarks, or mutate canonical observatory state.
 - Extraction evaluation scores synthetic benchmark stubs with test-only offline providers only; scores do not establish provider superiority or release authority.
 
