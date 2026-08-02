@@ -68,6 +68,22 @@ $env:NEUROAI_OPS_WORKSPACE = "<extract-root>"
 python scripts/generate_migration_verification.py --now --output migration/MIGRATION_VERIFICATION.ops.local.json
 ```
 
+Reproduce the executable v1.4 → v1.6 → v1.7 chain from ops inputs:
+
+```powershell
+$env:NEUROAI_OPS_WORKSPACE = "<extract-root>"
+
+# Digests must match migration/archive_inventory.jsonl
+Get-FileHash "$env:NEUROAI_OPS_WORKSPACE\05_RELEASES\historical\CANONICAL_EVIDENCE_DEPTH_AND_OBSERVATORY_RELEASE_v1.4.json" -Algorithm SHA256
+Get-FileHash "$env:NEUROAI_OPS_WORKSPACE\05_RELEASES\historical\CANONICAL_LIVE_REFRESH_RELEASE_v1.6.json" -Algorithm SHA256
+Get-FileHash "$env:NEUROAI_OPS_WORKSPACE\05_RELEASES\historical\ADJUDICATED_DELTA_v1.6.json" -Algorithm SHA256
+Get-FileHash "$env:NEUROAI_OPS_WORKSPACE\05_RELEASES\current\CANONICAL_SUCCESSOR_SNAPSHOT_v1.7.json" -Algorithm SHA256
+
+python -m pytest tests/integration/test_ops_v16_chain.py -q
+```
+
+When `NEUROAI_OPS_WORKSPACE` is set, `observatory-v1.6-adapter` migrates both v1.6 packages and clears the inaccessible-predecessor blocker for v1.7 verification. Missing ops files fail closed to `DIGEST_RECORDED` (known digest, no invented bytes).
+
 Or through the CLI:
 
 ```powershell
