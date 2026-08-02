@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/extraction-disposition-1.0.json",
+  "type": "object",
+  "required": ["schema_version", "request_id", "response_sha256", "disposition", "notes", "actor", "recorded_at", "canonical_mutation", "boundary", "disposition_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "request_id": {"type": "string", "pattern": "^EXT-[0-9a-f]{32}$"},
+    "response_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "disposition": {"type": "string", "enum": ["ACCEPTED_AS_DRAFT", "PARTIALLY_USED", "REJECTED"]},
+    "notes": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "minLength": 10},
+    "canonical_mutation": {"const": "NONE_PERFORMED_BY_DISPOSITION_RECORD"},
+    "boundary": {"type": "string", "minLength": 1},
+    "disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

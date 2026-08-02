@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "policy_id": "EXTRACTION_DEFAULT_v1",
+  "default_deny_protected": true,
+  "export_allowed_classes": ["PUBLIC_SYNTHETIC", "PUBLIC_SOURCE_EXCERPT"],
+  "protected_classes": ["PROTECTED_NEURAL", "PROTECTED_PARTICIPANT", "PROTECTED_REGULATOR", "PROTECTED_SECURITY", "PROTECTED_CLINICAL", "CREDENTIAL", "LOCAL_PATH"],
+  "scan_controls": ["SECRET_PATTERN_SCAN", "LOCAL_PATH_SCAN", "PROTECTED_MARKER_SCAN"],
+  "prompt_injection_controls": ["SOURCE_TEXT_UNTRUSTED", "NO_TOOL_EXECUTION", "NO_EXTERNAL_BROWSING"],
+  "boundary": "Default extraction disclosure policy is default-deny for protected classes. Passing scan controls does not prove lawful export or field classification completeness."
+}

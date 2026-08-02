@@ -1,0 +1,1 @@
+{"fixture_id": "FIX-00000000000000000000000000000001", "expected_fields": [{"field_type": "ENTITY_MENTION", "value": "NeuroDevice Corp"}, {"field_type": "DATE", "value": "2026-03-15"}], "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record."}

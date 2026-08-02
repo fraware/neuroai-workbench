@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "manifest_id": "MANIFEST-PILOT-05-BRAIN2QWERTY",
+    "assessment_id": "PILOT-05-BRAIN2QWERTY-v4.1.3",
+    "manifest_version": "1.0",
+    "title": "Brain2Qwerty pilot assessment dependency manifest",
+    "evidence_cutoff": "2026-07-28",
+    "evidence_freeze_id": "B2Q-EF-2026-07-28-01",
+    "system_id": "BRAIN2QWERTY-FAMILY",
+    "configuration_id": "B2Q-V2-PAPER-QWEN3-4B-2026-06-29",
+    "observatory_binding": "Brain2Qwerty public-evidence pilot v4.1.3"
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-B2Q-SYSTEM",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "SYSTEM",
+      "target_ref": "BRAIN2QWERTY-FAMILY",
+      "target_label": "Brain2Qwerty v2 asynchronous non-invasive MEG-to-text research system",
+      "version_or_period": "Paper state through 2026-07-28",
+      "resolution_state": "RESOLVED",
+      "observatory_object_ref": "Brain2Qwerty public-evidence pilot v4.1.3"
+    },
+    {
+      "dependency_id": "DEP-B2Q-CONFIG",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "CONFIGURATION",
+      "target_ref": "B2Q-V2-PAPER-QWEN3-4B-2026-06-29",
+      "target_label": "v2 paper configuration with Qwen3-4B language model",
+      "version_or_period": "2026-06-29 paper state",
+      "resolution_state": "PARTIAL",
+      "notes": "Exact paper-best checkpoint and raw dataset were unavailable at cutoff."
+    },
+    {
+      "dependency_id": "DEP-B2Q-MODEL-LM",
+      "dependency_role": "REOPENING_TRIGGER",
+      "target_kind": "MODEL",
+      "target_ref": "Qwen3-4B",
+      "target_label": "Generative language-model reconstruction component",
+      "version_or_period": "Paper-reported v2 configuration",
+      "resolution_state": "PARTIAL"
+    },
+    {
+      "dependency_id": "DEP-B2Q-HW-MEG",
+      "dependency_role": "IDENTITY_DEFINING",
+      "target_kind": "HARDWARE",
+      "target_ref": "CMP-01",
+      "target_label": "MEGIN whole-head cryogenic MEG system",
+      "version_or_period": "306 channels; v2 data collection",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-B2Q-SUPPLIER-MEGIN",
+      "dependency_role": "FINDING_SUPPORTING",
+      "target_kind": "SUPPLIER",
+      "target_ref": "MEGIN",
+      "target_label": "MEG hardware supplier",
+      "version_or_period": "v2 data collection",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-B2Q-SITE-BCBL",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "SITE",
+      "target_ref": "BCBL",
+      "target_label": "Basque Center on Cognition, Brain and Language",
+      "version_or_period": "Research site context",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-B2Q-JUR-ES",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "JURISDICTION",
+      "target_ref": "Spain",
+      "target_label": "Spain research and data-governance context",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-B2Q-DATASET",
+      "dependency_role": "GAP_SUPPORTING",
+      "target_kind": "EVIDENCE_OBJECT",
+      "target_ref": "B2Q-V2-RAW-DATASET",
+      "target_label": "Public v2 raw dataset and independently reproduced result",
+      "version_or_period": "Unavailable at cutoff",
+      "resolution_state": "INACCESSIBLE"
+    },
+    {
+      "dependency_id": "DEP-B2Q-EVIDENCE-CUTOFF",
+      "dependency_role": "DECISION_SUPPORTING",
+      "target_kind": "EVIDENCE_CUTOFF",
+      "target_ref": "B2Q-EF-2026-07-28-01",
+      "target_label": "Assessment evidence freeze",
+      "version_or_period": "2026-07-28",
+      "resolution_state": "RESOLVED"
+    },
+    {
+      "dependency_id": "DEP-B2Q-OBS",
+      "dependency_role": "CONTEXTUAL_ONLY",
+      "target_kind": "OBSERVATORY_RELEASE",
+      "target_ref": "v1.6",
+      "target_label": "Observatory release context",
+      "version_or_period": "2026-07-29",
+      "resolution_state": "RESOLVED"
+    }
+  ],
+  "withheld_claims": [
+    "Public v2 raw dataset, exact paper-best checkpoint, and independent reproduction were unavailable at the evidence cutoff.",
+    "Language-model and neural-signal contributions remain separately bounded; thought-decoding claims are prohibited.",
+    "Model-version changes for unrelated systems do not automatically reopen this assessment."
+  ],
+  "boundary": "This manifest records typed dependencies for the exact Brain2Qwerty v2 paper configuration. Inaccessible evidence remains explicit without automatic failure."
+}

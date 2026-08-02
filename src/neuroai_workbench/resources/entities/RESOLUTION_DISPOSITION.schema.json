@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/resolution-disposition-1.0.json",
+  "type": "object",
+  "required": [
+    "disposition_id",
+    "proposal_id",
+    "proposal_sha256",
+    "decided_at",
+    "decided_by",
+    "decision",
+    "selected_entity_id",
+    "rationale",
+    "registry_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "disposition_id": {"type": "string", "pattern": "^RESDIS-[0-9a-f]{32}$"},
+    "proposal_id": {"type": "string", "pattern": "^RES-[0-9a-f]{32}$"},
+    "proposal_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "decided_at": {"type": "string", "minLength": 10},
+    "decided_by": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"]},
+    "selected_entity_id": {"type": ["string", "null"]},
+    "rationale": {"type": "string", "minLength": 1},
+    "registry_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
