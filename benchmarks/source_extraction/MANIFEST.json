@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "benchmark_id": "BENCH-EXT-00000000000000000000000000000001",
+  "status": "PREREGISTERED",
+  "preregistered_at": "2026-08-02T00:00:00Z",
+  "categories": ["COMPANY_ANNOUNCEMENT", "REGULATORY_RECORD", "CLINICAL_TRIAL", "PUBLICATION", "OWNERSHIP_FUNDING", "SAFETY_WITHDRAWAL", "CONTRADICTORY_SOURCE"],
+  "metrics": ["field_precision", "field_recall", "citation_accuracy", "unsupported_attribution_rate", "entity_resolution_precision", "abstention_rate", "reviewer_time_saved"],
+  "stop_conditions": ["unsupported_attribution_rate exceeds preregistered threshold", "citation_accuracy below preregistered threshold", "protected disclosure not preventable by default-deny controls", "provider configuration selected solely on aggregate score"],
+  "fixtures": [
+    {"fixture_id": "FIX-00000000000000000000000000000001", "category": "COMPANY_ANNOUNCEMENT", "capture_stub": "fixtures/company_announcement.capture.json", "annotation_stub": "fixtures/company_announcement.annotation.json", "blinded": true},
+    {"fixture_id": "FIX-00000000000000000000000000000002", "category": "REGULATORY_RECORD", "capture_stub": "fixtures/regulatory_record.capture.json", "annotation_stub": "fixtures/regulatory_record.annotation.json", "blinded": true},
+    {"fixture_id": "FIX-00000000000000000000000000000003", "category": "CONTRADICTORY_SOURCE", "capture_stub": "fixtures/contradictory_source.capture.json", "annotation_stub": "fixtures/contradictory_source.annotation.json", "blinded": true}
+  ],
+  "boundary": "Preregistered benchmark stubs define evaluation categories and metrics only. They do not establish extraction accuracy, provider selection, or canonical observatory facts."
+}
