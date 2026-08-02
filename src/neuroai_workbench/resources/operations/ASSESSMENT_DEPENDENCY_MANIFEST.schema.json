@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/assessment-dependency-manifest-1.0.json",
+  "type": "object",
+  "required": ["metadata", "dependencies", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "manifest_id",
+        "assessment_id",
+        "manifest_version",
+        "title",
+        "evidence_cutoff",
+        "system_id",
+        "configuration_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "manifest_id": {"type": "string", "minLength": 1},
+        "assessment_id": {"type": "string", "minLength": 1},
+        "manifest_version": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "evidence_cutoff": {"type": "string", "minLength": 10},
+        "evidence_freeze_id": {"type": "string"},
+        "system_id": {"type": "string", "minLength": 1},
+        "configuration_id": {"type": "string", "minLength": 1},
+        "observatory_binding": {"type": "string"}
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "dependency_id",
+          "dependency_role",
+          "target_kind",
+          "target_ref",
+          "target_label",
+          "resolution_state"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "dependency_id": {"type": "string", "minLength": 1},
+          "dependency_role": {
+            "enum": [
+              "IDENTITY_DEFINING",
+              "FINDING_SUPPORTING",
+              "GAP_SUPPORTING",
+              "DECISION_SUPPORTING",
+              "CONTEXTUAL_ONLY",
+              "REOPENING_TRIGGER"
+            ]
+          },
+          "target_kind": {
+            "enum": [
+              "ORGANIZATION",
+              "LEGAL_ENTITY",
+              "SYSTEM",
+              "CONFIGURATION",
+              "MODEL",
+              "FIRMWARE",
+              "HARDWARE",
+              "SOFTWARE",
+              "TRIAL",
+              "PARTICIPANT_POPULATION",
+              "SITE",
+              "ENDPOINT",
+              "REGULATORY_RECORD",
+              "JURISDICTION",
+              "SUPPLIER",
+              "INFRASTRUCTURE",
+              "EVIDENCE_OBJECT",
+              "SOURCE_RECORD",
+              "OBSERVATORY_RELEASE",
+              "EVIDENCE_CUTOFF"
+            ]
+          },
+          "target_ref": {"type": "string", "minLength": 1},
+          "target_label": {"type": "string", "minLength": 1},
+          "version_or_period": {"type": "string"},
+          "resolution_state": {
+            "enum": ["RESOLVED", "UNKNOWN", "INACCESSIBLE", "PARTIAL"]
+          },
+          "observatory_object_ref": {"type": "string"},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "withheld_claims": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

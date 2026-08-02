@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/extraction-evaluation-report-1.0.json",
+  "type": "object",
+  "required": ["schema_version", "benchmark_id", "compared_at", "config_results", "metric_comparison", "selection_refused", "selection_refused_reason", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "benchmark_id": {"type": "string", "pattern": "^BENCH-EXT-[0-9a-f]{32}$"},
+    "compared_at": {"type": "string", "minLength": 10},
+    "config_results": {"type": "array", "minItems": 2, "items": {"type": "object"}},
+    "metric_comparison": {"type": "object"},
+    "aggregate_scores": {"type": "object"},
+    "recommended_config_id": {"type": ["string", "null"]},
+    "selection_refused": {"const": true},
+    "selection_refused_reason": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

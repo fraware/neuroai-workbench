@@ -14,6 +14,8 @@ MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/evidence.py": 95.0,
     "neuroai_workbench/observatory.py": 95.0,
     "neuroai_workbench/monitoring.py": 95.0,
+    "neuroai_workbench/entities/registry.py": 90.0,
+    "neuroai_workbench/entities/resolver.py": 90.0,
     "neuroai_workbench/delta/compiler.py": 95.0,
     "neuroai_workbench/delta/schemas.py": 95.0,
     "neuroai_workbench/delta/apply.py": 95.0,
@@ -21,6 +23,13 @@ MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/review.py": 95.0,
     "neuroai_workbench/events.py": 95.0,
     "neuroai_workbench/server.py": 90.0,
+    "neuroai_workbench/collector/dns.py": 95.0,
+    "neuroai_workbench/collector/handoff.py": 95.0,
+    "neuroai_workbench/collector/http_client.py": 95.0,
+    "neuroai_workbench/collector/quarantine.py": 95.0,
+    "neuroai_workbench/collector/scheduler.py": 95.0,
+    "neuroai_workbench/collector/service.py": 95.0,
+    "neuroai_workbench/collector/url_policy.py": 95.0,
 }
 
 
