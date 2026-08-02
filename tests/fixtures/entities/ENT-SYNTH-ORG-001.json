@@ -1,0 +1,11 @@
+{
+  "entity_id": "ENT-SYNTH-ORG-001",
+  "entity_type": "ORGANIZATION",
+  "display_name": "Synthetic Neuro Devices Inc.",
+  "status": "ACTIVE",
+  "created_at": "2026-08-01T12:00:00Z",
+  "predecessor_entity_id": null,
+  "successor_entity_id": null,
+  "jurisdiction": "US",
+  "boundary": "Synthetic fixture for tests only."
+}

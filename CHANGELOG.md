@@ -17,6 +17,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Provider-neutral model-assistance request, response, disposition, and integrity records.
 - Structured-output validation, evidence-reference checks, secret-pattern guardrails, and tamper detection.
 - Alpha offline-first observatory monitoring operations: source-registry validation, content-addressed snapshots, change candidates, immutable adjudications, non-canonical refresh packages, and `neuroai-monitor` CLI. Network collection remains outside the default workbench.
+- Entity registry schemas, exact-ID resolution, append-only alias and identifier registration, synthetic fixtures, and adversarial refusal of fuzzy merge, overwrite, and path traversal under `neuroai_workbench.entities`.
 
 ### Changed
 
@@ -33,6 +34,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Model output cannot mutate an assessment or exercise decision authority.
 - The 78-requirement v4.2 kernel and historical pilot findings remain unchanged.
 - Monitoring operations are alpha, offline-first, and non-authoritative for substantive NeuroAI findings, regulatory authorization, clinical value, or conformance.
+- Entity registry resolution is exact-ID only; it does not merge entities on name similarity or establish substantive correspondence without human disposition in follow-on workflows.
 
 ## 0.2.1 — stabilization candidate
 
