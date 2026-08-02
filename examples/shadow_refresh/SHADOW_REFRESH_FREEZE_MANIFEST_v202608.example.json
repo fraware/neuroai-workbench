@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "title": "Shadow refresh configuration freeze manifest (example)",
+    "run_id": "shadow-refresh-202608",
+    "frozen_at": "2026-08-02T08:00:00Z",
+    "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+    "evidence_cutoff": "2026-08-02",
+    "frozen_by": "shadow-evaluation-coordinator"
+  },
+  "configuration_hashes": {
+    "registry_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "monitoring_policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reopening_policy_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "collector_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "workbench_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "entity_resolution_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "extraction_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "reviewer_roster_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "cohort_reference": {
+    "cohort_id": "SHADOW-COHORT-202608",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "source_count": 25
+  },
+  "withheld_claims": [
+    "Example hashes are placeholders for shadow scaffolding only.",
+    "A live shadow refresh must freeze actual configuration bytes before retrieval begins.",
+    "This manifest does not authorize canonical observatory mutation or assessment reopening."
+  ],
+  "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+}
