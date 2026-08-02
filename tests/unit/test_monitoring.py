@@ -186,15 +186,18 @@ def test_snapshot_diff_classifications(tmp_path: Path) -> None:
         media_type="text/plain",
         retrieved_at="2026-08-02T03:00:00Z",
     )
-    assert compare_snapshots(workspace, "SRC-0001", first["snapshot_id"], first["snapshot_id"])[
-        "classification"
-    ] == "NO_CHANGE"
-    assert compare_snapshots(workspace, "SRC-0001", first["snapshot_id"], formatting["snapshot_id"])[
-        "classification"
-    ] == "NON_MATERIAL_REPRESENTATION_CHANGE"
-    assert compare_snapshots(workspace, "SRC-0001", formatting["snapshot_id"], changed["snapshot_id"])[
-        "classification"
-    ] == "CONTENT_CHANGED_REQUIRES_REVIEW"
+    assert (
+        compare_snapshots(workspace, "SRC-0001", first["snapshot_id"], first["snapshot_id"])["classification"]
+        == "NO_CHANGE"
+    )
+    assert (
+        compare_snapshots(workspace, "SRC-0001", first["snapshot_id"], formatting["snapshot_id"])["classification"]
+        == "NON_MATERIAL_REPRESENTATION_CHANGE"
+    )
+    assert (
+        compare_snapshots(workspace, "SRC-0001", formatting["snapshot_id"], changed["snapshot_id"])["classification"]
+        == "CONTENT_CHANGED_REQUIRES_REVIEW"
+    )
 
 
 def test_candidate_requires_material_change_and_never_mutates_observatory(tmp_path: Path) -> None:

@@ -59,7 +59,9 @@ MONITORING_BOUNDARY = (
 
 
 def _schema(name: str) -> dict[str, Any]:
-    return cast(dict[str, Any], json.loads(files(OPERATIONS_RESOURCE_PACKAGE).joinpath(name).read_text(encoding="utf-8")))
+    return cast(
+        dict[str, Any], json.loads(files(OPERATIONS_RESOURCE_PACKAGE).joinpath(name).read_text(encoding="utf-8"))
+    )
 
 
 def _schema_errors(value: Any, schema_name: str) -> list[dict[str, Any]]:
@@ -175,13 +177,9 @@ def validate_source_registry(value: Any) -> dict[str, Any]:
                 )
 
     if duplicate_monitor_ids:
-        errors.append(
-            {"code": "DUPLICATE_MONITOR_ID", "path": "sources", "identifiers": sorted(duplicate_monitor_ids)}
-        )
+        errors.append({"code": "DUPLICATE_MONITOR_ID", "path": "sources", "identifiers": sorted(duplicate_monitor_ids)})
     if duplicate_source_ids:
-        errors.append(
-            {"code": "DUPLICATE_SOURCE_ID", "path": "sources", "identifiers": sorted(duplicate_source_ids)}
-        )
+        errors.append({"code": "DUPLICATE_SOURCE_ID", "path": "sources", "identifiers": sorted(duplicate_source_ids)})
 
     declared_count = registry.get("metadata", {}).get("record_count")
     if isinstance(declared_count, int) and declared_count != len(sources):
@@ -497,12 +495,16 @@ def load_snapshot(workspace: Path, source_id: str, snapshot_id: str) -> dict[str
     return value
 
 
-def compare_snapshots(workspace: Path, source_id: str, older_snapshot_id: str, newer_snapshot_id: str) -> dict[str, Any]:
+def compare_snapshots(
+    workspace: Path, source_id: str, older_snapshot_id: str, newer_snapshot_id: str
+) -> dict[str, Any]:
     older = load_snapshot(workspace, source_id, older_snapshot_id)
     newer = load_snapshot(workspace, source_id, newer_snapshot_id)
     if older["sha256"] == newer["sha256"]:
         classification = "NO_CHANGE"
-    elif older.get("normalized_text_sha256") and older.get("normalized_text_sha256") == newer.get("normalized_text_sha256"):
+    elif older.get("normalized_text_sha256") and older.get("normalized_text_sha256") == newer.get(
+        "normalized_text_sha256"
+    ):
         classification = "NON_MATERIAL_REPRESENTATION_CHANGE"
     else:
         classification = "CONTENT_CHANGED_REQUIRES_REVIEW"

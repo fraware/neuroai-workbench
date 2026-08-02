@@ -150,9 +150,7 @@ def main(argv: list[str] | None = None) -> int:
                 actor=args.actor,
             )
         elif args.command == "package":
-            result = build_refresh_candidate(
-                Path(args.workspace), args.version, args.evidence_cutoff, actor=args.actor
-            )
+            result = build_refresh_candidate(Path(args.workspace), args.version, args.evidence_cutoff, actor=args.actor)
         elif args.command == "status":
             result = monitoring_status(Path(args.workspace))
         else:  # pragma: no cover - argparse prevents this path.
