@@ -64,8 +64,9 @@ def resolve_adapter(
 
     # Prefer FDA adapter only when an explicit device identifier is present.
     fda = adapters.get("fda_device")
-    if fda is not None and source_record is not None and hasattr(fda, "supports_source"):
-        if fda.supports_source(source_record, {"requested_url": requested_url}):  # type: ignore[attr-defined]
+    supports_source = getattr(fda, "supports_source", None) if fda is not None else None
+    if fda is not None and source_record is not None and callable(supports_source):
+        if supports_source(source_record, {"requested_url": requested_url}):
             return fda
 
     for adapter in ordered:
