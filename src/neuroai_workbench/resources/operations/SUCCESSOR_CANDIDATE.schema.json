@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/successor-candidate-1.0.json",
+  "type": "object",
+  "required": [
+    "metadata",
+    "predecessor_reference",
+    "delta_reference",
+    "reopening_register",
+    "inventories",
+    "withheld_claims",
+    "release_gate",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "candidate_id",
+        "version",
+        "predecessor_version",
+        "effective_as_of",
+        "evidence_cutoff",
+        "generated_at",
+        "generated_by",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "candidate_id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "predecessor_version": {"type": "string", "minLength": 1},
+        "effective_as_of": {"type": "string", "minLength": 10},
+        "evidence_cutoff": {"type": "string", "minLength": 10},
+        "generated_at": {"type": "string", "minLength": 10},
+        "generated_by": {"type": "string", "minLength": 1},
+        "status": {"enum": ["CANDIDATE", "REVIEWED", "AUTHORIZED", "PUBLISHED"]},
+        "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "predecessor_reference": {
+      "type": "object",
+      "required": ["release_version", "sha256", "immutable"],
+      "additionalProperties": false,
+      "properties": {
+        "release_version": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "immutable": {"const": true},
+        "baseline_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "delta_reference": {
+      "type": "object",
+      "required": ["delta_counts", "operation_count"],
+      "additionalProperties": false,
+      "properties": {
+        "delta_counts": {"type": "object"},
+        "operation_count": {"type": "integer", "minimum": 0},
+        "adjudicated_delta_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "reopening_register": {
+      "type": "object",
+      "required": ["recommendations", "confirmations", "observatory_decisions"],
+      "additionalProperties": false,
+      "properties": {
+        "recommendations": {"type": "array"},
+        "confirmations": {"type": "array"},
+        "observatory_decisions": {"type": "array"}
+      }
+    },
+    "inventories": {
+      "type": "object",
+      "required": ["changed", "unchanged", "superseded", "unresolved"],
+      "additionalProperties": false,
+      "properties": {
+        "changed": {"type": "array"},
+        "unchanged": {"type": "array"},
+        "superseded": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    },
+    "data_quality_report": {"type": "object"},
+    "release_gate": {
+      "type": "object",
+      "required": ["current_gate", "history"],
+      "additionalProperties": false,
+      "properties": {
+        "current_gate": {"enum": ["CANDIDATE", "REVIEWED", "AUTHORIZED", "PUBLISHED"]},
+        "history": {"type": "array"}
+      }
+    },
+    "withheld_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

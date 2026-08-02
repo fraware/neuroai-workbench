@@ -1,0 +1,14 @@
+{
+  "alias_id": "ALIAS-SYNTH-001",
+  "entity_id": "ENT-SYNTH-ORG-001",
+  "alias_text": "Synthetic Neuro Devices",
+  "alias_kind": "TRADE_NAME",
+  "status": "ACTIVE",
+  "registered_at": "2026-08-01T12:10:00Z",
+  "jurisdiction": "US",
+  "evidence_ref": "SYNTHETIC-FIXTURE",
+  "effective_from": null,
+  "effective_to": null,
+  "predecessor_alias_id": null,
+  "boundary": "Synthetic fixture for tests only."
+}

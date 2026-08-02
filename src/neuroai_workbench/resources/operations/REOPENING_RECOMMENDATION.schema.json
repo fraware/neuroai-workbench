@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/reopening-recommendation-1.0.json",
+  "type": "object",
+  "required": [
+    "recommendation_id",
+    "operation_id",
+    "assessment_id",
+    "rule_reopening_effect",
+    "rule_rationale",
+    "dependency_matches",
+    "resolution_state",
+    "assessment_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "recommendation_id": {"type": "string", "minLength": 1},
+    "operation_id": {"type": "string", "minLength": 1},
+    "operation_section": {"type": "string"},
+    "assessment_id": {"type": "string", "minLength": 1},
+    "observatory_object": {"type": "string"},
+    "change_class": {"type": "string", "minLength": 1},
+    "materiality": {"enum": ["MATERIAL", "NON_MATERIAL", "UNDETERMINED"]},
+    "rule_reopening_effect": {
+      "enum": [
+        "NO_EFFECT",
+        "METADATA_UPDATE_ONLY",
+        "EVIDENCE_GAP_UPDATE",
+        "REVIEW_REQUIRED",
+        "PARTIAL_REASSESSMENT_REQUIRED",
+        "FULL_REASSESSMENT_REQUIRED",
+        "UNDETERMINED"
+      ]
+    },
+    "suggested_observatory_decision": {"type": "string"},
+    "rule_rationale": {"type": "string", "minLength": 1},
+    "dependency_matches": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "resolution_state": {
+      "enum": ["RESOLVED", "UNRESOLVED", "NO_MATCH", "OUT_OF_SCOPE"]
+    },
+    "assessment_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

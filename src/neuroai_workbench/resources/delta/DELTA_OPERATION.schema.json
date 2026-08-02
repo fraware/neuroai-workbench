@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/delta-operation-1.0.json",
+  "type": "object",
+  "required": ["operation_id", "operation_type", "target_section"],
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": {"type": "string", "pattern": "^OP-[0-9]{6}$"},
+    "operation_type": {
+      "enum": [
+        "ADD_RECORD",
+        "ADD_RELATIONSHIP",
+        "UPDATE_FIELD_WITH_PREDECESSOR",
+        "ADD_EVENT",
+        "SUPERSEDE_RECORD",
+        "ADD_ALIAS",
+        "RECORD_SOURCE_INACCESSIBILITY",
+        "QUEUE_ASSESSMENT_REVIEW"
+      ]
+    },
+    "target_section": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
+    "adjudication_id": {"type": "string", "pattern": "^ADJ-[0-9a-f]{32}$"},
+    "record_id_field": {"type": "string", "minLength": 1},
+    "record_id": {"type": "string", "minLength": 1},
+    "field": {"type": "string", "minLength": 1},
+    "before_value": {},
+    "after_value": {},
+    "record": {"type": "object"},
+    "entity_id": {"type": "string", "minLength": 1},
+    "alias": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "inaccessibility_reason": {"type": "string", "minLength": 1},
+    "evidence_state": {"type": "string", "minLength": 1},
+    "superseded_by": {"type": "string", "minLength": 1},
+    "tombstone": {"type": "object"},
+    "assessment_id": {"type": "string", "minLength": 1},
+    "reopening_effect": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_RECORD"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_RELATIONSHIP"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "UPDATE_FIELD_WITH_PREDECESSOR"}}, "required": ["operation_type"]},
+      "then": {"required": ["record_id_field", "record_id", "field", "before_value", "after_value"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_EVENT"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "SUPERSEDE_RECORD"}}, "required": ["operation_type"]},
+      "then": {"required": ["record_id_field", "record_id", "superseded_by", "tombstone"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_ALIAS"}}, "required": ["operation_type"]},
+      "then": {"required": ["entity_id", "alias"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "RECORD_SOURCE_INACCESSIBILITY"}}, "required": ["operation_type"]},
+      "then": {"required": ["source_id", "inaccessibility_reason", "evidence_state"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "QUEUE_ASSESSMENT_REVIEW"}}, "required": ["operation_type"]},
+      "then": {"required": ["assessment_id", "reopening_effect", "rationale"]}
+    }
+  ]
+}

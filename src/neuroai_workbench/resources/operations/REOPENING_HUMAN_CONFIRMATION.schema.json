@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/reopening-human-confirmation-1.0.json",
+  "type": "object",
+  "required": [
+    "confirmation_id",
+    "recommendation_id",
+    "recommendation_sha256",
+    "confirmed_at",
+    "confirmed_by",
+    "authority_claim",
+    "human_reopening_effect",
+    "human_rationale",
+    "rule_reopening_effect",
+    "assessment_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "confirmation_id": {"type": "string", "minLength": 1},
+    "recommendation_id": {"type": "string", "minLength": 1},
+    "recommendation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "confirmed_at": {"type": "string", "minLength": 10},
+    "confirmed_by": {"type": "string", "minLength": 1},
+    "authority_claim": {
+      "type": "object",
+      "required": ["name_or_role", "accountability_state"],
+      "additionalProperties": false,
+      "properties": {
+        "name_or_role": {"type": "string", "minLength": 1},
+        "organization": {"type": "string"},
+        "accountability_state": {"type": "string", "minLength": 1}
+      }
+    },
+    "human_reopening_effect": {
+      "enum": [
+        "NO_EFFECT",
+        "METADATA_UPDATE_ONLY",
+        "EVIDENCE_GAP_UPDATE",
+        "REVIEW_REQUIRED",
+        "PARTIAL_REASSESSMENT_REQUIRED",
+        "FULL_REASSESSMENT_REQUIRED",
+        "UNDETERMINED",
+        "DECLINED"
+      ]
+    },
+    "human_rationale": {"type": "string", "minLength": 1},
+    "rule_reopening_effect": {"type": "string", "minLength": 1},
+    "observatory_decision": {"type": "string"},
+    "assessment_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

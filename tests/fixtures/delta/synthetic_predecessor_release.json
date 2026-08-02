@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "title": "Synthetic observatory predecessor",
+    "version": "v1.0-synthetic",
+    "evidence_cutoff": "2026-08-01",
+    "status": "SYNTHETIC_FIXTURE"
+  },
+  "sources": [
+    {
+      "source_id": "SRC-0001",
+      "publisher": "Example regulator",
+      "source_class": "REGULATORY_RECORD",
+      "baseline_verification_state": "CURRENT_VERIFIED",
+      "baseline_claim_boundary": "Synthetic fixture; no substantive claim."
+    },
+    {
+      "source_id": "SRC-0002",
+      "publisher": "Example company",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "baseline_verification_state": "CURRENT_VERIFIED",
+      "baseline_claim_boundary": "Synthetic fixture; no substantive claim."
+    }
+  ],
+  "regulatory_and_market_events": [
+    {
+      "event_id": "REG-001",
+      "event_date": "2026-07-01",
+      "source_ids": ["SRC-0001"],
+      "evidence_state": "SYNTHETIC_BASELINE",
+      "summary": "Baseline regulatory event fixture."
+    }
+  ],
+  "organizations": []
+}
