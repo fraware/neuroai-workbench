@@ -78,7 +78,12 @@ def test_public_live_summary_fixture_remains_non_canonical() -> None:
 
     from neuroai_workbench.util import load_json
 
-    path = Path(__file__).resolve().parents[2] / "examples" / "shadow_refresh" / "SHADOW_REFRESH_LIVE_PUBLIC_SUMMARY_v202608.json"
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "examples"
+        / "shadow_refresh"
+        / "SHADOW_REFRESH_LIVE_PUBLIC_SUMMARY_v202608.json"
+    )
     summary = load_json(path)
     assert summary["metadata"]["status"] == "SHADOW_EVALUATION_NOT_CANONICAL"
     assert summary["network_retrieval"] == "EXECUTED_LIVE_QUARANTINE_ONLY"

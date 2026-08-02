@@ -288,8 +288,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.live:
         if os.environ.get(LIVE_COLLECTION_ENV, "").strip() != "1":
             sys.stderr.write(
-                f"ERROR --live requires {LIVE_COLLECTION_ENV}=1 "
-                "(CI and default runs remain network-free)\n"
+                f"ERROR --live requires {LIVE_COLLECTION_ENV}=1 (CI and default runs remain network-free)\n"
             )
             return 2
         quarantine_root = output_root / "captures" / "quarantine"
@@ -312,9 +311,7 @@ def main(argv: list[str] | None = None) -> int:
             run_id=run_id,
             planned_total=len(source_ids),
         )
-        freeze["configuration_hashes"]["collector_sha256"] = str(
-            live_package["collector"]["configuration_hash"]
-        )
+        freeze["configuration_hashes"]["collector_sha256"] = str(live_package["collector"]["configuration_hash"])
     else:
         run_results = observed_run_results_from_plan(plan, run_id=run_id)
 
