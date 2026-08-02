@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/independent-review-disposition-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "disposition_id",
+    "review_track",
+    "scope_label",
+    "scope_sha256",
+    "disposition",
+    "reviewer_claim",
+    "recorded_at",
+    "recorded_by",
+    "rationale",
+    "release_authorization_performed",
+    "authority_profile",
+    "boundary",
+    "disposition_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1"},
+    "disposition_id": {"type": "string", "pattern": "^IRD-[0-9a-f]{32}$"},
+    "review_track": {
+      "enum": [
+        "SECURITY",
+        "METHODOLOGY",
+        "DATA_GOVERNANCE",
+        "ACCESSIBILITY",
+        "DOMAIN",
+        "AFFECTED_COMMUNITY"
+      ]
+    },
+    "scope_label": {"type": "string", "minLength": 1},
+    "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "disposition": {
+      "enum": [
+        "ACCEPTED",
+        "ACCEPTED_WITH_CONDITIONS",
+        "REJECTED",
+        "DEFERRED",
+        "INCOMPLETE"
+      ]
+    },
+    "reviewer_claim": {
+      "type": "object",
+      "required": ["name_or_role", "accountability_state", "independence_statement"],
+      "additionalProperties": false,
+      "properties": {
+        "name_or_role": {"type": "string", "minLength": 1},
+        "organization": {"type": "string"},
+        "accountability_state": {"type": "string", "minLength": 1},
+        "independence_statement": {"type": "string", "minLength": 1},
+        "conflict_of_interest_disclosure": {"type": "string"}
+      }
+    },
+    "recorded_at": {"type": "string", "minLength": 10},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "conditions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "findings_register_ref": {"type": "string"},
+    "unresolved_risks": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "release_authorization_performed": {"const": false},
+    "authority_profile": {"const": "LOCAL_UNAUTHENTICATED_ATTRIBUTION"},
+    "boundary": {"type": "string", "minLength": 1},
+    "disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
