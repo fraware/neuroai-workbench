@@ -19,6 +19,24 @@ from .exporter import export_case_bundle
 from .metrics import summarize
 from .resource_loader import read_resource_bytes
 from .util import ensure_identifier
+from .monitoring import adjudicate_change_candidate
+from .review_queue import (
+    claim_lease,
+    initialize_review_queue,
+    list_queue_items,
+    load_reviewer_profiles,
+    register_reviewer_profile,
+    release_lease,
+    review_queue_status,
+    submit_opinion,
+    verify_review_queue,
+)
+from .review_ui import (
+    adjudication_fields,
+    ops_health_projection,
+    queue_item_detail,
+    reviewer_profile_fields,
+)
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -156,6 +174,45 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                     }
                 )
                 return
+            if segments == ["api", "review", "health"]:
+                self._send_json(ops_health_projection(self.workspace.root))
+                return
+            if segments == ["api", "review", "queue"]:
+                status = review_queue_status(self.workspace.root)
+                if not status.get("initialized"):
+                    self._send_json(
+                        {
+                            "initialized": False,
+                            "items": [],
+                            "status": status,
+                            "boundary": status.get("boundary"),
+                        }
+                    )
+                    return
+                self._send_json(
+                    {
+                        "initialized": True,
+                        "items": list_queue_items(self.workspace.root),
+                        "status": status,
+                        "verification": verify_review_queue(self.workspace.root),
+                    }
+                )
+                return
+            if segments == ["api", "review", "profiles"]:
+                self._send_json(
+                    {
+                        "profiles": load_reviewer_profiles(self.workspace.root),
+                        "fields": reviewer_profile_fields(),
+                    }
+                )
+                return
+            if segments == ["api", "review", "fields"]:
+                self._send_json({"adjudication_fields": adjudication_fields()})
+                return
+            if len(segments) == 4 and segments[:2] == ["api", "review"] and segments[2] == "queue":
+                item_id = ensure_identifier(segments[3], "queue item ID")
+                self._send_json(queue_item_detail(self.workspace.root, item_id))
+                return
             if segments == ["api", "cases"]:
                 self._send_json({"cases": self.workspace.list_cases()})
                 return
@@ -211,6 +268,72 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
         try:
             segments = self._segments()
             body = self._read_json()
+            if segments == ["api", "review", "init"]:
+                result = initialize_review_queue(self.workspace.root, actor=str(body.get("actor", "web-user")))
+                self._send_json(result, HTTPStatus.CREATED)
+                return
+            if segments == ["api", "review", "profiles"]:
+                profile = register_reviewer_profile(
+                    self.workspace.root,
+                    str(body.get("profile_id", "")),
+                    str(body.get("display_name", "")),
+                    list(body.get("roles") or []),
+                    actor=str(body.get("actor", "web-user")),
+                )
+                status = HTTPStatus.CREATED if profile.get("created") else HTTPStatus.OK
+                self._send_json(profile, status)
+                return
+            if len(segments) == 5 and segments[:3] == ["api", "review", "queue"] and segments[4] == "lease":
+                item_id = ensure_identifier(segments[3], "queue item ID")
+                lease = claim_lease(
+                    self.workspace.root,
+                    item_id,
+                    str(body.get("reviewer_profile_id", "")),
+                    ttl_seconds=int(body.get("ttl_seconds", 3600)),
+                    actor=str(body.get("actor") or body.get("reviewer_profile_id", "web-user")),
+                )
+                self._send_json(lease, HTTPStatus.CREATED)
+                return
+            if len(segments) == 5 and segments[:3] == ["api", "review", "queue"] and segments[4] == "opinion":
+                item_id = ensure_identifier(segments[3], "queue item ID")
+                opinion = submit_opinion(
+                    self.workspace.root,
+                    item_id,
+                    str(body.get("reviewer_profile_id", "")),
+                    str(body.get("position", "")),
+                    str(body.get("rationale", "")),
+                    role=str(body.get("role")) if body.get("role") else None,
+                    actor=str(body.get("actor") or body.get("reviewer_profile_id", "web-user")),
+                )
+                self._send_json(opinion, HTTPStatus.CREATED)
+                return
+            if len(segments) == 5 and segments[:3] == ["api", "review", "queue"] and segments[4] == "adjudicate":
+                item_id = ensure_identifier(segments[3], "queue item ID")
+                detail = queue_item_detail(self.workspace.root, item_id)
+                candidate_id = str(detail["candidate"]["candidate_id"])
+                adjudication = adjudicate_change_candidate(
+                    self.workspace.root,
+                    candidate_id,
+                    str(body.get("decision", "")),
+                    rationale=str(body.get("rationale", "")),
+                    change_class=str(body.get("change_class", "UNCLASSIFIED")),
+                    materiality=str(body.get("materiality", "UNDETERMINED")),
+                    reopening_effect=str(body.get("reopening_effect", "UNDETERMINED")),
+                    actor=str(body.get("decided_by") or body.get("actor", "web-user")),
+                )
+                self._send_json(adjudication, HTTPStatus.CREATED)
+                return
+            if len(segments) == 5 and segments[:3] == ["api", "review", "leases"] and segments[4] == "release":
+                lease_id = ensure_identifier(segments[3], "lease ID")
+                release = release_lease(
+                    self.workspace.root,
+                    lease_id,
+                    str(body.get("reviewer_profile_id", "")),
+                    reason=str(body.get("reason", "RELEASED")),
+                    actor=str(body.get("actor") or body.get("reviewer_profile_id", "web-user")),
+                )
+                self._send_json(release)
+                return
             if segments == ["api", "cases"]:
                 assessment = self.workspace.create_case(
                     str(body.get("case_id", "")),
