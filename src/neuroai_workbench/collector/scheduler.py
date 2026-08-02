@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from ..util import utc_now
@@ -15,6 +16,11 @@ from .handoff import prepare_monitoring_handoff
 from .http_client import HttpTransport
 from .ids import new_request_id
 from .schemas import REQUEST_SCHEMA, validate_or_raise
+
+
+def _is_http_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.hostname)
 
 
 @dataclass(frozen=True)
@@ -87,6 +93,22 @@ class CollectionScheduler:
             if source_record is None:
                 outcomes.append({"source_id": source_id, "status": "SKIPPED", "reason": "unknown_source"})
                 continue
+            requested_url = str(item.get("url") or source_record.get("url") or "")
+            if not _is_http_url(requested_url):
+                # Defensive guard: never abort the whole plan for a non-HTTP local path.
+                outcomes.append(
+                    {
+                        "source_id": source_id,
+                        "status": "FAILURE",
+                        "reason": "POLICY_BLOCK",
+                        "failure_class": "POLICY_BLOCK",
+                        "message": (
+                            "Non-HTTP URL cannot enter the HTTP collector path; "
+                            "use manual queue or LocalContentAddressedAdapter"
+                        ),
+                    }
+                )
+                continue
             adapter = adapter_for_source(adapters, source_record)
             if adapter.adapter_id in self.scheduler_config.disabled_adapter_ids:
                 outcomes.append(
@@ -98,7 +120,19 @@ class CollectionScheduler:
                     }
                 )
                 continue
-            request = self.build_collection_request(item, registry_sha256=registry_sha256)
+            try:
+                request = self.build_collection_request(item, registry_sha256=registry_sha256)
+            except (ValueError, TypeError, KeyError) as exc:
+                outcomes.append(
+                    {
+                        "source_id": source_id,
+                        "status": "FAILURE",
+                        "reason": "POLICY_BLOCK",
+                        "failure_class": "POLICY_BLOCK",
+                        "message": f"Collection request rejected: {exc}",
+                    }
+                )
+                continue
             outcome = adapter.collect(request)
             outcomes.append(
                 {
