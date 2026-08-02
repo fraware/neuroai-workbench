@@ -31,11 +31,11 @@ jobs:
       - run: python -m pip install --no-deps -e .
       - run: mkdir -p artifacts workspaces/monitor-plan
       - run: >-
-          neuroai-workbench monitor-registry-validate
+          neuroai-monitor registry-validate
           examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
           --out artifacts/source-registry-validation.json
       - run: >-
-          neuroai-workbench monitor-init
+          neuroai-monitor init
           workspaces/monitor-plan
           examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
           --out artifacts/monitor-init.json
@@ -46,7 +46,7 @@ jobs:
           if [[ -n "${{ inputs.as_of }}" ]]; then
             args+=(--as-of "${{ inputs.as_of }}")
           fi
-          neuroai-workbench monitor-plan "${args[@]}"
+          neuroai-monitor plan "${args[@]}"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: observatory-monitor-plan
