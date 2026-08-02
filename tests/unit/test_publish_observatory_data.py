@@ -91,3 +91,44 @@ def test_publish_is_deterministic_for_fixture_hashes(tmp_path: Path) -> None:
     manifest_a = (staging_a / "releases" / "data-v0.0.1-bootstrap" / "SHA256SUMS.txt").read_text(encoding="utf-8")
     manifest_b = (staging_b / "releases" / "data-v0.0.1-bootstrap" / "SHA256SUMS.txt").read_text(encoding="utf-8")
     assert manifest_a == manifest_b
+
+
+def test_authorized_public_release_set_requires_ops_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from neuroai_workbench.migration_ops.constants import OPS_WORKSPACE_ENV
+    from neuroai_workbench.publish.data import AUTHORIZED_PUBLIC_RELEASE_SET
+
+    monkeypatch.delenv(OPS_WORKSPACE_ENV, raising=False)
+    with pytest.raises(FileNotFoundError, match=OPS_WORKSPACE_ENV):
+        build_publish_plan(
+            release_tag="data-v0.1.0-public-governing",
+            staging_root=tmp_path / "staging",
+            target=SCAFFOLD,
+            release_set=AUTHORIZED_PUBLIC_RELEASE_SET,
+        )
+
+
+@pytest.mark.skipif(
+    not Path(__import__("os").environ.get("NEUROAI_OPS_WORKSPACE", "")).is_dir(),
+    reason="NEUROAI_OPS_WORKSPACE not configured",
+)
+def test_authorized_public_release_set_publishes_from_ops(tmp_path: Path) -> None:
+    from neuroai_workbench.publish.data import AUTHORIZED_PUBLIC_RELEASE_SET
+
+    staging = tmp_path / "staging"
+    plan = build_publish_plan(
+        release_tag="data-v0.1.0-public-governing",
+        staging_root=staging,
+        target=SCAFFOLD,
+        release_set=AUTHORIZED_PUBLIC_RELEASE_SET,
+    )
+    report = publish_release(plan, target=SCAFFOLD)
+    assert report["manifest_verified"] is True
+    assert report["descriptor"]["release_set"] == AUTHORIZED_PUBLIC_RELEASE_SET
+    records = staging / "releases" / "data-v0.1.0-public-governing" / "records"
+    assert (records / "source_monitor_registry_v1.5.json").is_file()
+    assert (records / "canonical_successor_snapshot_v1.7.json").is_file()
+    assert (records / "public_disposition_summary.json").is_file()
+    assert any("UNESCO" in claim for claim in report["descriptor"]["withheld_claims"])
+    verify = verify_publish_staging(plan, target=SCAFFOLD)
+    assert verify["manifest_verified"] is True
+    assert verify["descriptor_verified"] is True
