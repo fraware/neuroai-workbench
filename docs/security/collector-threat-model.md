@@ -150,6 +150,18 @@ The collector may not:
 
 Schema validation and this threat model do not replace independent security review, restricted-network deployment, secret-store hardening, or operational monitoring of collector behavior. A compromised collector host, secret store, or registry supply chain can still produce structurally valid but misleading provenance. Human quarantine approval is a workflow gate, not proof of substantive correctness.
 
+## Implementation controls (PR-06)
+
+The `neuroai_workbench.collector` package implements the retrieval controls above in a dedicated module outside `monitoring.py`:
+
+- `dns.py` resolves immediately before connect and rejects non-global addresses after every resolution.
+- `http_client.py` revalidates redirect targets, enforces redirect limits, and applies size and decompression-ratio checks.
+- `rate_limit.py` enforces per-host request budgets.
+- `quarantine.py` writes bytes and metadata only inside the quarantine root.
+- `service.py` validates all emitted records against PR-05 schemas and records HTTP 304 responses as new capture identities with unchanged content hashes when prior capture context is supplied.
+
+Architecture tests assert that collector modules do not import monitoring write APIs (`record_snapshot`, `adjudicate`, or change-candidate creation).
+
 ## Related documents
 
 - [ADR 0008 — Collector deployment boundary](../adr/0008-collector-deployment-boundary.md)
