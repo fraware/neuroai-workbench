@@ -1,6 +1,6 @@
 # Extraction evaluation preregistration
 
-Status: `PREREGISTERED` for issue [#38](https://github.com/fraware/neuroai-workbench/issues/38). No provider execution or scored runs are authorized.
+Status: `PREREGISTERED` for issue [#38](https://github.com/fraware/neuroai-workbench/issues/38) under epic [#34](https://github.com/fraware/neuroai-workbench/issues/34). PR-13 enables offline comparison of explicitly enabled test-only provider configurations against benchmark stubs only. No external provider execution is authorized.
 
 ## Metrics
 
@@ -12,4 +12,4 @@ Stop when unsupported-attribution or citation errors exceed thresholds, protecte
 
 ## Boundary
 
-PR-12 defines contract and preregistration only. Provider comparison requires PR-13.
+PR-12 defines contract and preregistration. PR-13 executes bounded offline comparison without selecting a provider solely on aggregate score. See [extraction-evaluation.md](extraction-evaluation.md).
