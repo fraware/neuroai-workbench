@@ -64,6 +64,8 @@ neuroai_workbench = [
   "static/*",
   "resources/v4_2/*",
   "resources/operations/*",
+  "resources/collector/*",
+  "resources/extraction/*",
   "resources/entities/*",
 ]
 
