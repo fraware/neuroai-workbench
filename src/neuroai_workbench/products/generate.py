@@ -48,10 +48,16 @@ def reconcile_formats(query: dict[str, Any], products: dict[str, Any]) -> dict[s
     """Cross-format reconciliation comparing release identity across generated products."""
     expected = query["release_sha256"]
     narrative_text = Path(products["narrative_markdown"]["output"]).read_text(encoding="utf-8")
-    pdf_path = Path(products.get("pdf", products.get("pdf_stub"))["output"])
-    pdf_bytes = pdf_path.read_bytes()
-    pdf_contains = expected.encode("utf-8") in pdf_bytes or expected in pdf_bytes.decode("utf-8", errors="ignore")
-    docx_ok = Path(products["docx"]["output"]).is_file() if "docx" in products else True
+    pdf_meta = products.get("pdf") or products.get("pdf_stub") or {}
+    pdf_output = pdf_meta.get("output")
+    if not isinstance(pdf_output, str):
+        pdf_contains = False
+    else:
+        pdf_bytes = Path(pdf_output).read_bytes()
+        pdf_contains = expected.encode("utf-8") in pdf_bytes or expected in pdf_bytes.decode("utf-8", errors="ignore")
+    docx_meta = products.get("docx") or {}
+    docx_output = docx_meta.get("output")
+    docx_ok = Path(docx_output).is_file() if isinstance(docx_output, str) else True
     checks = {
         "markdown_contains_release_hash": expected in narrative_text,
         "html_contains_release_hash": expected

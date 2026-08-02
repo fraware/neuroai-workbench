@@ -847,11 +847,12 @@ def build_source_health_report(
         if not isinstance(failure_class, str):
             failure_class = "NONE"
         failure_class_counts[failure_class] = failure_class_counts.get(failure_class, 0) + 1
-        status_flags = record.get("status_flags") if isinstance(record.get("status_flags"), list) else []
+        raw_flags = record.get("status_flags")
+        status_flags: list[Any] = raw_flags if isinstance(raw_flags, list) else []
         obsolete = bool(
             record.get("obsolete")
             or record.get("withdrawn")
-            or any(flag in {"OBSOLETE", "WITHDRAWN"} for flag in status_flags if isinstance(flag, str))
+            or any(isinstance(flag, str) and flag in {"OBSOLETE", "WITHDRAWN"} for flag in status_flags)
         )
         if obsolete:
             obsolete_count += 1

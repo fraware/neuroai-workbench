@@ -16,8 +16,8 @@ OPS_ROOT = Path(os.environ.get(OPS_WORKSPACE_ENV, ""))
 REPO = Path(__file__).resolve().parents[2]
 
 pytestmark = pytest.mark.skipif(
-    not OPS_ROOT.is_dir(),
-    reason=f"{OPS_WORKSPACE_ENV} not configured",
+    not OPS_ROOT.is_dir() or not (OPS_ROOT / "01_CONFIG" / "source_monitor_registry_v1.5.json").is_file(),
+    reason=f"{OPS_WORKSPACE_ENV} not configured with starter extract",
 )
 
 

@@ -8,7 +8,7 @@ from ..util import atomic_write_bytes, sha256_bytes
 
 def render_docx(query: dict[str, Any]) -> bytes | None:
     try:
-        from docx import Document
+        from docx import Document  # type: ignore[import-untyped,import-not-found]
     except ImportError:
         return None
     document = Document()
@@ -33,7 +33,7 @@ def render_docx(query: dict[str, Any]) -> bytes | None:
     )
     buffer_path_bytes = __import__("io").BytesIO()
     document.save(buffer_path_bytes)
-    return buffer_path_bytes.getvalue()
+    return bytes(buffer_path_bytes.getvalue())
 
 
 def write_docx(query: dict[str, Any], output: Path) -> dict[str, Any]:

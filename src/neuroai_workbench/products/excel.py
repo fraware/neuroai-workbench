@@ -27,7 +27,7 @@ def _sheet_to_csv(rows: list[dict[str, Any]]) -> str:
 
 def _render_native_xlsx(query: dict[str, Any]) -> bytes | None:
     try:
-        from openpyxl import Workbook
+        from openpyxl import Workbook  # type: ignore[import-untyped]
     except ImportError:
         return None
     workbook = Workbook()

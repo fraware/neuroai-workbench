@@ -8,8 +8,8 @@ from ..util import atomic_write_bytes, sha256_bytes
 
 def render_pdf(query: dict[str, Any]) -> bytes | None:
     try:
-        from reportlab.lib.pagesizes import letter
-        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter  # type: ignore[import-untyped]
+        from reportlab.pdfgen import canvas  # type: ignore[import-untyped]
     except ImportError:
         return None
     buffer = __import__("io").BytesIO()
@@ -39,7 +39,7 @@ def render_pdf(query: dict[str, Any]) -> bytes | None:
         pdf.drawString(72, y, line[:100])
         y -= 14
     pdf.save()
-    return buffer.getvalue()
+    return bytes(buffer.getvalue())
 
 
 def render_pdf_stub(query: dict[str, Any]) -> str:
