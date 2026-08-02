@@ -10,7 +10,7 @@ from neuroai_workbench.collector.adapters.registry_stub import ClinicalRegulator
 from neuroai_workbench.collector.config import CollectorConfig
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.collector.http_client import HttpRequest
-from tests.unit.test_collector_adapters_scheduler import FakeTransport, GLOBAL_IP
+from tests.unit.test_collector_adapters_scheduler import GLOBAL_IP, FakeTransport
 from tests.unit.test_collector_schemas import CONFIG_HASH, valid_collection_request
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "collector"
