@@ -10,8 +10,11 @@ from .contract import (
 )
 
 FAKE_OFFLINE_PROVIDER_ID = "fake-offline"
-ALLOWED_ENDPOINT_CLASSES = frozenset({"NOT_EXECUTED", "OFFLINE_EXPORT"})
-DEFAULT_PROVIDER_REGISTRY: dict[str, str] = {}
+CAPTURED_REPLAY_PROVIDER_ID = "captured-response-replay"
+ALLOWED_ENDPOINT_CLASSES = frozenset({"NOT_EXECUTED", "OFFLINE_EXPORT", "CAPTURED_REPLAY"})
+DEFAULT_PROVIDER_REGISTRY: dict[str, str] = {
+    CAPTURED_REPLAY_PROVIDER_ID: "CapturedResponseReplayProvider",
+}
 
 
 class ProviderExecutionRefusedError(ValueError):
@@ -48,7 +51,9 @@ def validate_provider_config(config: ExtractionProviderConfig) -> list[dict[str,
                 "message": f"endpoint_class {config.endpoint_class!r} is not allowed for bounded offline evaluation",
             }
         )
-    if config.provider_id not in {FAKE_OFFLINE_PROVIDER_ID} and config.provider_id not in DEFAULT_PROVIDER_REGISTRY:
+    if config.provider_id not in {FAKE_OFFLINE_PROVIDER_ID, CAPTURED_REPLAY_PROVIDER_ID} and (
+        config.provider_id not in DEFAULT_PROVIDER_REGISTRY
+    ):
         errors.append(
             {
                 "code": "PROVIDER_UNREGISTERED",
@@ -59,7 +64,11 @@ def validate_provider_config(config: ExtractionProviderConfig) -> list[dict[str,
     return errors
 
 
-def resolve_provider(config: ExtractionProviderConfig) -> ExtractionProvider:
+def resolve_provider(
+    config: ExtractionProviderConfig,
+    *,
+    captured_responses: dict[str, dict[str, Any]] | None = None,
+) -> ExtractionProvider:
     errors = validate_provider_config(config)
     if errors:
         raise ProviderExecutionRefusedError(
@@ -69,11 +78,13 @@ def resolve_provider(config: ExtractionProviderConfig) -> ExtractionProvider:
         raise ProviderExecutionRefusedError(
             "Provider adapter is disabled by default; enable explicitly for offline evaluation only."
         )
-    if config.provider_id != FAKE_OFFLINE_PROVIDER_ID:
-        raise ProviderExecutionRefusedError(
-            f"Provider {config.provider_id!r} is not approved for offline execution in this release."
-        )
-    return FakeOfflineExtractionProvider(config)
+    if config.provider_id == FAKE_OFFLINE_PROVIDER_ID:
+        return FakeOfflineExtractionProvider(config)
+    if config.provider_id == CAPTURED_REPLAY_PROVIDER_ID:
+        return CapturedResponseReplayProvider(config, captured_responses or {})
+    raise ProviderExecutionRefusedError(
+        f"Provider {config.provider_id!r} is not approved for offline execution in this release."
+    )
 
 
 class FakeOfflineExtractionProvider:
@@ -162,8 +173,44 @@ class FakeOfflineExtractionProvider:
         return response
 
 
+class CapturedResponseReplayProvider:
+    """Replay previously captured model responses keyed by request_id or excerpt_id.
+
+    Does not call a network provider. Captures must be supplied as fixtures.
+    """
+
+    def __init__(
+        self,
+        config: ExtractionProviderConfig,
+        captured_responses: dict[str, dict[str, Any]],
+    ) -> None:
+        self.config = config
+        self.captured_responses = captured_responses
+
+    def extract(self, request: dict[str, Any], *, annotation: dict[str, Any] | None = None) -> dict[str, Any]:
+        del annotation  # Replay ignores annotation cheating paths.
+        request_id = str(request.get("request_id", ""))
+        excerpts = request.get("selected_excerpts", [])
+        excerpt_id = ""
+        if isinstance(excerpts, list) and excerpts and isinstance(excerpts[0], dict):
+            excerpt_id = str(excerpts[0].get("excerpt_id", ""))
+        payload = self.captured_responses.get(request_id) or self.captured_responses.get(excerpt_id)
+        if payload is None:
+            raise ProviderExecutionRefusedError(
+                f"No captured response for request_id={request_id!r} excerpt_id={excerpt_id!r}"
+            )
+        response = dict(payload)
+        response["request_id"] = request.get("request_id")
+        response["request_sha256"] = request.get("request_sha256")
+        response.setdefault("boundary", EXTRACTION_BOUNDARY)
+        validation = validate_extraction_response(response, request)
+        if not validation["valid"]:
+            raise ValueError(f"Captured replay response invalid: {validation['errors']}")
+        return response
+
+
 def default_offline_evaluation_configs(*, enabled: bool = True) -> list[ExtractionProviderConfig]:
-    """Return two preregistered offline configs for bounded comparison."""
+    """Return preregistered offline fake configs for bounded comparison."""
     return [
         ExtractionProviderConfig(
             config_id="CFG-FAKE-BASELINE",
@@ -182,6 +229,17 @@ def default_offline_evaluation_configs(*, enabled: bool = True) -> list[Extracti
             endpoint_class="NOT_EXECUTED",
         ),
     ]
+
+
+def captured_replay_evaluation_config(*, enabled: bool = True) -> ExtractionProviderConfig:
+    return ExtractionProviderConfig(
+        config_id="CFG-CAPTURED-REPLAY",
+        provider_id=CAPTURED_REPLAY_PROVIDER_ID,
+        model_id="captured-replay-v1",
+        enabled=enabled,
+        profile="replay",
+        endpoint_class="CAPTURED_REPLAY",
+    )
 
 
 def new_request_id() -> str:

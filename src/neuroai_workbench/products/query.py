@@ -8,15 +8,25 @@ from ..util import canonical_json_bytes, sha256_bytes
 
 FULL_RELEASE = "FULL_OBSERVATORY_RELEASE"
 COMPACT_SUCCESSOR = "COMPACT_SUCCESSOR_SNAPSHOT"
+DEFAULT_PREVIEW_LIMIT = 50
 
 
-def query_release(release_path: Path) -> dict[str, Any]:
-    """Shared query layer stub projecting canonical release records for product generation."""
+def query_release(release_path: Path, *, limit: int | None = DEFAULT_PREVIEW_LIMIT) -> dict[str, Any]:
+    """Shared query layer projecting canonical release records for product generation.
+
+    ``limit`` caps list projections for interactive previews. Pass ``limit=None`` for
+    authorized release builds so products are not silently truncated.
+    """
     release = load_release(release_path)
     summary = summarize_release(release)
     validation = validate_release(release)
     kind = release_kind(release)
     metadata = release.get("metadata", {})
+
+    def _slice(items: list[Any]) -> list[Any]:
+        if limit is None:
+            return items
+        return items[:limit]
 
     rows: dict[str, list[dict[str, Any]]] = {
         "release_summary": [
@@ -50,23 +60,39 @@ def query_release(release_path: Path) -> dict[str, Any]:
             for key, value in sorted(summary.get("coverage", {}).items())
             if not isinstance(value, dict)
         ]
-        rows["organizations"] = [
+        organizations = [
             {
                 "organization_id": item.get("organization_id"),
                 "canonical_name": item.get("canonical_name"),
                 "verification_state": item.get("verification_state"),
             }
-            for item in release.get("organizations", [])[:50]
+            for item in release.get("organizations", [])
             if isinstance(item, dict)
         ]
-        rows["sources"] = [
+        sources = [
             {
                 "source_id": item.get("source_id"),
                 "publisher": item.get("publisher"),
                 "source_class": item.get("source_class"),
             }
-            for item in release.get("sources", [])[:50]
+            for item in release.get("sources", [])
             if isinstance(item, dict)
+        ]
+        rows["organizations"] = _slice(organizations)
+        rows["sources"] = _slice(sources)
+        rows["projection_limits"] = [
+            {
+                "field": "list_limit",
+                "value": "NONE" if limit is None else str(limit),
+            },
+            {
+                "field": "organizations_total",
+                "value": len(organizations),
+            },
+            {
+                "field": "sources_total",
+                "value": len(sources),
+            },
         ]
 
     release_sha256 = sha256_bytes(canonical_json_bytes(release))
@@ -82,6 +108,7 @@ def query_release(release_path: Path) -> dict[str, Any]:
         "metadata": metadata,
         "summary": summary,
         "rows": rows,
+        "limit": limit,
         "withheld_claims": [
             "No regulatory authorization",
             "No clinical effectiveness or safety conclusion",
