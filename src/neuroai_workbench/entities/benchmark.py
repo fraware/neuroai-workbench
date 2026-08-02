@@ -19,6 +19,20 @@ def load_blinded_benchmark_stub() -> dict[str, Any]:
     return cast(dict[str, Any], payload)
 
 
+def load_public_annotated_subset() -> dict[str, Any]:
+    """Load the public redistribution-safe annotated subset (≥20 cases) for CI metrics."""
+    try:
+        payload = json.loads(files(BENCHMARK_RESOURCE).joinpath(PUBLIC_ANNOTATED_SUBSET).read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ValueError(f"Missing public annotated subset resource {PUBLIC_ANNOTATED_SUBSET}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("Public annotated subset must be an object")
+    cases = payload.get("cases")
+    if not isinstance(cases, list) or len(cases) < 20:
+        raise ValueError("Public annotated subset must include at least 20 cases")
+    return cast(dict[str, Any], payload)
+
+
 def load_benchmark_document(path: Path | None = None) -> dict[str, Any]:
     if path is None:
         return load_blinded_benchmark_stub()

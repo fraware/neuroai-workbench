@@ -1,36 +1,27 @@
 # Entity resolution evaluation report
 
-## Scope
+**Governing issues:** [#37](https://github.com/fraware/neuroai-workbench/issues/37), tracking [#75](https://github.com/fraware/neuroai-workbench/issues/75)
 
-Engineering behavioral evaluation of entity-resolution proposals against annotated cases. Outcomes do not establish substantive accuracy, regulatory authorization, or conformance.
+## Boundary
+
+Measured precision, recall, and false-merge counts are engineering behavioral metrics against annotated synthetic/public cases. They do not establish substantive entity identity, regulatory authority, or clinical correctness. Non-exact matches still require human confirmation.
 
 ## Corpora
 
-| Corpus | Location | Status |
-| --- | --- | --- |
-| Synthetic blinded stub | `resources/entities/RESOLUTION_BENCHMARK_BLINDED.json` | CI fixture (5 cases) |
-| Ops annotated set | `$NEUROAI_OPS_WORKSPACE/evaluation/entity/` | Protected ops; ≥50 cases when mined |
-| Public ID subset | shadow cohort public IDs under `examples/shadow_refresh/` | Redistribution-safe IDs only |
+| Corpus | Location | Size | Role |
+| --- | --- | --- | --- |
+| Blinded stub | `RESOLUTION_BENCHMARK_BLINDED.json` | 5 | Fast CI smoke |
+| Public annotated subset | `RESOLUTION_BENCHMARK_PUBLIC_SUBSET.json` | ≥20 | CI metrics |
+| Ops annotated draft | ops `evaluation/entity/RESOLUTION_BENCHMARK_OPS_GE60.json` | ≥60 | Ops-gated only |
 
-## Metrics
+## Public subset coverage
 
-When `expected.entity_id` / abstain annotations are present, `run_blinded_benchmark` reports:
+The public subset spans renames, acquisitions, parent/sub mentions, lab-name collisions, product-vs-company, sponsor-vs-site, abbreviations, historical IDs, and CJK/Arabic script variants using synthetic redistribution-safe strings only.
 
-- precision / recall
-- top-k hit rate
-- abstention count
-- false-merge / false-split counts
-
-Without annotations, only case pass rate is reported (precision/recall remain null).
-
-## Human confirmation
-
-Non-exact matches still require human confirmation (`auto_confirmed=false`). Software proposals never mutate canonical entity registries.
-
-## Reproduction
+## How to measure
 
 ```powershell
-python -c "from pathlib import Path; from neuroai_workbench.entities.benchmark import run_blinded_benchmark; print(run_blinded_benchmark(Path('workspaces/entity-bench')))"
+python -c "from pathlib import Path; from neuroai_workbench.entities.benchmark import load_public_annotated_subset, run_blinded_benchmark; from tests.unit.test_entity_resolver import seed_entity_workspace; print('use seeded workspace + run_blinded_benchmark(..., benchmark_path=...)')"
 ```
 
-Ops-gated mining and annotated evaluation remain local under `NEUROAI_OPS_WORKSPACE`.
+Ops-gated full ≥60 run requires `NEUROAI_OPS_WORKSPACE` and does not commit protected annotations to the software repository.
