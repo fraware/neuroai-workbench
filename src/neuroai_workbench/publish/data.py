@@ -6,7 +6,8 @@ import shutil
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from types import ModuleType
+from typing import Any, cast
 
 from .. import __version__
 from ..util import atomic_write_json, sha256_file, utc_now
@@ -60,7 +61,7 @@ def resolve_data_repo_root(path: Path | None) -> Path:
     )
 
 
-def _load_script_module(name: str, script: Path):
+def _load_script_module(name: str, script: Path) -> ModuleType:
     if not script.is_file():
         raise FileNotFoundError(f"{script.name} not found under {script.parent}")
     spec = importlib.util.spec_from_file_location(name, script)
@@ -128,12 +129,12 @@ def _render_descriptor(plan: PublishPlan, manifest_sha256: str, record_counts: d
 
 def _manifest_for_tree(repo_root: Path, fixtures_dir: Path, manifest_path: Path) -> str:
     generate = _load_script_module("observatory_generate_manifest", repo_root / "scripts" / "generate_manifest.py")
-    return generate.render_manifest(fixtures_dir, exclude={manifest_path.resolve()})
+    return cast(str, generate.render_manifest(fixtures_dir, exclude={manifest_path.resolve()}))
 
 
 def _verify_manifest(repo_root: Path, fixtures_dir: Path, manifest_path: Path) -> tuple[bool, list[str]]:
     verify = _load_script_module("observatory_verify_manifest", repo_root / "scripts" / "verify_manifest.py")
-    return verify.verify_manifest(fixtures_dir, manifest_path)
+    return cast(tuple[bool, list[str]], verify.verify_manifest(fixtures_dir, manifest_path))
 
 
 def publish_release(plan: PublishPlan, *, target: Path | None = None) -> dict[str, Any]:
