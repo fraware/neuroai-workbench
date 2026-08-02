@@ -1,0 +1,1 @@
+{"fixture_id": "FIX-00000000000000000000000000000002", "expected_fields": [{"field_type": "EVENT_TYPE", "value": "REGULATORY_NOTICE"}], "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record."}

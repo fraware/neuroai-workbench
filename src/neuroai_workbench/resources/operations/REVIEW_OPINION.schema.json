@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/review-opinion-1.0.json",
+  "type": "object",
+  "required": [
+    "opinion_id",
+    "item_id",
+    "reviewer_profile_id",
+    "role",
+    "position",
+    "rationale",
+    "monitoring_record_sha256",
+    "submitted_at",
+    "canonical_mutation_performed",
+    "opinion_sha256",
+    "authority_profile",
+    "identity_boundary",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "opinion_id": {"type": "string", "pattern": "^RQO-[0-9a-f]{32}$"},
+    "item_id": {"type": "string", "pattern": "^RQI-CAND-[0-9a-f]{32}$"},
+    "reviewer_profile_id": {"type": "string", "minLength": 1},
+    "role": {
+      "enum": [
+        "MONITORING_REVIEWER",
+        "ADJUDICATION_REVIEWER",
+        "LEAD_MONITORING_REVIEWER",
+        "OBSERVER"
+      ]
+    },
+    "position": {"enum": ["SUPPORT", "OPPOSE", "DEFER", "ABSTAIN", "NEEDS_EVIDENCE"]},
+    "rationale": {"type": "string", "minLength": 1},
+    "monitoring_record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "submitted_at": {"type": "string", "minLength": 10},
+    "lease_id": {"type": "string", "pattern": "^RQL-[0-9a-f]{32}$"},
+    "canonical_mutation_performed": {"const": false},
+    "opinion_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_profile": {"const": "LOCAL_UNAUTHENTICATED_ATTRIBUTION"},
+    "identity_boundary": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

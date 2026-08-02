@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/successor-release-gate-1.0.json",
+  "type": "object",
+  "required": [
+    "gate_record_id",
+    "candidate_id",
+    "candidate_sha256",
+    "prior_gate",
+    "target_gate",
+    "advanced_at",
+    "advanced_by",
+    "authority_claim",
+    "rationale",
+    "automatic_publication_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "gate_record_id": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "prior_gate": {"enum": ["CANDIDATE", "REVIEWED", "AUTHORIZED", "PUBLISHED"]},
+    "target_gate": {"enum": ["REVIEWED", "AUTHORIZED", "PUBLISHED"]},
+    "advanced_at": {"type": "string", "minLength": 10},
+    "advanced_by": {"type": "string", "minLength": 1},
+    "authority_claim": {
+      "type": "object",
+      "required": ["name_or_role", "authority_basis", "accountability_state"],
+      "additionalProperties": false,
+      "properties": {
+        "name_or_role": {"type": "string", "minLength": 1},
+        "authority_basis": {"type": "string", "minLength": 1},
+        "organization": {"type": "string"},
+        "accountability_state": {"type": "string", "minLength": 1}
+      }
+    },
+    "rationale": {"type": "string", "minLength": 1},
+    "verification_checks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "automatic_publication_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

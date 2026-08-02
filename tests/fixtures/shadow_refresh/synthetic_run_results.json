@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+    "title": "Synthetic shadow refresh run results for metrics stub validation"
+  },
+  "run_id": "shadow-refresh-202608",
+  "captures": {
+    "attempted": 25,
+    "succeeded": 23,
+    "failed": 2,
+    "unchanged": 18,
+    "changed": 5
+  },
+  "candidates": {
+    "generated": 5,
+    "true_positives": 4,
+    "false_positives": 1,
+    "false_negatives": 0,
+    "unsupported": 0
+  },
+  "entity_resolution": {
+    "decisions": 3,
+    "correct": 3
+  },
+  "review": {
+    "sampled_candidates": 5,
+    "agreements": 4,
+    "disagreements": 1,
+    "total_adjudication_minutes": 45.0
+  },
+  "model_assistance": {
+    "minutes_saved": 12.5,
+    "errors_introduced": 1
+  },
+  "reopening": {
+    "recommended": 2,
+    "true_positives": 2,
+    "false_positives": 0
+  },
+  "provenance": {
+    "complete_records": 25,
+    "total_records": 25
+  },
+  "publication": {
+    "reconciliation_errors": 0
+  },
+  "cost_by_source_class": {
+    "REGULATORY_RECORD": 2.5,
+    "CLINICAL_TRIAL_REGISTRY": 1.8,
+    "PEER_REVIEWED_PUBLICATION": 3.2,
+    "COMMERCIAL_OR_MEDIA_CLAIM": 1.1,
+    "PREPRINT": 1.4,
+    "PRIMARY_RESEARCH_PAGE": 2.0,
+    "CONTROLLED_DISCOVERY_RECORD": 1.6
+  }
+}
