@@ -33,12 +33,11 @@ def reconcile_formats(query: dict[str, Any], products: dict[str, Any]) -> dict[s
     """Cross-format reconciliation stub comparing release identity across generated products."""
     expected = query["release_sha256"]
     checks = {
-        "markdown_contains_release_hash": expected in Path(products["narrative_markdown"]["output"]).read_text(
-            encoding="utf-8"
-        ),
-        "html_contains_release_hash": expected in Path(products["dashboard_html"]["output"]).read_text(encoding="utf-8"),
-        "pdf_stub_contains_release_hash": expected
-        in Path(products["pdf_stub"]["output"]).read_text(encoding="utf-8"),
+        "markdown_contains_release_hash": expected
+        in Path(products["narrative_markdown"]["output"]).read_text(encoding="utf-8"),
+        "html_contains_release_hash": expected
+        in Path(products["dashboard_html"]["output"]).read_text(encoding="utf-8"),
+        "pdf_stub_contains_release_hash": expected in Path(products["pdf_stub"]["output"]).read_text(encoding="utf-8"),
         "withheld_claims_count_matches": all(
             claim in Path(products["narrative_markdown"]["output"]).read_text(encoding="utf-8")
             for claim in query["withheld_claims"]

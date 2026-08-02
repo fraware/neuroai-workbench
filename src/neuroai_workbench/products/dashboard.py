@@ -14,21 +14,21 @@ def render_dashboard_html(query: dict[str, Any]) -> str:
     if query["release_kind"] == "COMPACT_SUCCESSOR_SNAPSHOT":
         for row in query["rows"].get("successor_counts", []):
             count_rows += (
-                f"<tr><th scope=\"row\">{row['metric']}</th><td>{row['value']}</td>"
-                f"<td><span class=\"status-pill valid\">recorded</span></td></tr>\n"
+                f'<tr><th scope="row">{row["metric"]}</th><td>{row["value"]}</td>'
+                f'<td><span class="status-pill valid">recorded</span></td></tr>\n'
             )
     else:
         for row in query["rows"].get("coverage_counts", []):
             count_rows += (
-                f"<tr><th scope=\"row\">{row['metric']}</th><td>{row['value']}</td>"
-                f"<td><span class=\"status-pill valid\">recorded</span></td></tr>\n"
+                f'<tr><th scope="row">{row["metric"]}</th><td>{row["value"]}</td>'
+                f'<td><span class="status-pill valid">recorded</span></td></tr>\n'
             )
 
     reopening_rows = ""
     for row in query["rows"].get("reopening_decisions", []):
         reopening_rows += (
             f"<tr><td>{row.get('decision_id', '')}</td><td>{row.get('object', '')}</td>"
-            f"<td><span class=\"status-pill warn\">{row.get('decision', '')}</span></td></tr>\n"
+            f'<td><span class="status-pill warn">{row.get("decision", "")}</span></td></tr>\n'
         )
 
     return f"""<!DOCTYPE html>
@@ -74,7 +74,7 @@ def render_dashboard_html(query: dict[str, Any]) -> str:
       <dt>Version</dt><dd>{metadata.get("version", "UNRESOLVED")}</dd>
       <dt>Status</dt><dd>{metadata.get("status", "UNRESOLVED")}</dd>
       <dt>Release SHA-256</dt><dd><code>{query["release_sha256"]}</code></dd>
-      <dt>Mechanical validation</dt><dd>{'VALID' if summary.get('valid') else 'INVALID'}</dd>
+      <dt>Mechanical validation</dt><dd>{"VALID" if summary.get("valid") else "INVALID"}</dd>
     </dl>
   </section>
   <section aria-labelledby="counts-heading">
