@@ -352,7 +352,6 @@ def test_redirect_chain_limit(tmp_path: Path) -> None:
 def test_collector_modules_do_not_import_monitoring_write_apis() -> None:
     collector_root = Path(__file__).resolve().parents[2] / "src" / "neuroai_workbench" / "collector"
     forbidden = {"record_snapshot", "record_snapshot_file", "adjudicate", "create_change_candidate"}
-    for path in collector_root.glob("*.py"):
     for path in collector_root.rglob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
