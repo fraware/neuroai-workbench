@@ -40,6 +40,7 @@ All notable changes are recorded here. Release integrity does not establish subs
 - Observatory identifier validation reports missing/non-string IDs per row with indexed paths.
 - CI adds per-module coverage floors, SHA-pinned Actions, `pip-audit`, and hashed install constraints.
 - Issue #10 independent-review track completeness is optional recommended follow-up; it no longer blocks successor `AUTHORIZED` or `PUBLISHED`. Summary field `blocking_tracks` renamed to `incomplete_tracks` with explicit `release_gate_blocked: false`. Named release-authority and technical release gates remain.
+- Documentation under `docs/` consolidated into fewer durable guides (agent protocol, observatory automation, public-data release, entities, extraction evaluation) with redirect stubs for moved paths; `docs/README.md` is the documentation index.
 
 ### Boundaries
 

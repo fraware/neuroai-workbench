@@ -11,7 +11,7 @@ make quality
 make test
 ```
 
-Read `AGENTS.md` and the applicable `.cursor/rules/` files before changing code or controlled resources.
+Read `AGENTS.md`, [AI-agent development](docs/operations/ai-agent-development.md), and the applicable `.cursor/rules/` files before changing code or controlled resources.
 
 ## Pull-request contract
 

@@ -91,7 +91,7 @@ def main() -> int:
         "docs/reference/evidence-exchange.md",
         "docs/reference/observatory.md",
         "docs/reference/review.md",
-        "docs/operations/cursor-engineering-handoff.md",
+        "docs/operations/ai-agent-development.md",
         "src/neuroai_workbench/cli.py",
         "src/neuroai_workbench/server.py",
         "src/neuroai_workbench/programme_adapter.py",
