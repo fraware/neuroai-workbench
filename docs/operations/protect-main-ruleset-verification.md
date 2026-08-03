@@ -1,10 +1,15 @@
 # Protect main ruleset verification
 
+- Acquired at: `2026-08-03T16:17:10Z`
 - Ruleset: `Protect main` (`20116255`)
 - Status: **FAIL**
-- Checks: 10/12 passed
+- Checks: 13/14 passed
 - Required status contexts: 11
+- Approval count: 0
+- Review-thread resolution: True
+- Merge methods: squash
 - Bypass actors recorded: 0
+- Rules API update succeeded: False
 
 ## Check results
 
@@ -17,7 +22,9 @@
 | Ruleset includes the default branch | PASS |
 | Ruleset does not exclude the default branch | PASS |
 | Pull-request rule is present | PASS |
-| At least one approving review is required | FAIL |
+| Approving-review count matches the core-development policy | PASS |
+| Review-thread resolution policy matches | PASS |
+| Allowed merge methods match | PASS |
 | Required-status-check rule is present | PASS |
 | Hosted required checks match the repository contract | FAIL |
 | Required checks have unique contexts | PASS |
@@ -27,4 +34,4 @@
 
 This report verifies the GitHub-hosted ruleset response acquired for the named repository. It does not authenticate human reviewers, establish scientific or release authority, or prove that future settings remain unchanged after the recorded acquisition.
 
-The raw GitHub Rules API response is retained as a workflow artifact and is not committed.
+The raw pre-update and post-update GitHub Rules API responses are retained as workflow artifacts and are not committed.

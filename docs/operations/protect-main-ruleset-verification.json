@@ -3,9 +3,9 @@
   "ruleset_id": 20116255,
   "ruleset_name": "Protect main",
   "status": "FAIL",
-  "checks_total": 12,
-  "checks_passed": 10,
-  "checks_failed": 2,
+  "checks_total": 14,
+  "checks_passed": 13,
+  "checks_failed": 1,
   "required_status_check_contexts": [
     "codeql",
     "container",
@@ -29,6 +29,14 @@
     "allowed_merge_methods": [
       "squash"
     ]
+  },
+  "expected_hosted_policy": {
+    "required_approving_review_count": 0,
+    "required_review_thread_resolution": true,
+    "allowed_merge_methods": [
+      "squash"
+    ],
+    "rationale": "Human review and governance are deferred during core construction under issue #101; automated integrity gates remain mandatory."
   },
   "bypass_actors": [],
   "observed_rule_types": [
@@ -95,9 +103,32 @@
       ]
     },
     {
-      "name": "At least one approving review is required",
-      "status": "FAIL",
-      "detail": 0
+      "name": "Approving-review count matches the core-development policy",
+      "status": "PASS",
+      "detail": {
+        "expected": 0,
+        "observed": 0
+      }
+    },
+    {
+      "name": "Review-thread resolution policy matches",
+      "status": "PASS",
+      "detail": {
+        "expected": true,
+        "observed": true
+      }
+    },
+    {
+      "name": "Allowed merge methods match",
+      "status": "PASS",
+      "detail": {
+        "expected": [
+          "squash"
+        ],
+        "observed": [
+          "squash"
+        ]
+      }
     },
     {
       "name": "Required-status-check rule is present",
@@ -194,5 +225,17 @@
       "detail": true
     }
   ],
-  "boundary": "This report verifies the GitHub-hosted ruleset response acquired for the named repository. It does not authenticate human reviewers, establish scientific or release authority, or prove that future settings remain unchanged after the recorded acquisition."
+  "boundary": "This report verifies the GitHub-hosted ruleset response acquired for the named repository. It does not authenticate human reviewers, establish scientific or release authority, or prove that future settings remain unchanged after the recorded acquisition.",
+  "acquired_at": "2026-08-03T16:17:10Z",
+  "repository": "fraware/neuroai-workbench",
+  "update_attempt": {
+    "requested_contexts": [
+      "pip-audit",
+      "product-native"
+    ],
+    "exit_code": 1,
+    "api_call_succeeded": false,
+    "error": "gh: Resource not accessible by integration (HTTP 403)",
+    "post_update_response_reaudited": true
+  }
 }
