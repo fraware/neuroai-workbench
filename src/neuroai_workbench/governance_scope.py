@@ -75,11 +75,7 @@ def _schema_errors(value: Any, schema_name: str) -> list[dict[str, Any]]:
 
 
 def _hash_record(value: dict[str, Any]) -> str:
-    controlled = {
-        key: item
-        for key, item in value.items()
-        if key != "manifest_sha256" and not key.startswith("_")
-    }
+    controlled = {key: item for key, item in value.items() if key != "manifest_sha256" and not key.startswith("_")}
     return sha256_bytes(canonical_json_bytes(controlled))
 
 
@@ -227,9 +223,7 @@ def verify_governance_scope_manifest(
         roles.append(role)
         expected_type = ROLE_OBJECT_TYPES.get(role)
         if expected_type is None:
-            errors.append(
-                {"code": "UNSUPPORTED_OBJECT_ROLE", "path": f"objects.{index}.role", "role": role}
-            )
+            errors.append({"code": "UNSUPPORTED_OBJECT_ROLE", "path": f"objects.{index}.role", "role": role})
         elif object_type != expected_type:
             errors.append(
                 {
@@ -248,9 +242,7 @@ def verify_governance_scope_manifest(
                 protected_bindings=protected_bindings,
             )
         except ValueError as exc:
-            errors.append(
-                {"code": "OBJECT_REFERENCE_INVALID", "path": f"objects.{index}", "message": str(exc)}
-            )
+            errors.append({"code": "OBJECT_REFERENCE_INVALID", "path": f"objects.{index}", "message": str(exc)})
             continue
         if not path.is_file():
             errors.append(
@@ -281,13 +273,9 @@ def verify_governance_scope_manifest(
     if missing_roles:
         errors.append({"code": "REQUIRED_ROLES_MISSING", "path": "objects", "roles": missing_roles})
     if controlled.get("release_authorization_performed") is not False:
-        errors.append(
-            {"code": "RELEASE_AUTHORIZATION_PROHIBITED", "path": "release_authorization_performed"}
-        )
+        errors.append({"code": "RELEASE_AUTHORIZATION_PROHIBITED", "path": "release_authorization_performed"})
     if not any(
-        str(item.get("storage_boundary")) == "PROTECTED_WORKSPACE"
-        for item in objects
-        if isinstance(item, dict)
+        str(item.get("storage_boundary")) == "PROTECTED_WORKSPACE" for item in objects if isinstance(item, dict)
     ):
         warnings.append("No protected object is bound in this governance scope.")
 
@@ -344,8 +332,7 @@ def record_governance_scope_manifest(
     )
     if not verification["valid"]:
         raise ValueError(
-            "Governance scope manifest failed verification: "
-            f"{json.dumps(verification['errors'], ensure_ascii=False)}"
+            f"Governance scope manifest failed verification: {json.dumps(verification['errors'], ensure_ascii=False)}"
         )
 
     output = _scopes_root(workspace) / f"{scope_id}.json"
@@ -401,8 +388,7 @@ def verify_governance_scope_records(
             str(event.get("payload", {}).get("manifest_sha256")),
         )
         for event in events
-        if event.get("action") == "GOVERNANCE_SCOPE_RECORDED"
-        and isinstance(event.get("payload"), dict)
+        if event.get("action") == "GOVERNANCE_SCOPE_RECORDED" and isinstance(event.get("payload"), dict)
     }
 
     for record in records:

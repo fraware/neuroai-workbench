@@ -222,9 +222,7 @@ def test_protected_locator_and_binding_fail_closed(tmp_path: Path) -> None:
     assert any("No protected binding supplied" in error.get("message", "") for error in report["errors"])
 
     leaked = json.loads(json.dumps(manifest))
-    protected = next(
-        item for item in leaked["objects"] if item["storage_boundary"] == "PROTECTED_WORKSPACE"
-    )
+    protected = next(item for item in leaked["objects"] if item["storage_boundary"] == "PROTECTED_WORKSPACE")
     protected["locator"] = "protected/private/cycle-43.json"
     leaked["manifest_sha256"] = _hash_record(leaked)
     report = verify_governance_scope_manifest(
@@ -393,9 +391,7 @@ def test_record_verification_detects_duplicate_scope_and_event_failure(tmp_path:
 def test_scope_without_protected_object_warns_but_remains_valid(tmp_path: Path) -> None:
     _, roots, _, result = _record(tmp_path)
     manifest = json.loads(json.dumps(result["manifest"]))
-    manifest["objects"] = [
-        item for item in manifest["objects"] if item["storage_boundary"] != "PROTECTED_WORKSPACE"
-    ]
+    manifest["objects"] = [item for item in manifest["objects"] if item["storage_boundary"] != "PROTECTED_WORKSPACE"]
     manifest["manifest_sha256"] = _hash_record(manifest)
     report = verify_governance_scope_manifest(manifest, boundary_roots=roots)
     assert report["valid"] is True
