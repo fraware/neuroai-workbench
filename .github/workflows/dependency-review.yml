@@ -86,6 +86,20 @@ jobs:
               if count != 1:
                   raise SystemExit(f'transaction replacement expected once, observed {count}: {old[:60]!r}')
               tx = tx.replace(old, new)
+
+          old_predicate = '''    return (
+        _path_hash(case_path / "assessment.json") == journal["desired"]["assessment_sha256"]
+        and _path_hash(case_path / "persistence.json") == journal["desired"]["persistence_sha256"]
+    )
+'''
+          new_predicate = '''    return bool(
+        _path_hash(case_path / "assessment.json") == journal["desired"]["assessment_sha256"]
+        and _path_hash(case_path / "persistence.json") == journal["desired"]["persistence_sha256"]
+    )
+'''
+          if tx.count(old_predicate) != 1:
+              raise SystemExit('transaction completion predicate did not match')
+          tx = tx.replace(old_predicate, new_predicate)
           tx_path.write_text(tx, encoding='utf-8')
 
           evidence_path = Path('src/neuroai_workbench/evidence.py')
