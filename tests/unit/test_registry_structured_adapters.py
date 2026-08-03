@@ -5,7 +5,7 @@ from pathlib import Path
 
 from neuroai_workbench.collector.adapters.clinicaltrials import ClinicalTrialsGovAdapter
 from neuroai_workbench.collector.adapters.fda_device import FdaDeviceAdapter
-from neuroai_workbench.collector.adapters.registry import adapter_for_source, build_adapters
+from neuroai_workbench.collector.adapters.registry import adapter_for_source, build_adapters, resolve_adapter
 from neuroai_workbench.collector.adapters.registry_stub import ClinicalRegulatoryHttpCaptureAdapter
 from neuroai_workbench.collector.config import CollectorConfig
 from neuroai_workbench.collector.dns import DnsGuard
@@ -84,6 +84,73 @@ def test_ctgov_adapter_rewrites_nct_and_fetches_fixture(tmp_path: Path) -> None:
     assert transport.calls[0].url == api_url
     body = json.loads(payload.decode("utf-8"))
     assert body["protocolSection"]["identificationModule"]["nctId"] == "NCT01234567"
+
+
+def test_ctgov_extracts_nct_from_metadata_and_falls_back_without_id(tmp_path: Path) -> None:
+    adapters = _adapters(tmp_path, FakeTransport())
+    adapter = adapters["clinicaltrials_gov"]
+    assert isinstance(adapter, ClinicalTrialsGovAdapter)
+    assert (
+        adapter.extract_nct_id(
+            {"metadata": {"nct_id": "nct99887766"}, "source_class": "CLINICAL_TRIAL_REGISTRY"},
+            {"requested_url": "https://example.org/study"},
+        )
+        == "NCT99887766"
+    )
+    assert adapter.extract_nct_id({"source_class": "CLINICAL_TRIAL_REGISTRY"}, {"requested_url": "https://example.org/x"}) is None
+    request = valid_collection_request()
+    request["requested_url"] = "https://page.example.org/no-nct"
+    transport = FakeTransport(
+        responses={"https://page.example.org/no-nct": (200, {"content-type": "text/html"}, b"<html>no nct</html>")}
+    )
+    adapters = _adapters(tmp_path / "fallback", transport)
+    outcome = adapters["clinicaltrials_gov"].collect(
+        request,
+        source_record={"source_id": "SRC-NO", "source_class": "CLINICAL_TRIAL_REGISTRY", "url": request["requested_url"]},
+    )
+    assert outcome.kind == "result"
+    assert transport.calls[0].url == "https://page.example.org/no-nct"
+
+
+def test_fda_extracts_from_metadata_and_skips_without_device_id(tmp_path: Path) -> None:
+    adapters = _adapters(tmp_path, FakeTransport())
+    fda = adapters["fda_device"]
+    assert isinstance(fda, FdaDeviceAdapter)
+    assert (
+        fda.extract_device_id(
+            {"source_class": "REGULATORY_RECORD", "metadata": {"knumber": "K123456"}},
+            {"requested_url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/pmn.cfm"},
+        )
+        == "K123456"
+    )
+    source = {
+        "source_id": "SRC-REG",
+        "source_class": "REGULATORY_RECORD",
+        "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/pmn.cfm",
+    }
+    assert fda.supports_source(source, {"requested_url": source["url"]}) is False
+    selected = adapter_for_source(adapters, source)
+    assert selected.adapter_id != "fda_device"
+
+
+def test_resolve_adapter_json_and_feed_url_fallbacks(tmp_path: Path) -> None:
+    adapters = _adapters(tmp_path, FakeTransport())
+    assert (
+        resolve_adapter(
+            adapters,
+            source_class="UNKNOWN_CLASS",
+            requested_url="https://page.example.org/data.json",
+        ).adapter_id
+        == "json_api"
+    )
+    assert (
+        resolve_adapter(
+            adapters,
+            source_class="UNKNOWN_CLASS",
+            requested_url="https://page.example.org/feed.atom",
+        ).adapter_id
+        == "xml_feed"
+    )
 
 
 def test_fda_adapter_selected_for_explicit_device_id(tmp_path: Path) -> None:
