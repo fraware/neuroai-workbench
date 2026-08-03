@@ -37,6 +37,15 @@ def _expected_api_contexts(manifest: dict[str, Any]) -> set[str]:
     return {str(context).rsplit(" / ", 1)[-1] for context in contexts}
 
 
+def _hosted_policy(manifest: dict[str, Any]) -> dict[str, Any]:
+    reference = manifest.get("ruleset_reference")
+    reference = reference if isinstance(reference, dict) else {}
+    policy = reference.get("hosted_policy")
+    if not isinstance(policy, dict):
+        raise ValueError("ruleset_reference.hosted_policy must be an object")
+    return policy
+
+
 def _observed_contexts(rule: dict[str, Any]) -> tuple[set[str], list[dict[str, Any]]]:
     parameters = rule.get("parameters")
     if not isinstance(parameters, dict):
@@ -56,6 +65,7 @@ def audit(ruleset: dict[str, Any], manifest: dict[str, Any]) -> dict[str, Any]:
 
     reference = manifest.get("ruleset_reference")
     reference = reference if isinstance(reference, dict) else {}
+    policy = _hosted_policy(manifest)
     expected_id = reference.get("ruleset_id")
     expected_name = reference.get("name")
 
@@ -92,11 +102,29 @@ def audit(ruleset: dict[str, Any], manifest: dict[str, Any]) -> dict[str, Any]:
     check("Pull-request rule is present", pull_request is not None, sorted(rules))
     pull_parameters = pull_request.get("parameters") if isinstance(pull_request, dict) else {}
     pull_parameters = pull_parameters if isinstance(pull_parameters, dict) else {}
-    approving_count = pull_parameters.get("required_approving_review_count")
+
+    expected_approvals = policy.get("required_approving_review_count")
+    observed_approvals = pull_parameters.get("required_approving_review_count")
     check(
-        "At least one approving review is required",
-        isinstance(approving_count, int) and approving_count >= 1,
-        approving_count,
+        "Approving-review count matches the core-development policy",
+        isinstance(expected_approvals, int) and observed_approvals == expected_approvals,
+        {"expected": expected_approvals, "observed": observed_approvals},
+    )
+    expected_resolution = policy.get("required_review_thread_resolution")
+    observed_resolution = pull_parameters.get("required_review_thread_resolution")
+    check(
+        "Review-thread resolution policy matches",
+        isinstance(expected_resolution, bool) and observed_resolution is expected_resolution,
+        {"expected": expected_resolution, "observed": observed_resolution},
+    )
+    expected_methods = policy.get("allowed_merge_methods")
+    expected_methods = [str(item) for item in expected_methods] if isinstance(expected_methods, list) else []
+    observed_methods = pull_parameters.get("allowed_merge_methods")
+    observed_methods = [str(item) for item in observed_methods] if isinstance(observed_methods, list) else []
+    check(
+        "Allowed merge methods match",
+        sorted(observed_methods) == sorted(expected_methods),
+        {"expected": sorted(expected_methods), "observed": sorted(observed_methods)},
     )
 
     required_checks = rules.get("required_status_checks")
@@ -137,6 +165,7 @@ def audit(ruleset: dict[str, Any], manifest: dict[str, Any]) -> dict[str, Any]:
         "checks_failed": len(failed),
         "required_status_check_contexts": sorted(observed_contexts),
         "pull_request_parameters": pull_parameters,
+        "expected_hosted_policy": policy,
         "bypass_actors": bypass_rows,
         "observed_rule_types": sorted(rules),
         "checks": checks,
