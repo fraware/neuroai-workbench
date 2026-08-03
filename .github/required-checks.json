@@ -103,7 +103,8 @@
       },
       "forbid_secrets": true,
       "jobs": [
-        {"id": "recover", "name": "recover-v0.2.1-release", "required_contexts": []}
+        {"id": "recover", "name": "recover-v0.2.1-release", "required_contexts": []},
+        {"id": "verify", "name": "verify-v0.2.1-release", "required_contexts": []}
       ]
     },
     {
