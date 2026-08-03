@@ -12,6 +12,10 @@ REQUEST_SCHEMA = "collection-request.schema.json"
 RESULT_SCHEMA = "collection-result.schema.json"
 FAILURE_SCHEMA = "collection-failure.schema.json"
 QUARANTINE_SCHEMA = "quarantine-record.schema.json"
+STRUCTURED_ADAPTER_CONTRACT_SCHEMA = "structured-adapter-contract.schema.json"
+NORMALIZED_STUDY_SCHEMA = "normalized-study-record.schema.json"
+NORMALIZED_DEVICE_SCHEMA = "normalized-device-record.schema.json"
+NORMALIZED_PUBLICATION_SCHEMA = "normalized-publication-record.schema.json"
 
 
 def _schema(name: str) -> dict[str, Any]:

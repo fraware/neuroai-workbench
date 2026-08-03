@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/normalized-study-record-1.0.json",
+  "title": "Normalized ClinicalTrials.gov study record",
+  "description": "Stable projection of selected CT.gov study fields for field-level change detection. Does not establish clinical truth or registry completeness.",
+  "type": "object",
+  "required": [
+    "record_kind",
+    "nct_id",
+    "brief_title",
+    "overall_status",
+    "field_digests",
+    "aggregate_digest",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "record_kind": {"const": "NORMALIZED_CTGOV_STUDY"},
+    "nct_id": {"type": "string", "pattern": "^NCT[0-9]{8}$"},
+    "brief_title": {"type": ["string", "null"]},
+    "overall_status": {"type": ["string", "null"]},
+    "last_update_post_date": {"type": ["string", "null"]},
+    "primary_completion_date": {"type": ["string", "null"]},
+    "enrollment_count": {"type": ["integer", "null"]},
+    "phase": {"type": ["string", "null"]},
+    "field_digests": {
+      "type": "object",
+      "required": [
+        "nct_id",
+        "brief_title",
+        "overall_status",
+        "last_update_post_date",
+        "primary_completion_date",
+        "enrollment_count",
+        "phase"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "nct_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "brief_title": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "overall_status": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "last_update_post_date": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "primary_completion_date": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "enrollment_count": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "phase": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "aggregate_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

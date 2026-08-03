@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/normalized-publication-record-1.0.json",
+  "title": "Normalized publication metadata record",
+  "description": "Stable projection of PubMed/PMC/Crossref metadata fields. Does not establish publication authenticity beyond retrieved metadata bytes.",
+  "type": "object",
+  "required": [
+    "record_kind",
+    "primary_id",
+    "id_type",
+    "title",
+    "field_digests",
+    "aggregate_digest",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "record_kind": {"const": "NORMALIZED_PUBLICATION"},
+    "primary_id": {"type": "string", "minLength": 1},
+    "id_type": {"enum": ["PMID", "PMCID", "DOI"]},
+    "title": {"type": ["string", "null"]},
+    "journal": {"type": ["string", "null"]},
+    "publication_date": {"type": ["string", "null"]},
+    "doi": {"type": ["string", "null"]},
+    "authors_digest": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "field_digests": {
+      "type": "object",
+      "required": ["primary_id", "title", "journal", "publication_date", "doi"],
+      "additionalProperties": false,
+      "properties": {
+        "primary_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "title": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "journal": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "publication_date": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "doi": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "aggregate_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
