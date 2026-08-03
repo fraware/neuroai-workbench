@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from importlib.resources import files
-from typing import Any
+from typing import Any, cast
 
 from ...util import canonical_json_bytes, sha256_bytes
 from ..errors import CollectionFailureError
@@ -35,7 +35,7 @@ def load_adapter_contract(adapter_id: str) -> dict[str, Any]:
     validate_or_raise(payload, STRUCTURED_ADAPTER_CONTRACT_SCHEMA)
     if payload.get("adapter_id") != adapter_id:
         raise ValueError(f"Contract adapter_id mismatch for {adapter_id!r}")
-    return payload
+    return cast(dict[str, Any], payload)
 
 
 def field_digest(value: Any) -> str:
