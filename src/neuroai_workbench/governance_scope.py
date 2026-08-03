@@ -129,7 +129,7 @@ def _validate_locator(storage_boundary: str, locator: str) -> None:
     if "\\" in locator:
         raise ValueError("Governance scope locators must use POSIX separators")
     pure = PurePosixPath(locator)
-    if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
+    if pure.is_absolute() or pure.as_posix() != locator or any(part in {"", ".", ".."} for part in pure.parts):
         raise ValueError("Governance scope locator must be a normalized relative POSIX path")
 
 

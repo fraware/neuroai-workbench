@@ -397,3 +397,112 @@ def test_scope_without_protected_object_warns_but_remains_valid(tmp_path: Path) 
     report = verify_governance_scope_manifest(manifest, boundary_roots=roots)
     assert report["valid"] is True
     assert report["warnings"] == ["No protected object is bound in this governance scope."]
+
+
+def test_extended_fail_closed_validation_paths(tmp_path: Path) -> None:
+    _, roots, bindings, result = _record(tmp_path)
+    manifest = result["manifest"]
+    path = tmp_path / "fixture.json"
+    atomic_write_json(path, {"fixture": True})
+
+    with pytest.raises(ValueError, match="Unsupported governance scope role"):
+        scope_object_for_path(
+            role="UNKNOWN",
+            label="Unknown",
+            object_type="DELTA",
+            path=path,
+            storage_boundary="GENERATED_OUTPUT",
+            boundary_root=tmp_path,
+        )
+    with pytest.raises(ValueError, match="identify a file below"):
+        scope_object_for_path(
+            role="DELTA",
+            label="Delta",
+            object_type="DELTA",
+            path=path,
+            storage_boundary="GENERATED_OUTPUT",
+            boundary_root=path,
+        )
+
+    mutations = [
+        ("sha256", "invalid"),
+        ("storage_boundary", "UNKNOWN"),
+        ("locator", ""),
+        ("locator", "protected-ref:leak"),
+        ("locator", "nested\\object.json"),
+        ("locator", "nested//object.json"),
+    ]
+    for field, value in mutations:
+        candidate = json.loads(json.dumps(manifest))
+        target = next(item for item in candidate["objects"] if item["role"] == "WITHHELD_CLAIMS")
+        target[field] = value
+        candidate["manifest_sha256"] = _hash_record(candidate)
+        report = verify_governance_scope_manifest(
+            candidate,
+            boundary_roots=roots,
+            protected_bindings=bindings,
+        )
+        assert report["valid"] is False
+        assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)
+
+    report = verify_governance_scope_manifest(
+        manifest,
+        boundary_roots={"PUBLIC_GIT": roots["PUBLIC_GIT"], "ARCHIVE": roots["ARCHIVE"]},
+        protected_bindings=bindings,
+    )
+    assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)
+    assert any("No verification root supplied" in error.get("message", "") for error in report["errors"])
+
+    malformed = json.loads(json.dumps(manifest))
+    malformed["objects"] = {}
+    malformed["manifest_sha256"] = _hash_record(malformed)
+    report = verify_governance_scope_manifest(malformed, boundary_roots=roots, protected_bindings=bindings)
+    assert "REQUIRED_ROLES_MISSING" in _error_codes(report)
+
+    non_object = json.loads(json.dumps(manifest))
+    non_object["objects"][0] = "invalid-object-reference"
+    non_object["manifest_sha256"] = _hash_record(non_object)
+    report = verify_governance_scope_manifest(non_object, boundary_roots=roots, protected_bindings=bindings)
+    assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)
+
+    unsupported = json.loads(json.dumps(manifest))
+    target = next(item for item in unsupported["objects"] if item["role"] == "WITHHELD_CLAIMS")
+    target["role"] = "UNKNOWN"
+    unsupported["manifest_sha256"] = _hash_record(unsupported)
+    report = verify_governance_scope_manifest(unsupported, boundary_roots=roots, protected_bindings=bindings)
+    assert "UNSUPPORTED_OBJECT_ROLE" in _error_codes(report)
+
+
+def test_invalid_record_non_object_file_and_corrupt_event_log(tmp_path: Path) -> None:
+    workspace = _workspace(tmp_path)
+    roots, bindings, objects = _artifacts(tmp_path)
+    with pytest.raises(ValueError, match="failed verification"):
+        record_governance_scope_manifest(
+            workspace,
+            scope_label="Incomplete scope",
+            objects=[item for item in objects if item["role"] != "PREDECESSOR_RELEASE"],
+            boundary_roots=roots,
+            protected_bindings=bindings,
+        )
+
+    scopes = workspace.root / "governance" / "scopes"
+    scopes.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(scopes / "non-object.json", ["ignored non-object record"])
+    assert load_governance_scope_manifests(workspace) == []
+
+    result = record_governance_scope_manifest(
+        workspace,
+        scope_label="Valid scope",
+        objects=objects,
+        boundary_roots=roots,
+        protected_bindings=bindings,
+    )
+    assert result["verification"]["valid"] is True
+    (workspace.root / "events.jsonl").write_text("{invalid-json\n", encoding="utf-8")
+    report = verify_governance_scope_records(
+        workspace,
+        boundary_roots=roots,
+        protected_bindings=bindings,
+    )
+    assert report["valid"] is False
+    assert any("event log load failed" in error for error in report["errors"])
