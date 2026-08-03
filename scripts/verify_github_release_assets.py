@@ -8,7 +8,6 @@ import hashlib
 import json
 import re
 import subprocess
-import sys
 import tarfile
 import tempfile
 import zipfile
