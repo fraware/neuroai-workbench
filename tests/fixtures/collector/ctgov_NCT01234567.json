@@ -1,0 +1,12 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT01234567",
+      "briefTitle": "Synthetic fixture trial for offline CT.gov adapter tests"
+    },
+    "statusModule": {
+      "overallStatus": "RECRUITING"
+    }
+  },
+  "boundary": "Fixture study payload for offline tests only; not a real trial record."
+}

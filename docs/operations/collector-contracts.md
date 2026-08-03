@@ -46,8 +46,12 @@ Source-type adapters wrap the HTTP collector core:
 | HTML page | `html` | Official company and product pages |
 | JSON API | `json_api` | Public JSON APIs and bibliographic metadata |
 | XML / RSS / Atom | `xml_feed` | Syndication and procedural guidance feeds |
-| Clinical / regulatory registry stub | `registry_stub` | Regulatory records and trial registries |
+| Clinical / regulatory HTTP capture | `clinical_regulatory_http_capture` | Selected regulatory landing pages (page capture only, not structured registry integration) |
+| ClinicalTrials.gov structured | `clinicaltrials_gov` | Trial registry/page classes with explicit NCT IDs |
+| FDA device landing | `fda_device` | Regulatory records with explicit PMA/HDE/De Novo/510(k) IDs |
 | Controlled authenticated download stub | `auth_download` | `CONTROLLED_AUTHENTICATED_DOWNLOAD` |
+
+Do not claim observatory-grade registry completeness from page capture alone. Structured CT.gov/FDA adapters retrieve selected identifier-bound payloads only.
 
 `CollectionScheduler` consumes `neuroai-monitor plan` output, selects an adapter from registry `source_class` and URL shape, and writes quarantine records only. Kill switches can disable collection globally, per source, per adapter, or monitoring handoff. Runtime credentials for the authenticated download stub are supplied through a `CredentialProvider` outside collection records; embedded URL credentials are refused.
 

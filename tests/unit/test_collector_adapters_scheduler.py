@@ -178,7 +178,7 @@ def test_registry_stub_adapter_collects_stub_payload(tmp_path: Path, html_transp
     scheduler = _scheduler(tmp_path, html_transport)
     plan = plan_monitoring_run(workspace, as_of="2026-08-02", source_ids=["SRC-0001"])
     run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)
-    assert run["outcomes"][0]["adapter_id"] == "registry_stub"
+    assert run["outcomes"][0]["adapter_id"] == "clinical_regulatory_http_capture"
     assert run["outcomes"][0]["status"] == "RESULT"
 
 
@@ -472,7 +472,7 @@ def test_adapter_kill_switch(tmp_path: Path, html_transport: FakeTransport) -> N
     scheduler = _scheduler(
         tmp_path,
         html_transport,
-        scheduler_config=SchedulerConfig(disabled_adapter_ids=frozenset({"registry_stub"})),
+        scheduler_config=SchedulerConfig(disabled_adapter_ids=frozenset({"clinical_regulatory_http_capture"})),
     )
     plan = plan_monitoring_run(workspace, as_of="2026-08-02", source_ids=["SRC-0001"])
     run = scheduler.run_plan(plan, registry_sha256=registry_sha256, source_index=source_index)

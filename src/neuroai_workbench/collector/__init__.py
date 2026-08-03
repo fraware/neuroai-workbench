@@ -2,8 +2,11 @@
 
 from .adapters import (
     AuthenticatedDownloadStub,
+    ClinicalRegulatoryHttpCaptureAdapter,
     ClinicalRegulatoryRegistryStub,
+    ClinicalTrialsGovAdapter,
     CollectorAdapter,
+    FdaDeviceAdapter,
     HtmlPageAdapter,
     JsonApiAdapter,
     XmlFeedAdapter,
@@ -27,12 +30,15 @@ from .service import CollectionOutcome, HttpCollector, PriorCapture
 
 __all__ = [
     "AuthenticatedDownloadStub",
+    "ClinicalRegulatoryHttpCaptureAdapter",
     "ClinicalRegulatoryRegistryStub",
+    "ClinicalTrialsGovAdapter",
     "CollectionOutcome",
     "CollectionScheduler",
     "CollectorAdapter",
     "CollectorConfig",
     "CredentialProvider",
+    "FdaDeviceAdapter",
     "HandoffBlockedError",
     "HtmlPageAdapter",
     "HttpCollector",

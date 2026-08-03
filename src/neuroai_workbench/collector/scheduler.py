@@ -162,8 +162,11 @@ class CollectionScheduler:
                     }
                 )
                 continue
-
-            outcome = adapter.collect(request)
+            collect = adapter.collect
+            try:
+                outcome = collect(request, source_record=primary_record)  # type: ignore[call-arg]
+            except TypeError:
+                outcome = collect(request)
             unique_retrievals += 1
             record_id = outcome.record.get("result_id") or outcome.record.get("failure_id")
             for source_id in group.source_ids:
