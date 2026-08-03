@@ -39,9 +39,9 @@ Only exact `entity_id` matches set `auto_confirmed: true`. All other proposals r
 
 ## Evaluation
 
-Blinded and public annotated corpora live under entity benchmark fixtures. Measured precision, recall, and false-merge counts are engineering behavioral metrics against annotated synthetic or public cases; they do not establish substantive entity identity. See [entity-resolution-report.md](../evaluation/entity-resolution-report.md).
+Blinded stub (5), public annotated subset (≥20), and public/synthetic scale corpus (≥200 with frozen train/dev/test partitions) live under entity benchmark resources. Measured precision, recall, false-merge, false-split, and abstention counts are engineering behavioral metrics against annotated synthetic or public cases; they do not establish substantive entity identity. Ops ≥60 remains ops-gated. See [entity-resolution-report.md](../evaluation/entity-resolution-report.md).
 
-Ops-gated full annotated runs require `NEUROAI_OPS_WORKSPACE` and do not commit protected annotations to the software repository.
+Ops-gated full ≥60 annotated runs require `NEUROAI_OPS_WORKSPACE` and do not commit protected annotations to the software repository. Issue #37 layers 5–6 remain deferred.
 
 ## Schemas and fixtures
 

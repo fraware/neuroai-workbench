@@ -16,7 +16,7 @@ Default policy `EXTRACTION_DEFAULT_v1` allows only `PUBLIC_SYNTHETIC` and `PUBLI
 
 ## Benchmark registry
 
-Preregistered stubs live in `benchmarks/source_extraction/`.
+Preregistered classic stubs live in `benchmarks/source_extraction/MANIFEST.json`. The public/synthetic scale pack (≥150 cases) is `CORPUS_PUBLIC_SCALE.json` with `MANIFEST_SCALE.json`. `CapturedResponseReplayProvider` is the primary accuracy lane; `fake-offline` remains `CONTRACT_FIXTURE_NON_ACCURACY`. See [extraction-evaluation.md](../evaluation/extraction-evaluation.md).
 
 ## Offline evaluation
 
