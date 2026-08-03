@@ -28,6 +28,8 @@
 17. A stale, malformed, or replaced event lock is treated as valid ownership, or one writer deletes another writer's successor lock.
 18. A trailer sidecar is trusted after historical log replacement or tampering.
 19. A writer crashes after persisting event bytes and before persisting the corresponding trailer.
+20. Evidence registration crashes between object, index, assessment, persistence, and event writes, leaving partial or divergent state.
+21. Recovery overwrites an external change that is outside the recorded predecessor/successor transaction states.
 
 ## Implemented controls
 
@@ -46,6 +48,15 @@
   - O(1) indexed-head verification and append preparation when the trailer is current;
   - full-chain fallback and trailer rebuild on missing, stale, malformed, tampered, or identity-mismatched indexes;
   - verified-prefix recovery of complete unindexed events and digest-recorded truncation of incomplete or invalid crash tails.
+- Transactional local evidence registration:
+  - one durable case-level registration lock covering recovery, ID allocation, preparation, durable writes, and commit event;
+  - write-ahead journals with exact predecessor and desired hashes plus temporary recovery snapshots;
+  - idempotent forward completion only when object, index, assessment, and persistence match the complete desired state;
+  - exact predecessor rollback when every current file is a recorded predecessor or successor state;
+  - recovery blocking on any third-state divergence or object digest mismatch;
+  - orphan object deletion only when created by the incomplete transaction and unreferenced by the restored index;
+  - transaction-ID-keyed commit and rollback event markers;
+  - terminal compaction removing staged evidence and before/desired snapshot copies.
 - Schema and semantic validation with explicit `DRAFT_INVALID` / `VALID` persistence labeling.
 - Decision-object separation and explicit result boundaries.
 - Programme-adapter fail-closed mappings for unknown evidence, access, and decision states.
@@ -65,6 +76,6 @@ The application does not authenticate users or reviewers, verify institutional r
 
 Event-chain locking coordinates cooperative writers through filesystem primitives. It is not distributed consensus, Byzantine fault tolerance, or hostile-writer fencing. A writer that ignores the protocol can still corrupt the log or sidecars. Shared-filesystem lease recovery depends on filesystem coherence and bounded clock skew. O(1) indexed-head verification detects current trailer/final-event inconsistency but does not replace periodic full-chain verification for arbitrary historical tampering. Recovery records preserve discarded-byte digests, not the discarded event bytes themselves.
 
-Transactional multi-step evidence registration remains incomplete until issue #23 lands. A crash between evidence bytes, index updates, assessment updates, and event records may still leave partial state even though the event substrate itself has durable append and recovery controls.
+Evidence journaling coordinates one case on a cooperative filesystem. It does not provide cross-case transactions, remote database isolation, hostile-writer fencing, evidence authentication, legal custody, or disclosure authorization. Active transaction directories temporarily duplicate evidence and assessment state and therefore inherit the case's strongest protection and retention requirements. A `RECOVERY_BLOCKED` journal requires controlled intervention; software deliberately preserves unknown divergent state instead of overwriting it.
 
 The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Discovery result counts do not prove registry completeness or evidence authenticity. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment, institutional identity, canonical release governance, and direct provider integration require separate architectures and independent review.
