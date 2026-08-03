@@ -37,6 +37,26 @@ jobs:
           start = source.index(marker) + len(marker)
           end = source.index("\n          PY\n", start)
           program = textwrap.dedent(source[start:end])
+
+          # The two disposition call sites use different indentation. Replace the
+          # embedded whitespace-sensitive loop with an occurrence-counted semantic rewrite.
+          loop_start = program.index(
+              "for field in ('decision', 'rationale', 'change_class', 'materiality', 'reopening_effect'):"
+          )
+          loop_end = program.index(
+              "cycle = replace_exact(\n    cycle,\n    'substantive classification pending human review.'",
+              loop_start,
+          )
+          robust_loop = '''for field in ('decision', 'rationale', 'change_class', 'materiality', 'reopening_effect'):
+    old = f'adj.{field}'
+    new = f'disposition.{field}'
+    observed = cycle.count(old)
+    if observed != 2:
+        raise SystemExit(f'cycle disposition field {field}: expected 2 occurrences, observed {observed}')
+    cycle = cycle.replace(old, new)
+'''
+          program = program[:loop_start] + robust_loop + program[loop_end:]
+
           namespace = {'__name__': '__core_governance_refactor__'}
           exec(compile(program, '<core-governance-refactor>', 'exec'), namespace)
           PY
