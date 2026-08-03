@@ -9,6 +9,8 @@ from neuroai_workbench.events import append_event, load_events
 from neuroai_workbench.governance_opinions import (
     GOVERNANCE_OPINION_BOUNDARY,
     _hash_record,
+    _scope_manifest_sha256,
+    _scope_records_by_id,
     _supersession_errors,
     load_governance_reviewer_opinions,
     record_governance_reviewer_opinion,
@@ -533,3 +535,177 @@ def test_exactly_one_matching_event_is_required(tmp_path: Path) -> None:
     report = verify_governance_reviewer_opinions(workspace)
     assert report["valid"] is False
     assert any("2 matching append-only events" in error for error in report["errors"])
+
+
+def test_scope_store_defensive_branches(tmp_path: Path) -> None:
+    workspace, _ = _scope(tmp_path / "missing-id")
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored = json.loads(scope_path.read_text(encoding="utf-8"))
+    stored.pop("scope_id")
+    atomic_write_json(scope_path, stored)
+    with pytest.raises(ValueError, match="missing scope_id"):
+        _scope_records_by_id(workspace)
+
+    workspace, _ = _scope(tmp_path / "private-field")
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored = json.loads(scope_path.read_text(encoding="utf-8"))
+    stored["_unbound"] = "authority"
+    atomic_write_json(scope_path, stored)
+    with pytest.raises(ValueError, match="unsupported private fields"):
+        _scope_records_by_id(workspace)
+
+    workspace, _ = _scope(tmp_path / "authorizing")
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored = json.loads(scope_path.read_text(encoding="utf-8"))
+    stored["release_authorization_performed"] = True
+    stored["manifest_sha256"] = _scope_manifest_sha256(stored)
+    atomic_write_json(scope_path, stored)
+    with pytest.raises(ValueError, match="must remain non-authorizing"):
+        _scope_records_by_id(workspace)
+
+    workspace, _ = _scope(tmp_path / "duplicate")
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored = json.loads(scope_path.read_text(encoding="utf-8"))
+    atomic_write_json(scope_path.parent / "duplicate.json", stored)
+    with pytest.raises(ValueError, match="Duplicate governance scope ID"):
+        _scope_records_by_id(workspace)
+
+
+def test_additional_evidence_locator_variants_fail_closed(tmp_path: Path) -> None:
+    workspace, scope = _scope(tmp_path)
+    locators = [
+        ("PUBLIC_GIT", ""),
+        ("PUBLIC_GIT", "nested\\object.json"),
+        ("PUBLIC_GIT", "/absolute/object.json"),
+        ("PUBLIC_GIT", "nested//object.json"),
+        ("PROTECTED_WORKSPACE", "protected-ref:"),
+    ]
+    for index, (boundary, locator) in enumerate(locators):
+        with pytest.raises(ValueError):
+            _record(
+                workspace,
+                scope,
+                reviewer_key=f"locator-{index}",
+                track="METHODOLOGY",
+                evidence_references=[
+                    {
+                        "label": "Invalid locator fixture",
+                        "sha256": "a" * 64,
+                        "storage_boundary": boundary,
+                        "locator": locator,
+                    }
+                ],
+            )
+
+
+def test_persisted_semantic_tampering_is_reported(tmp_path: Path) -> None:
+    def mutated_report(
+        suffix: str,
+        mutation: object,
+    ) -> dict[str, object]:
+        workspace, scope = _scope(tmp_path / suffix)
+        result = _record(workspace, scope)
+        path = Path(str(result["path"]))
+        opinion = json.loads(path.read_text(encoding="utf-8"))
+        assert callable(mutation)
+        mutation(opinion)
+        opinion["opinion_sha256"] = _hash_record(opinion)
+        atomic_write_json(path, opinion)
+        return verify_governance_reviewer_opinions(workspace)
+
+    cases = [
+        ("private", lambda item: item.__setitem__("_unbound", "authority"), "unsupported private fields"),
+        ("boundary", lambda item: item.__setitem__("boundary", "authorizes release"), "authority boundary mismatch"),
+        ("track", lambda item: item.__setitem__("review_track", "UNKNOWN"), "unsupported review track"),
+        ("state", lambda item: item.__setitem__("opinion_state", "UNKNOWN"), "unsupported opinion state"),
+        (
+            "authorization",
+            lambda item: item.__setitem__("release_authorization_performed", True),
+            "release authorization must remain false",
+        ),
+        (
+            "conditions",
+            lambda item: item.__setitem__("opinion_state", "SUPPORT_WITH_CONDITIONS"),
+            "conditions required",
+        ),
+        (
+            "evidence-request",
+            lambda item: item.__setitem__("opinion_state", "REQUEST_EVIDENCE"),
+            "evidence requests required",
+        ),
+        (
+            "evidence-reference",
+            lambda item: item.__setitem__("evidence_references", ["invalid"]),
+            "invalid evidence reference",
+        ),
+    ]
+    for suffix, mutation, expected in cases:
+        report = mutated_report(suffix, mutation)
+        assert report["valid"] is False
+        assert any(expected in error for error in report["errors"])
+
+
+def test_duplicate_active_opinions_are_reported(tmp_path: Path) -> None:
+    workspace, scope = _scope(tmp_path)
+    result = _record(workspace, scope)
+    original = result["opinion"]
+    duplicate = json.loads(json.dumps(original))
+    duplicate["opinion_id"] = "GOVOP-" + "d" * 32
+    duplicate["opinion_sha256"] = _hash_record(duplicate)
+    root = workspace.root / "governance" / "opinions"
+    atomic_write_json(root / f"{duplicate['opinion_id']}.json", duplicate)
+    append_event(
+        workspace.root / "events.jsonl",
+        "GOVERNANCE_REVIEWER_OPINION_RECORDED",
+        "local-user",
+        {
+            "opinion_id": duplicate["opinion_id"],
+            "opinion_sha256": duplicate["opinion_sha256"],
+            "scope_id": duplicate["scope_id"],
+            "scope_sha256": duplicate["scope_sha256"],
+            "review_track": duplicate["review_track"],
+            "opinion_state": duplicate["opinion_state"],
+            "reviewer_key": duplicate["reviewer_claim"]["reviewer_key"],
+            "supersedes_opinion_id": None,
+            "release_authorization_performed": False,
+        },
+    )
+    report = verify_governance_reviewer_opinions(workspace)
+    assert report["valid"] is False
+    assert any("multiple active opinions" in error for error in report["errors"])
+
+
+def test_additional_supersession_and_summary_fallbacks(tmp_path: Path) -> None:
+    base = {
+        "scope_id": "GOVSCOPE-" + "1" * 32,
+        "scope_sha256": "a" * 64,
+        "review_track": "SECURITY",
+        "reviewer_claim": {"reviewer_key": "reviewer-a"},
+    }
+    first = {**base, "opinion_id": "GOVOP-" + "1" * 32, "opinion_sha256": "b" * 64}
+    second = {
+        **base,
+        "opinion_id": "GOVOP-" + "2" * 32,
+        "opinion_sha256": "c" * 64,
+        "supersedes_opinion_id": first["opinion_id"],
+        "supersedes_opinion_sha256": first["opinion_sha256"],
+    }
+    changed_scope_id = {**second, "scope_id": "GOVSCOPE-" + "2" * 32}
+    changed_scope_hash = {**second, "scope_sha256": "d" * 64}
+    changed_reviewer_type = {**second, "reviewer_claim": []}
+    assert any("changes scope_id" in error for error in _supersession_errors([first, changed_scope_id]))
+    assert any("changes scope_sha256" in error for error in _supersession_errors([first, changed_scope_hash]))
+    assert any("changes reviewer_key" in error for error in _supersession_errors([first, changed_reviewer_type]))
+
+    workspace, scope = _scope(tmp_path / "summary")
+    result = _record(workspace, scope)
+    path = Path(str(result["path"]))
+    opinion = json.loads(path.read_text(encoding="utf-8"))
+    opinion["review_track"] = "UNKNOWN"
+    opinion["reviewer_claim"] = []
+    opinion["opinion_sha256"] = _hash_record(opinion)
+    atomic_write_json(path, opinion)
+    summary = summarize_governance_reviewer_opinions(workspace)
+    assert summary["integrity_valid"] is False
+    assert summary["active_state_counts"] == {"SUPPORT": 1}
+    assert all(not opinions for opinions in summary["by_track"].values())

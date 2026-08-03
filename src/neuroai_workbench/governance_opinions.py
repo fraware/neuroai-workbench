@@ -281,8 +281,6 @@ def record_governance_reviewer_opinion(
         and isinstance(record.get("reviewer_claim"), dict)
         and record["reviewer_claim"].get("reviewer_key") == reviewer_key
     ]
-    if len(matching_active) > 1:
-        raise ValueError("Multiple active opinions already exist for this reviewer, track, and scope")
     if supersedes_opinion_id is None and matching_active:
         raise ValueError(
             "An active opinion already exists for this reviewer, track, and scope; explicit supersession is required"
