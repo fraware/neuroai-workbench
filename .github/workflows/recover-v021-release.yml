@@ -1,0 +1,87 @@
+name: Recover v0.2.1 release
+
+on:
+  push:
+    branches:
+      - agent/verify-v0.2.1-release
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: recover-v0.2.1-release
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    name: recover-v0.2.1-release
+    if: github.repository == 'fraware/neuroai-workbench'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: v0.2.1
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - run: python scripts/check_version_consistency.py --tag v0.2.1
+      - run: make quality
+      - run: make test
+      - run: mkdir -p artifacts
+      - run: python scripts/verify_release.py --output artifacts/RELEASE_VERIFICATION.json
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - run: python scripts/generate_sbom.py --output artifacts/SBOM.spdx.json
+      - run: git bundle create artifacts/neuroai-workbench-v0.2.1.bundle --all
+      - run: cp dist/* artifacts/
+      - run: python scripts/generate_sha256_manifest.py artifacts artifacts/SHA256SUMS.txt
+      - name: Confirm exact recovery asset set
+        shell: bash
+        run: |
+          expected=$(printf '%s\n' \
+            RELEASE_VERIFICATION.json \
+            SBOM.spdx.json \
+            SHA256SUMS.txt \
+            neuroai-workbench-v0.2.1.bundle \
+            neuroai_workbench-0.2.1-py3-none-any.whl \
+            neuroai_workbench-0.2.1.tar.gz | sort)
+          observed=$(find artifacts -maxdepth 1 -type f -printf '%f\n' | sort)
+          test "$observed" = "$expected"
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4
+        with:
+          subject-path: artifacts/*
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: recovered-release-v0.2.1
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish recovered release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v0.2.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Refusing to overwrite an existing v0.2.1 release.' >&2
+            exit 1
+          fi
+          cat > release-notes.md <<'EOF'
+          ## Controlled release recovery
+
+          This GitHub Release was reconstructed on August 3, 2026 from the immutable annotated tag `v0.2.1`, which peels to commit `7e60d1051a0a6a6178b7d5c39deac0b02270296d`. The recovery workflow reran the tag-pinned quality suite, tests, release verification, package build, SPDX SBOM generation, checksum generation, and GitHub build-provenance attestation before publication.
+
+          The release establishes technical artifact identity and reproducible package provenance. It does not establish scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status. It also does not establish evidence authenticity, methodological adequacy, completed system conformance, or permission to publish a canonical observatory successor.
+          EOF
+          gh release create v0.2.1 artifacts/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title 'NeuroAI Workbench v0.2.1' \
+            --notes-file release-notes.md
