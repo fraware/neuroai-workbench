@@ -1,0 +1,103 @@
+name: Harden governance opinions
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    name: harden
+    if: github.event.pull_request.head.ref == 'agent/governance-reviewer-opinions' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/governance-reviewer-opinions
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - name: Apply fail-closed opinion-store hardening
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text: str, old: str, new: str, label: str) -> str:
+              if text.count(old) != 1:
+                  raise SystemExit(f"{label} was not found exactly once")
+              return text.replace(old, new)
+
+          source = Path("src/neuroai_workbench/governance_opinions.py")
+          text = source.read_text(encoding="utf-8")
+          text = replace_once(
+              text,
+              '''def _hash_record(value: dict[str, Any]) -> str:\n    controlled = {\n        key: item\n        for key, item in value.items()\n        if key != "opinion_sha256" and key not in RUNTIME_PRIVATE_KEYS\n    }\n    return sha256_bytes(canonical_json_bytes(controlled))\n''',
+              '''def _hash_record(value: dict[str, Any]) -> str:\n    controlled = {\n        key: item\n        for key, item in value.items()\n        if key != "opinion_sha256" and key not in RUNTIME_PRIVATE_KEYS\n    }\n    return sha256_bytes(canonical_json_bytes(controlled))\n\n\ndef _scope_manifest_sha256(value: dict[str, Any]) -> str:\n    controlled = {\n        key: item\n        for key, item in value.items()\n        if key != "manifest_sha256" and key not in RUNTIME_PRIVATE_KEYS\n    }\n    return sha256_bytes(canonical_json_bytes(controlled))\n''',
+              "record hash block",
+          )
+          text = replace_once(
+              text,
+              '''def _scope_records_by_id(workspace: Workspace) -> dict[str, dict[str, Any]]:\n    scopes: dict[str, dict[str, Any]] = {}\n    for scope in load_governance_scope_manifests(workspace):\n        scope_id = str(scope.get("scope_id", ""))\n        if not scope_id:\n            continue\n        if scope_id in scopes:\n            raise ValueError(f"Duplicate governance scope ID {scope_id}")\n        scopes[scope_id] = scope\n    return scopes\n''',
+              '''def _scope_records_by_id(workspace: Workspace) -> dict[str, dict[str, Any]]:\n    scopes: dict[str, dict[str, Any]] = {}\n    for scope in load_governance_scope_manifests(workspace):\n        scope_id = str(scope.get("scope_id", ""))\n        if not scope_id:\n            raise ValueError("Governance scope record is missing scope_id")\n        unsupported_private = sorted(\n            key for key in scope if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS\n        )\n        if unsupported_private:\n            raise ValueError(\n                f"Governance scope {scope_id} contains unsupported private fields {unsupported_private}"\n            )\n        if scope.get("manifest_sha256") != _scope_manifest_sha256(scope):\n            raise ValueError(f"Governance scope {scope_id} failed canonical hash verification")\n        if scope.get("release_authorization_performed") is not False:\n            raise ValueError(f"Governance scope {scope_id} must remain non-authorizing")\n        if scope_id in scopes:\n            raise ValueError(f"Duplicate governance scope ID {scope_id}")\n        scopes[scope_id] = scope\n    return scopes\n''',
+              "scope index block",
+          )
+          text = replace_once(
+              text,
+              '''    existing = load_governance_reviewer_opinions(workspace)\n    index = _record_index(existing)\n''',
+              '''    existing = load_governance_reviewer_opinions(workspace)\n    if existing:\n        existing_verification = verify_governance_reviewer_opinions(workspace)\n        if not existing_verification["valid"]:\n            raise ValueError(\n                "Existing governance opinion store failed verification: "\n                f"{json.dumps(existing_verification['errors'], ensure_ascii=False)}"\n            )\n    index = _record_index(existing)\n''',
+              "existing opinion-store block",
+          )
+          text = replace_once(
+              text,
+              '''    seen_ids: set[str] = set()\n    scopes = _scope_records_by_id(workspace)\n\n    try:\n''',
+              '''    seen_ids: set[str] = set()\n    try:\n        scopes = _scope_records_by_id(workspace)\n    except ValueError as exc:\n        scopes = {}\n        errors.append(f"governance scope store invalid: {exc}")\n\n    try:\n''',
+              "verifier scope-load block",
+          )
+          text = replace_once(
+              text,
+              '''    opinion_events = {\n        (\n            str(event.get("payload", {}).get("opinion_id")),\n            str(event.get("payload", {}).get("opinion_sha256")),\n            str(event.get("payload", {}).get("scope_id")),\n            str(event.get("payload", {}).get("scope_sha256")),\n        )\n        for event in events\n        if event.get("action") == "GOVERNANCE_REVIEWER_OPINION_RECORDED"\n        and isinstance(event.get("payload"), dict)\n    }\n''',
+              '''    opinion_events: Counter[tuple[str, str, str, str]] = Counter(\n        (\n            str(event.get("payload", {}).get("opinion_id")),\n            str(event.get("payload", {}).get("opinion_sha256")),\n            str(event.get("payload", {}).get("scope_id")),\n            str(event.get("payload", {}).get("scope_sha256")),\n        )\n        for event in events\n        if event.get("action") == "GOVERNANCE_REVIEWER_OPINION_RECORDED"\n        and isinstance(event.get("payload"), dict)\n    )\n''',
+              "opinion event index block",
+          )
+          text = replace_once(
+              text,
+              '''        if event_key not in opinion_events:\n            errors.append(f"opinion {opinion_id}: matching append-only event is missing")\n''',
+              '''        event_count = opinion_events[event_key]\n        if event_count == 0:\n            errors.append(f"opinion {opinion_id}: matching append-only event is missing")\n        elif event_count > 1:\n            errors.append(\n                f"opinion {opinion_id}: {event_count} matching append-only events were recorded"\n            )\n''',
+              "opinion event verification block",
+          )
+          source.write_text(text, encoding="utf-8")
+
+          tests = Path("tests/unit/test_governance_opinions.py")
+          test_text = tests.read_text(encoding="utf-8")
+          test_text = replace_once(
+              test_text,
+              "from neuroai_workbench.events import load_events\n",
+              "from neuroai_workbench.events import append_event, load_events\n",
+              "event import",
+          )
+          if "def test_scope_store_integrity_and_existing_opinion_store_fail_closed" not in test_text:
+              test_text += '''\n\ndef test_scope_store_integrity_and_existing_opinion_store_fail_closed(tmp_path: Path) -> None:\n    workspace, scope = _scope(tmp_path)\n    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))\n    stored_scope = json.loads(scope_path.read_text(encoding="utf-8"))\n    stored_scope["scope_label"] = "Tampered scope label"\n    atomic_write_json(scope_path, stored_scope)\n    with pytest.raises(ValueError, match="failed canonical hash verification"):\n        _record(workspace, scope)\n    report = verify_governance_reviewer_opinions(workspace)\n    assert report["valid"] is False\n    assert any("governance scope store invalid" in error for error in report["errors"])\n\n    workspace, scope = _scope(tmp_path / "opinion-store")\n    result = _record(workspace, scope)\n    opinion_path = Path(str(result["path"]))\n    opinion = json.loads(opinion_path.read_text(encoding="utf-8"))\n    opinion["rationale"] = "Tampered existing opinion"\n    atomic_write_json(opinion_path, opinion)\n    with pytest.raises(ValueError, match="Existing governance opinion store failed verification"):\n        _record(\n            workspace,\n            scope,\n            reviewer_key="reviewer-b",\n            track="METHODOLOGY",\n        )\n\n\ndef test_exactly_one_matching_event_is_required(tmp_path: Path) -> None:\n    workspace, scope = _scope(tmp_path)\n    result = _record(workspace, scope)\n    opinion = result["opinion"]\n    append_event(\n        workspace.root / "events.jsonl",\n        "GOVERNANCE_REVIEWER_OPINION_RECORDED",\n        "local-user",\n        {\n            "opinion_id": opinion["opinion_id"],\n            "opinion_sha256": opinion["opinion_sha256"],\n            "scope_id": opinion["scope_id"],\n            "scope_sha256": opinion["scope_sha256"],\n            "review_track": opinion["review_track"],\n            "opinion_state": opinion["opinion_state"],\n            "reviewer_key": opinion["reviewer_claim"]["reviewer_key"],\n            "supersedes_opinion_id": None,\n            "release_authorization_performed": False,\n        },\n    )\n    report = verify_governance_reviewer_opinions(workspace)\n    assert report["valid"] is False\n    assert any("2 matching append-only events" in error for error in report["errors"])\n'''
+          tests.write_text(test_text, encoding="utf-8")
+          PY
+      - run: python -m ruff format src/neuroai_workbench/governance_opinions.py tests/unit/test_governance_opinions.py
+      - run: python -m ruff format --check .
+      - run: python -m ruff check .
+      - run: python -m pytest tests/unit/test_governance_opinions.py --cov=neuroai_workbench.governance_opinions --cov-report=term-missing --cov-fail-under=95
+      - run: python scripts/check_github_workflow_contract.py
+      - name: Commit exact hardening changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/neuroai_workbench/governance_opinions.py tests/unit/test_governance_opinions.py
+          git commit -m "Harden governance opinion store integrity"
+          git push origin HEAD:agent/governance-reviewer-opinions
