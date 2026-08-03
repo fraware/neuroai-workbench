@@ -1,0 +1,67 @@
+{
+  "contract_version": "1.0.0",
+  "baseline_release": "v2.2.0",
+  "target_release": "v2.3.0-dev",
+  "expected_sheet_count": 48,
+  "expected_key_counts": {
+    "Organizations": 223,
+    "Sources": 224,
+    "Kernel_Requirements": 78,
+    "Assessment_Findings": 312,
+    "Assessment_Claims": 44,
+    "Assessment_Evidence": 52,
+    "Assessment_Endpoints": 38,
+    "Assessment_Gaps": 60,
+    "Comparative_Matrix": 78,
+    "CSV_Dataset_Index": 100,
+    "Raw_CSV_Rows": 10727,
+    "JSON_File_Index": 455,
+    "File_Manifest": 1436
+  },
+  "assessment_summary": {
+    "Brain2Qwerty": {
+      "PASS": 14,
+      "PARTIAL": 35,
+      "FAIL": 4,
+      "NOT ASSESSED": 25,
+      "TOTAL": 78,
+      "gaps": 12,
+      "claims": 8,
+      "evidence_objects": 10,
+      "endpoints": 6
+    },
+    "FDA adaptive DBS": {
+      "PASS": 25,
+      "PARTIAL": 41,
+      "FAIL": 0,
+      "NOT ASSESSED": 12,
+      "TOTAL": 78,
+      "gaps": 12,
+      "claims": 10,
+      "evidence_objects": 15,
+      "endpoints": 8
+    },
+    "BrainGate2 T15": {
+      "PASS": 17,
+      "PARTIAL": 41,
+      "FAIL": 0,
+      "NOT ASSESSED": 20,
+      "TOTAL": 78,
+      "gaps": 14,
+      "claims": 12,
+      "evidence_objects": 12,
+      "endpoints": 13
+    },
+    "PRIMA": {
+      "PASS": 15,
+      "PARTIAL": 42,
+      "FAIL": 0,
+      "NOT ASSESSED": 21,
+      "TOTAL": 78,
+      "gaps": 22,
+      "claims": 14,
+      "evidence_objects": 15,
+      "endpoints": 11
+    }
+  }
+}
