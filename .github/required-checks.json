@@ -92,22 +92,6 @@
       ]
     },
     {
-      "path": ".github/workflows/recover-v021-release.yml",
-      "name": "Recover v0.2.1 release",
-      "pull_request_required": false,
-      "required_trigger_markers": ["  push:", "      - agent/verify-v0.2.1-release"],
-      "permissions": {
-        "contents": "write",
-        "id-token": "write",
-        "attestations": "write"
-      },
-      "forbid_secrets": true,
-      "jobs": [
-        {"id": "recover", "name": "recover-v0.2.1-release", "required_contexts": []},
-        {"id": "verify", "name": "verify-v0.2.1-release", "required_contexts": []}
-      ]
-    },
-    {
       "path": ".github/workflows/release.yml",
       "name": "Release",
       "pull_request_required": false,
