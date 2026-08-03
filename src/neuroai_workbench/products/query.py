@@ -16,22 +16,67 @@ FULL_ORG_FIELDS = (
     "organization_id",
     "canonical_name",
     "verification_state",
+    "organization_type",
     "roles",
+    "headquarters_country",
+    "jurisdictions",
+    "unesco_region",
     "countries",
     "regions",
     "aliases",
     "evidence_state",
     "claim_boundary",
+    "current_status",
+    "official_url",
 )
 FULL_SOURCE_FIELDS = (
     "source_id",
     "publisher",
     "source_class",
+    "title",
     "url",
     "evidence_state",
     "verification_state",
     "claim_boundary",
     "jurisdiction",
+    "supports",
+    "retrieved",
+)
+
+# First-class full-depth sheets when a named canonical list key yields data.
+# Sheet name → release key(s) tried in order. Missing or empty lists fall through to
+# later aliases; if every key is missing or empty the sheet is omitted, never invented.
+FULL_LIST_PROJECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("system_relationships", ("system_relationships",)),
+    ("systems", ("systems",)),
+    ("ownership_capital_events", ("capital_and_ownership_events",)),
+    ("models", ("representative_model_records", "models")),
+    ("models_datasets", ("model_and_dataset_registry", "models_datasets")),
+    ("trial_sites", ("trial_site_relationships",)),
+    ("participant_authority", ("participant_authority_relationships",)),
+    ("suppliers", ("supplier_dependency_relationships",)),
+    ("data_quality_findings", ("data_quality",)),
+    ("organization_resolution", ("organization_resolution",)),
+    ("regional_expansion", ("regional_expansion",)),
+    ("captures", ("captures",)),
+    ("candidates", ("change_candidates", "candidates")),
+    ("adjudications", ("adjudications",)),
+    ("source_checks", ("source_checks",)),
+    ("evidence_register", ("evidence_register", "evidence_registers")),
+    ("assessment_findings", ("findings",)),
+    ("assessment_evidence", ("evidence",)),
+    ("assessment_gaps", ("gaps",)),
+    ("requirement_results", ("requirement_results",)),
+    ("provenance_links", ("provenance",)),
+)
+
+# Sheets rendered as DOCX/PDF appendices (identity sheets stay in the front matter).
+APPENDIX_EXCLUDED_SHEETS = frozenset(
+    {
+        "verification",
+        "projection_limits",
+        "release_summary",
+    }
 )
 
 
@@ -59,6 +104,88 @@ def _project_dict_list(items: list[Any]) -> list[dict[str, Any]]:
     return rows
 
 
+def _countries_cell(item: dict[str, Any]) -> Any:
+    if "countries" in item:
+        return _cell(item.get("countries"))
+    jurisdictions = item.get("jurisdictions")
+    if isinstance(jurisdictions, list) and jurisdictions:
+        return _cell(jurisdictions)
+    return _cell(item.get("headquarters_country"))
+
+
+def _regions_cell(item: dict[str, Any]) -> Any:
+    if "regions" in item:
+        return _cell(item.get("regions"))
+    return _cell(item.get("unesco_region"))
+
+
+def _project_organizations(items: list[Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        row = {field: _cell(item.get(field)) for field in FULL_ORG_FIELDS}
+        row["countries"] = _countries_cell(item)
+        row["regions"] = _regions_cell(item)
+        rows.append(row)
+    return rows
+
+
+def _project_aliases(organizations: list[Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for item in organizations:
+        if not isinstance(item, dict):
+            continue
+        organization_id = item.get("organization_id")
+        aliases = item.get("aliases")
+        if not isinstance(aliases, list):
+            continue
+        for alias in aliases:
+            if alias is None or alias == "":
+                continue
+            rows.append(
+                {
+                    "organization_id": organization_id,
+                    "canonical_name": item.get("canonical_name"),
+                    "alias": alias if not isinstance(alias, (dict, list)) else _cell(alias),
+                }
+            )
+    return rows
+
+
+def _metric_rows(mapping: Any) -> list[dict[str, Any]]:
+    if not isinstance(mapping, dict):
+        return []
+    return [{"metric": key, "value": value} for key, value in sorted(mapping.items()) if not isinstance(value, dict)]
+
+
+def _project_optional_dict_as_rows(value: Any, *, section: str | None = None) -> list[dict[str, Any]]:
+    if isinstance(value, list):
+        return _project_dict_list(value)
+    if isinstance(value, dict):
+        rows = _project_dict_list([value])
+        if section is not None and rows:
+            for row in rows:
+                row.setdefault("section", section)
+        return rows
+    return []
+
+
+def iter_appendix_sheets(query: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]]]]:
+    """Return ordered (sheet_name, rows) pairs for substantive DOCX/PDF appendices."""
+    rows = query.get("rows")
+    if not isinstance(rows, dict):
+        return []
+    sheets: list[tuple[str, list[dict[str, Any]]]] = []
+    for name in sorted(rows):
+        if name in APPENDIX_EXCLUDED_SHEETS:
+            continue
+        values = rows[name]
+        if isinstance(values, list) and values:
+            sheets.append((name, values))
+    return sheets
+
+
 def query_release(
     release_path: Path,
     *,
@@ -71,6 +198,8 @@ def query_release(
     available canonical fields for publication builds. ``limit`` caps list
     projections for interactive previews; pass ``limit=None`` for authorized
     release builds so products are not silently truncated.
+
+    Missing canonical sections are omitted and never invented.
     """
     if depth not in {"summary", "full"}:
         raise ValueError("depth must be 'summary' or 'full'")
@@ -101,9 +230,7 @@ def query_release(
     }
 
     if kind == COMPACT_SUCCESSOR:
-        rows["successor_counts"] = [
-            {"metric": key, "value": value} for key, value in sorted(summary.get("counts", {}).items())
-        ]
+        rows["successor_counts"] = _metric_rows(summary.get("counts", {}))
         if depth == "summary":
             rows["reopening_decisions"] = [
                 {
@@ -130,19 +257,29 @@ def query_release(
                         row = {"delta_section": section}
                         row.update({str(key): _cell(value) for key, value in sorted(item.items())})
                         rows["delta_records"].append(row)
-            if isinstance(release.get("delta_counts"), dict):
-                rows["delta_counts"] = [
-                    {"metric": key, "value": value} for key, value in sorted(release["delta_counts"].items())
-                ]
+            delta_counts = _metric_rows(release.get("delta_counts"))
+            if delta_counts:
+                rows["delta_counts"] = delta_counts
+            baseline_counts = _metric_rows(release.get("baseline_counts"))
+            if baseline_counts:
+                rows["baseline_counts"] = baseline_counts
             assessment = release.get("assessment_successor_delta")
             if isinstance(assessment, dict):
                 rows["assessment_successor_delta"] = _project_dict_list([assessment])
+            provenance = release.get("provenance")
+            provenance_rows = _project_optional_dict_as_rows(provenance)
+            if provenance_rows:
+                # Flatten scalar provenance map into metric-style rows when it is a dict of scalars.
+                if isinstance(provenance, dict) and all(not isinstance(v, (dict, list)) for v in provenance.values()):
+                    rows["provenance_links"] = [
+                        {"field": key, "value": value} for key, value in sorted(provenance.items())
+                    ]
+                else:
+                    rows["provenance_links"] = provenance_rows
     else:
-        rows["coverage_counts"] = [
-            {"metric": key, "value": value}
-            for key, value in sorted(summary.get("coverage", {}).items())
-            if not isinstance(value, dict)
-        ]
+        rows["coverage_counts"] = _metric_rows(summary.get("coverage", {}))
+        organizations_raw = [item for item in release.get("organizations", []) if isinstance(item, dict)]
+        sources_raw = [item for item in release.get("sources", []) if isinstance(item, dict)]
         if depth == "summary":
             organizations = [
                 {
@@ -150,8 +287,7 @@ def query_release(
                     "canonical_name": item.get("canonical_name"),
                     "verification_state": item.get("verification_state"),
                 }
-                for item in release.get("organizations", [])
-                if isinstance(item, dict)
+                for item in organizations_raw
             ]
             sources = [
                 {
@@ -159,50 +295,42 @@ def query_release(
                     "publisher": item.get("publisher"),
                     "source_class": item.get("source_class"),
                 }
-                for item in release.get("sources", [])
-                if isinstance(item, dict)
+                for item in sources_raw
             ]
         else:
-            organizations = _project_rows(
-                [item for item in release.get("organizations", []) if isinstance(item, dict)],
-                FULL_ORG_FIELDS,
-            )
-            sources = _project_rows(
-                [item for item in release.get("sources", []) if isinstance(item, dict)],
-                FULL_SOURCE_FIELDS,
-            )
-            for sheet_name, key in (
-                ("system_relationships", "system_relationships"),
-                ("ownership_capital_events", "capital_and_ownership_events"),
-                ("models_datasets", "models"),
-                ("trial_sites", "trial_site_relationships"),
-                ("participant_authority", "participant_authority_relationships"),
-                ("suppliers", "supplier_dependency_relationships"),
-                ("data_quality_findings", "data_quality"),
-            ):
-                values = release.get(key)
-                if isinstance(values, list):
-                    rows[sheet_name] = _slice(_project_dict_list(values))
-            for sheet_name, key in (
-                ("v16_change_candidates", "change_candidates"),
-                ("v16_source_checks", "source_checks"),
-                ("v16_adjudications", "adjudications"),
-            ):
-                values = release.get(key)
-                if isinstance(values, list):
-                    rows[sheet_name] = _slice(_project_dict_list(values))
-            for sheet_name, key in (
-                ("assessment_findings", "findings"),
-                ("assessment_evidence", "evidence"),
-                ("assessment_gaps", "gaps"),
-                ("requirement_results", "requirement_results"),
-                ("provenance_links", "provenance"),
-            ):
-                values = release.get(key)
-                if isinstance(values, list):
-                    rows[sheet_name] = _slice(_project_dict_list(values))
-                elif isinstance(values, dict):
-                    rows[sheet_name] = _project_dict_list([values])
+            organizations = _project_organizations(organizations_raw)
+            sources = _project_rows(sources_raw, FULL_SOURCE_FIELDS)
+            alias_rows = _project_aliases(organizations_raw)
+            if alias_rows:
+                rows["aliases"] = _slice(alias_rows)
+            for sheet_name, keys in FULL_LIST_PROJECTIONS:
+                projected: list[dict[str, Any]] | None = None
+                for key in keys:
+                    values = release.get(key)
+                    if isinstance(values, list):
+                        if not values:
+                            continue
+                        dict_items = [item for item in values if isinstance(item, dict)]
+                        if dict_items:
+                            projected = _slice(_project_dict_list(dict_items))
+                            break
+                        projected = _slice([{"value": _cell(item)} for item in values])
+                        break
+                    if isinstance(values, dict):
+                        projected = _project_dict_list([values])
+                        break
+                if projected:
+                    rows[sheet_name] = projected
+            coverage = release.get("coverage")
+            if isinstance(coverage, dict):
+                exit_conditions = coverage.get("exit_conditions")
+                if isinstance(exit_conditions, list) and exit_conditions:
+                    rows["coverage_exit_conditions"] = _slice(_project_dict_list(exit_conditions))
+            methodology = release.get("methodology")
+            if isinstance(methodology, dict):
+                universes = methodology.get("source_universes")
+                if isinstance(universes, list) and universes:
+                    rows["methodology_source_universes"] = _slice(_project_dict_list(universes))
 
         rows["organizations"] = _slice(organizations)
         rows["sources"] = _slice(sources)
