@@ -13,7 +13,7 @@ from .evidence_transactions import (
     recover_evidence_transactions,
     recover_evidence_transactions_unlocked,
 )
-from .util import atomic_write_bytes, load_json, safe_join, sha256_bytes, sha256_file, utc_now
+from .util import load_json, safe_join, sha256_bytes, sha256_file, utc_now
 from .validation import validate_assessment
 from .workspace import Workspace
 
@@ -193,14 +193,21 @@ def _assessment_evidence_record(
     }
 
 
-def _persistence_record(assessment: dict[str, Any], *, actor: str) -> dict[str, Any]:
+def _assessment_commit_state(
+    assessment: dict[str, Any],
+    *,
+    before_sha256: str,
+    actor: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
     report = validate_assessment(assessment)
     validation_state = "VALID" if report.valid else "DRAFT_INVALID"
-    return {
+    persisted_as = "valid" if report.valid else "draft_invalid"
+    after_sha256 = sha256_bytes(_json_bytes(assessment))
+    persistence = {
         "validation_state": validation_state,
-        "persisted_as": "valid" if report.valid else "draft_invalid",
+        "persisted_as": persisted_as,
         "require_valid": False,
-        "assessment_sha256": sha256_bytes(_json_bytes(assessment)),
+        "assessment_sha256": after_sha256,
         "updated_at": utc_now(),
         "actor": actor,
         "boundary": (
@@ -208,6 +215,16 @@ def _persistence_record(assessment: dict[str, Any], *, actor: str) -> dict[str, 
             "it does not establish substantive truth or conformance."
         ),
     }
+    event = {
+        "before_sha256": before_sha256,
+        "after_sha256": after_sha256,
+        "valid": report.valid,
+        "validation_state": validation_state,
+        "persisted_as": persisted_as,
+        "schema_errors": len(report.schema_issues),
+        "semantic_errors": len(report.semantic_issues),
+    }
+    return persistence, event
 
 
 def recover_evidence_registrations(
@@ -248,6 +265,8 @@ def add_evidence_bytes(
         target = safe_join(objects_root, stored_name)
     except ValueError as exc:
         raise ValueError("Evidence object path escapes the controlled objects root") from exc
+    if target.is_symlink():
+        raise ValueError("Evidence object path must not be a symlink")
 
     with evidence_registration_lock(case):
         recover_evidence_transactions_unlocked(case, actor=actor)
@@ -263,6 +282,7 @@ def add_evidence_bytes(
         if not isinstance(index.get("objects"), list):
             raise ValueError("Evidence index objects must be a list")
 
+        assessment_path = case / "assessment.json"
         assessment = workspace.load_case(case_id)
         evidence_id = _next_evidence_id(assessment, index)
         record = {
@@ -283,6 +303,7 @@ def add_evidence_bytes(
 
         desired_assessment: dict[str, Any] | None = None
         desired_persistence: dict[str, Any] | None = None
+        assessment_event: dict[str, Any] | None = None
         if link_to_assessment:
             desired_assessment = json.loads(json.dumps(assessment))
             desired_assessment.setdefault("evidence_register", []).append(
@@ -298,7 +319,11 @@ def add_evidence_bytes(
                     actor=actor,
                 )
             )
-            desired_persistence = _persistence_record(desired_assessment, actor=actor)
+            desired_persistence, assessment_event = _assessment_commit_state(
+                desired_assessment,
+                before_sha256=sha256_file(assessment_path),
+                actor=actor,
+            )
 
         transaction_path = prepare_evidence_transaction(
             case,
@@ -307,6 +332,7 @@ def add_evidence_bytes(
             desired_index=desired_index,
             desired_assessment=desired_assessment,
             desired_persistence=desired_persistence,
+            assessment_event=assessment_event,
         )
         apply_evidence_transaction(case, transaction_path, actor=actor)
         return record
