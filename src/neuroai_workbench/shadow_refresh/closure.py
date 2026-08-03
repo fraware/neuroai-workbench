@@ -25,8 +25,8 @@ from ..extraction.disposition import (
 )
 from ..extraction.evaluation import build_extraction_request_from_capture
 from ..extraction.providers import (
-    ExtractionProviderConfig,
     FAKE_OFFLINE_PROVIDER_ID,
+    ExtractionProviderConfig,
     new_request_id,
     resolve_provider,
 )

@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from neuroai_workbench.collector.handoff import approve_quarantine_record, load_quarantine_record
 from neuroai_workbench.shadow_refresh.closure import (
     build_closure_run_results,
