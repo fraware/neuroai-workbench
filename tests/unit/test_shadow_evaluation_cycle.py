@@ -271,9 +271,7 @@ def test_live_cycle_with_injected_transport_and_baseline(tmp_path: Path, monkeyp
         actor="tester",
     )
 
-    transport = FakeTransport(
-        responses={url: (200, {"content-type": "text/html"}, b"<html>changed-live</html>")}
-    )
+    transport = FakeTransport(responses={url: (200, {"content-type": "text/html"}, b"<html>changed-live</html>")})
     plan = {
         "plan_id": "PLAN-EVAL-LIVE",
         "as_of": "2026-08-02",

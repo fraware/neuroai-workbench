@@ -27,8 +27,8 @@ def _table_matrix(rows: list[dict[str, Any]]) -> tuple[list[str], list[list[str]
 
 def render_docx(query: dict[str, Any]) -> bytes | None:
     try:
-        from docx import Document  # type: ignore
-        from docx.enum.text import WD_BREAK  # type: ignore
+        from docx import Document
+        from docx.enum.text import WD_BREAK
     except ImportError:
         return None
     document = Document()

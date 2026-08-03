@@ -118,10 +118,7 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
             # Query form keeps quarantine filenames free of percent-encoded path separators.
             return f"{CROSSREF_WORKS}?filter=doi:{quote(identifier, safe='')}"
         if id_type == "PMCID":
-            return (
-                f"{EUTILS_SUMMARY}?db=pmc&id={quote(identifier.replace('PMC', ''), safe='')}"
-                f"&retmode=json"
-            )
+            return f"{EUTILS_SUMMARY}?db=pmc&id={quote(identifier.replace('PMC', ''), safe='')}&retmode=json"
         return f"{EUTILS_SUMMARY}?db=pubmed&id={quote(identifier, safe='')}&retmode=json"
 
     def normalize_publication(
@@ -168,7 +165,11 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
                     articleids = docs.get("articleids")
                     if isinstance(articleids, list):
                         for item in articleids:
-                            if isinstance(item, dict) and item.get("idtype") == "doi" and isinstance(item.get("value"), str):
+                            if (
+                                isinstance(item, dict)
+                                and item.get("idtype") == "doi"
+                                and isinstance(item.get("value"), str)
+                            ):
                                 doi = item["value"]
                                 break
                     authors = docs.get("authors")

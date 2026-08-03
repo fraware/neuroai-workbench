@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from neuroai_workbench.monitoring import load_source_registry
 from neuroai_workbench.shadow_refresh import (
     LIVE_COLLECTION_ENV,
     SHADOW_EVALUATION_STATUS,
@@ -39,7 +40,6 @@ from neuroai_workbench.shadow_refresh.closure import (
     run_offline_extraction_sample,
     scaffold_dual_human_review,
 )
-from neuroai_workbench.monitoring import load_source_registry
 from neuroai_workbench.util import atomic_write_json, load_json, sha256_file, utc_now
 
 OPS_ENV = "NEUROAI_OPS_WORKSPACE"
@@ -297,7 +297,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"- Status: `{SHADOW_EVALUATION_STATUS}`",
                 f"- Formal disposition: `{formal['disposition']}`",
                 f"- Metrics recommendation: `{metrics['evaluation']['recommendation']}`",
-                f"- Dual human review complete: `false`",
+                "- Dual human review complete: `false`",
                 f"- Live retry executed: `{str(live_retry_executed).lower()}`",
                 f"- Evaluation handoffs: `{len(handoff['handoffs'])}`",
                 f"- Change candidates: `{len(candidates['candidates'])}`",

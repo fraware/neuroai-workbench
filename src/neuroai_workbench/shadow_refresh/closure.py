@@ -25,8 +25,8 @@ from ..extraction.disposition import (
 )
 from ..extraction.evaluation import build_extraction_request_from_capture
 from ..extraction.providers import (
-    ExtractionProviderConfig,
     FAKE_OFFLINE_PROVIDER_ID,
+    ExtractionProviderConfig,
     new_request_id,
     resolve_provider,
 )
@@ -470,7 +470,9 @@ def run_offline_entity_sample(
             }
         )
         if proposal["status"] == "PENDING_HUMAN_DISPOSITION":
-            decision = "DEFER" if proposal["resolution_state"] in {"AMBIGUOUS", "DUPLICATE_CANDIDATE"} else "NEEDS_EVIDENCE"
+            decision = (
+                "DEFER" if proposal["resolution_state"] in {"AMBIGUOUS", "DUPLICATE_CANDIDATE"} else "NEEDS_EVIDENCE"
+            )
             disposition = record_resolution_disposition(
                 evaluation_workspace,
                 proposal["proposal_id"],
