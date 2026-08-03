@@ -4,7 +4,7 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   dependency-review:
@@ -42,87 +42,3 @@ jobs:
             echo "This scans the pinned environment for known vulnerabilities but does not provide GitHub's PR-to-base dependency delta or license-delta analysis."
             echo "Re-enable the official dependency graph review when repository security settings support it."
           } >> "$GITHUB_STEP_SUMMARY"
-
-  verify-hosted-ruleset:
-    name: verify-hosted-ruleset
-    if: github.head_ref == 'agent/verify-protect-main-ruleset' && github.actor != 'github-actions[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-      - name: Acquire Protect main ruleset
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p artifacts docs/operations
-          gh api "repos/${GITHUB_REPOSITORY}/rulesets/20116255" > artifacts/protect-main-ruleset.raw.json
-      - name: Verify hosted parity
-        id: audit
-        shell: bash
-        run: |
-          set +e
-          python scripts/verify_github_ruleset.py \
-            --ruleset-json artifacts/protect-main-ruleset.raw.json \
-            --manifest .github/required-checks.json \
-            --output docs/operations/protect-main-ruleset-verification.json
-          status=$?
-          echo "$status" > artifacts/audit-exit-code.txt
-          exit 0
-      - name: Render verification summary
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          report = json.loads(Path('docs/operations/protect-main-ruleset-verification.json').read_text())
-          lines = [
-              '# Protect main ruleset verification',
-              '',
-              f"- Ruleset: `{report.get('ruleset_name')}` (`{report.get('ruleset_id')}`)",
-              f"- Status: **{report.get('status')}**",
-              f"- Checks: {report.get('checks_passed')}/{report.get('checks_total')} passed",
-              f"- Required status contexts: {len(report.get('required_status_check_contexts', []))}",
-              f"- Bypass actors recorded: {len(report.get('bypass_actors', []))}",
-              '',
-              '## Check results',
-              '',
-              '| Check | Status |',
-              '|---|---|',
-          ]
-          for check in report.get('checks', []):
-              lines.append(f"| {check['name']} | {check['status']} |")
-          lines.extend([
-              '',
-              '## Boundary',
-              '',
-              report.get('boundary', ''),
-              '',
-              'The raw GitHub Rules API response is retained as a workflow artifact and is not committed.',
-          ])
-          Path('docs/operations/protect-main-ruleset-verification.md').write_text('\n'.join(lines) + '\n')
-          PY
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: protect-main-ruleset-audit
-          path: |
-            artifacts/protect-main-ruleset.raw.json
-            artifacts/audit-exit-code.txt
-            docs/operations/protect-main-ruleset-verification.json
-          if-no-files-found: error
-          retention-days: 30
-      - name: Commit normalized report and restore contract files
-        run: |
-          git fetch origin main
-          git checkout origin/main -- .github/required-checks.json .github/workflows/dependency-review.yml
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .github/required-checks.json \
-                  .github/workflows/dependency-review.yml \
-                  docs/operations/protect-main-ruleset-verification.json \
-                  docs/operations/protect-main-ruleset-verification.md
-          git commit -m "docs: record Protect main ruleset parity"
-          git push origin HEAD:${{ github.head_ref }}
-      - name: Enforce audit result
-        run: exit "$(cat artifacts/audit-exit-code.txt)"

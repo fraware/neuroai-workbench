@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "ruleset_id": 20116255,
+  "ruleset_name": "Protect main",
+  "status": "FAIL",
+  "checks_total": 12,
+  "checks_passed": 10,
+  "checks_failed": 2,
+  "required_status_check_contexts": [
+    "codeql",
+    "container",
+    "dependency-review",
+    "package",
+    "quality",
+    "release-verification",
+    "tests-python-3.10",
+    "tests-python-3.11",
+    "tests-python-3.12",
+    "tests-python-3.13",
+    "tests-python-3.14"
+  ],
+  "pull_request_parameters": {
+    "required_approving_review_count": 0,
+    "dismiss_stale_reviews_on_push": true,
+    "required_reviewers": [],
+    "require_code_owner_review": false,
+    "require_last_push_approval": false,
+    "required_review_thread_resolution": true,
+    "allowed_merge_methods": [
+      "squash"
+    ]
+  },
+  "bypass_actors": [],
+  "observed_rule_types": [
+    "deletion",
+    "non_fast_forward",
+    "pull_request",
+    "required_linear_history",
+    "required_status_checks"
+  ],
+  "checks": [
+    {
+      "name": "Ruleset ID",
+      "status": "PASS",
+      "detail": {
+        "expected": 20116255,
+        "observed": 20116255
+      }
+    },
+    {
+      "name": "Ruleset name",
+      "status": "PASS",
+      "detail": {
+        "expected": "Protect main",
+        "observed": "Protect main"
+      }
+    },
+    {
+      "name": "Ruleset enforcement is active",
+      "status": "PASS",
+      "detail": "active"
+    },
+    {
+      "name": "Ruleset targets branches",
+      "status": "PASS",
+      "detail": "branch"
+    },
+    {
+      "name": "Ruleset includes the default branch",
+      "status": "PASS",
+      "detail": {
+        "include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "accepted": [
+          "refs/heads/main",
+          "~DEFAULT_BRANCH"
+        ]
+      }
+    },
+    {
+      "name": "Ruleset does not exclude the default branch",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "Pull-request rule is present",
+      "status": "PASS",
+      "detail": [
+        "deletion",
+        "non_fast_forward",
+        "pull_request",
+        "required_linear_history",
+        "required_status_checks"
+      ]
+    },
+    {
+      "name": "At least one approving review is required",
+      "status": "FAIL",
+      "detail": 0
+    },
+    {
+      "name": "Required-status-check rule is present",
+      "status": "PASS",
+      "detail": [
+        "deletion",
+        "non_fast_forward",
+        "pull_request",
+        "required_linear_history",
+        "required_status_checks"
+      ]
+    },
+    {
+      "name": "Hosted required checks match the repository contract",
+      "status": "FAIL",
+      "detail": {
+        "expected": [
+          "codeql",
+          "container",
+          "dependency-review",
+          "package",
+          "pip-audit",
+          "product-native",
+          "quality",
+          "release-verification",
+          "tests-python-3.10",
+          "tests-python-3.11",
+          "tests-python-3.12",
+          "tests-python-3.13",
+          "tests-python-3.14"
+        ],
+        "observed": [
+          "codeql",
+          "container",
+          "dependency-review",
+          "package",
+          "quality",
+          "release-verification",
+          "tests-python-3.10",
+          "tests-python-3.11",
+          "tests-python-3.12",
+          "tests-python-3.13",
+          "tests-python-3.14"
+        ],
+        "missing": [
+          "pip-audit",
+          "product-native"
+        ],
+        "unexpected": []
+      }
+    },
+    {
+      "name": "Required checks have unique contexts",
+      "status": "PASS",
+      "detail": [
+        {
+          "context": "quality"
+        },
+        {
+          "context": "tests-python-3.10"
+        },
+        {
+          "context": "tests-python-3.11"
+        },
+        {
+          "context": "tests-python-3.12"
+        },
+        {
+          "context": "tests-python-3.13"
+        },
+        {
+          "context": "tests-python-3.14"
+        },
+        {
+          "context": "package"
+        },
+        {
+          "context": "release-verification"
+        },
+        {
+          "context": "container"
+        },
+        {
+          "context": "codeql"
+        },
+        {
+          "context": "dependency-review"
+        }
+      ]
+    },
+    {
+      "name": "Strict required-status-check policy is enabled",
+      "status": "PASS",
+      "detail": true
+    }
+  ],
+  "boundary": "This report verifies the GitHub-hosted ruleset response acquired for the named repository. It does not authenticate human reviewers, establish scientific or release authority, or prove that future settings remain unchanged after the recorded acquisition."
+}
