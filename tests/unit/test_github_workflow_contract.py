@@ -11,6 +11,7 @@ _CONTRACT_FILES = (
     ".github/workflows/ci.yml",
     ".github/workflows/codeql.yml",
     ".github/workflows/dependency-review.yml",
+    ".github/workflows/observatory-monitor-plan.yml",
     ".github/workflows/release.yml",
 )
 
@@ -88,3 +89,10 @@ def test_unsafe_pr_trigger_is_rejected(tmp_path):
     errors = validate(root)
     assert any("forbidden workflow marker" in error for error in errors)
     assert any("pull_request trigger is required" in error for error in errors)
+
+
+def test_scheduled_workflow_trigger_drift_is_rejected(tmp_path):
+    root = _copy_contract(tmp_path)
+    workflow = root / ".github/workflows/observatory-monitor-plan.yml"
+    _replace(workflow, '    - cron: "17 6 * * 1"', '    - cron: "0 0 * * *"')
+    assert any("required trigger marker missing" in error for error in validate(root))
