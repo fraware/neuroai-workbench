@@ -139,9 +139,38 @@ neuroai-monitor package workspaces/operations refresh-2026-08 \
   --out artifacts/refresh-package-result.json
 ```
 
-## Verification boundary
+## Programme control
 
-The monitoring core has its own per-module coverage floor in addition to the repository-wide coverage gate. CI also exercises the dedicated command surface, package contents, release verifier, Python support matrix, static typing, CodeQL, dependency checks, and container build. Passing those gates establishes software behavior for the tested cases; it does not establish that a retrieved source is authentic, that an extracted claim is true, or that a human adjudication is substantively correct.
+**Control identifier:** NEUROAI-ENG-TAKEOVER-1.0  
+**Governing epic:** [#34](https://github.com/fraware/neuroai-workbench/issues/34)
+
+Named humans retain substantive classification, entity-resolution approval, assessment reopening, and canonical release authority. Automation may schedule, retrieve, preserve, compare, propose, validate, and render only.
+
+Locked decisions:
+
+1. CodeQL Option A: Default Setup disabled; Advanced `.github/workflows/codeql.yml` retained; required check context `codeql`.
+2. Public data repository name: `neuroai-observatory-data` ([ADR-0009](../adr/0009-canonical-data-and-evidence-stores.md)).
+3. One capability per PR; see [public-data-release.md](public-data-release.md) for S2 publication.
+
+Authority exclusions (always stated): no UNESCO endorsement; no regulatory, clinical, or conformance claim from software gates; generated Excel/Word/PDF/dashboard products are views never canonical inputs; absence of evidence is not automatic FAIL.
+
+## Verification gates
+
+### Software gates
+
+- Source-registry schema and semantic validation pass.
+- Capture identifiers remain distinct from content hashes.
+- Repeated unchanged retrievals preserve both capture events and deduplicate bytes.
+- Snapshot manifests and content digests verify.
+- Change candidates never mutate canonical observatory or assessment state.
+- Accepted candidates require explicit human change class, materiality, reopening effect, and rationale.
+- Adjudications and refresh packages are immutable and content-addressed.
+- The monitoring core satisfies its dedicated module coverage floor.
+- Ruff, mypy, Python 3.10–3.14 tests, package verification, release verification, container checks, CodeQL, and dependency controls pass.
+
+### Substantive gates
+
+Software verification does not establish source authenticity, claim truth, scientific validity, regulatory status, clinical safety, conformance, or UNESCO endorsement. A canonical observatory successor still requires reconciliation against the predecessor release and an authorized release decision with named release-authority approval. Issue #10 independent-review tracks remain optional recommended follow-up and do not block AUTHORIZED or PUBLISHED.
 
 ## Authority boundary
 

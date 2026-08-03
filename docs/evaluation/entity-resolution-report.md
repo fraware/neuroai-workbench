@@ -25,3 +25,5 @@ python -c "from pathlib import Path; from neuroai_workbench.entities.benchmark i
 ```
 
 Ops-gated full ≥60 run requires `NEUROAI_OPS_WORKSPACE` and does not commit protected annotations to the software repository.
+
+See also [entities.md](../reference/entities.md).

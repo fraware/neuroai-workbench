@@ -20,4 +20,4 @@ Exportable context is limited to explicitly selected public or synthetic structu
 
 Model-generated candidates do not establish evidence authenticity, scientific validity, legal authorization, clinical safety, deployment readiness, or system conformance.
 
-See also `.cursor/rules/80-model-assistance.mdc`, `docs/reference/extraction.md`, `docs/evaluation/extraction-evaluation.md`, and `docs/evaluation/extraction-preregistration.md`.
+See also `.cursor/rules/80-model-assistance.mdc`, `docs/reference/extraction.md`, and `docs/evaluation/extraction-evaluation.md`.

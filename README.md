@@ -123,13 +123,16 @@ neuroai-workbench bundle workspaces/demo CASE-001 artifacts/CASE-001.zip
 ## Engineering entry points
 
 - [`AGENTS.md`](AGENTS.md) defines mandatory invariants for humans and coding agents.
+- [Documentation map](docs/README.md)
 - [Architecture](docs/architecture/overview.md)
 - [Evidence and decision boundary](docs/governance/evidence-boundary.md)
 - [Threat model](THREAT_MODEL.md)
 - [Data governance](DATA_GOVERNANCE.md)
 - [Contribution protocol](CONTRIBUTING.md)
+- [AI-agent development](docs/operations/ai-agent-development.md)
 - [Release process](docs/operations/release-process.md)
 - [Observatory automation](docs/operations/observatory-automation.md)
+- [Public data release](docs/operations/public-data-release.md)
 - [Static archive to operational programme](docs/architecture/static-to-operational.md)
 
 ## Repository status
