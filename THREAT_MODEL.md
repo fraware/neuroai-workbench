@@ -25,11 +25,13 @@
 14. A model response or human disposition is applied automatically and silently changes the assessment.
 15. A metadata exchange leaks a local path, credential, participant detail, or protected evidence excerpt, or overstates an out-of-band reference as verified receipt.
 16. A discovery query or opt-in network search result is treated as an authorized registry source, or silent in-place registry overwrite bypasses human acceptance and append-only succession.
-17. A stale, malformed, or replaced event lock is treated as valid ownership, or one writer deletes another writer's successor lock.
+17. A stale, malformed, expired, or replaced event lock is treated as valid ownership, or one writer deletes another writer's successor lock.
 18. A trailer sidecar is trusted after historical log replacement or tampering.
 19. A writer crashes after persisting event bytes and before persisting the corresponding trailer.
 20. Evidence registration crashes between object, index, assessment, persistence, and event writes, leaving partial or divergent state.
-21. Recovery overwrites an external change that is outside the recorded predecessor/successor transaction states.
+21. Recovery overwrites an external change outside the recorded predecessor/successor transaction states.
+22. A transaction journal or predecessor/successor snapshot is altered before recovery.
+23. A transaction directory loses its journal and is incorrectly treated as harmless cleanup.
 
 ## Implemented controls
 
@@ -37,11 +39,14 @@
 - No remote JavaScript, CSS, fonts or analytics.
 - Content Security Policy and defensive HTTP headers.
 - Controlled path resolution and case identifiers, including observatory release versions and evidence object basenames via `ensure_identifier` / `safe_join`.
-- Atomic JSON and evidence-object writes.
-- SHA-256 evidence registration and verification that refuses path-escaping index entries and escaping symlinks.
+- Atomic JSON and evidence-object replacement with file `fsync` and POSIX parent-directory `fsync` after replacement.
+- SHA-256 evidence registration and verification that refuses path-escaping index entries, unsafe basenames, digest/suffix mismatches, and escaping symlinks.
 - Hash-chained event logs with durable filesystem coordination:
   - structured ownership records with unique lock identity, host, PID, process-start token, lease expiry, and explicit coordination-only authority;
-  - immediate dead-owner recovery on the same host and lease-expiry recovery for cooperative shared-filesystem writers;
+  - immediate dead-owner recovery on the same host;
+  - retention of a live same-host local owner after lease expiry;
+  - fail-closed treatment of a foreign local-profile lock;
+  - lease-expiry recovery for cooperative shared-filesystem writers;
   - ownership checks that refuse to delete or continue under a replacement lock;
   - append-only event persistence with complete-write handling and `fsync`;
   - content-addressed trailer indexes binding event count, head hash, log extent, final-event position, and file identity;
@@ -49,14 +54,16 @@
   - full-chain fallback and trailer rebuild on missing, stale, malformed, tampered, or identity-mismatched indexes;
   - verified-prefix recovery of complete unindexed events and digest-recorded truncation of incomplete or invalid crash tails.
 - Transactional local evidence registration:
-  - one durable case-level registration lock covering recovery, ID allocation, preparation, durable writes, and commit event;
-  - write-ahead journals with exact predecessor and desired hashes plus temporary recovery snapshots;
-  - idempotent forward completion only when object, index, assessment, and persistence match the complete desired state;
-  - exact predecessor rollback when every current file is a recorded predecessor or successor state;
-  - recovery blocking on any third-state divergence or object digest mismatch;
-  - orphan object deletion only when created by the incomplete transaction and unreferenced by the restored index;
-  - transaction-ID-keyed commit and rollback event markers;
-  - terminal compaction removing staged evidence and before/desired snapshot copies.
+  - one durable case-level registration lock covering recovery, ID allocation, preparation, durable writes, event completion, and terminal journal state;
+  - write-ahead journals with self-hashes, exact predecessor hashes, exact desired hashes, and object-preexistence state;
+  - hash verification of every staged evidence, predecessor, and desired snapshot before application or rollback;
+  - idempotent forward completion only after object, index, assessment, and persistence match the complete desired state;
+  - exact predecessor rollback only after every current file matches a recorded predecessor or successor state;
+  - recovery blocking on journal corruption, snapshot corruption, third-state divergence, or object digest mismatch;
+  - object removal only when the incomplete transaction created the object and the restored index contains no reference;
+  - transaction-ID-keyed `ASSESSMENT_SAVED`, `EVIDENCE_ADDED`, and rollback events;
+  - fail-closed quarantine of journal-less transaction directories with preserved bytes and `UNKNOWN_FAIL_CLOSED` status;
+  - terminal compaction removing staged evidence and predecessor/successor snapshot copies.
 - Schema and semantic validation with explicit `DRAFT_INVALID` / `VALID` persistence labeling.
 - Decision-object separation and explicit result boundaries.
 - Programme-adapter fail-closed mappings for unknown evidence, access, and decision states.
@@ -74,8 +81,10 @@
 
 The application does not authenticate users or reviewers, verify institutional roles, encrypt files, isolate tenants, scan uploads comprehensively, verify signatures, establish source authenticity, or prevent a privileged local actor from replacing an entire workspace and its backups.
 
-Event-chain locking coordinates cooperative writers through filesystem primitives. It is not distributed consensus, Byzantine fault tolerance, or hostile-writer fencing. A writer that ignores the protocol can still corrupt the log or sidecars. Shared-filesystem lease recovery depends on filesystem coherence and bounded clock skew. O(1) indexed-head verification detects current trailer/final-event inconsistency but does not replace periodic full-chain verification for arbitrary historical tampering. Recovery records preserve discarded-byte digests, not the discarded event bytes themselves.
+Event-chain locking coordinates cooperative writers through filesystem primitives. It is not distributed consensus, Byzantine fault tolerance, or hostile-writer fencing. A writer that ignores the protocol can still corrupt the log or sidecars. The shared-filesystem profile depends on filesystem coherence and bounded clock skew. O(1) indexed-head verification detects current trailer/final-event inconsistency but does not replace periodic full-chain verification for arbitrary historical tampering. Recovery records preserve discarded-byte digests, not discarded event bytes.
 
-Evidence journaling coordinates one case on a cooperative filesystem. It does not provide cross-case transactions, remote database isolation, hostile-writer fencing, evidence authentication, legal custody, or disclosure authorization. Active transaction directories temporarily duplicate evidence and assessment state and therefore inherit the case's strongest protection and retention requirements. A `RECOVERY_BLOCKED` journal requires controlled intervention; software deliberately preserves unknown divergent state instead of overwriting it.
+Evidence journaling coordinates one case on a cooperative filesystem. It does not provide cross-case transactions, remote database isolation, hostile-writer fencing, evidence authentication, legal custody, or disclosure authorization. Active transaction directories and journal-less quarantines may contain duplicate evidence and assessment state; they inherit the case's strongest protection, backup, retention, access-control, and incident-response requirements. A `RECOVERY_BLOCKED` journal or `UNKNOWN_FAIL_CLOSED` orphan requires controlled intervention. The software preserves divergent state instead of overwriting it.
+
+File and directory `fsync` reduce crash windows under the operating-system and filesystem guarantees available to the process. Storage-controller caches, hardware faults, network-filesystem semantics, privileged tampering, and incomplete backup sets remain outside those guarantees.
 
 The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Discovery result counts do not prove registry completeness or evidence authenticity. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment, institutional identity, canonical release governance, and direct provider integration require separate architectures and independent review.
