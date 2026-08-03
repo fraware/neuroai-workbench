@@ -18,9 +18,28 @@ The workbench follows data minimisation and federated-evidence principles.
 
 Evidence bytes are content-addressed by SHA-256 and stored under the case directory. Newly registered local files receive `access_state: EVALUATION NOT EXECUTED` and `publication_or_record_state: LOCAL CONTROLLED RECORD` so export and assistance workflows do not treat local bytes as a public extract without an explicit later classification. The workbench provides integrity checks, not encryption or authenticity verification.
 
+### Transaction journal
+
+Local evidence registration uses a case-scoped write-ahead journal under `evidence/transactions/`. During an active transaction, the journal directory temporarily contains:
+
+- one staged copy of the evidence bytes;
+- predecessor and desired copies of the evidence index;
+- predecessor and desired assessment and persistence records when assessment linking is enabled;
+- a transaction metadata record containing hashes, state, actor, and the evidence index record.
+
+These temporary copies exist solely for crash recovery. After `COMMITTED` or `ROLLED_BACK`, the workbench deletes staged evidence and all predecessor/successor snapshot copies. The terminal journal retains hashes, timestamps, transaction status, evidence identifiers, recovery outcome, and the byte-identity boundary.
+
+Transaction directories therefore inherit the same protection, retention, backup, access-control, and incident-response classification as the case evidence and assessment they temporarily duplicate. They must never be exported as public software artifacts or copied into Git.
+
+Recovery follows a fail-closed rule. A transaction may complete forward only when all desired durable hashes match. It may roll back only when every current file matches a recorded predecessor or successor hash. Any third-state divergence is preserved and flagged for intervention instead of being overwritten.
+
+SHA-256 equality establishes byte identity only. It does not authenticate the source, establish lawful custody, prove relevance or completeness, authorize disclosure, or upgrade the substantive status of an evidence record.
+
 ## Deletion and retention
 
 Deletion is an administrative filesystem operation. Secure erasure depends on the storage medium, filesystem, backup system and hosting environment. Institutional deployments must adopt a retention schedule, legal-hold process, backup policy, participant-withdrawal process and destruction verification procedure.
+
+Terminal transaction metadata should follow the case audit-retention schedule. Non-terminal or `RECOVERY_BLOCKED` journals must remain protected until resolution because they may contain temporary state required to preserve or recover the case accurately.
 
 ## Collaborative review records
 
