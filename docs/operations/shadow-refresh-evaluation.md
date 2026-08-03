@@ -145,12 +145,67 @@ Behavior:
 
 Do not commit protected capture bodies, quarantine trees, or ops ZIP extracts into git.
 
+## Wave 2 closure command (ops-gated)
+
+Software/ops steps that do not forge dual-human review completions:
+
+```bash
+export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
+export NEUROAI_LIVE_COLLECTION=1   # required only for HTTP_ERROR retries
+# Quarantine successes must already be APPROVED_FOR_HANDOFF (per-record); this script does not auto-approve.
+python scripts/close_shadow_refresh_43.py --sample-size 5
+```
+
+This writes evaluation-only artifacts under `runs/shadow-refresh-YYYYMM-live/wave2-closure/` (handoff of pre-approved quarantine records only, first-capture candidates, dual-review scaffolding, offline entity/extraction dispositions, `go-no-go-metrics.json`, formal disposition). Public digests/metrics may land in `examples/shadow_refresh/SHADOW_REFRESH_WAVE2_PUBLIC_SUMMARY_v202608.json`. Capture bodies stay in the ops workspace.
+
 ## Residual blockers for closing #43
 
-Observed live cohort collection is scaffolding for evaluation evidence. Closing [#43](https://github.com/fraware/neuroai-workbench/issues/43) still requires:
+Observed live cohort collection and Wave 2 software scaffolding are evaluation evidence only. Closing [#43](https://github.com/fraware/neuroai-workbench/issues/43) still requires:
 
-- dual human review sample recorded against observed captures/candidates;
-- unresolved go/no-go gaps addressed or explicitly withheld;
-- protected archive and network access approvals where applicable (#44).
+- dual human review sample opinions recorded against observed captures/candidates (scaffolding exists; completions must be human);
+- formal `GO` only after dual review (software records `WITHHELD` / `NO_GO` until then);
+- protected archive and network access approvals where applicable (#44);
+- human decisions on unresolved retrieval outcomes (for example ACCESS_DENIAL / URL replacement) without converting them into `FAIL` findings.
 
 Independent security, accessibility, and methodological review (#10) is an optional recommended follow-up for institutional-pilot readiness language. It is not a release blocker for successor `AUTHORIZED` or `PUBLISHED` gates.
+
+## Wave 3 — Non-canonical full evaluation cycle
+
+Extends quarantine-only live collection into a scripted evaluation operating cycle:
+
+```text
+plan → live collect → quarantine → per-record APPROVED_FOR_HANDOFF → --approve-handoff consent → record_snapshot
+  → compare_snapshots → create_change_candidate → adjudicate
+  → build_refresh_candidate → compile_adjudicated_delta → apply_delta (candidate successor)
+  → reopening analysis → depth=full publications
+```
+
+Library: `neuroai_workbench.shadow_refresh.cycle`. Script: `scripts/run_evaluation_cycle.py`.
+
+### Offline (CI-safe, default)
+
+```bash
+python scripts/run_evaluation_cycle.py --mode offline
+python -m pytest tests/unit/test_shadow_evaluation_cycle.py -q
+```
+
+Uses fixture snapshot pairs (no network, no `NEUROAI_LIVE_COLLECTION`). Emits a candidate successor and full-depth publication products under the run output directory. Status remains `SHADOW_EVALUATION_NOT_CANONICAL`.
+
+### Live (ops-gated)
+
+```bash
+export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
+export NEUROAI_LIVE_COLLECTION=1
+# After live collect, approve quarantine records per-record (APPROVED_FOR_HANDOFF), then:
+python scripts/run_evaluation_cycle.py --mode live --approve-handoff --sample-size 5
+```
+
+Requires both env gates plus explicit `--approve-handoff`. That flag consents only to evaluation-only handoff of quarantine records already `APPROVED_FOR_HANDOFF`; it does not auto-approve pending captures. Collector monitoring handoff stays disabled. Capture bodies remain in the ops workspace; do not commit them.
+
+### Boundaries retained
+
+- Per-source outcome taxonomy includes success, 304, changed / no-change, redirect failure, access denial, robots/terms, JS-render, content-type, timeout, withdrawal, and URL replacement needed — typed outcomes only, never automatic `FAIL` findings.
+- Adjudication scaffolding does not forge dual human review or formal `GO`.
+- Candidate successor is not an `AUTHORIZED` / `PUBLISHED` observatory release (#41 remains separate).
+- Reopening analysis does not mutate assessments.
+- CI stays network-free; live path is ops-gated only.
