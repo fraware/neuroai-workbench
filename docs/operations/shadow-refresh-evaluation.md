@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Shadow refresh evaluation rehearses the monitoring, review, and delta workflow on a bounded source cohort without publishing a canonical observatory successor, modifying assessments, or making substantive NeuroAI findings. It validates operations only.
+Shadow refresh evaluation exercises the monitoring, comparison, development-disposition, delta, reopening, and product-generation workflow on a bounded source cohort. It does not publish a canonical observatory successor, modify assessments, or make substantive NeuroAI findings.
 
-Parent epic: [#34](https://github.com/fraware/neuroai-workbench/issues/34). Evaluation issue: [#43](https://github.com/fraware/neuroai-workbench/issues/43).
+Parent epic: [#34](https://github.com/fraware/neuroai-workbench/issues/34). Core evaluation issue: [#43](https://github.com/fraware/neuroai-workbench/issues/43). Deferred governance issue: [#101](https://github.com/fraware/neuroai-workbench/issues/101).
 
 ## Authority boundary
 
@@ -12,10 +12,11 @@ Shadow refresh artifacts are marked `SHADOW_EVALUATION_NOT_CANONICAL`. They do n
 
 - mutate canonical observatory state;
 - reopen or modify assessments automatically;
-- establish regulatory authorization, clinical effectiveness, or conformance;
-- authorize live network retrieval over protected or archive sources without human approval.
+- establish regulatory authorization, clinical effectiveness, conformance, or institutional endorsement;
+- authorize canonical publication;
+- bypass operational authorization for network retrieval, protected archives, licensed evidence, or data export.
 
-Passing go/no-go thresholds in a synthetic or shadow run does not authorize the first canonical successor release.
+Engineering completeness does not authorize the first canonical successor release. Human review, owner sign-off, and release authority are deferred to #101.
 
 ## Protected operations path
 
@@ -30,76 +31,82 @@ Each run directory should contain, at minimum:
 - `freeze-manifest.json` — frozen configuration hashes and cohort reference;
 - `cohort/` — cohort definition copy or content-addressed reference;
 - `captures/` — immutable retrieval records when an approved collector is used;
-- `candidates/` and `adjudications/` — structured review artifacts;
+- `candidates/` — structured comparison candidates;
+- `core-closure/` — typed retrieval outcomes, approved evaluation handoffs, candidate records, and core preparation reports;
 - `refresh-candidate.json` — non-canonical refresh package when applicable;
-- `go-no-go-metrics.json` — computed evaluation metrics;
-- `evaluation-report.md` — human-readable summary and unresolved risks.
+- `evaluation-cycle-package.json` — full non-canonical cycle record;
+- reconciled XLSX, DOCX, PDF, and dashboard products when generated.
 
-Example public scaffolding lives under `examples/shadow_refresh/`. Synthetic fixtures under `tests/fixtures/shadow_refresh/` support schema and metrics stub tests only.
+The current compatibility layer serializes deterministic development dispositions through the monitoring decision-record format used by downstream delta code. Those records carry development-only rationale, `governance_layer_applied=false`, no substantive authority, and no release authority. #101 will add governance as a separate overlay without rewriting these records.
 
-## Development authorization boundary
+Example public scaffolding lives under `examples/shadow_refresh/`. Synthetic fixtures under `tests/fixtures/shadow_refresh/` support schema and engineering tests only.
 
-A live shadow refresh over 20–30 real sources requires explicit human approval before:
+## Operational authorization boundary
+
+A live shadow refresh over real sources requires explicit operator authorization before:
 
 - enabling network collection against non-synthetic URLs;
 - accessing protected programme archives or licensed evidence;
-- exporting draft publication products outside the protected workspace;
-- comparing reopening recommendations against external expert judgment at scale.
+- handing approved quarantine records into the evaluation workspace;
+- exporting draft products outside the protected workspace.
 
-Core software may execute without reviewer profiles or human governance. Protected-data access and explicit quarantine handoff consent remain operational custody controls. Human governance and release authority are deferred to issue #101.
+These are access, custody, and execution controls. They are distinct from reviewer governance. Core software may execute without reviewer profiles, reviewer opinions, owner approval, or release authorization.
 
 ## Cohort definition
 
-Frozen shadow cohorts are **reviewed exact `source_id` manifests**. Regex discovery is an optional helper only and cannot write the freeze artifact.
+Frozen shadow cohorts use exact `source_id` manifests. Regex discovery is an optional helper and cannot write the freeze artifact.
 
-- Synthetic rehearsal fixture: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_v202608.json` (25 synthetic URLs under `https://synthetic.example/neuroai/shadow/...`).
-- Reviewed ops-bound freeze: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_REVIEWED_v202608.json` (25 exact registry IDs with human `coverage_label`, `selection_rationale`, `reviewer`, and `reviewed_at`).
+- Synthetic rehearsal fixture: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_v202608.json`.
+- Ops-bound exact-ID freeze: `examples/shadow_refresh/SHADOW_REFRESH_COHORT_REVIEWED_v202608.json`.
 
-Each member requires `source_id`, `coverage_label` (equal to `cohort_category`), and review provenance. Categories cover:
+The existing 25-source manifest retains its selection provenance and covers:
 
-- PRIMA / Science Corporation (not Meta research pages);
+- PRIMA / Science Corporation;
 - Synchron;
 - Paradromics;
 - Brain2Qwerty;
-- FDA adaptive DBS / neurological regulatory surfaces (not supplier neuromodulation pages);
+- FDA adaptive DBS and neurological regulatory surfaces;
 - BrainGate2 T15 publications and programme sources;
-- registries and EU medical-device sector pages (not mislabeled as SAFETY_SUPPLIER);
+- registries and EU medical-device sector pages;
 - ownership, funding, safety, and supplier-dependency categories.
 
-`run_shadow_refresh.py` loads `--cohort-manifest` (defaulting to the reviewed ops or examples path). Use `--discover-only` to emit non-authoritative regex candidates.
+`run_shadow_refresh.py` loads `--cohort-manifest`, defaulting to the ops or example exact-ID manifest. Use `--discover-only` to emit non-authoritative candidates.
 
 ## Configuration freeze
 
-Before retrieval, record a freeze manifest that captures SHA-256 hashes for:
+Before retrieval, record SHA-256 identities for:
 
 - source monitor registry;
 - monitoring and reopening policies;
 - approved collector configuration;
-- workbench package identity;
+- workbench package;
 - entity-resolution rules;
 - extraction configuration;
-- reviewer roster.
+- development-disposition configuration;
+- governance state, recorded as `DEFERRED` with issue `#101` during core development.
+
+Reviewer rosters and release-authority records are added only by the final governance overlay.
 
 See `examples/shadow_refresh/SHADOW_REFRESH_FREEZE_MANIFEST_v202608.example.json`.
 
-## Go/no-go metrics
+## Core engineering metrics
 
-The metrics schema and `compute_go_no_go_metrics()` stub measure:
+Core execution measures:
 
-- retrieval success and failure rates;
-- unchanged versus changed capture proportions;
-- candidate precision, recall, and unsupported-candidate rate;
-- entity-resolution precision;
-- reviewer agreement and adjudication time;
-- model assistance time saved and errors introduced;
-- reopening precision and false-positive rate;
-- provenance closure;
+- retrieval attempts, successes, and typed failures;
+- unchanged, representation-only, changed, and first-capture outcomes;
+- candidate and development-disposition counts;
+- entity-resolution and extraction disposition counts;
+- delta compilation and deterministic application;
+- predecessor immutability;
+- reopening recommendation counts with zero assessment mutation;
+- provenance closure and manifest integrity;
 - publication reconciliation errors;
 - operational cost by source class.
 
-Threshold defaults live in `DEFAULT_GO_NO_GO_THRESHOLDS`. Recommendations are `GO`, `NO_GO`, or `INCOMPLETE` based on threshold comparison. Synthetic stub output remains non-canonical.
+Candidate precision, recall, reviewer agreement, disagreement, adjudication time, and final release decisions belong to the deferred governance overlay in #101. Existing synthetic go/no-go fixtures remain non-canonical test assets and do not gate core development.
 
-## Commands (scaffolding)
+## Fixture commands
 
 Validate the cohort fixture:
 
@@ -113,20 +120,16 @@ assert not validate_shadow_refresh_cohort(cohort)
 assert not validate_shadow_artifact_status(cohort)
 ```
 
-Compute metrics from synthetic run results:
+Run the full offline engineering cycle:
 
-```python
-from pathlib import Path
-from neuroai_workbench.util import load_json
-from neuroai_workbench.shadow_refresh import compute_go_no_go_metrics
-
-results = load_json(Path("tests/fixtures/shadow_refresh/synthetic_run_results.json"))
-metrics = compute_go_no_go_metrics(results)
+```bash
+python scripts/run_evaluation_cycle.py --mode offline
+python -m pytest tests/unit/test_shadow_evaluation_cycle.py -q
 ```
 
-## Live cohort collection (ops-gated)
+## Live cohort collection
 
-Allowlisted live retrieval over the reviewed 25-source cohort is available only when both gates are set:
+Allowlisted live retrieval over the 25-source exact-ID cohort is available only when both operational gates are set:
 
 ```bash
 export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
@@ -136,31 +139,50 @@ python scripts/run_shadow_refresh.py --live --run-month YYYYMM
 
 Behavior:
 
-- Loads the reviewed exact-ID cohort (never regex freeze).
-- Promotes HTTP `not_due` members into an evaluation due set for one-shot retrieval; `CONTROLLED_LOCAL_INPUT` / `network_access_required=false` stay manual and never enter the HTTP collector.
-- Writes quarantine-only under `runs/shadow-refresh-YYYYMM/captures/quarantine/` in the ops workspace.
-- Emits public summary counts, capture digests (hashes/sizes/status only), and go/no-go metrics.
-- Remains `SHADOW_EVALUATION_NOT_CANONICAL`; monitoring handoff stays disabled; no canonical successor is published.
-- CI stays network-free. The integration test `tests/integration/test_ops_live_cohort.py` skips unless `NEUROAI_LIVE_COLLECTION=1`.
+- loads the exact-ID cohort and never promotes regex discovery into authority;
+- promotes eligible HTTP members into a one-shot evaluation due set;
+- keeps `CONTROLLED_LOCAL_INPUT` and `network_access_required=false` records outside the HTTP collector;
+- writes quarantine-only under `runs/shadow-refresh-YYYYMM/captures/quarantine/`;
+- emits public counts and capture digests without capture bodies;
+- remains `SHADOW_EVALUATION_NOT_CANONICAL`;
+- keeps monitoring handoff disabled;
+- writes no canonical successor;
+- keeps CI network-free.
 
-Do not commit protected capture bodies, quarantine trees, or ops ZIP extracts into git.
+Do not commit protected capture bodies, quarantine trees, ops extracts, or licensed evidence into Git.
 
-## Wave 2 closure command (ops-gated)
+## Core preparation command
 
-Core software/ops preparation without activating the deferred governance layer:
+Prepare typed retrieval outcomes, approved evaluation handoffs, first-capture candidates, and bounded entity/extraction samples without activating governance:
 
 ```bash
 export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
-export NEUROAI_LIVE_COLLECTION=1   # required only for HTTP_ERROR retries
-# Quarantine successes must already be APPROVED_FOR_HANDOFF (per-record); this script does not auto-approve.
+export NEUROAI_LIVE_COLLECTION=1   # required only for live HTTP_ERROR retries
+# Successful quarantine records must already be APPROVED_FOR_HANDOFF.
 python scripts/close_shadow_refresh_43.py --sample-size 5
 ```
 
-This writes evaluation-only artifacts under `runs/shadow-refresh-YYYYMM-live/wave2-closure/` (handoff of pre-approved quarantine records only, first-capture candidates, dual-review scaffolding, offline entity/extraction dispositions, `go-no-go-metrics.json`, formal disposition). Public digests/metrics may land in `examples/shadow_refresh/SHADOW_REFRESH_WAVE2_PUBLIC_SUMMARY_v202608.json`. Capture bodies stay in the ops workspace.
+The script writes under:
+
+```text
+runs/shadow-refresh-202608-live/core-closure/
+```
+
+Expected outputs include:
+
+- `retrieval_outcomes.json`;
+- `evaluation_handoff.json`;
+- `change_candidates.json`;
+- `entity_disposition_sample.json`;
+- `extraction_disposition_sample.json`;
+- `core-preparation-report.json`;
+- `public-core-summary.json`.
+
+It creates no reviewer profiles, opinions, human residual checklist, owner disposition, go/no-go authorization, or canonical release. Capture bodies remain protected.
 
 ## Core completion criteria for #43
 
-Issue #43 now tracks the non-canonical engineering cycle only. Human reviewers, owner sign-off, and release authority are deferred to [#101](https://github.com/fraware/neuroai-workbench/issues/101) and do not block core development.
+Issue #43 tracks the non-canonical engineering cycle only. Human reviewers, owner sign-off, and release authority are deferred to #101 and do not block core development.
 
 Core closure requires:
 
@@ -169,50 +191,49 @@ Core closure requires:
 - snapshot comparison and candidate generation;
 - development-only dispositions sufficient to exercise deterministic downstream mechanics;
 - non-canonical delta compilation and deterministic application;
+- predecessor immutability verification;
 - reopening analysis with zero assessment mutation;
-- full-depth publication generation and cross-format reconciliation;
+- full-depth product generation and cross-format reconciliation;
 - end-to-end provenance, manifests, hashes, and protected-data boundary verification.
 
 Closing #43 does not authorize a canonical successor. All development successors remain non-canonical until #101 is completed.
 
-## Wave 3 — Non-canonical full evaluation cycle
+## Full non-canonical evaluation cycle
 
-Extends quarantine-only live collection into a scripted evaluation operating cycle:
+The core operating sequence is:
 
 ```text
-plan → live collect → quarantine → per-record APPROVED_FOR_HANDOFF → --approve-handoff consent → record_snapshot
+plan → live collect → quarantine → per-record APPROVED_FOR_HANDOFF → explicit handoff consent → record_snapshot
   → compare_snapshots → create_change_candidate → development disposition
-  → build_refresh_candidate → compile_adjudicated_delta → apply_delta (candidate successor)
-  → reopening analysis → depth=full publications
+  → build_refresh_candidate → compile delta → apply delta to a candidate successor
+  → reopening analysis → full-depth products → reconciliation
 ```
 
 Library: `neuroai_workbench.shadow_refresh.cycle`. Script: `scripts/run_evaluation_cycle.py`.
 
-### Offline (CI-safe, default)
+### Offline mode
 
 ```bash
 python scripts/run_evaluation_cycle.py --mode offline
-python -m pytest tests/unit/test_shadow_evaluation_cycle.py -q
 ```
 
-Uses fixture snapshot pairs (no network, no `NEUROAI_LIVE_COLLECTION`). Emits a candidate successor and full-depth publication products under the run output directory. Status remains `SHADOW_EVALUATION_NOT_CANONICAL`.
+Offline mode uses fixture snapshot pairs and opens no network connection. It emits a candidate successor and full-depth products under the run output directory. Status remains `SHADOW_EVALUATION_NOT_CANONICAL`.
 
-### Live (ops-gated)
+### Live mode
 
 ```bash
 export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
 export NEUROAI_LIVE_COLLECTION=1
-# After live collect, approve quarantine records per-record (APPROVED_FOR_HANDOFF), then:
 python scripts/run_evaluation_cycle.py --mode live --approve-handoff --sample-size 5
 ```
 
-Requires both env gates plus explicit `--approve-handoff`. That flag consents only to evaluation-only handoff of quarantine records already `APPROVED_FOR_HANDOFF`; it does not auto-approve pending captures. Collector monitoring handoff stays disabled. Capture bodies remain in the ops workspace; do not commit them.
+Live mode requires both environment gates plus explicit `--approve-handoff`. The flag consents only to evaluation handoff of quarantine records already marked `APPROVED_FOR_HANDOFF`; it does not auto-approve pending captures. Collector monitoring handoff stays disabled.
 
 ### Boundaries retained
 
-- Per-source outcome taxonomy includes success, 304, changed / no-change, redirect failure, access denial, robots/terms, JS-render, content-type, timeout, withdrawal, and URL replacement needed — typed outcomes only, never automatic `FAIL` findings.
+- Typed source outcomes never become automatic `FAIL` findings.
 - Development dispositions exercise deterministic mechanics only and carry no substantive or release authority.
-- Human governance and canonical release authorization are deferred to #101.
-- Candidate successor is not an `AUTHORIZED` / `PUBLISHED` observatory release (#41 remains separate).
+- Candidate successors remain outside `AUTHORIZED` and `PUBLISHED` gates.
 - Reopening analysis does not mutate assessments.
-- CI stays network-free; live path is ops-gated only.
+- Human governance and canonical release authorization remain deferred to #101.
+- CI stays network-free; live paths remain ops-gated.
