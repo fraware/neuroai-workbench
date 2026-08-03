@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "release": "v0.2.1",
+  "status": "BLOCKED_TAG_INTEGRITY",
+  "observed_release_state": "PUBLISHED",
+  "release_url": "https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1",
+  "asset_count": 6,
+  "checks_total": 47,
+  "checks_passed": 46,
+  "checks_failed": 1,
+  "asset_verification": {
+    "exact_inventory": true,
+    "sha256_manifest": true,
+    "github_asset_digests": true,
+    "wheel_identity": true,
+    "source_distribution_identity": true,
+    "spdx_2_3_sbom": true,
+    "release_verification_report": "65/65 PASS",
+    "build_provenance_attestations": "6/6 PASS",
+    "release_notes_authority_boundaries": true
+  },
+  "tag_integrity": {
+    "expected_original_target": "7e60d10271ceba7ec5674bcd9de2d8903947bdf5",
+    "attested_bundle_target": "7e60d10271ceba7ec5674bcd9de2d8903947bdf5",
+    "current_repository_target": "41f39ee938c00bb774c2d4970431bd68ea9b51ab",
+    "attested_tag_object": "6944952c58f3997110d19d5f36ef6df0060660a4",
+    "commits_diverge": true,
+    "failed_check": "Repository tag peels to expected commit"
+  },
+  "repair_attempts": [
+    {
+      "method": "Authenticated GitHub Actions ref restoration from the verified release bundle",
+      "result": "BLOCKED",
+      "error": "GitHub App refused to create or update a ref targeting commits that introduced workflow files without workflow-authoring permission."
+    },
+    {
+      "method": "Narrow force update of the existing v0.2.1 ref without creating a forensic ref",
+      "result": "BLOCKED",
+      "error": "The available Actions credential lacks the workflow-authoring permission needed for the target commit."
+    }
+  ],
+  "required_administrator_action": {
+    "credential": "Repository administrator credential with Contents write and workflow-authoring permission",
+    "operation": "Restore refs/tags/v0.2.1 to annotated tag object 6944952c58f3997110d19d5f36ef6df0060660a4 from the attested neuroai-workbench-v0.2.1.bundle, then rerun scripts/acquire_live_v021_release.py.",
+    "success_condition": "47/47 checks pass and the repository tag peels to 7e60d10271ceba7ec5674bcd9de2d8903947bdf5."
+  },
+  "boundary": "The release is published and its six asset bytes, checksums, package structures, SPDX document, internal verification report, and build-provenance attestations verify. Release completion remains blocked because the repository tag target diverges from the target frozen in the attested bundle and the original release record. This report establishes no scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, official UNESCO status, source authenticity, or lawful evidence custody."
+}
