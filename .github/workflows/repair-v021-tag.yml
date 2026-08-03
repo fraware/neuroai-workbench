@@ -1,0 +1,45 @@
+name: Repair v0.2.1 tag integrity
+
+on:
+  push:
+    branches:
+      - agent/verify-v0.2.1-release
+
+permissions:
+  contents: write
+
+jobs:
+  repair-tag:
+    name: repair-v0.2.1-tag
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Restore existing tag from attested bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          expected='7e60d10271ceba7ec5674bcd9de2d8903947bdf5'
+          displaced='41f39ee938c00bb774c2d4970431bd68ea9b51ab'
+          current=$(git rev-parse 'refs/tags/v0.2.1^{commit}')
+          if [[ "$current" == "$expected" ]]; then
+            exit 0
+          fi
+          test "$current" = "$displaced"
+          mkdir -p "$RUNNER_TEMP/v021-tag-repair"
+          gh release download v0.2.1 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'neuroai-workbench-v0.2.1.bundle' \
+            --dir "$RUNNER_TEMP/v021-tag-repair"
+          bundle="$RUNNER_TEMP/v021-tag-repair/neuroai-workbench-v0.2.1.bundle"
+          git bundle verify "$bundle"
+          git fetch "$bundle" 'refs/tags/v0.2.1:refs/tags/v0.2.1-attested'
+          test "$(git rev-parse 'refs/tags/v0.2.1-attested^{commit}')" = "$expected"
+          attested_object=$(git rev-parse refs/tags/v0.2.1-attested)
+          git update-ref refs/tags/v0.2.1 "$attested_object"
+          git push --force origin refs/tags/v0.2.1
+          test "$(git ls-remote origin refs/tags/v0.2.1 | awk '{print $1}')" = "$attested_object"
