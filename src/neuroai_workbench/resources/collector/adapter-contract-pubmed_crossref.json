@@ -1,0 +1,21 @@
+{
+  "adapter_id": "pubmed_crossref",
+  "completeness": "PARTIAL",
+  "capabilities": [
+    "single_record_fetch",
+    "doi_metadata",
+    "normalized_record"
+  ],
+  "allowed_hosts": [
+    "eutils.ncbi.nlm.nih.gov",
+    "pubmed.ncbi.nlm.nih.gov",
+    "www.ncbi.nlm.nih.gov",
+    "api.crossref.org"
+  ],
+  "source_classes": [
+    "PEER_REVIEWED_PRIMARY_CLINICAL_STUDY",
+    "OFFICIAL_BIBLIOGRAPHIC_METADATA",
+    "PUBLICATION_RECORD"
+  ],
+  "boundary": "Retrieves selected PubMed/PMC E-utilities or Crossref DOI metadata payloads when an explicit PMID, PMCID, or DOI is present. Does not establish publication authenticity beyond retrieved metadata bytes, and does not imply literature-corpus completeness."
+}

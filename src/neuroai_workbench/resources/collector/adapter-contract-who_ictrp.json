@@ -1,0 +1,8 @@
+{
+  "adapter_id": "who_ictrp",
+  "completeness": "SCAFFOLD_NOT_COMPLETE",
+  "capabilities": ["stub_only"],
+  "allowed_hosts": ["trialsearch.who.int"],
+  "source_classes": ["WHO_ICTRP_RECORD"],
+  "boundary": "Scaffold only. WHO ICTRP structured retrieval is not implemented. Live collection through this adapter is refused. Respect ToS and rate limits before any future ops-gated implementation."
+}

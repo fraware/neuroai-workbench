@@ -1,0 +1,18 @@
+{
+  "adapter_id": "clinicaltrials_gov",
+  "completeness": "PARTIAL",
+  "capabilities": [
+    "single_record_fetch",
+    "search_query",
+    "pagination",
+    "field_level_change",
+    "normalized_record"
+  ],
+  "allowed_hosts": ["clinicaltrials.gov"],
+  "source_classes": [
+    "CLINICAL_TRIAL_REGISTRY",
+    "OFFICIAL_TRIAL_REGISTRY",
+    "OFFICIAL_TRIAL_PAGE"
+  ],
+  "boundary": "Retrieves selected ClinicalTrials.gov API study or search payloads only. Page capture is not registry completeness. Field digests detect byte-stable field change only and do not establish clinical truth."
+}

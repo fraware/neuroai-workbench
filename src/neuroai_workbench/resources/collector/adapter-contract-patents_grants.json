@@ -1,0 +1,8 @@
+{
+  "adapter_id": "patents_grants",
+  "completeness": "SCAFFOLD_NOT_COMPLETE",
+  "capabilities": ["stub_only"],
+  "allowed_hosts": ["ops.epo.org", "api.reporter.nih.gov"],
+  "source_classes": ["PATENT_OR_GRANT_RECORD"],
+  "boundary": "Scaffold only. EPO OPS / NIH RePORTER streams are not implemented. Live collection through this adapter is refused."
+}

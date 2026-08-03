@@ -1,0 +1,8 @@
+{
+  "adapter_id": "eu_ctis",
+  "completeness": "SCAFFOLD_NOT_COMPLETE",
+  "capabilities": ["stub_only"],
+  "allowed_hosts": ["euclinicaltrials.eu"],
+  "source_classes": ["EU_CTIS_RECORD"],
+  "boundary": "Scaffold only. EU CTIS structured retrieval is not implemented. Live collection through this adapter is refused."
+}
