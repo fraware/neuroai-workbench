@@ -3,10 +3,16 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
+import sys
 import tarfile
+import warnings
 import zipfile
 from pathlib import Path
 
+import pytest
+
+from scripts import acquire_live_v021_release
 from scripts import verify_github_release_assets as release_audit
 
 TAG = "v0.2.1"
@@ -40,8 +46,15 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict, dict, dict]:
     _write_wheel(assets / "neuroai_workbench-0.2.1-py3-none-any.whl")
     _write_sdist(assets / "neuroai_workbench-0.2.1.tar.gz")
     (assets / "neuroai-workbench-v0.2.1.bundle").write_bytes(b"synthetic bundle")
-    (assets / "sbom.cdx.json").write_text(
-        json.dumps({"bomFormat": "CycloneDX", "specVersion": "1.6", "components": [{"name": "jsonschema"}]}),
+    (assets / "SBOM.spdx.json").write_text(
+        json.dumps(
+            {
+                "spdxVersion": "SPDX-2.3",
+                "dataLicense": "CC0-1.0",
+                "SPDXID": "SPDXRef-DOCUMENT",
+                "packages": [{"name": "neuroai-workbench"}, {"name": "jsonschema"}],
+            }
+        ),
         encoding="utf-8",
     )
     (assets / "RELEASE_VERIFICATION.json").write_text(
@@ -56,8 +69,8 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict, dict, dict]:
         ),
         encoding="utf-8",
     )
-    checksummed = sorted(release_audit._expected_assets(VERSION) - {"SHA256SUMS"})
-    (assets / "SHA256SUMS").write_text(
+    checksummed = sorted(release_audit._expected_assets(VERSION) - {"SHA256SUMS.txt"})
+    (assets / "SHA256SUMS.txt").write_text(
         "".join(f"{_sha(assets / name)}  {name}\n" for name in checksummed),
         encoding="utf-8",
     )
@@ -104,10 +117,10 @@ def test_complete_release_audit_passes(tmp_path, monkeypatch):
     assert report["observed_release_state"] == "PUBLISHED"
 
 
-def test_tampered_asset_fails_checksum_and_github_digest(tmp_path, monkeypatch):
+def test_tampered_asset_fails_checksum_github_digest_and_spdx(tmp_path, monkeypatch):
     assets, release, tag, attestations = _fixture(tmp_path)
     monkeypatch.setattr(release_audit, "_bundle_commit", lambda bundle, tag: (True, COMMIT, "synthetic"))
-    (assets / "sbom.cdx.json").write_text("{}", encoding="utf-8")
+    (assets / "SBOM.spdx.json").write_text("{}", encoding="utf-8")
     report = release_audit.audit(
         assets_dir=assets,
         release=release,
@@ -118,9 +131,9 @@ def test_tampered_asset_fails_checksum_and_github_digest(tmp_path, monkeypatch):
         require_published=True,
     )
     failed = {item["name"] for item in report["checks"] if item["status"] == "FAIL"}
-    assert "Checksum sbom.cdx.json" in failed
-    assert "GitHub asset digest sbom.cdx.json" in failed
-    assert "CycloneDX format identity" in failed
+    assert "Checksum SBOM.spdx.json" in failed
+    assert "GitHub asset digest SBOM.spdx.json" in failed
+    assert "SPDX format identity" in failed
 
 
 def test_missing_attestation_fails_inventory_and_asset_check(tmp_path, monkeypatch):
@@ -187,3 +200,31 @@ def test_release_verification_claim_drift_is_rejected(tmp_path, monkeypatch):
     failed = {item["name"] for item in report["checks"] if item["status"] == "FAIL"}
     assert "Release verification checks all pass" in failed
     assert "Release verification preserves withheld claims" in failed
+
+
+def test_live_v021_release_and_attestations():
+    if os.getenv("GITHUB_ACTIONS") != "true":
+        pytest.skip("live release audit runs only in GitHub Actions")
+    if os.getenv("GITHUB_HEAD_REF") != "agent/verify-v0.2.1-release":
+        pytest.skip("live release audit is restricted to the dedicated verification branch")
+    if sys.version_info[:2] != (3, 13):
+        pytest.skip("live release audit executes once on Python 3.13")
+
+    try:
+        report = acquire_live_v021_release.acquire_and_audit()
+    except Exception as exc:  # noqa: BLE001 - audit boundary converts acquisition failures into evidence
+        report = {
+            "schema_version": 1,
+            "release": TAG,
+            "status": "FAIL",
+            "checks_total": 1,
+            "checks_passed": 0,
+            "checks_failed": 1,
+            "checks": [{"name": "Live acquisition", "status": "FAIL", "detail": str(exc)}],
+        }
+    warnings.warn(
+        "LIVE_V021_AUDIT_JSON=" + json.dumps(report, ensure_ascii=False, separators=(",", ":")),
+        UserWarning,
+        stacklevel=1,
+    )
+    assert report["status"] == "PASS", json.dumps(report, ensure_ascii=False, indent=2)
