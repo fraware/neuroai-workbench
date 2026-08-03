@@ -5,6 +5,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any, cast
 
+from .corpus_scale import filter_corpus_by_partition, load_public_scale_corpus
 from .resolver import propose_resolution
 
 BENCHMARK_RESOURCE = "neuroai_workbench.resources.entities"
@@ -40,6 +41,27 @@ def load_benchmark_document(path: Path | None = None) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError("Benchmark document must be an object")
     return cast(dict[str, Any], payload)
+
+
+def _observed_entity_id(proposal: dict[str, Any]) -> str | None:
+    """Resolve the single observed entity id from proposal candidates when unambiguous."""
+    direct = proposal.get("entity_id")
+    if isinstance(direct, str) and direct:
+        return direct
+    candidates = proposal.get("candidate_entity_ids") or []
+    if isinstance(candidates, list) and len(candidates) == 1 and isinstance(candidates[0], str):
+        return candidates[0]
+    return None
+
+
+def _observed_candidate_ids(proposal: dict[str, Any]) -> list[str]:
+    candidates = proposal.get("candidate_entity_ids")
+    if isinstance(candidates, list):
+        return [str(item) for item in candidates if isinstance(item, str)]
+    legacy = proposal.get("candidates")
+    if isinstance(legacy, list):
+        return [str(item.get("entity_id")) for item in legacy if isinstance(item, dict) and item.get("entity_id")]
+    return []
 
 
 def _annotation_metrics(results: list[dict[str, Any]]) -> dict[str, Any]:
@@ -117,9 +139,14 @@ def run_blinded_benchmark(
     *,
     actor: str = "benchmark-runner",
     benchmark_path: Path | None = None,
+    partition: str | None = None,
+    use_public_scale: bool = False,
 ) -> dict[str, Any]:
     """Run blinded resolution benchmark cases against a prepared workspace."""
-    stub = load_benchmark_document(benchmark_path)
+    if use_public_scale and benchmark_path is not None:
+        raise ValueError("Provide either benchmark_path or use_public_scale, not both")
+    stub = load_public_scale_corpus() if use_public_scale else load_benchmark_document(benchmark_path)
+    stub = filter_corpus_by_partition(stub, partition)
     cases = stub.get("cases")
     if not isinstance(cases, list):
         raise ValueError("Blinded benchmark missing cases array")
@@ -145,29 +172,30 @@ def run_blinded_benchmark(
             identifier_value=cast(str | None, case_input.get("identifier_value")),
             actor=actor,
         )
+        observed_entity = _observed_entity_id(proposal)
+        observed_candidates = _observed_candidate_ids(proposal)
         checks = {
             "resolution_state": proposal["resolution_state"] == expected.get("resolution_state"),
             "match_layer": proposal["match_layer"] == expected.get("match_layer"),
             "auto_confirmed": proposal["auto_confirmed"] is expected.get("auto_confirmed"),
         }
-        if "entity_id" in expected:
-            checks["entity_id"] = proposal.get("entity_id") == expected.get("entity_id")
+        if "entity_id" in expected and expected.get("abstain") is not True:
+            checks["entity_id"] = observed_entity == expected.get("entity_id")
         case_passed = all(checks.values())
         if case_passed:
             passed += 1
         results.append(
             {
                 "case_id": case_id,
+                "partition": case_input.get("partition"),
                 "passed": case_passed,
                 "expected": expected,
                 "observed": {
                     "resolution_state": proposal["resolution_state"],
                     "match_layer": proposal["match_layer"],
                     "auto_confirmed": proposal["auto_confirmed"],
-                    "entity_id": proposal.get("entity_id"),
-                    "candidate_entity_ids": [
-                        item.get("entity_id") for item in proposal.get("candidates", []) if isinstance(item, dict)
-                    ],
+                    "entity_id": observed_entity,
+                    "candidate_entity_ids": observed_candidates,
                 },
                 "checks": checks,
             }
@@ -187,8 +215,10 @@ def run_blinded_benchmark(
         "abstention_count": annotation_metrics["abstention_count"],
         "false_merge_count": annotation_metrics["false_merge_count"],
         "false_split_count": annotation_metrics["false_split_count"],
+        "annotated_cases": annotation_metrics["annotated_cases"],
         "note": (
-            "Measured precision/recall from annotated expected.entity_id / abstain labels."
+            "Measured precision/recall/false-merge/false-split/abstention from annotated "
+            "expected.entity_id / abstain labels."
             if has_annotations
             else "Precision and recall require annotated expected.entity_id fields; case pass rate only otherwise."
         ),
@@ -198,6 +228,8 @@ def run_blinded_benchmark(
         "version": stub.get("version", "1.0"),
         "blinding": stub.get("blinding"),
         "status": stub.get("status"),
+        "active_partition": stub.get("active_partition"),
+        "partitions": stub.get("partitions"),
         "passed": passed == total and total > 0,
         "counts": {"passed": passed, "failed": total - passed, "total": total},
         "metrics": metrics,
@@ -205,6 +237,7 @@ def run_blinded_benchmark(
         "cases": results,
         "boundary": (
             "Benchmark outcomes are engineering behavioral checks. "
-            "They do not establish substantive entity-resolution accuracy, regulatory authorization, or conformance."
+            "They do not establish substantive entity-resolution accuracy, regulatory authorization, or conformance. "
+            "Non-exact matches still require human confirmation."
         ),
     }
