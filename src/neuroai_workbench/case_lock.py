@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Cooperative filesystem serialization for one mutable case boundary."""
+
+from __future__ import annotations
 
 from collections.abc import Iterator
 from contextlib import contextmanager
