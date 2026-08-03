@@ -38,6 +38,48 @@ def test_default_offline_evaluation_includes_replay_primary_lane() -> None:
     assert "aggregate score" in report["selection_refused_reason"]
 
 
+def test_scale_corpus_ge150_and_contract_evaluation() -> None:
+    from neuroai_workbench.extraction import (
+        load_scale_benchmark_manifest,
+        load_scale_corpus,
+        run_scale_corpus_evaluation,
+        validate_benchmark_manifest,
+    )
+
+    corpus = load_scale_corpus()
+    assert corpus["case_count"] >= 150
+    assert corpus["evaluation_lanes"]["primary"] == "captured-response-replay"
+    assert corpus["evaluation_lanes"]["contract_label"] == "CONTRACT_FIXTURE_NON_ACCURACY"
+    for required in ("REGULATORY_RECORD", "CLINICAL_TRIAL", "PUBLICATION", "COMPANY_ANNOUNCEMENT"):
+        assert corpus["category_counts"].get(required, 0) >= 20
+
+    manifest = load_scale_benchmark_manifest()
+    validation = validate_benchmark_manifest(manifest)
+    assert validation["valid"] is True
+    assert len(manifest["fixtures"]) >= 150
+
+    report = run_scale_corpus_evaluation()
+    assert report["fixture_count"] >= 150
+    assert report["selection_refused"] is True
+    assert report["primary_accuracy_lane"] == "captured-response-replay"
+    assert report["contract_lane_label"] == "CONTRACT_FIXTURE_NON_ACCURACY"
+    assert len(report["config_results"]) == 2
+    for result in report["config_results"]:
+        assert result["aggregate_metrics"]["field_precision"] is not None
+        assert result["aggregate_metrics"]["citation_accuracy"] is not None
+
+
+def test_scale_corpus_virtual_stub_resolution() -> None:
+    from neuroai_workbench.extraction import load_fixture_stub, load_scale_benchmark_manifest
+
+    manifest = load_scale_benchmark_manifest()
+    virtual = next(item for item in manifest["fixtures"] if str(item["capture_stub"]).startswith("corpus:"))
+    capture = load_fixture_stub(str(virtual["capture_stub"]))
+    annotation = load_fixture_stub(str(virtual["annotation_stub"]))
+    assert capture["public_text"]
+    assert annotation["fixture_id"] == virtual["fixture_id"]
+
+
 def test_baseline_and_conservative_profiles_differ_on_contradictory_fixture() -> None:
     manifest = load_benchmark_manifest()
     fake = _fake_offline_configs()

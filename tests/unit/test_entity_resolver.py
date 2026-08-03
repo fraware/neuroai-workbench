@@ -139,6 +139,42 @@ def test_public_annotated_subset_loads_and_runs_metrics(tmp_path: Path) -> None:
     assert "human confirmation" in report["boundary"].lower() or "do not establish" in report["boundary"].lower()
 
 
+def test_public_scale_corpus_ge200_with_frozen_partitions(tmp_path: Path) -> None:
+    from neuroai_workbench.entities import load_public_scale_corpus
+    from neuroai_workbench.entities.corpus_scale import build_public_scale_document
+
+    corpus = load_public_scale_corpus()
+    assert corpus["case_count"] >= 200
+    assert len(corpus["cases"]) >= 200
+    assert corpus["partitions"]["frozen"] is True
+    assert corpus["partitions"]["counts"] == {"train": 140, "dev": 30, "test": 30}
+    regenerated = build_public_scale_document()
+    assert [case["case_id"] for case in regenerated["cases"]] == [case["case_id"] for case in corpus["cases"]]
+
+    workspace = seed_entity_workspace(tmp_path)
+    full = run_blinded_benchmark(workspace, actor="tester", use_public_scale=True)
+    assert full["counts"]["total"] >= 200
+    assert full["metrics"]["annotated_cases"] > 0
+    assert full["metrics"]["precision"] is not None
+    assert full["metrics"]["recall"] is not None
+    assert "false_merge_count" in full["metrics"]
+    assert "false_split_count" in full["metrics"]
+    assert "abstention_count" in full["metrics"]
+
+    train = run_blinded_benchmark(workspace, actor="tester", use_public_scale=True, partition="train")
+    dev = run_blinded_benchmark(workspace, actor="tester", use_public_scale=True, partition="dev")
+    test = run_blinded_benchmark(workspace, actor="tester", use_public_scale=True, partition="test")
+    assert train["counts"]["total"] == 140
+    assert dev["counts"]["total"] == 30
+    assert test["counts"]["total"] == 30
+    assert train["active_partition"] == "train"
+
+
+def test_blinded_stub_remains_five_cases() -> None:
+    stub = load_blinded_benchmark_stub()
+    assert len(stub["cases"]) == 5
+
+
 def test_blinded_benchmark_runs_on_synthetic_workspace(tmp_path: Path) -> None:
     workspace = seed_entity_workspace(tmp_path)
     report = run_blinded_benchmark(workspace, actor="tester")
