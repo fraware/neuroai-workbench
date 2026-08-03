@@ -10,13 +10,18 @@ from .util import ensure_identifier
 
 
 def case_mutation_lock_path(case_path: Path) -> Path:
+    """Return a stable lock path outside the mutable case directory."""
     case_id = ensure_identifier(case_path.name, "case ID")
     return case_path.parent / ".case-locks" / f"{case_id}.lock"
 
 
 @contextmanager
 def case_mutation_lock(case_path: Path) -> Iterator[dict[str, Any]]:
-    """Serialize cooperative writes that change one case or its event history."""
+    """Serialize cooperative case writes, snapshots, registration, and deletion.
+
+    The external lock remains present if the case directory is deleted, so an
+    active owner cannot lose exclusion through deletion of the protected tree.
+    """
     with _exclusive_lock(case_mutation_lock_path(case_path), profile=LOCK_PROFILE_LOCAL) as owner:
         yield owner
 
