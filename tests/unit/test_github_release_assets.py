@@ -17,7 +17,7 @@ from scripts import verify_github_release_assets as release_audit
 
 TAG = "v0.2.1"
 VERSION = "0.2.1"
-COMMIT = "7e60d1051a0a6a6178b7d5c39deac0b02270296d"
+COMMIT = "7e60d10271ceba7ec5674bcd9de2d8903947bdf5"
 
 
 def _write_wheel(path: Path) -> None:
