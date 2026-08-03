@@ -23,23 +23,41 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
-      - name: Correct required-role substitution fixture
+      - name: Add fail-closed validation coverage
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          path = Path("tests/unit/test_governance_scope.py")
-          text = path.read_text(encoding="utf-8")
-          old = '''    manifest["objects"][0]["role"] = "DELTA"\n    manifest["objects"][0]["object_type"] = "RELEASE"\n'''
-          new = '''    predecessor = next(item for item in manifest["objects"] if item["role"] == "PREDECESSOR_RELEASE")\n    predecessor["role"] = "DELTA"\n    predecessor["object_type"] = "RELEASE"\n'''
+          source = Path("src/neuroai_workbench/governance_scope.py")
+          text = source.read_text(encoding="utf-8")
+          old = '''    pure = PurePosixPath(locator)\n    if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):\n        raise ValueError("Governance scope locator must be a normalized relative POSIX path")\n'''
+          new = '''    pure = PurePosixPath(locator)\n    if (\n        pure.is_absolute()\n        or pure.as_posix() != locator\n        or any(part in {"", ".", ".."} for part in pure.parts)\n    ):\n        raise ValueError("Governance scope locator must be a normalized relative POSIX path")\n'''
           if text.count(old) != 1:
-              raise SystemExit("expected governance role-substitution fixture was not found exactly once")
-          path.write_text(text.replace(old, new), encoding="utf-8")
+              raise SystemExit("expected locator-validation block was not found exactly once")
+          source.write_text(text.replace(old, new), encoding="utf-8")
+
+          tests = Path("tests/unit/test_governance_scope.py")
+          test_text = tests.read_text(encoding="utf-8")
+          marker = "def test_extended_fail_closed_validation_paths"
+          if marker not in test_text:
+              test_text += '''\n\ndef test_extended_fail_closed_validation_paths(tmp_path: Path) -> None:\n    _, roots, bindings, result = _record(tmp_path)\n    manifest = result["manifest"]\n    path = tmp_path / "fixture.json"\n    atomic_write_json(path, {"fixture": True})\n\n    with pytest.raises(ValueError, match="Unsupported governance scope role"):\n        scope_object_for_path(\n            role="UNKNOWN",\n            label="Unknown",\n            object_type="DELTA",\n            path=path,\n            storage_boundary="GENERATED_OUTPUT",\n            boundary_root=tmp_path,\n        )\n    with pytest.raises(ValueError, match="identify a file below"):\n        scope_object_for_path(\n            role="DELTA",\n            label="Delta",\n            object_type="DELTA",\n            path=path,\n            storage_boundary="GENERATED_OUTPUT",\n            boundary_root=path,\n        )\n\n    mutations = [\n        ("sha256", "invalid"),\n        ("storage_boundary", "UNKNOWN"),\n        ("locator", ""),\n        ("locator", "protected-ref:leak"),\n        ("locator", "nested\\\\object.json"),\n        ("locator", "nested//object.json"),\n    ]\n    for field, value in mutations:\n        candidate = json.loads(json.dumps(manifest))\n        target = next(item for item in candidate["objects"] if item["role"] == "WITHHELD_CLAIMS")\n        target[field] = value\n        candidate["manifest_sha256"] = _hash_record(candidate)\n        report = verify_governance_scope_manifest(\n            candidate,\n            boundary_roots=roots,\n            protected_bindings=bindings,\n        )\n        assert report["valid"] is False\n        assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)\n\n    report = verify_governance_scope_manifest(\n        manifest,\n        boundary_roots={"PUBLIC_GIT": roots["PUBLIC_GIT"], "ARCHIVE": roots["ARCHIVE"]},\n        protected_bindings=bindings,\n    )\n    assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)\n    assert any("No verification root supplied" in error.get("message", "") for error in report["errors"])\n\n    malformed = json.loads(json.dumps(manifest))\n    malformed["objects"] = {}\n    malformed["manifest_sha256"] = _hash_record(malformed)\n    report = verify_governance_scope_manifest(malformed, boundary_roots=roots, protected_bindings=bindings)\n    assert "REQUIRED_ROLES_MISSING" in _error_codes(report)\n\n    non_object = json.loads(json.dumps(manifest))\n    non_object["objects"][0] = "invalid-object-reference"\n    non_object["manifest_sha256"] = _hash_record(non_object)\n    report = verify_governance_scope_manifest(non_object, boundary_roots=roots, protected_bindings=bindings)\n    assert "OBJECT_REFERENCE_INVALID" in _error_codes(report)\n\n    unsupported = json.loads(json.dumps(manifest))\n    target = next(item for item in unsupported["objects"] if item["role"] == "WITHHELD_CLAIMS")\n    target["role"] = "UNKNOWN"\n    unsupported["manifest_sha256"] = _hash_record(unsupported)\n    report = verify_governance_scope_manifest(unsupported, boundary_roots=roots, protected_bindings=bindings)\n    assert "UNSUPPORTED_OBJECT_ROLE" in _error_codes(report)\n\n\ndef test_invalid_record_non_object_file_and_corrupt_event_log(tmp_path: Path) -> None:\n    workspace = _workspace(tmp_path)\n    roots, bindings, objects = _artifacts(tmp_path)\n    with pytest.raises(ValueError, match="failed verification"):\n        record_governance_scope_manifest(\n            workspace,\n            scope_label="Incomplete scope",\n            objects=[item for item in objects if item["role"] != "PREDECESSOR_RELEASE"],\n            boundary_roots=roots,\n            protected_bindings=bindings,\n        )\n\n    scopes = workspace.root / "governance" / "scopes"\n    scopes.mkdir(parents=True, exist_ok=True)\n    atomic_write_json(scopes / "non-object.json", ["ignored non-object record"] )\n    assert load_governance_scope_manifests(workspace) == []\n\n    result = record_governance_scope_manifest(\n        workspace,\n        scope_label="Valid scope",\n        objects=objects,\n        boundary_roots=roots,\n        protected_bindings=bindings,\n    )\n    assert result["verification"]["valid"] is True\n    (workspace.root / "events.jsonl").write_text("{invalid-json\\n", encoding="utf-8")\n    report = verify_governance_scope_records(\n        workspace,\n        boundary_roots=roots,\n        protected_bindings=bindings,\n    )\n    assert report["valid"] is False\n    assert any("event log load failed" in error for error in report["errors"])\n'''
+          tests.write_text(test_text, encoding="utf-8")
+
+          coverage = Path("scripts/check_module_coverage.py")
+          coverage_text = coverage.read_text(encoding="utf-8")
+          old_floor = '    "neuroai_workbench/independent_review.py": 95.0,\n'
+          new_floor = old_floor + '    "neuroai_workbench/governance_scope.py": 95.0,\n'
+          if new_floor not in coverage_text:
+              if coverage_text.count(old_floor) != 1:
+                  raise SystemExit("independent-review coverage floor anchor was not found exactly once")
+              coverage_text = coverage_text.replace(old_floor, new_floor)
+          coverage.write_text(coverage_text, encoding="utf-8")
           PY
-      - run: python -m ruff format src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py
+      - run: python -m ruff format src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py scripts/check_module_coverage.py
       - run: python -m ruff format --check .
       - run: python -m ruff check .
-      - name: Commit exact correction and formatter output
+      - run: python -m pytest tests/unit/test_governance_scope.py --cov=neuroai_workbench.governance_scope --cov-report=term-missing --cov-fail-under=95
+      - name: Commit validation and coverage changes
         run: |
           if git diff --quiet; then
             echo "No changes required."
@@ -47,6 +65,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py
-          git commit -m "Correct governance scope adversarial fixture"
+          git add src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py scripts/check_module_coverage.py
+          git commit -m "Enforce governance scope validation coverage"
           git push origin HEAD:agent/governance-scope-binding
