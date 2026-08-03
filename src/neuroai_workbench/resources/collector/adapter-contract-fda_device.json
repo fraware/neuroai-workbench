@@ -1,0 +1,17 @@
+{
+  "adapter_id": "fda_device",
+  "completeness": "PARTIAL",
+  "capabilities": [
+    "single_record_fetch",
+    "pathway_linkage",
+    "normalized_record"
+  ],
+  "allowed_hosts": ["api.fda.gov", "www.accessdata.fda.gov", "accessdata.fda.gov"],
+  "source_classes": [
+    "REGULATORY_RECORD",
+    "OFFICIAL_COMPANY_REGULATORY_ANNOUNCEMENT",
+    "OFFICIAL_COMPANY_US_REGULATORY_ANNOUNCEMENT",
+    "COMPANY_REGULATORY_ANNOUNCEMENT"
+  ],
+  "boundary": "Retrieves selected openFDA device pathway payloads (510k/De Novo/PMA/HDE) when an explicit identifier is present. Does not imply completeness of the adverse-event or recall universe."
+}

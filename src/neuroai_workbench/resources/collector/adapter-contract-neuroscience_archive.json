@@ -1,0 +1,8 @@
+{
+  "adapter_id": "neuroscience_archive",
+  "completeness": "SCAFFOLD_NOT_COMPLETE",
+  "capabilities": ["stub_only"],
+  "allowed_hosts": ["api.dandiarchive.org", "openneuro.org", "physionet.org"],
+  "source_classes": ["NEUROSCIENCE_DATASET_RECORD"],
+  "boundary": "Scaffold only. DANDI / OpenNeuro / PhysioNet dataset adapters are not implemented. Live collection through this adapter is refused. Never commit private neural data."
+}

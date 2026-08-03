@@ -1,0 +1,8 @@
+{
+  "adapter_id": "fda_recall",
+  "completeness": "SCAFFOLD_NOT_COMPLETE",
+  "capabilities": ["stub_only"],
+  "allowed_hosts": ["api.fda.gov"],
+  "source_classes": ["FDA_RECALL_RECORD"],
+  "boundary": "Scaffold only. Device enforcement/recall retrieval is not implemented. Live collection through this adapter is refused."
+}
