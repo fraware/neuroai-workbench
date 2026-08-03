@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/governance-scope-manifest-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scope_id",
+    "scope_label",
+    "created_at",
+    "created_by",
+    "objects",
+    "release_authorization_performed",
+    "authority_profile",
+    "boundary",
+    "manifest_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1"},
+    "scope_id": {"type": "string", "pattern": "^GOVSCOPE-[0-9a-f]{32}$"},
+    "scope_label": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "minLength": 10},
+    "created_by": {"type": "string", "minLength": 1},
+    "objects": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "label",
+          "object_type",
+          "sha256",
+          "storage_boundary",
+          "locator"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "enum": [
+              "PREDECESSOR_RELEASE",
+              "SUCCESSOR_CANDIDATE",
+              "DELTA",
+              "REOPENING_REGISTER",
+              "PRODUCT_MANIFEST",
+              "WITHHELD_CLAIMS",
+              "CORE_CYCLE_EXECUTION"
+            ]
+          },
+          "label": {"type": "string", "minLength": 1},
+          "object_type": {
+            "enum": [
+              "RELEASE",
+              "SUCCESSOR_CANDIDATE",
+              "DELTA",
+              "REOPENING_REGISTER",
+              "PRODUCT_MANIFEST",
+              "CLAIM_SET",
+              "CORE_CYCLE_EXECUTION"
+            ]
+          },
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "storage_boundary": {
+            "enum": ["PUBLIC_GIT", "GENERATED_OUTPUT", "PROTECTED_WORKSPACE", "ARCHIVE"]
+          },
+          "locator": {"type": "string", "minLength": 1},
+          "media_type": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "release_authorization_performed": {"const": false},
+    "authority_profile": {"const": "SCOPE_INTEGRITY_ONLY"},
+    "boundary": {"type": "string", "minLength": 1},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
