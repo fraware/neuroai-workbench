@@ -2,6 +2,9 @@
 # Does not include the local neuroai-workbench package; install that with --no-deps -e .
 # Pin Linux/Windows/older-Python transitive backends so Windows-compiled hashes still
 # install across the CI matrix (3.10-3.14).
+# Product extras (openpyxl / python-docx / reportlab) stay optional for end users via
+# [project.optional-dependencies] products; CI pins them here so native XLSX/DOCX/PDF
+# paths are exercised under hashed installs.
 SecretStorage>=3.2,<4
 jeepney>=0.6,<1
 backports.tarfile>=1.2,<2
@@ -18,3 +21,6 @@ pytest>=9.0,<10
 pytest-cov>=7,<8
 ruff>=0.12,<1
 twine>=6.1,<8
+openpyxl>=3.1,<4
+python-docx>=1.1,<2
+reportlab>=4.2,<6
