@@ -1,0 +1,784 @@
+"""Wave 2 shadow-refresh closure helpers for issue #43.
+
+Automates software/ops steps that do not require forged dual-human review
+signatures. Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Unresolved
+network access is recorded as typed outcomes, never as FAIL findings.
+"""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+from typing import Any
+
+from ..collector.handoff import (
+    HandoffBlockedError,
+    load_collection_result,
+    load_quarantine_record,
+    prepare_monitoring_handoff,
+)
+from ..entities import initialize_registry, propose_resolution, record_resolution_disposition
+from ..extraction.disposition import (
+    dispose_extraction_response,
+    record_extraction_request,
+    record_extraction_response,
+)
+from ..extraction.evaluation import build_extraction_request_from_capture
+from ..extraction.providers import (
+    ExtractionProviderConfig,
+    FAKE_OFFLINE_PROVIDER_ID,
+    new_request_id,
+    resolve_provider,
+)
+from ..monitoring import (
+    create_change_candidate,
+    initialize_monitoring,
+    record_snapshot,
+)
+from ..review_queue import (
+    initialize_review_queue,
+    list_queue_items,
+    register_reviewer_profile,
+)
+from ..util import atomic_write_json, load_json, sha256_bytes, utc_now
+from .live import run_live_cohort_collection
+from .metrics import compute_go_no_go_metrics
+from .schemas import SHADOW_EVALUATION_STATUS, SHADOW_REFRESH_BOUNDARY
+
+DEFAULT_FAILED_SOURCE_IDS = ("SRC-0041", "SRC-0115", "SRC-14-007")
+EVAL_ACTOR = "shadow-eval-scaffolding"
+REVIEWER_A = "REV-SHADOW-A"
+REVIEWER_B = "REV-SHADOW-B"
+
+
+def classify_retrieval_failure(failure: dict[str, Any]) -> dict[str, Any]:
+    """Map a collector failure record into a typed retrieval outcome (not a finding)."""
+    message = str(failure.get("failure_message") or failure.get("message") or "")
+    failure_class = str(failure.get("failure_class") or "UNKNOWN")
+    http_status = failure.get("http_status")
+    status_match = re.search(r"Unexpected HTTP status\s+(\d{3})", message)
+    if http_status is None and status_match:
+        http_status = int(status_match.group(1))
+
+    outcome_type = "UNRESOLVED_RETRIEVAL"
+    if failure_class == "TIMEOUT" or "timeout" in message.casefold():
+        outcome_type = "TIMEOUT"
+    elif failure_class == "DNS_FAILURE":
+        outcome_type = "DNS_FAILURE"
+    elif failure_class == "SSRF_BLOCK" or failure_class == "POLICY_BLOCK":
+        outcome_type = "POLICY_BLOCK"
+    elif http_status in {401, 403}:
+        outcome_type = "ACCESS_DENIAL"
+    elif http_status == 404:
+        outcome_type = "CONTENT_NOT_FOUND_OR_URL_REPLACEMENT_NEEDED"
+    elif http_status in {301, 302, 303, 307, 308} or "redirect" in message.casefold():
+        outcome_type = "REDIRECT_FAILURE"
+    elif isinstance(http_status, int) and http_status >= 500:
+        outcome_type = "UPSTREAM_SERVER_ERROR"
+    elif failure_class == "HTTP_ERROR":
+        outcome_type = "HTTP_ERROR_UNCLASSIFIED"
+
+    return {
+        "source_id": failure.get("source_id"),
+        "failure_id": failure.get("failure_id") or failure.get("record_id"),
+        "requested_url": failure.get("requested_url"),
+        "failure_class": failure_class,
+        "http_status": http_status,
+        "message": message,
+        "outcome_type": outcome_type,
+        "finding_effect": "NONE",
+        "notes": (
+            "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding "
+            "or substantive assessment mutation."
+        ),
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def build_source_retry_plan(
+    registry: dict[str, Any],
+    source_ids: list[str],
+    *,
+    as_of: str = "2026-08-03",
+) -> dict[str, Any]:
+    """Build a one-shot evaluation plan limited to the listed HTTP sources."""
+    wanted = set(source_ids)
+    source_index = {
+        str(record["source_id"]): record
+        for record in registry.get("sources", [])
+        if isinstance(record, dict) and "source_id" in record
+    }
+    due: list[dict[str, Any]] = []
+    missing: list[str] = []
+    for source_id in source_ids:
+        record = source_index.get(source_id)
+        if record is None:
+            missing.append(source_id)
+            continue
+        due.append(
+            {
+                "source_id": source_id,
+                "monitor_id": record.get("monitor_id"),
+                "url": record.get("url"),
+                "publisher": record.get("publisher"),
+                "source_class": record.get("source_class"),
+                "network_access_required": record.get("network_access_required", True),
+                "evaluation_override": "SHADOW_LIVE_RETRY_DUE",
+            }
+        )
+    if missing:
+        raise ValueError(f"Retry source IDs missing from registry: {', '.join(missing)}")
+    if wanted - {item["source_id"] for item in due}:
+        raise ValueError("Retry plan incomplete")
+    return {
+        "plan_id": f"SHADOW-RETRY-{as_of}",
+        "as_of": as_of,
+        "due": due,
+        "manual": [],
+        "not_due": [],
+        "counts": {"due": len(due), "manual": 0, "not_due": 0},
+        "status": SHADOW_EVALUATION_STATUS,
+        "live_evaluation": True,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def retry_failed_sources(
+    *,
+    registry: dict[str, Any],
+    registry_sha256: str,
+    quarantine_root: Path,
+    source_ids: list[str] | None = None,
+    as_of: str = "2026-08-03",
+) -> dict[str, Any]:
+    """Retry allowlisted failed sources into a dedicated quarantine root."""
+    ids = list(source_ids or DEFAULT_FAILED_SOURCE_IDS)
+    plan = build_source_retry_plan(registry, ids, as_of=as_of)
+    live_package = run_live_cohort_collection(
+        plan=plan,
+        registry=registry,
+        registry_sha256=registry_sha256,
+        quarantine_root=quarantine_root,
+    )
+    by_source: dict[str, dict[str, Any]] = {}
+    failures_dir = quarantine_root / "failures"
+    if failures_dir.is_dir():
+        for path in sorted(failures_dir.glob("*.json")):
+            try:
+                record = load_json(path)
+            except (OSError, ValueError, TypeError):
+                continue
+            if isinstance(record, dict) and record.get("source_id"):
+                by_source[str(record["source_id"])] = classify_retrieval_failure(record)
+    for outcome in live_package.get("collection_run", {}).get("outcomes", []):
+        sid = str(outcome.get("source_id") or "")
+        if not sid:
+            continue
+        if outcome.get("status") == "RESULT":
+            by_source[sid] = {
+                "source_id": sid,
+                "outcome_type": "RETRIEVAL_SUCCEEDED",
+                "failure_class": None,
+                "http_status": None,
+                "message": None,
+                "finding_effect": "NONE",
+                "record_id": outcome.get("record_id"),
+                "status": SHADOW_EVALUATION_STATUS,
+                "boundary": SHADOW_REFRESH_BOUNDARY,
+            }
+        elif sid not in by_source:
+            by_source[sid] = classify_retrieval_failure(outcome)
+    return {
+        "metadata": {
+            "title": "Shadow refresh HTTP_ERROR retry outcomes",
+            "executed_at": utc_now(),
+            "status": SHADOW_EVALUATION_STATUS,
+        },
+        "source_ids": ids,
+        "live_package": live_package,
+        "typed_outcomes": [by_source[sid] for sid in ids if sid in by_source],
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def list_quarantine_successes(quarantine_root: Path) -> list[dict[str, Any]]:
+    records_dir = quarantine_root / "records"
+    if not records_dir.is_dir():
+        return []
+    successes: list[dict[str, Any]] = []
+    for path in sorted(records_dir.glob("*.json")):
+        record = load_json(path)
+        if not isinstance(record, dict):
+            continue
+        if record.get("result_id"):
+            successes.append(record)
+    return successes
+
+
+def handoff_quarantine_sample_to_evaluation(
+    *,
+    quarantine_root: Path,
+    evaluation_workspace: Path,
+    registry_path: Path,
+    sample_size: int = 5,
+    approved_by: str = EVAL_ACTOR,
+) -> dict[str, Any]:
+    """Handoff a sample of pre-approved quarantine records into an evaluation workspace only.
+
+    Each selected record must already be ``APPROVED_FOR_HANDOFF``. This function does
+    not call ``approve_quarantine_record`` and fails closed on pending or rejected
+    records in the selected sample. Does not enable the collector monitoring handoff
+    kill-switch and does not mutate the canonical ops workbench.
+    """
+    if sample_size <= 0:
+        raise ValueError("sample_size must be positive")
+    evaluation_workspace.mkdir(parents=True, exist_ok=True)
+    if not (evaluation_workspace / "observatory" / "monitoring" / "registry" / "registry.json").is_file():
+        initialize_monitoring(evaluation_workspace, registry_path, actor=approved_by)
+
+    # Fail closed: only pre-approved records may enter the handoff sample. Pending
+    # successes are left untouched for per-record human review.
+    records = [
+        record
+        for record in list_quarantine_successes(quarantine_root)
+        if record.get("approval_state") == "APPROVED_FOR_HANDOFF"
+    ][:sample_size]
+    handoffs: list[dict[str, Any]] = []
+    for record in records:
+        qid = str(record["quarantine_id"])
+        current = load_quarantine_record(quarantine_root, qid)
+        if current.get("approval_state") != "APPROVED_FOR_HANDOFF":
+            raise HandoffBlockedError(
+                f"Quarantine record {qid!r} requires APPROVED_FOR_HANDOFF before "
+                f"evaluation handoff (current: {current.get('approval_state')!r}); "
+                "handoff does not auto-approve"
+            )
+        payload = prepare_monitoring_handoff(quarantine_root, qid)
+        result = load_collection_result(quarantine_root, payload.result_id)
+        media_type = str(result.get("media_type") or "application/octet-stream")
+        data = payload.bytes_path.read_bytes()
+        snapshot = record_snapshot(
+            evaluation_workspace,
+            payload.source_id,
+            data,
+            media_type=media_type,
+            retrieved_at=payload.captured_at,
+            retrieval_url=str(result.get("final_url") or result.get("requested_url") or ""),
+            original_filename=payload.original_filename,
+            actor=approved_by,
+        )
+        handoffs.append(
+            {
+                "quarantine_id": qid,
+                "source_id": payload.source_id,
+                "snapshot_id": snapshot["snapshot_id"],
+                "sha256": snapshot["sha256"],
+                "size_bytes": snapshot["size_bytes"],
+                "media_type": media_type,
+            }
+        )
+    return {
+        "metadata": {
+            "title": "Evaluation-only quarantine to snapshot handoff",
+            "status": SHADOW_EVALUATION_STATUS,
+            "approved_by": approved_by,
+            "executed_at": utc_now(),
+        },
+        "evaluation_workspace": str(evaluation_workspace),
+        "sample_size_requested": sample_size,
+        "handoffs": handoffs,
+        "monitoring_handoff_kill_switch": "DISABLED",
+        "canonical_workbench_mutated": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def create_first_capture_candidates(
+    *,
+    evaluation_workspace: Path,
+    handoffs: list[dict[str, Any]],
+    actor: str = EVAL_ACTOR,
+) -> dict[str, Any]:
+    """Create MANUAL change candidates for first-time evaluation snapshots.
+
+    Baseline comparison is unavailable when no prior snapshots exist; mechanical
+    NO_CHANGE/CONTENT_CHANGED comparison therefore cannot run until a second capture.
+    """
+    candidates: list[dict[str, Any]] = []
+    for item in handoffs:
+        candidate = create_change_candidate(
+            evaluation_workspace,
+            str(item["source_id"]),
+            str(item["snapshot_id"]),
+            previous_snapshot_id=None,
+            summary=(
+                "First evaluation snapshot after live quarantine handoff; "
+                "no baseline capture available for mechanical comparison."
+            ),
+            actor=actor,
+        )
+        candidates.append(
+            {
+                "candidate_id": candidate["candidate_id"],
+                "source_id": candidate["source_id"],
+                "snapshot_id": item["snapshot_id"],
+                "detection": candidate["detection"],
+                "status": candidate["status"],
+            }
+        )
+    return {
+        "metadata": {
+            "title": "First-capture change candidates (no baseline)",
+            "status": SHADOW_EVALUATION_STATUS,
+            "executed_at": utc_now(),
+        },
+        "baseline_comparison": "UNAVAILABLE_NO_PRIOR_SNAPSHOTS",
+        "candidates": candidates,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def scaffold_dual_human_review(
+    *,
+    evaluation_workspace: Path,
+    output_dir: Path,
+    actor: str = EVAL_ACTOR,
+) -> dict[str, Any]:
+    """Register two reviewer profiles and project the queue; do not forge opinions."""
+    initialize_review_queue(evaluation_workspace, actor=actor)
+    profile_a = register_reviewer_profile(
+        evaluation_workspace,
+        REVIEWER_A,
+        "Shadow Reviewer A (claimed local workflow identity)",
+        ["MONITORING_REVIEWER", "ADJUDICATION_REVIEWER"],
+        actor=actor,
+    )
+    profile_b = register_reviewer_profile(
+        evaluation_workspace,
+        REVIEWER_B,
+        "Shadow Reviewer B (claimed local workflow identity)",
+        ["MONITORING_REVIEWER", "ADJUDICATION_REVIEWER"],
+        actor=actor,
+    )
+    items = list_queue_items(evaluation_workspace, persist_projection=True)
+    instructions = {
+        "metadata": {
+            "title": "Dual human review instructions for shadow evaluation #43",
+            "status": SHADOW_EVALUATION_STATUS,
+            "generated_at": utc_now(),
+        },
+        "required_reviewers": [REVIEWER_A, REVIEWER_B],
+        "identity_boundary": (
+            "Reviewer profile IDs are claimed local workflow identities only. "
+            "They do not authenticate persons or establish institutional authority."
+        ),
+        "steps": [
+            "Each reviewer independently claims a lease on each OPEN queue item.",
+            "Each reviewer records an opinion (SUPPORT / OPPOSE / DEFER / ABSTAIN / NEEDS_EVIDENCE).",
+            "Preserve disagreement and abstention; do not erase dissent.",
+            "A lead monitoring reviewer may adjudicate only after both opinions are recorded or explicitly withheld.",
+            "Do not mutate canonical observatory state or assessments from this evaluation workspace.",
+        ],
+        "open_item_ids": [item["item_id"] for item in items if item.get("queue_status") == "OPEN"],
+        "completion_state": "SCAFFOLDED_AWAITING_HUMAN_OPINIONS",
+        "forged_completions": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(output_dir / "dual_review_instructions.json", instructions)
+    residual = {
+        "metadata": {
+            "title": "Human residual checklist for closing #43",
+            "status": SHADOW_EVALUATION_STATUS,
+            "generated_at": utc_now(),
+        },
+        "checklist": [
+            {
+                "id": "DUAL_REVIEW_OPINIONS",
+                "state": "BLOCKED_HUMAN",
+                "detail": "Two distinct human reviewers must record opinions on the sampled candidates.",
+            },
+            {
+                "id": "DISAGREEMENT_PRESERVATION",
+                "state": "PENDING_HUMAN",
+                "detail": "Any OPPOSE/ABSTAIN/NEEDS_EVIDENCE must remain on record.",
+            },
+            {
+                "id": "FORMAL_GO_AUTHORIZATION",
+                "state": "BLOCKED_HUMAN",
+                "detail": "GO requires completed dual review; software must not close as GO without it.",
+            },
+            {
+                "id": "PROTECTED_ARCHIVE_APPROVALS",
+                "state": "EXTERNAL",
+                "detail": "Archive/network approvals tracked under #44 remain separate.",
+            },
+        ],
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+    atomic_write_json(output_dir / "human_residual_checklist.json", residual)
+    return {
+        "profiles": {
+            "reviewer_a": profile_a["profile"]["profile_id"],
+            "reviewer_b": profile_b["profile"]["profile_id"],
+            "created_a": profile_a["created"],
+            "created_b": profile_b["created"],
+        },
+        "queue_item_count": len(items),
+        "open_item_count": sum(1 for item in items if item.get("queue_status") == "OPEN"),
+        "instructions_path": str(output_dir / "dual_review_instructions.json"),
+        "residual_checklist_path": str(output_dir / "human_residual_checklist.json"),
+        "dual_review_complete": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def run_offline_entity_sample(
+    *,
+    evaluation_workspace: Path,
+    sample_mentions: list[dict[str, str]],
+    actor: str = EVAL_ACTOR,
+) -> dict[str, Any]:
+    """Propose entity resolutions and record evaluation dispositions (not dual review)."""
+    initialize_registry(evaluation_workspace, actor=actor)
+    proposals: list[dict[str, Any]] = []
+    dispositions: list[dict[str, Any]] = []
+    for item in sample_mentions:
+        mention = item["mention"].strip()
+        if not mention:
+            continue
+        proposal = propose_resolution(
+            evaluation_workspace,
+            raw_mention=mention,
+            source_capture_ref=item.get("source_id"),
+            actor=actor,
+        )
+        proposals.append(
+            {
+                "proposal_id": proposal["proposal_id"],
+                "source_id": item.get("source_id"),
+                "mention": mention,
+                "resolution_state": proposal["resolution_state"],
+                "status": proposal["status"],
+            }
+        )
+        if proposal["status"] == "PENDING_HUMAN_DISPOSITION":
+            decision = "DEFER" if proposal["resolution_state"] in {"AMBIGUOUS", "DUPLICATE_CANDIDATE"} else "NEEDS_EVIDENCE"
+            disposition = record_resolution_disposition(
+                evaluation_workspace,
+                proposal["proposal_id"],
+                decision,
+                rationale=(
+                    "Shadow evaluation offline disposition recorded by claimed local scaffolding actor. "
+                    "Not a dual-human monitoring review completion."
+                ),
+                actor=actor,
+            )
+            dispositions.append(
+                {
+                    "disposition_id": disposition["disposition_id"],
+                    "proposal_id": proposal["proposal_id"],
+                    "decision": disposition["decision"],
+                }
+            )
+    return {
+        "metadata": {
+            "title": "Offline entity disposition sample for shadow evaluation",
+            "status": SHADOW_EVALUATION_STATUS,
+            "executed_at": utc_now(),
+            "actor": actor,
+        },
+        "proposal_count": len(proposals),
+        "disposition_count": len(dispositions),
+        "proposals": proposals,
+        "dispositions": dispositions,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def run_offline_extraction_sample(
+    *,
+    evaluation_workspace: Path,
+    quarantine_root: Path,
+    handoffs: list[dict[str, Any]],
+    actor: str = EVAL_ACTOR,
+) -> dict[str, Any]:
+    """Run offline fake-provider extraction on synthetic public stubs linked to capture digests.
+
+    Raw quarantine HTML is not fed into the extraction request path: disclosure controls may
+    refuse local-path-like strings embedded in page markup. The sample remains
+    CONTRACT_FIXTURE_NON_ACCURACY and is not an accuracy evaluation.
+    """
+    del quarantine_root  # Digests come from handoff metadata; bodies stay out of extraction requests.
+    config = ExtractionProviderConfig(
+        config_id="CFG-SHADOW-FAKE-OFFLINE",
+        provider_id=FAKE_OFFLINE_PROVIDER_ID,
+        model_id="fake-offline-shadow-eval-v1",
+        enabled=True,
+        profile="conservative",
+        endpoint_class="NOT_EXECUTED",
+        notes="CONTRACT_FIXTURE_NON_ACCURACY for shadow evaluation sample only.",
+    )
+    provider = resolve_provider(config)
+    recorded: list[dict[str, Any]] = []
+    for item in handoffs[: min(3, len(handoffs))]:
+        source_id = str(item["source_id"])
+        sha = str(item["sha256"])
+        excerpt = (
+            f"Public synthetic shadow evaluation stub for {source_id}. "
+            "This text is not source page content. Capture digest linkage is metadata-only."
+        )
+        capture_stub = {
+            "capture_id": f"CAP-SHADOW-{source_id}",
+            "content_sha256": sha,
+            "public_text": excerpt,
+        }
+        request = build_extraction_request_from_capture(
+            capture_stub,
+            request_id=new_request_id(),
+        )
+        record_extraction_request(evaluation_workspace, request, actor=actor)
+        response = provider.extract(request)
+        record_extraction_response(
+            evaluation_workspace,
+            request,
+            response,
+            provider=config.provider_id,
+            model=config.model_id,
+            actor=actor,
+        )
+        disposition = dispose_extraction_response(
+            evaluation_workspace,
+            request["request_id"],
+            "REJECTED",
+            notes=(
+                "Shadow evaluation offline disposition: CONTRACT_FIXTURE_NON_ACCURACY output rejected "
+                "for substantive use. Does not authorize findings or dual-review completion."
+            ),
+            actor=actor,
+        )
+        recorded.append(
+            {
+                "source_id": source_id,
+                "request_id": request["request_id"],
+                "content_sha256": sha,
+                "disposition": disposition["disposition"]["disposition"],
+                "provider": config.provider_id,
+                "accuracy_lane": "CONTRACT_FIXTURE_NON_ACCURACY",
+            }
+        )
+    return {
+        "metadata": {
+            "title": "Offline extraction disposition sample for shadow evaluation",
+            "status": SHADOW_EVALUATION_STATUS,
+            "executed_at": utc_now(),
+            "actor": actor,
+        },
+        "records": recorded,
+        "record_count": len(recorded),
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def build_closure_run_results(
+    *,
+    run_id: str,
+    live_succeeded: int,
+    live_failed: int,
+    live_attempted: int,
+    digest_count: int,
+    candidate_count: int,
+    entity_decisions: int,
+    entity_correct: int,
+    dual_review_complete: bool,
+    review_agreements: int = 0,
+    review_disagreements: int = 0,
+) -> dict[str, Any]:
+    """Build observed run-results for metrics from executed shadow steps."""
+    sampled = candidate_count if dual_review_complete else 0
+    return {
+        "metadata": {
+            "title": "Observed shadow refresh closure run results",
+            "status": SHADOW_EVALUATION_STATUS,
+        },
+        "run_id": run_id,
+        "captures": {
+            "attempted": live_attempted,
+            "succeeded": live_succeeded,
+            "failed": live_failed,
+            "unchanged": 0,
+            "changed": live_succeeded,
+        },
+        "candidates": {
+            "generated": candidate_count,
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "unsupported": candidate_count if candidate_count else 0,
+        },
+        "entity_resolution": {"decisions": entity_decisions, "correct": entity_correct},
+        "review": {
+            "agreements": review_agreements,
+            "disagreements": review_disagreements,
+            "sampled_candidates": sampled,
+            "total_adjudication_minutes": 0,
+        },
+        "reopening": {"recommended": 0, "true_positives": 0, "false_positives": 0},
+        "provenance": {
+            "complete_records": digest_count,
+            "total_records": max(live_attempted, digest_count),
+        },
+        "publication": {"reconciliation_errors": 0},
+        "model_assistance": {"minutes_saved": 0.0, "errors_introduced": 0},
+        "cost_by_source_class": {},
+    }
+
+
+def record_formal_disposition(
+    *,
+    run_id: str,
+    metrics_recommendation: str,
+    dual_review_complete: bool,
+    owners: list[str],
+    residual_checklist: list[dict[str, Any]],
+    typed_retry_outcomes: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Record GO / NO_GO / WITHHELD without writing a canonical successor.
+
+    Incomplete dual human review forces WITHHELD or NO_GO (never GO).
+    """
+    if dual_review_complete and metrics_recommendation == "GO":
+        disposition = "GO"
+    elif dual_review_complete:
+        disposition = "NO_GO"
+    else:
+        # Prefer WITHHELD when the human sample has not completed; NO_GO remains
+        # available via metrics_recommendation for threshold failures already observed.
+        disposition = "WITHHELD"
+
+    return {
+        "metadata": {
+            "title": "Formal shadow refresh disposition for issue #43",
+            "recorded_at": utc_now(),
+            "status": SHADOW_EVALUATION_STATUS,
+            "evaluation_issue": "#43",
+        },
+        "run_id": run_id,
+        "disposition": disposition,
+        "metrics_recommendation": metrics_recommendation,
+        "dual_review_complete": dual_review_complete,
+        "owners": owners,
+        "closure_conditions": [
+            "Two distinct human reviewers complete opinions on the sampled change candidates.",
+            "Disagreement and abstention records are preserved.",
+            "Formal GO is recorded only after dual review and threshold review by owners.",
+            "No canonical observatory successor is written from this shadow evaluation.",
+        ],
+        "residual_checklist": residual_checklist,
+        "typed_retry_outcomes": typed_retry_outcomes or [],
+        "withheld_claims": [
+            "This disposition does not authorize AUTHORIZED or PUBLISHED successor gates (#41).",
+            "Capture digests prove retrieval bytes only and do not establish substantive truth.",
+            "Claimed local reviewer profiles are not authenticated identities.",
+            "Unresolved retrieval access was not converted into FAIL findings.",
+        ],
+        "canonical_successor_written": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def compute_closure_metrics(run_results: dict[str, Any], *, generated_by: str) -> dict[str, Any]:
+    return compute_go_no_go_metrics(
+        run_results,
+        generated_at=utc_now(),
+        generated_by=generated_by,
+    )
+
+
+def build_public_closure_summary(
+    *,
+    run_id: str,
+    live_counts: dict[str, Any],
+    capture_digests: list[dict[str, Any]],
+    typed_retry_outcomes: list[dict[str, Any]],
+    candidate_count: int,
+    dual_review_complete: bool,
+    metrics_recommendation: str,
+    formal_disposition: str,
+) -> dict[str, Any]:
+    return {
+        "metadata": {
+            "title": "Shadow refresh Wave 2 public closure summary",
+            "status": SHADOW_EVALUATION_STATUS,
+            "run_id": run_id,
+            "evaluation_issue": "#43",
+            "boundary": SHADOW_REFRESH_BOUNDARY,
+        },
+        "network_retrieval": "EXECUTED_LIVE_QUARANTINE_ONLY",
+        "live_collection_counts": live_counts,
+        "capture_digest_count": len(capture_digests),
+        "capture_digests": [
+            {
+                "source_id": item.get("source_id"),
+                "sha256": item.get("sha256"),
+                "http_status": item.get("http_status"),
+                "size_bytes": item.get("size_bytes"),
+            }
+            for item in capture_digests
+        ],
+        "retry_outcomes": [
+            {
+                "source_id": item.get("source_id"),
+                "outcome_type": item.get("outcome_type"),
+                "http_status": item.get("http_status"),
+                "failure_class": item.get("failure_class"),
+                "finding_effect": item.get("finding_effect", "NONE"),
+            }
+            for item in typed_retry_outcomes
+        ],
+        "candidate_count": candidate_count,
+        "dual_review_complete": dual_review_complete,
+        "metrics_recommendation": metrics_recommendation,
+        "formal_disposition": formal_disposition,
+        "withheld_claims": [
+            "Public digests and metrics only; protected capture bodies remain outside git.",
+            "Formal disposition WITHHELD/NO_GO while dual human review is incomplete.",
+            "Does not authorize a canonical observatory successor.",
+        ],
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def publisher_mentions_for_sources(
+    registry: dict[str, Any],
+    source_ids: list[str],
+) -> list[dict[str, str]]:
+    index = {
+        str(record["source_id"]): record
+        for record in registry.get("sources", [])
+        if isinstance(record, dict) and "source_id" in record
+    }
+    mentions: list[dict[str, str]] = []
+    for source_id in source_ids:
+        record = index.get(source_id)
+        if not record:
+            continue
+        publisher = str(record.get("publisher") or "").strip()
+        if publisher:
+            mentions.append({"source_id": source_id, "mention": publisher})
+    return mentions
+
+
+def content_addressed_run_id(seed: bytes) -> str:
+    return f"SHADOW-RUN-202608-WAVE2-{sha256_bytes(seed)[:12]}"
