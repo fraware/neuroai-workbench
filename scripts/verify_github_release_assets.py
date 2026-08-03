@@ -55,9 +55,9 @@ def _expected_assets(version: str) -> set[str]:
         f"neuroai_workbench-{version}-py3-none-any.whl",
         f"neuroai_workbench-{version}.tar.gz",
         f"neuroai-workbench-v{version}.bundle",
-        "sbom.cdx.json",
+        "SBOM.spdx.json",
         "RELEASE_VERIFICATION.json",
-        "SHA256SUMS",
+        "SHA256SUMS.txt",
     }
 
 
@@ -168,7 +168,7 @@ def audit(
     files = {path.name for path in assets_dir.iterdir() if path.is_file()}
     check("Downloaded asset inventory", files == expected_assets, sorted(files))
 
-    checksum_path = assets_dir / "SHA256SUMS"
+    checksum_path = assets_dir / "SHA256SUMS.txt"
     try:
         checksum_records = _parse_checksums(checksum_path)
         checksum_parse_error = None
@@ -178,10 +178,10 @@ def audit(
     check("SHA256SUMS parses safely", checksum_parse_error is None, checksum_parse_error or checksum_records)
     check(
         "SHA256SUMS covers every non-manifest asset",
-        set(checksum_records) == expected_assets - {"SHA256SUMS"},
+        set(checksum_records) == expected_assets - {"SHA256SUMS.txt"},
         sorted(checksum_records),
     )
-    for name in sorted(expected_assets - {"SHA256SUMS"}):
+    for name in sorted(expected_assets - {"SHA256SUMS.txt"}):
         path = assets_dir / name
         actual = _sha256(path) if path.is_file() else None
         check(
@@ -253,21 +253,22 @@ def audit(
         withheld,
     )
 
-    sbom_path = assets_dir / "sbom.cdx.json"
+    sbom_path = assets_dir / "SBOM.spdx.json"
     try:
-        sbom = _load_object(sbom_path, "CycloneDX SBOM")
+        sbom = _load_object(sbom_path, "SPDX SBOM")
         sbom_error = None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         sbom = {}
         sbom_error = str(exc)
-    components = sbom.get("components")
-    check("CycloneDX SBOM parses", sbom_error is None, sbom_error or "parsed")
-    check("CycloneDX format identity", sbom.get("bomFormat") == "CycloneDX", sbom.get("bomFormat"))
+    packages = sbom.get("packages")
+    check("SPDX SBOM parses", sbom_error is None, sbom_error or "parsed")
+    check("SPDX format identity", sbom.get("spdxVersion") == "SPDX-2.3", sbom.get("spdxVersion"))
     check(
-        "CycloneDX component inventory is non-empty",
-        isinstance(components, list) and len(components) > 0,
-        len(components) if isinstance(components, list) else None,
+        "SPDX package inventory is non-empty",
+        isinstance(packages, list) and len(packages) > 0,
+        len(packages) if isinstance(packages, list) else None,
     )
+    check("SPDX data license", sbom.get("dataLicense") == "CC0-1.0", sbom.get("dataLicense"))
 
     tag_commit = str(tag_record.get("tag_commit") or "")
     check("Repository tag identity", tag_record.get("tag") == expected_tag, tag_record)
