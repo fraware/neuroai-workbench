@@ -21,6 +21,7 @@ def case_mutation_lock(case_path: Path) -> Iterator[dict[str, Any]]:
 
     The external lock remains present if the case directory is deleted, so an
     active owner cannot lose exclusion through deletion of the protected tree.
+    This is a filesystem coordination boundary, not identity or custody proof.
     """
     with _exclusive_lock(case_mutation_lock_path(case_path), profile=LOCK_PROFILE_LOCAL) as owner:
         yield owner
