@@ -43,7 +43,7 @@ def _workflow_files(root: Path) -> set[str]:
 
 def _workflow_name(text: str) -> str | None:
     match = _WORKFLOW_NAME_RE.search(text)
-    return match.group(1).strip('"\'') if match else None
+    return match.group(1).strip("\"'") if match else None
 
 
 def _permissions(text: str) -> dict[str, str]:
@@ -56,7 +56,7 @@ def _permissions(text: str) -> dict[str, str]:
                     break
                 match = _PERMISSION_RE.match(candidate)
                 if match:
-                    result[match.group(1)] = match.group(2).strip('"\'')
+                    result[match.group(1)] = match.group(2).strip("\"'")
             return result
     return {}
 
@@ -81,7 +81,7 @@ def _jobs(text: str) -> dict[str, str | None]:
             continue
         name_match = _JOB_NAME_RE.match(line)
         if current and name_match and result[current] is None:
-            result[current] = name_match.group(1).strip('"\'')
+            result[current] = name_match.group(1).strip("\"'")
     return result
 
 
@@ -89,7 +89,7 @@ def _matrix_values(text: str, key: str) -> list[str] | None:
     match = re.search(rf"(?m)^\s+{re.escape(key)}:\s*\[(.*?)\]\s*$", text)
     if not match:
         return None
-    return [part.strip().strip('"\'') for part in match.group(1).split(",") if part.strip()]
+    return [part.strip().strip("\"'") for part in match.group(1).split(",") if part.strip()]
 
 
 def _action_pin_errors(path: str, text: str) -> list[str]:
@@ -153,33 +153,25 @@ def validate(root: Path) -> list[str]:
         expected_permissions = {str(key): str(value) for key, value in spec.get("permissions", {}).items()}
         observed_permissions = _permissions(text)
         if observed_permissions != expected_permissions:
-            errors.append(
-                f"{relative}: permissions {observed_permissions!r} != contract {expected_permissions!r}"
-            )
+            errors.append(f"{relative}: permissions {observed_permissions!r} != contract {expected_permissions!r}")
 
         errors.extend(_action_pin_errors(relative, text))
 
         expected_jobs = {str(item["id"]): item for item in spec.get("jobs", [])}
         observed_jobs = _jobs(text)
         if set(observed_jobs) != set(expected_jobs):
-            errors.append(
-                f"{relative}: job IDs {sorted(observed_jobs)!r} != contract {sorted(expected_jobs)!r}"
-            )
+            errors.append(f"{relative}: job IDs {sorted(observed_jobs)!r} != contract {sorted(expected_jobs)!r}")
         for job_id, job_spec in expected_jobs.items():
             expected_job_name = str(job_spec["name"])
             observed_job_name = observed_jobs.get(job_id)
             if observed_job_name != expected_job_name:
-                errors.append(
-                    f"{relative}: job {job_id!r} name {observed_job_name!r} != {expected_job_name!r}"
-                )
+                errors.append(f"{relative}: job {job_id!r} name {observed_job_name!r} != {expected_job_name!r}")
             matrix_key = job_spec.get("matrix_key")
             if matrix_key:
                 expected_values = [str(value) for value in job_spec.get("matrix_values", [])]
                 observed_values = _matrix_values(text, str(matrix_key))
                 if observed_values != expected_values:
-                    errors.append(
-                        f"{relative}: matrix {matrix_key!r} {observed_values!r} != {expected_values!r}"
-                    )
+                    errors.append(f"{relative}: matrix {matrix_key!r} {observed_values!r} != {expected_values!r}")
             if pull_request_required:
                 derived_contexts.extend(str(value) for value in job_spec.get("required_contexts", []))
 
