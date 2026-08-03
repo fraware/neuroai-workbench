@@ -93,6 +93,15 @@ def acquire_and_audit() -> dict[str, Any]:
         if download.returncode != 0:
             raise RuntimeError(f"release asset acquisition failed: {download.stderr.strip()}")
 
+        _git_output(
+            [
+                "fetch",
+                "--force",
+                "--no-tags",
+                "origin",
+                f"refs/tags/{TAG}:refs/tags/{TAG}",
+            ]
+        )
         tag_type = _git_output(["cat-file", "-t", f"refs/tags/{TAG}"])
         tag_commit = _git_output(["rev-parse", f"refs/tags/{TAG}^{{commit}}"])
         tag_record = {"tag": TAG, "tag_type": tag_type, "tag_commit": tag_commit}
