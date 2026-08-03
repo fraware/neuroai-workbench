@@ -1,6 +1,7 @@
 """Controlled entity registry with exact-ID resolution and layered resolver proposals."""
 
-from .benchmark import load_blinded_benchmark_stub, run_blinded_benchmark
+from .benchmark import load_blinded_benchmark_stub, load_public_annotated_subset, run_blinded_benchmark
+from .corpus_scale import load_public_scale_corpus
 from .errors import (
     AmbiguousResolutionError,
     EntityRegistryError,
@@ -57,6 +58,8 @@ __all__ = [
     "initialize_registry",
     "load_blinded_benchmark_stub",
     "load_entity",
+    "load_public_annotated_subset",
+    "load_public_scale_corpus",
     "load_registry",
     "load_resolution_proposal",
     "normalize_mention",

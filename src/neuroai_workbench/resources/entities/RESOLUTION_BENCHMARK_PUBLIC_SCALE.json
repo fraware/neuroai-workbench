@@ -1,0 +1,3298 @@
+{
+  "benchmark_id": "ENTITY-RES-BENCH-PUBLIC-SCALE-001",
+  "version": "1.0",
+  "status": "PUBLIC_REDISTRIBUTION_SAFE_SCALE",
+  "case_count": 200,
+  "partitions": {
+    "frozen": true,
+    "counts": {
+      "train": 140,
+      "dev": 30,
+      "test": 30
+    },
+    "case_ids": {
+      "train": [
+        "SCALE-0001",
+        "SCALE-0002",
+        "SCALE-0003",
+        "SCALE-0004",
+        "SCALE-0005",
+        "SCALE-0006",
+        "SCALE-0007",
+        "SCALE-0008",
+        "SCALE-0009",
+        "SCALE-0010",
+        "SCALE-0011",
+        "SCALE-0012",
+        "SCALE-0013",
+        "SCALE-0014",
+        "SCALE-0015",
+        "SCALE-0016",
+        "SCALE-0017",
+        "SCALE-0018",
+        "SCALE-0019",
+        "SCALE-0020",
+        "SCALE-0021",
+        "SCALE-0022",
+        "SCALE-0023",
+        "SCALE-0024",
+        "SCALE-0025",
+        "SCALE-0026",
+        "SCALE-0027",
+        "SCALE-0028",
+        "SCALE-0029",
+        "SCALE-0030",
+        "SCALE-0031",
+        "SCALE-0032",
+        "SCALE-0033",
+        "SCALE-0034",
+        "SCALE-0035",
+        "SCALE-0036",
+        "SCALE-0037",
+        "SCALE-0038",
+        "SCALE-0039",
+        "SCALE-0040",
+        "SCALE-0041",
+        "SCALE-0042",
+        "SCALE-0043",
+        "SCALE-0044",
+        "SCALE-0045",
+        "SCALE-0046",
+        "SCALE-0047",
+        "SCALE-0048",
+        "SCALE-0049",
+        "SCALE-0050",
+        "SCALE-0051",
+        "SCALE-0052",
+        "SCALE-0053",
+        "SCALE-0054",
+        "SCALE-0055",
+        "SCALE-0056",
+        "SCALE-0057",
+        "SCALE-0058",
+        "SCALE-0059",
+        "SCALE-0060",
+        "SCALE-0061",
+        "SCALE-0062",
+        "SCALE-0063",
+        "SCALE-0064",
+        "SCALE-0065",
+        "SCALE-0066",
+        "SCALE-0067",
+        "SCALE-0068",
+        "SCALE-0069",
+        "SCALE-0070",
+        "SCALE-0071",
+        "SCALE-0072",
+        "SCALE-0073",
+        "SCALE-0074",
+        "SCALE-0075",
+        "SCALE-0076",
+        "SCALE-0077",
+        "SCALE-0078",
+        "SCALE-0079",
+        "SCALE-0080",
+        "SCALE-0081",
+        "SCALE-0082",
+        "SCALE-0083",
+        "SCALE-0084",
+        "SCALE-0085",
+        "SCALE-0086",
+        "SCALE-0087",
+        "SCALE-0088",
+        "SCALE-0089",
+        "SCALE-0090",
+        "SCALE-0091",
+        "SCALE-0092",
+        "SCALE-0093",
+        "SCALE-0094",
+        "SCALE-0095",
+        "SCALE-0096",
+        "SCALE-0097",
+        "SCALE-0098",
+        "SCALE-0099",
+        "SCALE-0100",
+        "SCALE-0101",
+        "SCALE-0102",
+        "SCALE-0103",
+        "SCALE-0104",
+        "SCALE-0105",
+        "SCALE-0106",
+        "SCALE-0107",
+        "SCALE-0108",
+        "SCALE-0109",
+        "SCALE-0110",
+        "SCALE-0111",
+        "SCALE-0112",
+        "SCALE-0113",
+        "SCALE-0114",
+        "SCALE-0115",
+        "SCALE-0116",
+        "SCALE-0117",
+        "SCALE-0118",
+        "SCALE-0119",
+        "SCALE-0120",
+        "SCALE-0121",
+        "SCALE-0122",
+        "SCALE-0123",
+        "SCALE-0124",
+        "SCALE-0125",
+        "SCALE-0126",
+        "SCALE-0127",
+        "SCALE-0128",
+        "SCALE-0129",
+        "SCALE-0130",
+        "SCALE-0131",
+        "SCALE-0132",
+        "SCALE-0133",
+        "SCALE-0134",
+        "SCALE-0135",
+        "SCALE-0136",
+        "SCALE-0137",
+        "SCALE-0138",
+        "SCALE-0139",
+        "SCALE-0140"
+      ],
+      "dev": [
+        "SCALE-0141",
+        "SCALE-0142",
+        "SCALE-0143",
+        "SCALE-0144",
+        "SCALE-0145",
+        "SCALE-0146",
+        "SCALE-0147",
+        "SCALE-0148",
+        "SCALE-0149",
+        "SCALE-0150",
+        "SCALE-0151",
+        "SCALE-0152",
+        "SCALE-0153",
+        "SCALE-0154",
+        "SCALE-0155",
+        "SCALE-0156",
+        "SCALE-0157",
+        "SCALE-0158",
+        "SCALE-0159",
+        "SCALE-0160",
+        "SCALE-0161",
+        "SCALE-0162",
+        "SCALE-0163",
+        "SCALE-0164",
+        "SCALE-0165",
+        "SCALE-0166",
+        "SCALE-0167",
+        "SCALE-0168",
+        "SCALE-0169",
+        "SCALE-0170"
+      ],
+      "test": [
+        "SCALE-0171",
+        "SCALE-0172",
+        "SCALE-0173",
+        "SCALE-0174",
+        "SCALE-0175",
+        "SCALE-0176",
+        "SCALE-0177",
+        "SCALE-0178",
+        "SCALE-0179",
+        "SCALE-0180",
+        "SCALE-0181",
+        "SCALE-0182",
+        "SCALE-0183",
+        "SCALE-0184",
+        "SCALE-0185",
+        "SCALE-0186",
+        "SCALE-0187",
+        "SCALE-0188",
+        "SCALE-0189",
+        "SCALE-0190",
+        "SCALE-0191",
+        "SCALE-0192",
+        "SCALE-0193",
+        "SCALE-0194",
+        "SCALE-0195",
+        "SCALE-0196",
+        "SCALE-0197",
+        "SCALE-0198",
+        "SCALE-0199",
+        "SCALE-0200"
+      ]
+    }
+  },
+  "blinding": "Synthetic public mentions only; multilingual and adversarial variants use redistribution-safe strings. No private participant or protected registry strings.",
+  "boundary": "Public/synthetic redistribution-safe annotated corpus for engineering metrics only. Partitions are frozen for reproducible evaluation. Metrics do not establish substantive entity identity. Ops ≥60 protected annotations remain ops-gated and are not committed here. #37 layers 5–6 (relationship ranking / model-assisted suggestions) remain deferred.",
+  "cases": [
+    {
+      "case_id": "SCALE-0001",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0001",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0002",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0002",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0003",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0003",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0004",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0004",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0005",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0005",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0006",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 6",
+        "source_capture_ref": "CAP-SCALE-0006",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0007",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 7",
+        "source_capture_ref": "CAP-SCALE-0007",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0008",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 8",
+        "source_capture_ref": "CAP-SCALE-0008",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0009",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 9",
+        "source_capture_ref": "CAP-SCALE-0009",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0010",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 10",
+        "source_capture_ref": "CAP-SCALE-0010",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0011",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 11",
+        "source_capture_ref": "CAP-SCALE-0011",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0012",
+      "input": {
+        "raw_mention": "SND-12",
+        "source_capture_ref": "CAP-SCALE-0012",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0013",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 13",
+        "source_capture_ref": "CAP-SCALE-0013",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0014",
+      "input": {
+        "raw_mention": "合成神经组织14",
+        "source_capture_ref": "CAP-SCALE-0014",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0015",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 15",
+        "source_capture_ref": "CAP-SCALE-0015",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0016",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 16",
+        "source_capture_ref": "CAP-SCALE-0016",
+        "category": "scripts_mixed",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0017",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 17",
+        "source_capture_ref": "CAP-SCALE-0017",
+        "category": "false_merge_guard",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0018",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 18",
+        "source_capture_ref": "CAP-SCALE-0018",
+        "category": "funding_vehicle",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0019",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 19",
+        "source_capture_ref": "CAP-SCALE-0019",
+        "category": "regulator_office",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0020",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 20",
+        "source_capture_ref": "CAP-SCALE-0020",
+        "category": "supplier",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0021",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 21",
+        "source_capture_ref": "CAP-SCALE-0021",
+        "category": "hospital",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0022",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 22",
+        "source_capture_ref": "CAP-SCALE-0022",
+        "category": "relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0023",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 23",
+        "source_capture_ref": "CAP-SCALE-0023",
+        "category": "adversarial_near_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0024",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0024",
+        "category": "adversarial_whitespace",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0025",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 25",
+        "source_capture_ref": "CAP-SCALE-0025",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0026",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0026",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0027",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0027",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0028",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0028",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0029",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0029",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0030",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0030",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0031",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 31",
+        "source_capture_ref": "CAP-SCALE-0031",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0032",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 32",
+        "source_capture_ref": "CAP-SCALE-0032",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0033",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 33",
+        "source_capture_ref": "CAP-SCALE-0033",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0034",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 34",
+        "source_capture_ref": "CAP-SCALE-0034",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0035",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 35",
+        "source_capture_ref": "CAP-SCALE-0035",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0036",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 36",
+        "source_capture_ref": "CAP-SCALE-0036",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0037",
+      "input": {
+        "raw_mention": "SND-37",
+        "source_capture_ref": "CAP-SCALE-0037",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0038",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 38",
+        "source_capture_ref": "CAP-SCALE-0038",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0039",
+      "input": {
+        "raw_mention": "合成神经组织39",
+        "source_capture_ref": "CAP-SCALE-0039",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0040",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 40",
+        "source_capture_ref": "CAP-SCALE-0040",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0041",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 41",
+        "source_capture_ref": "CAP-SCALE-0041",
+        "category": "scripts_mixed",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0042",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 42",
+        "source_capture_ref": "CAP-SCALE-0042",
+        "category": "false_merge_guard",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0043",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 43",
+        "source_capture_ref": "CAP-SCALE-0043",
+        "category": "funding_vehicle",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0044",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 44",
+        "source_capture_ref": "CAP-SCALE-0044",
+        "category": "regulator_office",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0045",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 45",
+        "source_capture_ref": "CAP-SCALE-0045",
+        "category": "supplier",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0046",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 46",
+        "source_capture_ref": "CAP-SCALE-0046",
+        "category": "hospital",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0047",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 47",
+        "source_capture_ref": "CAP-SCALE-0047",
+        "category": "relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0048",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 48",
+        "source_capture_ref": "CAP-SCALE-0048",
+        "category": "adversarial_near_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0049",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0049",
+        "category": "adversarial_whitespace",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0050",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 50",
+        "source_capture_ref": "CAP-SCALE-0050",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0051",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0051",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0052",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0052",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0053",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0053",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0054",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0054",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0055",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0055",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0056",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 56",
+        "source_capture_ref": "CAP-SCALE-0056",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0057",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 57",
+        "source_capture_ref": "CAP-SCALE-0057",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0058",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 58",
+        "source_capture_ref": "CAP-SCALE-0058",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0059",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 59",
+        "source_capture_ref": "CAP-SCALE-0059",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0060",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 60",
+        "source_capture_ref": "CAP-SCALE-0060",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0061",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 61",
+        "source_capture_ref": "CAP-SCALE-0061",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0062",
+      "input": {
+        "raw_mention": "SND-62",
+        "source_capture_ref": "CAP-SCALE-0062",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0063",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 63",
+        "source_capture_ref": "CAP-SCALE-0063",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0064",
+      "input": {
+        "raw_mention": "合成神经组织64",
+        "source_capture_ref": "CAP-SCALE-0064",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0065",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 65",
+        "source_capture_ref": "CAP-SCALE-0065",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0066",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 66",
+        "source_capture_ref": "CAP-SCALE-0066",
+        "category": "scripts_mixed",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0067",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 67",
+        "source_capture_ref": "CAP-SCALE-0067",
+        "category": "false_merge_guard",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0068",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 68",
+        "source_capture_ref": "CAP-SCALE-0068",
+        "category": "funding_vehicle",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0069",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 69",
+        "source_capture_ref": "CAP-SCALE-0069",
+        "category": "regulator_office",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0070",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 70",
+        "source_capture_ref": "CAP-SCALE-0070",
+        "category": "supplier",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0071",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 71",
+        "source_capture_ref": "CAP-SCALE-0071",
+        "category": "hospital",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0072",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 72",
+        "source_capture_ref": "CAP-SCALE-0072",
+        "category": "relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0073",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 73",
+        "source_capture_ref": "CAP-SCALE-0073",
+        "category": "adversarial_near_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0074",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0074",
+        "category": "adversarial_whitespace",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0075",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 75",
+        "source_capture_ref": "CAP-SCALE-0075",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0076",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0076",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0077",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0077",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0078",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0078",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0079",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0079",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0080",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0080",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0081",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 81",
+        "source_capture_ref": "CAP-SCALE-0081",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0082",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 82",
+        "source_capture_ref": "CAP-SCALE-0082",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0083",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 83",
+        "source_capture_ref": "CAP-SCALE-0083",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0084",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 84",
+        "source_capture_ref": "CAP-SCALE-0084",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0085",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 85",
+        "source_capture_ref": "CAP-SCALE-0085",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0086",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 86",
+        "source_capture_ref": "CAP-SCALE-0086",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0087",
+      "input": {
+        "raw_mention": "SND-87",
+        "source_capture_ref": "CAP-SCALE-0087",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0088",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 88",
+        "source_capture_ref": "CAP-SCALE-0088",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0089",
+      "input": {
+        "raw_mention": "合成神经组织89",
+        "source_capture_ref": "CAP-SCALE-0089",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0090",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 90",
+        "source_capture_ref": "CAP-SCALE-0090",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0091",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 91",
+        "source_capture_ref": "CAP-SCALE-0091",
+        "category": "scripts_mixed",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0092",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 92",
+        "source_capture_ref": "CAP-SCALE-0092",
+        "category": "false_merge_guard",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0093",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 93",
+        "source_capture_ref": "CAP-SCALE-0093",
+        "category": "funding_vehicle",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0094",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 94",
+        "source_capture_ref": "CAP-SCALE-0094",
+        "category": "regulator_office",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0095",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 95",
+        "source_capture_ref": "CAP-SCALE-0095",
+        "category": "supplier",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0096",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 96",
+        "source_capture_ref": "CAP-SCALE-0096",
+        "category": "hospital",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0097",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 97",
+        "source_capture_ref": "CAP-SCALE-0097",
+        "category": "relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0098",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 98",
+        "source_capture_ref": "CAP-SCALE-0098",
+        "category": "adversarial_near_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0099",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0099",
+        "category": "adversarial_whitespace",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0100",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 100",
+        "source_capture_ref": "CAP-SCALE-0100",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0101",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0101",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0102",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0102",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0103",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0103",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0104",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0104",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0105",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0105",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0106",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 106",
+        "source_capture_ref": "CAP-SCALE-0106",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0107",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 107",
+        "source_capture_ref": "CAP-SCALE-0107",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0108",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 108",
+        "source_capture_ref": "CAP-SCALE-0108",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0109",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 109",
+        "source_capture_ref": "CAP-SCALE-0109",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0110",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 110",
+        "source_capture_ref": "CAP-SCALE-0110",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0111",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 111",
+        "source_capture_ref": "CAP-SCALE-0111",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0112",
+      "input": {
+        "raw_mention": "SND-112",
+        "source_capture_ref": "CAP-SCALE-0112",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0113",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 113",
+        "source_capture_ref": "CAP-SCALE-0113",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0114",
+      "input": {
+        "raw_mention": "合成神经组织114",
+        "source_capture_ref": "CAP-SCALE-0114",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0115",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 115",
+        "source_capture_ref": "CAP-SCALE-0115",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0116",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 116",
+        "source_capture_ref": "CAP-SCALE-0116",
+        "category": "scripts_mixed",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0117",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 117",
+        "source_capture_ref": "CAP-SCALE-0117",
+        "category": "false_merge_guard",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0118",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 118",
+        "source_capture_ref": "CAP-SCALE-0118",
+        "category": "funding_vehicle",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0119",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 119",
+        "source_capture_ref": "CAP-SCALE-0119",
+        "category": "regulator_office",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0120",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 120",
+        "source_capture_ref": "CAP-SCALE-0120",
+        "category": "supplier",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0121",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 121",
+        "source_capture_ref": "CAP-SCALE-0121",
+        "category": "hospital",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0122",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 122",
+        "source_capture_ref": "CAP-SCALE-0122",
+        "category": "relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0123",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 123",
+        "source_capture_ref": "CAP-SCALE-0123",
+        "category": "adversarial_near_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0124",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0124",
+        "category": "adversarial_whitespace",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0125",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 125",
+        "source_capture_ref": "CAP-SCALE-0125",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0126",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0126",
+        "category": "exact_id",
+        "partition": "train",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0127",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0127",
+        "category": "alias",
+        "partition": "train",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0128",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0128",
+        "category": "domain",
+        "partition": "train",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0129",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0129",
+        "category": "normalized_org",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0130",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0130",
+        "category": "system_exact",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0131",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 131",
+        "source_capture_ref": "CAP-SCALE-0131",
+        "category": "rename",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0132",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 132",
+        "source_capture_ref": "CAP-SCALE-0132",
+        "category": "acquisition",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0133",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 133",
+        "source_capture_ref": "CAP-SCALE-0133",
+        "category": "parent_sub",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0134",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 134",
+        "source_capture_ref": "CAP-SCALE-0134",
+        "category": "lab_collision",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0135",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 135",
+        "source_capture_ref": "CAP-SCALE-0135",
+        "category": "product_vs_company",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0136",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 136",
+        "source_capture_ref": "CAP-SCALE-0136",
+        "category": "sponsor_vs_site",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0137",
+      "input": {
+        "raw_mention": "SND-137",
+        "source_capture_ref": "CAP-SCALE-0137",
+        "category": "abbr",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0138",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 138",
+        "source_capture_ref": "CAP-SCALE-0138",
+        "category": "historical_id",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0139",
+      "input": {
+        "raw_mention": "合成神经组织139",
+        "source_capture_ref": "CAP-SCALE-0139",
+        "category": "cjk",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0140",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 140",
+        "source_capture_ref": "CAP-SCALE-0140",
+        "category": "arabic",
+        "partition": "train"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0141",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 141",
+        "source_capture_ref": "CAP-SCALE-0141",
+        "category": "scripts_mixed",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0142",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 142",
+        "source_capture_ref": "CAP-SCALE-0142",
+        "category": "false_merge_guard",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0143",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 143",
+        "source_capture_ref": "CAP-SCALE-0143",
+        "category": "funding_vehicle",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0144",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 144",
+        "source_capture_ref": "CAP-SCALE-0144",
+        "category": "regulator_office",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0145",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 145",
+        "source_capture_ref": "CAP-SCALE-0145",
+        "category": "supplier",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0146",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 146",
+        "source_capture_ref": "CAP-SCALE-0146",
+        "category": "hospital",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0147",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 147",
+        "source_capture_ref": "CAP-SCALE-0147",
+        "category": "relationship_ambiguity",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0148",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 148",
+        "source_capture_ref": "CAP-SCALE-0148",
+        "category": "adversarial_near_collision",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0149",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0149",
+        "category": "adversarial_whitespace",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0150",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 150",
+        "source_capture_ref": "CAP-SCALE-0150",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0151",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0151",
+        "category": "exact_id",
+        "partition": "dev",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0152",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0152",
+        "category": "alias",
+        "partition": "dev",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0153",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0153",
+        "category": "domain",
+        "partition": "dev",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0154",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0154",
+        "category": "normalized_org",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0155",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0155",
+        "category": "system_exact",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0156",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 156",
+        "source_capture_ref": "CAP-SCALE-0156",
+        "category": "rename",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0157",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 157",
+        "source_capture_ref": "CAP-SCALE-0157",
+        "category": "acquisition",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0158",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 158",
+        "source_capture_ref": "CAP-SCALE-0158",
+        "category": "parent_sub",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0159",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 159",
+        "source_capture_ref": "CAP-SCALE-0159",
+        "category": "lab_collision",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0160",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 160",
+        "source_capture_ref": "CAP-SCALE-0160",
+        "category": "product_vs_company",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0161",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 161",
+        "source_capture_ref": "CAP-SCALE-0161",
+        "category": "sponsor_vs_site",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0162",
+      "input": {
+        "raw_mention": "SND-162",
+        "source_capture_ref": "CAP-SCALE-0162",
+        "category": "abbr",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0163",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 163",
+        "source_capture_ref": "CAP-SCALE-0163",
+        "category": "historical_id",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0164",
+      "input": {
+        "raw_mention": "合成神经组织164",
+        "source_capture_ref": "CAP-SCALE-0164",
+        "category": "cjk",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0165",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 165",
+        "source_capture_ref": "CAP-SCALE-0165",
+        "category": "arabic",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0166",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 166",
+        "source_capture_ref": "CAP-SCALE-0166",
+        "category": "scripts_mixed",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0167",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 167",
+        "source_capture_ref": "CAP-SCALE-0167",
+        "category": "false_merge_guard",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0168",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 168",
+        "source_capture_ref": "CAP-SCALE-0168",
+        "category": "funding_vehicle",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0169",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 169",
+        "source_capture_ref": "CAP-SCALE-0169",
+        "category": "regulator_office",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0170",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 170",
+        "source_capture_ref": "CAP-SCALE-0170",
+        "category": "supplier",
+        "partition": "dev"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0171",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 171",
+        "source_capture_ref": "CAP-SCALE-0171",
+        "category": "hospital",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0172",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 172",
+        "source_capture_ref": "CAP-SCALE-0172",
+        "category": "relationship_ambiguity",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0173",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 173",
+        "source_capture_ref": "CAP-SCALE-0173",
+        "category": "adversarial_near_collision",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0174",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0174",
+        "category": "adversarial_whitespace",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0175",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 175",
+        "source_capture_ref": "CAP-SCALE-0175",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    },
+    {
+      "case_id": "SCALE-0176",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0176",
+        "category": "exact_id",
+        "partition": "test",
+        "entity_id": "ENT-SYNTH-ORG-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ENTITY_ID",
+        "auto_confirmed": true,
+        "requires_human_confirmation": false,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0177",
+      "input": {
+        "raw_mention": "Synthetic Neuro",
+        "source_capture_ref": "CAP-SCALE-0177",
+        "category": "alias",
+        "partition": "test",
+        "alias_id": "ALIAS-SYNTH-001"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_ALIAS_ID",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0178",
+      "input": {
+        "raw_mention": "synthetic-neuro.example.org",
+        "source_capture_ref": "CAP-SCALE-0178",
+        "category": "domain",
+        "partition": "test",
+        "identifier_scheme": "DOMAIN",
+        "identifier_value": "synthetic-neuro.example.org"
+      },
+      "expected": {
+        "resolution_state": "EXISTING_ENTITY",
+        "match_layer": "EXACT_IDENTIFIER",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0179",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Inc.",
+        "source_capture_ref": "CAP-SCALE-0179",
+        "category": "normalized_org",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0180",
+      "input": {
+        "raw_mention": "Synthetic Closed-Loop DBS Platform",
+        "source_capture_ref": "CAP-SCALE-0180",
+        "category": "system_exact",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-SYS-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0181",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Holdings 181",
+        "source_capture_ref": "CAP-SCALE-0181",
+        "category": "rename",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0182",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices acquired unit 182",
+        "source_capture_ref": "CAP-SCALE-0182",
+        "category": "acquisition",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0183",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices Research Lab 183",
+        "source_capture_ref": "CAP-SCALE-0183",
+        "category": "parent_sub",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0184",
+      "input": {
+        "raw_mention": "Synthetic Neuro Lab 184",
+        "source_capture_ref": "CAP-SCALE-0184",
+        "category": "lab_collision",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0185",
+      "input": {
+        "raw_mention": "Synthetic Neuro Implant System 185",
+        "source_capture_ref": "CAP-SCALE-0185",
+        "category": "product_vs_company",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0186",
+      "input": {
+        "raw_mention": "Synthetic Neuro University Trial Site 186",
+        "source_capture_ref": "CAP-SCALE-0186",
+        "category": "sponsor_vs_site",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0187",
+      "input": {
+        "raw_mention": "SND-187",
+        "source_capture_ref": "CAP-SCALE-0187",
+        "category": "abbr",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0188",
+      "input": {
+        "raw_mention": "Legacy Synthetic Neuro Devices 188",
+        "source_capture_ref": "CAP-SCALE-0188",
+        "category": "historical_id",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0189",
+      "input": {
+        "raw_mention": "合成神经组织189",
+        "source_capture_ref": "CAP-SCALE-0189",
+        "category": "cjk",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0190",
+      "input": {
+        "raw_mention": "منظمة ألفا العصبية 190",
+        "source_capture_ref": "CAP-SCALE-0190",
+        "category": "arabic",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0191",
+      "input": {
+        "raw_mention": "Synthetic Νeuro Devices 191",
+        "source_capture_ref": "CAP-SCALE-0191",
+        "category": "scripts_mixed",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0192",
+      "input": {
+        "raw_mention": "Unrelated Beta Devices Cohort 192",
+        "source_capture_ref": "CAP-SCALE-0192",
+        "category": "false_merge_guard",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0193",
+      "input": {
+        "raw_mention": "Synthetic Neuro Fund 193",
+        "source_capture_ref": "CAP-SCALE-0193",
+        "category": "funding_vehicle",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0194",
+      "input": {
+        "raw_mention": "Synthetic Device Review Office 194",
+        "source_capture_ref": "CAP-SCALE-0194",
+        "category": "regulator_office",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0195",
+      "input": {
+        "raw_mention": "Synthetic Component Supplier GmbH 195",
+        "source_capture_ref": "CAP-SCALE-0195",
+        "category": "supplier",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0196",
+      "input": {
+        "raw_mention": "Synthetic University Hospital BCI Unit 196",
+        "source_capture_ref": "CAP-SCALE-0196",
+        "category": "hospital",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0197",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices partner clinic 197",
+        "source_capture_ref": "CAP-SCALE-0197",
+        "category": "relationship_ambiguity",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0198",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devicez Inc 198",
+        "source_capture_ref": "CAP-SCALE-0198",
+        "category": "adversarial_near_collision",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true
+      }
+    },
+    {
+      "case_id": "SCALE-0199",
+      "input": {
+        "raw_mention": "  Synthetic Neuro Devices Inc.  ",
+        "source_capture_ref": "CAP-SCALE-0199",
+        "category": "adversarial_whitespace",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "DUPLICATE_CANDIDATE",
+        "match_layer": "NORMALIZED_NAME",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "entity_id": "ENT-SYNTH-ORG-001"
+      }
+    },
+    {
+      "case_id": "SCALE-0200",
+      "input": {
+        "raw_mention": "Synthetic Neuro Devices affiliate clinic 200",
+        "source_capture_ref": "CAP-SCALE-0200",
+        "category": "abstain_relationship_ambiguity",
+        "partition": "test"
+      },
+      "expected": {
+        "resolution_state": "NEW_ENTITY",
+        "match_layer": "NO_MATCH",
+        "auto_confirmed": false,
+        "requires_human_confirmation": true,
+        "abstain": true
+      }
+    }
+  ]
+}
