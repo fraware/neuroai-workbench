@@ -1,0 +1,1 @@
+{"fixture_id":"FIX-63cbbab1ffebc5e0dfc7010bcdb0ffd7","boundary":"Annotation stub for blinded benchmark review; not an authoritative ground-truth record.","expected_fields":[{"field_type":"ENTITY_MENTION","value":"SynthTrial Org 16"},{"field_type":"DATE","value":"2026-03-17"}]}

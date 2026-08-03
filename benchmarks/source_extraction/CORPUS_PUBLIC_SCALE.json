@@ -1,0 +1,3989 @@
+{
+  "corpus_id": "EXTRACTION-PUBLIC-SCALE-001",
+  "version": "1.0",
+  "status": "OFFLINE_ANNOTATED_SCALE",
+  "case_count": 150,
+  "category_counts": {
+    "REGULATORY_RECORD": 22,
+    "CLINICAL_TRIAL": 22,
+    "PUBLICATION": 22,
+    "COMPANY_ANNOUNCEMENT": 21,
+    "OWNERSHIP_FUNDING": 21,
+    "SAFETY_WITHDRAWAL": 21,
+    "CONTRADICTORY_SOURCE": 21
+  },
+  "evaluation_lanes": {
+    "primary": "captured-response-replay",
+    "contract_only": "fake-offline",
+    "contract_label": "CONTRACT_FIXTURE_NON_ACCURACY"
+  },
+  "boundary": "Public/synthetic redistribution-safe annotated extraction corpus for offline evaluation only. Capture proves retrieval of the fixture text; extraction proposals require human disposition and do not establish substantive truth. No private neural data or protected capture bodies.",
+  "cases": [
+    {
+      "fixture_id": "FIX-3e247796576ed4b263bf3339af9025fa",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0001",
+        "content_sha256": "6ae68c33a2c22bc1a34e56b58076974159dea139869662acb8fdf3d117a19e0c",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 1 referencing trial NCT00000001 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3e247796576ed4b263bf3339af9025fa",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ee0703c6bb7e36c3cdbd7786f1e85d61",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0002",
+        "content_sha256": "2350992f00060aaac86da16c682d87eef3bd6bde049cc3879a5663956b9d4837",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000002: Recruiting as of 2026-03-03; sponsor SynthTrial Org 2.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-ee0703c6bb7e36c3cdbd7786f1e85d61",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 2"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-164dc6b02e7a6d49593d51e17257ab20",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0003",
+        "content_sha256": "f4b0afaa3bbdc0bce4c8220357e0438b05e95914a1252e68b5ece201b6407708",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 3: SynthPub Lab 3 reported bounded outcomes for population P-3 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-164dc6b02e7a6d49593d51e17257ab20",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 3"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fd0d78f1045f45e61e48a8303a2a9577",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0004",
+        "content_sha256": "7ecc99829ddf1546bba350512f4a5ae0cb1cd78a93fb743b0589ef720f3cb549",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 4 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fd0d78f1045f45e61e48a8303a2a9577",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 4"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c6d37e1423822db008d4396760c11a28",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0005",
+        "content_sha256": "2ee66edf52ed1a6ea3cece9facb030c35dfe1e6f7472acd492be3fcb1fde1ab9",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 5: SynthCapital Fund 5 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c6d37e1423822db008d4396760c11a28",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 5"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-168267c553f994b2c1562da31ba776fa",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0006",
+        "content_sha256": "0da2c1355483a50c6c9972bec40f7a76724fa2a1da9e95d5a5a295feaf4793b5",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 6: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-168267c553f994b2c1562da31ba776fa",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d9488bcf021f578aaa1219ffaa4e4782",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0007",
+        "content_sha256": "f76447d1145b3671f0a3af3b6329a8f6c711711b7e964db2d8dd436c62fdcd70",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 7 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d9488bcf021f578aaa1219ffaa4e4782",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-046cf1db8834e74f9ba44073bdc9cb02",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0008",
+        "content_sha256": "10813decbc3f63fadf1f27d99816a707dfe7b910a6d0bfb312bc690fe581d516",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 8 referencing trial NCT00000008 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-046cf1db8834e74f9ba44073bdc9cb02",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-98784d7f047838121e88ab00b4740b73",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0009",
+        "content_sha256": "ca45e3c3310bb0981783165cfa0601435a733ceb6463cfd6d5edb4a0964f8a66",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000009: Recruiting as of 2026-03-10; sponsor SynthTrial Org 9.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-98784d7f047838121e88ab00b4740b73",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 9"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e12baa9f31c8ae74464589b06c168f44",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0010",
+        "content_sha256": "cc210620db9936987a313b5c25d76d8eea4c43e5fd944e4b23513aceb3b4d986",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 10: SynthPub Lab 10 reported bounded outcomes for population P-10 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e12baa9f31c8ae74464589b06c168f44",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 10"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c33f0b5e1dda245f2ffcba72d9ec24eb",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0011",
+        "content_sha256": "4e7246c8556756efc58e8317015ad0d710f86d83b5e69694ff29b22effa3604a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 11 announced a limited feasibility study on 2026-03-12. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c33f0b5e1dda245f2ffcba72d9ec24eb",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 11"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-12"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-418492c5498c65ba4449319f719824e8",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0012",
+        "content_sha256": "2e577ee27c6c19e8b88b0b7d31d9bf00294cc42fae0b4e9d0169ee24c140a1e9",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 12: SynthCapital Fund 12 disclosed a minority stake update on 2026-04-13.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-418492c5498c65ba4449319f719824e8",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 12"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-13"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e41800b710a98a6981bc3ae6cad49bcf",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0013",
+        "content_sha256": "41546a2c250a148518f1e1ebbb9ff3514f9b23ad2713f00e6e93572e68ce9655",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 13: SynthSafety Board reported voluntary withdrawal review dated 2026-05-14.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e41800b710a98a6981bc3ae6cad49bcf",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-14"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3d1d4b787c4724e396b3805178ba9fa4",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0014",
+        "content_sha256": "8860a659261ad870b7a4be192026b0481a94c5737d0086a9a5f0404dfdf91d0d",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 14 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3d1d4b787c4724e396b3805178ba9fa4",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1aef0e85ab4710a8a84f1d7503c6f2be",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0015",
+        "content_sha256": "fa348a68f200617845b023b30bff8e819e68155f65849959ae095ea43f0c4878",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 15 referencing trial NCT00000015 on 2026-02-16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1aef0e85ab4710a8a84f1d7503c6f2be",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-16"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-63cbbab1ffebc5e0dfc7010bcdb0ffd7",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0016",
+        "content_sha256": "0c6f08011ab622818fbd9b7ba30c681d497872b568ee5427074f60b1024e992c",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000016: Recruiting as of 2026-03-17; sponsor SynthTrial Org 16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-63cbbab1ffebc5e0dfc7010bcdb0ffd7",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 16"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-17"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-428c163f53943622b67cbcc919279f26",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0017",
+        "content_sha256": "61a4d05fa858ade8bdd6a92500d809df123b33b4020ed54f7ad5371ab2e56d5e",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 17: SynthPub Lab 17 reported bounded outcomes for population P-17 on 2026-01-18.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-428c163f53943622b67cbcc919279f26",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 17"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-18"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a427d6e0cfc974a16f750d63e213aba8",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0018",
+        "content_sha256": "a72ef8ce2c979d0b315e054748bff7b0c102c545a0ff8b0a076e221f5313544b",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 18 announced a limited feasibility study on 2026-03-19. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-a427d6e0cfc974a16f750d63e213aba8",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 18"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-19"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a7dcd98c74d1c3a4a31935e1c05dda2c",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0019",
+        "content_sha256": "23799ff6e644cc0b94a7bcf86cb8bf9c4c74bc609edfea27a28222c93cfecb7d",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 19: SynthCapital Fund 19 disclosed a minority stake update on 2026-04-20.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-a7dcd98c74d1c3a4a31935e1c05dda2c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 19"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-20"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4a71b649a65bab1e1fa6e99536b4cf38",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0020",
+        "content_sha256": "fa0944926ae0bbd202c9e7218287c56f21e7a058832ab9698c4545546701ac78",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 20: SynthSafety Board reported voluntary withdrawal review dated 2026-05-21.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-4a71b649a65bab1e1fa6e99536b4cf38",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-21"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e390282519ea46c9fc68de858087f851",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0021",
+        "content_sha256": "82595186ad9281315d195cbcbd00385530be50bf6468ac31c7d55a8924878780",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 21 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e390282519ea46c9fc68de858087f851",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-971086b1075b9ce2c7e56df28b28a862",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0022",
+        "content_sha256": "8437821fccd8be76d7077171d0f703a9e17cc36deb6cc5c1a011e646f88b1816",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 22 referencing trial NCT00000022 on 2026-02-23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-971086b1075b9ce2c7e56df28b28a862",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-23"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1b216bee66768ec487b48f6f4ba9fc02",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0023",
+        "content_sha256": "7cfc9eef0f799f73b0df1c05deb8f2670fd3df1f9c97ce2146e4b4cb30034f2e",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000023: Recruiting as of 2026-03-24; sponsor SynthTrial Org 23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1b216bee66768ec487b48f6f4ba9fc02",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 23"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-24"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d9fbce79ec24d283204b92f93d9c2e19",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0024",
+        "content_sha256": "ad6be01848f051154066397ab059a139e5fd823266359df37af6f51ac16d242b",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 24: SynthPub Lab 24 reported bounded outcomes for population P-24 on 2026-01-25.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d9fbce79ec24d283204b92f93d9c2e19",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 24"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-25"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d24980ae1a20a7503d13b07239aa5041",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0025",
+        "content_sha256": "67a5330819cc5b5e7718971b4b153a3aec0eb0df7d843e93af9034640420a766",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 25 announced a limited feasibility study on 2026-03-26. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d24980ae1a20a7503d13b07239aa5041",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 25"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-26"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-61814052302bd77ab07297d1ff7b05e5",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0026",
+        "content_sha256": "b94aefc034b2cf7c1109472aec04e6577b3e47fa5908bcd14cd7b5cef397bc1d",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 26: SynthCapital Fund 26 disclosed a minority stake update on 2026-04-27.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-61814052302bd77ab07297d1ff7b05e5",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 26"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-27"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d71b67ecd7b0ae12390f675ef3cd7960",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0027",
+        "content_sha256": "118b85a1350736aa1868d88c21ae8c657dde3ef6ec9e8a9e2310d369e0cbbffb",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 27: SynthSafety Board reported voluntary withdrawal review dated 2026-05-28.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d71b67ecd7b0ae12390f675ef3cd7960",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-28"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fabe23857e802c5de33bce7fe9bd25f0",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0028",
+        "content_sha256": "60ce4a8b96688d90fcfe265636a86f473a21b5b0d7c2a03c24778fe13f9fa0d8",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 28 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fabe23857e802c5de33bce7fe9bd25f0",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-34a5f13f139ade8a619fc86be894e3d1",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0029",
+        "content_sha256": "e19d74083ec56860f6599dcd69697089d7309cf70ab79f3dbb2d6e4555d63f86",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 29 referencing trial NCT00000029 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-34a5f13f139ade8a619fc86be894e3d1",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-665804297f22ec8c22a1667f974b523e",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0030",
+        "content_sha256": "1300cf1d975253b372c5ebab6ff781c3d6a8c4f82d62909144148a2377faba7b",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000030: Recruiting as of 2026-03-03; sponsor SynthTrial Org 30.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-665804297f22ec8c22a1667f974b523e",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 30"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3d570112e10ec05295d1290e03baaa92",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0031",
+        "content_sha256": "b0d9630e212bdd1d5296f1af8682355859a06658df620be13acf2ba29b708212",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 31: SynthPub Lab 31 reported bounded outcomes for population P-31 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3d570112e10ec05295d1290e03baaa92",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 31"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-76aec9f6e888198b9914117729dbc408",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0032",
+        "content_sha256": "8bf75635c9dead1f816cc6456f9dd7412ebcee702e862e6845d1c82e0ff584e5",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 32 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-76aec9f6e888198b9914117729dbc408",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 32"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3bbd0c5121a27f03e21bb375d49e4c7f",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0033",
+        "content_sha256": "f0f9b74eeebbd617b88be71cc147cf01fc1cbe0014c592f46b378b44c2317298",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 33: SynthCapital Fund 33 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3bbd0c5121a27f03e21bb375d49e4c7f",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 33"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5eafe1ddb3111131f56a0a587d0382e3",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0034",
+        "content_sha256": "37131ca657a7f632dcf0a48a14f122510c51b908b8560cbf0ba5bbcd2f394373",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 34: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5eafe1ddb3111131f56a0a587d0382e3",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1472244bb85369b49f4af540d10603cb",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0035",
+        "content_sha256": "27abde58e56692d92f8156e493a531f3a17f707d2b5f2da17e8d22a4807982a0",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 35 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1472244bb85369b49f4af540d10603cb",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fd4ce749c165cf3dcd343a6c49976f24",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0036",
+        "content_sha256": "bbf429bd5c32fba83d7c170bd068f00d0328c89f504c8eabf079606399388323",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 36 referencing trial NCT00000036 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fd4ce749c165cf3dcd343a6c49976f24",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2a8ae327f1f89b595efc9828baa94fad",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0037",
+        "content_sha256": "4a660202cda247c6b5f6e697f6ae349afa82e8b121bb3182dff6e49bf9aeaf62",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000037: Recruiting as of 2026-03-10; sponsor SynthTrial Org 37.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-2a8ae327f1f89b595efc9828baa94fad",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 37"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1c6a440b1c1157c4dad5413ee8970ee2",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0038",
+        "content_sha256": "dd97ad2abe2d646813fe1e22f6752ebe7fc3b3b794e487f515eb86950bad8ad4",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 38: SynthPub Lab 38 reported bounded outcomes for population P-38 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1c6a440b1c1157c4dad5413ee8970ee2",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 38"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fa3f603b9026013ec076d439624c9b10",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0039",
+        "content_sha256": "3468a9d6dd53b7c5c0762f7878f7c0c6d4cbbd6ee65e9f5725c191f486d10dc5",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 39 announced a limited feasibility study on 2026-03-12. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fa3f603b9026013ec076d439624c9b10",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 39"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-12"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4e6c5d3288dc7313ad7eb3e3ebc82185",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0040",
+        "content_sha256": "46c10fd3c67cd1d362da00a65ee43e57df3451bb435f524dc9afda030d68eda6",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 40: SynthCapital Fund 40 disclosed a minority stake update on 2026-04-13.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-4e6c5d3288dc7313ad7eb3e3ebc82185",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 40"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-13"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ce4f20ea5acaf9042107cc3cc2e3c5af",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0041",
+        "content_sha256": "4ff1964471858a4de25d2092b926007195f3e7087a83de9c14a283bedf85e89b",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 41: SynthSafety Board reported voluntary withdrawal review dated 2026-05-14.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-ce4f20ea5acaf9042107cc3cc2e3c5af",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-14"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fb68fbc3e168ed7fcf5c2d65fbb1a27d",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0042",
+        "content_sha256": "c230bbb99d4a9afc9e687c5f8d92be2825f3159a61a9e47a46c4f223f3cbda6b",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 42 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fb68fbc3e168ed7fcf5c2d65fbb1a27d",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f28bcfb3ba603e9a941552948b084c69",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0043",
+        "content_sha256": "603766094da19759fedd64c340b902b7fb5a18cb3b87cc16706f1d65184e4e4d",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 43 referencing trial NCT00000043 on 2026-02-16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-f28bcfb3ba603e9a941552948b084c69",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-16"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-722ef05b5531b6924534f3560854b8bf",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0044",
+        "content_sha256": "54f3c0d851ccc501d495e8d69ce3ad824fa75e78715cbf825801038559d40ef2",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000044: Recruiting as of 2026-03-17; sponsor SynthTrial Org 44.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-722ef05b5531b6924534f3560854b8bf",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 44"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-17"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3b76e74f243b5312f5a1eeb243b28ac4",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0045",
+        "content_sha256": "4c02576ed44b95e62b6d1c0b1267ab6103c9bb3e9f5aee8bfe5e69b7ed1a2b37",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 45: SynthPub Lab 45 reported bounded outcomes for population P-45 on 2026-01-18.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3b76e74f243b5312f5a1eeb243b28ac4",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 45"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-18"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6950d4843f75391a199efe025f343024",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0046",
+        "content_sha256": "4cbb781d65a336af4bb22eee40d2fb941a909a4ed7daff07d4c222a01bde197b",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 46 announced a limited feasibility study on 2026-03-19. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-6950d4843f75391a199efe025f343024",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 46"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-19"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-07187b01cfef137162608426c95deed3",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0047",
+        "content_sha256": "4ef9a5af68d62d15184cae5d6c7b42d8f6982ab628a9ce847c2ab21ededc44cf",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 47: SynthCapital Fund 47 disclosed a minority stake update on 2026-04-20.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-07187b01cfef137162608426c95deed3",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 47"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-20"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1f758051f14d5a2cd27a1dd09feb51b9",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0048",
+        "content_sha256": "c348afd0d5106db2b3f5c45538f73edad29b6f9205cca23d263835ab87d0f9b5",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 48: SynthSafety Board reported voluntary withdrawal review dated 2026-05-21.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1f758051f14d5a2cd27a1dd09feb51b9",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-21"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-256c554128ad3c54a5c983c0b070e5c7",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0049",
+        "content_sha256": "8fad0993ed0d6a57d0cb681ae47ba55b5bb9716da938d82f34a908eb11bf0dab",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 49 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-256c554128ad3c54a5c983c0b070e5c7",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-0a231b3de898df901ce4999a199824da",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0050",
+        "content_sha256": "957c1d84161649c6af98cdbedc51debf1cd80b445a2281b08616afa493323f44",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 50 referencing trial NCT00000050 on 2026-02-23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-0a231b3de898df901ce4999a199824da",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-23"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9ca6e889a946c36276a13002c9693738",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0051",
+        "content_sha256": "658c4a1488bb493551fdc440677b0027df4f014a83bb9c3ffcc80bb6255e5257",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000051: Recruiting as of 2026-03-24; sponsor SynthTrial Org 51.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-9ca6e889a946c36276a13002c9693738",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 51"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-24"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c9e2730fe708b7c398852cf50580b4f5",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0052",
+        "content_sha256": "1db0de0052ec11055a43397422f33849f345b85f2b91c83efb75d378f04383bf",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 52: SynthPub Lab 52 reported bounded outcomes for population P-52 on 2026-01-25.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c9e2730fe708b7c398852cf50580b4f5",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 52"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-25"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a8aa05118e121d3e8866440e919e2760",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0053",
+        "content_sha256": "de1f48681dc9410e1526ce06d3f397f41c629dd2a5230216b6a07770ad19cd80",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 53 announced a limited feasibility study on 2026-03-26. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-a8aa05118e121d3e8866440e919e2760",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 53"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-26"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-bc675a9a6c5bc5a63996875e165c3ab8",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0054",
+        "content_sha256": "272f8b8150dce5a8b0a48330c1bb76616571380b488f0752f82b32fa3b12556f",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 54: SynthCapital Fund 54 disclosed a minority stake update on 2026-04-27.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-bc675a9a6c5bc5a63996875e165c3ab8",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 54"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-27"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9ad0050808711b4acc26d988186e8d83",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0055",
+        "content_sha256": "b5911acbdafc4262df6265b2f8278cbf895507db564ee836382cb2a1c804b249",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 55: SynthSafety Board reported voluntary withdrawal review dated 2026-05-28.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-9ad0050808711b4acc26d988186e8d83",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-28"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d58d6712be72b1ddb15a19b34abbbc14",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0056",
+        "content_sha256": "9ec587e5d20609b9e38d02d67cec0bea2b334f8c829652fab21bd6fe2452eb02",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 56 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d58d6712be72b1ddb15a19b34abbbc14",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6482ad3839b998bc6d9d93472adff215",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0057",
+        "content_sha256": "6025b4734a82883f24782ec41a57270e5d452052b8dc7af9492dc72966a888a3",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 57 referencing trial NCT00000057 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-6482ad3839b998bc6d9d93472adff215",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8de06e26b37655439909c69a3165ee5e",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0058",
+        "content_sha256": "f69a034077494272e14be86107a907b5c29efa92dd362a5c124741033e717fcc",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000058: Recruiting as of 2026-03-03; sponsor SynthTrial Org 58.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-8de06e26b37655439909c69a3165ee5e",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 58"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-433516c8196519d6d22578c530bed305",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0059",
+        "content_sha256": "4cfd259d8100fbbea97fe9d29f28a2aed7616856047ae7d125ccc15fc6a14989",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 59: SynthPub Lab 59 reported bounded outcomes for population P-59 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-433516c8196519d6d22578c530bed305",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 59"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5dc749843fac66602ebf8bdcadb10a9e",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0060",
+        "content_sha256": "ea8342ab05be83d78c71556a31bebf8849b0bf1dfa67f7b46fae27acc001ac4f",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 60 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5dc749843fac66602ebf8bdcadb10a9e",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 60"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f05efc04b5b6df2bdc08d0afb4410b31",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0061",
+        "content_sha256": "02cc54cdf670862d7542780c089e51120128bbc2bf1daa01a024643e3c4dbf59",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 61: SynthCapital Fund 61 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-f05efc04b5b6df2bdc08d0afb4410b31",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 61"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-392ace5d95ebbf1da131fb10c1a8acc6",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0062",
+        "content_sha256": "aedf4b6c75e7ad065aa8e8e077cbb30aa0ddddfefc6ff3e1019146085a652211",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 62: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-392ace5d95ebbf1da131fb10c1a8acc6",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9b6d9b165c793228221b5174e89ea125",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0063",
+        "content_sha256": "37afbed7f064e8721570bb0bd872ab197dd9a9f0e78bfc962ff403d86c0ddc59",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 63 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-9b6d9b165c793228221b5174e89ea125",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-013bdcb00d539843fb627f44bccf0143",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0064",
+        "content_sha256": "bbfb9ff40e168fa5ba16d7b75c47c7a4ca5e25f159125d2124886c8065e73515",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 64 referencing trial NCT00000064 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-013bdcb00d539843fb627f44bccf0143",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2d6483b480eae58a65f4fc2d4b93dd8e",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0065",
+        "content_sha256": "356f3ca4981d0eadebe542835c8c710aebfd2f86c6e570725f2215154f071cb1",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000065: Recruiting as of 2026-03-10; sponsor SynthTrial Org 65.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-2d6483b480eae58a65f4fc2d4b93dd8e",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 65"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-93ca0d82ab251ecea874cc84efd16520",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0066",
+        "content_sha256": "6090dbf45a30c18db9240aee7da5058774abc2ec937981b51483f1a893400443",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 66: SynthPub Lab 66 reported bounded outcomes for population P-66 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-93ca0d82ab251ecea874cc84efd16520",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 66"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-63957171acc31d06c60aff954b49cc1c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0067",
+        "content_sha256": "e4e5c33a6ca833bbaf579bfb3f2d8db8a58cd2322824d0508183ef9474567985",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 67 announced a limited feasibility study on 2026-03-12. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-63957171acc31d06c60aff954b49cc1c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 67"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-12"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-cb78634734c6de4d2fe29d2be81c20af",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0068",
+        "content_sha256": "6ee6b27181b3915375a77ff798d23c01ffefae20ad643d0c0c69633eae9efd54",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 68: SynthCapital Fund 68 disclosed a minority stake update on 2026-04-13.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-cb78634734c6de4d2fe29d2be81c20af",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 68"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-13"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e1c00b372524d3454abc83af8fe01b93",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0069",
+        "content_sha256": "55ab22aa08e0e270589caf261c4837f55212cc0738488ffb9ec30c20d056696f",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 69: SynthSafety Board reported voluntary withdrawal review dated 2026-05-14.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e1c00b372524d3454abc83af8fe01b93",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-14"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4b111d9885eb8ac806c6187bedb18436",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0070",
+        "content_sha256": "e34078c8dde8f654d5e8f617678fecbaaaa47d7f6d9490fcbce7f08ec09046bc",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 70 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-4b111d9885eb8ac806c6187bedb18436",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8f84f3be1cb891caf8162611477b413d",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0071",
+        "content_sha256": "fe1c449897e97918d604440c2fc172bbc241247d6f2d8c56e21f9d5077b278de",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 71 referencing trial NCT00000071 on 2026-02-16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-8f84f3be1cb891caf8162611477b413d",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-16"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5521c04338edf5cba0f7c61cf411b526",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0072",
+        "content_sha256": "7996db672c9173b3ec8e285ab668f32e2c0e355234b7e39b93632010997f601e",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000072: Recruiting as of 2026-03-17; sponsor SynthTrial Org 72.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5521c04338edf5cba0f7c61cf411b526",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 72"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-17"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6c865268f598ff17aa58cc32e30c8859",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0073",
+        "content_sha256": "dc66570f4fc8bea395de949ec80b82b3b76bdeb97eba842413afdeedede2654d",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 73: SynthPub Lab 73 reported bounded outcomes for population P-73 on 2026-01-18.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-6c865268f598ff17aa58cc32e30c8859",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 73"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-18"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9229d89ae2166324f31f8a7e91e655b7",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0074",
+        "content_sha256": "db8840de55163c06d5781dbdde320115ede2d257a8a42eb6a576b31414ccfd42",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 74 announced a limited feasibility study on 2026-03-19. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-9229d89ae2166324f31f8a7e91e655b7",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 74"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-19"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-887978268a3516f96537c720c4471a62",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0075",
+        "content_sha256": "7feabf5401c8fc13f35abf3c9db3adc8089027fb76f9e0e57c4dc082fe95599f",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 75: SynthCapital Fund 75 disclosed a minority stake update on 2026-04-20.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-887978268a3516f96537c720c4471a62",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 75"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-20"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-51d522e70e860a8ad1fcdefdbea85d42",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0076",
+        "content_sha256": "1d3237b15122d1fda5cfec4213df3544fef84d9dc8597399e6c2206361b81c1d",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 76: SynthSafety Board reported voluntary withdrawal review dated 2026-05-21.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-51d522e70e860a8ad1fcdefdbea85d42",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-21"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-599cfad071c5cabda0a2dc0c67d4c991",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0077",
+        "content_sha256": "dcb9f3a130f57ca3c691aeb90d984050120468b709725a3cecc093568e98abb0",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 77 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-599cfad071c5cabda0a2dc0c67d4c991",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d1df7d1f4862b67eacf248ab9ae56326",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0078",
+        "content_sha256": "4f1a6168e2f730345718e724bccb03fed42ea7f87af5802ca33adb315575d888",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 78 referencing trial NCT00000078 on 2026-02-23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d1df7d1f4862b67eacf248ab9ae56326",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-23"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ce84cc9384499b8fde422cf67265549d",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0079",
+        "content_sha256": "d1f68ab57353fab06874a06f8d16710abf67a87cd0edd6405005a274c81a6ffb",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000079: Recruiting as of 2026-03-24; sponsor SynthTrial Org 79.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-ce84cc9384499b8fde422cf67265549d",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 79"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-24"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b11da06b897b3cc3ba8cf0ddacf488eb",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0080",
+        "content_sha256": "23efa435626f59174f6ce12bdd8f632a2459403171d11f140b3126cc6c4ff10d",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 80: SynthPub Lab 80 reported bounded outcomes for population P-80 on 2026-01-25.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-b11da06b897b3cc3ba8cf0ddacf488eb",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 80"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-25"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-129c25b162e5c41552323ec56fb94d95",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0081",
+        "content_sha256": "6239e47a0757b7524b83193dd7f2a841f280fd00871ae9094306c88ff2f230e9",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 81 announced a limited feasibility study on 2026-03-26. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-129c25b162e5c41552323ec56fb94d95",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 81"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-26"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-09b0907db06ea63303ae69dc203ae3f1",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0082",
+        "content_sha256": "e5cd74867880df312bfc9aea6a0057316e9c4288a1a1161f5fc5d3c84aa5996c",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 82: SynthCapital Fund 82 disclosed a minority stake update on 2026-04-27.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-09b0907db06ea63303ae69dc203ae3f1",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 82"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-27"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f5d29d825113650bdd77c038a7b958fd",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0083",
+        "content_sha256": "e5dace65cac5dccef5d63ba8512952a04a7caadab6420e16a3cad19db0543f58",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 83: SynthSafety Board reported voluntary withdrawal review dated 2026-05-28.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-f5d29d825113650bdd77c038a7b958fd",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-28"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c1f8066b57c5564340ba09028506841a",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0084",
+        "content_sha256": "0b6e61f4549645f111aa99b42e512d299a67b54b65c254393cb40ba8b28fe0dc",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 84 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c1f8066b57c5564340ba09028506841a",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-02aac325e24cc6dbcb0d28fcb3659e73",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0085",
+        "content_sha256": "8e4da974b179b62e8c5ed6ba6c56a63bcf31508e2d9e817679d001e6d698e91e",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 85 referencing trial NCT00000085 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-02aac325e24cc6dbcb0d28fcb3659e73",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4a0ebc2bc7fca6a4327ac3f5b00056c7",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0086",
+        "content_sha256": "4ccfffd04b30af2d0a2c37e8dbca6dce0eb6348a9e6c674a4c63b2d7eedf2b38",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000086: Recruiting as of 2026-03-03; sponsor SynthTrial Org 86.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-4a0ebc2bc7fca6a4327ac3f5b00056c7",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 86"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-52eb1b667ef09613a22a48e773bf959d",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0087",
+        "content_sha256": "d34d874c596e0b2d940a2477519de894c5006c3e01e3963cd142fc8fecca8d8c",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 87: SynthPub Lab 87 reported bounded outcomes for population P-87 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-52eb1b667ef09613a22a48e773bf959d",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 87"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3e4ce26b916a45657dcdf842cbe9d275",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0088",
+        "content_sha256": "08e4781d7e1c663ce4c69e6f0bdf1969b26ce9006d18e053a7479f7bcd1b4a5e",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 88 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3e4ce26b916a45657dcdf842cbe9d275",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 88"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-eb6e50a080db892fd686a688969110bf",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0089",
+        "content_sha256": "3cd08f300f9ec29988f282fe36622978e2dc7015f22a012e46b8caaf0650426a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 89: SynthCapital Fund 89 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-eb6e50a080db892fd686a688969110bf",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 89"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-295f6d65ba36b1c6e50fa7297f89d1af",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0090",
+        "content_sha256": "3fbecfbc5f54e86c51053ce606ffb1f831ac8ca6f05dedfd9bc8ef53ea64c3a3",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 90: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-295f6d65ba36b1c6e50fa7297f89d1af",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-57f2dbbf0d47f01ceeb8357c9249321a",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0091",
+        "content_sha256": "3a9cf59847f604a661000bc36d5ffc52a768ce772bfcd7881aa29cf7a0daabb7",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 91 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-57f2dbbf0d47f01ceeb8357c9249321a",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-da5f5e3b5605b5072df91e8e807ab7af",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0092",
+        "content_sha256": "f7b9e68f1e9f4c7a2cf9bedee6bf6c08790e791e0f0e86d779c2c10eb94dfebd",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 92 referencing trial NCT00000092 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-da5f5e3b5605b5072df91e8e807ab7af",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6d4b16afae72647fb930416ff3a54efe",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0093",
+        "content_sha256": "b2747f475eb3f90f7d3509a0c139d53af3ba54b8cd346c7d31765769e9ffac0c",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000093: Recruiting as of 2026-03-10; sponsor SynthTrial Org 93.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-6d4b16afae72647fb930416ff3a54efe",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 93"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b0582644a2372b443eea2a68c0d02aae",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0094",
+        "content_sha256": "f031601d40bad1eb4602915bf6976635c5a3e1f35159da05c46497a55d99ae09",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 94: SynthPub Lab 94 reported bounded outcomes for population P-94 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-b0582644a2372b443eea2a68c0d02aae",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 94"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-018c122b14ac3cab1de3b40ca046f310",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0095",
+        "content_sha256": "66427eb091157afd9fbb0d234f8c8e90872ed16c464f8ecb5e300f090cb5fd42",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 95 announced a limited feasibility study on 2026-03-12. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-018c122b14ac3cab1de3b40ca046f310",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 95"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-12"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1b90b42f6db51bfd1736bbee95469a9c",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0096",
+        "content_sha256": "2d7e6194fec32492f104d64a609f64dc8a7e72e8081ec3daba157ad9297ccc13",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 96: SynthCapital Fund 96 disclosed a minority stake update on 2026-04-13.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1b90b42f6db51bfd1736bbee95469a9c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 96"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-13"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8946208b227291e4d27d7d08182f2856",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0097",
+        "content_sha256": "7fb7dc90ffb132f70bb457a5233314a2da04799a0ebc1e017850d207a696b9df",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 97: SynthSafety Board reported voluntary withdrawal review dated 2026-05-14.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-8946208b227291e4d27d7d08182f2856",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-14"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-808767f603d2469b8c75af3e0c58669b",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0098",
+        "content_sha256": "ddaa8909b29139094ed94262eb6a57077880cc35157f8d97c4af6416a7230ad3",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 98 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-808767f603d2469b8c75af3e0c58669b",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-79b6a29e0d4c52eef03ac7fbe2a99c68",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0099",
+        "content_sha256": "859432b74fb4d1fd8ee21009cdd3d9305ac7846ba9d77e8aeeefb69a364b11cd",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 99 referencing trial NCT00000099 on 2026-02-16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-79b6a29e0d4c52eef03ac7fbe2a99c68",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-16"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-13521be97bfad198c0c1487d16b398c1",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0100",
+        "content_sha256": "fa93fa536bd69c667da87b7440eb963b6b27bd058db1f76d973644a7328aa739",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000100: Recruiting as of 2026-03-17; sponsor SynthTrial Org 100.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-13521be97bfad198c0c1487d16b398c1",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 100"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-17"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fba3863b960412aac31baf9641428014",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0101",
+        "content_sha256": "cf1c18a6736cc6508fe3ac39d09030a63610b1b69ef5023da30d0624afa983e5",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 101: SynthPub Lab 101 reported bounded outcomes for population P-101 on 2026-01-18.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fba3863b960412aac31baf9641428014",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 101"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-18"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-86532fe4fdb432ea486957e2b4ee8fc9",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0102",
+        "content_sha256": "5e6f16cedfdb0d0ee041260c059167722eae2b7ab95083d6793ffe5ee468dd7a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 102 announced a limited feasibility study on 2026-03-19. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-86532fe4fdb432ea486957e2b4ee8fc9",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 102"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-19"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-62eff3eae73454949a4d270039651d8e",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0103",
+        "content_sha256": "dc9c59d3557257bb2791bd357f33ce27c4f536cbe1a4417763f8267540febd35",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 103: SynthCapital Fund 103 disclosed a minority stake update on 2026-04-20.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-62eff3eae73454949a4d270039651d8e",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 103"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-20"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-daacc4a15c004e100f3471a0e34276a6",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0104",
+        "content_sha256": "8de412ff84469d817d0c83dd057da0b91b658991fd27c86b130bc615a851fcd2",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 104: SynthSafety Board reported voluntary withdrawal review dated 2026-05-21.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-daacc4a15c004e100f3471a0e34276a6",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-21"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c8ec7a6b41f1a16443bd3d55ad809191",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0105",
+        "content_sha256": "868524478c8935835614cafed93e9e4c297232fdfa2ab1f70477ea6883978a2a",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 105 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c8ec7a6b41f1a16443bd3d55ad809191",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-066959ee3132fefe97027cb636735481",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0106",
+        "content_sha256": "40207426d2b49e2d9cbf702c36146ad7ffb0920b628f5ae28edde968d6f44dad",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 106 referencing trial NCT00000106 on 2026-02-23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-066959ee3132fefe97027cb636735481",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-23"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5c04a07bfc6b65a579190cba5d4c8c8a",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0107",
+        "content_sha256": "a1b2f3d26e64c8c29b4d767a66f46c0f79c7c23cd03aec1588593cb8578c2386",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000107: Recruiting as of 2026-03-24; sponsor SynthTrial Org 107.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5c04a07bfc6b65a579190cba5d4c8c8a",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 107"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-24"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-760d724654ed1bab5e7b4fb15bc6a232",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0108",
+        "content_sha256": "713d5a60b0a7854c2e0babb30e90beb96007e5a2414b1609b691684859f12c97",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 108: SynthPub Lab 108 reported bounded outcomes for population P-108 on 2026-01-25.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-760d724654ed1bab5e7b4fb15bc6a232",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 108"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-25"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-48ec1a4d8d6f0d84f8e533741f59d823",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0109",
+        "content_sha256": "d1a2d420da5b2e8a078844d69a18cc41995f1ec704723251819d85b24c93c27f",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 109 announced a limited feasibility study on 2026-03-26. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-48ec1a4d8d6f0d84f8e533741f59d823",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 109"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-26"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-dab70732d403c28785f32ab12f995ea8",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0110",
+        "content_sha256": "a1f9ad316a6cc9e32f9f2c754d04bbff2e5b95f081285646696938aa9569d960",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 110: SynthCapital Fund 110 disclosed a minority stake update on 2026-04-27.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-dab70732d403c28785f32ab12f995ea8",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 110"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-27"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5b34ca443ee06c199d5a3ea0fdc19693",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0111",
+        "content_sha256": "0a3a22dd33adbb9758e27a06e0719b16dacb446a70512d9fbe795f91e594bc8c",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 111: SynthSafety Board reported voluntary withdrawal review dated 2026-05-28.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5b34ca443ee06c199d5a3ea0fdc19693",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-28"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d53afcf6b4ca064ffe03e2a0a299ad85",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0112",
+        "content_sha256": "218d99f57a1bea36874718317a6e6ce52918e0117b54e7be30e2e7380c49e48f",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 112 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d53afcf6b4ca064ffe03e2a0a299ad85",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-480dda89c7a4b1081ad3b42941917fa9",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0113",
+        "content_sha256": "40ff963d498fcf4b0ff97fac5061ad13ddca1da8d32e8aadd47527b5631e6b4b",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 113 referencing trial NCT00000113 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-480dda89c7a4b1081ad3b42941917fa9",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-eef11423984f5adbae13b7fe74817475",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0114",
+        "content_sha256": "caa93a4549c04491dd90f02d0401e9100b4534389363155f2628f06e071283b1",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000114: Recruiting as of 2026-03-03; sponsor SynthTrial Org 114.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-eef11423984f5adbae13b7fe74817475",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 114"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-925024d65d225d6d0b48e5e815318913",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0115",
+        "content_sha256": "8cdb1b9edc006bf9d2c34f5872ab86c550652fce609025d138d6fa59f4028344",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 115: SynthPub Lab 115 reported bounded outcomes for population P-115 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-925024d65d225d6d0b48e5e815318913",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 115"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8f375a6a02f0b28cceb053a111df7a25",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0116",
+        "content_sha256": "bb240b2eab0c032826fae965c84272f84c4769953269185a4b3737b7ca6844fe",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 116 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-8f375a6a02f0b28cceb053a111df7a25",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 116"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-61a12055eb75245731bcc8b2bceb5d54",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0117",
+        "content_sha256": "a2df247e7292ba31ec24d073021238bedfdc1ec109f96eac72fa44384403171a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 117: SynthCapital Fund 117 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-61a12055eb75245731bcc8b2bceb5d54",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 117"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-168790c204accdd8ebc80b71d1e9c998",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0118",
+        "content_sha256": "360c8d104417d98d946b0e408523b87362a2f2b59aaf2bffdfaa6bd8f2b0fb2f",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 118: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-168790c204accdd8ebc80b71d1e9c998",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1d652e181b2e878faadea2a22475c967",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0119",
+        "content_sha256": "6a5a415a15742a82f0046dadb4f3ddec2ca71195cda7e68acc881b4f51d5d12a",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 119 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1d652e181b2e878faadea2a22475c967",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1afe2d86cb0ae59dc1fcf29407ed2300",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0120",
+        "content_sha256": "fe724511486557cd18bba86c003b8b11bc69ba35785f767eb0675efe0cd53e90",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 120 referencing trial NCT00000120 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1afe2d86cb0ae59dc1fcf29407ed2300",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-79f6f3f3a06ce7429a021e10cf7f16d3",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0121",
+        "content_sha256": "9b2c2a8f1b12d7fa7a44d463e2b37960bebd24357f60c761c264dd18a1419a3f",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000121: Recruiting as of 2026-03-10; sponsor SynthTrial Org 121.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-79f6f3f3a06ce7429a021e10cf7f16d3",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 121"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d21e03fcd180e8a2060ef69f44b0caad",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0122",
+        "content_sha256": "562f9c7635f1b9bb1064dba4d152125944bdcd7b863e125c8994589c7b4d7043",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 122: SynthPub Lab 122 reported bounded outcomes for population P-122 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-d21e03fcd180e8a2060ef69f44b0caad",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 122"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5d1fff969f082ab1c9ed74c8a9aa164c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0123",
+        "content_sha256": "9501e7570a41aea96e08e0fb8161820f43989f68ead98cf9c4f6e9978f21dd41",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 123 announced a limited feasibility study on 2026-03-12. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5d1fff969f082ab1c9ed74c8a9aa164c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 123"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-12"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-bd59c55f0211c67448365a5827e03ac6",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0124",
+        "content_sha256": "95b31c2980eab3da8884864a57c84cc5a8cac9e1d4f1418e04bf4a35bdd796f6",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 124: SynthCapital Fund 124 disclosed a minority stake update on 2026-04-13.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-bd59c55f0211c67448365a5827e03ac6",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 124"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-13"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6aeb0f715e97002ceb2135be001f23b9",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0125",
+        "content_sha256": "0a4cb2836949500f1a8b483b069e7aa52939fccb50f9b845f67a12396a644daa",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 125: SynthSafety Board reported voluntary withdrawal review dated 2026-05-14.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-6aeb0f715e97002ceb2135be001f23b9",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-14"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-56c240e6fe010872a6d837ec185002dc",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0126",
+        "content_sha256": "de1a831560e74c6e5b9f2d8cafe42b1c63fb7b4ca23ddd8dce9925cc8e5c499f",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 126 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-56c240e6fe010872a6d837ec185002dc",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-cec95481cc6aa2e1e28e227c24c00a89",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0127",
+        "content_sha256": "8d762c133d167c0d1c0ea266c568b54520532bb1da3e51d94878c8989140a435",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 127 referencing trial NCT00000127 on 2026-02-16.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-cec95481cc6aa2e1e28e227c24c00a89",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-16"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5e4c1dfd35a6c292db10fbb9c1a978ce",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0128",
+        "content_sha256": "16ec3216a90c26f577f31d49b4ef71c39a1e9efab3dac1b3160a21dacc12b1d2",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000128: Recruiting as of 2026-03-17; sponsor SynthTrial Org 128.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5e4c1dfd35a6c292db10fbb9c1a978ce",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 128"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-17"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c980f3c19e2d4a18e5d6da9fc11d5896",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0129",
+        "content_sha256": "11edd92c14da6c20a19c5ea4654d8e22cdd204e0adf64ecced64c3ec5a2793d9",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 129: SynthPub Lab 129 reported bounded outcomes for population P-129 on 2026-01-18.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c980f3c19e2d4a18e5d6da9fc11d5896",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 129"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-18"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f32dc88aadd0a482b23b0329852731a2",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0130",
+        "content_sha256": "1cedc4b565012814b2220e14e05f13c5befca297ae51bbf1e1949777328b7e25",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 130 announced a limited feasibility study on 2026-03-19. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-f32dc88aadd0a482b23b0329852731a2",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 130"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-19"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-0b23d0cdd2ed135dffdc4e90db3e5173",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0131",
+        "content_sha256": "b0430a982ccb57c0dd3968ef1755e110bbe2d04ba4124491e4e9618f1934fd8a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 131: SynthCapital Fund 131 disclosed a minority stake update on 2026-04-20.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-0b23d0cdd2ed135dffdc4e90db3e5173",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 131"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-20"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-56267a4bacd1aa68eb5b99ab894dec16",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0132",
+        "content_sha256": "4b7cc483079ed4bd691c5b10c36bcfa4d4e97a0da81f042055ce18db001cc814",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 132: SynthSafety Board reported voluntary withdrawal review dated 2026-05-21.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-56267a4bacd1aa68eb5b99ab894dec16",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-21"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4fdbe285c94d32c6ed1e90e97200ea6c",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0133",
+        "content_sha256": "94fa54f0aafee745b510f43d7474dd23949c13f9d9fb4a5842aef311fc961d1d",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 133 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-4fdbe285c94d32c6ed1e90e97200ea6c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5e52d88ca8d4e7644360b637f011b1fa",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0134",
+        "content_sha256": "59cd1f022b898e29ebcd79543aefd728f7bf721a1ea1849605551839f72624fb",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 134 referencing trial NCT00000134 on 2026-02-23.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5e52d88ca8d4e7644360b637f011b1fa",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-23"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2ac56f9ee90e2e9991040391f1fc5f25",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0135",
+        "content_sha256": "bee1d206195d3ac62a02fc6d5f83a60ade69002fafb1a1561302dbe5c8b6ba9f",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000135: Recruiting as of 2026-03-24; sponsor SynthTrial Org 135.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-2ac56f9ee90e2e9991040391f1fc5f25",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 135"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-24"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fea9f0d06b2a9051b7de15213fb2c985",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0136",
+        "content_sha256": "b3a712f4ba9d46e758663f5b7aef4e8a1120f5b96016494ab2b33d83536c31c4",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 136: SynthPub Lab 136 reported bounded outcomes for population P-136 on 2026-01-25.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-fea9f0d06b2a9051b7de15213fb2c985",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 136"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-25"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5cf54acb1285f90ddbf66b328dc7891c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0137",
+        "content_sha256": "934eff881d2816fd29b48c8b1d95a08716d3c9ea071b233e5a0489d8903a4d40",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 137 announced a limited feasibility study on 2026-03-26. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-5cf54acb1285f90ddbf66b328dc7891c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 137"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-26"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-339502f014331fafd53a4127ca008a9a",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0138",
+        "content_sha256": "4bea89c4ce276292b452aa1ec810b72bde115d2b1df2bb05e8fdcfc052c895c9",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 138: SynthCapital Fund 138 disclosed a minority stake update on 2026-04-27.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-339502f014331fafd53a4127ca008a9a",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 138"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-27"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a0b3c197ddd19d2978e1ce20787f64ea",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0139",
+        "content_sha256": "666596db053a3d357a5efbe0f55ca8fefa8cfcfdb857091a9257c1d1655d76a0",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 139: SynthSafety Board reported voluntary withdrawal review dated 2026-05-28.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-a0b3c197ddd19d2978e1ce20787f64ea",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-28"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1d433dac0562300ef061ff5722c143ff",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0140",
+        "content_sha256": "38a09b3db9e687bd6083338424e64691172deac9f260d341df15b68e1c35c963",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 140 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-1d433dac0562300ef061ff5722c143ff",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e1fb4d324fac58e3dda70133dce16135",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0141",
+        "content_sha256": "63782dcfab33f7ce49950ede32360cbd5008f0b3a71d6b63569d3d2a3fe5e0a6",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 141 referencing trial NCT00000141 on 2026-02-02.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e1fb4d324fac58e3dda70133dce16135",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-02"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b9ac7f34c1d49944774d2ffe80f20a27",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0142",
+        "content_sha256": "54500416f2c892526b186ce455f3b058ac62ebfbd01648bd92788a2582160b85",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000142: Recruiting as of 2026-03-03; sponsor SynthTrial Org 142.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-b9ac7f34c1d49944774d2ffe80f20a27",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 142"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-03"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9761e75d2781f35522f13729b1588951",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0143",
+        "content_sha256": "3f34f809485ef26bf1fe4f12130def304d4b39db8af757d959e8fc9a089ccbdc",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 143: SynthPub Lab 143 reported bounded outcomes for population P-143 on 2026-01-04.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-9761e75d2781f35522f13729b1588951",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 143"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-04"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c25979f6bb7eae734d0cd5074bc01d2b",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0144",
+        "content_sha256": "1349d0a37e70d0f02e5aaea270526621d3df5530f0fee7e1f128cf6387878f69",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "SynthDevice Corp 144 announced a limited feasibility study on 2026-03-05. Not a regulatory authorization.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-c25979f6bb7eae734d0cd5074bc01d2b",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthDevice Corp 144"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-05"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3c790710e9ca005cc07f6ed98ff3ce22",
+      "category": "OWNERSHIP_FUNDING",
+      "source_class": "OFFICIAL_COMPANY_PAGE",
+      "capture": {
+        "capture_id": "CAP-SCALE-0145",
+        "content_sha256": "cc62bfa9729a645cee2e25065d3d6707b7b7ea1c67f8762a11f15c9cf818ab5a",
+        "source_class": "OFFICIAL_COMPANY_PAGE",
+        "public_text": "Funding note 145: SynthCapital Fund 145 disclosed a minority stake update on 2026-04-06.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-3c790710e9ca005cc07f6ed98ff3ce22",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthCapital Fund 145"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-04-06"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-7acf50402b3a5cbf4e4537ad48b41305",
+      "category": "SAFETY_WITHDRAWAL",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0146",
+        "content_sha256": "0e394664b41af615f9035191ff1abd432490c4afbeca48c885a7d1dc6bde6b3b",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Safety bulletin 146: SynthSafety Board reported voluntary withdrawal review dated 2026-05-07.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-7acf50402b3a5cbf4e4537ad48b41305",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "SAFETY_BULLETIN"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-05-07"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-192e88056dd8899f61ab93c8b19111aa",
+      "category": "CONTRADICTORY_SOURCE",
+      "source_class": "PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0147",
+        "content_sha256": "1e0c25c57933f38650b17b03bbfafeef2a63abe70b9539728f96fff1f59d3ec6",
+        "source_class": "PUBLICATION",
+        "public_text": "Source A for case 147 reports improved throughput. Source B in the same capture states throughput was unchanged.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-192e88056dd8899f61ab93c8b19111aa",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_abstentions": [
+          {
+            "field_type": "CHANGE_CLASS",
+            "reason": "Contradictory excerpts require human adjudication."
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-005f720e913f7ff0659f4fb1b4141d2c",
+      "category": "REGULATORY_RECORD",
+      "source_class": "REGULATORY_RECORD",
+      "capture": {
+        "capture_id": "CAP-SCALE-0148",
+        "content_sha256": "4f77a1b55ba0152ef365fb5f24e2f2df6debf9eecc863b87de57f3eded96693b",
+        "source_class": "REGULATORY_RECORD",
+        "public_text": "Example regulator published notice 148 referencing trial NCT00000148 on 2026-02-09.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-005f720e913f7ff0659f4fb1b4141d2c",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "EVENT_TYPE",
+            "value": "REGULATORY_NOTICE"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-02-09"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8513b29429ec4465b37585b1b57288f6",
+      "category": "CLINICAL_TRIAL",
+      "source_class": "CLINICAL_TRIAL_REGISTRY",
+      "capture": {
+        "capture_id": "CAP-SCALE-0149",
+        "content_sha256": "4bf0ef9c9a579f455c4f1be0f78180f093cbd370b1c80160d34000aa6e171dce",
+        "source_class": "CLINICAL_TRIAL_REGISTRY",
+        "public_text": "Registry status for NCT00000149: Recruiting as of 2026-03-10; sponsor SynthTrial Org 149.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-8513b29429ec4465b37585b1b57288f6",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthTrial Org 149"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-03-10"
+          }
+        ]
+      },
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e790a73d4aa916823fb579eab87b462b",
+      "category": "PUBLICATION",
+      "source_class": "PEER_REVIEWED_PUBLICATION",
+      "capture": {
+        "capture_id": "CAP-SCALE-0150",
+        "content_sha256": "0664f9d8db854a4894497d879424dc6af162d06e077c78411f3d5c4fa3adfc85",
+        "source_class": "PEER_REVIEWED_PUBLICATION",
+        "public_text": "Peer-reviewed note 150: SynthPub Lab 150 reported bounded outcomes for population P-150 on 2026-01-11.",
+        "boundary": "Synthetic public fixture for preregistered extraction evaluation only."
+      },
+      "annotation": {
+        "fixture_id": "FIX-e790a73d4aa916823fb579eab87b462b",
+        "boundary": "Annotation stub for blinded benchmark review; not an authoritative ground-truth record.",
+        "expected_fields": [
+          {
+            "field_type": "ENTITY_MENTION",
+            "value": "SynthPub Lab 150"
+          },
+          {
+            "field_type": "DATE",
+            "value": "2026-01-11"
+          }
+        ]
+      },
+      "blinded": true
+    }
+  ]
+}

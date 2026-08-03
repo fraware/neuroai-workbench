@@ -1,0 +1,1 @@
+{"fixture_id":"FIX-d9488bcf021f578aaa1219ffaa4e4782","boundary":"Annotation stub for blinded benchmark review; not an authoritative ground-truth record.","expected_abstentions":[{"field_type":"CHANGE_CLASS","reason":"Contradictory excerpts require human adjudication."}]}

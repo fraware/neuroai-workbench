@@ -1,8 +1,8 @@
 {
   "corpus_id": "EXTRACTION-REAL-SOURCE-CORPUS-001",
-  "version": "1.0",
+  "version": "1.1",
   "status": "OFFLINE_ANNOTATED_FIXTURES",
-  "boundary": "Offline annotated excerpts for extraction evaluation only. Capture proves retrieval; extraction proposals require human disposition and do not establish substantive truth.",
+  "boundary": "Offline annotated excerpts for extraction evaluation only. Capture proves retrieval; extraction proposals require human disposition and do not establish substantive truth. Scale pack lives under benchmarks/source_extraction/CORPUS_PUBLIC_SCALE.json (≥150 synthetic/public-safe cases). Individual classic stubs remain in benchmarks/source_extraction/fixtures/.",
   "sources": [
     {
       "source_class": "REGULATORY_RECORD",
@@ -25,8 +25,17 @@
       "notes": "Company announcement; not regulatory authorization"
     }
   ],
+  "scale_corpus": {
+    "corpus_id": "EXTRACTION-PUBLIC-SCALE-001",
+    "path": "benchmarks/source_extraction/CORPUS_PUBLIC_SCALE.json",
+    "manifest": "benchmarks/source_extraction/MANIFEST_SCALE.json",
+    "target_cases": 150,
+    "concrete_fixture_files": "benchmarks/source_extraction/fixtures/scale/",
+    "notes": "Compact corpus pack holds ≥150 annotated cases. A concrete fixture subset is also materialized for classic stub loading; remaining cases resolve via corpus: virtual stubs."
+  },
   "evaluation_lanes": {
     "primary": "captured-response-replay",
-    "contract_only": "fake-offline"
+    "contract_only": "fake-offline",
+    "contract_label": "CONTRACT_FIXTURE_NON_ACCURACY"
   }
 }
