@@ -5,8 +5,8 @@
     "name": "Protect main",
     "ruleset_id": 20116255,
     "evidence": "Issue #5 records REVIEW_REQUIRED enforcement on PR #18 without bypass.",
-    "settings_introspection": "EXTERNAL_TO_REPOSITORY_VALIDATOR",
-    "boundary": "This manifest defines the repository-owned check contract. GitHub-hosted ruleset configuration must be compared against required_pull_request_contexts through repository settings or the GitHub Rules API."
+    "settings_introspection": "AUTHENTICATED_RULES_API_AUDIT_IN_PROGRESS",
+    "boundary": "This manifest defines the repository-owned check contract. GitHub-hosted ruleset configuration is compared against required_pull_request_contexts through an authenticated one-time audit job."
   },
   "required_pull_request_contexts": [
     "CI / quality",
@@ -58,10 +58,11 @@
       "name": "Dependency review",
       "pull_request_required": true,
       "required_trigger_markers": ["  pull_request:"],
-      "permissions": {"contents": "read"},
+      "permissions": {"contents": "write"},
       "forbid_secrets": true,
       "jobs": [
-        {"id": "dependency-review", "name": "dependency-review", "required_contexts": ["Dependency review / dependency-review"]}
+        {"id": "dependency-review", "name": "dependency-review", "required_contexts": ["Dependency review / dependency-review"]},
+        {"id": "verify-hosted-ruleset", "name": "verify-hosted-ruleset", "required_contexts": []}
       ]
     },
     {
