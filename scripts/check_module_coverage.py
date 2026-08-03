@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/assistance.py": 90.0,
     "neuroai_workbench/evidence.py": 95.0,
+    "neuroai_workbench/evidence_transactions.py": 90.0,
     "neuroai_workbench/observatory.py": 95.0,
     "neuroai_workbench/monitoring.py": 95.0,
     "neuroai_workbench/entities/registry.py": 90.0,
