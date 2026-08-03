@@ -1,0 +1,49 @@
+sheet,role,disposition,update_requirement
+00_Guide,GENERATED_VIEW,REGENERATE,"Update title, version, cutoff, authority model, repo/data architecture."
+01_Dashboard,GENERATED_VIEW,REGENERATE,"Recompute from canonical current state; add source health, refresh, and workbench metrics."
+Assessment_Summary,GENERATED_VIEW,REGENERATE,Generate from all canonical assessments; retain exact historical determinations.
+Programme_State,PROGRAMME_REGISTER,MIGRATE_AND_UPDATE,Replace v2.0.0 state with successor state including current repo and data repository.
+Releases,PROGRAMME_REGISTER,MIGRATE_AND_UPDATE,Preserve full lineage and append all post-v2.2 software/data milestones.
+Reports,PROGRAMME_REGISTER,MIGRATE_AND_UPDATE,"Map narrative artifacts to historical, current, or generated status."
+Data_Catalog,PROGRAMME_REGISTER,MIGRATE_AND_UPDATE,Make canonical dataset catalog; include data repository paths and schemas.
+Organizations,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Preserve IDs; reconcile with observatory baseline and later accepted changes.
+Systems_Models,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,"Separate systems, models, datasets, configurations, and versions."
+Relationships,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Preserve typed edges and provenance; avoid inference from co-occurrence.
+Sources,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,"Map to full source registry, retrieval targets, source states, and live captures."
+Org_Verification,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Convert verification decisions to typed records and current checks.
+Org_Resolution,CANONICAL_DATA,MIGRATE_RECONCILE,Preserve historical dispositions; connect to entity-resolution records.
+Regional_Expansion,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Preserve source-universe boundary and expand through explicit discovery streams.
+Capital_Ownership,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Update through authoritative transaction/filing sources.
+Supplier_Dependencies,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Preserve system-specific evidence boundaries.
+Trial_Sites,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Link to structured trial identifiers and registries.
+Participant_Authority,CANONICAL_DATA,MIGRATE_RECONCILE,Preserve typed authority powers and evidence boundaries.
+Model_Registry,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Separate representative model records from discovery registry objects.
+Model_Dataset_Registry,CANONICAL_DATA,MIGRATE_RECONCILE_REFRESH,Add structured repository and dataset identifiers.
+Data_Quality,GENERATED_VIEW,REGENERATE,"Compute from canonical validation, completeness, and unresolved queues."
+Observatory_Changes,CANONICAL_EVENT_DATA,MIGRATE_RECONCILE_REFRESH,Preserve v1.6/v1.7 changes and append later runs.
+Reopening_Decisions,CANONICAL_DECISION_DATA,MIGRATE_RECONCILE_REFRESH,Preserve exact decisions; connect to dependency graph.
+Kernel_Requirements,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,v4.2 remains versioned; no silent edits.
+Normative_Modules,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,Generate workbook view from canonical normative JSON.
+Prohibited_Inference,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,Generate from canonical prohibited-inference catalog.
+Risk_Escalators,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,Generate from canonical risk-escalator resource.
+Assurance_Profiles,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,Generate from canonical profiles.
+Conformance_Levels,NORMATIVE_RESOURCE,MIGRATE_AS_VERSIONED_RESOURCE,Generate from canonical conformance levels.
+Assessment_Findings,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,All 312 findings must reconcile by ID and status.
+Assessment_Claims,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,"Preserve claim wording, scope, and source state."
+Assessment_Evidence,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,"Preserve evidence IDs, access states, digests, and citations."
+Assessment_Endpoints,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,Preserve endpoint/denominator/comparator semantics.
+Assessment_Gaps,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,Preserve open gaps and evidence requests.
+Safety_Denominators,CANONICAL_ASSESSMENT_DATA,MIGRATE_RECONCILE,Preserve PRIMA denominators and safety-event records.
+Comparative_Matrix,GENERATED_ANALYSIS,REGENERATE_AND_EXTEND,Reproduce three-case matrix and add a clearly separated four-case analysis including PRIMA.
+Minimum_Evidence,NORMATIVE_DERIVED_RESOURCE,MIGRATE_RECONCILE,Preserve calibrated minimum evidence standard.
+Calibration_Changes,CANONICAL_METHOD_RECORD,MIGRATE_RECONCILE,Preserve accepted v4.2 calibration changes.
+Module_Summary,GENERATED_ANALYSIS,REGENERATE,Compute from canonical assessment findings.
+Implementation_Indicators,CANONICAL_IMPLEMENTATION_DATA,MIGRATE_AND_UPDATE,Update indicators and connect to current programme operations.
+Recommendation_Crosswalk,CANONICAL_POLICY_MAPPING,MIGRATE_AND_UPDATE,Update only through cited and versioned mapping changes.
+Outreach_Contacts,OPERATIONAL_DATA,REVIEW_AND_UPDATE,Separate current contacts from historical prepared messages; verify before use.
+Original_Entities,HISTORICAL_INPUT,PRESERVE_READ_ONLY,Retain exactly as supplied; never overwrite.
+Original_Relationships,HISTORICAL_INPUT,PRESERVE_READ_ONLY,Retain exactly as supplied; never overwrite.
+CSV_Dataset_Index,PROVENANCE_INDEX,REGENERATE,Index immutable archive and canonical migration status.
+Raw_CSV_Rows,HISTORICAL_RAW_DATA,PRESERVE_AND_INDEX,"Keep complete raw rows as archive evidence, not canonical master."
+JSON_File_Index,PROVENANCE_INDEX,REGENERATE,"Add schema family, canonical status, and successor mapping."
+File_Manifest,PROVENANCE_INDEX,REGENERATE,Inventory all archive files and current generated artifacts with hashes.
