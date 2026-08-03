@@ -167,11 +167,9 @@ def main(argv: list[str] | None = None) -> int:
                 }
             )
     typed_retry_outcomes = _ordered_unique_outcomes(typed_retry_outcomes)
-    retrieval_outcomes_complete = [
-        str(item.get("source_id")) for item in typed_retry_outcomes
-    ] == list(DEFAULT_FAILED_SOURCE_IDS) and all(
-        item.get("finding_effect") == "NONE" for item in typed_retry_outcomes
-    )
+    retrieval_outcomes_complete = [str(item.get("source_id")) for item in typed_retry_outcomes] == list(
+        DEFAULT_FAILED_SOURCE_IDS
+    ) and all(item.get("finding_effect") == "NONE" for item in typed_retry_outcomes)
 
     atomic_write_json(
         core_root / "retrieval_outcomes.json",
