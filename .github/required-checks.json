@@ -4,15 +4,9 @@
   "ruleset_reference": {
     "name": "Protect main",
     "ruleset_id": 20116255,
-    "evidence": "Issue #5 records REVIEW_REQUIRED enforcement on PR #18 without bypass; the current authenticated Rules API response supersedes that historical approval-count observation.",
-    "settings_introspection": "AUTHENTICATED_RULES_API_VERIFICATION",
-    "hosted_policy": {
-      "required_approving_review_count": 0,
-      "required_review_thread_resolution": true,
-      "allowed_merge_methods": ["squash"],
-      "rationale": "Human review and governance are deferred during core construction under issue #101; automated integrity gates remain mandatory."
-    },
-    "boundary": "This manifest defines the repository-owned check contract and the current core-development hosted ruleset policy. Human review requirements will be reconsidered with the final governance overlay."
+    "evidence": "Issue #5 records REVIEW_REQUIRED enforcement on PR #18 without bypass.",
+    "settings_introspection": "EXTERNAL_TO_REPOSITORY_VALIDATOR",
+    "boundary": "This manifest defines the repository-owned check contract. GitHub-hosted ruleset configuration must be compared against required_pull_request_contexts through repository settings or the GitHub Rules API."
   },
   "required_pull_request_contexts": [
     "CI / quality",
