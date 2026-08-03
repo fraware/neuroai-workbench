@@ -6,13 +6,15 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnostics:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.11"
@@ -44,3 +46,23 @@ jobs:
             coverage.xml
           if-no-files-found: error
           retention-days: 7
+      - name: Commit exact Ruff formatting
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            src/neuroai_workbench/collector/adapters/clinicaltrials.py \
+            src/neuroai_workbench/collector/adapters/pubmed.py \
+            src/neuroai_workbench/discovery/network.py \
+            src/neuroai_workbench/discovery/workflow.py \
+            src/neuroai_workbench/products/pdf.py \
+            src/neuroai_workbench/shadow_refresh/closure.py \
+            src/neuroai_workbench/shadow_refresh/cycle.py \
+            tests/unit/test_discovery_adversarial.py \
+            tests/unit/test_shadow_evaluation_cycle.py \
+            tests/unit/test_ci_repair_coverage.py
+          git commit -m "style: apply repository Ruff formatting"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
