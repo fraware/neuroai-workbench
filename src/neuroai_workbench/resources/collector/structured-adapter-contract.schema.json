@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/structured-adapter-contract-1.0.json",
+  "title": "Structured source adapter contract",
+  "description": "Declares adapter identity, completeness, reviewed hosts, and evidence boundary. Completeness is a capability claim about the software surface only — never registry completeness or scientific truth.",
+  "type": "object",
+  "required": [
+    "adapter_id",
+    "completeness",
+    "capabilities",
+    "allowed_hosts",
+    "source_classes",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "adapter_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "completeness": {
+      "enum": ["PARTIAL", "SCAFFOLD_NOT_COMPLETE"],
+      "description": "PARTIAL = reviewed retrieval paths exist for identifier-bound or query-bound payloads. SCAFFOLD_NOT_COMPLETE = contract and stubs only; live retrieval is refused."
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "single_record_fetch",
+          "search_query",
+          "pagination",
+          "field_level_change",
+          "pathway_linkage",
+          "doi_metadata",
+          "normalized_record",
+          "stub_only"
+        ]
+      }
+    },
+    "allowed_hosts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$"
+      }
+    },
+    "source_classes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    }
+  }
+}

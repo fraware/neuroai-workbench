@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/normalized-device-record-1.0.json",
+  "title": "Normalized FDA device record",
+  "description": "Stable projection of selected FDA device pathway fields. Capture proves retrieval of the selected openFDA payload only — not MAUDE/recall universe completeness or regulatory truth.",
+  "type": "object",
+  "required": [
+    "record_kind",
+    "device_id",
+    "pathway",
+    "openfda_endpoint",
+    "field_digests",
+    "aggregate_digest",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "record_kind": {"const": "NORMALIZED_FDA_DEVICE"},
+    "device_id": {
+      "type": "string",
+      "pattern": "^(DEN|K|P|H)[0-9]{6}$"
+    },
+    "pathway": {
+      "enum": ["510K", "DENOVO", "PMA", "HDE"]
+    },
+    "openfda_endpoint": {
+      "enum": ["device/510k", "device/pma"]
+    },
+    "applicant": {"type": ["string", "null"]},
+    "decision_date": {"type": ["string", "null"]},
+    "product_code": {"type": ["string", "null"]},
+    "device_name": {"type": ["string", "null"]},
+    "linked_identifiers": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "required": ["identifier", "relationship"],
+        "additionalProperties": false,
+        "properties": {
+          "identifier": {"type": "string", "minLength": 1},
+          "relationship": {
+            "enum": ["SAME_RECORD", "PREDICATE", "SUPPLEMENT", "DECLARED_LINK"]
+          }
+        }
+      }
+    },
+    "field_digests": {
+      "type": "object",
+      "required": ["device_id", "pathway", "applicant", "decision_date", "product_code", "device_name"],
+      "additionalProperties": false,
+      "properties": {
+        "device_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "pathway": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "applicant": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "decision_date": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "product_code": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "device_name": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "aggregate_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
