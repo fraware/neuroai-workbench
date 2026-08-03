@@ -1,6 +1,6 @@
 # Data governance
 
-The workbench follows data minimisation and federated-evidence principles.
+The workbench follows data-minimisation and federated-evidence principles.
 
 ## Default policy
 
@@ -12,40 +12,50 @@ The workbench follows data minimisation and federated-evidence principles.
 - Treat exports and backups as protected copies with their own retention and destruction rules.
 - Treat review rationales, disagreement records, proposed changes, and model-assistance context as potentially sensitive assessment metadata.
 - Keep registered evidence bytes out of model-assistance requests. Include only the minimum selected structured fields required for the declared task.
-- Do not place credentials, private evidence excerpts, participant identifiers, protected security findings, or confidential legal analysis in review or model-assistance free-text fields.
+- Exclude credentials, private evidence excerpts, participant identifiers, protected security findings, and confidential legal analysis from review or model-assistance free-text fields.
 
 ## Local evidence store
 
-Evidence bytes are content-addressed by SHA-256 and stored under the case directory. Newly registered local files receive `access_state: EVALUATION NOT EXECUTED` and `publication_or_record_state: LOCAL CONTROLLED RECORD` so export and assistance workflows do not treat local bytes as a public extract without an explicit later classification. The workbench provides integrity checks, not encryption or authenticity verification.
+Evidence bytes are content-addressed by SHA-256 and stored under the case directory. Newly registered local files receive `access_state: EVALUATION NOT EXECUTED` and `publication_or_record_state: LOCAL CONTROLLED RECORD`, preserving the distinction between local custody and public evidence. The workbench provides byte-integrity checks. It provides no encryption, source authentication, lawful-custody proof, or substantive appraisal.
 
 ### Transaction journal
 
-Local evidence registration uses a case-scoped write-ahead journal under `evidence/transactions/`. During an active transaction, the journal directory temporarily contains:
+Local evidence registration uses a case-scoped write-ahead journal under `evidence/transactions/`. During an active transaction, the transaction directory temporarily contains:
 
 - one staged copy of the evidence bytes;
 - predecessor and desired copies of the evidence index;
-- predecessor and desired assessment and persistence records when assessment linking is enabled;
-- a transaction metadata record containing hashes, state, actor, and the evidence index record.
+- predecessor and desired assessment and persistence records for linked registration;
+- a self-hashed transaction record containing state hashes, evidence metadata, assessment-event metadata, object-preexistence state, timestamps, and the byte-identity boundary.
 
-These temporary copies exist solely for crash recovery. After `COMMITTED` or `ROLLED_BACK`, the workbench deletes staged evidence and all predecessor/successor snapshot copies. The terminal journal retains hashes, timestamps, transaction status, evidence identifiers, recovery outcome, and the byte-identity boundary.
+Every staged predecessor and desired image is hash-verified before application or rollback. Parent-directory metadata is flushed after atomic replacement, transaction-directory creation, quarantine rename, and controlled removal on POSIX.
 
-Transaction directories therefore inherit the same protection, retention, backup, access-control, and incident-response classification as the case evidence and assessment they temporarily duplicate. They must never be exported as public software artifacts or copied into Git.
+After `COMMITTED` or `ROLLED_BACK`, the workbench removes staged evidence and predecessor/successor snapshot copies. The terminal journal retains transaction identity, hashes, timestamps, evidence identifiers, state, recovery outcome, and the byte-identity boundary.
 
-Recovery follows a fail-closed rule. A transaction may complete forward only when all desired durable hashes match. It may roll back only when every current file matches a recorded predecessor or successor hash. Any third-state divergence is preserved and flagged for intervention instead of being overwritten.
+A transaction directory lacking a durable journal moves into `evidence/transaction-orphans/`. Its bytes remain protected for controlled inspection. The event record uses `UNKNOWN_FAIL_CLOSED`; software makes no claim that external case state remained unchanged.
 
-SHA-256 equality establishes byte identity only. It does not authenticate the source, establish lawful custody, prove relevance or completeness, authorize disclosure, or upgrade the substantive status of an evidence record.
+Transaction directories and orphan quarantines inherit the strongest protection, retention, backup, access-control, legal-hold, incident-response, and destruction requirements of the evidence and assessment content they contain. They remain outside public exports and Git repositories.
+
+Recovery follows three controlled outcomes:
+
+- **forward completion** after every durable surface matches the recorded desired hashes;
+- **exact rollback** after every durable surface matches either the recorded predecessor or successor hash;
+- **recovery blocking or orphan quarantine** after corruption, third-state divergence, unexpected object bytes, or missing transaction identity.
+
+Linked registration preserves transaction-keyed `ASSESSMENT_SAVED` and `EVIDENCE_ADDED` events. Rollback preserves an `EVIDENCE_REGISTRATION_ROLLED_BACK` marker and performs no selective historical-finding edits.
+
+SHA-256 equality establishes byte identity only. It carries no source-authenticity, lawful-custody, relevance, completeness, disclosure-authorization, or substantive-status claim.
 
 ## Deletion and retention
 
-Deletion is an administrative filesystem operation. Secure erasure depends on the storage medium, filesystem, backup system and hosting environment. Institutional deployments must adopt a retention schedule, legal-hold process, backup policy, participant-withdrawal process and destruction verification procedure.
+Deletion is an administrative filesystem operation. Secure erasure depends on the storage medium, filesystem, backup system and hosting environment. Institutional deployments must adopt a retention schedule, legal-hold process, backup policy, participant-withdrawal process and destruction-verification procedure.
 
-Terminal transaction metadata should follow the case audit-retention schedule. Non-terminal or `RECOVERY_BLOCKED` journals must remain protected until resolution because they may contain temporary state required to preserve or recover the case accurately.
+Terminal transaction metadata follows the case audit-retention schedule. Non-terminal, `RECOVERY_BLOCKED`, and journal-less quarantined transactions remain protected until controlled resolution, as they may contain the only predecessor, successor, or staged bytes needed to interpret the case accurately.
 
 ## Collaborative review records
 
-Review assignments, statements, disagreements and dispositions are stored as integrity-addressed local records. Reviewer identifiers and roles are claimed workflow metadata; the reference implementation does not authenticate a person, institution, licence, mandate or delegated authority. Review text can contain sensitive interpretations even when no evidence bytes are attached, so institutions must classify, retain, disclose and redact these records deliberately.
+Review assignments, statements, disagreements and dispositions are stored as integrity-addressed local records. Reviewer identifiers and roles are claimed workflow metadata; the reference implementation does not authenticate a person, institution, licence, mandate or delegated authority. Review text may contain sensitive interpretations even in the absence of evidence bytes, so institutions must classify, retain, disclose and redact these records deliberately.
 
-A disposition records how a local workflow handled a statement. It does not edit the assessment and does not itself establish scientific, legal, clinical or institutional authority. Accepted changes must be applied through a separate human-controlled assessment change with ordinary provenance.
+A disposition records how a local workflow handled a statement. It does not edit the assessment and does not itself establish scientific, legal, clinical or institutional authority. Accepted changes enter the assessment through a separate controlled change with ordinary provenance.
 
 ## Model-assistance records
 
@@ -53,10 +63,10 @@ The default workflow exports selected structured context and imports a candidate
 
 ## Protected-evidence metadata exchange
 
-The exchange workflow records the minimum structured metadata required to request controlled evidence from a lawful custodian. It excludes evidence bytes, local paths, credentials and access tokens. Public URLs may be retained; non-public access locations must remain outside the workbench request.
+The exchange workflow records the minimum structured metadata required to request controlled evidence from a lawful custodian. It excludes evidence bytes, local paths, credentials and access tokens. Public URLs may be retained; non-public access locations remain outside the workbench request.
 
 A holder response may record access conditions, a non-secret holder reference and an optional supplied digest. The workbench marks every out-of-band material `NOT_VERIFIED_BY_WORKBENCH`. Receipt, transfer, authentication and substantive appraisal require a separate authorized evidence workflow.
 
 ## Discovery query records
 
-Discovery runs and candidate source proposals are workflow metadata stored under an ops discovery workspace. Default execution is offline (fixture or replay). Opt-in network discovery requires an explicit environment gate and public-URL SSRF checks. Public synthetic fixtures may be committed to the software repository; live result bodies and protected captures must remain outside public git. Discovery acceptance drafts append-only registry successors only and does not by itself authorize canonical publication.
+Discovery runs and candidate source proposals are workflow metadata stored under an operations discovery workspace. Default execution is offline through fixtures or replay. Opt-in network discovery requires an explicit environment gate and public-URL SSRF checks. Public synthetic fixtures may enter the software repository; live result bodies and protected captures remain outside public Git. Discovery acceptance creates append-only registry successor drafts and carries no canonical publication authority.
