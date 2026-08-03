@@ -23,17 +23,30 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - name: Correct required-role substitution fixture
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("tests/unit/test_governance_scope.py")
+          text = path.read_text(encoding="utf-8")
+          old = '''    manifest["objects"][0]["role"] = "DELTA"\n    manifest["objects"][0]["object_type"] = "RELEASE"\n'''
+          new = '''    predecessor = next(item for item in manifest["objects"] if item["role"] == "PREDECESSOR_RELEASE")\n    predecessor["role"] = "DELTA"\n    predecessor["object_type"] = "RELEASE"\n'''
+          if text.count(old) != 1:
+              raise SystemExit("expected governance role-substitution fixture was not found exactly once")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
       - run: python -m ruff format src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py
       - run: python -m ruff format --check .
       - run: python -m ruff check .
-      - name: Commit exact formatter output
+      - name: Commit exact correction and formatter output
         run: |
           if git diff --quiet; then
-            echo "No formatting changes required."
+            echo "No changes required."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/neuroai_workbench/governance_scope.py tests/unit/test_governance_scope.py
-          git commit -m "Apply pinned Ruff formatting to governance scope"
+          git commit -m "Correct governance scope adversarial fixture"
           git push origin HEAD:agent/governance-scope-binding
