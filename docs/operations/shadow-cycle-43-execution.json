@@ -1,0 +1,1270 @@
+{
+  "schema_version": 1,
+  "issue": "#43",
+  "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+  "mode": "live",
+  "core_engineering_complete": true,
+  "governance_layer_applied": false,
+  "governance_issue": "#101",
+  "release_authority_state": "DEFERRED",
+  "canonical_successor_written": false,
+  "assessment_mutation_performed": false,
+  "monitoring_handoff_kill_switch": "DISABLED",
+  "predecessor": {
+    "path": "examples/observatory/canonical_successor_snapshot_v1.7.json",
+    "sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70",
+    "expected_sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70",
+    "immutable": true
+  },
+  "registry": {
+    "source_count": 25,
+    "sha256": "8ff60a0e8714f38ee58f529b8df8bf8bb34fe5964cfa89a00590171dc1659910",
+    "reviewed_cohort_sha256": "0556b1614fab6c0d6683327066def6692f18a868c55078afa94a7977d66cfc7a",
+    "exact_source_ids": [
+      "SRC-0004",
+      "SRC-0013",
+      "SRC-0030",
+      "SRC-0031",
+      "SRC-0034",
+      "SRC-0038",
+      "SRC-0040",
+      "SRC-0041",
+      "SRC-0045",
+      "SRC-0046",
+      "SRC-0047",
+      "SRC-0062",
+      "SRC-0063",
+      "SRC-0079",
+      "SRC-0115",
+      "SRC-0121",
+      "SRC-0124",
+      "SRC-0169",
+      "SRC-0174",
+      "SRC-14-007",
+      "SRC-14-031",
+      "SRC-14-032",
+      "SRC-14-033",
+      "SRC-14-039",
+      "SRC-14-041"
+    ]
+  },
+  "prior_observed_run": {
+    "run_id": "CRUN-92f1b84184f241269aadc30df5dab9d3",
+    "live_collection_counts": {
+      "succeeded": 22,
+      "failed": 3,
+      "skipped": 0,
+      "total": 25
+    },
+    "candidate_count": 5,
+    "formal_disposition": "WITHHELD"
+  },
+  "fresh_precollection": {
+    "collection_run": {
+      "run_id": "CRUN-58a4771543684519999937c3b6673175",
+      "status": "COMPLETED",
+      "counts": {
+        "succeeded": 22,
+        "failed": 3,
+        "skipped": 0,
+        "total": 25,
+        "unique_retrievals": 25,
+        "retrieval_target_groups": 25,
+        "coalesced_source_count": 0,
+        "logical_sources": 25
+      },
+      "outcomes": [
+        {
+          "source_id": "SRC-0004",
+          "adapter_id": "fda_device",
+          "status": "RESULT",
+          "record_id": "CRES-d1a48dbd3b894c75a5e597dc18aaec19",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0013",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-3a85ac74e82f4da89d5052074f063504",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0030",
+          "adapter_id": "clinicaltrials_gov",
+          "status": "RESULT",
+          "record_id": "CRES-57d6f874553e4554bbb8dbe7a3997764",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0031",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-7b7cd296908f44e59550101e229a726c",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0034",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-489412351cab48c8bb83c111dd0e10e3",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0038",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-b562e9c6725243c9804ef13f366fb55b",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0040",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-b82fa664c01940e4b210940a27e71f47",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0041",
+          "adapter_id": "html",
+          "status": "FAILURE",
+          "record_id": "CFAIL-fcad5bf57aa843169704ff97716035db",
+          "reason": null,
+          "failure_class": "HTTP_ERROR",
+          "message": null
+        },
+        {
+          "source_id": "SRC-0045",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-4ef0d86c7f8f48029039d446dfb5b040",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0046",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-cdf00b82c1f047cd9e1a773060640d33",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0047",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-3fb644a39bab4cce97e9de3234915e60",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0062",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-e9ecac01b6fc41f1b4685923de38df3e",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0063",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-15687cafb86945f7ae2c5d9d0791179d",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0079",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-3d558ce75245454381e9eee1f659fd00",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0115",
+          "adapter_id": "html",
+          "status": "FAILURE",
+          "record_id": "CFAIL-cdd8042da9c842909e247ac668fe4052",
+          "reason": null,
+          "failure_class": "HTTP_ERROR",
+          "message": null
+        },
+        {
+          "source_id": "SRC-0121",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-be23d5600c8042909e666576abfee25b",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0124",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-9f54a84b3b76441ea77d022ebe6bfe91",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0169",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-ddd3f1703ebe49dbb920d798ef3475a1",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-0174",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-22155c159ed64519b864231c4417e78a",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-14-007",
+          "adapter_id": "html",
+          "status": "FAILURE",
+          "record_id": "CFAIL-19b218074f4a416d9f9cad71fecfaeeb",
+          "reason": null,
+          "failure_class": "HTTP_ERROR",
+          "message": null
+        },
+        {
+          "source_id": "SRC-14-031",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-e6b1e399af3c4d74b731d9879a8497c2",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-14-032",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-d0e068f5fdf44f5e8c43049cc9b29942",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-14-033",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-53ae4fb5c7da4a64885519e77465e876",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-14-039",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-013d089010d6459ea71f3f5f76e5695b",
+          "reason": null,
+          "failure_class": null
+        },
+        {
+          "source_id": "SRC-14-041",
+          "adapter_id": "html",
+          "status": "RESULT",
+          "record_id": "CRES-09a4d9fb8cdb4b0497913efef974cc13",
+          "reason": null,
+          "failure_class": null
+        }
+      ]
+    },
+    "capture_digest_count": 22,
+    "failure_count": 3,
+    "approved_evaluation_sample": [
+      {
+        "source_id": "SRC-0004",
+        "quarantine_id": "QRN-014e6f738287466d81c930afad4a89e2",
+        "approval_state": "APPROVED_FOR_HANDOFF"
+      },
+      {
+        "source_id": "SRC-0013",
+        "quarantine_id": "QRN-88401bfdd9484254aa0ab33ab3576ef5",
+        "approval_state": "APPROVED_FOR_HANDOFF"
+      },
+      {
+        "source_id": "SRC-0030",
+        "quarantine_id": "QRN-5f9e889340274366905bd65adabb2803",
+        "approval_state": "APPROVED_FOR_HANDOFF"
+      },
+      {
+        "source_id": "SRC-0031",
+        "quarantine_id": "QRN-f7906dcf7ac3449481761fce1e696c2a",
+        "approval_state": "APPROVED_FOR_HANDOFF"
+      },
+      {
+        "source_id": "SRC-0034",
+        "quarantine_id": "QRN-d69db8ff5ca74e3c82a03113e403ac20",
+        "approval_state": "APPROVED_FOR_HANDOFF"
+      }
+    ]
+  },
+  "source_outcomes": [
+    {
+      "source_id": "SRC-14-039",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0079",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0004",
+      "outcome_type": "MANUAL_FIRST_CAPTURE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "No prior snapshot; mechanical comparison unavailable.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-041",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0063",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0174",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-033",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0063",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0013",
+      "outcome_type": "MANUAL_FIRST_CAPTURE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "No prior snapshot; mechanical comparison unavailable.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0079",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0047",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0062",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0034",
+      "outcome_type": "MANUAL_FIRST_CAPTURE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "No prior snapshot; mechanical comparison unavailable.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0045",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-033",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0030",
+      "outcome_type": "MANUAL_FIRST_CAPTURE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "No prior snapshot; mechanical comparison unavailable.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0040",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0038",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-039",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0031",
+      "outcome_type": "MANUAL_FIRST_CAPTURE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "No prior snapshot; mechanical comparison unavailable.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0031",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0045",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0030",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0174",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0124",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0034",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0169",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0046",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0013",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-032",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0121",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0038",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0040",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0121",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0124",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0047",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0046",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-031",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-032",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0004",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0169",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-041",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-031",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0062",
+      "outcome_type": "SUCCESS",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": null,
+      "notes": "Typed retrieval/comparison outcome only; not a substantive finding.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-007",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0041",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-14-007",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0115",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0115",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    },
+    {
+      "source_id": "SRC-0041",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null,
+      "notes": "Typed retrieval outcome only. Unresolved access must not be converted into a FAIL finding or substantive assessment mutation.",
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+      "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+    }
+  ],
+  "stats": {
+    "retrieval": {
+      "outcome_count": 50,
+      "by_type": {
+        "SUCCESS": 39,
+        "MANUAL_FIRST_CAPTURE": 5,
+        "HTTP_ERROR_UNCLASSIFIED": 6
+      }
+    },
+    "candidates": {
+      "generated": 5,
+      "accepted": 5
+    },
+    "development_disposition": {
+      "records": 5,
+      "scope": "DEVELOPMENT_PIPELINE_ONLY",
+      "governance_layer_applied": false,
+      "substantive_authority": false,
+      "note": "Development dispositions exercise pipeline mechanics only; human governance and release authority are deferred to issue #101."
+    },
+    "reopening": {
+      "recommended": 40,
+      "assessment_mutation_performed": false
+    },
+    "publication": {
+      "reconciled": true,
+      "reconciliation_errors": 0
+    },
+    "registry_source_count": 25
+  },
+  "stages": {
+    "plan": {
+      "plan_id": "PLAN-2026-08-03-f905c7b34d2d",
+      "counts": {
+        "due": 25,
+        "manual": 0,
+        "not_due": 0
+      },
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL"
+    },
+    "collect": {
+      "mode": "live",
+      "network_retrieval": "EXECUTED_LIVE_QUARANTINE_ONLY",
+      "collection_run": {
+        "run_id": "CRUN-29e80d5373264e04939da95451cc712e",
+        "status": "COMPLETED",
+        "counts": {
+          "succeeded": 22,
+          "failed": 3,
+          "skipped": 0,
+          "total": 25,
+          "unique_retrievals": 25,
+          "retrieval_target_groups": 25,
+          "coalesced_source_count": 0,
+          "logical_sources": 25
+        },
+        "outcomes": [
+          {
+            "source_id": "SRC-0004",
+            "adapter_id": "fda_device",
+            "status": "RESULT",
+            "record_id": "CRES-027839c21cb44f7abc949c08fcf8748b",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0013",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-aa0ec453fb014824af07cb7b638dbf97",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0030",
+            "adapter_id": "clinicaltrials_gov",
+            "status": "RESULT",
+            "record_id": "CRES-8fdebab9aaed40089cddb6f15b843512",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0031",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-7a3854b49e5d41eeb4e15efe6673afc1",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0034",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-a4a478634a0747ba97eefbacecfe6bbd",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0038",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-6917e9f16c684404bc06c8c422cfc5a0",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0040",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-586fc780cbc24b949be423864ac9e4a5",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0041",
+            "adapter_id": "html",
+            "status": "FAILURE",
+            "record_id": "CFAIL-1df35a8637cf41c4b7c6e53e91c5bcc6",
+            "reason": null,
+            "failure_class": "HTTP_ERROR",
+            "message": null
+          },
+          {
+            "source_id": "SRC-0045",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-847dddb521e84539805f0816fd479598",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0046",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-a7fddb1a39124ea2b168aa2a0447835e",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0047",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-cdcfdbfa35e6486b8a7432a33886c494",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0062",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-44cc24187e6e455f98d15ad46fdcb41e",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0063",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-37ad95102fad413b939022bc591dd0f5",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0079",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-02251359516640138fd89b4d815b56dd",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0115",
+            "adapter_id": "html",
+            "status": "FAILURE",
+            "record_id": "CFAIL-90f309fef1df4c9b8ba9e8b7f7910b5a",
+            "reason": null,
+            "failure_class": "HTTP_ERROR",
+            "message": null
+          },
+          {
+            "source_id": "SRC-0121",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-b3ced45d096640a18e773a7a5da4079e",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0124",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-c15c9f1016bc4234adffc975d063004c",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0169",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-a645190e342c469d8b1095906da26870",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-0174",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-93b2e8a1b35f428eb5de94f136f7f7ed",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-14-007",
+            "adapter_id": "html",
+            "status": "FAILURE",
+            "record_id": "CFAIL-60be06ac9b0d4d5aa8f03931fb95534d",
+            "reason": null,
+            "failure_class": "HTTP_ERROR",
+            "message": null
+          },
+          {
+            "source_id": "SRC-14-031",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-ce7af2430d5a4005b6977db5d5201036",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-14-032",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-aee01afb1bed47daacfacbe52c46487a",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-14-033",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-24fc3075947a493aa607747f79fecd55",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-14-039",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-6a68926efa5643578c88087013167045",
+            "reason": null,
+            "failure_class": null
+          },
+          {
+            "source_id": "SRC-14-041",
+            "adapter_id": "html",
+            "status": "RESULT",
+            "record_id": "CRES-de08293d50044d90a4ce1c9f36b655e3",
+            "reason": null,
+            "failure_class": null
+          }
+        ]
+      },
+      "capture_digest_count": 44,
+      "failure_summary_count": 6,
+      "status": "SHADOW_EVALUATION_NOT_CANONICAL"
+    },
+    "quarantine_approve_handoff": {
+      "handoff_count": 5,
+      "monitoring_handoff_kill_switch": "DISABLED",
+      "canonical_workbench_mutated": false
+    },
+    "record_snapshot": {
+      "count": 5
+    },
+    "compare_snapshots": {
+      "comparisons": [],
+      "count": 0,
+      "first_capture_without_baseline": 5
+    },
+    "create_change_candidate": {
+      "candidates": [
+        {
+          "candidate_id": "CAND-f0513bbad2b8468f9aa11a5148de0421",
+          "source_id": "SRC-0004"
+        },
+        {
+          "candidate_id": "CAND-1499b84b56214ef8bfb14b47480d6147",
+          "source_id": "SRC-0030"
+        },
+        {
+          "candidate_id": "CAND-ae0801f738b74564940e65fd0822263c",
+          "source_id": "SRC-0013"
+        },
+        {
+          "candidate_id": "CAND-a6224d940202458b9ab2d1f5ab73c307",
+          "source_id": "SRC-0034"
+        },
+        {
+          "candidate_id": "CAND-b160d1ce535d49c38362a6dbf77ffd40",
+          "source_id": "SRC-0031"
+        }
+      ],
+      "count": 5
+    },
+    "development_disposition": {
+      "records": [
+        {
+          "adjudication_id": "ADJ-f0513bbad2b8468f9aa11a5148de0421",
+          "candidate_id": "CAND-f0513bbad2b8468f9aa11a5148de0421",
+          "decision": "ACCEPT"
+        },
+        {
+          "adjudication_id": "ADJ-1499b84b56214ef8bfb14b47480d6147",
+          "candidate_id": "CAND-1499b84b56214ef8bfb14b47480d6147",
+          "decision": "ACCEPT"
+        },
+        {
+          "adjudication_id": "ADJ-ae0801f738b74564940e65fd0822263c",
+          "candidate_id": "CAND-ae0801f738b74564940e65fd0822263c",
+          "decision": "ACCEPT"
+        },
+        {
+          "adjudication_id": "ADJ-a6224d940202458b9ab2d1f5ab73c307",
+          "candidate_id": "CAND-a6224d940202458b9ab2d1f5ab73c307",
+          "decision": "ACCEPT"
+        },
+        {
+          "adjudication_id": "ADJ-b160d1ce535d49c38362a6dbf77ffd40",
+          "candidate_id": "CAND-b160d1ce535d49c38362a6dbf77ffd40",
+          "decision": "ACCEPT"
+        }
+      ],
+      "count": 5,
+      "scope": "DEVELOPMENT_PIPELINE_ONLY",
+      "governance_layer_applied": false,
+      "substantive_authority": false
+    },
+    "build_refresh_candidate": {
+      "version": "shadow-cycle-43-20260803",
+      "status": "REVIEW_CANDIDATE_NOT_CANONICAL",
+      "counts": {
+        "candidates": 5,
+        "adjudications": 5,
+        "accepted": 5,
+        "unresolved": 0,
+        "reopening_queue": 0
+      },
+      "path": "observatory/monitoring/runs/shadow-cycle-43-20260803/refresh-candidate.json"
+    },
+    "compile_adjudicated_delta": {
+      "delta_id": "DELTA-925680697d6c408dbb8a74f484b3680f",
+      "status": "NON_CANONICAL",
+      "operation_count": 5,
+      "path": "/home/runner/work/_temp/shadow-cycle-43/protected/cycle-output/adjudicated-delta.json"
+    },
+    "apply_delta": {
+      "apply_id": "apply-shadow-cycle-43-20260803",
+      "status": "CANDIDATE_SUCCESSOR_NOT_CANONICAL",
+      "predecessor_unchanged": true
+    },
+    "reopening_analysis": {
+      "recommendation_count": 40,
+      "path": "/home/runner/work/_temp/shadow-cycle-43/protected/cycle-output/reopening-recommendations.json",
+      "assessment_mutation_performed": false
+    },
+    "publications": {
+      "release_sha256": "2c5c649534e0b1cc1a01716225fcf9797e46d786b7beecccb2bdf6109ce0539c",
+      "reconciled": true,
+      "depth": "full",
+      "product_types": [
+        "analytical_workbook",
+        "dashboard_html",
+        "docx",
+        "narrative_markdown",
+        "pdf",
+        "pdf_stub"
+      ]
+    }
+  },
+  "protected_artifact": {
+    "retained_outside_git": true,
+    "actions_artifact_name": "protected-shadow-cycle-43",
+    "capture_bodies_in_git": false,
+    "sha256": "84d108f8bdb119a95f94b7468040cdb2388226743ef998bb839dca3834b34b9d",
+    "retention_days": 90
+  },
+  "withheld_claims": [
+    "No reviewer or owner opinion is created by this core execution.",
+    "No GO authorization or canonical observatory successor is created.",
+    "No assessment mutation, scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status is established."
+  ],
+  "boundary": "Protected non-canonical core execution only. Retrieval proves access to acquired bytes, not substantive truth. Development dispositions carry no reviewer, owner, release, scientific, clinical, regulatory, conformance, institutional, or UNESCO authority. Governance remains deferred to issue #101.",
+  "acceptance_checks": {
+    "status": true,
+    "core_engineering_complete": true,
+    "governance_deferred": true,
+    "no_canonical_successor": true,
+    "no_assessment_mutation": true,
+    "handoff_disabled": true,
+    "predecessor_immutable": true,
+    "predecessor_hash": true,
+    "five_candidates": true,
+    "five_development_dispositions": true,
+    "products_reconciled": true
+  },
+  "acceptance_status": "PASS"
+}
