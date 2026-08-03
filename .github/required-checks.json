@@ -92,17 +92,6 @@
       ]
     },
     {
-      "path": ".github/workflows/complete-shadow-cycle-43.yml",
-      "name": "Complete protected shadow cycle 43",
-      "pull_request_required": false,
-      "required_trigger_markers": ["  push:", "      - agent/complete-shadow-cycle-43"],
-      "permissions": {"contents": "write"},
-      "forbid_secrets": true,
-      "jobs": [
-        {"id": "protected-cycle", "name": "protected-shadow-cycle-43", "required_contexts": []}
-      ]
-    },
-    {
       "path": ".github/workflows/release.yml",
       "name": "Release",
       "pull_request_required": false,
