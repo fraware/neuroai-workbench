@@ -13,7 +13,7 @@ from .cohort import (
 from .cycle import (
     CYCLE_STAGES,
     SOURCE_OUTCOME_TAXONOMY,
-    CycleAdjudicationSpec,
+    CycleDevelopmentDispositionSpec,
     SnapshotPairFixture,
     classify_cycle_source_outcome,
     run_live_evaluation_cycle,
@@ -47,7 +47,7 @@ __all__ = [
     "SHADOW_EVALUATION_STATUS",
     "SHADOW_REFRESH_BOUNDARY",
     "SOURCE_OUTCOME_TAXONOMY",
-    "CycleAdjudicationSpec",
+    "CycleDevelopmentDispositionSpec",
     "SnapshotPairFixture",
     "bind_reviewed_cohort_to_registry",
     "classify_cycle_source_outcome",

@@ -14,7 +14,7 @@ from neuroai_workbench.shadow_refresh.closure import list_quarantine_successes
 from neuroai_workbench.shadow_refresh.cycle import (
     CYCLE_STAGES,
     SOURCE_OUTCOME_TAXONOMY,
-    CycleAdjudicationSpec,
+    CycleDevelopmentDispositionSpec,
     SnapshotPairFixture,
     classify_cycle_source_outcome,
     run_live_evaluation_cycle,
@@ -29,7 +29,7 @@ PREDECESSOR = FIXTURES / "synthetic_predecessor_release.json"
 
 
 def _mini_registry() -> list[dict[str, object]]:
-    boundary = "Official pages establish representations only; human adjudication controls all substantive effects."
+    boundary = "Official pages establish representations only; substantive authority is deferred to the final governance overlay."
     return [
         {
             "monitor_id": "MON-SRC-0001",
@@ -131,24 +131,29 @@ def test_offline_full_cycle_produces_candidate_successor_and_publications(tmp_pa
         refresh_version="eval-cycle-test",
         evidence_cutoff="2026-08-02",
         apply_id="apply-eval-test-001",
-        adjudication=CycleAdjudicationSpec(
+        development_disposition=CycleDevelopmentDispositionSpec(
             decision="ACCEPT",
             change_class="FIELD_UPDATE",
             materiality="NON_MATERIAL",
             reopening_effect="NO_EFFECT",
-            rationale="Offline fixture adjudication for pipeline proof only.",
+            rationale="Offline development disposition for pipeline proof only.",
         ),
     )
 
     assert package["status"] == "SHADOW_EVALUATION_NOT_CANONICAL"
     assert package["canonical_successor_written"] is False
-    assert package["formal_go_authorized"] is False
+    assert package["core_engineering_complete"] is True
+    assert package["governance_layer_applied"] is False
+    assert package["governance_issue"] == "#101"
+    assert package["release_authority_state"] == "DEFERRED"
     assert package["assessment_mutation_performed"] is False
     assert package["monitoring_handoff_kill_switch"] == "DISABLED"
     assert package["metadata"]["stages"] == list(CYCLE_STAGES)
     assert package["source_outcomes"][0]["outcome_type"] == "CONTENT_CHANGED"
     assert package["stats"]["candidates"]["generated"] == 1
-    assert package["stats"]["review"]["dual_review_forged"] is False
+    assert package["stats"]["development_disposition"]["governance_layer_applied"] is False
+    assert package["stage_results"]["development_disposition"]["scope"] == "DEVELOPMENT_PIPELINE_ONLY"
+    assert not (workspace / "observatory" / "review_queue").exists()
     assert package["stage_results"]["collect"]["network_retrieval"] == "SKIPPED_FIXTURE_SNAPSHOTS"
     assert package["stage_results"]["apply_delta"]["predecessor_unchanged"] is True
     assert package["stage_results"]["reopening_analysis"]["assessment_mutation_performed"] is False
@@ -321,8 +326,8 @@ def test_live_cycle_with_injected_transport_and_baseline(tmp_path: Path, monkeyp
         transport=transport,
         dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
         approve_handoff=True,
-        adjudication=CycleAdjudicationSpec(
-            rationale="Injected-transport live path proof; not dual review.",
+        development_disposition=CycleDevelopmentDispositionSpec(
+            rationale="Injected-transport live development path proof.",
         ),
     )
     assert package["metadata"]["mode"] == "live"

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Close shadow-refresh issue #43 software/ops steps without forging dual review.
+"""Prepare issue #43 core shadow-refresh artifacts without activating governance.
 
 Requires NEUROAI_OPS_WORKSPACE. Live retries additionally require
-NEUROAI_LIVE_COLLECTION=1. Writes evaluation artifacts under the ops run root.
-Public digests/metrics may be copied into examples/; capture bodies stay in ops.
+NEUROAI_LIVE_COLLECTION=1. Writes evaluation artifacts under the protected ops
+run root. Public outputs contain digests and counts only.
 
-Evaluation handoff requires quarantine records already APPROVED_FOR_HANDOFF
-(per-record). This script does not auto-approve pending captures.
+The script does not create reviewer profiles, review opinions, owner approvals,
+or release-authority records. Human governance is deferred to issue #101.
 """
 
 from __future__ import annotations
@@ -27,52 +27,70 @@ from neuroai_workbench.shadow_refresh import (
 from neuroai_workbench.shadow_refresh.closure import (
     DEFAULT_FAILED_SOURCE_IDS,
     EVAL_ACTOR,
-    build_closure_run_results,
-    build_public_closure_summary,
-    compute_closure_metrics,
+    classify_retrieval_failure,
     create_first_capture_candidates,
     handoff_quarantine_sample_to_evaluation,
     list_quarantine_successes,
     publisher_mentions_for_sources,
-    record_formal_disposition,
     retry_failed_sources,
     run_offline_entity_sample,
     run_offline_extraction_sample,
-    scaffold_dual_human_review,
 )
 from neuroai_workbench.util import atomic_write_json, load_json, sha256_file, utc_now
 
 OPS_ENV = "NEUROAI_OPS_WORKSPACE"
+GOVERNANCE_ISSUE = "#101"
+_FAILED_SOURCE_SET = frozenset(DEFAULT_FAILED_SOURCE_IDS)
 
 
 def _load_prior_live(run_root: Path) -> dict[str, Any]:
     path = run_root / "live_collection.json"
     if not path.is_file():
         raise FileNotFoundError(f"Missing prior live collection package: {path}")
-    return load_json(path)
+    value = load_json(path)
+    if not isinstance(value, dict):
+        raise ValueError(f"Prior live collection package must be an object: {path}")
+    return value
+
+
+def _ordered_unique_outcomes(outcomes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Retain one typed outcome per expected source in deterministic source order."""
+    by_source: dict[str, dict[str, Any]] = {}
+    for outcome in outcomes:
+        source_id = str(outcome.get("source_id") or "")
+        if source_id in _FAILED_SOURCE_SET:
+            by_source[source_id] = outcome
+    return [by_source[source_id] for source_id in DEFAULT_FAILED_SOURCE_IDS if source_id in by_source]
+
+
+def _prior_typed_outcomes(run_root: Path, quarantine_root: Path) -> tuple[list[dict[str, Any]], bool]:
+    """Load the newest available typed failure record for each expected source."""
+    failure_dirs = [
+        run_root / "wave2-closure" / "retry-quarantine" / "failures",
+        quarantine_root / "failures",
+    ]
+    for failures_dir in failure_dirs:
+        if not failures_dir.is_dir():
+            continue
+        outcomes: list[dict[str, Any]] = []
+        for path in sorted(failures_dir.glob("*.json")):
+            record = load_json(path)
+            if isinstance(record, dict) and record.get("source_id") in _FAILED_SOURCE_SET:
+                outcomes.append(classify_retrieval_failure(record))
+        normalized = _ordered_unique_outcomes(outcomes)
+        if normalized:
+            return normalized, failures_dir == (run_root / "wave2-closure" / "retry-quarantine" / "failures")
+    return [], False
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ops-workspace", type=Path, default=None)
     parser.add_argument("--workbench-root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument(
-        "--run-root",
-        type=Path,
-        default=None,
-        help="Defaults to <ops>/runs/shadow-refresh-202608-live/",
-    )
+    parser.add_argument("--run-root", type=Path, default=None)
     parser.add_argument("--sample-size", type=int, default=5)
-    parser.add_argument(
-        "--skip-live-retry",
-        action="store_true",
-        help="Skip HTTP_ERROR retry even when NEUROAI_LIVE_COLLECTION=1",
-    )
-    parser.add_argument(
-        "--force-live-retry",
-        action="store_true",
-        help="Require live retry; fail if NEUROAI_LIVE_COLLECTION is unset",
-    )
+    parser.add_argument("--skip-live-retry", action="store_true")
+    parser.add_argument("--force-live-retry", action="store_true")
     args = parser.parse_args(argv)
 
     ops = args.ops_workspace or Path(os.environ.get(OPS_ENV, ""))
@@ -91,26 +109,30 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     quarantine_root = run_root / "captures" / "quarantine"
-    wave2_root = run_root / "wave2-closure"
-    wave2_root.mkdir(parents=True, exist_ok=True)
-    evaluation_workspace = wave2_root / "evaluation_workspace"
+    core_root = run_root / "core-closure"
+    core_root.mkdir(parents=True, exist_ok=True)
+    evaluation_workspace = core_root / "evaluation_workspace"
 
-    registry = load_source_registry(registry_path)
-    prior_live = _load_prior_live(run_root)
-    run_id = str(prior_live.get("collection_run", {}).get("run_id") or "SHADOW-RUN-202608-WAVE2")
+    try:
+        registry = load_source_registry(registry_path)
+        prior_live = _load_prior_live(run_root)
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        sys.stderr.write(f"ERROR loading core inputs: {exc}\n")
+        return 2
 
-    typed_retry_outcomes: list[dict[str, Any]] = []
-    retry_package: dict[str, Any] | None = None
-    live_retry_executed = False
+    run_id = str(prior_live.get("collection_run", {}).get("run_id") or "SHADOW-RUN-202608-CORE")
+
     live_enabled = os.environ.get(LIVE_COLLECTION_ENV, "").strip() == "1"
     if args.force_live_retry and not live_enabled:
         sys.stderr.write(f"ERROR --force-live-retry requires {LIVE_COLLECTION_ENV}=1\n")
         return 2
 
-    retry_root = wave2_root / "retry-quarantine"
+    typed_retry_outcomes: list[dict[str, Any]] = []
+    live_retry_executed = False
+    retry_root = core_root / "retry-quarantine"
     if live_enabled and not args.skip_live_retry:
         try:
-            retry_package = retry_failed_sources(
+            package = retry_failed_sources(
                 registry=registry,
                 registry_sha256=sha256_file(registry_path),
                 quarantine_root=retry_root,
@@ -122,237 +144,154 @@ def main(argv: list[str] | None = None) -> int:
         except (ValueError, OSError, RuntimeError, TypeError, KeyError) as exc:
             sys.stderr.write(f"ERROR live retry failed: {exc}\n")
             return 1
-        typed_retry_outcomes = list(retry_package.get("typed_outcomes", []))
+        typed_retry_outcomes = _ordered_unique_outcomes(list(package.get("typed_outcomes", [])))
         live_retry_executed = True
-        atomic_write_json(wave2_root / "retry_outcomes.json", retry_package)
     else:
-        from neuroai_workbench.shadow_refresh.closure import classify_retrieval_failure
+        try:
+            typed_retry_outcomes, live_retry_executed = _prior_typed_outcomes(run_root, quarantine_root)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            sys.stderr.write(f"ERROR loading prior retry outcomes: {exc}\n")
+            return 2
 
-        # Prefer typed outcomes from a prior Wave 2 retry quarantine when present.
-        failure_dirs = [
-            retry_root / "failures",
-            quarantine_root / "failures",
-        ]
-        prior_failures: list[dict[str, Any]] = []
-        for failures_dir in failure_dirs:
-            if not failures_dir.is_dir():
-                continue
-            batch: list[dict[str, Any]] = []
-            for path in sorted(failures_dir.glob("*.json")):
-                record = load_json(path)
-                if isinstance(record, dict) and record.get("source_id") in set(DEFAULT_FAILED_SOURCE_IDS):
-                    batch.append(record)
-            if batch:
-                prior_failures = batch
-                live_retry_executed = failures_dir == (retry_root / "failures")
-                break
-        typed_retry_outcomes = [classify_retrieval_failure(item) for item in prior_failures]
-        seen = {str(item.get("source_id")) for item in typed_retry_outcomes}
-        for sid in DEFAULT_FAILED_SOURCE_IDS:
-            if sid not in seen:
-                typed_retry_outcomes.append(
-                    {
-                        "source_id": sid,
-                        "outcome_type": "RETRY_NOT_EXECUTED_LIVE_GATE_OFF",
-                        "failure_class": "HTTP_ERROR",
-                        "finding_effect": "NONE",
-                        "status": SHADOW_EVALUATION_STATUS,
-                        "boundary": SHADOW_REFRESH_BOUNDARY,
-                    }
-                )
-        atomic_write_json(
-            wave2_root / "retry_outcomes.json",
-            {
-                "metadata": {
-                    "title": "Shadow refresh HTTP_ERROR outcomes",
+    observed = {str(item.get("source_id")) for item in typed_retry_outcomes}
+    for source_id in DEFAULT_FAILED_SOURCE_IDS:
+        if source_id not in observed:
+            typed_retry_outcomes.append(
+                {
+                    "source_id": source_id,
+                    "outcome_type": "RETRY_NOT_EXECUTED_LIVE_GATE_OFF",
+                    "failure_class": "HTTP_ERROR",
+                    "finding_effect": "NONE",
                     "status": SHADOW_EVALUATION_STATUS,
-                    "recorded_at": utc_now(),
-                },
-                "live_retry_executed": live_retry_executed,
-                "typed_outcomes": typed_retry_outcomes,
-                "status": SHADOW_EVALUATION_STATUS,
-                "boundary": SHADOW_REFRESH_BOUNDARY,
-            },
-        )
+                    "boundary": SHADOW_REFRESH_BOUNDARY,
+                }
+            )
+    typed_retry_outcomes = _ordered_unique_outcomes(typed_retry_outcomes)
+    retrieval_outcomes_complete = [str(item.get("source_id")) for item in typed_retry_outcomes] == list(
+        DEFAULT_FAILED_SOURCE_IDS
+    ) and all(item.get("finding_effect") == "NONE" for item in typed_retry_outcomes)
+
+    atomic_write_json(
+        core_root / "retrieval_outcomes.json",
+        {
+            "run_id": run_id,
+            "expected_source_ids": list(DEFAULT_FAILED_SOURCE_IDS),
+            "live_retry_executed": live_retry_executed,
+            "typed_outcomes": typed_retry_outcomes,
+            "retrieval_outcomes_complete": retrieval_outcomes_complete,
+            "finding_mutation_performed": False,
+            "status": SHADOW_EVALUATION_STATUS,
+            "boundary": SHADOW_REFRESH_BOUNDARY,
+        },
+    )
 
     successes = list_quarantine_successes(quarantine_root)
-    approved = [r for r in successes if r.get("approval_state") == "APPROVED_FOR_HANDOFF"]
+    approved = [record for record in successes if record.get("approval_state") == "APPROVED_FOR_HANDOFF"]
     if successes and not approved:
-        sys.stderr.write(
-            "ERROR quarantine successes exist but none are APPROVED_FOR_HANDOFF; "
-            "approve per-record before evaluation handoff "
-            "(handoff does not auto-approve pending captures)\n"
-        )
+        sys.stderr.write("ERROR successful captures exist but none are APPROVED_FOR_HANDOFF\n")
         return 2
 
-    handoff = handoff_quarantine_sample_to_evaluation(
-        quarantine_root=quarantine_root,
-        evaluation_workspace=evaluation_workspace,
-        registry_path=registry_path,
-        sample_size=args.sample_size,
-        approved_by=EVAL_ACTOR,
-    )
-    atomic_write_json(wave2_root / "evaluation_handoff.json", handoff)
+    try:
+        handoff = handoff_quarantine_sample_to_evaluation(
+            quarantine_root=quarantine_root,
+            evaluation_workspace=evaluation_workspace,
+            registry_path=registry_path,
+            sample_size=args.sample_size,
+            approved_by=EVAL_ACTOR,
+        )
+        atomic_write_json(core_root / "evaluation_handoff.json", handoff)
 
-    candidates = create_first_capture_candidates(
-        evaluation_workspace=evaluation_workspace,
-        handoffs=handoff["handoffs"],
-        actor=EVAL_ACTOR,
-    )
-    atomic_write_json(wave2_root / "change_candidates.json", candidates)
+        candidates = create_first_capture_candidates(
+            evaluation_workspace=evaluation_workspace,
+            handoffs=handoff["handoffs"],
+            actor=EVAL_ACTOR,
+        )
+        atomic_write_json(core_root / "change_candidates.json", candidates)
 
-    review = scaffold_dual_human_review(
-        evaluation_workspace=evaluation_workspace,
-        output_dir=wave2_root,
-        actor=EVAL_ACTOR,
-    )
-    atomic_write_json(wave2_root / "dual_review_scaffold.json", review)
+        source_ids = [str(item["source_id"]) for item in handoff["handoffs"]]
+        entity = run_offline_entity_sample(
+            evaluation_workspace=evaluation_workspace,
+            sample_mentions=publisher_mentions_for_sources(registry, source_ids),
+            actor=EVAL_ACTOR,
+        )
+        atomic_write_json(core_root / "entity_disposition_sample.json", entity)
 
-    mention_source_ids = [str(item["source_id"]) for item in handoff["handoffs"]]
-    entity = run_offline_entity_sample(
-        evaluation_workspace=evaluation_workspace,
-        sample_mentions=publisher_mentions_for_sources(registry, mention_source_ids),
-        actor=EVAL_ACTOR,
-    )
-    atomic_write_json(wave2_root / "entity_disposition_sample.json", entity)
-
-    extraction = run_offline_extraction_sample(
-        evaluation_workspace=evaluation_workspace,
-        quarantine_root=quarantine_root,
-        handoffs=handoff["handoffs"],
-        actor=EVAL_ACTOR,
-    )
-    atomic_write_json(wave2_root / "extraction_disposition_sample.json", extraction)
+        extraction = run_offline_extraction_sample(
+            evaluation_workspace=evaluation_workspace,
+            quarantine_root=quarantine_root,
+            handoffs=handoff["handoffs"],
+            actor=EVAL_ACTOR,
+        )
+        atomic_write_json(core_root / "extraction_disposition_sample.json", extraction)
+    except (ValueError, OSError, RuntimeError, TypeError, KeyError) as exc:
+        sys.stderr.write(f"ERROR core evaluation preparation failed: {exc}\n")
+        return 1
 
     live_counts = dict(prior_live.get("collection_run", {}).get("counts", {}))
-    digests = list(prior_live.get("capture_digests") or [])
-    if retry_package is not None:
-        # Merge retry successes into digest view without claiming full cohort re-run.
-        digests = digests + list(retry_package.get("live_package", {}).get("capture_digests", []))
-
-    run_results = build_closure_run_results(
-        run_id=run_id,
-        live_succeeded=int(live_counts.get("succeeded", 0)),
-        live_failed=int(live_counts.get("failed", 0)),
-        live_attempted=int(live_counts.get("total", 0)),
-        digest_count=len(digests),
-        candidate_count=len(candidates["candidates"]),
-        entity_decisions=int(entity.get("disposition_count", 0)),
-        entity_correct=0,
-        dual_review_complete=False,
+    core_complete = (
+        int(live_counts.get("total", 0)) == 25
+        and retrieval_outcomes_complete
+        and len(handoff["handoffs"]) == args.sample_size
+        and len(candidates["candidates"]) == args.sample_size
     )
-    atomic_write_json(wave2_root / "run_results.json", run_results)
-
-    metrics = compute_closure_metrics(run_results, generated_by="close_shadow_refresh_43.py")
-    atomic_write_json(wave2_root / "go_no_go_metrics.json", metrics)
-    # Keep legacy filename expected by ops docs.
-    atomic_write_json(wave2_root / "go-no-go-metrics.json", metrics)
-
-    residual = load_json(wave2_root / "human_residual_checklist.json")
-    formal = record_formal_disposition(
-        run_id=run_id,
-        metrics_recommendation=str(metrics["evaluation"]["recommendation"]),
-        dual_review_complete=False,
-        owners=["programme-owner", "monitoring-lead"],
-        residual_checklist=list(residual.get("checklist", [])),
-        typed_retry_outcomes=typed_retry_outcomes,
-    )
-    atomic_write_json(wave2_root / "formal_disposition.json", formal)
-
-    evaluation_report = {
+    report = {
         "metadata": {
-            "title": "Shadow refresh Wave 2 evaluation report",
-            "status": SHADOW_EVALUATION_STATUS,
+            "title": "Issue #43 core shadow-refresh preparation report",
+            "run_id": run_id,
             "generated_at": utc_now(),
-            "evaluation_issue": "#43",
+            "status": SHADOW_EVALUATION_STATUS,
         },
-        "summary": {
-            "prior_live_counts": live_counts,
-            "live_retry_executed": live_retry_executed,
-            "typed_retry_outcomes": typed_retry_outcomes,
-            "evaluation_handoffs": len(handoff["handoffs"]),
-            "change_candidates": len(candidates["candidates"]),
-            "baseline_comparison": candidates.get("baseline_comparison"),
-            "dual_review_complete": False,
-            "entity_dispositions": entity.get("disposition_count", 0),
-            "extraction_dispositions": extraction.get("record_count", 0),
-            "metrics_recommendation": metrics["evaluation"]["recommendation"],
-            "formal_disposition": formal["disposition"],
-        },
-        "human_blocked": [
-            "Dual human review opinions on sampled candidates",
-            "Any GO disposition authorization after dual review",
-        ],
-        "withheld_claims": formal["withheld_claims"],
+        "collection_counts": live_counts,
+        "live_retry_executed": live_retry_executed,
+        "typed_retry_outcomes": typed_retry_outcomes,
+        "retrieval_outcomes_complete": retrieval_outcomes_complete,
+        "evaluation_handoffs": len(handoff["handoffs"]),
+        "change_candidates": len(candidates["candidates"]),
+        "entity_dispositions": int(entity.get("disposition_count", 0)),
+        "extraction_dispositions": int(extraction.get("record_count", 0)),
+        "core_wave2_complete": core_complete,
+        "next_core_step": "RUN_NONCANONICAL_FULL_EVALUATION_CYCLE",
+        "governance_layer_applied": False,
+        "governance_issue": GOVERNANCE_ISSUE,
+        "release_authority_state": "DEFERRED",
+        "canonical_successor_written": False,
+        "assessment_mutation_performed": False,
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,
     }
-    atomic_write_json(wave2_root / "evaluation-report.md.json", evaluation_report)
-    report_md = wave2_root / "evaluation-report.md"
-    report_md.write_text(
-        "\n".join(
-            [
-                "# Shadow refresh Wave 2 evaluation report",
-                "",
-                f"- Status: `{SHADOW_EVALUATION_STATUS}`",
-                f"- Formal disposition: `{formal['disposition']}`",
-                f"- Metrics recommendation: `{metrics['evaluation']['recommendation']}`",
-                "- Dual human review complete: `false`",
-                f"- Live retry executed: `{str(live_retry_executed).lower()}`",
-                f"- Evaluation handoffs: `{len(handoff['handoffs'])}`",
-                f"- Change candidates: `{len(candidates['candidates'])}`",
-                f"- Baseline comparison: `{candidates.get('baseline_comparison')}`",
-                "",
-                "## Human-blocked residuals",
-                "",
-                "- Dual human review opinions on sampled candidates",
-                "- Formal GO only after dual review (software must not forge completions)",
-                "",
-                "## Withheld claims",
-                "",
-                *[f"- {claim}" for claim in formal["withheld_claims"]],
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    atomic_write_json(core_root / "core-preparation-report.json", report)
 
-    public_summary = build_public_closure_summary(
-        run_id=run_id,
-        live_counts=live_counts,
-        capture_digests=digests,
-        typed_retry_outcomes=typed_retry_outcomes,
-        candidate_count=len(candidates["candidates"]),
-        dual_review_complete=False,
-        metrics_recommendation=str(metrics["evaluation"]["recommendation"]),
-        formal_disposition=str(formal["disposition"]),
-    )
-    public_summary["live_retry_executed"] = live_retry_executed
-    atomic_write_json(wave2_root / "public_metrics_summary.json", public_summary)
+    public = {
+        "metadata": report["metadata"],
+        "collection_counts": live_counts,
+        "typed_retry_outcomes": [
+            {
+                "source_id": item.get("source_id"),
+                "outcome_type": item.get("outcome_type"),
+                "http_status": item.get("http_status"),
+                "finding_effect": item.get("finding_effect"),
+            }
+            for item in typed_retry_outcomes
+        ],
+        "retrieval_outcomes_complete": retrieval_outcomes_complete,
+        "evaluation_handoffs": len(handoff["handoffs"]),
+        "change_candidates": len(candidates["candidates"]),
+        "core_wave2_complete": core_complete,
+        "governance_layer_applied": False,
+        "governance_issue": GOVERNANCE_ISSUE,
+        "canonical_successor_written": False,
+        "capture_bodies_included": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+    atomic_write_json(core_root / "public-core-summary.json", public)
+    examples = args.workbench_root / "examples" / "shadow_refresh"
+    if examples.is_dir():
+        atomic_write_json(examples / "SHADOW_REFRESH_CORE_PUBLIC_SUMMARY_v202608.json", public)
 
-    examples_dir = args.workbench_root / "examples" / "shadow_refresh"
-    if examples_dir.is_dir():
-        atomic_write_json(examples_dir / "SHADOW_REFRESH_WAVE2_PUBLIC_SUMMARY_v202608.json", public_summary)
-
-    json.dump(
-        {
-            "wave2_root": str(wave2_root),
-            "formal_disposition": formal["disposition"],
-            "metrics_recommendation": metrics["evaluation"]["recommendation"],
-            "dual_review_complete": False,
-            "live_retry_executed": live_retry_executed,
-            "typed_retry_outcomes": [
-                {"source_id": item.get("source_id"), "outcome_type": item.get("outcome_type")}
-                for item in typed_retry_outcomes
-            ],
-            "status": SHADOW_EVALUATION_STATUS,
-        },
-        sys.stdout,
-        ensure_ascii=False,
-        indent=2,
-    )
+    json.dump(report, sys.stdout, ensure_ascii=False, indent=2)
     sys.stdout.write("\n")
-    return 0
+    return 0 if core_complete else 1
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 """Non-canonical full evaluation operating cycle (Wave 3).
 
 Orchestrates plan → collect → quarantine handoff → snapshot → compare →
-candidate → adjudicate → refresh → delta → apply → reopening → publications.
+candidate → development disposition → refresh → delta → apply → reopening → publications.
 
 Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Live network steps require
 NEUROAI_LIVE_COLLECTION=1. Offline/unit paths use fixtures and never open the
@@ -52,7 +52,7 @@ CYCLE_STAGES = (
     "record_snapshot",
     "compare_snapshots",
     "create_change_candidate",
-    "adjudicate",
+    "development_disposition",
     "build_refresh_candidate",
     "compile_adjudicated_delta",
     "apply_delta",
@@ -89,18 +89,22 @@ CycleMode = Literal["offline", "live"]
 
 
 @dataclass(frozen=True)
-class CycleAdjudicationSpec:
-    """Explicit human-supplied adjudication for evaluation scaffolding.
+class CycleDevelopmentDispositionSpec:
+    """Non-substantive disposition used to exercise the core engineering pipeline.
 
-    Reviewer IDs remain claimed local workflow identities. Specs do not forge
-    dual-review completion or GO authorization.
+    The record drives deterministic delta, reopening, and publication mechanics only.
+    It carries no reviewer identity, domain authority, release authority, or canonical
+    effect. Human governance is deferred to issue #101 after core completion.
     """
 
     decision: str = "ACCEPT"
     change_class: str = "FIELD_UPDATE"
     materiality: str = "NON_MATERIAL"
     reopening_effect: str = "NO_EFFECT"
-    rationale: str = "Evaluation-cycle scaffolding adjudication for non-canonical pipeline proof only."
+    rationale: str = (
+        "Development-only candidate disposition for non-canonical pipeline verification; "
+        "substantive governance is deferred to issue #101."
+    )
 
 
 @dataclass(frozen=True)
@@ -245,7 +249,7 @@ def run_offline_snapshot_cycle(
     refresh_version: str,
     evidence_cutoff: str,
     apply_id: str,
-    adjudication: CycleAdjudicationSpec | None = None,
+    development_disposition: CycleDevelopmentDispositionSpec | None = None,
     operation_specs: dict[str, list[dict[str, Any]]] | None = None,
     actor: str = EVAL_CYCLE_ACTOR,
     as_of: str = "2026-08-02",
@@ -253,7 +257,7 @@ def run_offline_snapshot_cycle(
     """Execute the full evaluation cycle from fixture snapshot pairs (network-free)."""
     if not snapshot_pairs:
         raise ValueError("snapshot_pairs must be non-empty for the offline cycle")
-    adj = adjudication or CycleAdjudicationSpec()
+    disposition = development_disposition or CycleDevelopmentDispositionSpec()
     evaluation_workspace = evaluation_workspace.resolve()
     registry_path = registry_path.resolve()
     predecessor_path = predecessor_path.resolve()
@@ -335,7 +339,7 @@ def run_offline_snapshot_cycle(
                 current["snapshot_id"],
                 previous_snapshot_id=baseline["snapshot_id"],
                 summary=(
-                    "Evaluation-cycle mechanical content change; substantive classification pending human review."
+                    "Evaluation-cycle mechanical content change; substantive authority deferred; development disposition pending."
                 ),
                 actor=actor,
             )
@@ -343,11 +347,11 @@ def run_offline_snapshot_cycle(
             adjudication_record = adjudicate_change_candidate(
                 evaluation_workspace,
                 candidate["candidate_id"],
-                adj.decision,
-                rationale=adj.rationale,
-                change_class=adj.change_class,
-                materiality=adj.materiality,
-                reopening_effect=adj.reopening_effect,
+                disposition.decision,
+                rationale=disposition.rationale,
+                change_class=disposition.change_class,
+                materiality=disposition.materiality,
+                reopening_effect=disposition.reopening_effect,
                 actor=actor,
             )
             adjudications.append(adjudication_record)
@@ -374,8 +378,8 @@ def run_offline_snapshot_cycle(
         "candidates": [{"candidate_id": c["candidate_id"], "source_id": c["source_id"]} for c in candidates],
         "count": len(candidates),
     }
-    stage_results["adjudicate"] = {
-        "adjudications": [
+    stage_results["development_disposition"] = {
+        "records": [
             {
                 "adjudication_id": item["adjudication_id"],
                 "candidate_id": item["candidate_id"],
@@ -384,7 +388,9 @@ def run_offline_snapshot_cycle(
             for item in adjudications
         ],
         "count": len(adjudications),
-        "dual_review_forged": False,
+        "scope": "DEVELOPMENT_PIPELINE_ONLY",
+        "governance_layer_applied": False,
+        "substantive_authority": False,
     }
 
     return _finish_cycle_after_adjudication(
@@ -416,7 +422,7 @@ def run_live_evaluation_cycle(
     apply_id: str,
     plan: dict[str, Any] | None = None,
     sample_size: int = 5,
-    adjudication: CycleAdjudicationSpec | None = None,
+    development_disposition: CycleDevelopmentDispositionSpec | None = None,
     operation_specs: dict[str, list[dict[str, Any]]] | None = None,
     transport: HttpTransport | None = None,
     dns_guard: DnsGuard | None = None,
@@ -438,7 +444,7 @@ def run_live_evaluation_cycle(
             "pass approve_handoff=True only after per-record quarantine approval "
             "(APPROVED_FOR_HANDOFF) to consent to handoff of those pre-approved records."
         )
-    adj = adjudication or CycleAdjudicationSpec()
+    disposition = development_disposition or CycleDevelopmentDispositionSpec()
     evaluation_workspace = evaluation_workspace.resolve()
     registry_path = registry_path.resolve()
     predecessor_path = predecessor_path.resolve()
@@ -582,11 +588,11 @@ def run_live_evaluation_cycle(
         adjudication_record = adjudicate_change_candidate(
             evaluation_workspace,
             candidate["candidate_id"],
-            adj.decision,
-            rationale=adj.rationale,
-            change_class=adj.change_class,
-            materiality=adj.materiality,
-            reopening_effect=adj.reopening_effect,
+            disposition.decision,
+            rationale=disposition.rationale,
+            change_class=disposition.change_class,
+            materiality=disposition.materiality,
+            reopening_effect=disposition.reopening_effect,
             actor=actor,
         )
         adjudications.append(adjudication_record)
@@ -609,8 +615,8 @@ def run_live_evaluation_cycle(
         "candidates": [{"candidate_id": c["candidate_id"], "source_id": c["source_id"]} for c in candidates],
         "count": len(candidates),
     }
-    stage_results["adjudicate"] = {
-        "adjudications": [
+    stage_results["development_disposition"] = {
+        "records": [
             {
                 "adjudication_id": item["adjudication_id"],
                 "candidate_id": item["candidate_id"],
@@ -619,7 +625,9 @@ def run_live_evaluation_cycle(
             for item in adjudications
         ],
         "count": len(adjudications),
-        "dual_review_forged": False,
+        "scope": "DEVELOPMENT_PIPELINE_ONLY",
+        "governance_layer_applied": False,
+        "substantive_authority": False,
     }
 
     # Quarantine success count retained for provenance reporting.
@@ -759,14 +767,19 @@ def _finish_cycle_after_adjudication(
             "generated": len(candidates),
             "accepted": sum(
                 1
-                for item in stage_results.get("adjudicate", {}).get("adjudications", [])
+                for item in stage_results.get("development_disposition", {}).get("records", [])
                 if item.get("decision") == "ACCEPT"
             ),
         },
-        "review": {
-            "adjudications": stage_results.get("adjudicate", {}).get("count", 0),
-            "dual_review_forged": False,
-            "note": "Claimed local workflow identities only; dual human review remains open unless recorded elsewhere.",
+        "development_disposition": {
+            "records": stage_results.get("development_disposition", {}).get("count", 0),
+            "scope": "DEVELOPMENT_PIPELINE_ONLY",
+            "governance_layer_applied": False,
+            "substantive_authority": False,
+            "note": (
+                "Development dispositions exercise pipeline mechanics only; "
+                "human governance and release authority are deferred to issue #101."
+            ),
         },
         "reopening": {
             "recommended": len(recommendations),
@@ -796,11 +809,15 @@ def _finish_cycle_after_adjudication(
         "canonical_successor_written": False,
         "monitoring_handoff_kill_switch": "DISABLED",
         "assessment_mutation_performed": False,
-        "formal_go_authorized": False,
+        "core_engineering_complete": bool(reconciliation["reconciled"]),
+        "governance_layer_applied": False,
+        "governance_issue": "#101",
+        "release_authority_state": "DEFERRED",
         "withheld_claims": [
             "Cycle artifacts remain SHADOW_EVALUATION_NOT_CANONICAL.",
             "Candidate successor is not an AUTHORIZED or PUBLISHED observatory release (#41).",
-            "Adjudication scaffolding does not forge dual human review or GO disposition.",
+            "Development dispositions exercise mechanics only and carry no substantive authority.",
+            "Human governance and release authorization are deferred to issue #101.",
             "Retrieval/comparison outcomes are typed operations evidence, not FAIL findings.",
             "Reopening analysis does not mutate assessments.",
             "Publication products are views of the candidate successor only.",

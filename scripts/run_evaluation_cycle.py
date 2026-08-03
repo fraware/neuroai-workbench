@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run a non-canonical full evaluation operating cycle (Wave 3).
 
-Offline (default): fixture snapshot pairs → compare → candidate → adjudicate →
+Offline (default): fixture snapshot pairs → compare → candidate → development disposition →
 refresh → delta → apply → reopening → depth=full publications. No network.
 
 Live: requires NEUROAI_LIVE_COLLECTION=1 and NEUROAI_OPS_WORKSPACE. Collects into
@@ -9,7 +9,7 @@ quarantine only, then evaluation-only handoff of records already APPROVED_FOR_HA
 (--approve-handoff consents to that handoff; it does not auto-approve). Collector
 monitoring handoff stays disabled for the remaining stages.
 
-Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Does not forge dual review or GO.
+Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Governance is deferred to issue #101.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pathlib import Path
 
 from neuroai_workbench.shadow_refresh import LIVE_COLLECTION_ENV, SHADOW_EVALUATION_STATUS
 from neuroai_workbench.shadow_refresh.cycle import (
-    CycleAdjudicationSpec,
+    CycleDevelopmentDispositionSpec,
     SnapshotPairFixture,
     run_live_evaluation_cycle,
     run_offline_snapshot_cycle,
@@ -117,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
                             "baseline_verification_state": "CURRENT_VERIFIED",
                             "baseline_claim_boundary": (
                                 "Official pages establish representations only; "
-                                "human adjudication controls all substantive effects."
+                                "substantive authority is deferred to the final governance overlay."
                             ),
                             "network_access_required": True,
                             "current_status": "BASELINE_REGISTERED",
@@ -134,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
             refresh_version=args.refresh_version,
             evidence_cutoff=args.evidence_cutoff,
             apply_id=args.apply_id,
-            adjudication=CycleAdjudicationSpec(),
+            development_disposition=CycleDevelopmentDispositionSpec(),
         )
     else:
         ops = (args.ops_workspace or Path(os.environ.get(OPS_ENV, ""))).resolve()
@@ -169,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
             evidence_cutoff=args.evidence_cutoff,
             apply_id=args.apply_id,
             sample_size=args.sample_size,
-            adjudication=CycleAdjudicationSpec(),
+            development_disposition=CycleDevelopmentDispositionSpec(),
             approve_handoff=True,
         )
 
@@ -183,7 +183,10 @@ def main(argv: list[str] | None = None) -> int:
             "stats": package.get("stats"),
             "source_outcome_counts": package.get("stats", {}).get("retrieval", {}).get("by_type"),
             "canonical_successor_written": False,
-            "formal_go_authorized": False,
+            "core_engineering_complete": package.get("core_engineering_complete", False),
+            "governance_layer_applied": False,
+            "governance_issue": "#101",
+            "release_authority_state": "DEFERRED",
             "withheld_claims": package.get("withheld_claims"),
             "status": SHADOW_EVALUATION_STATUS,
             "boundary": package.get("boundary"),
