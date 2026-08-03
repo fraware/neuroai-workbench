@@ -42,6 +42,18 @@ def load_json(path: Path) -> Any:
         return json.load(handle)
 
 
+def fsync_directory(path: Path) -> None:
+    """Persist directory metadata after create, replace, rename, or unlink on POSIX."""
+    if os.name == "nt":
+        return
+    flags = os.O_RDONLY | int(getattr(os, "O_DIRECTORY", 0))
+    fd = os.open(str(path), flags)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 def atomic_write_bytes(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=str(path.parent))
@@ -51,6 +63,7 @@ def atomic_write_bytes(path: Path, data: bytes) -> None:
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(tmp_name, path)
+        fsync_directory(path.parent)
     finally:
         if os.path.exists(tmp_name):
             os.unlink(tmp_name)
