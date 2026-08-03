@@ -132,9 +132,7 @@ def _bundle_commit(bundle: Path, tag: str) -> tuple[bool, str, str]:
             check=False,
         )
     detail = "\n".join(
-        part.strip()
-        for part in (verify.stdout, verify.stderr, init.stderr, fetch.stderr, rev.stderr)
-        if part.strip()
+        part.strip() for part in (verify.stdout, verify.stderr, init.stderr, fetch.stderr, rev.stderr) if part.strip()
     )
     return verify.returncode == init.returncode == fetch.returncode == rev.returncode == 0, rev.stdout.strip(), detail
 
@@ -187,7 +185,11 @@ def audit(
     for name in sorted(expected_assets - {"SHA256SUMS"}):
         path = assets_dir / name
         actual = _sha256(path) if path.is_file() else None
-        check(f"Checksum {name}", actual == checksum_records.get(name), {"expected": checksum_records.get(name), "actual": actual})
+        check(
+            f"Checksum {name}",
+            actual == checksum_records.get(name),
+            {"expected": checksum_records.get(name), "actual": actual},
+        )
 
     metadata_digests = {
         str(item.get("name")): str(item.get("digest") or "")
@@ -262,7 +264,11 @@ def audit(
     components = sbom.get("components")
     check("CycloneDX SBOM parses", sbom_error is None, sbom_error or "parsed")
     check("CycloneDX format identity", sbom.get("bomFormat") == "CycloneDX", sbom.get("bomFormat"))
-    check("CycloneDX component inventory is non-empty", isinstance(components, list) and len(components) > 0, len(components) if isinstance(components, list) else None)
+    check(
+        "CycloneDX component inventory is non-empty",
+        isinstance(components, list) and len(components) > 0,
+        len(components) if isinstance(components, list) else None,
+    )
 
     tag_commit = str(tag_record.get("tag_commit") or "")
     check("Repository tag identity", tag_record.get("tag") == expected_tag, tag_record)
@@ -273,11 +279,11 @@ def audit(
     check("Git bundle tag peels to expected commit", bundle_commit == expected_commit, bundle_commit)
 
     attestation_rows = attestations.get("assets")
-    attestation_map = {
-        str(item.get("name")): bool(item.get("verified"))
-        for item in attestation_rows
-        if isinstance(item, dict)
-    } if isinstance(attestation_rows, list) else {}
+    attestation_map = (
+        {str(item.get("name")): bool(item.get("verified")) for item in attestation_rows if isinstance(item, dict)}
+        if isinstance(attestation_rows, list)
+        else {}
+    )
     check("Attestation result inventory", set(attestation_map) == expected_assets, sorted(attestation_map))
     for name in sorted(expected_assets):
         check(f"Build provenance attestation {name}", attestation_map.get(name) is True, attestation_map.get(name))
@@ -343,7 +349,9 @@ def main(argv: list[str] | None = None) -> int:
         }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({key: report.get(key) for key in ("release", "status", "checks_total", "checks_failed")}, indent=2))
+    print(
+        json.dumps({key: report.get(key) for key in ("release", "status", "checks_total", "checks_failed")}, indent=2)
+    )
     return 0 if report.get("status") == "PASS" else 1
 
 
