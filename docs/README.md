@@ -21,7 +21,7 @@ Audience-oriented index for the NeuroAI Workbench. Every page below has a distin
 
 ## Architecture decision records
 
-Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Current records: offline-first local-only, filesystem workspaces, no aggregate conformance score, normative kernel change control, controlled language-model assistance, single-writer event chain, transactional evidence registration, collector deployment boundary, canonical data and evidence stores.
+Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Current records: offline-first local-only, filesystem workspaces, no aggregate conformance score, normative kernel change control, controlled language-model assistance, single-writer event chain, transactional evidence registration, collector deployment boundary, canonical data and evidence stores, discovery query streams.
 
 ## Operations
 
