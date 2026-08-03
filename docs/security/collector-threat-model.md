@@ -35,6 +35,7 @@ An attacker manipulates a registry entry, redirect chain, or adapter override so
 **Controls**
 
 - Registry-driven allowlist only; no ad hoc URL parameters outside reviewed adapters.
+- Structured adapters may rewrite retrieval targets only to hosts declared in their versioned adapter contracts (for example `clinicaltrials.gov`, `api.fda.gov`, `eutils.ncbi.nlm.nih.gov`, `api.crossref.org`). Rewrites remain subject to the same SSRF, DNS, redirect, and size controls as registry URLs.
 - HTTP and HTTPS only unless a separately reviewed adapter explicitly permits another scheme.
 - DNS resolution before every request and after every redirect hop.
 - Reject loopback, private, link-local, reserved, multicast, and unspecified addresses after resolution.
@@ -122,6 +123,7 @@ An attacker attempts to write outside the quarantine root using path traversal, 
 - Reject filenames containing path separators, `..`, or control characters.
 - Store objects under content-addressed relative paths inside the quarantine root.
 - Require human approval before any handoff to monitoring snapshot registration.
+- Evaluation handoff paths sample only `APPROVED_FOR_HANDOFF` records and refuse auto-approval of pending quarantine captures.
 
 **Contract mapping**
 

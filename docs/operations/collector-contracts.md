@@ -10,6 +10,12 @@ This page indexes the versioned collector contracts introduced for issue #35. Th
 | Collection result | `collection-result.schema.json` | Successful retrieval provenance and quarantine pointer |
 | Collection failure | `collection-failure.schema.json` | Visible failure record with retry state |
 | Quarantine record | `quarantine-record.schema.json` | Quarantined byte metadata and approval gate |
+| Structured adapter contract | `structured-adapter-contract.schema.json` | Adapter completeness, reviewed hosts, and capability declaration |
+| Normalized study record | `normalized-study-record.schema.json` | CT.gov field projection for mechanical change detection |
+| Normalized device record | `normalized-device-record.schema.json` | FDA pathway-linked device projection |
+| Normalized publication record | `normalized-publication-record.schema.json` | PubMed/PMC/Crossref metadata projection |
+
+Per-adapter contracts are versioned as `adapter-contract-<adapter_id>.json` beside these schemas. `PARTIAL` means reviewed identifier- or query-bound retrieval paths exist; `SCAFFOLD_NOT_COMPLETE` means the adapter refuses live collection.
 
 Package location: `src/neuroai_workbench/resources/collector/`.
 
@@ -41,17 +47,24 @@ The hardened HTTP collector core lives in `src/neuroai_workbench/collector/`. It
 
 Source-type adapters wrap the HTTP collector core:
 
-| Adapter | Identifier | Typical source classes |
-| --- | --- | --- |
-| HTML page | `html` | Official company and product pages |
-| JSON API | `json_api` | Public JSON APIs and bibliographic metadata |
-| XML / RSS / Atom | `xml_feed` | Syndication and procedural guidance feeds |
-| Clinical / regulatory HTTP capture | `clinical_regulatory_http_capture` | Selected regulatory landing pages (page capture only, not structured registry integration) |
-| ClinicalTrials.gov structured | `clinicaltrials_gov` | Trial registry/page classes with explicit NCT IDs |
-| FDA device landing | `fda_device` | Regulatory records with explicit PMA/HDE/De Novo/510(k) IDs |
-| Controlled authenticated download stub | `auth_download` | `CONTROLLED_AUTHENTICATED_DOWNLOAD` |
+| Adapter | Identifier | Typical source classes | Completeness |
+| --- | --- | --- | --- |
+| HTML page | `html` | Official company and product pages | fallback |
+| JSON API | `json_api` | Public JSON APIs | generic |
+| XML / RSS / Atom | `xml_feed` | Syndication and procedural guidance feeds | generic |
+| Clinical / regulatory HTTP capture | `clinical_regulatory_http_capture` | Selected regulatory/publication landing pages without structured IDs | page capture only |
+| ClinicalTrials.gov structured | `clinicaltrials_gov` | Trial registry/page classes with NCT ID or search query | `PARTIAL` (study + search/pagination + field digests) |
+| FDA device structured | `fda_device` | Regulatory records with explicit PMA/HDE/De Novo/510(k) IDs → openFDA | `PARTIAL` (pathway linkage) |
+| PubMed / PMC / Crossref | `pubmed_crossref` | Publication classes with PMID, PMCID, or DOI | `PARTIAL` |
+| FDA MAUDE | `fda_maude` | `FDA_MAUDE_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| FDA recall | `fda_recall` | `FDA_RECALL_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| WHO ICTRP | `who_ictrp` | `WHO_ICTRP_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| EU CTIS | `eu_ctis` | `EU_CTIS_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| Neuroscience archives | `neuroscience_archive` | `NEUROSCIENCE_DATASET_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| Patents / grants | `patents_grants` | `PATENT_OR_GRANT_RECORD` | `SCAFFOLD_NOT_COMPLETE` |
+| Controlled authenticated download stub | `auth_download` | `CONTROLLED_AUTHENTICATED_DOWNLOAD` | stub |
 
-Do not claim observatory-grade registry completeness from page capture alone. Structured CT.gov/FDA adapters retrieve selected identifier-bound payloads only.
+Do not claim observatory-grade registry completeness from page capture alone. Structured adapters retrieve selected identifier-bound or query-bound payloads only. HTML remains the fallback when no structured identifier or dedicated source class applies. Scaffold adapters refuse live retrieval with an explicit non-substantive failure; that refusal is not a scientific `FAIL` finding.
 
 `CollectionScheduler` consumes `neuroai-monitor plan` output, selects an adapter from registry `source_class` and URL shape, and writes quarantine records only. Kill switches can disable collection globally, per source, per adapter, or monitoring handoff. Runtime credentials for the authenticated download stub are supplied through a `CredentialProvider` outside collection records; embedded URL credentials are refused.
 
