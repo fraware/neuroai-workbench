@@ -20,30 +20,59 @@ jobs:
     if: github.repository == 'fraware/neuroai-workbench'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Check existing release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v0.2.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'exists=true' >> "$GITHUB_OUTPUT"
+            echo 'v0.2.1 already exists; recovery is idempotently complete.'
+          else
+            echo 'exists=false' >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.release.outputs.exists != 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: v0.2.1
           fetch-depth: 0
           fetch-tags: true
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+      - if: steps.release.outputs.exists != 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.13"
           cache: pip
-      - run: python -m pip install --upgrade pip
-      - run: python -m pip install --require-hashes -r requirements/constraints.txt
-      - run: python -m pip install --no-deps -e .
-      - run: python scripts/check_version_consistency.py --tag v0.2.1
-      - run: make quality
-      - run: make test
-      - run: mkdir -p artifacts
-      - run: python scripts/verify_release.py --output artifacts/RELEASE_VERIFICATION.json
-      - run: python -m build
-      - run: python -m twine check dist/*
-      - run: python scripts/generate_sbom.py --output artifacts/SBOM.spdx.json
-      - run: git bundle create artifacts/neuroai-workbench-v0.2.1.bundle --all
-      - run: cp dist/* artifacts/
-      - run: python scripts/generate_sha256_manifest.py artifacts artifacts/SHA256SUMS.txt
-      - name: Confirm exact recovery asset set
+      - if: steps.release.outputs.exists != 'true'
+        run: python -m pip install --upgrade pip
+      - if: steps.release.outputs.exists != 'true'
+        run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - if: steps.release.outputs.exists != 'true'
+        run: python -m pip install --no-deps -e .
+      - if: steps.release.outputs.exists != 'true'
+        run: python scripts/check_version_consistency.py --tag v0.2.1
+      - if: steps.release.outputs.exists != 'true'
+        run: make quality
+      - if: steps.release.outputs.exists != 'true'
+        run: make test
+      - if: steps.release.outputs.exists != 'true'
+        run: mkdir -p artifacts
+      - if: steps.release.outputs.exists != 'true'
+        run: python scripts/verify_release.py --output artifacts/RELEASE_VERIFICATION.json
+      - if: steps.release.outputs.exists != 'true'
+        run: python -m build
+      - if: steps.release.outputs.exists != 'true'
+        run: python -m twine check dist/*
+      - if: steps.release.outputs.exists != 'true'
+        run: python scripts/generate_sbom.py --output artifacts/SBOM.spdx.json
+      - if: steps.release.outputs.exists != 'true'
+        run: git bundle create artifacts/neuroai-workbench-v0.2.1.bundle --all
+      - if: steps.release.outputs.exists != 'true'
+        run: cp dist/* artifacts/
+      - if: steps.release.outputs.exists != 'true'
+        run: python scripts/generate_sha256_manifest.py artifacts artifacts/SHA256SUMS.txt
+      - if: steps.release.outputs.exists != 'true'
+        name: Confirm exact recovery asset set
         shell: bash
         run: |
           expected=$(printf '%s\n' \
@@ -55,24 +84,23 @@ jobs:
             neuroai_workbench-0.2.1.tar.gz | sort)
           observed=$(find artifacts -maxdepth 1 -type f -printf '%f\n' | sort)
           test "$observed" = "$expected"
-      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4
+      - if: steps.release.outputs.exists != 'true'
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4
         with:
           subject-path: artifacts/*
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - if: steps.release.outputs.exists != 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: recovered-release-v0.2.1
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
-      - name: Publish recovered release
+      - if: steps.release.outputs.exists != 'true'
+        name: Publish recovered release
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          if gh release view v0.2.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Refusing to overwrite an existing v0.2.1 release.' >&2
-            exit 1
-          fi
           cat > release-notes.md <<'EOF'
           ## Controlled release recovery
 
