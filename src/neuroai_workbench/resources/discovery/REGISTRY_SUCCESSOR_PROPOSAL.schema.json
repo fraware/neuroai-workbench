@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/registry-successor-proposal-1.0.json",
+  "title": "REGISTRY_SUCCESSOR_PROPOSAL",
+  "description": "Append-only successor draft for a source monitor registry. Never overwrites a prior registry version in place.",
+  "type": "object",
+  "required": [
+    "successor_id",
+    "created_at",
+    "created_by",
+    "base_registry_version",
+    "proposed_registry_version",
+    "accepted_proposal_ids",
+    "added_sources",
+    "status",
+    "overwrite_refused",
+    "automatic_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "successor_id": {"type": "string", "pattern": "^DRS-[0-9a-f]{32}$"},
+    "created_at": {"type": "string", "minLength": 10},
+    "created_by": {"type": "string", "minLength": 1},
+    "base_registry_version": {"type": "string", "minLength": 1},
+    "proposed_registry_version": {"type": "string", "minLength": 1},
+    "accepted_proposal_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^DSP-[0-9a-f]{32}$"}
+    },
+    "added_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "url", "publisher", "source_class", "from_proposal_id"],
+        "additionalProperties": true,
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "url": {"type": "string", "minLength": 1},
+          "publisher": {"type": "string", "minLength": 1},
+          "source_class": {"type": "string", "minLength": 1},
+          "from_proposal_id": {"type": "string", "pattern": "^DSP-[0-9a-f]{32}$"}
+        }
+      }
+    },
+    "status": {"enum": ["DRAFT_SUCCESSOR", "WITHDRAWN"]},
+    "overwrite_refused": {"const": true},
+    "automatic_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/discovery-query-1.0.json",
+  "title": "DISCOVERY_QUERY",
+  "description": "Controlled discovery query definition. Execution produces candidate source proposals only; it does not mutate the monitor registry or establish evidence completeness.",
+  "type": "object",
+  "required": [
+    "query_id",
+    "object_family",
+    "query_text",
+    "filters",
+    "source_system",
+    "created_at",
+    "created_by",
+    "status",
+    "network_access_required",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "query_id": {
+      "type": "string",
+      "pattern": "^DISCOVERY-[A-Z0-9][A-Z0-9_-]{0,96}$"
+    },
+    "object_family": {"const": "DISCOVERY_QUERY"},
+    "query_text": {"type": "string", "minLength": 1},
+    "filters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean", "null", "array", "object"]
+      }
+    },
+    "source_system": {
+      "type": "string",
+      "enum": [
+        "CLINICALTRIALS_GOV",
+        "FDA_DEVICE",
+        "PUBMED",
+        "PATENT_OFFICE",
+        "GRANT_DATABASE",
+        "DATASET_CATALOG",
+        "OTHER_PUBLIC"
+      ]
+    },
+    "created_at": {"type": "string", "minLength": 10},
+    "created_by": {"type": "string", "minLength": 1},
+    "status": {"enum": ["ACTIVE", "RETIRED"]},
+    "network_access_required": {"type": "boolean"},
+    "notes": {"type": ["string", "null"]},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}
