@@ -49,10 +49,50 @@ def test_full_depth_projection_has_richer_columns() -> None:
         "canonical_name",
         "verification_state",
     }
-    assert {"roles", "aliases", "countries", "evidence_state", "claim_boundary"} <= set(
-        full["rows"]["organizations"][0]
-    )
-    assert {"url", "evidence_state", "claim_boundary"} <= set(full["rows"]["sources"][0])
+    assert {
+        "roles",
+        "aliases",
+        "countries",
+        "regions",
+        "evidence_state",
+        "claim_boundary",
+        "headquarters_country",
+        "unesco_region",
+    } <= set(full["rows"]["organizations"][0])
+    assert {"url", "evidence_state", "claim_boundary", "title"} <= set(full["rows"]["sources"][0])
+    assert "aliases" in full["rows"]
+    assert {"organization_id", "alias"} <= set(full["rows"]["aliases"][0])
+    for sheet in (
+        "organization_resolution",
+        "regional_expansion",
+        "ownership_capital_events",
+        "models",
+        "models_datasets",
+        "trial_sites",
+        "participant_authority",
+        "suppliers",
+        "data_quality_findings",
+    ):
+        assert full["rows"][sheet], f"expected non-empty sheet {sheet}"
+    # Missing canonical sections stay omitted.
+    for absent in ("systems", "captures", "candidates", "adjudications", "evidence_register"):
+        assert absent not in full["rows"]
+
+
+def test_full_list_projection_falls_through_empty_canonical_key(tmp_path: Path) -> None:
+    """Empty first alias must not block a later non-empty key (Bugbot: silent sheet drop)."""
+    release = json.loads(FULL.read_text(encoding="utf-8"))
+    models = release.get("representative_model_records")
+    assert isinstance(models, list) and models
+    release["representative_model_records"] = []
+    release["models"] = models
+    path = tmp_path / "empty-primary-models-alias.json"
+    path.write_text(json.dumps(release), encoding="utf-8")
+
+    query = query_release(path, depth="full", limit=None)
+    assert "models" in query["rows"]
+    assert query["rows"]["models"]
+    assert len(query["rows"]["models"]) == len(models)
 
 
 def test_full_depth_compact_includes_delta_and_reopening_detail() -> None:
@@ -62,6 +102,8 @@ def test_full_depth_compact_includes_delta_and_reopening_detail() -> None:
     assert "required_actions" in full["rows"]["reopening_decisions"][0]
     assert full["rows"]["delta_records"]
     assert "delta_section" in full["rows"]["delta_records"][0]
+    assert full["rows"]["baseline_counts"]
+    assert full["rows"]["provenance_links"]
 
 
 def test_query_preview_limit_and_release_unbounded() -> None:
