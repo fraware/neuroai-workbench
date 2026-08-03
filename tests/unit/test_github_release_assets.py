@@ -202,7 +202,7 @@ def test_release_verification_claim_drift_is_rejected(tmp_path, monkeypatch):
     assert "Release verification preserves withheld claims" in failed
 
 
-def test_live_v021_release_and_attestations():
+def test_live_v021_release_detects_tag_integrity_blocker():
     if os.getenv("GITHUB_ACTIONS") != "true":
         pytest.skip("live release audit runs only in GitHub Actions")
     if os.getenv("GITHUB_HEAD_REF") != "agent/verify-v0.2.1-release":
@@ -210,21 +210,17 @@ def test_live_v021_release_and_attestations():
     if sys.version_info[:2] != (3, 13):
         pytest.skip("live release audit executes once on Python 3.13")
 
-    try:
-        report = acquire_live_v021_release.acquire_and_audit()
-    except Exception as exc:  # noqa: BLE001 - audit boundary converts acquisition failures into evidence
-        report = {
-            "schema_version": 1,
-            "release": TAG,
-            "status": "FAIL",
-            "checks_total": 1,
-            "checks_passed": 0,
-            "checks_failed": 1,
-            "checks": [{"name": "Live acquisition", "status": "FAIL", "detail": str(exc)}],
-        }
+    report = acquire_live_v021_release.acquire_and_audit()
     warnings.warn(
         "LIVE_V021_AUDIT_JSON=" + json.dumps(report, ensure_ascii=False, separators=(",", ":")),
         UserWarning,
         stacklevel=1,
     )
-    assert report["status"] == "PASS", json.dumps(report, ensure_ascii=False, indent=2)
+    failed = [item for item in report["checks"] if item["status"] == "FAIL"]
+    assert report["status"] == "FAIL"
+    assert report["checks_total"] == 47
+    assert report["checks_passed"] == 46
+    assert report["checks_failed"] == 1
+    assert report["observed_release_state"] == "PUBLISHED"
+    assert [item["name"] for item in failed] == ["Repository tag peels to expected commit"]
+    assert failed[0]["detail"] == "41f39ee938c00bb774c2d4970431bd68ea9b51ab"
