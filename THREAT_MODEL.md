@@ -24,6 +24,7 @@
 13. Sensitive context or credentials are included in a model request, or a provider response attempts prompt injection or unsupported evidence attribution.
 14. A model response or human disposition is applied automatically and silently changes the assessment.
 15. A metadata exchange leaks a local path, credential, participant detail, or protected evidence excerpt, or overstates an out-of-band reference as verified receipt.
+16. A discovery query or opt-in network search result is treated as an authorized registry source, or silent in-place registry overwrite bypasses human acceptance and append-only succession.
 
 ## Implemented controls
 
@@ -43,8 +44,9 @@
 - Provider-neutral model-assistance records with selected context, credential-pattern guards over prompt and context, evidence-reference checks, stale-request rejection, hashes and mandatory human disposition.
 - No automatic assessment mutation from review or model-assistance records.
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
+- Discovery query execution is offline-first; opt-in network mode requires `NEUROAI_LIVE_DISCOVERY=1`, reuses collector public-URL SSRF checks, emits human-gated candidate source proposals only, and refuses silent registry overwrite in favour of append-only successor drafts (ADR 0010).
 - Shadow-refresh evaluation handoff samples only quarantine records already `APPROVED_FOR_HANDOFF`; `approve_handoff` / `--approve-handoff` consents to that handoff and does not auto-approve pending captures (fail closed).
 
 ## Residual risks
 
-The application does not authenticate users or reviewers, verify institutional roles, encrypt files, isolate tenants, scan uploads comprehensively, verify signatures, establish source authenticity, or prevent a privileged local actor from replacing an entire workspace and its backups. Concurrent multi-writer use of a shared workspace can still race despite the event append lock; transactional multi-step evidence registration remains incomplete (see ADR 0006 and ADR 0007). The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment and direct provider integration require separate architectures and independent review.
+The application does not authenticate users or reviewers, verify institutional roles, encrypt files, isolate tenants, scan uploads comprehensively, verify signatures, establish source authenticity, or prevent a privileged local actor from replacing an entire workspace and its backups. Concurrent multi-writer use of a shared workspace can still race despite the event append lock; transactional multi-step evidence registration remains incomplete (see ADR 0006 and ADR 0007). The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Discovery result counts do not prove registry completeness or evidence authenticity. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment and direct provider integration require separate architectures and independent review.

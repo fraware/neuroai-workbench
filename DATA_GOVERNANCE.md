@@ -37,3 +37,7 @@ The default workflow exports selected structured context and imports a candidate
 The exchange workflow records the minimum structured metadata required to request controlled evidence from a lawful custodian. It excludes evidence bytes, local paths, credentials and access tokens. Public URLs may be retained; non-public access locations must remain outside the workbench request.
 
 A holder response may record access conditions, a non-secret holder reference and an optional supplied digest. The workbench marks every out-of-band material `NOT_VERIFIED_BY_WORKBENCH`. Receipt, transfer, authentication and substantive appraisal require a separate authorized evidence workflow.
+
+## Discovery query records
+
+Discovery runs and candidate source proposals are workflow metadata stored under an ops discovery workspace. Default execution is offline (fixture or replay). Opt-in network discovery requires an explicit environment gate and public-URL SSRF checks. Public synthetic fixtures may be committed to the software repository; live result bodies and protected captures must remain outside public git. Discovery acceptance drafts append-only registry successors only and does not by itself authorize canonical publication.
