@@ -1,0 +1,17 @@
+{
+  "studies": [
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07654321",
+          "briefTitle": "Synthetic fixture trial page 2"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED"
+        }
+      }
+    }
+  ],
+  "totalCount": 2,
+  "boundary": "Synthetic CT.gov search page 2 fixture; pagination terminal page."
+}

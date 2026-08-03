@@ -1,0 +1,12 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message": {
+    "DOI": "10.1000/neuroai.fixture.41124203",
+    "title": ["Synthetic Crossref fixture title for offline adapter tests"],
+    "container-title": ["Synthetic Journal of Neural Interfaces"],
+    "issued": {"date-parts": [[2025, 10, 1]]},
+    "author": [{"given": "A", "family": "Fixture", "sequence": "first"}]
+  },
+  "boundary": "Synthetic Crossref works fixture; not a live DOI registration."
+}
