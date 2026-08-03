@@ -15,7 +15,7 @@ from scripts import verify_github_release_assets as release_audit
 
 REPOSITORY = "fraware/neuroai-workbench"
 TAG = "v0.2.1"
-EXPECTED_COMMIT = "7e60d1051a0a6a6178b7d5c39deac0b02270296d"
+EXPECTED_COMMIT = "7e60d10271ceba7ec5674bcd9de2d8903947bdf5"
 
 
 def _checkout_token() -> str:
@@ -94,7 +94,7 @@ def acquire_and_audit() -> dict[str, Any]:
             raise RuntimeError(f"release asset acquisition failed: {download.stderr.strip()}")
 
         tag_type = _git_output(["cat-file", "-t", f"refs/tags/{TAG}"])
-        tag_commit = _git_output(["rev-list", "-n", "1", f"refs/tags/{TAG}"])
+        tag_commit = _git_output(["rev-parse", f"refs/tags/{TAG}^{{commit}}"])
         tag_record = {"tag": TAG, "tag_type": tag_type, "tag_commit": tag_commit}
 
         attestation_rows: list[dict[str, Any]] = []
