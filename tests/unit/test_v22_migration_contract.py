@@ -4,7 +4,6 @@ import csv
 import json
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = REPO_ROOT / "examples" / "migration" / "V2_2_MIGRATION_CONTRACT.json"
 DISPOSITIONS = REPO_ROOT / "examples" / "migration" / "V2_2_WORKBOOK_SHEET_DISPOSITIONS.csv"

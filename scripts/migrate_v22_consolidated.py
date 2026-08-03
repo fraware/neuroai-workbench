@@ -17,13 +17,13 @@ import hashlib
 import json
 import os
 import re
-import sys
 import zipfile
 from collections import Counter
+from collections.abc import Iterable
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from docx import Document
 from openpyxl import load_workbook
