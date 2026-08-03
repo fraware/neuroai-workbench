@@ -97,7 +97,10 @@ def test_ctgov_extracts_nct_from_metadata_and_falls_back_without_id(tmp_path: Pa
         )
         == "NCT99887766"
     )
-    assert adapter.extract_nct_id({"source_class": "CLINICAL_TRIAL_REGISTRY"}, {"requested_url": "https://example.org/x"}) is None
+    assert (
+        adapter.extract_nct_id({"source_class": "CLINICAL_TRIAL_REGISTRY"}, {"requested_url": "https://example.org/x"})
+        is None
+    )
     request = valid_collection_request()
     request["requested_url"] = "https://page.example.org/no-nct"
     transport = FakeTransport(
@@ -106,7 +109,11 @@ def test_ctgov_extracts_nct_from_metadata_and_falls_back_without_id(tmp_path: Pa
     adapters = _adapters(tmp_path / "fallback", transport)
     outcome = adapters["clinicaltrials_gov"].collect(
         request,
-        source_record={"source_id": "SRC-NO", "source_class": "CLINICAL_TRIAL_REGISTRY", "url": request["requested_url"]},
+        source_record={
+            "source_id": "SRC-NO",
+            "source_class": "CLINICAL_TRIAL_REGISTRY",
+            "url": request["requested_url"],
+        },
     )
     assert outcome.kind == "result"
     assert transport.calls[0].url == "https://page.example.org/no-nct"
