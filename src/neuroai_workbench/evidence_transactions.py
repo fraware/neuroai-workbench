@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 import time
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -350,9 +349,7 @@ def apply_evidence_transaction(
     )
     if object_path.is_file():
         if sha256_file(object_path) != journal["desired"]["object_sha256"]:
-            raise EvidenceTransactionRecoveryError(
-                "Existing content-addressed evidence object has a digest mismatch"
-            )
+            raise EvidenceTransactionRecoveryError("Existing content-addressed evidence object has a digest mismatch")
     else:
         atomic_write_bytes(object_path, staged)
     journal = _write_journal(transaction_path, journal, "OBJECT_WRITTEN")
@@ -527,9 +524,7 @@ def rollback_evidence_transaction(
     if not isinstance(restored_index, dict):
         raise EvidenceTransactionRecoveryError("Restored evidence index is invalid")
     references = {
-        str(item.get("stored_filename"))
-        for item in restored_index.get("objects", [])
-        if isinstance(item, dict)
+        str(item.get("stored_filename")) for item in restored_index.get("objects", []) if isinstance(item, dict)
     }
     if not journal["object_preexisting"] and object_path.name not in references:
         object_path.unlink(missing_ok=True)
