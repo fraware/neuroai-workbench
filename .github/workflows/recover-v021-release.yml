@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/verify-v0.2.1-release
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -17,7 +20,7 @@ concurrency:
 jobs:
   recover:
     name: recover-v0.2.1-release
-    if: github.repository == 'fraware/neuroai-workbench'
+    if: github.repository == 'fraware/neuroai-workbench' && (github.event_name == 'push' || github.head_ref == 'agent/verify-v0.2.1-release')
     runs-on: ubuntu-latest
     steps:
       - name: Check existing release
