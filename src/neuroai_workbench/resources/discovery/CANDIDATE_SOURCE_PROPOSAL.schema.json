@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/candidate-source-proposal-1.0.json",
+  "title": "CANDIDATE_SOURCE_PROPOSAL",
+  "description": "Human-gated proposal to add a discovered source to a monitor registry successor. Acceptance alone does not mutate the live registry.",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "run_id",
+    "query_id",
+    "created_at",
+    "created_by",
+    "classification",
+    "proposed_source",
+    "status",
+    "automatic_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "proposal_id": {"type": "string", "pattern": "^DSP-[0-9a-f]{32}$"},
+    "run_id": {"type": "string", "pattern": "^DRUN-[0-9a-f]{32}$"},
+    "query_id": {
+      "type": "string",
+      "pattern": "^DISCOVERY-[A-Z0-9][A-Z0-9_-]{0,96}$"
+    },
+    "created_at": {"type": "string", "minLength": 10},
+    "created_by": {"type": "string", "minLength": 1},
+    "classification": {"enum": ["NEW", "DUPLICATE", "EXCLUDED"]},
+    "proposed_source": {
+      "type": "object",
+      "required": [
+        "record_key",
+        "title",
+        "url",
+        "publisher",
+        "source_class",
+        "suggested_source_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "record_key": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "url": {"type": ["string", "null"]},
+        "publisher": {"type": "string", "minLength": 1},
+        "source_class": {"type": "string", "minLength": 1},
+        "suggested_source_id": {"type": "string", "minLength": 1},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "duplicate_of_source_id": {"type": ["string", "null"]},
+    "exclusion_reason": {"type": ["string", "null"]},
+    "status": {
+      "enum": [
+        "PENDING_HUMAN_ACCEPTANCE",
+        "ACCEPTED",
+        "REJECTED",
+        "DEFERRED",
+        "EXCLUDED"
+      ]
+    },
+    "adjudication_id": {"type": ["string", "null"], "pattern": "^DADJ-[0-9a-f]{32}$"},
+    "automatic_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

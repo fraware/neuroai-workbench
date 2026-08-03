@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/discovery-adjudication-1.0.json",
+  "title": "DISCOVERY_ADJUDICATION",
+  "description": "Claimed local human disposition over a candidate source proposal. Does not authenticate identity or authorize canonical registry publication by itself.",
+  "type": "object",
+  "required": [
+    "adjudication_id",
+    "proposal_id",
+    "run_id",
+    "decision",
+    "rationale",
+    "adjudicated_at",
+    "adjudicated_by",
+    "identity_boundary",
+    "registry_successor_id",
+    "automatic_mutation_performed",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "adjudication_id": {"type": "string", "pattern": "^DADJ-[0-9a-f]{32}$"},
+    "proposal_id": {"type": "string", "pattern": "^DSP-[0-9a-f]{32}$"},
+    "run_id": {"type": "string", "pattern": "^DRUN-[0-9a-f]{32}$"},
+    "decision": {"enum": ["ACCEPT", "REJECT", "DEFER", "EXCLUDE"]},
+    "rationale": {"type": "string", "minLength": 1},
+    "adjudicated_at": {"type": "string", "minLength": 10},
+    "adjudicated_by": {"type": "string", "minLength": 1},
+    "identity_boundary": {
+      "const": "LOCAL_UNAUTHENTICATED_ATTRIBUTION"
+    },
+    "registry_successor_id": {
+      "type": ["string", "null"],
+      "pattern": "^DRS-[0-9a-f]{32}$"
+    },
+    "automatic_mutation_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "fixture_id": "DISCOVERY_QUERY_FIXTURES_v202608",
+  "object_family": "DISCOVERY_QUERY_FIXTURE_SET",
+  "status": "PUBLIC_SYNTHETIC_FIXTURE",
+  "boundary": "Public synthetic discovery query fixtures only. They do not establish registry completeness, live retrieval success, regulatory coverage, or assessment effect.",
+  "queries": [
+    {
+      "query_id": "DISCOVERY-CLINICAL-TRIALS-BCI",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "brain-computer interface OR neural prosthesis interventional studies",
+      "filters": {
+        "study_type": "INTERVENTIONAL",
+        "keywords": ["BCI", "brain-computer interface"]
+      },
+      "source_system": "CLINICALTRIALS_GOV",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query definition for ClinicalTrials.gov-oriented discovery. Live execution requires opt-in network gate.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    },
+    {
+      "query_id": "DISCOVERY-FDA-NEURAL-INTERFACE",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "neural interface OR brain computer device product codes",
+      "filters": {
+        "product_area": "NEURAL_INTERFACE",
+        "databases": ["510k", "de_novo", "pma"]
+      },
+      "source_system": "FDA_DEVICE",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query for FDA device database discovery streams.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    },
+    {
+      "query_id": "DISCOVERY-PUBMED-NEUROAI",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "neuroAI OR \"neural decoding\" OR \"brain-computer interface\" machine learning",
+      "filters": {
+        "publication_types": ["JOURNAL_ARTICLE", "REVIEW"],
+        "language": "en"
+      },
+      "source_system": "PUBMED",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query for PubMed/PMC-oriented literature discovery.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    },
+    {
+      "query_id": "DISCOVERY-PATENTS-IMPLANTABLE-BCI",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "implantable brain-computer interface electrode array",
+      "filters": {
+        "cpc_hints": ["A61N1", "A61B5"],
+        "status": "PUBLISHED"
+      },
+      "source_system": "PATENT_OFFICE",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query for patent-office discovery streams.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    },
+    {
+      "query_id": "DISCOVERY-GRANTS-NEURAL-DECODING",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "neural decoding OR closed-loop BCI grant awards",
+      "filters": {
+        "agency_hints": ["NIH", "DARPA", "NSF"],
+        "activity": "ACTIVE_OR_RECENT"
+      },
+      "source_system": "GRANT_DATABASE",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query for grant-database discovery streams.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    },
+    {
+      "query_id": "DISCOVERY-DATASETS-EEG-FOUNDATION-MODEL",
+      "object_family": "DISCOVERY_QUERY",
+      "query_text": "EEG foundation model OR large-scale EEG dataset catalog entries",
+      "filters": {
+        "modalities": ["EEG"],
+        "catalog_hints": ["OpenNeuro", "DANDI", "PhysioNet"]
+      },
+      "source_system": "DATASET_CATALOG",
+      "created_at": "2026-08-01T00:00:00Z",
+      "created_by": "fixture-author",
+      "status": "ACTIVE",
+      "network_access_required": true,
+      "notes": "Fixture query for public dataset-catalog discovery streams.",
+      "boundary": "Discovery query definitions identify search intent only. They do not authorize registry mutation, establish evidence authenticity, or imply global trial coverage."
+    }
+  ],
+  "offline_result_sets": {
+    "DISCOVERY-CLINICAL-TRIALS-BCI": [
+      {
+        "record_key": "SYNTH-NCT-00000001",
+        "title": "Synthetic BCI Motor Imagery Feasibility Study",
+        "url": "https://example.org/trials/SYNTH-NCT-00000001",
+        "publisher": "Synthetic Trial Registry Fixture",
+        "source_class": "TRIAL_REGISTRY",
+        "suggested_source_id": "SRC-DISC-SYNTH-001",
+        "classification_hint": "NEW"
+      },
+      {
+        "record_key": "SYNTH-NCT-00000002",
+        "title": "Duplicate-key fixture matching existing registry URL",
+        "url": "https://example.org/known-source",
+        "publisher": "Synthetic Trial Registry Fixture",
+        "source_class": "TRIAL_REGISTRY",
+        "suggested_source_id": "SRC-DISC-SYNTH-002",
+        "classification_hint": "DUPLICATE",
+        "duplicate_of_source_id": "SRC-KNOWN-001"
+      },
+      {
+        "record_key": "SYNTH-NCT-EXCLUDED",
+        "title": "Out-of-scope veterinary stimulation study",
+        "url": "https://example.org/trials/SYNTH-NCT-EXCLUDED",
+        "publisher": "Synthetic Trial Registry Fixture",
+        "source_class": "TRIAL_REGISTRY",
+        "suggested_source_id": "SRC-DISC-SYNTH-EXCL",
+        "classification_hint": "EXCLUDED",
+        "exclusion_reason": "Out of NeuroAI human-system scope for this fixture set"
+      }
+    ]
+  }
+}
