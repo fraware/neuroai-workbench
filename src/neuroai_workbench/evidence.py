@@ -6,9 +6,9 @@ import mimetypes
 from pathlib import Path
 from typing import Any, cast
 
+from .case_lock import case_mutation_lock
 from .evidence_transactions import (
     apply_evidence_transaction,
-    evidence_registration_lock,
     prepare_evidence_transaction,
     recover_evidence_transactions,
     recover_evidence_transactions_unlocked,
@@ -268,7 +268,7 @@ def add_evidence_bytes(
     if target.is_symlink():
         raise ValueError("Evidence object path must not be a symlink")
 
-    with evidence_registration_lock(case):
+    with case_mutation_lock(case):
         recover_evidence_transactions_unlocked(case, actor=actor)
         if target.is_file() and sha256_file(target) != digest:
             raise ValueError("Existing content-addressed evidence object has a digest mismatch")

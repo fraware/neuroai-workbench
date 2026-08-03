@@ -6,13 +6,13 @@ from pathlib import Path
 import pytest
 
 from neuroai_workbench import evidence_transactions as transactions
+from neuroai_workbench.events import load_events, verify_chain
 from neuroai_workbench.evidence import (
     add_evidence_bytes,
     list_evidence_files,
     recover_evidence_registrations,
     verify_evidence_files,
 )
-from neuroai_workbench.events import load_events, verify_chain
 from neuroai_workbench.util import atomic_write_json, load_json, sha256_bytes, sha256_file
 
 

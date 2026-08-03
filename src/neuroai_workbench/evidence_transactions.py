@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import os
 import time
-from collections.abc import Iterator
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from .events import LOCK_PROFILE_LOCAL, _exclusive_lock, append_event, load_events
+from .case_lock import case_mutation_lock
+from .events import append_event, load_events
 from .util import (
     atomic_write_bytes,
     atomic_write_json,
@@ -47,10 +46,6 @@ def _transactions_root(case_path: Path) -> Path:
 
 def _transaction_orphans_root(case_path: Path) -> Path:
     return case_path / "evidence" / "transaction-orphans"
-
-
-def _registration_lock_path(case_path: Path) -> Path:
-    return case_path / "evidence" / "registration.lock"
 
 
 def _journal_path(transaction_path: Path) -> Path:
@@ -207,12 +202,6 @@ def _compact_transaction(transaction_path: Path) -> None:
             changed = True
     if changed:
         fsync_directory(transaction_path)
-
-
-@contextmanager
-def evidence_registration_lock(case_path: Path) -> Iterator[dict[str, Any]]:
-    with _exclusive_lock(_registration_lock_path(case_path), profile=LOCK_PROFILE_LOCAL) as owner:
-        yield owner
 
 
 def prepare_evidence_transaction(
@@ -415,7 +404,7 @@ def _transaction_is_fully_applied(case_path: Path, journal: dict[str, Any]) -> b
         return False
     if not journal["link_to_assessment"]:
         return True
-    return (
+    return bool(
         _path_hash(case_path / "assessment.json") == journal["desired"]["assessment_sha256"]
         and _path_hash(case_path / "persistence.json") == journal["desired"]["persistence_sha256"]
     )
@@ -638,5 +627,5 @@ def recover_evidence_transactions(
     *,
     actor: str = "evidence-recovery",
 ) -> list[dict[str, Any]]:
-    with evidence_registration_lock(case_path):
+    with case_mutation_lock(case_path):
         return recover_evidence_transactions_unlocked(case_path, actor=actor)
