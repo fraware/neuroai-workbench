@@ -99,9 +99,7 @@ def _sdist_metadata(path: Path) -> dict[str, str]:
         if unsafe:
             raise ValueError(f"Source distribution contains unsafe paths: {unsafe[:3]}")
         package_info = [
-            member
-            for member in members
-            if len(Path(member.name).parts) == 2 and member.name.endswith("/PKG-INFO")
+            member for member in members if len(Path(member.name).parts) == 2 and member.name.endswith("/PKG-INFO")
         ]
         if len(package_info) != 1:
             raise ValueError("Source distribution must contain exactly one top-level PKG-INFO")
