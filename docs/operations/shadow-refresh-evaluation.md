@@ -124,16 +124,33 @@ results = load_json(Path("tests/fixtures/shadow_refresh/synthetic_run_results.js
 metrics = compute_go_no_go_metrics(results)
 ```
 
-## Residual blockers for live execution
+## Live cohort collection (ops-gated)
 
-Live shadow refresh remains blocked pending:
+Allowlisted live retrieval over the reviewed 25-source cohort is available only when both gates are set:
 
-- approved external collector (#35);
-- observatory monitoring review queue (#36);
-- entity resolution (#37);
-- bounded model-assisted extraction (#38);
-- protected archive and network access approvals (#44).
+```bash
+export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
+export NEUROAI_LIVE_COLLECTION=1
+python scripts/run_shadow_refresh.py --live --run-month YYYYMM
+```
+
+Behavior:
+
+- Loads the reviewed exact-ID cohort (never regex freeze).
+- Promotes HTTP `not_due` members into an evaluation due set for one-shot retrieval; `CONTROLLED_LOCAL_INPUT` / `network_access_required=false` stay manual and never enter the HTTP collector.
+- Writes quarantine-only under `runs/shadow-refresh-YYYYMM/captures/quarantine/` in the ops workspace.
+- Emits public summary counts, capture digests (hashes/sizes/status only), and go/no-go metrics.
+- Remains `SHADOW_EVALUATION_NOT_CANONICAL`; monitoring handoff stays disabled; no canonical successor is published.
+- CI stays network-free. The integration test `tests/integration/test_ops_live_cohort.py` skips unless `NEUROAI_LIVE_COLLECTION=1`.
+
+Do not commit protected capture bodies, quarantine trees, or ops ZIP extracts into git.
+
+## Residual blockers for closing #43
+
+Observed live cohort collection is scaffolding for evaluation evidence. Closing [#43](https://github.com/fraware/neuroai-workbench/issues/43) still requires:
+
+- dual human review sample recorded against observed captures/candidates;
+- unresolved go/no-go gaps addressed or explicitly withheld;
+- protected archive and network access approvals where applicable (#44).
 
 Independent security, accessibility, and methodological review (#10) is an optional recommended follow-up for institutional-pilot readiness language. It is not a release blocker for successor `AUTHORIZED` or `PUBLISHED` gates.
-
-Track residual blockers on [#43](https://github.com/fraware/neuroai-workbench/issues/43).
