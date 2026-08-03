@@ -40,8 +40,6 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | [post-publication-withdrawal-drill.md](operations/post-publication-withdrawal-drill.md) | Withdrawal and correction drill |
 | [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional independent-review tracks and checklists |
 
-Redirect stubs (moved content): `cursor-handoff.md`, `cursor-engineering-handoff.md`, `observatory-engineering-takeover.md`, `observatory-operations-verification.md`, `publish-observatory-data.md`, `neuroai-observatory-data-bootstrap.md`.
-
 ## Reference
 
 | Document | Purpose |
@@ -66,16 +64,12 @@ Redirect stubs (moved content): `cursor-handoff.md`, `cursor-engineering-handoff
 | [reopening-engine.md](reference/reopening-engine.md) | Assessment reopening recommendations |
 | [successor-releases.md](reference/successor-releases.md) | Observatory successor release states |
 
-Redirect stubs: `entity-registry.md`, `entity-resolver.md`.
-
 ## Evaluation
 
 | Document | Purpose |
 | --- | --- |
 | [extraction-evaluation.md](evaluation/extraction-evaluation.md) | Preregistration, offline comparison, dispositions |
 | [entity-resolution-report.md](evaluation/entity-resolution-report.md) | Entity-resolution benchmark corpora and metrics |
-
-Redirect stub: `extraction-preregistration.md`.
 
 ## Security
 
