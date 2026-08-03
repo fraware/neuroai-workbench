@@ -6,7 +6,15 @@ from scripts.verify_github_ruleset import audit
 def _manifest() -> dict:
     return {
         "default_branch": "main",
-        "ruleset_reference": {"ruleset_id": 20116255, "name": "Protect main"},
+        "ruleset_reference": {
+            "ruleset_id": 20116255,
+            "name": "Protect main",
+            "hosted_policy": {
+                "required_approving_review_count": 0,
+                "required_review_thread_resolution": True,
+                "allowed_merge_methods": ["squash"],
+            },
+        },
         "required_pull_request_contexts": [
             "CI / quality",
             "CI / tests-python-3.13",
@@ -28,11 +36,12 @@ def _ruleset() -> dict:
             {
                 "type": "pull_request",
                 "parameters": {
-                    "required_approving_review_count": 1,
+                    "required_approving_review_count": 0,
                     "dismiss_stale_reviews_on_push": True,
                     "require_code_owner_review": False,
-                    "require_last_push_approval": True,
+                    "require_last_push_approval": False,
                     "required_review_thread_resolution": True,
+                    "allowed_merge_methods": ["squash"],
                 },
             },
             {
@@ -88,13 +97,24 @@ def test_inactive_or_wrong_target_ruleset_fails():
     assert "Ruleset does not exclude the default branch" in failed
 
 
-def test_review_and_strict_policy_are_required():
+def test_core_review_and_merge_policy_must_match_exactly():
     ruleset = _ruleset()
-    ruleset["rules"][0]["parameters"]["required_approving_review_count"] = 0
+    parameters = ruleset["rules"][0]["parameters"]
+    parameters["required_approving_review_count"] = 1
+    parameters["required_review_thread_resolution"] = False
+    parameters["allowed_merge_methods"] = ["merge", "squash"]
+    report = audit(ruleset, _manifest())
+    failed = {item["name"] for item in report["checks"] if item["status"] == "FAIL"}
+    assert "Approving-review count matches the core-development policy" in failed
+    assert "Review-thread resolution policy matches" in failed
+    assert "Allowed merge methods match" in failed
+
+
+def test_strict_policy_is_required():
+    ruleset = _ruleset()
     ruleset["rules"][1]["parameters"]["strict_required_status_checks_policy"] = False
     report = audit(ruleset, _manifest())
     failed = {item["name"] for item in report["checks"] if item["status"] == "FAIL"}
-    assert "At least one approving review is required" in failed
     assert "Strict required-status-check policy is enabled" in failed
 
 
