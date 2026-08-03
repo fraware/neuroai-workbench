@@ -92,28 +92,6 @@
       ]
     },
     {
-      "path": ".github/workflows/rebase-v021-branch.yml",
-      "name": "Rebase v0.2.1 verification branch",
-      "pull_request_required": false,
-      "required_trigger_markers": ["  push:", "      - agent/verify-v0.2.1-release"],
-      "permissions": {"contents": "write"},
-      "forbid_secrets": true,
-      "jobs": [
-        {"id": "rebase", "name": "rebase-v0.2.1-verification-branch", "required_contexts": []}
-      ]
-    },
-    {
-      "path": ".github/workflows/repair-v021-audit.yml",
-      "name": "Repair v0.2.1 release audit",
-      "pull_request_required": false,
-      "required_trigger_markers": ["  push:", "      - agent/verify-v0.2.1-release"],
-      "permissions": {"contents": "write"},
-      "forbid_secrets": true,
-      "jobs": [
-        {"id": "repair", "name": "repair-v0.2.1-release-audit", "required_contexts": []}
-      ]
-    },
-    {
       "path": ".github/workflows/recover-v021-release.yml",
       "name": "Recover v0.2.1 release",
       "pull_request_required": false,
