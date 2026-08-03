@@ -111,6 +111,17 @@
       "jobs": [
         {"id": "build-release", "name": "build-release", "required_contexts": []}
       ]
+    },
+    {
+      "path": ".github/workflows/harden-governance-scope.yml",
+      "name": "Harden governance scope",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  push:", "      - \"agent/governance-scope-binding\""],
+      "permissions": {"contents": "write"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "harden", "name": "harden", "required_contexts": []}
+      ]
     }
   ],
   "global_forbidden_markers": [
