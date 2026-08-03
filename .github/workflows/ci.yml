@@ -33,6 +33,7 @@ jobs:
       - run: python -m mypy src/neuroai_workbench
       - run: python -m compileall -q src scripts
       - run: python scripts/check_repository_hygiene.py
+      - run: python scripts/check_github_workflow_contract.py
       - run: python scripts/check_version_consistency.py
       - run: python scripts/agent_eval_harness.py
 
