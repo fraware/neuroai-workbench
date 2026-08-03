@@ -18,6 +18,8 @@ REQUEST_SCHEMA = "collection-request.schema.json"
 RESULT_SCHEMA = "collection-result.schema.json"
 FAILURE_SCHEMA = "collection-failure.schema.json"
 QUARANTINE_SCHEMA = "quarantine-record.schema.json"
+STRUCTURED_ADAPTER_CONTRACT_SCHEMA = "structured-adapter-contract.schema.json"
+NORMALIZED_STUDY_SCHEMA = "normalized-study-record.schema.json"
 
 REGISTRY_SHA256 = "a" * 64
 CONFIG_HASH = "b" * 64
@@ -217,3 +219,50 @@ def test_collection_failure_requires_closed_retry_state() -> None:
     payload = valid_collection_failure()
     payload["retry_state"]["unexpected"] = True
     assert _validate(FAILURE_SCHEMA, payload)
+
+
+def valid_structured_adapter_contract() -> dict[str, Any]:
+    return {
+        "adapter_id": "clinicaltrials_gov",
+        "completeness": "PARTIAL",
+        "capabilities": ["single_record_fetch", "normalized_record"],
+        "allowed_hosts": ["clinicaltrials.gov"],
+        "source_classes": ["CLINICAL_TRIAL_REGISTRY"],
+        "boundary": "Test contract boundary; page capture is not registry completeness.",
+    }
+
+
+def valid_normalized_study_record() -> dict[str, Any]:
+    digest = "d" * 64
+    return {
+        "record_kind": "NORMALIZED_CTGOV_STUDY",
+        "nct_id": "NCT01234567",
+        "brief_title": "Synthetic",
+        "overall_status": "RECRUITING",
+        "last_update_post_date": "2026-01-15",
+        "primary_completion_date": "2027-06",
+        "enrollment_count": 42,
+        "phase": "PHASE2",
+        "field_digests": {
+            "nct_id": digest,
+            "brief_title": digest,
+            "overall_status": digest,
+            "last_update_post_date": digest,
+            "primary_completion_date": digest,
+            "enrollment_count": digest,
+            "phase": digest,
+        },
+        "aggregate_digest": digest,
+        "boundary": "Synthetic normalized study for schema tests only.",
+    }
+
+
+def test_structured_adapter_and_normalized_study_schemas_accept_valid() -> None:
+    assert _validate(STRUCTURED_ADAPTER_CONTRACT_SCHEMA, valid_structured_adapter_contract()) == []
+    assert _validate(NORMALIZED_STUDY_SCHEMA, valid_normalized_study_record()) == []
+
+
+def test_structured_adapter_contract_rejects_unknown_completeness() -> None:
+    payload = valid_structured_adapter_contract()
+    payload["completeness"] = "COMPLETE_UNIVERSE"
+    assert _validate(STRUCTURED_ADAPTER_CONTRACT_SCHEMA, payload)

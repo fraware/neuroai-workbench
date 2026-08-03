@@ -1,0 +1,18 @@
+{
+  "studies": [
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT01234567",
+          "briefTitle": "Synthetic fixture trial page 1"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING"
+        }
+      }
+    }
+  ],
+  "nextPageToken": "SYNTHETIC_PAGE_2_TOKEN",
+  "totalCount": 2,
+  "boundary": "Synthetic CT.gov search page 1 fixture; not a live registry snapshot."
+}

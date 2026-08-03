@@ -5,7 +5,13 @@
       "briefTitle": "Synthetic fixture trial for offline CT.gov adapter tests"
     },
     "statusModule": {
-      "overallStatus": "RECRUITING"
+      "overallStatus": "RECRUITING",
+      "lastUpdatePostDateStruct": {"date": "2026-01-15"},
+      "primaryCompletionDateStruct": {"date": "2027-06"},
+      "enrollmentInfo": {"count": 42, "type": "ESTIMATED"}
+    },
+    "designModule": {
+      "phases": ["PHASE2"]
     }
   },
   "boundary": "Fixture study payload for offline tests only; not a real trial record."

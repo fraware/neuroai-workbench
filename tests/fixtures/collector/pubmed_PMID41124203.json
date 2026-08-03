@@ -1,0 +1,17 @@
+{
+  "result": {
+    "uids": ["41124203"],
+    "41124203": {
+      "uid": "41124203",
+      "title": "Synthetic PubMed fixture title for offline adapter tests",
+      "fulljournalname": "Synthetic Journal of Neural Interfaces",
+      "pubdate": "2025 Oct",
+      "authors": [{"name": "Fixture A", "authtype": "Author"}],
+      "articleids": [
+        {"idtype": "pubmed", "value": "41124203"},
+        {"idtype": "doi", "value": "10.1000/neuroai.fixture.41124203"}
+      ]
+    }
+  },
+  "boundary": "Synthetic NCBI E-utilities esummary fixture; not a live PubMed record."
+}

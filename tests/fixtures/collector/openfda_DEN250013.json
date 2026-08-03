@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "disclaimer": "Synthetic openFDA fixture for offline tests only.",
+    "results": {
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "k_number": "DEN250013",
+      "applicant": "SYNTHETIC DEVICE APPLICANT LLC",
+      "decision_date": "2025-06-01",
+      "product_code": "QYZ",
+      "device_name": "Synthetic De Novo fixture device",
+      "clearance_type": "De Novo"
+    }
+  ],
+  "boundary": "Synthetic openFDA 510k/De Novo fixture; not a real FDA record."
+}
