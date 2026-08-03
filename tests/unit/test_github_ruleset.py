@@ -80,7 +80,9 @@ def test_missing_context_and_unexpected_context_fail():
     rows.pop()
     rows.append({"context": "legacy-check", "integration_id": 15368})
     report = audit(ruleset, _manifest())
-    parity = next(item for item in report["checks"] if item["name"] == "Hosted required checks match the repository contract")
+    parity = next(
+        item for item in report["checks"] if item["name"] == "Hosted required checks match the repository contract"
+    )
     assert parity["status"] == "FAIL"
     assert parity["detail"]["missing"] == ["codeql"]
     assert parity["detail"]["unexpected"] == ["legacy-check"]
