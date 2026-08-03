@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from .util import atomic_write_bytes, canonical_json_bytes, sha256_bytes, utc_now
+from .util import atomic_write_bytes, canonical_json_bytes, fsync_directory, sha256_bytes, utc_now
 
 GENESIS = "0" * 64
 LOCK_PROFILE_LOCAL = "LOCAL_FILESYSTEM"
@@ -319,6 +319,7 @@ def _create_lock(path: Path, record: dict[str, Any]) -> bool:
         os.fsync(fd)
     finally:
         os.close(fd)
+    fsync_directory(path.parent)
     return True
 
 
@@ -341,12 +342,16 @@ def _recovery_reason(path: Path, record: dict[str, Any] | None) -> str | None:
         except FileNotFoundError:
             return "DISAPPEARED"
         return "MALFORMED_EXPIRED" if expired else None
-    if (
-        record.get("host") == socket.gethostname()
-        and isinstance(record.get("pid"), int)
-        and not _pid_alive(int(record["pid"]), record.get("process_start_token"))
-    ):
-        return "DEAD_LOCAL_OWNER"
+
+    same_host = record.get("host") == socket.gethostname()
+    pid = record.get("pid")
+    if same_host and isinstance(pid, int):
+        if not _pid_alive(pid, record.get("process_start_token")):
+            return "DEAD_LOCAL_OWNER"
+        return None
+
+    if record.get("profile") != LOCK_PROFILE_SHARED:
+        return None
     expiry = record.get("lease_expires_at_ns")
     return "LEASE_EXPIRED" if isinstance(expiry, int) and expiry <= time.time_ns() else None
 
@@ -365,6 +370,8 @@ def _recover_lock(path: Path, raw: bytes | None, reason: str) -> bool:
         os.replace(path, target)
     except FileNotFoundError:
         return False
+    fsync_directory(path.parent)
+    fsync_directory(archive)
     atomic_write_bytes(
         target.with_suffix(".metadata.json"),
         json.dumps(
@@ -408,10 +415,12 @@ def _exclusive_lock(
         current, _ = _read_lock(lock_path)
         if current is not None and current.get("lock_id") == owner["lock_id"]:
             lock_path.unlink(missing_ok=True)
+            fsync_directory(lock_path.parent)
 
 
 def _append_fsync(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    created = not path.exists()
     fd = os.open(str(path), os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)
     try:
         view = memoryview(data)
@@ -423,6 +432,8 @@ def _append_fsync(path: Path, data: bytes) -> None:
         os.fsync(fd)
     finally:
         os.close(fd)
+    if created:
+        fsync_directory(path.parent)
 
 
 def _record_recovery(path: Path, reason: str, original: int, recovered: int, discarded: bytes) -> None:
