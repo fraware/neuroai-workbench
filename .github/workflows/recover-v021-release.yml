@@ -35,12 +35,53 @@ jobs:
           else
             echo 'exists=false' >> "$GITHUB_OUTPUT"
           fi
-      - if: steps.release.outputs.exists != 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: v0.2.1
           fetch-depth: 0
           fetch-tags: true
+      - name: Restore v0.2.1 tag from the attested bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          expected='7e60d10271ceba7ec5674bcd9de2d8903947bdf5'
+          displaced='41f39ee938c00bb774c2d4970431bd68ea9b51ab'
+          current=$(git rev-parse 'refs/tags/v0.2.1^{commit}')
+          if [[ "$current" == "$expected" ]]; then
+            echo 'v0.2.1 already points to the attested release commit.'
+            exit 0
+          fi
+          if [[ "$current" != "$displaced" ]]; then
+            echo "Unexpected current v0.2.1 target: $current" >&2
+            exit 1
+          fi
+
+          mkdir -p "$RUNNER_TEMP/v021-tag-repair"
+          gh release download v0.2.1 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'neuroai-workbench-v0.2.1.bundle' \
+            --dir "$RUNNER_TEMP/v021-tag-repair"
+          bundle="$RUNNER_TEMP/v021-tag-repair/neuroai-workbench-v0.2.1.bundle"
+          git bundle verify "$bundle"
+          git fetch "$bundle" 'refs/tags/v0.2.1:refs/tags/v0.2.1-attested'
+          attested=$(git rev-parse 'refs/tags/v0.2.1-attested^{commit}')
+          test "$attested" = "$expected"
+
+          forensic='forensics/v0.2.1-mispointed-20260803'
+          if ! git ls-remote --exit-code origin "refs/tags/$forensic" >/dev/null 2>&1; then
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git tag -a "$forensic" "$displaced" \
+              -m 'Preserve the displaced v0.2.1 tag target observed during the August 3, 2026 release audit.'
+            git push origin "refs/tags/$forensic"
+          fi
+
+          attested_object=$(git rev-parse refs/tags/v0.2.1-attested)
+          git update-ref refs/tags/v0.2.1 "$attested_object"
+          git push --force origin refs/tags/v0.2.1
+          remote_object=$(git ls-remote origin refs/tags/v0.2.1 | awk '{print $1}')
+          test "$remote_object" = "$attested_object"
+          test "$(git rev-parse 'refs/tags/v0.2.1^{commit}')" = "$expected"
       - if: steps.release.outputs.exists != 'true'
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
@@ -124,7 +165,7 @@ jobs:
           cat > release-notes.md <<'EOF'
           ## Controlled v0.2.1 release
 
-          This release is bound to the immutable annotated tag `v0.2.1`, which peels to commit `7e60d10271ceba7ec5674bcd9de2d8903947bdf5`. The six attached artifacts preserve their original attested bytes and SHA-256 manifest.
+          This release is bound to the restored immutable annotated tag `v0.2.1`, which peels to commit `7e60d10271ceba7ec5674bcd9de2d8903947bdf5`. The tag was restored from the attested Git bundle after the August 3, 2026 audit detected a divergent target; the displaced target is preserved under forensic tag `forensics/v0.2.1-mispointed-20260803`. The six attached artifacts retain their original attested bytes and SHA-256 manifest.
 
           The release establishes technical artifact identity and reproducible package provenance. It does not establish scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status. It also does not establish evidence authenticity, methodological adequacy, completed system conformance, or permission to publish a canonical observatory successor.
           EOF
