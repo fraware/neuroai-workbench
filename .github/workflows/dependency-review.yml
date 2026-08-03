@@ -75,9 +75,19 @@ jobs:
           robust_loop = "for field in ('decision', 'rationale', 'change_class', 'materiality', 'reopening_effect'):\n    old = f'adj.{field}'\n    new = f'disposition.{field}'\n    observed = cycle.count(old)\n    if observed != 2:\n        raise SystemExit(f'cycle disposition field {field}: expected 2 occurrences, observed {observed}')\n    cycle = cycle.replace(old, new)\n"
           program = program[:loop_start] + robust_loop + program[loop_end:]
           exec(compile(program, '<core-governance-refactor>', 'exec'), {'__name__': '__core_governance_refactor__'})
+
+          init_path = Path('src/neuroai_workbench/shadow_refresh/__init__.py')
+          init_text = init_path.read_text(encoding='utf-8')
+          observed = init_text.count('CycleAdjudicationSpec')
+          if observed != 2:
+              raise SystemExit(f'public cycle export: expected 2 occurrences, observed {observed}')
+          init_path.write_text(
+              init_text.replace('CycleAdjudicationSpec', 'CycleDevelopmentDispositionSpec'),
+              encoding='utf-8',
+          )
           PY
-      - run: python -m ruff format src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
-      - run: python -m ruff check src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
+      - run: python -m ruff format src/neuroai_workbench/shadow_refresh/__init__.py src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
+      - run: python -m ruff check src/neuroai_workbench/shadow_refresh/__init__.py src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
       - run: python -m mypy src/neuroai_workbench
       - run: python -m compileall -q src scripts
       - run: python -m pytest tests/unit/test_shadow_evaluation_cycle.py tests/unit/test_shadow_closure.py -q
@@ -85,7 +95,8 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/neuroai_workbench/shadow_refresh/cycle.py \
+          git add src/neuroai_workbench/shadow_refresh/__init__.py \
+                  src/neuroai_workbench/shadow_refresh/cycle.py \
                   scripts/run_evaluation_cycle.py \
                   scripts/close_shadow_refresh_43.py \
                   tests/unit/test_shadow_evaluation_cycle.py \
