@@ -506,3 +506,40 @@ def test_invalid_record_non_object_file_and_corrupt_event_log(tmp_path: Path) ->
     )
     assert report["valid"] is False
     assert any("event log load failed" in error for error in report["errors"])
+
+
+def test_manifest_binding_rejects_unbound_fields_and_substitution(tmp_path: Path) -> None:
+    _, roots, bindings, result = _record(tmp_path)
+    manifest = result["manifest"]
+
+    runtime = json.loads(json.dumps(manifest))
+    runtime["_path"] = "/runtime-only/path"
+    assert _hash_record(runtime) == manifest["manifest_sha256"]
+    assert verify_governance_scope_manifest(runtime, boundary_roots=roots, protected_bindings=bindings)["valid"] is True
+
+    private = json.loads(json.dumps(manifest))
+    private["_unbound_authority"] = "release approved"
+    private["manifest_sha256"] = _hash_record(private)
+    report = verify_governance_scope_manifest(private, boundary_roots=roots, protected_bindings=bindings)
+    assert "UNSUPPORTED_PRIVATE_FIELDS" in _error_codes(report)
+    assert report["valid"] is False
+
+    boundary = json.loads(json.dumps(manifest))
+    boundary["boundary"] = "This scope authorizes publication."
+    boundary["manifest_sha256"] = _hash_record(boundary)
+    report = verify_governance_scope_manifest(boundary, boundary_roots=roots, protected_bindings=bindings)
+    assert "AUTHORITY_BOUNDARY_MISMATCH" in _error_codes(report)
+
+    reordered = json.loads(json.dumps(manifest))
+    reordered["objects"] = list(reversed(reordered["objects"]))
+    reordered["manifest_sha256"] = _hash_record(reordered)
+    report = verify_governance_scope_manifest(reordered, boundary_roots=roots, protected_bindings=bindings)
+    assert "OBJECT_ORDER_NONCANONICAL" in _error_codes(report)
+
+    substituted = json.loads(json.dumps(manifest))
+    delta = next(item for item in substituted["objects"] if item["role"] == "DELTA")
+    candidate = next(item for item in substituted["objects"] if item["role"] == "SUCCESSOR_CANDIDATE")
+    candidate["sha256"] = delta["sha256"]
+    substituted["manifest_sha256"] = _hash_record(substituted)
+    report = verify_governance_scope_manifest(substituted, boundary_roots=roots, protected_bindings=bindings)
+    assert "DUPLICATE_OBJECT_DIGESTS" in _error_codes(report)

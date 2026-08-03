@@ -70,7 +70,7 @@
     },
     "release_authorization_performed": {"const": false},
     "authority_profile": {"const": "SCOPE_INTEGRITY_ONLY"},
-    "boundary": {"type": "string", "minLength": 1},
+    "boundary": {"const": "Governance scope manifests bind byte identities and storage boundaries only. Digest validity does not authenticate a source, validate substantive claims, identify a reviewer, or authorize a successor release."},
     "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   }
 }

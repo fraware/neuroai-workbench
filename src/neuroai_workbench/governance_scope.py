@@ -47,6 +47,7 @@ REQUIRED_ROLES = frozenset(
 )
 STORAGE_BOUNDARIES = frozenset({"PUBLIC_GIT", "GENERATED_OUTPUT", "PROTECTED_WORKSPACE", "ARCHIVE"})
 PROTECTED_PREFIX = "protected-ref:"
+RUNTIME_PRIVATE_KEYS = frozenset({"_path"})
 
 GOVERNANCE_SCOPE_BOUNDARY = (
     "Governance scope manifests bind byte identities and storage boundaries only. "
@@ -75,7 +76,9 @@ def _schema_errors(value: Any, schema_name: str) -> list[dict[str, Any]]:
 
 
 def _hash_record(value: dict[str, Any]) -> str:
-    controlled = {key: item for key, item in value.items() if key != "manifest_sha256" and not key.startswith("_")}
+    controlled = {
+        key: item for key, item in value.items() if key != "manifest_sha256" and key not in RUNTIME_PRIVATE_KEYS
+    }
     return sha256_bytes(canonical_json_bytes(controlled))
 
 
@@ -203,13 +206,26 @@ def verify_governance_scope_manifest(
 ) -> dict[str, Any]:
     """Verify schema, canonical hash, role integrity, locators, and referenced bytes."""
     protected_bindings = protected_bindings or {}
-    controlled = {key: value for key, value in manifest.items() if not key.startswith("_")}
+    unsupported_private_keys = sorted(
+        key for key in manifest if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS
+    )
+    controlled = {key: value for key, value in manifest.items() if key not in RUNTIME_PRIVATE_KEYS}
     errors = list(_schema_errors(controlled, SCOPE_SCHEMA))
+    if unsupported_private_keys:
+        errors.append(
+            {
+                "code": "UNSUPPORTED_PRIVATE_FIELDS",
+                "path": "",
+                "fields": unsupported_private_keys,
+            }
+        )
     warnings: list[str] = []
     roles: list[str] = []
 
     if controlled.get("manifest_sha256") != _hash_record(controlled):
         errors.append({"code": "MANIFEST_SHA256_MISMATCH", "path": "manifest_sha256"})
+    if controlled.get("boundary") != GOVERNANCE_SCOPE_BOUNDARY:
+        errors.append({"code": "AUTHORITY_BOUNDARY_MISMATCH", "path": "boundary"})
 
     objects = controlled.get("objects")
     if not isinstance(objects, list):
@@ -269,6 +285,20 @@ def verify_governance_scope_manifest(
     duplicate_roles = sorted({role for role in roles if roles.count(role) > 1})
     if duplicate_roles:
         errors.append({"code": "DUPLICATE_LOGICAL_ROLES", "path": "objects", "roles": duplicate_roles})
+    if roles != sorted(roles):
+        errors.append({"code": "OBJECT_ORDER_NONCANONICAL", "path": "objects"})
+    digests = [
+        str(item.get("sha256")) for item in objects if isinstance(item, dict) and isinstance(item.get("sha256"), str)
+    ]
+    duplicate_digests = sorted({digest for digest in digests if digests.count(digest) > 1})
+    if duplicate_digests:
+        errors.append(
+            {
+                "code": "DUPLICATE_OBJECT_DIGESTS",
+                "path": "objects",
+                "digests": duplicate_digests,
+            }
+        )
     missing_roles = sorted(REQUIRED_ROLES - set(roles))
     if missing_roles:
         errors.append({"code": "REQUIRED_ROLES_MISSING", "path": "objects", "roles": missing_roles})

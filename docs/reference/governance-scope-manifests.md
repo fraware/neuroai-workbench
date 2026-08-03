@@ -47,7 +47,7 @@ Protected objects use only opaque locators of the form `protected-ref:<identifie
 - the non-authorizing authority profile;
 - the claim boundary.
 
-The object list is sorted by logical role before the manifest is recorded. A matching digest establishes byte identity for the acquired file. It does not establish source authenticity, truth, completeness, legal admissibility, reviewer identity, or institutional delegation.
+The object list is sorted by logical role before the manifest is recorded. Verification rejects non-canonical ordering, duplicate object digests across logical roles, altered authority-boundary text, and every underscore-prefixed field except the internal `_path` key added only while loading local records. A matching digest establishes byte identity for the acquired file. It does not establish source authenticity, truth, completeness, legal admissibility, reviewer identity, or institutional delegation.
 
 ## Recording workflow
 
