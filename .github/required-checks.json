@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "default_branch": "main",
+  "ruleset_reference": {
+    "name": "Protect main",
+    "ruleset_id": 20116255,
+    "evidence": "Issue #5 records REVIEW_REQUIRED enforcement on PR #18 without bypass.",
+    "settings_introspection": "EXTERNAL_TO_REPOSITORY_VALIDATOR",
+    "boundary": "This manifest defines the repository-owned check contract. GitHub-hosted ruleset configuration must be compared against required_pull_request_contexts through repository settings or the GitHub Rules API."
+  },
+  "required_pull_request_contexts": [
+    "CI / quality",
+    "CI / tests-python-3.10",
+    "CI / tests-python-3.11",
+    "CI / tests-python-3.12",
+    "CI / tests-python-3.13",
+    "CI / tests-python-3.14",
+    "CI / package",
+    "CI / release-verification",
+    "CI / container",
+    "CI / product-native",
+    "CI / pip-audit",
+    "Dependency review / dependency-review",
+    "CodeQL / codeql"
+  ],
+  "workflows": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "name": "CI",
+      "pull_request_required": true,
+      "required_trigger_markers": ["  pull_request:", "  merge_group:"],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "quality", "name": "quality", "required_contexts": ["CI / quality"]},
+        {
+          "id": "tests",
+          "name": "tests-python-${{ matrix.python-version }}",
+          "matrix_key": "python-version",
+          "matrix_values": ["3.10", "3.11", "3.12", "3.13", "3.14"],
+          "required_contexts": [
+            "CI / tests-python-3.10",
+            "CI / tests-python-3.11",
+            "CI / tests-python-3.12",
+            "CI / tests-python-3.13",
+            "CI / tests-python-3.14"
+          ]
+        },
+        {"id": "package", "name": "package", "required_contexts": ["CI / package"]},
+        {"id": "release-verification", "name": "release-verification", "required_contexts": ["CI / release-verification"]},
+        {"id": "container", "name": "container", "required_contexts": ["CI / container"]},
+        {"id": "product-native", "name": "product-native", "required_contexts": ["CI / product-native"]},
+        {"id": "pip-audit", "name": "pip-audit", "required_contexts": ["CI / pip-audit"]}
+      ]
+    },
+    {
+      "path": ".github/workflows/dependency-review.yml",
+      "name": "Dependency review",
+      "pull_request_required": true,
+      "required_trigger_markers": ["  pull_request:"],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "dependency-review", "name": "dependency-review", "required_contexts": ["Dependency review / dependency-review"]}
+      ]
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "name": "CodeQL",
+      "pull_request_required": true,
+      "required_trigger_markers": ["  pull_request:"],
+      "permissions": {
+        "security-events": "write",
+        "packages": "read",
+        "actions": "read",
+        "contents": "read"
+      },
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "analyze", "name": "codeql", "required_contexts": ["CodeQL / codeql"]}
+      ]
+    },
+    {
+      "path": ".github/workflows/observatory-monitor-plan.yml",
+      "name": "Observatory monitoring plan",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  workflow_dispatch:", "  schedule:", "    - cron: \"17 6 * * 1\""],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "plan", "name": "plan", "required_contexts": []}
+      ]
+    },
+    {
+      "path": ".github/workflows/recover-v021-release.yml",
+      "name": "Recover v0.2.1 release",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  push:", "      - agent/verify-v0.2.1-release"],
+      "permissions": {
+        "contents": "write",
+        "id-token": "write",
+        "attestations": "write"
+      },
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "recover", "name": "recover-v0.2.1-release", "required_contexts": []}
+      ]
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "name": "Release",
+      "pull_request_required": false,
+      "required_trigger_markers": ["    tags:", "      - \"v*\""],
+      "permissions": {
+        "contents": "write",
+        "id-token": "write",
+        "attestations": "write"
+      },
+      "forbid_secrets": false,
+      "jobs": [
+        {"id": "build-release", "name": "build-release", "required_contexts": []}
+      ]
+    }
+  ],
+  "global_forbidden_markers": [
+    "pull_request_target:",
+    "workflow_run:",
+    "repository_dispatch:",
+    "permissions: write-all"
+  ],
+  "action_pin_pattern": "^[0-9a-f]{40}$"
+}
