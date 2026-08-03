@@ -31,7 +31,7 @@ jobs:
         run: |
           if gh release view v0.2.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo 'exists=true' >> "$GITHUB_OUTPUT"
-            echo 'v0.2.1 already exists; recovery is idempotently complete.'
+            echo 'v0.2.1 already exists; preserving its six attested asset bytes.'
           else
             echo 'exists=false' >> "$GITHUB_OUTPUT"
           fi
@@ -99,15 +99,15 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - if: steps.release.outputs.exists != 'true'
-        name: Publish recovered release
+        name: Create release from immutable tag
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           cat > release-notes.md <<'EOF'
-          ## Controlled release recovery
+          ## Controlled v0.2.1 release
 
-          This GitHub Release was reconstructed on August 3, 2026 from the immutable annotated tag `v0.2.1`, which peels to commit `7e60d1051a0a6a6178b7d5c39deac0b02270296d`. The recovery workflow reran the tag-pinned quality suite, tests, release verification, package build, SPDX SBOM generation, checksum generation, and GitHub build-provenance attestation before publication.
+          This release is bound to the immutable annotated tag `v0.2.1`, which peels to commit `7e60d10271ceba7ec5674bcd9de2d8903947bdf5`. The six attached artifacts preserve their SHA-256 manifest and GitHub build-provenance attestations.
 
           The release establishes technical artifact identity and reproducible package provenance. It does not establish scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status. It also does not establish evidence authenticity, methodological adequacy, completed system conformance, or permission to publish a canonical observatory successor.
           EOF
@@ -116,6 +116,23 @@ jobs:
             --verify-tag \
             --title 'NeuroAI Workbench v0.2.1' \
             --notes-file release-notes.md
+      - name: Normalize and publish release metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          cat > release-notes.md <<'EOF'
+          ## Controlled v0.2.1 release
+
+          This release is bound to the immutable annotated tag `v0.2.1`, which peels to commit `7e60d10271ceba7ec5674bcd9de2d8903947bdf5`. The six attached artifacts preserve their original attested bytes and SHA-256 manifest.
+
+          The release establishes technical artifact identity and reproducible package provenance. It does not establish scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status. It also does not establish evidence authenticity, methodological adequacy, completed system conformance, or permission to publish a canonical observatory successor.
+          EOF
+          gh release edit v0.2.1 \
+            --repo "$GITHUB_REPOSITORY" \
+            --title 'NeuroAI Workbench v0.2.1' \
+            --notes-file release-notes.md \
+            --draft=false
 
   verify:
     name: verify-v0.2.1-release
