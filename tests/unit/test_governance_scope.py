@@ -196,8 +196,9 @@ def test_manifest_tampering_is_detected(tmp_path: Path) -> None:
 def test_duplicate_missing_and_substituted_roles_are_detected(tmp_path: Path) -> None:
     _, roots, bindings, result = _record(tmp_path)
     manifest = json.loads(json.dumps(result["manifest"]))
-    manifest["objects"][0]["role"] = "DELTA"
-    manifest["objects"][0]["object_type"] = "RELEASE"
+    predecessor = next(item for item in manifest["objects"] if item["role"] == "PREDECESSOR_RELEASE")
+    predecessor["role"] = "DELTA"
+    predecessor["object_type"] = "RELEASE"
     manifest["manifest_sha256"] = _hash_record(manifest)
     report = verify_governance_scope_manifest(
         manifest,
