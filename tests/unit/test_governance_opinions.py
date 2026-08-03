@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from neuroai_workbench.events import load_events
+from neuroai_workbench.events import append_event, load_events
 from neuroai_workbench.governance_opinions import (
     GOVERNANCE_OPINION_BOUNDARY,
     _hash_record,
@@ -164,7 +164,10 @@ def test_record_verify_and_summarize_support(tmp_path: Path) -> None:
     assert opinion["opinion_sha256"] == _hash_record(opinion)
     assert opinion["boundary"] == GOVERNANCE_OPINION_BOUNDARY
     assert opinion["release_authorization_performed"] is False
-    assert opinion["evidence_references"][0]["storage_boundary"] == "PUBLIC_GIT"
+    assert {item["storage_boundary"] for item in opinion["evidence_references"]} == {
+        "PUBLIC_GIT",
+        "PROTECTED_WORKSPACE",
+    }
 
     verification = verify_governance_reviewer_opinions(workspace)
     assert verification["valid"] is True
@@ -293,9 +296,7 @@ def test_opinion_state_and_reviewer_claim_validation(tmp_path: Path) -> None:
         with pytest.raises(ValueError, match=field):
             record_governance_reviewer_opinion(**{**common, "reviewer_claim": claim})
     with pytest.raises(ValueError, match="requires at least one condition"):
-        record_governance_reviewer_opinion(
-            **{**common, "opinion_state": "SUPPORT_WITH_CONDITIONS"}
-        )
+        record_governance_reviewer_opinion(**{**common, "opinion_state": "SUPPORT_WITH_CONDITIONS"})
     with pytest.raises(ValueError, match="requires at least one evidence request"):
         record_governance_reviewer_opinion(**{**common, "opinion_state": "REQUEST_EVIDENCE"})
 
@@ -438,15 +439,12 @@ def test_supersession_graph_rejects_branching_cycles_and_substitution() -> None:
         "supersedes_opinion_id": second["opinion_id"],
         "supersedes_opinion_sha256": second["opinion_sha256"],
     }
-    combined = _supersession_errors(
-        [first, changed_track, changed_reviewer, changed_hash, incomplete, missing, self_reference]
-    )
-    assert any("changes review_track" in error for error in combined)
-    assert any("changes reviewer_key" in error for error in combined)
-    assert any("hash mismatch" in error for error in combined)
-    assert any("incomplete supersession" in error for error in combined)
-    assert any("is missing" in error for error in combined)
-    assert any("cannot supersede itself" in error for error in combined)
+    assert any("changes review_track" in error for error in _supersession_errors([first, changed_track]))
+    assert any("changes reviewer_key" in error for error in _supersession_errors([first, changed_reviewer]))
+    assert any("hash mismatch" in error for error in _supersession_errors([first, changed_hash]))
+    assert any("incomplete supersession" in error for error in _supersession_errors([first, incomplete]))
+    assert any("is missing" in error for error in _supersession_errors([first, missing]))
+    assert any("cannot supersede itself" in error for error in _supersession_errors([first, self_reference]))
 
 
 def test_duplicate_ids_non_object_files_and_corrupt_event_log(tmp_path: Path) -> None:
@@ -483,3 +481,55 @@ def test_uuid_collision_is_append_only(tmp_path: Path, monkeypatch: pytest.Monke
             track="METHODOLOGY",
         )
     assert first["opinion_id"] == "GOVOP-" + "a" * 32
+
+
+def test_scope_store_integrity_and_existing_opinion_store_fail_closed(tmp_path: Path) -> None:
+    workspace, scope = _scope(tmp_path)
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored_scope = json.loads(scope_path.read_text(encoding="utf-8"))
+    stored_scope["scope_label"] = "Tampered scope label"
+    atomic_write_json(scope_path, stored_scope)
+    with pytest.raises(ValueError, match="failed canonical hash verification"):
+        _record(workspace, scope)
+    report = verify_governance_reviewer_opinions(workspace)
+    assert report["valid"] is False
+    assert any("governance scope store invalid" in error for error in report["errors"])
+
+    workspace, scope = _scope(tmp_path / "opinion-store")
+    result = _record(workspace, scope)
+    opinion_path = Path(str(result["path"]))
+    opinion = json.loads(opinion_path.read_text(encoding="utf-8"))
+    opinion["rationale"] = "Tampered existing opinion"
+    atomic_write_json(opinion_path, opinion)
+    with pytest.raises(ValueError, match="Existing governance opinion store failed verification"):
+        _record(
+            workspace,
+            scope,
+            reviewer_key="reviewer-b",
+            track="METHODOLOGY",
+        )
+
+
+def test_exactly_one_matching_event_is_required(tmp_path: Path) -> None:
+    workspace, scope = _scope(tmp_path)
+    result = _record(workspace, scope)
+    opinion = result["opinion"]
+    append_event(
+        workspace.root / "events.jsonl",
+        "GOVERNANCE_REVIEWER_OPINION_RECORDED",
+        "local-user",
+        {
+            "opinion_id": opinion["opinion_id"],
+            "opinion_sha256": opinion["opinion_sha256"],
+            "scope_id": opinion["scope_id"],
+            "scope_sha256": opinion["scope_sha256"],
+            "review_track": opinion["review_track"],
+            "opinion_state": opinion["opinion_state"],
+            "reviewer_key": opinion["reviewer_claim"]["reviewer_key"],
+            "supersedes_opinion_id": None,
+            "release_authorization_performed": False,
+        },
+    )
+    report = verify_governance_reviewer_opinions(workspace)
+    assert report["valid"] is False
+    assert any("2 matching append-only events" in error for error in report["errors"])

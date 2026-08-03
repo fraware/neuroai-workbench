@@ -69,9 +69,14 @@ def _schema_errors(value: Any, schema_name: str) -> list[dict[str, Any]]:
 
 def _hash_record(value: dict[str, Any]) -> str:
     controlled = {
-        key: item
-        for key, item in value.items()
-        if key != "opinion_sha256" and key not in RUNTIME_PRIVATE_KEYS
+        key: item for key, item in value.items() if key != "opinion_sha256" and key not in RUNTIME_PRIVATE_KEYS
+    }
+    return sha256_bytes(canonical_json_bytes(controlled))
+
+
+def _scope_manifest_sha256(value: dict[str, Any]) -> str:
+    controlled = {
+        key: item for key, item in value.items() if key != "manifest_sha256" and key not in RUNTIME_PRIVATE_KEYS
     }
     return sha256_bytes(canonical_json_bytes(controlled))
 
@@ -111,11 +116,7 @@ def _validate_locator(storage_boundary: str, locator: str) -> None:
     if "\\" in locator:
         raise ValueError("Evidence locators must use POSIX separators")
     pure = PurePosixPath(locator)
-    if (
-        pure.is_absolute()
-        or pure.as_posix() != locator
-        or any(part in {"", ".", ".."} for part in pure.parts)
-    ):
+    if pure.is_absolute() or pure.as_posix() != locator or any(part in {"", ".", ".."} for part in pure.parts):
         raise ValueError("Evidence locator must be a normalized relative POSIX path")
 
 
@@ -175,7 +176,14 @@ def _scope_records_by_id(workspace: Workspace) -> dict[str, dict[str, Any]]:
     for scope in load_governance_scope_manifests(workspace):
         scope_id = str(scope.get("scope_id", ""))
         if not scope_id:
-            continue
+            raise ValueError("Governance scope record is missing scope_id")
+        unsupported_private = sorted(key for key in scope if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS)
+        if unsupported_private:
+            raise ValueError(f"Governance scope {scope_id} contains unsupported private fields {unsupported_private}")
+        if scope.get("manifest_sha256") != _scope_manifest_sha256(scope):
+            raise ValueError(f"Governance scope {scope_id} failed canonical hash verification")
+        if scope.get("release_authorization_performed") is not False:
+            raise ValueError(f"Governance scope {scope_id} must remain non-authorizing")
         if scope_id in scopes:
             raise ValueError(f"Duplicate governance scope ID {scope_id}")
         scopes[scope_id] = scope
@@ -193,11 +201,7 @@ def _record_index(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 
 
 def _active_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    superseded = {
-        str(record.get("supersedes_opinion_id"))
-        for record in records
-        if record.get("supersedes_opinion_id")
-    }
+    superseded = {str(record.get("supersedes_opinion_id")) for record in records if record.get("supersedes_opinion_id")}
     return [record for record in records if str(record.get("opinion_id")) not in superseded]
 
 
@@ -261,6 +265,13 @@ def record_governance_reviewer_opinion(
         raise ValueError(f"Governance scope {scope_id} SHA-256 does not match the recorded manifest")
 
     existing = load_governance_reviewer_opinions(workspace)
+    if existing:
+        existing_verification = verify_governance_reviewer_opinions(workspace)
+        if not existing_verification["valid"]:
+            raise ValueError(
+                "Existing governance opinion store failed verification: "
+                f"{json.dumps(existing_verification['errors'], ensure_ascii=False)}"
+            )
     index = _record_index(existing)
     matching_active = [
         record
@@ -283,7 +294,9 @@ def record_governance_reviewer_opinion(
         if superseded is None:
             raise ValueError(f"Superseded opinion {supersedes_opinion_id} does not exist")
         if not matching_active or matching_active[0].get("opinion_id") != supersedes_opinion_id:
-            raise ValueError("supersedes_opinion_id must identify the current active opinion for this reviewer and track")
+            raise ValueError(
+                "supersedes_opinion_id must identify the current active opinion for this reviewer and track"
+            )
         if superseded.get("opinion_sha256") != _hash_record(superseded):
             raise ValueError(f"Superseded opinion {supersedes_opinion_id} failed hash verification")
 
@@ -293,9 +306,7 @@ def record_governance_reviewer_opinion(
         "name_or_role": str(reviewer_claim["name_or_role"]).strip(),
         "accountability_state": str(reviewer_claim["accountability_state"]).strip(),
         "independence_statement": str(reviewer_claim["independence_statement"]).strip(),
-        "conflict_of_interest_disclosure": str(
-            reviewer_claim["conflict_of_interest_disclosure"]
-        ).strip(),
+        "conflict_of_interest_disclosure": str(reviewer_claim["conflict_of_interest_disclosure"]).strip(),
     }
     if reviewer_claim.get("organization"):
         claim["organization"] = str(reviewer_claim["organization"]).strip()
@@ -393,9 +404,7 @@ def _supersession_errors(records: list[dict[str, Any]]) -> list[str]:
 
     for target_id, opinion_ids in sorted(superseders.items()):
         if len(opinion_ids) > 1:
-            errors.append(
-                f"opinion {target_id}: branching supersession by {', '.join(sorted(opinion_ids))}"
-            )
+            errors.append(f"opinion {target_id}: branching supersession by {', '.join(sorted(opinion_ids))}")
 
     for start in sorted(graph):
         seen: set[str] = set()
@@ -415,14 +424,18 @@ def verify_governance_reviewer_opinions(workspace: Workspace) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
     seen_ids: set[str] = set()
-    scopes = _scope_records_by_id(workspace)
+    try:
+        scopes = _scope_records_by_id(workspace)
+    except ValueError as exc:
+        scopes = {}
+        errors.append(f"governance scope store invalid: {exc}")
 
     try:
         events = load_events(workspace.root / "events.jsonl")
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
         events = []
         errors.append(f"event log load failed: {exc}")
-    opinion_events = {
+    opinion_events: Counter[tuple[str, str, str, str]] = Counter(
         (
             str(event.get("payload", {}).get("opinion_id")),
             str(event.get("payload", {}).get("opinion_sha256")),
@@ -430,18 +443,15 @@ def verify_governance_reviewer_opinions(workspace: Workspace) -> dict[str, Any]:
             str(event.get("payload", {}).get("scope_sha256")),
         )
         for event in events
-        if event.get("action") == "GOVERNANCE_REVIEWER_OPINION_RECORDED"
-        and isinstance(event.get("payload"), dict)
-    }
+        if event.get("action") == "GOVERNANCE_REVIEWER_OPINION_RECORDED" and isinstance(event.get("payload"), dict)
+    )
 
     for record in records:
         opinion_id = str(record.get("opinion_id", ""))
         if opinion_id in seen_ids:
             errors.append(f"opinion {opinion_id}: duplicate opinion_id")
         seen_ids.add(opinion_id)
-        unsupported_private = sorted(
-            key for key in record if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS
-        )
+        unsupported_private = sorted(key for key in record if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS)
         if unsupported_private:
             errors.append(f"opinion {opinion_id}: unsupported private fields {unsupported_private}")
         schema_target = {key: value for key, value in record.items() if key not in RUNTIME_PRIVATE_KEYS}
@@ -475,8 +485,11 @@ def verify_governance_reviewer_opinions(workspace: Workspace) -> dict[str, Any]:
             scope_id,
             str(record.get("scope_sha256")),
         )
-        if event_key not in opinion_events:
+        event_count = opinion_events[event_key]
+        if event_count == 0:
             errors.append(f"opinion {opinion_id}: matching append-only event is missing")
+        elif event_count > 1:
+            errors.append(f"opinion {opinion_id}: {event_count} matching append-only events were recorded")
 
         references = record.get("evidence_references", [])
         if isinstance(references, list):
