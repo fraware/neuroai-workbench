@@ -280,10 +280,15 @@ def test_dead_local_owner_is_recovered(tmp_path, monkeypatch):
     assert "DEAD_LOCAL_OWNER" in metadata.read_text(encoding="utf-8")
 
 
-def test_expired_foreign_and_malformed_locks_are_recovered(tmp_path):
+def test_expired_shared_and_malformed_locks_are_recovered(tmp_path):
     path = tmp_path / "events.jsonl"
     lock = events._sidecar(path, ".lock")
-    _write_lock(lock, host="other-host", lease_expires_at_ns=time.time_ns() - 1)
+    _write_lock(
+        lock,
+        profile=events.LOCK_PROFILE_SHARED,
+        host="other-host",
+        lease_expires_at_ns=time.time_ns() - 1,
+    )
     assert events.append_event(path, "ONE", "tester", {})["seq"] == 1
 
     second = tmp_path / "second.jsonl"
@@ -292,6 +297,29 @@ def test_expired_foreign_and_malformed_locks_are_recovered(tmp_path):
     old = time.time() - events._LOCK_LEASE_SECONDS - 1
     os.utime(malformed, (old, old))
     assert events.append_event(second, "ONE", "tester", {})["seq"] == 1
+
+
+def test_expired_live_local_owner_is_not_recovered(tmp_path, monkeypatch):
+    monkeypatch.setattr(events, "_LOCK_TIMEOUT_SECONDS", 0.03)
+    monkeypatch.setattr(events, "_LOCK_POLL_SECONDS", 0.001)
+    path = tmp_path / "events.jsonl"
+    lock = events._sidecar(path, ".lock")
+    _write_lock(lock, lease_expires_at_ns=time.time_ns() - 1)
+    monkeypatch.setattr(events, "_pid_alive", lambda pid, token: True)
+    with pytest.raises(TimeoutError, match="event-chain lock"):
+        events.append_event(path, "BLOCKED", "tester", {})
+    assert lock.exists()
+
+
+def test_expired_foreign_local_owner_is_not_recovered(tmp_path, monkeypatch):
+    monkeypatch.setattr(events, "_LOCK_TIMEOUT_SECONDS", 0.03)
+    monkeypatch.setattr(events, "_LOCK_POLL_SECONDS", 0.001)
+    path = tmp_path / "events.jsonl"
+    lock = events._sidecar(path, ".lock")
+    _write_lock(lock, host="other-host", lease_expires_at_ns=time.time_ns() - 1)
+    with pytest.raises(TimeoutError, match="event-chain lock"):
+        events.append_event(path, "BLOCKED", "tester", {})
+    assert lock.exists()
 
 
 def test_lock_release_never_deletes_replacement_owner(tmp_path):
