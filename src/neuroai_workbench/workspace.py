@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from . import __version__
+from .case_lock import case_mutation_lock
 from .errors import WorkspaceError
 from .events import append_event, verify_chain
 from .resource_loader import read_resource_bytes
@@ -157,72 +158,73 @@ class Workspace:
         path = self.case_path(case_id)
         if not path.is_dir():
             raise WorkspaceError(f"Unknown case {case_id!r}")
-        report = validate_assessment(assessment)
-        if require_valid and not report.valid:
-            raise WorkspaceError("Assessment failed the required validation gate")
-        validation_state = "VALID" if report.valid else "DRAFT_INVALID"
-        persisted_as = "valid" if report.valid else "draft_invalid"
-        target = path / CASE_FILE
-        before = sha256_file(target) if target.exists() else None
-        atomic_write_json(target, assessment)
-        after = sha256_file(target)
-        # Case-level sidecar keeps draft/valid visibility without mutating normative assessment schema.
-        atomic_write_json(
-            path / "persistence.json",
-            {
-                "validation_state": validation_state,
-                "persisted_as": persisted_as,
-                "require_valid": require_valid,
-                "assessment_sha256": after,
-                "updated_at": utc_now(),
-                "actor": actor,
-                "boundary": (
-                    "validation_state records schema/semantic gate outcome only; "
-                    "it does not establish substantive truth or conformance."
-                ),
-            },
-        )
-        append_event(
-            path / "events.jsonl",
-            "ASSESSMENT_SAVED",
-            actor,
-            {
-                "before_sha256": before,
-                "after_sha256": after,
-                "valid": report.valid,
-                "validation_state": validation_state,
-                "persisted_as": persisted_as,
-                "schema_errors": len(report.schema_issues),
-                "semantic_errors": len(report.semantic_issues),
-            },
-        )
-        result = report.to_dict()
-        result["validation_state"] = validation_state
-        result["persisted_as"] = persisted_as
-        return result
+        with case_mutation_lock(path):
+            report = validate_assessment(assessment)
+            if require_valid and not report.valid:
+                raise WorkspaceError("Assessment failed the required validation gate")
+            validation_state = "VALID" if report.valid else "DRAFT_INVALID"
+            persisted_as = "valid" if report.valid else "draft_invalid"
+            target = path / CASE_FILE
+            before = sha256_file(target) if target.exists() else None
+            atomic_write_json(target, assessment)
+            after = sha256_file(target)
+            atomic_write_json(
+                path / "persistence.json",
+                {
+                    "validation_state": validation_state,
+                    "persisted_as": persisted_as,
+                    "require_valid": require_valid,
+                    "assessment_sha256": after,
+                    "updated_at": utc_now(),
+                    "actor": actor,
+                    "boundary": (
+                        "validation_state records schema/semantic gate outcome only; "
+                        "it does not establish substantive truth or conformance."
+                    ),
+                },
+            )
+            append_event(
+                path / "events.jsonl",
+                "ASSESSMENT_SAVED",
+                actor,
+                {
+                    "before_sha256": before,
+                    "after_sha256": after,
+                    "valid": report.valid,
+                    "validation_state": validation_state,
+                    "persisted_as": persisted_as,
+                    "schema_errors": len(report.schema_issues),
+                    "semantic_errors": len(report.semantic_issues),
+                },
+            )
+            result = report.to_dict()
+            result["validation_state"] = validation_state
+            result["persisted_as"] = persisted_as
+            return result
 
     def snapshot(self, case_id: str, actor: str = "local-user", label: str = "snapshot") -> dict[str, Any]:
         case = self.case_path(case_id)
         assessment_path = case / CASE_FILE
         if not assessment_path.is_file():
             raise WorkspaceError(f"Unknown case {case_id!r}")
-        timestamp = utc_now().replace(":", "").replace("-", "")
-        safe_label = ensure_identifier(label, "snapshot label")
-        destination = case / "snapshots" / f"{timestamp}-{safe_label}"
-        destination.mkdir(parents=True)
-        shutil.copy2(assessment_path, destination / CASE_FILE)
-        evidence_index = case / "evidence/index.json"
-        if evidence_index.exists():
-            shutil.copy2(evidence_index, destination / "evidence-index.json")
-        record = {
-            "snapshot_id": destination.name,
-            "created_at": utc_now(),
-            "assessment_sha256": sha256_file(destination / CASE_FILE),
-            "event_chain": verify_chain(case / "events.jsonl"),
-        }
-        atomic_write_json(destination / "snapshot.json", record)
-        append_event(case / "events.jsonl", "SNAPSHOT_CREATED", actor, record)
-        return record
+        with case_mutation_lock(case):
+            timestamp = utc_now().replace(":", "").replace("-", "")
+            safe_label = ensure_identifier(label, "snapshot label")
+            destination = case / "snapshots" / f"{timestamp}-{safe_label}"
+            destination.mkdir(parents=True)
+            shutil.copy2(assessment_path, destination / CASE_FILE)
+            evidence_index = case / "evidence/index.json"
+            if evidence_index.exists():
+                shutil.copy2(evidence_index, destination / "evidence-index.json")
+            record = {
+                "snapshot_id": destination.name,
+                "created_at": utc_now(),
+                "assessment_sha256": sha256_file(destination / CASE_FILE),
+                "event_chain": verify_chain(case / "events.jsonl"),
+            }
+            atomic_write_json(destination / "snapshot.json", record)
+            append_event(case / "events.jsonl", "SNAPSHOT_CREATED", actor, record)
+            return record
 
     def delete_case(self, case_id: str, confirmation: str) -> None:
         if confirmation != case_id:
@@ -230,4 +232,5 @@ class Workspace:
         path = self.case_path(case_id)
         if not path.is_dir():
             raise WorkspaceError(f"Unknown case {case_id!r}")
-        shutil.rmtree(path)
+        with case_mutation_lock(path):
+            shutil.rmtree(path)
