@@ -35,3 +35,5 @@ Monitoring operations already record immutable snapshots, change candidates, and
 ## Follow-on
 
 Implement the collector service, restricted-network deployment profile, adversarial runtime tests, and operational runbooks in bounded follow-on issues under epic #34. Update `THREAT_MODEL.md` when runtime controls land.
+
+Continuous discovery query streams (candidate sources before registry succession) are specified in [ADR 0010](0010-discovery-query-streams.md) and reuse this boundary's offline-first, SSRF, and human-gate posture without relocating quarantine writes into discovery.
