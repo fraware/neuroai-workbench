@@ -10,7 +10,7 @@ from uuid import uuid4
 from jsonschema import Draft202012Validator
 
 from .events import append_event, load_events, verify_chain
-from .governance_scope import load_governance_scope_manifests
+from .governance_scope import GOVERNANCE_SCOPE_BOUNDARY, load_governance_scope_manifests
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, utc_now
 from .workspace import Workspace
 
@@ -172,6 +172,15 @@ def load_governance_reviewer_opinions(workspace: Workspace) -> list[dict[str, An
 
 
 def _scope_records_by_id(workspace: Workspace) -> dict[str, dict[str, Any]]:
+    events = load_events(workspace.root / "events.jsonl")
+    scope_events: Counter[tuple[str, str]] = Counter(
+        (
+            str(event.get("payload", {}).get("scope_id")),
+            str(event.get("payload", {}).get("manifest_sha256")),
+        )
+        for event in events
+        if event.get("action") == "GOVERNANCE_SCOPE_RECORDED" and isinstance(event.get("payload"), dict)
+    )
     scopes: dict[str, dict[str, Any]] = {}
     for scope in load_governance_scope_manifests(workspace):
         scope_id = str(scope.get("scope_id", ""))
@@ -180,10 +189,22 @@ def _scope_records_by_id(workspace: Workspace) -> dict[str, dict[str, Any]]:
         unsupported_private = sorted(key for key in scope if key.startswith("_") and key not in RUNTIME_PRIVATE_KEYS)
         if unsupported_private:
             raise ValueError(f"Governance scope {scope_id} contains unsupported private fields {unsupported_private}")
-        if scope.get("manifest_sha256") != _scope_manifest_sha256(scope):
+        manifest_sha256 = str(scope.get("manifest_sha256", ""))
+        if manifest_sha256 != _scope_manifest_sha256(scope):
             raise ValueError(f"Governance scope {scope_id} failed canonical hash verification")
+        if scope.get("schema_version") != "1":
+            raise ValueError(f"Governance scope {scope_id} has unsupported schema version")
+        if scope.get("authority_profile") != "SCOPE_INTEGRITY_ONLY":
+            raise ValueError(f"Governance scope {scope_id} has an invalid authority profile")
+        if scope.get("boundary") != GOVERNANCE_SCOPE_BOUNDARY:
+            raise ValueError(f"Governance scope {scope_id} has an invalid authority boundary")
         if scope.get("release_authorization_performed") is not False:
             raise ValueError(f"Governance scope {scope_id} must remain non-authorizing")
+        event_count = scope_events[(scope_id, manifest_sha256)]
+        if event_count == 0:
+            raise ValueError(f"Governance scope {scope_id} has no matching append-only event")
+        if event_count > 1:
+            raise ValueError(f"Governance scope {scope_id} has {event_count} matching append-only events")
         if scope_id in scopes:
             raise ValueError(f"Duplicate governance scope ID {scope_id}")
         scopes[scope_id] = scope

@@ -709,3 +709,46 @@ def test_additional_supersession_and_summary_fallbacks(tmp_path: Path) -> None:
     assert summary["integrity_valid"] is False
     assert summary["active_state_counts"] == {"SUPPORT": 1}
     assert all(not opinions for opinions in summary["by_track"].values())
+
+
+def test_scope_event_and_authority_binding_fail_closed(tmp_path: Path) -> None:
+    workspace, scope = _scope(tmp_path / "recomputed")
+    scope_path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+    stored = json.loads(scope_path.read_text(encoding="utf-8"))
+    stored["scope_label"] = "Recomputed tampered scope"
+    stored["manifest_sha256"] = _scope_manifest_sha256(stored)
+    atomic_write_json(scope_path, stored)
+    with pytest.raises(ValueError, match="no matching append-only event"):
+        _scope_records_by_id(workspace)
+    with pytest.raises(ValueError, match="no matching append-only event"):
+        _record(workspace, stored)
+
+    workspace, scope = _scope(tmp_path / "duplicate-event")
+    append_event(
+        workspace.root / "events.jsonl",
+        "GOVERNANCE_SCOPE_RECORDED",
+        "local-user",
+        {
+            "scope_id": scope["scope_id"],
+            "manifest_sha256": scope["manifest_sha256"],
+            "object_count": len(scope["objects"]),
+            "release_authorization_performed": False,
+        },
+    )
+    with pytest.raises(ValueError, match="2 matching append-only events"):
+        _scope_records_by_id(workspace)
+
+    mutations = [
+        ("schema", "schema_version", "2", "unsupported schema version"),
+        ("profile", "authority_profile", "RELEASE_AUTHORITY", "invalid authority profile"),
+        ("boundary", "boundary", "authorizes release", "invalid authority boundary"),
+    ]
+    for suffix, field, value, message in mutations:
+        workspace, _ = _scope(tmp_path / suffix)
+        path = next((workspace.root / "governance" / "scopes").glob("*.json"))
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record[field] = value
+        record["manifest_sha256"] = _scope_manifest_sha256(record)
+        atomic_write_json(path, record)
+        with pytest.raises(ValueError, match=message):
+            _scope_records_by_id(workspace)
