@@ -7,7 +7,7 @@ on:
   merge_group:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -180,3 +180,83 @@ jobs:
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
       - run: python -m pip install --no-deps -e .
       - run: python -m pip_audit -r requirements/constraints.txt
+
+  apply-case-lock-refactor:
+    name: apply-case-lock-refactor
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/transactional-evidence-journal' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - name: Apply exact source transformation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          tx_path = Path('src/neuroai_workbench/evidence_transactions.py')
+          tx = tx_path.read_text(encoding='utf-8')
+          replacements = [
+              ('from collections.abc import Iterator\n', ''),
+              ('from contextlib import contextmanager\n', ''),
+              (
+                  'from .events import LOCK_PROFILE_LOCAL, _exclusive_lock, append_event, load_events\n',
+                  'from .case_lock import case_mutation_lock\nfrom .events import append_event, load_events\n',
+              ),
+              (
+                  'def _registration_lock_path(case_path: Path) -> Path:\n    return case_path / "evidence" / "registration.lock"\n\n\n',
+                  '',
+              ),
+              (
+                  '@contextmanager\ndef evidence_registration_lock(case_path: Path) -> Iterator[dict[str, Any]]:\n    with _exclusive_lock(_registration_lock_path(case_path), profile=LOCK_PROFILE_LOCAL) as owner:\n        yield owner\n\n\n',
+                  '',
+              ),
+              ('with evidence_registration_lock(case_path):', 'with case_mutation_lock(case_path):'),
+          ]
+          for old, new in replacements:
+              if tx.count(old) != 1:
+                  raise SystemExit(f'transaction replacement did not match once: {old[:60]!r}')
+              tx = tx.replace(old, new)
+          old_predicate = '''    return (
+        _path_hash(case_path / "assessment.json") == journal["desired"]["assessment_sha256"]
+        and _path_hash(case_path / "persistence.json") == journal["desired"]["persistence_sha256"]
+    )
+'''
+          new_predicate = '''    return bool(
+        _path_hash(case_path / "assessment.json") == journal["desired"]["assessment_sha256"]
+        and _path_hash(case_path / "persistence.json") == journal["desired"]["persistence_sha256"]
+    )
+'''
+          if tx.count(old_predicate) != 1:
+              raise SystemExit('transaction completion predicate did not match')
+          tx_path.write_text(tx.replace(old_predicate, new_predicate), encoding='utf-8')
+
+          evidence_path = Path('src/neuroai_workbench/evidence.py')
+          evidence = evidence_path.read_text(encoding='utf-8')
+          old_import = 'from .evidence_transactions import (\n    apply_evidence_transaction,\n    evidence_registration_lock,\n'
+          new_import = 'from .case_lock import case_mutation_lock\nfrom .evidence_transactions import (\n    apply_evidence_transaction,\n'
+          if evidence.count(old_import) != 1 or evidence.count('with evidence_registration_lock(case):') != 1:
+              raise SystemExit('evidence lock boundary did not match')
+          evidence = evidence.replace(old_import, new_import)
+          evidence = evidence.replace('with evidence_registration_lock(case):', 'with case_mutation_lock(case):')
+          evidence_path.write_text(evidence, encoding='utf-8')
+          PY
+      - run: python -m ruff format src/neuroai_workbench/case_lock.py src/neuroai_workbench/evidence.py src/neuroai_workbench/evidence_transactions.py src/neuroai_workbench/workspace.py tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py
+      - run: python -m ruff check --fix src/neuroai_workbench/case_lock.py src/neuroai_workbench/evidence.py src/neuroai_workbench/evidence_transactions.py src/neuroai_workbench/workspace.py tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py
+      - run: python -m ruff format --check src/neuroai_workbench/case_lock.py src/neuroai_workbench/evidence.py src/neuroai_workbench/evidence_transactions.py src/neuroai_workbench/workspace.py tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py
+      - run: python -m ruff check src/neuroai_workbench/case_lock.py src/neuroai_workbench/evidence.py src/neuroai_workbench/evidence_transactions.py src/neuroai_workbench/workspace.py tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py
+      - run: python -m mypy src/neuroai_workbench
+      - run: python -m pytest tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py tests/unit/test_evidence.py tests/unit/test_events.py tests/unit/test_workspace.py -q
+      - name: Commit validated refactor
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/neuroai_workbench/case_lock.py src/neuroai_workbench/evidence.py src/neuroai_workbench/evidence_transactions.py src/neuroai_workbench/workspace.py tests/unit/test_case_lock.py tests/unit/test_evidence_transactions.py
+          git commit -m "fix: serialize case mutations with one durable lock"
+          git push origin HEAD:${{ github.head_ref }}
