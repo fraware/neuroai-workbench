@@ -1,0 +1,117 @@
+name: Repair v0.2.1 release audit
+
+on:
+  push:
+    branches:
+      - agent/verify-v0.2.1-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair-v0.2.1-release-audit
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: repair-v0.2.1-release-audit
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - name: Apply exact audit and metadata repairs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          verifier = Path('scripts/verify_github_release_assets.py')
+          text = verifier.read_text(encoding='utf-8')
+          old = '''        package_info = [member for member in members if member.name.endswith("/PKG-INFO")]
+                  if len(package_info) != 1:
+                      raise ValueError("Source distribution must contain exactly one PKG-INFO")'''.replace('                  ', '        ').replace('                      ', '            ')
+          new = '''        package_info = [
+                      member
+                      for member in members
+                      if len(Path(member.name).parts) == 2 and member.name.endswith("/PKG-INFO")
+                  ]
+                  if len(package_info) != 1:
+                      raise ValueError("Source distribution must contain exactly one top-level PKG-INFO")'''.replace('                      ', '            ').replace('                  ', '        ')
+          if old not in text:
+              raise SystemExit('expected sdist verifier block not found')
+          text = text.replace(old, new, 1)
+          old_rev = '["git", "-C", str(bare), "rev-list", "-n", "1", f"refs/tags/{tag}"],'
+          new_rev = '["git", "-C", str(bare), "rev-parse", f"refs/tags/{tag}^{{commit}}"],'
+          if old_rev not in text:
+              raise SystemExit('expected bundle tag peel command not found')
+          verifier.write_text(text.replace(old_rev, new_rev, 1), encoding='utf-8')
+
+          tests = Path('tests/unit/test_github_release_assets.py')
+          test_text = tests.read_text(encoding='utf-8')
+          old_commit = '7e60d1051a0a6a6178b7d5c39deac0b02270296d'
+          new_commit = '7e60d10271ceba7ec5674bcd9de2d8903947bdf5'
+          if old_commit not in test_text:
+              raise SystemExit('expected historical test commit not found')
+          tests.write_text(test_text.replace(old_commit, new_commit), encoding='utf-8')
+
+          recovery = Path('.github/workflows/recover-v021-release.yml')
+          recovery_text = recovery.read_text(encoding='utf-8').replace(old_commit, new_commit)
+          marker = '\n  verify:\n'
+          if marker not in recovery_text:
+              raise SystemExit('recovery verify job marker not found')
+          normalization = '''
+                - name: Normalize and publish release metadata
+                  env:
+                    GH_TOKEN: ${{ github.token }}
+                  shell: bash
+                  run: |
+                    cat > release-notes.md <<'EOF'
+                    ## Controlled v0.2.1 release
+
+                    This release is bound to the immutable annotated tag `v0.2.1`, which peels to commit `7e60d10271ceba7ec5674bcd9de2d8903947bdf5`. The six attached artifacts preserve the original attested bytes and their SHA-256 manifest.
+
+                    The release establishes technical artifact identity and reproducible package provenance. It does not establish scientific validity, clinical safety, regulatory authorization, conformance, institutional endorsement, or official UNESCO status. It also does not establish evidence authenticity, methodological adequacy, completed system conformance, or permission to publish a canonical observatory successor.
+                    EOF
+                    gh release edit v0.2.1 \
+                      --repo "$GITHUB_REPOSITORY" \
+                      --title 'NeuroAI Workbench v0.2.1' \
+                      --notes-file release-notes.md \
+                      --draft=false
+          '''.replace('                ', '      ')
+          if 'Normalize and publish release metadata' not in recovery_text:
+              recovery_text = recovery_text.replace(marker, normalization + marker, 1)
+          recovery.write_text(recovery_text, encoding='utf-8')
+
+          Path('.github/workflows/rebase-v021-branch.yml').unlink()
+          Path('.github/workflows/repair-v021-audit.yml').unlink()
+          manifest_path = Path('.github/required-checks.json')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          removed = {
+              '.github/workflows/rebase-v021-branch.yml',
+              '.github/workflows/repair-v021-audit.yml',
+          }
+          manifest['workflows'] = [row for row in manifest['workflows'] if row.get('path') not in removed]
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+      - run: python -m ruff format scripts/verify_github_release_assets.py scripts/acquire_live_v021_release.py tests/unit/test_github_release_assets.py
+      - run: python -m ruff check scripts/verify_github_release_assets.py scripts/acquire_live_v021_release.py tests/unit/test_github_release_assets.py
+      - run: python -m pytest tests/unit/test_github_release_assets.py -q
+      - run: python scripts/check_github_workflow_contract.py
+      - name: Commit validated repairs
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Correct and publish v0.2.1 release audit' || exit 0
+          git push
