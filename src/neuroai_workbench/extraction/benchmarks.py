@@ -55,7 +55,42 @@ def get_stop_conditions(manifest: dict[str, Any] | None = None) -> list[str]:
 
 
 def load_fixture_stub(relative_path: str, *, root: Path | None = None) -> dict[str, Any]:
+    """Load a fixture stub path or a corpus-pack virtual stub.
+
+    Virtual stubs use the form ``corpus:<file>#<fixture_id>:capture|annotation``.
+    """
+    if relative_path.startswith("corpus:"):
+        return _load_corpus_virtual_stub(relative_path, root=root)
     target = (root or BENCHMARK_ROOT) / relative_path
     if not target.is_file():
         raise FileNotFoundError(f"Benchmark fixture stub not found at {target}")
     return cast(dict[str, Any], json.loads(target.read_text(encoding="utf-8")))
+
+
+def _load_corpus_virtual_stub(spec: str, *, root: Path | None = None) -> dict[str, Any]:
+    # corpus:CORPUS_PUBLIC_SCALE.json#FIX-...:capture
+    body = spec[len("corpus:") :]
+    if "#" not in body or ":" not in body.split("#", 1)[1]:
+        raise ValueError(f"Invalid corpus stub spec {spec!r}")
+    file_part, remainder = body.split("#", 1)
+    fixture_id, kind = remainder.rsplit(":", 1)
+    if kind not in {"capture", "annotation"}:
+        raise ValueError(f"Corpus stub kind must be capture|annotation, got {kind!r}")
+    corpus_path = (root or BENCHMARK_ROOT) / file_part
+    payload = json.loads(corpus_path.read_text(encoding="utf-8"))
+    cases = payload.get("cases") if isinstance(payload, dict) else None
+    if not isinstance(cases, list):
+        raise ValueError(f"Corpus pack {corpus_path} missing cases array")
+    for case in cases:
+        if isinstance(case, dict) and case.get("fixture_id") == fixture_id:
+            fragment = case.get(kind)
+            if not isinstance(fragment, dict):
+                raise ValueError(f"Corpus case {fixture_id} missing {kind}")
+            return cast(dict[str, Any], fragment)
+    raise FileNotFoundError(f"Fixture {fixture_id} not found in corpus pack {corpus_path}")
+
+
+def load_scale_benchmark_manifest(path: Path | None = None) -> dict[str, Any]:
+    """Load the ≥150-case scale manifest when present."""
+    target = path or (BENCHMARK_ROOT / "MANIFEST_SCALE.json")
+    return load_benchmark_manifest(target)

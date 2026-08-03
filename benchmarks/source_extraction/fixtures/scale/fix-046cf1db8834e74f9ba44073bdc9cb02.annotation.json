@@ -1,0 +1,1 @@
+{"fixture_id":"FIX-046cf1db8834e74f9ba44073bdc9cb02","boundary":"Annotation stub for blinded benchmark review; not an authoritative ground-truth record.","expected_fields":[{"field_type":"EVENT_TYPE","value":"REGULATORY_NOTICE"},{"field_type":"DATE","value":"2026-02-09"}]}

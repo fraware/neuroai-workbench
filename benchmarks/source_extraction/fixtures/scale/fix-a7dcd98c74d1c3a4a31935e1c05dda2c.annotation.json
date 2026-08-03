@@ -1,0 +1,1 @@
+{"fixture_id":"FIX-a7dcd98c74d1c3a4a31935e1c05dda2c","boundary":"Annotation stub for blinded benchmark review; not an authoritative ground-truth record.","expected_fields":[{"field_type":"ENTITY_MENTION","value":"SynthCapital Fund 19"},{"field_type":"DATE","value":"2026-04-20"}]}

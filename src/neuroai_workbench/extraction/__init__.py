@@ -6,6 +6,7 @@ from .benchmarks import (
     list_benchmark_fixtures,
     load_benchmark_manifest,
     load_fixture_stub,
+    load_scale_benchmark_manifest,
     validate_benchmark_manifest,
 )
 from .contract import (
@@ -18,6 +19,7 @@ from .contract import (
     validate_extraction_request,
     validate_extraction_response,
 )
+from .corpus_scale import load_scale_corpus
 from .disclosure import (
     DEFAULT_DISCLOSURE_POLICY,
     EXPORT_ALLOWED_CLASSES,
@@ -41,13 +43,16 @@ from .evaluation import (
     compare_provider_configs,
     run_bounded_offline_evaluation,
     run_config_against_benchmark,
+    run_scale_corpus_evaluation,
     score_fixture_response,
 )
 from .providers import (
+    CAPTURED_REPLAY_PROVIDER_ID,
     FAKE_OFFLINE_PROVIDER_ID,
     ExtractionProviderConfig,
     FakeOfflineExtractionProvider,
     ProviderExecutionRefusedError,
+    captured_replay_evaluation_config,
     contract_fake_offline_configs,
     default_offline_evaluation_configs,
     resolve_provider,
@@ -55,6 +60,7 @@ from .providers import (
 )
 
 __all__ = [
+    "CAPTURED_REPLAY_PROVIDER_ID",
     "DEFAULT_DISCLOSURE_POLICY",
     "EXPORT_ALLOWED_CLASSES",
     "EXTRACTION_BOUNDARY",
@@ -67,6 +73,7 @@ __all__ = [
     "FakeOfflineExtractionProvider",
     "ProviderExecutionRefusedError",
     "build_extraction_request_from_capture",
+    "captured_replay_evaluation_config",
     "check_context_disclosure",
     "check_response_disclosure",
     "compare_provider_configs",
@@ -81,11 +88,14 @@ __all__ = [
     "load_benchmark_manifest",
     "load_disclosure_policy",
     "load_fixture_stub",
+    "load_scale_benchmark_manifest",
+    "load_scale_corpus",
     "record_extraction_request",
     "record_extraction_response",
     "resolve_provider",
     "run_bounded_offline_evaluation",
     "run_config_against_benchmark",
+    "run_scale_corpus_evaluation",
     "scan_prompt_injection",
     "score_fixture_response",
     "validate_benchmark_manifest",

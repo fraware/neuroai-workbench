@@ -1,0 +1,1 @@
+{"fixture_id":"FIX-a427d6e0cfc974a16f750d63e213aba8","boundary":"Annotation stub for blinded benchmark review; not an authoritative ground-truth record.","expected_fields":[{"field_type":"ENTITY_MENTION","value":"SynthDevice Corp 18"},{"field_type":"DATE","value":"2026-03-19"}]}

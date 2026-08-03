@@ -214,13 +214,14 @@ def run_config_against_benchmark(
     config: ExtractionProviderConfig,
     *,
     manifest: dict[str, Any] | None = None,
+    captured_responses: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     payload = manifest or load_benchmark_manifest()
     manifest_validation = validate_benchmark_manifest(payload)
     if not manifest_validation["valid"]:
         raise ValueError(f"Benchmark manifest invalid: {manifest_validation['errors']}")
 
-    provider = resolve_provider(config)
+    provider = resolve_provider(config, captured_responses=captured_responses)
     metric_names = get_preregistered_metrics(payload)
     fixture_results: list[dict[str, Any]] = []
 
@@ -268,12 +269,16 @@ def compare_provider_configs(
     configs: list[ExtractionProviderConfig],
     *,
     manifest: dict[str, Any] | None = None,
+    captured_responses: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if len(configs) < 2:
         raise ValueError("At least two provider configurations are required for bounded comparison")
     payload = manifest or load_benchmark_manifest()
     metric_names = get_preregistered_metrics(payload)
-    config_results = [run_config_against_benchmark(config, manifest=payload) for config in configs]
+    config_results = [
+        run_config_against_benchmark(config, manifest=payload, captured_responses=captured_responses)
+        for config in configs
+    ]
 
     metric_comparison: dict[str, list[dict[str, Any]]] = {metric: [] for metric in metric_names}
     for result in config_results:
@@ -326,3 +331,33 @@ def run_bounded_offline_evaluation(
         return compare_provider_configs(selected, manifest=manifest)
     except ProviderExecutionRefusedError as error:
         raise ValueError(str(error)) from error
+
+
+def run_scale_corpus_evaluation(
+    configs: list[ExtractionProviderConfig] | None = None,
+    *,
+    captured_responses: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Evaluate the ≥150-case public/synthetic scale corpus.
+
+    Default configs are contract fake-offline pairs (CONTRACT_FIXTURE_NON_ACCURACY).
+    Pass captured_responses with CapturedResponseReplayProvider configs for the primary
+    accuracy lane. Live providers remain separately gated.
+    """
+    from .benchmarks import load_scale_benchmark_manifest
+    from .providers import contract_fake_offline_configs
+
+    manifest = load_scale_benchmark_manifest()
+    selected = configs or contract_fake_offline_configs(enabled=True)
+    report = compare_provider_configs(selected, manifest=manifest, captured_responses=captured_responses)
+    report["corpus"] = "EXTRACTION-PUBLIC-SCALE-001"
+    report["fixture_count"] = len(list_benchmark_fixtures(manifest))
+    report["primary_accuracy_lane"] = "captured-response-replay"
+    report["contract_lane_label"] = "CONTRACT_FIXTURE_NON_ACCURACY"
+    report["boundary"] = (
+        "Scale-corpus offline evaluation uses synthetic/public-safe excerpts only. "
+        "Fake-offline remains CONTRACT_FIXTURE_NON_ACCURACY. Captured-response-replay is the "
+        "primary accuracy lane when captured responses are supplied. Scores do not establish "
+        "provider superiority, legal authorization, or release authority."
+    )
+    return report

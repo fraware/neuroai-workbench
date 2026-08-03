@@ -1,0 +1,1083 @@
+{
+  "schema_version": "1",
+  "benchmark_id": "BENCH-EXT-a75549f6f21daa9ebf876408996bcd34",
+  "status": "PREREGISTERED",
+  "preregistered_at": "2026-08-03T00:00:00Z",
+  "categories": [
+    "COMPANY_ANNOUNCEMENT",
+    "REGULATORY_RECORD",
+    "CLINICAL_TRIAL",
+    "PUBLICATION",
+    "OWNERSHIP_FUNDING",
+    "SAFETY_WITHDRAWAL",
+    "CONTRADICTORY_SOURCE"
+  ],
+  "metrics": [
+    "field_precision",
+    "field_recall",
+    "citation_accuracy",
+    "unsupported_attribution_rate",
+    "entity_resolution_precision",
+    "abstention_rate",
+    "reviewer_time_saved"
+  ],
+  "stop_conditions": [
+    "unsupported_attribution_rate exceeds preregistered threshold",
+    "citation_accuracy below preregistered threshold",
+    "protected disclosure not preventable by default-deny controls",
+    "provider configuration selected solely on aggregate score"
+  ],
+  "fixtures": [
+    {
+      "fixture_id": "FIX-3e247796576ed4b263bf3339af9025fa",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "fixtures/scale/fix-3e247796576ed4b263bf3339af9025fa.capture.json",
+      "annotation_stub": "fixtures/scale/fix-3e247796576ed4b263bf3339af9025fa.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ee0703c6bb7e36c3cdbd7786f1e85d61",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "fixtures/scale/fix-ee0703c6bb7e36c3cdbd7786f1e85d61.capture.json",
+      "annotation_stub": "fixtures/scale/fix-ee0703c6bb7e36c3cdbd7786f1e85d61.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-164dc6b02e7a6d49593d51e17257ab20",
+      "category": "PUBLICATION",
+      "capture_stub": "fixtures/scale/fix-164dc6b02e7a6d49593d51e17257ab20.capture.json",
+      "annotation_stub": "fixtures/scale/fix-164dc6b02e7a6d49593d51e17257ab20.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fd0d78f1045f45e61e48a8303a2a9577",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "fixtures/scale/fix-fd0d78f1045f45e61e48a8303a2a9577.capture.json",
+      "annotation_stub": "fixtures/scale/fix-fd0d78f1045f45e61e48a8303a2a9577.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c6d37e1423822db008d4396760c11a28",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "fixtures/scale/fix-c6d37e1423822db008d4396760c11a28.capture.json",
+      "annotation_stub": "fixtures/scale/fix-c6d37e1423822db008d4396760c11a28.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-168267c553f994b2c1562da31ba776fa",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "fixtures/scale/fix-168267c553f994b2c1562da31ba776fa.capture.json",
+      "annotation_stub": "fixtures/scale/fix-168267c553f994b2c1562da31ba776fa.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d9488bcf021f578aaa1219ffaa4e4782",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "fixtures/scale/fix-d9488bcf021f578aaa1219ffaa4e4782.capture.json",
+      "annotation_stub": "fixtures/scale/fix-d9488bcf021f578aaa1219ffaa4e4782.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-046cf1db8834e74f9ba44073bdc9cb02",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "fixtures/scale/fix-046cf1db8834e74f9ba44073bdc9cb02.capture.json",
+      "annotation_stub": "fixtures/scale/fix-046cf1db8834e74f9ba44073bdc9cb02.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-98784d7f047838121e88ab00b4740b73",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "fixtures/scale/fix-98784d7f047838121e88ab00b4740b73.capture.json",
+      "annotation_stub": "fixtures/scale/fix-98784d7f047838121e88ab00b4740b73.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e12baa9f31c8ae74464589b06c168f44",
+      "category": "PUBLICATION",
+      "capture_stub": "fixtures/scale/fix-e12baa9f31c8ae74464589b06c168f44.capture.json",
+      "annotation_stub": "fixtures/scale/fix-e12baa9f31c8ae74464589b06c168f44.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c33f0b5e1dda245f2ffcba72d9ec24eb",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "fixtures/scale/fix-c33f0b5e1dda245f2ffcba72d9ec24eb.capture.json",
+      "annotation_stub": "fixtures/scale/fix-c33f0b5e1dda245f2ffcba72d9ec24eb.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-418492c5498c65ba4449319f719824e8",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "fixtures/scale/fix-418492c5498c65ba4449319f719824e8.capture.json",
+      "annotation_stub": "fixtures/scale/fix-418492c5498c65ba4449319f719824e8.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e41800b710a98a6981bc3ae6cad49bcf",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "fixtures/scale/fix-e41800b710a98a6981bc3ae6cad49bcf.capture.json",
+      "annotation_stub": "fixtures/scale/fix-e41800b710a98a6981bc3ae6cad49bcf.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3d1d4b787c4724e396b3805178ba9fa4",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "fixtures/scale/fix-3d1d4b787c4724e396b3805178ba9fa4.capture.json",
+      "annotation_stub": "fixtures/scale/fix-3d1d4b787c4724e396b3805178ba9fa4.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1aef0e85ab4710a8a84f1d7503c6f2be",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "fixtures/scale/fix-1aef0e85ab4710a8a84f1d7503c6f2be.capture.json",
+      "annotation_stub": "fixtures/scale/fix-1aef0e85ab4710a8a84f1d7503c6f2be.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-63cbbab1ffebc5e0dfc7010bcdb0ffd7",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "fixtures/scale/fix-63cbbab1ffebc5e0dfc7010bcdb0ffd7.capture.json",
+      "annotation_stub": "fixtures/scale/fix-63cbbab1ffebc5e0dfc7010bcdb0ffd7.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-428c163f53943622b67cbcc919279f26",
+      "category": "PUBLICATION",
+      "capture_stub": "fixtures/scale/fix-428c163f53943622b67cbcc919279f26.capture.json",
+      "annotation_stub": "fixtures/scale/fix-428c163f53943622b67cbcc919279f26.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a427d6e0cfc974a16f750d63e213aba8",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "fixtures/scale/fix-a427d6e0cfc974a16f750d63e213aba8.capture.json",
+      "annotation_stub": "fixtures/scale/fix-a427d6e0cfc974a16f750d63e213aba8.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a7dcd98c74d1c3a4a31935e1c05dda2c",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "fixtures/scale/fix-a7dcd98c74d1c3a4a31935e1c05dda2c.capture.json",
+      "annotation_stub": "fixtures/scale/fix-a7dcd98c74d1c3a4a31935e1c05dda2c.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4a71b649a65bab1e1fa6e99536b4cf38",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "fixtures/scale/fix-4a71b649a65bab1e1fa6e99536b4cf38.capture.json",
+      "annotation_stub": "fixtures/scale/fix-4a71b649a65bab1e1fa6e99536b4cf38.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e390282519ea46c9fc68de858087f851",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "fixtures/scale/fix-e390282519ea46c9fc68de858087f851.capture.json",
+      "annotation_stub": "fixtures/scale/fix-e390282519ea46c9fc68de858087f851.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-971086b1075b9ce2c7e56df28b28a862",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "fixtures/scale/fix-971086b1075b9ce2c7e56df28b28a862.capture.json",
+      "annotation_stub": "fixtures/scale/fix-971086b1075b9ce2c7e56df28b28a862.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1b216bee66768ec487b48f6f4ba9fc02",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "fixtures/scale/fix-1b216bee66768ec487b48f6f4ba9fc02.capture.json",
+      "annotation_stub": "fixtures/scale/fix-1b216bee66768ec487b48f6f4ba9fc02.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d9fbce79ec24d283204b92f93d9c2e19",
+      "category": "PUBLICATION",
+      "capture_stub": "fixtures/scale/fix-d9fbce79ec24d283204b92f93d9c2e19.capture.json",
+      "annotation_stub": "fixtures/scale/fix-d9fbce79ec24d283204b92f93d9c2e19.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d24980ae1a20a7503d13b07239aa5041",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "fixtures/scale/fix-d24980ae1a20a7503d13b07239aa5041.capture.json",
+      "annotation_stub": "fixtures/scale/fix-d24980ae1a20a7503d13b07239aa5041.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-61814052302bd77ab07297d1ff7b05e5",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "fixtures/scale/fix-61814052302bd77ab07297d1ff7b05e5.capture.json",
+      "annotation_stub": "fixtures/scale/fix-61814052302bd77ab07297d1ff7b05e5.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d71b67ecd7b0ae12390f675ef3cd7960",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "fixtures/scale/fix-d71b67ecd7b0ae12390f675ef3cd7960.capture.json",
+      "annotation_stub": "fixtures/scale/fix-d71b67ecd7b0ae12390f675ef3cd7960.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fabe23857e802c5de33bce7fe9bd25f0",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "fixtures/scale/fix-fabe23857e802c5de33bce7fe9bd25f0.capture.json",
+      "annotation_stub": "fixtures/scale/fix-fabe23857e802c5de33bce7fe9bd25f0.annotation.json",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-34a5f13f139ade8a619fc86be894e3d1",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-34a5f13f139ade8a619fc86be894e3d1:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-34a5f13f139ade8a619fc86be894e3d1:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-665804297f22ec8c22a1667f974b523e",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-665804297f22ec8c22a1667f974b523e:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-665804297f22ec8c22a1667f974b523e:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3d570112e10ec05295d1290e03baaa92",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3d570112e10ec05295d1290e03baaa92:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3d570112e10ec05295d1290e03baaa92:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-76aec9f6e888198b9914117729dbc408",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-76aec9f6e888198b9914117729dbc408:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-76aec9f6e888198b9914117729dbc408:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3bbd0c5121a27f03e21bb375d49e4c7f",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3bbd0c5121a27f03e21bb375d49e4c7f:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3bbd0c5121a27f03e21bb375d49e4c7f:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5eafe1ddb3111131f56a0a587d0382e3",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5eafe1ddb3111131f56a0a587d0382e3:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5eafe1ddb3111131f56a0a587d0382e3:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1472244bb85369b49f4af540d10603cb",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1472244bb85369b49f4af540d10603cb:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1472244bb85369b49f4af540d10603cb:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fd4ce749c165cf3dcd343a6c49976f24",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fd4ce749c165cf3dcd343a6c49976f24:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fd4ce749c165cf3dcd343a6c49976f24:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2a8ae327f1f89b595efc9828baa94fad",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2a8ae327f1f89b595efc9828baa94fad:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2a8ae327f1f89b595efc9828baa94fad:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1c6a440b1c1157c4dad5413ee8970ee2",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1c6a440b1c1157c4dad5413ee8970ee2:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1c6a440b1c1157c4dad5413ee8970ee2:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fa3f603b9026013ec076d439624c9b10",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fa3f603b9026013ec076d439624c9b10:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fa3f603b9026013ec076d439624c9b10:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4e6c5d3288dc7313ad7eb3e3ebc82185",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4e6c5d3288dc7313ad7eb3e3ebc82185:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4e6c5d3288dc7313ad7eb3e3ebc82185:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ce4f20ea5acaf9042107cc3cc2e3c5af",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-ce4f20ea5acaf9042107cc3cc2e3c5af:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-ce4f20ea5acaf9042107cc3cc2e3c5af:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fb68fbc3e168ed7fcf5c2d65fbb1a27d",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fb68fbc3e168ed7fcf5c2d65fbb1a27d:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fb68fbc3e168ed7fcf5c2d65fbb1a27d:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f28bcfb3ba603e9a941552948b084c69",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f28bcfb3ba603e9a941552948b084c69:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f28bcfb3ba603e9a941552948b084c69:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-722ef05b5531b6924534f3560854b8bf",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-722ef05b5531b6924534f3560854b8bf:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-722ef05b5531b6924534f3560854b8bf:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3b76e74f243b5312f5a1eeb243b28ac4",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3b76e74f243b5312f5a1eeb243b28ac4:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3b76e74f243b5312f5a1eeb243b28ac4:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6950d4843f75391a199efe025f343024",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6950d4843f75391a199efe025f343024:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6950d4843f75391a199efe025f343024:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-07187b01cfef137162608426c95deed3",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-07187b01cfef137162608426c95deed3:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-07187b01cfef137162608426c95deed3:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1f758051f14d5a2cd27a1dd09feb51b9",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1f758051f14d5a2cd27a1dd09feb51b9:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1f758051f14d5a2cd27a1dd09feb51b9:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-256c554128ad3c54a5c983c0b070e5c7",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-256c554128ad3c54a5c983c0b070e5c7:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-256c554128ad3c54a5c983c0b070e5c7:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-0a231b3de898df901ce4999a199824da",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-0a231b3de898df901ce4999a199824da:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-0a231b3de898df901ce4999a199824da:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9ca6e889a946c36276a13002c9693738",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9ca6e889a946c36276a13002c9693738:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9ca6e889a946c36276a13002c9693738:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c9e2730fe708b7c398852cf50580b4f5",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c9e2730fe708b7c398852cf50580b4f5:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c9e2730fe708b7c398852cf50580b4f5:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a8aa05118e121d3e8866440e919e2760",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-a8aa05118e121d3e8866440e919e2760:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-a8aa05118e121d3e8866440e919e2760:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-bc675a9a6c5bc5a63996875e165c3ab8",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-bc675a9a6c5bc5a63996875e165c3ab8:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-bc675a9a6c5bc5a63996875e165c3ab8:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9ad0050808711b4acc26d988186e8d83",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9ad0050808711b4acc26d988186e8d83:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9ad0050808711b4acc26d988186e8d83:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d58d6712be72b1ddb15a19b34abbbc14",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d58d6712be72b1ddb15a19b34abbbc14:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d58d6712be72b1ddb15a19b34abbbc14:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6482ad3839b998bc6d9d93472adff215",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6482ad3839b998bc6d9d93472adff215:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6482ad3839b998bc6d9d93472adff215:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8de06e26b37655439909c69a3165ee5e",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8de06e26b37655439909c69a3165ee5e:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8de06e26b37655439909c69a3165ee5e:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-433516c8196519d6d22578c530bed305",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-433516c8196519d6d22578c530bed305:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-433516c8196519d6d22578c530bed305:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5dc749843fac66602ebf8bdcadb10a9e",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5dc749843fac66602ebf8bdcadb10a9e:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5dc749843fac66602ebf8bdcadb10a9e:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f05efc04b5b6df2bdc08d0afb4410b31",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f05efc04b5b6df2bdc08d0afb4410b31:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f05efc04b5b6df2bdc08d0afb4410b31:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-392ace5d95ebbf1da131fb10c1a8acc6",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-392ace5d95ebbf1da131fb10c1a8acc6:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-392ace5d95ebbf1da131fb10c1a8acc6:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9b6d9b165c793228221b5174e89ea125",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9b6d9b165c793228221b5174e89ea125:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9b6d9b165c793228221b5174e89ea125:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-013bdcb00d539843fb627f44bccf0143",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-013bdcb00d539843fb627f44bccf0143:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-013bdcb00d539843fb627f44bccf0143:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2d6483b480eae58a65f4fc2d4b93dd8e",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2d6483b480eae58a65f4fc2d4b93dd8e:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2d6483b480eae58a65f4fc2d4b93dd8e:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-93ca0d82ab251ecea874cc84efd16520",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-93ca0d82ab251ecea874cc84efd16520:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-93ca0d82ab251ecea874cc84efd16520:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-63957171acc31d06c60aff954b49cc1c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-63957171acc31d06c60aff954b49cc1c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-63957171acc31d06c60aff954b49cc1c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-cb78634734c6de4d2fe29d2be81c20af",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-cb78634734c6de4d2fe29d2be81c20af:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-cb78634734c6de4d2fe29d2be81c20af:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e1c00b372524d3454abc83af8fe01b93",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e1c00b372524d3454abc83af8fe01b93:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e1c00b372524d3454abc83af8fe01b93:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4b111d9885eb8ac806c6187bedb18436",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4b111d9885eb8ac806c6187bedb18436:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4b111d9885eb8ac806c6187bedb18436:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8f84f3be1cb891caf8162611477b413d",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8f84f3be1cb891caf8162611477b413d:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8f84f3be1cb891caf8162611477b413d:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5521c04338edf5cba0f7c61cf411b526",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5521c04338edf5cba0f7c61cf411b526:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5521c04338edf5cba0f7c61cf411b526:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6c865268f598ff17aa58cc32e30c8859",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6c865268f598ff17aa58cc32e30c8859:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6c865268f598ff17aa58cc32e30c8859:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9229d89ae2166324f31f8a7e91e655b7",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9229d89ae2166324f31f8a7e91e655b7:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9229d89ae2166324f31f8a7e91e655b7:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-887978268a3516f96537c720c4471a62",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-887978268a3516f96537c720c4471a62:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-887978268a3516f96537c720c4471a62:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-51d522e70e860a8ad1fcdefdbea85d42",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-51d522e70e860a8ad1fcdefdbea85d42:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-51d522e70e860a8ad1fcdefdbea85d42:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-599cfad071c5cabda0a2dc0c67d4c991",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-599cfad071c5cabda0a2dc0c67d4c991:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-599cfad071c5cabda0a2dc0c67d4c991:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d1df7d1f4862b67eacf248ab9ae56326",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d1df7d1f4862b67eacf248ab9ae56326:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d1df7d1f4862b67eacf248ab9ae56326:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-ce84cc9384499b8fde422cf67265549d",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-ce84cc9384499b8fde422cf67265549d:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-ce84cc9384499b8fde422cf67265549d:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b11da06b897b3cc3ba8cf0ddacf488eb",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b11da06b897b3cc3ba8cf0ddacf488eb:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b11da06b897b3cc3ba8cf0ddacf488eb:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-129c25b162e5c41552323ec56fb94d95",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-129c25b162e5c41552323ec56fb94d95:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-129c25b162e5c41552323ec56fb94d95:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-09b0907db06ea63303ae69dc203ae3f1",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-09b0907db06ea63303ae69dc203ae3f1:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-09b0907db06ea63303ae69dc203ae3f1:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f5d29d825113650bdd77c038a7b958fd",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f5d29d825113650bdd77c038a7b958fd:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f5d29d825113650bdd77c038a7b958fd:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c1f8066b57c5564340ba09028506841a",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c1f8066b57c5564340ba09028506841a:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c1f8066b57c5564340ba09028506841a:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-02aac325e24cc6dbcb0d28fcb3659e73",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-02aac325e24cc6dbcb0d28fcb3659e73:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-02aac325e24cc6dbcb0d28fcb3659e73:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4a0ebc2bc7fca6a4327ac3f5b00056c7",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4a0ebc2bc7fca6a4327ac3f5b00056c7:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4a0ebc2bc7fca6a4327ac3f5b00056c7:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-52eb1b667ef09613a22a48e773bf959d",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-52eb1b667ef09613a22a48e773bf959d:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-52eb1b667ef09613a22a48e773bf959d:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3e4ce26b916a45657dcdf842cbe9d275",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3e4ce26b916a45657dcdf842cbe9d275:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3e4ce26b916a45657dcdf842cbe9d275:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-eb6e50a080db892fd686a688969110bf",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-eb6e50a080db892fd686a688969110bf:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-eb6e50a080db892fd686a688969110bf:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-295f6d65ba36b1c6e50fa7297f89d1af",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-295f6d65ba36b1c6e50fa7297f89d1af:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-295f6d65ba36b1c6e50fa7297f89d1af:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-57f2dbbf0d47f01ceeb8357c9249321a",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-57f2dbbf0d47f01ceeb8357c9249321a:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-57f2dbbf0d47f01ceeb8357c9249321a:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-da5f5e3b5605b5072df91e8e807ab7af",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-da5f5e3b5605b5072df91e8e807ab7af:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-da5f5e3b5605b5072df91e8e807ab7af:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6d4b16afae72647fb930416ff3a54efe",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6d4b16afae72647fb930416ff3a54efe:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6d4b16afae72647fb930416ff3a54efe:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b0582644a2372b443eea2a68c0d02aae",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b0582644a2372b443eea2a68c0d02aae:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b0582644a2372b443eea2a68c0d02aae:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-018c122b14ac3cab1de3b40ca046f310",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-018c122b14ac3cab1de3b40ca046f310:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-018c122b14ac3cab1de3b40ca046f310:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1b90b42f6db51bfd1736bbee95469a9c",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1b90b42f6db51bfd1736bbee95469a9c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1b90b42f6db51bfd1736bbee95469a9c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8946208b227291e4d27d7d08182f2856",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8946208b227291e4d27d7d08182f2856:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8946208b227291e4d27d7d08182f2856:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-808767f603d2469b8c75af3e0c58669b",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-808767f603d2469b8c75af3e0c58669b:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-808767f603d2469b8c75af3e0c58669b:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-79b6a29e0d4c52eef03ac7fbe2a99c68",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-79b6a29e0d4c52eef03ac7fbe2a99c68:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-79b6a29e0d4c52eef03ac7fbe2a99c68:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-13521be97bfad198c0c1487d16b398c1",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-13521be97bfad198c0c1487d16b398c1:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-13521be97bfad198c0c1487d16b398c1:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fba3863b960412aac31baf9641428014",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fba3863b960412aac31baf9641428014:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fba3863b960412aac31baf9641428014:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-86532fe4fdb432ea486957e2b4ee8fc9",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-86532fe4fdb432ea486957e2b4ee8fc9:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-86532fe4fdb432ea486957e2b4ee8fc9:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-62eff3eae73454949a4d270039651d8e",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-62eff3eae73454949a4d270039651d8e:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-62eff3eae73454949a4d270039651d8e:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-daacc4a15c004e100f3471a0e34276a6",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-daacc4a15c004e100f3471a0e34276a6:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-daacc4a15c004e100f3471a0e34276a6:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c8ec7a6b41f1a16443bd3d55ad809191",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c8ec7a6b41f1a16443bd3d55ad809191:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c8ec7a6b41f1a16443bd3d55ad809191:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-066959ee3132fefe97027cb636735481",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-066959ee3132fefe97027cb636735481:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-066959ee3132fefe97027cb636735481:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5c04a07bfc6b65a579190cba5d4c8c8a",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5c04a07bfc6b65a579190cba5d4c8c8a:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5c04a07bfc6b65a579190cba5d4c8c8a:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-760d724654ed1bab5e7b4fb15bc6a232",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-760d724654ed1bab5e7b4fb15bc6a232:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-760d724654ed1bab5e7b4fb15bc6a232:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-48ec1a4d8d6f0d84f8e533741f59d823",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-48ec1a4d8d6f0d84f8e533741f59d823:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-48ec1a4d8d6f0d84f8e533741f59d823:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-dab70732d403c28785f32ab12f995ea8",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-dab70732d403c28785f32ab12f995ea8:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-dab70732d403c28785f32ab12f995ea8:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5b34ca443ee06c199d5a3ea0fdc19693",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5b34ca443ee06c199d5a3ea0fdc19693:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5b34ca443ee06c199d5a3ea0fdc19693:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d53afcf6b4ca064ffe03e2a0a299ad85",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d53afcf6b4ca064ffe03e2a0a299ad85:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d53afcf6b4ca064ffe03e2a0a299ad85:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-480dda89c7a4b1081ad3b42941917fa9",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-480dda89c7a4b1081ad3b42941917fa9:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-480dda89c7a4b1081ad3b42941917fa9:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-eef11423984f5adbae13b7fe74817475",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-eef11423984f5adbae13b7fe74817475:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-eef11423984f5adbae13b7fe74817475:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-925024d65d225d6d0b48e5e815318913",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-925024d65d225d6d0b48e5e815318913:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-925024d65d225d6d0b48e5e815318913:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8f375a6a02f0b28cceb053a111df7a25",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8f375a6a02f0b28cceb053a111df7a25:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8f375a6a02f0b28cceb053a111df7a25:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-61a12055eb75245731bcc8b2bceb5d54",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-61a12055eb75245731bcc8b2bceb5d54:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-61a12055eb75245731bcc8b2bceb5d54:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-168790c204accdd8ebc80b71d1e9c998",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-168790c204accdd8ebc80b71d1e9c998:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-168790c204accdd8ebc80b71d1e9c998:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1d652e181b2e878faadea2a22475c967",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1d652e181b2e878faadea2a22475c967:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1d652e181b2e878faadea2a22475c967:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1afe2d86cb0ae59dc1fcf29407ed2300",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1afe2d86cb0ae59dc1fcf29407ed2300:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1afe2d86cb0ae59dc1fcf29407ed2300:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-79f6f3f3a06ce7429a021e10cf7f16d3",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-79f6f3f3a06ce7429a021e10cf7f16d3:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-79f6f3f3a06ce7429a021e10cf7f16d3:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-d21e03fcd180e8a2060ef69f44b0caad",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d21e03fcd180e8a2060ef69f44b0caad:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-d21e03fcd180e8a2060ef69f44b0caad:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5d1fff969f082ab1c9ed74c8a9aa164c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5d1fff969f082ab1c9ed74c8a9aa164c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5d1fff969f082ab1c9ed74c8a9aa164c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-bd59c55f0211c67448365a5827e03ac6",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-bd59c55f0211c67448365a5827e03ac6:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-bd59c55f0211c67448365a5827e03ac6:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-6aeb0f715e97002ceb2135be001f23b9",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6aeb0f715e97002ceb2135be001f23b9:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-6aeb0f715e97002ceb2135be001f23b9:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-56c240e6fe010872a6d837ec185002dc",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-56c240e6fe010872a6d837ec185002dc:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-56c240e6fe010872a6d837ec185002dc:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-cec95481cc6aa2e1e28e227c24c00a89",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-cec95481cc6aa2e1e28e227c24c00a89:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-cec95481cc6aa2e1e28e227c24c00a89:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5e4c1dfd35a6c292db10fbb9c1a978ce",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5e4c1dfd35a6c292db10fbb9c1a978ce:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5e4c1dfd35a6c292db10fbb9c1a978ce:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c980f3c19e2d4a18e5d6da9fc11d5896",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c980f3c19e2d4a18e5d6da9fc11d5896:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c980f3c19e2d4a18e5d6da9fc11d5896:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-f32dc88aadd0a482b23b0329852731a2",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f32dc88aadd0a482b23b0329852731a2:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-f32dc88aadd0a482b23b0329852731a2:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-0b23d0cdd2ed135dffdc4e90db3e5173",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-0b23d0cdd2ed135dffdc4e90db3e5173:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-0b23d0cdd2ed135dffdc4e90db3e5173:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-56267a4bacd1aa68eb5b99ab894dec16",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-56267a4bacd1aa68eb5b99ab894dec16:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-56267a4bacd1aa68eb5b99ab894dec16:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-4fdbe285c94d32c6ed1e90e97200ea6c",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4fdbe285c94d32c6ed1e90e97200ea6c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-4fdbe285c94d32c6ed1e90e97200ea6c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5e52d88ca8d4e7644360b637f011b1fa",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5e52d88ca8d4e7644360b637f011b1fa:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5e52d88ca8d4e7644360b637f011b1fa:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-2ac56f9ee90e2e9991040391f1fc5f25",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2ac56f9ee90e2e9991040391f1fc5f25:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-2ac56f9ee90e2e9991040391f1fc5f25:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-fea9f0d06b2a9051b7de15213fb2c985",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fea9f0d06b2a9051b7de15213fb2c985:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-fea9f0d06b2a9051b7de15213fb2c985:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-5cf54acb1285f90ddbf66b328dc7891c",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5cf54acb1285f90ddbf66b328dc7891c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-5cf54acb1285f90ddbf66b328dc7891c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-339502f014331fafd53a4127ca008a9a",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-339502f014331fafd53a4127ca008a9a:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-339502f014331fafd53a4127ca008a9a:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-a0b3c197ddd19d2978e1ce20787f64ea",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-a0b3c197ddd19d2978e1ce20787f64ea:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-a0b3c197ddd19d2978e1ce20787f64ea:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-1d433dac0562300ef061ff5722c143ff",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1d433dac0562300ef061ff5722c143ff:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-1d433dac0562300ef061ff5722c143ff:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e1fb4d324fac58e3dda70133dce16135",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e1fb4d324fac58e3dda70133dce16135:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e1fb4d324fac58e3dda70133dce16135:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-b9ac7f34c1d49944774d2ffe80f20a27",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b9ac7f34c1d49944774d2ffe80f20a27:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-b9ac7f34c1d49944774d2ffe80f20a27:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-9761e75d2781f35522f13729b1588951",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9761e75d2781f35522f13729b1588951:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-9761e75d2781f35522f13729b1588951:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-c25979f6bb7eae734d0cd5074bc01d2b",
+      "category": "COMPANY_ANNOUNCEMENT",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c25979f6bb7eae734d0cd5074bc01d2b:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-c25979f6bb7eae734d0cd5074bc01d2b:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-3c790710e9ca005cc07f6ed98ff3ce22",
+      "category": "OWNERSHIP_FUNDING",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3c790710e9ca005cc07f6ed98ff3ce22:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-3c790710e9ca005cc07f6ed98ff3ce22:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-7acf50402b3a5cbf4e4537ad48b41305",
+      "category": "SAFETY_WITHDRAWAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-7acf50402b3a5cbf4e4537ad48b41305:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-7acf50402b3a5cbf4e4537ad48b41305:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-192e88056dd8899f61ab93c8b19111aa",
+      "category": "CONTRADICTORY_SOURCE",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-192e88056dd8899f61ab93c8b19111aa:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-192e88056dd8899f61ab93c8b19111aa:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-005f720e913f7ff0659f4fb1b4141d2c",
+      "category": "REGULATORY_RECORD",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-005f720e913f7ff0659f4fb1b4141d2c:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-005f720e913f7ff0659f4fb1b4141d2c:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-8513b29429ec4465b37585b1b57288f6",
+      "category": "CLINICAL_TRIAL",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8513b29429ec4465b37585b1b57288f6:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-8513b29429ec4465b37585b1b57288f6:annotation",
+      "blinded": true
+    },
+    {
+      "fixture_id": "FIX-e790a73d4aa916823fb579eab87b462b",
+      "category": "PUBLICATION",
+      "capture_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e790a73d4aa916823fb579eab87b462b:capture",
+      "annotation_stub": "corpus:CORPUS_PUBLIC_SCALE.json#FIX-e790a73d4aa916823fb579eab87b462b:annotation",
+      "blinded": true
+    }
+  ],
+  "boundary": "Public/synthetic redistribution-safe annotated extraction corpus for offline evaluation only. Capture proves retrieval of the fixture text; extraction proposals require human disposition and do not establish substantive truth. No private neural data or protected capture bodies."
+}
