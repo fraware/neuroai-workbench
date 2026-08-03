@@ -37,7 +37,7 @@ Each run directory should contain, at minimum:
 
 Example public scaffolding lives under `examples/shadow_refresh/`. Synthetic fixtures under `tests/fixtures/shadow_refresh/` support schema and metrics stub tests only.
 
-## Human approval requirement
+## Development authorization boundary
 
 A live shadow refresh over 20–30 real sources requires explicit human approval before:
 
@@ -46,7 +46,7 @@ A live shadow refresh over 20–30 real sources requires explicit human approval
 - exporting draft publication products outside the protected workspace;
 - comparing reopening recommendations against external expert judgment at scale.
 
-Software scaffolding can validate records and compute rehearsal metrics. It cannot substitute for those approvals.
+Core software may execute without reviewer profiles or human governance. Protected-data access and explicit quarantine handoff consent remain operational custody controls. Human governance and release authority are deferred to issue #101.
 
 ## Cohort definition
 
@@ -147,7 +147,7 @@ Do not commit protected capture bodies, quarantine trees, or ops ZIP extracts in
 
 ## Wave 2 closure command (ops-gated)
 
-Software/ops steps that do not forge dual-human review completions:
+Core software/ops preparation without activating the deferred governance layer:
 
 ```bash
 export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
@@ -158,16 +158,22 @@ python scripts/close_shadow_refresh_43.py --sample-size 5
 
 This writes evaluation-only artifacts under `runs/shadow-refresh-YYYYMM-live/wave2-closure/` (handoff of pre-approved quarantine records only, first-capture candidates, dual-review scaffolding, offline entity/extraction dispositions, `go-no-go-metrics.json`, formal disposition). Public digests/metrics may land in `examples/shadow_refresh/SHADOW_REFRESH_WAVE2_PUBLIC_SUMMARY_v202608.json`. Capture bodies stay in the ops workspace.
 
-## Residual blockers for closing #43
+## Core completion criteria for #43
 
-Observed live cohort collection and Wave 2 software scaffolding are evaluation evidence only. Closing [#43](https://github.com/fraware/neuroai-workbench/issues/43) still requires:
+Issue #43 now tracks the non-canonical engineering cycle only. Human reviewers, owner sign-off, and release authority are deferred to [#101](https://github.com/fraware/neuroai-workbench/issues/101) and do not block core development.
 
-- dual human review sample opinions recorded against observed captures/candidates (scaffolding exists; completions must be human);
-- formal `GO` only after dual review (software records `WITHHELD` / `NO_GO` until then);
-- protected archive and network access approvals where applicable (#44);
-- human decisions on unresolved retrieval outcomes (for example ACCESS_DENIAL / URL replacement) without converting them into `FAIL` findings.
+Core closure requires:
 
-Independent security, accessibility, and methodological review (#10) is an optional recommended follow-up for institutional-pilot readiness language. It is not a release blocker for successor `AUTHORIZED` or `PUBLISHED` gates.
+- typed outcomes for every attempted source, with retrieval failures kept distinct from findings;
+- approved evaluation-only handoff for the selected capture sample;
+- snapshot comparison and candidate generation;
+- development-only dispositions sufficient to exercise deterministic downstream mechanics;
+- non-canonical delta compilation and deterministic application;
+- reopening analysis with zero assessment mutation;
+- full-depth publication generation and cross-format reconciliation;
+- end-to-end provenance, manifests, hashes, and protected-data boundary verification.
+
+Closing #43 does not authorize a canonical successor. All development successors remain non-canonical until #101 is completed.
 
 ## Wave 3 — Non-canonical full evaluation cycle
 
@@ -175,7 +181,7 @@ Extends quarantine-only live collection into a scripted evaluation operating cyc
 
 ```text
 plan → live collect → quarantine → per-record APPROVED_FOR_HANDOFF → --approve-handoff consent → record_snapshot
-  → compare_snapshots → create_change_candidate → adjudicate
+  → compare_snapshots → create_change_candidate → development disposition
   → build_refresh_candidate → compile_adjudicated_delta → apply_delta (candidate successor)
   → reopening analysis → depth=full publications
 ```
@@ -205,7 +211,8 @@ Requires both env gates plus explicit `--approve-handoff`. That flag consents on
 ### Boundaries retained
 
 - Per-source outcome taxonomy includes success, 304, changed / no-change, redirect failure, access denial, robots/terms, JS-render, content-type, timeout, withdrawal, and URL replacement needed — typed outcomes only, never automatic `FAIL` findings.
-- Adjudication scaffolding does not forge dual human review or formal `GO`.
+- Development dispositions exercise deterministic mechanics only and carry no substantive or release authority.
+- Human governance and canonical release authorization are deferred to #101.
 - Candidate successor is not an `AUTHORIZED` / `PUBLISHED` observatory release (#41 remains separate).
 - Reopening analysis does not mutate assessments.
 - CI stays network-free; live path is ops-gated only.
