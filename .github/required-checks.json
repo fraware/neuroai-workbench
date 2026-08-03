@@ -111,6 +111,17 @@
       "jobs": [
         {"id": "build-release", "name": "build-release", "required_contexts": []}
       ]
+    },
+    {
+      "path": ".github/workflows/bind-governance-scope-events.yml",
+      "name": "Bind governance scope events",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  pull_request:"],
+      "permissions": {"contents": "write"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "bind", "name": "bind", "required_contexts": []}
+      ]
     }
   ],
   "global_forbidden_markers": [
