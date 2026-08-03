@@ -1,0 +1,281 @@
+name: Apply core-governance separation once
+
+on:
+  push:
+    branches:
+      - agent/defer-governance-core-cycle
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/defer-governance-core-cycle
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install pinned environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Apply constrained refactor
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          def read(path: str) -> str:
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path: str, value: str) -> None:
+              Path(path).write_text(value, encoding='utf-8')
+
+          def replace_exact(text: str, old: str, new: str, *, expected: int = 1, label: str) -> str:
+              observed = text.count(old)
+              if observed != expected:
+                  raise SystemExit(f'{label}: expected {expected} occurrences, observed {observed}')
+              return text.replace(old, new)
+
+          cycle_path = 'src/neuroai_workbench/shadow_refresh/cycle.py'
+          cycle = read(cycle_path)
+          cycle = replace_exact(
+              cycle,
+              'candidate → adjudicate → refresh → delta → apply → reopening → publications.',
+              'candidate → development disposition → refresh → delta → apply → reopening → publications.',
+              label='cycle doc sequence',
+          )
+          cycle = replace_exact(cycle, '    "adjudicate",\n', '    "development_disposition",\n', label='cycle stages')
+          old_class = '''@dataclass(frozen=True)\nclass CycleAdjudicationSpec:\n    """Explicit human-supplied adjudication for evaluation scaffolding.\n\n    Reviewer IDs remain claimed local workflow identities. Specs do not forge\n    dual-review completion or GO authorization.\n    """\n\n    decision: str = "ACCEPT"\n    change_class: str = "FIELD_UPDATE"\n    materiality: str = "NON_MATERIAL"\n    reopening_effect: str = "NO_EFFECT"\n    rationale: str = "Evaluation-cycle scaffolding adjudication for non-canonical pipeline proof only."\n'''
+          new_class = '''@dataclass(frozen=True)\nclass CycleDevelopmentDispositionSpec:\n    """Non-substantive disposition used to exercise the core engineering pipeline.\n\n    The record drives deterministic delta, reopening, and publication mechanics only.\n    It carries no reviewer identity, domain authority, release authority, or canonical\n    effect. Human governance is deferred to issue #101 after core completion.\n    """\n\n    decision: str = "ACCEPT"\n    change_class: str = "FIELD_UPDATE"\n    materiality: str = "NON_MATERIAL"\n    reopening_effect: str = "NO_EFFECT"\n    rationale: str = (\n        "Development-only candidate disposition for non-canonical pipeline verification; "\n        "substantive governance is deferred to issue #101."\n    )\n'''
+          cycle = replace_exact(cycle, old_class, new_class, label='development disposition class')
+          cycle = replace_exact(
+              cycle,
+              '    adjudication: CycleAdjudicationSpec | None = None,\n',
+              '    development_disposition: CycleDevelopmentDispositionSpec | None = None,\n',
+              expected=2,
+              label='cycle function parameter',
+          )
+          cycle = replace_exact(
+              cycle,
+              '    adj = adjudication or CycleAdjudicationSpec()\n',
+              '    disposition = development_disposition or CycleDevelopmentDispositionSpec()\n',
+              expected=2,
+              label='cycle disposition initialization',
+          )
+          for field in ('decision', 'rationale', 'change_class', 'materiality', 'reopening_effect'):
+              cycle = replace_exact(
+                  cycle,
+                  f'                adj.{field},\n' if field in {'decision'} else f'                {field}=adj.{field},\n',
+                  f'                disposition.{field},\n' if field in {'decision'} else f'                {field}=disposition.{field},\n',
+                  expected=2,
+                  label=f'cycle disposition field {field}',
+              )
+          cycle = replace_exact(
+              cycle,
+              'substantive classification pending human review.',
+              'substantive authority deferred; development disposition pending.',
+              label='candidate summary',
+          )
+          cycle = replace_exact(
+              cycle,
+              '    stage_results["adjudicate"] = {\n        "adjudications": [\n',
+              '    stage_results["development_disposition"] = {\n        "records": [\n',
+              expected=2,
+              label='stage result key',
+          )
+          cycle = replace_exact(
+              cycle,
+              '        "dual_review_forged": False,\n    }\n',
+              '        "scope": "DEVELOPMENT_PIPELINE_ONLY",\n        "governance_layer_applied": False,\n        "substantive_authority": False,\n    }\n',
+              expected=2,
+              label='stage governance fields',
+          )
+          cycle = replace_exact(
+              cycle,
+              '                for item in stage_results.get("adjudicate", {}).get("adjudications", [])\n',
+              '                for item in stage_results.get("development_disposition", {}).get("records", [])\n',
+              label='accepted count source',
+          )
+          old_stats = '''        "review": {\n            "adjudications": stage_results.get("adjudicate", {}).get("count", 0),\n            "dual_review_forged": False,\n            "note": "Claimed local workflow identities only; dual human review remains open unless recorded elsewhere.",\n        },\n'''
+          new_stats = '''        "development_disposition": {\n            "records": stage_results.get("development_disposition", {}).get("count", 0),\n            "scope": "DEVELOPMENT_PIPELINE_ONLY",\n            "governance_layer_applied": False,\n            "substantive_authority": False,\n            "note": (\n                "Development dispositions exercise pipeline mechanics only; "\n                "human governance and release authority are deferred to issue #101."\n            ),\n        },\n'''
+          cycle = replace_exact(cycle, old_stats, new_stats, label='cycle stats')
+          cycle = replace_exact(
+              cycle,
+              '        "formal_go_authorized": False,\n',
+              '        "core_engineering_complete": bool(reconciliation["reconciled"]),\n        "governance_layer_applied": False,\n        "governance_issue": "#101",\n        "release_authority_state": "DEFERRED",\n',
+              label='package governance fields',
+          )
+          cycle = replace_exact(
+              cycle,
+              '            "Adjudication scaffolding does not forge dual human review or GO disposition.",\n',
+              '            "Development dispositions exercise mechanics only and carry no substantive authority.",\n            "Human governance and release authorization are deferred to issue #101.",\n',
+              label='withheld claim',
+          )
+          if 'CycleAdjudicationSpec' in cycle or 'dual_review_forged' in cycle or 'formal_go_authorized' in cycle:
+              raise SystemExit('cycle.py retains removed active governance vocabulary')
+          write(cycle_path, cycle)
+
+          script_path = 'scripts/run_evaluation_cycle.py'
+          script = read(script_path)
+          script = replace_exact(
+              script,
+              'Offline (default): fixture snapshot pairs → compare → candidate → adjudicate →\n',
+              'Offline (default): fixture snapshot pairs → compare → candidate → development disposition →\n',
+              label='script doc sequence',
+          )
+          script = replace_exact(
+              script,
+              'Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Does not forge dual review or GO.\n',
+              'Artifacts remain SHADOW_EVALUATION_NOT_CANONICAL. Governance is deferred to issue #101.\n',
+              label='script governance statement',
+          )
+          script = replace_exact(script, '    CycleAdjudicationSpec,\n', '    CycleDevelopmentDispositionSpec,\n', label='script import')
+          script = replace_exact(
+              script,
+              'human adjudication controls all substantive effects.',
+              'substantive authority is deferred to the final governance overlay.',
+              label='offline registry boundary',
+          )
+          script = replace_exact(
+              script,
+              '            adjudication=CycleAdjudicationSpec(),\n',
+              '            development_disposition=CycleDevelopmentDispositionSpec(),\n',
+              expected=2,
+              label='script disposition arguments',
+          )
+          script = replace_exact(
+              script,
+              '            "formal_go_authorized": False,\n',
+              '            "core_engineering_complete": package.get("core_engineering_complete", False),\n            "governance_layer_applied": False,\n            "governance_issue": "#101",\n            "release_authority_state": "DEFERRED",\n',
+              label='public summary governance fields',
+          )
+          if 'CycleAdjudicationSpec' in script or 'formal_go_authorized' in script or 'dual review' in script.lower():
+              raise SystemExit('run_evaluation_cycle.py retains active reviewer governance vocabulary')
+          write(script_path, script)
+
+          test_path = 'tests/unit/test_shadow_evaluation_cycle.py'
+          test = read(test_path)
+          test = replace_exact(test, '    CycleAdjudicationSpec,\n', '    CycleDevelopmentDispositionSpec,\n', label='test import')
+          test = replace_exact(
+              test,
+              'Official pages establish representations only; human adjudication controls all substantive effects.',
+              'Official pages establish representations only; substantive authority is deferred to the final governance overlay.',
+              label='test boundary',
+          )
+          test = replace_exact(
+              test,
+              '        adjudication=CycleAdjudicationSpec(\n',
+              '        development_disposition=CycleDevelopmentDispositionSpec(\n',
+              expected=2,
+              label='test disposition arguments',
+          )
+          test = replace_exact(
+              test,
+              '            rationale="Offline fixture adjudication for pipeline proof only.",\n',
+              '            rationale="Offline development disposition for pipeline proof only.",\n',
+              label='offline rationale',
+          )
+          test = replace_exact(
+              test,
+              '    assert package["formal_go_authorized"] is False\n',
+              '    assert package["core_engineering_complete"] is True\n    assert package["governance_layer_applied"] is False\n    assert package["governance_issue"] == "#101"\n    assert package["release_authority_state"] == "DEFERRED"\n',
+              label='package governance assertions',
+          )
+          test = replace_exact(
+              test,
+              '    assert package["stats"]["review"]["dual_review_forged"] is False\n',
+              '    assert package["stats"]["development_disposition"]["governance_layer_applied"] is False\n    assert package["stage_results"]["development_disposition"]["scope"] == "DEVELOPMENT_PIPELINE_ONLY"\n    assert not (workspace / "observatory" / "review_queue").exists()\n',
+              label='development assertions',
+          )
+          test = replace_exact(
+              test,
+              '            rationale="Injected-transport live path proof; not dual review.",\n',
+              '            rationale="Injected-transport live development path proof.",\n',
+              label='live rationale',
+          )
+          if 'CycleAdjudicationSpec' in test or 'formal_go_authorized' in test or 'dual_review_forged' in test:
+              raise SystemExit('test retains old active governance vocabulary')
+          write(test_path, test)
+
+          close_path = 'scripts/close_shadow_refresh_43.py'
+          close_script = '''#!/usr/bin/env python3\n"""Prepare issue #43 core shadow-refresh artifacts without activating governance.\n\nRequires NEUROAI_OPS_WORKSPACE. Live retries additionally require\nNEUROAI_LIVE_COLLECTION=1. Writes evaluation artifacts under the protected ops\nrun root. Public outputs contain digests and counts only.\n\nThe script does not create reviewer profiles, review opinions, owner approvals,\nor release-authority records. Human governance is deferred to issue #101.\n"""\n\nfrom __future__ import annotations\n\nimport argparse\nimport json\nimport os\nimport sys\nfrom pathlib import Path\nfrom typing import Any\n\nfrom neuroai_workbench.monitoring import load_source_registry\nfrom neuroai_workbench.shadow_refresh import (\n    LIVE_COLLECTION_ENV,\n    SHADOW_EVALUATION_STATUS,\n    SHADOW_REFRESH_BOUNDARY,\n)\nfrom neuroai_workbench.shadow_refresh.closure import (\n    DEFAULT_FAILED_SOURCE_IDS,\n    EVAL_ACTOR,\n    classify_retrieval_failure,\n    create_first_capture_candidates,\n    handoff_quarantine_sample_to_evaluation,\n    list_quarantine_successes,\n    publisher_mentions_for_sources,\n    retry_failed_sources,\n    run_offline_entity_sample,\n    run_offline_extraction_sample,\n)\nfrom neuroai_workbench.util import atomic_write_json, load_json, sha256_file, utc_now\n\nOPS_ENV = "NEUROAI_OPS_WORKSPACE"\nGOVERNANCE_ISSUE = "#101"\n\n\ndef _load_prior_live(run_root: Path) -> dict[str, Any]:\n    path = run_root / "live_collection.json"\n    if not path.is_file():\n        raise FileNotFoundError(f"Missing prior live collection package: {path}")\n    return load_json(path)\n\n\ndef _prior_typed_outcomes(run_root: Path, quarantine_root: Path) -> tuple[list[dict[str, Any]], bool]:\n    failure_dirs = [run_root / "wave2-closure" / "retry-quarantine" / "failures", quarantine_root / "failures"]\n    for failures_dir in failure_dirs:\n        if not failures_dir.is_dir():\n            continue\n        outcomes: list[dict[str, Any]] = []\n        for path in sorted(failures_dir.glob("*.json")):\n            record = load_json(path)\n            if isinstance(record, dict) and record.get("source_id") in set(DEFAULT_FAILED_SOURCE_IDS):\n                outcomes.append(classify_retrieval_failure(record))\n        if outcomes:\n            return outcomes, "retry-quarantine" in str(failures_dir)\n    return [], False\n\n\ndef main(argv: list[str] | None = None) -> int:\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument("--ops-workspace", type=Path, default=None)\n    parser.add_argument("--workbench-root", type=Path, default=Path(__file__).resolve().parents[1])\n    parser.add_argument("--run-root", type=Path, default=None)\n    parser.add_argument("--sample-size", type=int, default=5)\n    parser.add_argument("--skip-live-retry", action="store_true")\n    parser.add_argument("--force-live-retry", action="store_true")\n    args = parser.parse_args(argv)\n\n    ops = args.ops_workspace or Path(os.environ.get(OPS_ENV, ""))\n    if not ops.is_dir():\n        sys.stderr.write(f"ERROR {OPS_ENV} must point at Operations Starter extract\\n")\n        return 2\n\n    registry_path = ops / "01_CONFIG" / "source_monitor_registry_v1.5.json"\n    if not registry_path.is_file():\n        sys.stderr.write(f"ERROR missing registry at {registry_path}\\n")\n        return 2\n\n    run_root = args.run_root or (ops / "runs" / "shadow-refresh-202608-live")\n    if not run_root.is_dir():\n        sys.stderr.write(f"ERROR missing live run root {run_root}\\n")\n        return 2\n\n    quarantine_root = run_root / "captures" / "quarantine"\n    core_root = run_root / "core-closure"\n    core_root.mkdir(parents=True, exist_ok=True)\n    evaluation_workspace = core_root / "evaluation_workspace"\n\n    registry = load_source_registry(registry_path)\n    prior_live = _load_prior_live(run_root)\n    run_id = str(prior_live.get("collection_run", {}).get("run_id") or "SHADOW-RUN-202608-CORE")\n\n    live_enabled = os.environ.get(LIVE_COLLECTION_ENV, "").strip() == "1"\n    if args.force_live_retry and not live_enabled:\n        sys.stderr.write(f"ERROR --force-live-retry requires {LIVE_COLLECTION_ENV}=1\\n")\n        return 2\n\n    typed_retry_outcomes: list[dict[str, Any]] = []\n    live_retry_executed = False\n    retry_root = core_root / "retry-quarantine"\n    if live_enabled and not args.skip_live_retry:\n        package = retry_failed_sources(\n            registry=registry,\n            registry_sha256=sha256_file(registry_path),\n            quarantine_root=retry_root,\n            source_ids=list(DEFAULT_FAILED_SOURCE_IDS),\n        )\n        typed_retry_outcomes = list(package.get("typed_outcomes", []))\n        live_retry_executed = True\n    else:\n        typed_retry_outcomes, live_retry_executed = _prior_typed_outcomes(run_root, quarantine_root)\n\n    observed = {str(item.get("source_id")) for item in typed_retry_outcomes}\n    for source_id in DEFAULT_FAILED_SOURCE_IDS:\n        if source_id not in observed:\n            typed_retry_outcomes.append({\n                "source_id": source_id,\n                "outcome_type": "RETRY_NOT_EXECUTED_LIVE_GATE_OFF",\n                "failure_class": "HTTP_ERROR",\n                "finding_effect": "NONE",\n                "status": SHADOW_EVALUATION_STATUS,\n                "boundary": SHADOW_REFRESH_BOUNDARY,\n            })\n    atomic_write_json(core_root / "retrieval_outcomes.json", {\n        "run_id": run_id,\n        "live_retry_executed": live_retry_executed,\n        "typed_outcomes": typed_retry_outcomes,\n        "finding_mutation_performed": False,\n        "status": SHADOW_EVALUATION_STATUS,\n        "boundary": SHADOW_REFRESH_BOUNDARY,\n    })\n\n    successes = list_quarantine_successes(quarantine_root)\n    approved = [record for record in successes if record.get("approval_state") == "APPROVED_FOR_HANDOFF"]\n    if successes and not approved:\n        sys.stderr.write("ERROR successful captures exist but none are APPROVED_FOR_HANDOFF\\n")\n        return 2\n\n    handoff = handoff_quarantine_sample_to_evaluation(\n        quarantine_root=quarantine_root,\n        evaluation_workspace=evaluation_workspace,\n        registry_path=registry_path,\n        sample_size=args.sample_size,\n        approved_by=EVAL_ACTOR,\n    )\n    atomic_write_json(core_root / "evaluation_handoff.json", handoff)\n\n    candidates = create_first_capture_candidates(\n        evaluation_workspace=evaluation_workspace,\n        handoffs=handoff["handoffs"],\n        actor=EVAL_ACTOR,\n    )\n    atomic_write_json(core_root / "change_candidates.json", candidates)\n\n    source_ids = [str(item["source_id"]) for item in handoff["handoffs"]]\n    entity = run_offline_entity_sample(\n        evaluation_workspace=evaluation_workspace,\n        sample_mentions=publisher_mentions_for_sources(registry, source_ids),\n        actor=EVAL_ACTOR,\n    )\n    atomic_write_json(core_root / "entity_disposition_sample.json", entity)\n\n    extraction = run_offline_extraction_sample(\n        evaluation_workspace=evaluation_workspace,\n        quarantine_root=quarantine_root,\n        handoffs=handoff["handoffs"],\n        actor=EVAL_ACTOR,\n    )\n    atomic_write_json(core_root / "extraction_disposition_sample.json", extraction)\n\n    live_counts = dict(prior_live.get("collection_run", {}).get("counts", {}))\n    core_complete = (\n        int(live_counts.get("total", 0)) == 25\n        and len(typed_retry_outcomes) == len(DEFAULT_FAILED_SOURCE_IDS)\n        and len(handoff["handoffs"]) == args.sample_size\n        and len(candidates["candidates"]) == args.sample_size\n    )\n    report = {\n        "metadata": {\n            "title": "Issue #43 core shadow-refresh preparation report",\n            "run_id": run_id,\n            "generated_at": utc_now(),\n            "status": SHADOW_EVALUATION_STATUS,\n        },\n        "collection_counts": live_counts,\n        "live_retry_executed": live_retry_executed,\n        "typed_retry_outcomes": typed_retry_outcomes,\n        "evaluation_handoffs": len(handoff["handoffs"]),\n        "change_candidates": len(candidates["candidates"]),\n        "entity_dispositions": int(entity.get("disposition_count", 0)),\n        "extraction_dispositions": int(extraction.get("record_count", 0)),\n        "core_wave2_complete": core_complete,\n        "next_core_step": "RUN_NONCANONICAL_FULL_EVALUATION_CYCLE",\n        "governance_layer_applied": False,\n        "governance_issue": GOVERNANCE_ISSUE,\n        "release_authority_state": "DEFERRED",\n        "canonical_successor_written": False,\n        "assessment_mutation_performed": False,\n        "status": SHADOW_EVALUATION_STATUS,\n        "boundary": SHADOW_REFRESH_BOUNDARY,\n    }\n    atomic_write_json(core_root / "core-preparation-report.json", report)\n\n    public = {\n        "metadata": report["metadata"],\n        "collection_counts": live_counts,\n        "typed_retry_outcomes": [\n            {\n                "source_id": item.get("source_id"),\n                "outcome_type": item.get("outcome_type"),\n                "http_status": item.get("http_status"),\n                "finding_effect": item.get("finding_effect"),\n            }\n            for item in typed_retry_outcomes\n        ],\n        "evaluation_handoffs": len(handoff["handoffs"]),\n        "change_candidates": len(candidates["candidates"]),\n        "core_wave2_complete": core_complete,\n        "governance_layer_applied": False,\n        "governance_issue": GOVERNANCE_ISSUE,\n        "canonical_successor_written": False,\n        "capture_bodies_included": False,\n        "status": SHADOW_EVALUATION_STATUS,\n        "boundary": SHADOW_REFRESH_BOUNDARY,\n    }\n    atomic_write_json(core_root / "public-core-summary.json", public)\n    examples = args.workbench_root / "examples" / "shadow_refresh"\n    if examples.is_dir():\n        atomic_write_json(examples / "SHADOW_REFRESH_CORE_PUBLIC_SUMMARY_v202608.json", public)\n\n    json.dump(report, sys.stdout, ensure_ascii=False, indent=2)\n    sys.stdout.write("\\n")\n    return 0 if core_complete else 1\n\n\nif __name__ == "__main__":\n    raise SystemExit(main())\n'''
+          write(close_path, close_script)
+
+          docs_path = 'docs/operations/shadow-refresh-evaluation.md'
+          docs = read(docs_path)
+          docs = docs.replace('## Human approval requirement', '## Development authorization boundary')
+          docs = docs.replace(
+              'Software scaffolding can validate records and compute rehearsal metrics. It cannot substitute for those approvals.',
+              'Core software may execute without reviewer profiles or human governance. Protected-data access and explicit quarantine handoff consent remain operational custody controls. Human governance and release authority are deferred to issue #101.',
+          )
+          docs = docs.replace(
+              'Software/ops steps that do not forge dual-human review completions:',
+              'Core software/ops preparation without activating the deferred governance layer:',
+          )
+          start = docs.index('## Residual blockers for closing #43')
+          end = docs.index('## Wave 3 — Non-canonical full evaluation cycle')
+          replacement = '''## Core completion criteria for #43\n\nIssue #43 now tracks the non-canonical engineering cycle only. Human reviewers, owner sign-off, and release authority are deferred to [#101](https://github.com/fraware/neuroai-workbench/issues/101) and do not block core development.\n\nCore closure requires:\n\n- typed outcomes for every attempted source, with retrieval failures kept distinct from findings;\n- approved evaluation-only handoff for the selected capture sample;\n- snapshot comparison and candidate generation;\n- development-only dispositions sufficient to exercise deterministic downstream mechanics;\n- non-canonical delta compilation and deterministic application;\n- reopening analysis with zero assessment mutation;\n- full-depth publication generation and cross-format reconciliation;\n- end-to-end provenance, manifests, hashes, and protected-data boundary verification.\n\nClosing #43 does not authorize a canonical successor. All development successors remain non-canonical until #101 is completed.\n\n'''
+          docs = docs[:start] + replacement + docs[end:]
+          docs = docs.replace(
+              'candidate → adjudicate\n',
+              'candidate → development disposition\n',
+          )
+          docs = docs.replace(
+              '- Adjudication scaffolding does not forge dual human review or formal `GO`.\n',
+              '- Development dispositions exercise deterministic mechanics only and carry no substantive or release authority.\n- Human governance and canonical release authorization are deferred to #101.\n',
+          )
+          write(docs_path, docs)
+
+          deferred = '''# Deferred human governance overlay\n\nIssue [#101](https://github.com/fraware/neuroai-workbench/issues/101) contains the final reviewer, owner, and release-authority layer. It is deliberately sequenced after the core programme is stable.\n\n## Current core mode\n\nThe active development pipeline may collect approved public sources, preserve captures, compare snapshots, generate candidates, apply development-only dispositions, compile and apply non-canonical deltas, analyze reopening effects, and generate reconciled products.\n\nThe active pipeline does not create reviewer profiles, review opinions, owner approvals, or canonical release decisions.\n\n## Boundaries retained during development\n\n- historical and predecessor objects remain immutable;\n- protected evidence remains outside public Git;\n- retrieval failures remain typed operational outcomes;\n- assessment mutation remains disabled;\n- successors and products remain explicitly non-canonical;\n- publication authority remains absent;\n- substantive scientific, regulatory, clinical, conformance, institutional, and UNESCO claims remain withheld.\n\n## Final overlay\n\nAfter core completion, #101 will bind exact candidate, delta, reopening, product, and release hashes to attributable reviewer and owner decisions. Governance will be additive and will not rewrite core evidence or historical records.\n'''
+          write('docs/operations/deferred-governance.md', deferred)
+          PY
+      - name: Format and inspect
+        run: |
+          python -m ruff format src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
+          python -m ruff check src/neuroai_workbench/shadow_refresh/cycle.py scripts/run_evaluation_cycle.py scripts/close_shadow_refresh_43.py tests/unit/test_shadow_evaluation_cycle.py
+          python -m mypy src/neuroai_workbench
+          python -m compileall -q src scripts
+      - name: Run targeted tests
+        run: |
+          python -m pytest tests/unit/test_shadow_evaluation_cycle.py tests/unit/test_shadow_closure.py -q
+      - name: Enforce changed-file allowlist
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed = {
+              '.github/workflows/apply-core-governance-separation-once.yml',
+              'src/neuroai_workbench/shadow_refresh/cycle.py',
+              'scripts/run_evaluation_cycle.py',
+              'scripts/close_shadow_refresh_43.py',
+              'tests/unit/test_shadow_evaluation_cycle.py',
+              'docs/operations/shadow-refresh-evaluation.md',
+              'docs/operations/deferred-governance.md',
+              'examples/shadow_refresh/SHADOW_REFRESH_CORE_PUBLIC_SUMMARY_v202608.json',
+          }
+          changed = set(subprocess.check_output(['git', 'status', '--short'], text=True).splitlines())
+          paths = {line[3:] for line in changed}
+          unexpected = sorted(paths - allowed)
+          if unexpected:
+              raise SystemExit(f'Unexpected changed files: {unexpected}')
+          print('\n'.join(sorted(paths)))
+          PY
+      - name: Commit refactor
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/neuroai_workbench/shadow_refresh/cycle.py \
+                  scripts/run_evaluation_cycle.py \
+                  scripts/close_shadow_refresh_43.py \
+                  tests/unit/test_shadow_evaluation_cycle.py \
+                  docs/operations/shadow-refresh-evaluation.md \
+                  docs/operations/deferred-governance.md
+          git commit -m "refactor: defer governance from core evaluation cycle"
+          git push origin HEAD:agent/defer-governance-core-cycle
