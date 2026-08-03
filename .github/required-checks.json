@@ -81,6 +81,17 @@
       ]
     },
     {
+      "path": ".github/workflows/observatory-monitor-plan.yml",
+      "name": "Observatory monitoring plan",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  workflow_dispatch:", "  schedule:", "    - cron: \"17 6 * * 1\""],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "plan", "name": "plan", "required_contexts": []}
+      ]
+    },
+    {
       "path": ".github/workflows/release.yml",
       "name": "Release",
       "pull_request_required": false,
