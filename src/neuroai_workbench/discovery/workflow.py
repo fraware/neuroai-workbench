@@ -71,14 +71,8 @@ def _classify_record(
         }
 
     duplicate_of = record.get("duplicate_of_source_id")
-    if hint == "DUPLICATE" or (url_norm and f"url:{url_norm}" in known) or (
-        suggested and f"id:{suggested}" in known
-    ):
-        resolved = (
-            str(duplicate_of)
-            if duplicate_of
-            else known.get(f"url:{url_norm}") or known.get(f"id:{suggested}")
-        )
+    if hint == "DUPLICATE" or (url_norm and f"url:{url_norm}" in known) or (suggested and f"id:{suggested}" in known):
+        resolved = str(duplicate_of) if duplicate_of else known.get(f"url:{url_norm}") or known.get(f"id:{suggested}")
         return {
             "record_key": str(record["record_key"]),
             "classification": "DUPLICATE",
@@ -107,11 +101,7 @@ def _proposal_from_record(
     actor: str,
     created_at: str,
 ) -> dict[str, Any]:
-    status = (
-        "EXCLUDED"
-        if classification["classification"] == "EXCLUDED"
-        else "PENDING_HUMAN_ACCEPTANCE"
-    )
+    status = "EXCLUDED" if classification["classification"] == "EXCLUDED" else "PENDING_HUMAN_ACCEPTANCE"
     return {
         "proposal_id": new_proposal_id(),
         "run_id": run_id,

@@ -470,7 +470,9 @@ def run_offline_entity_sample(
             }
         )
         if proposal["status"] == "PENDING_HUMAN_DISPOSITION":
-            decision = "DEFER" if proposal["resolution_state"] in {"AMBIGUOUS", "DUPLICATE_CANDIDATE"} else "NEEDS_EVIDENCE"
+            decision = (
+                "DEFER" if proposal["resolution_state"] in {"AMBIGUOUS", "DUPLICATE_CANDIDATE"} else "NEEDS_EVIDENCE"
+            )
             disposition = record_resolution_disposition(
                 evaluation_workspace,
                 proposal["proposal_id"],

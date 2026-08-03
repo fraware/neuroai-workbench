@@ -35,4 +35,3 @@ def validate_discovery_url(url: str) -> None:
         validate_public_url(url)
     except CollectionFailureError as exc:
         raise DiscoveryNetworkBlockedError(f"Discovery URL blocked by SSRF policy: {exc}") from exc
-

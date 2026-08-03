@@ -205,7 +205,9 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
 
         fields = {
             "nct_id": nct_id,
-            "brief_title": identification.get("briefTitle") if isinstance(identification.get("briefTitle"), str) else None,
+            "brief_title": identification.get("briefTitle")
+            if isinstance(identification.get("briefTitle"), str)
+            else None,
             "overall_status": status.get("overallStatus") if isinstance(status.get("overallStatus"), str) else None,
             "last_update_post_date": (
                 status.get("lastUpdatePostDateStruct", {}).get("date")

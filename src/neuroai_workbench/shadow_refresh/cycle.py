@@ -100,9 +100,7 @@ class CycleAdjudicationSpec:
     change_class: str = "FIELD_UPDATE"
     materiality: str = "NON_MATERIAL"
     reopening_effect: str = "NO_EFFECT"
-    rationale: str = (
-        "Evaluation-cycle scaffolding adjudication for non-canonical pipeline proof only."
-    )
+    rationale: str = "Evaluation-cycle scaffolding adjudication for non-canonical pipeline proof only."
 
 
 @dataclass(frozen=True)
@@ -195,7 +193,9 @@ def _ensure_monitoring(workspace: Path, registry_path: Path, *, actor: str) -> N
         initialize_monitoring(workspace, registry_path, actor=actor)
 
 
-def _default_operation_specs(candidates: list[dict[str, Any]], predecessor: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+def _default_operation_specs(
+    candidates: list[dict[str, Any]], predecessor: dict[str, Any]
+) -> dict[str, list[dict[str, Any]]]:
     """Build minimal ADD_EVENT specs for accepted candidates when none are supplied."""
     known_sources = {
         str(item.get("source_id"))
@@ -335,8 +335,7 @@ def run_offline_snapshot_cycle(
                 current["snapshot_id"],
                 previous_snapshot_id=baseline["snapshot_id"],
                 summary=(
-                    "Evaluation-cycle mechanical content change; "
-                    "substantive classification pending human review."
+                    "Evaluation-cycle mechanical content change; substantive classification pending human review."
                 ),
                 actor=actor,
             )

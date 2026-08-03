@@ -252,9 +252,7 @@ def test_shadow_closure_dispositions_and_public_projection() -> None:
     summary = build_public_closure_summary(
         run_id="RUN-WITHHELD",
         live_counts={"succeeded": 1, "failed": 1, "total": 2},
-        capture_digests=[
-            {"source_id": "SRC-1", "sha256": "a" * 64, "http_status": 200, "size_bytes": 12}
-        ],
+        capture_digests=[{"source_id": "SRC-1", "sha256": "a" * 64, "http_status": 200, "size_bytes": 12}],
         typed_retry_outcomes=[
             {
                 "source_id": "SRC-2",
@@ -302,9 +300,7 @@ def test_v16_v17_lineage_reports_all_material_inconsistencies() -> None:
     refresh["change_candidates"][0]["source_ids"].append("SRC-UNKNOWN")
     refresh["source_checks"].append({"check_id": "CHK-X", "source_id": "SRC-UNKNOWN"})
     refresh["reopening_decisions"].append({"basis": ["REG-MISSING"]})
-    refresh["adjudicated_delta"]["model_records"] = [
-        {"model_id": "MOD-X", "source_ids": ["SRC-UNKNOWN"]}
-    ]
+    refresh["adjudicated_delta"]["model_records"] = [{"model_id": "MOD-X", "source_ids": ["SRC-UNKNOWN"]}]
 
     delta["model_records"] = [{"model_id": "MOD-Y", "source_ids": ["SRC-UNKNOWN"]}]
     v17["delta"] = {}
@@ -315,9 +311,7 @@ def test_v16_v17_lineage_reports_all_material_inconsistencies() -> None:
         "capital_and_ownership_events": 0,
         "supplier_dependency_relationships": 0,
     }
-    v17["assessment_successor_delta"] = {
-        "source_delta": {"new_unique_source_records_relative_to_v1_6": 1}
-    }
+    v17["assessment_successor_delta"] = {"source_delta": {"new_unique_source_records_relative_to_v1_6": 1}}
     v17["successor_effective_counts"] = {
         "source_records": 2,
         "organizations": 3,

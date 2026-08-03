@@ -25,9 +25,7 @@ def test_ssrf_blocks_private_discovery_urls() -> None:
         validate_discovery_url("http://localhost/admin")
 
 
-def test_opt_in_network_rejects_ssrf_result_url(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_opt_in_network_rejects_ssrf_result_url(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("NEUROAI_LIVE_DISCOVERY", "1")
     seed_fixture_queries(tmp_path)
     with pytest.raises(DiscoveryNetworkBlockedError, match="SSRF"):
