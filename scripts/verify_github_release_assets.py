@@ -98,9 +98,13 @@ def _sdist_metadata(path: Path) -> dict[str, str]:
         unsafe = [member.name for member in members if member.name.startswith("/") or ".." in Path(member.name).parts]
         if unsafe:
             raise ValueError(f"Source distribution contains unsafe paths: {unsafe[:3]}")
-        package_info = [member for member in members if member.name.endswith("/PKG-INFO")]
+        package_info = [
+            member
+            for member in members
+            if len(Path(member.name).parts) == 2 and member.name.endswith("/PKG-INFO")
+        ]
         if len(package_info) != 1:
-            raise ValueError("Source distribution must contain exactly one PKG-INFO")
+            raise ValueError("Source distribution must contain exactly one top-level PKG-INFO")
         extracted = archive.extractfile(package_info[0])
         if extracted is None:
             raise ValueError("Source distribution PKG-INFO could not be read")
@@ -125,7 +129,7 @@ def _bundle_commit(bundle: Path, tag: str) -> tuple[bool, str, str]:
             check=False,
         )
         rev = subprocess.run(
-            ["git", "-C", str(bare), "rev-list", "-n", "1", f"refs/tags/{tag}"],
+            ["git", "-C", str(bare), "rev-parse", f"refs/tags/{tag}^{{commit}}"],
             text=True,
             capture_output=True,
             check=False,
