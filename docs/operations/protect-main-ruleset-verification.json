@@ -226,7 +226,7 @@
     }
   ],
   "boundary": "This report verifies the GitHub-hosted ruleset response acquired for the named repository. It does not authenticate human reviewers, establish scientific or release authority, or prove that future settings remain unchanged after the recorded acquisition.",
-  "acquired_at": "2026-08-03T16:17:10Z",
+  "acquired_at": "2026-08-03T16:21:00Z",
   "repository": "fraware/neuroai-workbench",
   "update_attempt": {
     "requested_contexts": [

@@ -5,7 +5,7 @@
     "name": "Protect main",
     "ruleset_id": 20116255,
     "evidence": "Issue #5 records REVIEW_REQUIRED enforcement on PR #18 without bypass; the current authenticated Rules API response supersedes that historical approval-count observation.",
-    "settings_introspection": "AUTHENTICATED_RULES_API_UPDATE_IN_PROGRESS",
+    "settings_introspection": "AUTHENTICATED_RULES_API_VERIFICATION",
     "hosted_policy": {
       "required_approving_review_count": 0,
       "required_review_thread_resolution": true,
@@ -64,11 +64,10 @@
       "name": "Dependency review",
       "pull_request_required": true,
       "required_trigger_markers": ["  pull_request:"],
-      "permissions": {"contents": "write"},
+      "permissions": {"contents": "read"},
       "forbid_secrets": true,
       "jobs": [
-        {"id": "dependency-review", "name": "dependency-review", "required_contexts": ["Dependency review / dependency-review"]},
-        {"id": "update-hosted-ruleset", "name": "update-hosted-ruleset", "required_contexts": []}
+        {"id": "dependency-review", "name": "dependency-review", "required_contexts": ["Dependency review / dependency-review"]}
       ]
     },
     {
