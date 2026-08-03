@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 from ..collector import CollectionScheduler, CollectorConfig, SchedulerConfig
 from ..collector.dns import DnsGuard
+from ..collector.http_client import HttpTransport
 from ..collector.transport import StdlibHttpTransport
 from ..util import load_json, sha256_bytes, utc_now
 from .schemas import SHADOW_EVALUATION_STATUS, SHADOW_REFRESH_BOUNDARY
@@ -98,11 +99,16 @@ def run_live_cohort_collection(
     registry_sha256: str,
     quarantine_root: Path,
     collector_config: CollectorConfig | None = None,
+    transport: HttpTransport | None = None,
+    dns_guard: DnsGuard | None = None,
 ) -> dict[str, Any]:
     """Execute allowlisted live HTTP collection for an evaluation plan.
 
     Writes quarantine-only under ``quarantine_root``. Does not hand off into
     monitoring and does not authorize canonical publication.
+
+    ``transport`` / ``dns_guard`` are injectable for offline unit tests; live ops
+    defaults remain ``StdlibHttpTransport`` and the real ``DnsGuard``.
     """
     require_live_collection_enabled()
     evaluation_plan = evaluation_collection_plan(plan)
@@ -115,14 +121,14 @@ def run_live_cohort_collection(
     }
     scheduler = CollectionScheduler(
         collector_config=config,
-        transport=StdlibHttpTransport(),
+        transport=transport or StdlibHttpTransport(),
         quarantine_root=quarantine_root,
         scheduler_config=SchedulerConfig(
             collection_enabled=True,
             handoff_enabled=False,
             include_manual_sources=False,
         ),
-        dns_guard=DnsGuard(),
+        dns_guard=dns_guard or DnsGuard(),
     )
     collection_run = scheduler.run_plan(
         evaluation_plan,

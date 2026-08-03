@@ -7,6 +7,7 @@ from .cohort import (
 )
 from .live import (
     LIVE_COLLECTION_ENV,
+    default_live_collector_config,
     evaluation_collection_plan,
     live_collection_enabled,
     observed_run_results_from_live,
@@ -32,6 +33,7 @@ __all__ = [
     "SHADOW_REFRESH_BOUNDARY",
     "bind_reviewed_cohort_to_registry",
     "compute_go_no_go_metrics",
+    "default_live_collector_config",
     "discover_cohort_candidates",
     "evaluation_collection_plan",
     "live_collection_enabled",
