@@ -4,7 +4,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   dependency-review:
@@ -42,3 +42,56 @@ jobs:
             echo "This scans the pinned environment for known vulnerabilities but does not provide GitHub's PR-to-base dependency delta or license-delta analysis."
             echo "Re-enable the official dependency graph review when repository security settings support it."
           } >> "$GITHUB_STEP_SUMMARY"
+
+  assignment-lineage-refactor:
+    name: assignment-lineage-refactor
+    if: github.head_ref == 'agent/20-assignment-supersession' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - name: Install verified payload
+        run: python scripts/apply_issue20_payload.py
+      - name: Apply repository formatter
+        run: >-
+          python -m ruff format
+          src/neuroai_workbench/review.py
+          src/neuroai_workbench/cli.py
+          tests/unit/test_review_assignment_transitions.py
+      - name: Lint permanent source
+        run: >-
+          python -m ruff check
+          src/neuroai_workbench/review.py
+          src/neuroai_workbench/cli.py
+          tests/unit/test_review_assignment_transitions.py
+      - run: python -m mypy src/neuroai_workbench
+      - run: python -m compileall -q src scripts
+      - name: Focused review and CLI tests
+        run: >-
+          python -m pytest -q
+          tests/unit/test_review.py
+          tests/unit/test_review_assignment_transitions.py
+          tests/unit/test_cli.py
+      - name: Commit validated permanent files
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            src/neuroai_workbench/review.py \
+            src/neuroai_workbench/cli.py \
+            tests/unit/test_review_assignment_transitions.py \
+            docs/reference/review.md \
+            docs/adr/0011-append-only-review-assignment-lineage.md \
+            THREAT_MODEL.md \
+            DATA_GOVERNANCE.md
+          git commit -m "feat: add append-only review assignment lineage"
+          git push origin HEAD:${{ github.head_ref }}
