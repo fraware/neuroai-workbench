@@ -574,14 +574,10 @@ def record_human_review_opinion(
     """Claim a lease (if needed) and record one human opinion. Never forges content."""
     if reviewer_profile_id not in REQUIRED_SHADOW_REVIEWERS:
         raise ValueError(
-            f"Shadow dual-review recorder accepts only {REQUIRED_SHADOW_REVIEWERS}; "
-            f"got {reviewer_profile_id!r}"
+            f"Shadow dual-review recorder accepts only {REQUIRED_SHADOW_REVIEWERS}; got {reviewer_profile_id!r}"
         )
     if position not in ALLOWED_OPINION_POSITIONS:
-        raise ValueError(
-            f"Unsupported opinion position {position!r}; "
-            f"allowed={sorted(ALLOWED_OPINION_POSITIONS)}"
-        )
+        raise ValueError(f"Unsupported opinion position {position!r}; allowed={sorted(ALLOWED_OPINION_POSITIONS)}")
     rationale = rationale.strip()
     if not rationale:
         raise ValueError("Opinion rationale must not be empty")

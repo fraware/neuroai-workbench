@@ -49,8 +49,7 @@ def _default_evaluation_workspace(ops: Path | None) -> Path:
         if (path / "observatory" / "review_queue").is_dir():
             return path
     raise FileNotFoundError(
-        "No shadow evaluation workspace with a review queue found under "
-        + ", ".join(str(path) for path in candidates)
+        "No shadow evaluation workspace with a review queue found under " + ", ".join(str(path) for path in candidates)
     )
 
 
@@ -106,9 +105,7 @@ def cmd_status(args: argparse.Namespace) -> int:
 def cmd_claim(args: argparse.Namespace) -> int:
     workspace = _resolve_workspace(args)
     if args.profile not in REQUIRED_SHADOW_REVIEWERS:
-        sys.stderr.write(
-            f"ERROR profile must be one of {REQUIRED_SHADOW_REVIEWERS}; got {args.profile!r}\n"
-        )
+        sys.stderr.write(f"ERROR profile must be one of {REQUIRED_SHADOW_REVIEWERS}; got {args.profile!r}\n")
         return 2
     result = claim_lease(
         workspace,
@@ -122,9 +119,7 @@ def cmd_claim(args: argparse.Namespace) -> int:
             "lease": result["lease"],
             "path": result["path"],
             "status": SHADOW_EVALUATION_STATUS,
-            "identity_boundary": (
-                "Claimed local workflow identity only; not authenticated institutional authority."
-            ),
+            "identity_boundary": ("Claimed local workflow identity only; not authenticated institutional authority."),
         }
     )
     return 0
@@ -133,10 +128,7 @@ def cmd_claim(args: argparse.Namespace) -> int:
 def cmd_opinion(args: argparse.Namespace) -> int:
     workspace = _resolve_workspace(args)
     if args.position not in ALLOWED_OPINION_POSITIONS:
-        sys.stderr.write(
-            f"ERROR position must be one of {sorted(ALLOWED_OPINION_POSITIONS)}; "
-            f"got {args.position!r}\n"
-        )
+        sys.stderr.write(f"ERROR position must be one of {sorted(ALLOWED_OPINION_POSITIONS)}; got {args.position!r}\n")
         return 2
     result = record_human_review_opinion(
         workspace,
@@ -204,15 +196,12 @@ def cmd_formal_disposition(args: argparse.Namespace) -> int:
         metrics_recommendation=metrics_recommendation,
         dual_review_complete=dual_complete,
         owners=owners,
-        residual_checklist=build_human_residual_checklist(
-            dual_review_complete=dual_complete
-        )["checklist"],
+        residual_checklist=build_human_residual_checklist(dual_review_complete=dual_complete)["checklist"],
     )
     if args.disposition_override:
         if args.disposition_override == "GO" and formal["disposition"] != "GO":
             sys.stderr.write(
-                "ERROR cannot override to GO unless dual review is complete and "
-                "metrics_recommendation is GO.\n"
+                "ERROR cannot override to GO unless dual review is complete and metrics_recommendation is GO.\n"
             )
             return 2
         if args.disposition_override == "GO":
