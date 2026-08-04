@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "title": "Post-integrity HTTP_ERROR retry digest (public)",
+    "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+    "recorded_at": "2026-08-04T08:32:19Z",
+    "core_issue": "#43",
+    "governance_issue": "#101",
+    "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+  },
+  "live_retry_executed": true,
+  "retry_outcomes": [
+    {
+      "source_id": "SRC-0041",
+      "outcome_type": "ACCESS_DENIAL",
+      "http_status": 403,
+      "failure_class": "HTTP_ERROR",
+      "finding_effect": "NONE"
+    },
+    {
+      "source_id": "SRC-0115",
+      "outcome_type": "CONTENT_NOT_FOUND_OR_URL_REPLACEMENT_NEEDED",
+      "http_status": 404,
+      "failure_class": "HTTP_ERROR",
+      "finding_effect": "NONE"
+    },
+    {
+      "source_id": "SRC-14-007",
+      "outcome_type": "CONTENT_NOT_FOUND_OR_URL_REPLACEMENT_NEEDED",
+      "http_status": 404,
+      "failure_class": "HTTP_ERROR",
+      "finding_effect": "NONE"
+    }
+  ],
+  "withheld_claims": [
+    "Public typed outcomes only; capture bodies remain outside git.",
+    "Unresolved retrieval was not converted into FAIL findings.",
+    "Does not authorize GO or a canonical successor.",
+    "Human governance and release authority remain under #101."
+  ],
+  "status": "SHADOW_EVALUATION_NOT_CANONICAL"
+}

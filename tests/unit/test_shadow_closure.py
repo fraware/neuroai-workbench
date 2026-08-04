@@ -6,6 +6,8 @@ from pathlib import Path
 
 from neuroai_workbench.collector.handoff import approve_quarantine_record, load_quarantine_record
 from neuroai_workbench.shadow_refresh.closure import (
+    GOVERNANCE_ISSUE,
+    assess_dual_human_review,
     build_closure_run_results,
     build_source_retry_plan,
     classify_retrieval_failure,
@@ -13,6 +15,7 @@ from neuroai_workbench.shadow_refresh.closure import (
     create_first_capture_candidates,
     handoff_quarantine_sample_to_evaluation,
     record_formal_disposition,
+    record_human_review_opinion,
     scaffold_dual_human_review,
 )
 from neuroai_workbench.shadow_refresh.schemas import validate_shadow_refresh_run_results
@@ -162,8 +165,28 @@ def test_wave2_public_summary_fixture_remains_non_canonical() -> None:
     assert summary["formal_disposition"] == "WITHHELD"
     assert summary["dual_review_complete"] is False
     assert summary["metrics_recommendation"] == "NO_GO"
+    assert summary["metadata"]["governance_issue"] == "#101"
     assert len(summary["retry_outcomes"]) == 3
     assert all(item.get("finding_effect") == "NONE" for item in summary["retry_outcomes"])
+    post = summary.get("post_integrity_http_error_retry") or {}
+    assert post.get("outcomes_unchanged") is True
+
+
+def test_post_integrity_retry_public_digest_remains_non_canonical() -> None:
+    from neuroai_workbench.util import load_json
+
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "examples"
+        / "shadow_refresh"
+        / "SHADOW_REFRESH_POST_INTEGRITY_RETRY_PUBLIC_v202608.json"
+    )
+    digest = load_json(path)
+    assert digest["metadata"]["status"] == "SHADOW_EVALUATION_NOT_CANONICAL"
+    assert digest["metadata"]["governance_issue"] == "#101"
+    assert digest["live_retry_executed"] is True
+    assert len(digest["retry_outcomes"]) == 3
+    assert all(item.get("finding_effect") == "NONE" for item in digest["retry_outcomes"])
 
 
 def test_formal_disposition_withheld_without_dual_review() -> None:
@@ -209,6 +232,8 @@ def test_closure_run_results_and_metrics_validate() -> None:
 
 
 def test_evaluation_handoff_and_dual_review_scaffold(tmp_path: Path) -> None:
+    from neuroai_workbench.util import load_json
+
     registry_path = tmp_path / "registry.json"
     atomic_write_json(registry_path, _mini_registry())
     quarantine = tmp_path / "quarantine"
@@ -244,6 +269,142 @@ def test_evaluation_handoff_and_dual_review_scaffold(tmp_path: Path) -> None:
     assert review["open_item_count"] == 1
     assert (out / "dual_review_instructions.json").is_file()
     assert (out / "human_residual_checklist.json").is_file()
+    instructions = load_json(out / "dual_review_instructions.json")
+    residual = load_json(out / "human_residual_checklist.json")
+    assert instructions["metadata"]["governance_issue"] == GOVERNANCE_ISSUE
+    assert residual["metadata"]["governance_issue"] == GOVERNANCE_ISSUE
+    assert "record_shadow_dual_review.py" in instructions["recording_cli"]
+
+
+def test_dual_review_recording_and_assessment_without_forged_go(tmp_path: Path) -> None:
+    registry_path = tmp_path / "registry.json"
+    atomic_write_json(registry_path, _mini_registry())
+    quarantine = tmp_path / "quarantine"
+    qid = _seed_quarantine(quarantine)
+    approve_quarantine_record(quarantine, qid, approved_by="tester")
+    evaluation = tmp_path / "eval_ws"
+    handoff = handoff_quarantine_sample_to_evaluation(
+        quarantine_root=quarantine,
+        evaluation_workspace=evaluation,
+        registry_path=registry_path,
+        sample_size=1,
+        approved_by="tester",
+    )
+    create_first_capture_candidates(
+        evaluation_workspace=evaluation,
+        handoffs=handoff["handoffs"],
+        actor="tester",
+    )
+    out = tmp_path / "wave2"
+    scaffold_dual_human_review(evaluation_workspace=evaluation, output_dir=out, actor="tester")
+
+    incomplete = assess_dual_human_review(evaluation)
+    assert incomplete["dual_review_complete"] is False
+    assert incomplete["incomplete_item_count"] == 1
+    item_id = incomplete["items"][0]["item_id"]
+
+    first = record_human_review_opinion(
+        evaluation,
+        item_id=item_id,
+        reviewer_profile_id="REV-SHADOW-A",
+        position="SUPPORT",
+        rationale="Human A supports the first-capture candidate for shadow evaluation only.",
+    )
+    assert first["dual_review_complete"] is False
+
+    second = record_human_review_opinion(
+        evaluation,
+        item_id=item_id,
+        reviewer_profile_id="REV-SHADOW-B",
+        position="OPPOSE",
+        rationale="Human B records disagreement; dissent must remain visible.",
+    )
+    assert second["dual_review_complete"] is True
+    assert second["assessment"]["review_disagreements"] == 1
+
+    withheld = record_formal_disposition(
+        run_id="SHADOW-RUN-TEST",
+        metrics_recommendation="GO",
+        dual_review_complete=False,
+        owners=["owner"],
+        residual_checklist=[],
+    )
+    assert withheld["disposition"] == "WITHHELD"
+    assert withheld["metadata"]["governance_issue"] == GOVERNANCE_ISSUE
+
+    after_dual = record_formal_disposition(
+        run_id="SHADOW-RUN-TEST",
+        metrics_recommendation="NO_GO",
+        dual_review_complete=True,
+        owners=["owner"],
+        residual_checklist=[],
+    )
+    assert after_dual["disposition"] == "NO_GO"
+
+
+def test_record_shadow_dual_review_cli_refuses_forged_go(tmp_path: Path) -> None:
+    import importlib.util
+    from pathlib import Path as PathType
+
+    script_path = PathType(__file__).resolve().parents[2] / "scripts" / "record_shadow_dual_review.py"
+    spec = importlib.util.spec_from_file_location("record_shadow_dual_review_cli", script_path)
+    assert spec is not None and spec.loader is not None
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+
+    registry_path = tmp_path / "registry.json"
+    atomic_write_json(registry_path, _mini_registry())
+    quarantine = tmp_path / "quarantine"
+    qid = _seed_quarantine(quarantine)
+    approve_quarantine_record(quarantine, qid, approved_by="tester")
+    evaluation = tmp_path / "eval_ws"
+    handoff = handoff_quarantine_sample_to_evaluation(
+        quarantine_root=quarantine,
+        evaluation_workspace=evaluation,
+        registry_path=registry_path,
+        sample_size=1,
+        approved_by="tester",
+    )
+    create_first_capture_candidates(
+        evaluation_workspace=evaluation,
+        handoffs=handoff["handoffs"],
+        actor="tester",
+    )
+    scaffold_dual_human_review(
+        evaluation_workspace=evaluation,
+        output_dir=tmp_path / "out",
+        actor="tester",
+    )
+
+    assert (
+        cli.main(
+            [
+                "--evaluation-workspace",
+                str(evaluation),
+                "formal-disposition",
+                "--run-id",
+                "SHADOW-RUN-CLI",
+                "--owners",
+                "owner-a",
+                "--metrics-recommendation",
+                "GO",
+                "--disposition-override",
+                "GO",
+                "--allow-incomplete",
+            ]
+        )
+        == 2
+    )
+    assert (
+        cli.main(
+            [
+                "--evaluation-workspace",
+                str(evaluation),
+                "assess",
+            ]
+        )
+        == 1
+    )
 
 
 def test_evaluation_handoff_refuses_pending_without_auto_approve(tmp_path: Path) -> None:

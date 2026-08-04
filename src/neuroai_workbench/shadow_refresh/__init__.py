@@ -1,8 +1,10 @@
 """Shadow refresh evaluation scaffolding for non-canonical operational rehearsal."""
 
 from .closure import (
+    assess_dual_human_review,
     classify_retrieval_failure,
     record_formal_disposition,
+    record_human_review_opinion,
     scaffold_dual_human_review,
 )
 from .cohort import (
@@ -49,6 +51,7 @@ __all__ = [
     "SOURCE_OUTCOME_TAXONOMY",
     "CycleDevelopmentDispositionSpec",
     "SnapshotPairFixture",
+    "assess_dual_human_review",
     "bind_reviewed_cohort_to_registry",
     "classify_cycle_source_outcome",
     "classify_retrieval_failure",
@@ -60,6 +63,7 @@ __all__ = [
     "load_reviewed_cohort_manifest",
     "observed_run_results_from_live",
     "record_formal_disposition",
+    "record_human_review_opinion",
     "require_live_collection_enabled",
     "run_live_cohort_collection",
     "run_live_evaluation_cycle",
