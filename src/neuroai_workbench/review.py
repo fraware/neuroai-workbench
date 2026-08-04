@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from .case_lock import case_mutation_lock
-from .events import append_event, verify_chain
-from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file, utc_now
+from .events import append_event, load_events, verify_chain
+from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file
 from .workspace import Workspace
 
 REVIEW_SCHEMA_VERSION = "1"
@@ -26,11 +27,43 @@ TARGET_TYPES = {"ASSESSMENT", "FINDING", "CLAIM", "DECISION", "GAP"}
 DECISION_ROLES = {"LEAD_ASSESSOR", "DECISION_AUTHORITY"}
 ASSIGNMENT_STATES = {"ACTIVE", "REVOKED"}
 ASSIGNMENT_TRANSITIONS = {"CREATED", "SUPERSEDES", "REVOKES"}
+ASSIGNMENT_EVENT_ACTIONS = {
+    "CREATED": "REVIEW_ASSIGNMENT_CREATED",
+    "SUPERSEDES": "REVIEW_ASSIGNMENT_SUPERSEDED",
+    "REVOKES": "REVIEW_ASSIGNMENT_REVOKED",
+}
+ASSIGNMENT_EVENT_ACTION_SET = frozenset(ASSIGNMENT_EVENT_ACTIONS.values())
 
 
 def _hash_record(value: dict[str, Any], hash_field: str) -> str:
     controlled = {key: item for key, item in value.items() if key != hash_field and not key.startswith("_")}
     return sha256_bytes(canonical_json_bytes(controlled))
+
+
+def _parse_utc_timestamp(value: object, field_name: str, *, record_id: str | None = None) -> datetime:
+    """Parse a timezone-aware RFC 3339 / ISO 8601 timestamp and normalize to UTC.
+
+    Accepts strings only. Trailing ``Z`` is treated as UTC. Naive timestamps and
+    non-string values are refused.
+    """
+    context = f" on record {record_id}" if record_id else ""
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"Invalid {field_name}{context}: expected a non-empty RFC 3339 / ISO 8601 timestamp string")
+    text = value.strip()
+    if text.endswith("Z"):
+        text = f"{text[:-1]}+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError as exc:
+        raise ValueError(f"Invalid {field_name}{context}: malformed timestamp {value!r}") from exc
+    if parsed.tzinfo is None:
+        raise ValueError(f"Invalid {field_name}{context}: naive timestamp {value!r} is refused")
+    return parsed.astimezone(timezone.utc)
+
+
+def _review_timestamp() -> str:
+    """UTC timestamp with subsecond precision for half-open lineage intervals."""
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def _review_root(workspace: Workspace, case_id: str) -> Path:
@@ -142,10 +175,6 @@ def _assignment_index(
             raise ValueError(f"Review assignment {assignment_id!r} follows a non-active predecessor")
         if predecessor_hash != predecessor.get("assignment_sha256"):
             raise ValueError(f"Review assignment {assignment_id!r} has a predecessor hash mismatch")
-        predecessor_time = str(predecessor.get("assigned_at") or "")
-        transition_time = str(item.get("transition_at") or "")
-        if predecessor_time and transition_time and transition_time < predecessor_time:
-            raise ValueError(f"Review assignment {assignment_id!r} predates its predecessor")
         if predecessor_id in successors:
             raise ValueError(f"Review assignment {predecessor_id!r} has multiple successor records")
         if not str(item.get("transition_by") or "").strip():
@@ -154,6 +183,18 @@ def _assignment_index(
             raise ValueError(f"Review assignment {assignment_id!r} is missing transition time")
         if not str(item.get("transition_rationale") or "").strip():
             raise ValueError(f"Review assignment {assignment_id!r} is missing transition rationale")
+        predecessor_time = _parse_utc_timestamp(
+            predecessor.get("assigned_at"),
+            "assigned_at",
+            record_id=predecessor_id,
+        )
+        transition_time = _parse_utc_timestamp(
+            item.get("transition_at"),
+            "transition_at",
+            record_id=assignment_id,
+        )
+        if transition_time < predecessor_time:
+            raise ValueError(f"Review assignment {assignment_id!r} predates its predecessor")
         if transition == "SUPERSEDES" and item.get("state") != "ACTIVE":
             raise ValueError(f"Review assignment {assignment_id!r} must be ACTIVE when superseding")
         if transition == "REVOKES":
@@ -189,21 +230,128 @@ def _effective_assignment_state(
 
 def _assignment_was_active_at(
     assignment_id: str,
-    timestamp: str,
+    timestamp: object,
     assignments: dict[str, dict[str, Any]],
     successors: dict[str, str],
 ) -> bool:
+    """Return whether ``assignment_id`` was effective on the half-open interval.
+
+    Effective iff ``assigned_at <= t < transition_at`` when a successor exists, or
+    ``assigned_at <= t`` when the lineage tip is open-ended. At ``t == transition_at``
+    the predecessor cannot authorize; the successor tip may.
+    """
     assignment = assignments.get(assignment_id)
     if assignment is None or assignment.get("state") != "ACTIVE":
         return False
-    assigned_at = str(assignment.get("assigned_at") or "")
-    if assigned_at and timestamp and timestamp < assigned_at:
+    try:
+        instant = _parse_utc_timestamp(timestamp, "activity_timestamp", record_id=assignment_id)
+        assigned_at = _parse_utc_timestamp(
+            assignment.get("assigned_at"),
+            "assigned_at",
+            record_id=assignment_id,
+        )
+    except ValueError:
+        return False
+    if instant < assigned_at:
         return False
     successor_id = successors.get(assignment_id)
     if not successor_id:
         return True
-    transition_at = str(assignments[successor_id].get("transition_at") or "")
-    return bool(timestamp and transition_at and timestamp <= transition_at)
+    try:
+        transition_at = _parse_utc_timestamp(
+            assignments[successor_id].get("transition_at"),
+            "transition_at",
+            record_id=successor_id,
+        )
+    except ValueError:
+        return False
+    return instant < transition_at
+
+
+def _collect_independent_assignment_errors(item: dict[str, Any]) -> list[str]:
+    """Collect per-record defects without trusting lineage reconstruction."""
+    assignment_id = str(item.get("assignment_id") or "?")
+    errors: list[str] = []
+    if item.get("assignment_sha256") != _hash_record(item, "assignment_sha256"):
+        errors.append(f"assignment {assignment_id}: hash mismatch")
+    if item.get("role") not in REVIEW_ROLES:
+        errors.append(f"assignment {assignment_id}: unsupported role")
+    if item.get("state") not in ASSIGNMENT_STATES:
+        errors.append(f"assignment {assignment_id}: unsupported state")
+    transition = _assignment_transition(item)
+    if transition not in ASSIGNMENT_TRANSITIONS:
+        errors.append(f"assignment {assignment_id}: unsupported transition")
+    for field in ("assigned_at", "transition_at"):
+        value = item.get(field)
+        if value is None and field == "transition_at" and transition == "CREATED":
+            continue
+        if value is None and field == "assigned_at":
+            errors.append(f"assignment {assignment_id}: missing {field}")
+            continue
+        if value is None:
+            continue
+        try:
+            _parse_utc_timestamp(value, field, record_id=assignment_id)
+        except ValueError as exc:
+            errors.append(f"assignment {assignment_id}: {exc}")
+    return errors
+
+
+def _verify_assignment_event_correspondence(
+    assignments: dict[str, dict[str, Any]],
+    events: list[dict[str, Any]],
+) -> list[str]:
+    """Require exactly one matching transition event per assignment; never silent-repair."""
+    errors: list[str] = []
+    transition_events = [event for event in events if event.get("action") in ASSIGNMENT_EVENT_ACTION_SET]
+    matched_indices: set[int] = set()
+
+    for assignment_id, item in assignments.items():
+        transition = _assignment_transition(item)
+        expected_action = ASSIGNMENT_EVENT_ACTIONS.get(transition)
+        if expected_action is None:
+            continue
+        matches = [
+            (index, event)
+            for index, event in enumerate(transition_events)
+            if (event.get("payload") or {}).get("assignment_id") == assignment_id
+        ]
+        if not matches:
+            errors.append(f"assignment {assignment_id}: missing matching {expected_action} event")
+            continue
+        if len(matches) > 1:
+            errors.append(f"assignment {assignment_id}: duplicate assignment transition events")
+            matched_indices.update(index for index, _event in matches)
+            continue
+
+        index, event = matches[0]
+        matched_indices.add(index)
+        payload = event.get("payload") or {}
+        expected_actor = item.get("transition_by") or item.get("assigned_by")
+        checks = [
+            (event.get("action") == expected_action, "event action mismatch"),
+            (payload.get("assignment_sha256") == item.get("assignment_sha256"), "event assignment digest mismatch"),
+            (event.get("actor") == expected_actor, "event actor mismatch"),
+            (payload.get("transition") == transition, "event transition mismatch"),
+            (payload.get("reviewer_id") == item.get("reviewer_id"), "event reviewer mismatch"),
+            (payload.get("role") == item.get("role"), "event role mismatch"),
+        ]
+        for ok, message in checks:
+            if not ok:
+                errors.append(f"assignment {assignment_id}: {message}")
+        if transition in {"SUPERSEDES", "REVOKES"}:
+            if payload.get("predecessor_assignment_id") != item.get("predecessor_assignment_id"):
+                errors.append(f"assignment {assignment_id}: event predecessor id mismatch")
+            if payload.get("predecessor_assignment_sha256") != item.get("predecessor_assignment_sha256"):
+                errors.append(f"assignment {assignment_id}: event predecessor digest mismatch")
+
+    for index, event in enumerate(transition_events):
+        if index in matched_indices:
+            continue
+        payload = event.get("payload") or {}
+        orphan_id = payload.get("assignment_id") or "?"
+        errors.append(f"assignment event {orphan_id}: orphan transition event without matching record")
+    return errors
 
 
 def _active_assignments(workspace: Workspace, case_id: str, reviewer_id: str) -> list[dict[str, Any]]:
@@ -248,7 +396,7 @@ def _assignment_record(
     predecessor: dict[str, Any] | None = None,
     rationale: str | None = None,
 ) -> dict[str, Any]:
-    recorded_at = utc_now()
+    recorded_at = _review_timestamp()
     predecessor_id = predecessor.get("assignment_id") if predecessor else None
     predecessor_hash = predecessor.get("assignment_sha256") if predecessor else None
     seed = canonical_json_bytes(
@@ -543,7 +691,7 @@ def submit_review_statement(
             raise ValueError(f"Unknown evidence IDs: {', '.join(unknown)}")
 
         assessment_path = workspace.case_path(case_id) / "assessment.json"
-        submitted_at = utc_now()
+        submitted_at = _review_timestamp()
         seed = canonical_json_bytes(
             {
                 "case_id": case_id,
@@ -649,7 +797,7 @@ def dispose_review_statement(
             "rationale": rationale,
             "actor": actor,
             "assignment_ids": sorted(item["assignment_id"] for item in assignments),
-            "recorded_at": utc_now(),
+            "recorded_at": _review_timestamp(),
             "assessment_mutation": "NONE_PERFORMED_BY_DISPOSITION_RECORD",
             "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
             "authority_boundary": (
@@ -688,10 +836,12 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
     evidence_ids = {str(item.get("evidence_id")) for item in assessment.get("evidence_register", [])}
     errors: list[str] = []
     warnings: list[str] = []
+    lineage_trusted = True
 
     try:
         assignments, successors = _assignment_index(records["assignments"])
     except ValueError as exc:
+        lineage_trusted = False
         assignments = {
             str(item.get("assignment_id")): item
             for item in records["assignments"]
@@ -699,15 +849,8 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
         }
         successors = {}
         errors.append(str(exc))
-        for assignment_id, item in assignments.items():
-            if item.get("assignment_sha256") != _hash_record(item, "assignment_sha256"):
-                errors.append(f"assignment {assignment_id}: hash mismatch")
-            if item.get("role") not in REVIEW_ROLES:
-                errors.append(f"assignment {assignment_id}: unsupported role")
-            if item.get("state") not in ASSIGNMENT_STATES:
-                errors.append(f"assignment {assignment_id}: unsupported state")
-            if _assignment_transition(item) not in ASSIGNMENT_TRANSITIONS:
-                errors.append(f"assignment {assignment_id}: unsupported transition")
+        for item in records["assignments"]:
+            errors.extend(_collect_independent_assignment_errors(item))
 
     for assignment_id, item in assignments.items():
         for scope_item in item.get("scope", []):
@@ -737,15 +880,16 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
         unknown = sorted(set(item.get("evidence_ids", [])) - evidence_ids)
         if unknown:
             errors.append(f"statement {statement_id}: unknown evidence IDs {', '.join(unknown)}")
-        submitted_at = str(item.get("submitted_at") or "")
+        submitted_at = item.get("submitted_at")
         linked = [assignments.get(str(value)) for value in item.get("assignment_ids", [])]
-        if not linked or not any(
+        covering = lineage_trusted and any(
             record is not None
             and record.get("reviewer_id") == item.get("reviewer_id")
             and _scope_allows(record.get("scope", []), target_type, target_id)
             and _assignment_was_active_at(str(record.get("assignment_id")), submitted_at, assignments, successors)
             for record in linked
-        ):
+        )
+        if not covering:
             errors.append(f"statement {statement_id}: no valid covering assignment at submission time")
 
     seen_dispositions: set[str] = set()
@@ -766,24 +910,38 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
         linked = [assignments.get(str(value)) for value in item.get("assignment_ids", [])]
         target_type = str(statement.get("target_type")) if statement else ""
         target_id = str(statement.get("target_id")) if statement else ""
-        recorded_at = str(item.get("recorded_at") or "")
-        if not any(
+        recorded_at = item.get("recorded_at")
+        covering = lineage_trusted and any(
             record is not None
             and record.get("reviewer_id") == item.get("actor")
             and record.get("role") in DECISION_ROLES
             and _scope_allows(record.get("scope", []), target_type, target_id)
             and _assignment_was_active_at(str(record.get("assignment_id")), recorded_at, assignments, successors)
             for record in linked
-        ):
+        )
+        if not covering:
             errors.append(f"disposition {statement_id}: no valid covering decision assignment at disposition time")
 
     event_report = verify_chain(workspace.case_path(case_id) / "events.jsonl")
     if not event_report["valid"]:
         errors.extend(f"event chain: {error}" for error in event_report["errors"])
+    else:
+        try:
+            events = load_events(workspace.case_path(case_id) / "events.jsonl")
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            errors.append(f"event chain: unable to load events for assignment correspondence ({exc})")
+        else:
+            errors.extend(_verify_assignment_event_correspondence(assignments, events))
+
     open_statement_count = sum(statement_id not in seen_dispositions for statement_id in statements)
     stale_statement_count = sum(item.get("assessment_sha256") != assessment_sha256 for item in records["statements"])
-    active_assignment_count = sum(
-        item.get("state") == "ACTIVE" and assignment_id not in successors for assignment_id, item in assignments.items()
+    active_assignment_count = (
+        0
+        if not lineage_trusted
+        else sum(
+            item.get("state") == "ACTIVE" and assignment_id not in successors
+            for assignment_id, item in assignments.items()
+        )
     )
     return {
         "valid": not errors,
@@ -815,9 +973,11 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
 def render_review_markdown(workspace: Workspace, case_id: str) -> str:
     records = load_review_records(workspace, case_id)
     verification = verify_review_records(workspace, case_id)
+    lineage_trusted = True
     try:
         assignments, successors = _assignment_index(records["assignments"])
     except ValueError:
+        lineage_trusted = False
         assignments = {
             str(item.get("assignment_id")): item
             for item in records["assignments"]
@@ -852,11 +1012,10 @@ def render_review_markdown(workspace: Workspace, case_id: str) -> str:
     ]
     for item in records["assignments"]:
         assignment_id = str(item.get("assignment_id"))
-        effective_state = (
-            _effective_assignment_state(assignment_id, assignments, successors)
-            if assignment_id in assignments
-            else "INVALID"
-        )
+        if not lineage_trusted or assignment_id not in assignments:
+            effective_state = "INVALID"
+        else:
+            effective_state = _effective_assignment_state(assignment_id, assignments, successors)
         lines.append(
             f"| {assignment_id} | {item.get('reviewer_id')} | {item.get('role')} | "
             f"{', '.join(item.get('scope', []))} | {item.get('state')} | {effective_state} | "

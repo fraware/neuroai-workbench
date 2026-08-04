@@ -30,13 +30,13 @@ Verification rejects branching, cycles, unresolved predecessors, predecessor-has
 
 ### Transition authority
 
-The original assigning actor or a covering active decision-role assignment may supersede or revoke an assignment. An assigned reviewer may relinquish their own assignment through revocation. A reviewer cannot appoint a successor solely by holding the assignment. Decision-role self-assignment remains refused.
+The current-assignment assigner (the tip record's `assigned_by`) or a covering active decision-role assignment may supersede or revoke an assignment. An assigned reviewer may relinquish their own assignment through revocation. A reviewer cannot appoint a successor solely by holding the assignment. There is no perpetual root-assigner inheritance across supersessions. Decision-role self-assignment remains refused.
 
 These are local workflow checks. They do not authenticate the actor or establish institutional delegation.
 
 ### Historical validity
 
-Statements and dispositions retain the assignment IDs that authorized them. Verification evaluates whether the linked assignment was active at the statement or disposition timestamp. A later transition does not erase valid historical attribution, and a revoked or superseded assignment cannot authorize new records.
+Statements and dispositions retain the assignment IDs that authorized them. Verification evaluates whether the linked assignment was active on the half-open interval `[assigned_at, transition_at)` (or open-ended when there is no successor). At the exact transition instant the predecessor cannot authorize; the successor tip may. A later transition does not erase valid historical attribution, and a revoked or superseded assignment cannot authorize new records. Each assignment record must correspond to exactly one matching case event; missing, duplicate, mismatched, or orphan transition events fail verification without silent repair.
 
 ### Concurrency
 
@@ -62,7 +62,7 @@ Rejected because current state alone cannot explain which assignment authorized 
 
 ### Permit the assigned reviewer to name a successor
 
-Rejected because relinquishment and appointment are distinct actions. The local assignment holder may revoke their own assignment but may not create authority for another reviewer without the original assigner or a covering decision-role record.
+Rejected because relinquishment and appointment are distinct actions. The local assignment holder may revoke their own assignment but may not create authority for another reviewer without the current-assignment assigner or a covering decision-role record.
 
 ## Validation
 

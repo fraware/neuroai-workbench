@@ -19,11 +19,11 @@ Every successor binds the predecessor assignment ID and SHA-256, records the tra
 
 Effective authority is derived from the unique lineage tip. A predecessor with a `SUPERSEDES` successor is reported as `SUPERSEDED`. A predecessor with a `REVOKES` successor is reported as `REVOKED`. Only an active lineage tip may authorize a new statement or disposition.
 
-The original assigning actor or a covering active decision-role assignment may supersede an assignment. The assigned reviewer may relinquish their own assignment through revocation, yet may not appoint a successor. This is a local workflow rule and carries no external authority claim.
+The current-assignment assigner (tip `assigned_by`) or a covering active decision-role assignment may supersede an assignment. The assigned reviewer may relinquish their own assignment through revocation, yet may not appoint a successor. Prior assigners in the lineage do not retain perpetual transition authority after supersession. This is a local workflow rule and carries no external authority claim.
 
 ## Historical statements
 
-Statements retain the assignment IDs that authorized them. Later revocation or supersession does not erase a statement that was validly submitted while its assignment was active. Verification checks assignment activity at the statement or disposition timestamp, preserving historical attribution without granting a revoked assignment current authority.
+Statements retain the assignment IDs that authorized them. Later revocation or supersession does not erase a statement that was validly submitted while its assignment was active. Verification uses half-open intervals (`assigned_at <= t < transition_at`) so authority is unambiguous at the exact transition instant, preserving historical attribution without granting a revoked assignment current authority. Assignment records must match exactly one corresponding case event; verification never silently repairs mismatches.
 
 ## Roles and scopes
 
