@@ -23,6 +23,13 @@ REVIEW_ROLES = {
 }
 POSITIONS = {"AGREE", "AGREE_WITH_CONDITIONS", "DISAGREE", "ABSTAIN"}
 DISPOSITIONS = {"ACCEPTED", "PARTIALLY_ACCEPTED", "REJECTED", "DEFERRED"}
+APPEAL_TYPES = {
+    "RECONSIDERATION",
+    "PROCEDURAL_OBJECTION",
+    "MINORITY_REPORT",
+    "ABSTENTION_CLARIFICATION",
+}
+APPEAL_OUTCOMES = {"UPHELD", "PARTIALLY_UPHELD", "DENIED", "DEFERRED", "WITHDRAWN"}
 TARGET_TYPES = {"ASSESSMENT", "FINDING", "CLAIM", "DECISION", "GAP"}
 DECISION_ROLES = {"LEAD_ASSESSOR", "DECISION_AUTHORITY"}
 ASSIGNMENT_STATES = {"ACTIVE", "REVOKED"}
@@ -33,6 +40,9 @@ ASSIGNMENT_EVENT_ACTIONS = {
     "REVOKES": "REVIEW_ASSIGNMENT_REVOKED",
 }
 ASSIGNMENT_EVENT_ACTION_SET = frozenset(ASSIGNMENT_EVENT_ACTIONS.values())
+APPEAL_FILED_EVENT = "REVIEW_APPEAL_FILED"
+APPEAL_DISPOSED_EVENT = "REVIEW_APPEAL_DISPOSED"
+APPEAL_EVENT_ACTION_SET = frozenset({APPEAL_FILED_EVENT, APPEAL_DISPOSED_EVENT})
 
 
 def _hash_record(value: dict[str, Any], hash_field: str) -> str:
@@ -71,7 +81,7 @@ def _review_root(workspace: Workspace, case_id: str) -> Path:
     if not (case / "assessment.json").is_file():
         raise ValueError(f"Unknown case {case_id!r}")
     root = case / "reviews"
-    for name in ("assignments", "statements", "dispositions"):
+    for name in ("assignments", "statements", "dispositions", "appeals", "appeal_dispositions"):
         (root / name).mkdir(parents=True, exist_ok=True)
     return root
 
@@ -819,13 +829,333 @@ def dispose_review_statement(
         return {"disposition": record, "path": str(output)}
 
 
+def file_review_appeal(
+    workspace: Workspace,
+    case_id: str,
+    source_statement_id: str,
+    appeal_type: str,
+    grounds: str,
+    requested_resolution: str,
+    *,
+    appellant_id: str,
+    evidence_ids: list[str] | None = None,
+    actor: str | None = None,
+) -> dict[str, Any]:
+    """Append an immutable appeal that references a source statement without modifying it."""
+    ensure_identifier(source_statement_id, "statement ID")
+    ensure_identifier(appellant_id, "appellant ID")
+    if appeal_type not in APPEAL_TYPES:
+        raise ValueError(f"Unsupported appeal type {appeal_type!r}")
+    grounds = grounds.strip()
+    requested_resolution = requested_resolution.strip()
+    if not grounds:
+        raise ValueError("Appeal grounds must not be empty")
+    if not requested_resolution:
+        raise ValueError("Requested resolution must not be empty")
+    actor = actor or appellant_id
+    if actor != appellant_id:
+        raise ValueError("The recorded actor must match appellant_id in the local reference workflow")
+
+    case = workspace.case_path(case_id)
+    with case_mutation_lock(case):
+        assessment = workspace.load_case(case_id)
+        root = _review_root(workspace, case_id)
+        statement_path = root / "statements" / f"{source_statement_id}.json"
+        if not statement_path.is_file():
+            raise FileNotFoundError(f"Unknown review statement {source_statement_id}")
+        statement = json.loads(statement_path.read_text(encoding="utf-8"))
+        if statement.get("statement_sha256") != _hash_record(statement, "statement_sha256"):
+            raise ValueError("Source review statement hash is invalid")
+
+        for existing in _load_records(root / "appeals"):
+            if existing.get("source_statement_id") == source_statement_id:
+                raise ValueError(
+                    f"An appeal is already recorded for statement {source_statement_id}; "
+                    "duplicate appeals are refused without an explicit successor record."
+                )
+
+        target_type = str(statement.get("target_type"))
+        target_id = str(statement.get("target_id"))
+        assignments = _active_assignments(workspace, case_id, appellant_id)
+        if not any(_scope_allows(item.get("scope", []), target_type, target_id) for item in assignments):
+            raise ValueError(f"Appellant {appellant_id!r} has no active assignment covering {target_type}:{target_id}")
+
+        known_evidence = {str(item.get("evidence_id")) for item in assessment.get("evidence_register", [])}
+        refs = sorted(set(evidence_ids or []))
+        unknown = sorted(set(refs) - known_evidence)
+        if unknown:
+            raise ValueError(f"Unknown evidence IDs: {', '.join(unknown)}")
+
+        assessment_path = workspace.case_path(case_id) / "assessment.json"
+        filed_at = _review_timestamp()
+        seed = canonical_json_bytes(
+            {
+                "case_id": case_id,
+                "source_statement_id": source_statement_id,
+                "appellant_id": appellant_id,
+                "appeal_type": appeal_type,
+                "grounds": grounds,
+                "requested_resolution": requested_resolution,
+                "assessment_sha256": sha256_file(assessment_path),
+                "filed_at": filed_at,
+            }
+        )
+        appeal_id = f"RAP-{filed_at.replace(':', '').replace('-', '')}-{sha256_bytes(seed)[:12]}"
+        record = {
+            "schema_version": REVIEW_SCHEMA_VERSION,
+            "appeal_id": appeal_id,
+            "case_id": case_id,
+            "source_statement_id": source_statement_id,
+            "source_statement_sha256": statement["statement_sha256"],
+            "appellant_id": appellant_id,
+            "assignment_ids": sorted(item["assignment_id"] for item in assignments),
+            "appeal_type": appeal_type,
+            "grounds": grounds,
+            "requested_resolution": requested_resolution,
+            "evidence_ids": refs,
+            "assessment_sha256": sha256_file(assessment_path),
+            "filed_at": filed_at,
+            "actor": actor,
+            "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
+            "authority_boundary": (
+                "This appeal attributes a local workflow dissent record; it does not establish "
+                "legal, institutional, or scientific authority."
+            ),
+            "assessment_mutation": "NONE_PERFORMED_BY_APPEAL_RECORD",
+        }
+        record["appeal_sha256"] = _hash_record(record, "appeal_sha256")
+        output = root / "appeals" / f"{appeal_id}.json"
+        if output.exists():
+            raise ValueError(f"An identical review appeal already exists for this timestamp: {appeal_id}")
+        atomic_write_json(output, record)
+        append_event(
+            workspace.case_path(case_id) / "events.jsonl",
+            APPEAL_FILED_EVENT,
+            actor,
+            {
+                "appeal_id": appeal_id,
+                "source_statement_id": source_statement_id,
+                "source_statement_sha256": statement["statement_sha256"],
+                "appeal_type": appeal_type,
+                "appeal_sha256": record["appeal_sha256"],
+            },
+        )
+        return {"appeal": record, "path": str(output)}
+
+
+def dispose_review_appeal(
+    workspace: Workspace,
+    case_id: str,
+    appeal_id: str,
+    outcome: str,
+    rationale: str,
+    *,
+    actor: str,
+) -> dict[str, Any]:
+    """Append an immutable appeal disposition without modifying the appeal or assessment."""
+    ensure_identifier(appeal_id, "appeal ID")
+    ensure_identifier(actor, "actor ID")
+    if outcome not in APPEAL_OUTCOMES:
+        raise ValueError(f"Unsupported appeal outcome {outcome!r}")
+    rationale = rationale.strip()
+    if not rationale:
+        raise ValueError("Appeal disposition rationale must not be empty")
+
+    case = workspace.case_path(case_id)
+    with case_mutation_lock(case):
+        root = _review_root(workspace, case_id)
+        appeal_path = root / "appeals" / f"{appeal_id}.json"
+        if not appeal_path.is_file():
+            raise FileNotFoundError(f"Unknown review appeal {appeal_id}")
+        appeal = json.loads(appeal_path.read_text(encoding="utf-8"))
+        if appeal.get("appeal_sha256") != _hash_record(appeal, "appeal_sha256"):
+            raise ValueError("Review appeal hash is invalid")
+
+        statement_id = str(appeal.get("source_statement_id"))
+        statement_path = root / "statements" / f"{statement_id}.json"
+        if not statement_path.is_file():
+            raise FileNotFoundError(f"Unknown review statement {statement_id}")
+        statement = json.loads(statement_path.read_text(encoding="utf-8"))
+        if statement.get("statement_sha256") != appeal.get("source_statement_sha256"):
+            raise ValueError("Appeal source-statement digest no longer matches the statement record")
+
+        output = root / "appeal_dispositions" / f"{appeal_id}.json"
+        if output.exists():
+            raise ValueError(f"An appeal disposition is already recorded for {appeal_id}")
+
+        assignments = _active_assignments(workspace, case_id, actor)
+        target_type = str(statement.get("target_type"))
+        target_id = str(statement.get("target_id"))
+        authorized = any(
+            item.get("role") in DECISION_ROLES and _scope_allows(item.get("scope", []), target_type, target_id)
+            for item in assignments
+        )
+        if not authorized:
+            raise ValueError(f"Actor {actor!r} has no active decision role covering {target_type}:{target_id}")
+
+        record = {
+            "schema_version": REVIEW_SCHEMA_VERSION,
+            "appeal_id": appeal_id,
+            "appeal_sha256": appeal["appeal_sha256"],
+            "outcome": outcome,
+            "rationale": rationale,
+            "actor": actor,
+            "decision_assignment_ids": sorted(item["assignment_id"] for item in assignments),
+            "recorded_at": _review_timestamp(),
+            "assessment_mutation": "NONE_PERFORMED_BY_APPEAL_DISPOSITION",
+            "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
+            "authority_boundary": (
+                "This disposition attributes a local workflow outcome; it does not establish "
+                "legal or institutional authority and does not mutate the assessment."
+            ),
+        }
+        record["appeal_disposition_sha256"] = _hash_record(record, "appeal_disposition_sha256")
+        atomic_write_json(output, record)
+        append_event(
+            workspace.case_path(case_id) / "events.jsonl",
+            APPEAL_DISPOSED_EVENT,
+            actor,
+            {
+                "appeal_id": appeal_id,
+                "outcome": outcome,
+                "appeal_sha256": appeal["appeal_sha256"],
+                "appeal_disposition_sha256": record["appeal_disposition_sha256"],
+            },
+        )
+        return {"appeal_disposition": record, "path": str(output)}
+
+
+def list_review_appeals(workspace: Workspace, case_id: str) -> dict[str, Any]:
+    """List appeals with their disposition status for local workflow inspection."""
+    records = load_review_records(workspace, case_id)
+    dispositions = {str(item.get("appeal_id")): item for item in records["appeal_dispositions"]}
+    statements = {str(item.get("statement_id")): item for item in records["statements"]}
+    items: list[dict[str, Any]] = []
+    for appeal in records["appeals"]:
+        appeal_id = str(appeal.get("appeal_id"))
+        disposition = dispositions.get(appeal_id)
+        statement = statements.get(str(appeal.get("source_statement_id")), {})
+        items.append(
+            {
+                "appeal_id": appeal_id,
+                "source_statement_id": appeal.get("source_statement_id"),
+                "source_position": statement.get("position"),
+                "appellant_id": appeal.get("appellant_id"),
+                "appeal_type": appeal.get("appeal_type"),
+                "grounds": appeal.get("grounds"),
+                "requested_resolution": appeal.get("requested_resolution"),
+                "filed_at": appeal.get("filed_at"),
+                "outcome": disposition.get("outcome") if disposition else "OPEN",
+                "disposition_rationale": disposition.get("rationale") if disposition else None,
+                "disposition_actor": disposition.get("actor") if disposition else None,
+                "appeal_sha256": appeal.get("appeal_sha256"),
+                "appeal_disposition_sha256": disposition.get("appeal_disposition_sha256") if disposition else None,
+            }
+        )
+    return {
+        "case_id": case_id,
+        "appeals": items,
+        "counts": {
+            "appeals": len(items),
+            "open_appeals": sum(item["outcome"] == "OPEN" for item in items),
+            "disposed_appeals": sum(item["outcome"] != "OPEN" for item in items),
+        },
+        "boundary": (
+            "Appeal listings attribute local workflow dissent records. They do not authenticate "
+            "identities or establish institutional decision authority."
+        ),
+    }
+
+
 def load_review_records(workspace: Workspace, case_id: str) -> dict[str, list[dict[str, Any]]]:
     root = _review_root(workspace, case_id)
     return {
         "assignments": _load_records(root / "assignments"),
         "statements": _load_records(root / "statements"),
         "dispositions": _load_records(root / "dispositions"),
+        "appeals": _load_records(root / "appeals"),
+        "appeal_dispositions": _load_records(root / "appeal_dispositions"),
     }
+
+
+def _verify_appeal_event_correspondence(
+    appeals: dict[str, dict[str, Any]],
+    dispositions: dict[str, dict[str, Any]],
+    events: list[dict[str, Any]],
+) -> list[str]:
+    """Require exactly one matching filed/disposed event per appeal record; never silent-repair."""
+    errors: list[str] = []
+    appeal_events = [event for event in events if event.get("action") in APPEAL_EVENT_ACTION_SET]
+    matched_indices: set[int] = set()
+
+    for appeal_id, item in appeals.items():
+        matches = [
+            (index, event)
+            for index, event in enumerate(appeal_events)
+            if event.get("action") == APPEAL_FILED_EVENT and (event.get("payload") or {}).get("appeal_id") == appeal_id
+        ]
+        if not matches:
+            errors.append(f"appeal {appeal_id}: missing matching {APPEAL_FILED_EVENT} event")
+        elif len(matches) > 1:
+            errors.append(f"appeal {appeal_id}: duplicate appeal filed events")
+            matched_indices.update(index for index, _event in matches)
+        else:
+            index, event = matches[0]
+            matched_indices.add(index)
+            payload = event.get("payload") or {}
+            checks = [
+                (payload.get("appeal_sha256") == item.get("appeal_sha256"), "event appeal digest mismatch"),
+                (event.get("actor") == item.get("actor"), "event actor mismatch"),
+                (
+                    payload.get("source_statement_id") == item.get("source_statement_id"),
+                    "event source statement mismatch",
+                ),
+                (
+                    payload.get("source_statement_sha256") == item.get("source_statement_sha256"),
+                    "event source statement digest mismatch",
+                ),
+                (payload.get("appeal_type") == item.get("appeal_type"), "event appeal type mismatch"),
+            ]
+            for ok, message in checks:
+                if not ok:
+                    errors.append(f"appeal {appeal_id}: {message}")
+
+    for appeal_id, item in dispositions.items():
+        matches = [
+            (index, event)
+            for index, event in enumerate(appeal_events)
+            if event.get("action") == APPEAL_DISPOSED_EVENT
+            and (event.get("payload") or {}).get("appeal_id") == appeal_id
+        ]
+        if not matches:
+            errors.append(f"appeal disposition {appeal_id}: missing matching {APPEAL_DISPOSED_EVENT} event")
+        elif len(matches) > 1:
+            errors.append(f"appeal disposition {appeal_id}: duplicate appeal disposition events")
+            matched_indices.update(index for index, _event in matches)
+        else:
+            index, event = matches[0]
+            matched_indices.add(index)
+            payload = event.get("payload") or {}
+            checks = [
+                (
+                    payload.get("appeal_disposition_sha256") == item.get("appeal_disposition_sha256"),
+                    "event disposition digest mismatch",
+                ),
+                (payload.get("appeal_sha256") == item.get("appeal_sha256"), "event appeal digest mismatch"),
+                (event.get("actor") == item.get("actor"), "event actor mismatch"),
+                (payload.get("outcome") == item.get("outcome"), "event outcome mismatch"),
+            ]
+            for ok, message in checks:
+                if not ok:
+                    errors.append(f"appeal disposition {appeal_id}: {message}")
+
+    for index, event in enumerate(appeal_events):
+        if index in matched_indices:
+            continue
+        payload = event.get("payload") or {}
+        orphan_id = payload.get("appeal_id") or "?"
+        errors.append(f"appeal event {orphan_id}: orphan appeal event without matching record")
+    return errors
 
 
 def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
@@ -922,6 +1252,76 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
         if not covering:
             errors.append(f"disposition {statement_id}: no valid covering decision assignment at disposition time")
 
+    appeals = {str(item.get("appeal_id")): item for item in records["appeals"]}
+    seen_appeal_sources: set[str] = set()
+    for appeal_id, item in appeals.items():
+        if item.get("appeal_sha256") != _hash_record(item, "appeal_sha256"):
+            errors.append(f"appeal {appeal_id}: hash mismatch")
+        if item.get("appeal_type") not in APPEAL_TYPES:
+            errors.append(f"appeal {appeal_id}: unsupported appeal type")
+        if item.get("actor") != item.get("appellant_id"):
+            errors.append(f"appeal {appeal_id}: actor does not match appellant")
+        source_id = str(item.get("source_statement_id"))
+        if source_id in seen_appeal_sources:
+            errors.append(f"appeal {appeal_id}: duplicate appeal for statement {source_id}")
+        seen_appeal_sources.add(source_id)
+        statement = statements.get(source_id)
+        if statement is None:
+            errors.append(f"appeal {appeal_id}: source statement missing")
+        elif item.get("source_statement_sha256") != statement.get("statement_sha256"):
+            errors.append(f"appeal {appeal_id}: source statement hash mismatch")
+        else:
+            target_type = str(statement.get("target_type"))
+            target_id = str(statement.get("target_id"))
+            filed_at = item.get("filed_at")
+            linked = [assignments.get(str(value)) for value in item.get("assignment_ids", [])]
+            covering = lineage_trusted and any(
+                record is not None
+                and record.get("reviewer_id") == item.get("appellant_id")
+                and _scope_allows(record.get("scope", []), target_type, target_id)
+                and _assignment_was_active_at(str(record.get("assignment_id")), filed_at, assignments, successors)
+                for record in linked
+            )
+            if not covering:
+                errors.append(f"appeal {appeal_id}: no valid covering assignment at filing time")
+        unknown = sorted(set(item.get("evidence_ids", [])) - evidence_ids)
+        if unknown:
+            errors.append(f"appeal {appeal_id}: unknown evidence IDs {', '.join(unknown)}")
+        if item.get("assessment_sha256") != assessment_sha256:
+            warnings.append(f"appeal {appeal_id}: assessment has changed since filing")
+
+    seen_appeal_dispositions: set[str] = set()
+    appeal_dispositions = {str(item.get("appeal_id")): item for item in records["appeal_dispositions"]}
+    for item in records["appeal_dispositions"]:
+        appeal_id = str(item.get("appeal_id"))
+        if appeal_id in seen_appeal_dispositions:
+            errors.append(f"appeal {appeal_id}: duplicate appeal disposition")
+        seen_appeal_dispositions.add(appeal_id)
+        if item.get("appeal_disposition_sha256") != _hash_record(item, "appeal_disposition_sha256"):
+            errors.append(f"appeal disposition {appeal_id}: hash mismatch")
+        appeal = appeals.get(appeal_id)
+        if appeal is None:
+            errors.append(f"appeal disposition {appeal_id}: appeal missing")
+        elif item.get("appeal_sha256") != appeal.get("appeal_sha256"):
+            errors.append(f"appeal disposition {appeal_id}: appeal hash mismatch")
+        if item.get("outcome") not in APPEAL_OUTCOMES:
+            errors.append(f"appeal disposition {appeal_id}: unsupported outcome")
+        statement = statements.get(str(appeal.get("source_statement_id"))) if appeal else None
+        linked = [assignments.get(str(value)) for value in item.get("decision_assignment_ids", [])]
+        target_type = str(statement.get("target_type")) if statement else ""
+        target_id = str(statement.get("target_id")) if statement else ""
+        recorded_at = item.get("recorded_at")
+        covering = lineage_trusted and any(
+            record is not None
+            and record.get("reviewer_id") == item.get("actor")
+            and record.get("role") in DECISION_ROLES
+            and _scope_allows(record.get("scope", []), target_type, target_id)
+            and _assignment_was_active_at(str(record.get("assignment_id")), recorded_at, assignments, successors)
+            for record in linked
+        )
+        if not covering:
+            errors.append(f"appeal disposition {appeal_id}: no valid covering decision assignment at disposition time")
+
     event_report = verify_chain(workspace.case_path(case_id) / "events.jsonl")
     if not event_report["valid"]:
         errors.extend(f"event chain: {error}" for error in event_report["errors"])
@@ -932,6 +1332,7 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
             errors.append(f"event chain: unable to load events for assignment correspondence ({exc})")
         else:
             errors.extend(_verify_assignment_event_correspondence(assignments, events))
+            errors.extend(_verify_appeal_event_correspondence(appeals, appeal_dispositions, events))
 
     open_statement_count = sum(statement_id not in seen_dispositions for statement_id in statements)
     stale_statement_count = sum(item.get("assessment_sha256") != assessment_sha256 for item in records["statements"])
@@ -950,7 +1351,10 @@ def verify_review_records(workspace: Workspace, case_id: str) -> dict[str, Any]:
             "assignments": len(records["assignments"]),
             "statements": len(records["statements"]),
             "dispositions": len(records["dispositions"]),
+            "appeals": len(records["appeals"]),
+            "appeal_dispositions": len(records["appeal_dispositions"]),
             "open_statements": open_statement_count,
+            "open_appeals": sum(appeal_id not in seen_appeal_dispositions for appeal_id in appeals),
             "disagreements": sum(item.get("position") == "DISAGREE" for item in records["statements"]),
             "stale_statements": stale_statement_count,
         },
@@ -985,6 +1389,8 @@ def render_review_markdown(workspace: Workspace, case_id: str) -> str:
         }
         successors = {}
     dispositions = {item.get("statement_id"): item for item in records["dispositions"]}
+    appeal_dispositions = {item.get("appeal_id"): item for item in records["appeal_dispositions"]}
+    statements = {item.get("statement_id"): item for item in records["statements"]}
     lines = [
         f"# Review record: {case_id}",
         "",
@@ -1003,6 +1409,8 @@ def render_review_markdown(workspace: Workspace, case_id: str) -> str:
         f"- Statements: {verification['counts']['statements']}",
         f"- Disagreements: {verification['counts']['disagreements']}",
         f"- Open statements: {verification['counts']['open_statements']}",
+        f"- Appeals: {verification['counts']['appeals']}",
+        f"- Open appeals: {verification['counts']['open_appeals']}",
         f"- Statements tied to an earlier assessment hash: {verification['counts']['stale_statements']}",
         "",
         "## Assignment lineage",
@@ -1038,6 +1446,29 @@ def render_review_markdown(workspace: Workspace, case_id: str) -> str:
             f"| {item.get('statement_id')} | {item.get('reviewer_id')} | "
             f"{item.get('target_type')}:{item.get('target_id')} | {item.get('position')} | {rationale} | "
             f"{disposition.get('disposition', 'OPEN')} | {disposition_rationale} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Appeals and dissent preservation",
+            "",
+            (
+                "| Appeal | Source statement | Original position | Appellant | Type | Grounds | "
+                "Requested resolution | Outcome | Outcome rationale |"
+            ),
+            "|---|---|---|---|---|---|---|---|---|",
+        ]
+    )
+    for item in records["appeals"]:
+        disposition = appeal_dispositions.get(item.get("appeal_id"), {})
+        statement = statements.get(item.get("source_statement_id"), {})
+        grounds = str(item.get("grounds", "")).replace("|", "\\|").replace("\n", " ")
+        requested = str(item.get("requested_resolution", "")).replace("|", "\\|").replace("\n", " ")
+        outcome_rationale = str(disposition.get("rationale", "")).replace("|", "\\|").replace("\n", " ")
+        lines.append(
+            f"| {item.get('appeal_id')} | {item.get('source_statement_id')} | "
+            f"{statement.get('position', '—')} | {item.get('appellant_id')} | {item.get('appeal_type')} | "
+            f"{grounds} | {requested} | {disposition.get('outcome', 'OPEN')} | {outcome_rationale} |"
         )
     if verification["errors"]:
         lines.extend(["", "## Integrity errors", ""])

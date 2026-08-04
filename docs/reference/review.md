@@ -1,6 +1,6 @@
 # Collaborative review records
 
-The workbench records local reviewer assignments, assignment lineage, review statements, disagreements, and human dispositions without changing the assessment automatically.
+The workbench records local reviewer assignments, assignment lineage, review statements, disagreements, appeals, and human dispositions without changing the assessment automatically.
 
 ## Authority boundary
 
@@ -39,11 +39,21 @@ Statements are immutable records. They do not edit the assessment.
 
 A lead assessor or decision authority with a covering effective assignment may record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review.
 
+## Appeals and dissent preservation
+
+Appeals are append-only records under `reviews/appeals/`. Each appeal binds a source statement ID and SHA-256, records the appellant, covering assignment IDs, appeal type, grounds, requested resolution, evidence references, and assessment hash, and emits a case event. Supported appeal types are `RECONSIDERATION`, `PROCEDURAL_OBJECTION`, `MINORITY_REPORT`, and `ABSTENTION_CLARIFICATION`.
+
+Filing an appeal does not modify the source statement, prior disposition, or assessment. Disposing an original statement does not erase dissent; an appeal may be filed after a statement disposition. Duplicate appeals for the same source statement are refused without an explicit successor record.
+
+Appeal dispositions are append-only under `reviews/appeal_dispositions/`. Only an active covering decision role may dispose an appeal. Authority is evaluated at disposition time. Outcomes are `UPHELD`, `PARTIALLY_UPHELD`, `DENIED`, `DEFERRED`, and `WITHDRAWN`. Disposing an appeal does not modify the appeal bytes and does not grant assessment-edit authority.
+
+Reports display the original position, appeal type and grounds, requested resolution, outcome, and rationales. Local reviewer and decision-role identifiers remain claimed workflow attributions under `LOCAL_UNAUTHENTICATED_ATTRIBUTION`; they do not authenticate a person or establish institutional authority.
+
 ## Integrity and concurrency
 
-Assignment creation, supersession, revocation, statement submission, and disposition are serialized through the case mutation lock. This prevents cooperative writers from creating two successors or accepting a statement concurrently with revocation. Assignment, statement, and disposition records remain individually hashed and linked to the case event chain.
+Assignment creation, supersession, revocation, statement submission, disposition, appeal filing, and appeal disposition are serialized through the case mutation lock. This prevents cooperative writers from creating two successors or accepting a statement or appeal concurrently with revocation. Assignment, statement, disposition, appeal, and appeal-disposition records remain individually hashed and linked to the case event chain.
 
-Verification detects altered records, unresolved targets, unknown evidence references, invalid assignment lineages, missing assignment authority at the recorded time, duplicate dispositions, and invalid decision-role linkage.
+Verification detects altered records, unresolved targets, unknown evidence references, invalid assignment lineages, missing assignment authority at the recorded time, duplicate dispositions, invalid decision-role linkage, and missing appeal or appeal-disposition event correspondence.
 
 Hash validity proves record consistency only. It does not prove reviewer identity, independence, reasoning quality, or institutional authority.
 
@@ -67,6 +77,17 @@ neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGR
 
 neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED \
   --rationale "Record the disagreement; edit separately." --actor lead-assessor
+
+neuroai-workbench review-appeal-file WORKSPACE CASE STATEMENT_ID MINORITY_REPORT \
+  --grounds "The minority position remains material." \
+  --requested-resolution "Preserve the disagreement in the final record." \
+  --appellant-id REVIEWER
+
+neuroai-workbench review-appeal-dispose WORKSPACE CASE APPEAL_ID DENIED \
+  --rationale "The original disposition stands; dissent remains recorded." \
+  --actor lead-assessor
+
+neuroai-workbench review-appeal-list WORKSPACE CASE
 
 neuroai-workbench review-verify WORKSPACE CASE
 neuroai-workbench review-report WORKSPACE CASE --output review.md

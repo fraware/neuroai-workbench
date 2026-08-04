@@ -41,7 +41,10 @@ from .programme_adapter import adapt_programme_file
 from .reports import write_assessment_markdown, write_gap_markdown
 from .review import (
     create_review_assignment,
+    dispose_review_appeal,
     dispose_review_statement,
+    file_review_appeal,
+    list_review_appeals,
     render_review_markdown,
     revoke_review_assignment,
     submit_review_statement,
@@ -315,6 +318,32 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--actor", required=True)
     p.add_argument("--out")
 
+    p = sub.add_parser("review-appeal-file", help="File an append-only appeal against a review statement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("source_statement_id")
+    p.add_argument("appeal_type")
+    p.add_argument("--grounds", required=True)
+    p.add_argument("--requested-resolution", required=True)
+    p.add_argument("--appellant-id", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--actor")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-appeal-dispose", help="Record an authorized disposition for a review appeal")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("appeal_id")
+    p.add_argument("outcome")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-appeal-list", help="List appeals and dissent preservation outcomes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("--out")
+
     p = sub.add_parser("review-verify", help="Verify review records, role linkage, and event-chain integrity")
     p.add_argument("workspace")
     p.add_argument("case_id")
@@ -542,6 +571,38 @@ def main(argv: list[str] | None = None) -> int:
                     args.rationale,
                     actor=args.actor,
                 ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-file":
+            emit(
+                file_review_appeal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.source_statement_id,
+                    args.appeal_type,
+                    args.grounds,
+                    args.requested_resolution,
+                    appellant_id=args.appellant_id,
+                    evidence_ids=args.evidence_id,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-dispose":
+            emit(
+                dispose_review_appeal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.appeal_id,
+                    args.outcome,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-list":
+            emit(
+                list_review_appeals(_workspace(args.workspace), args.case_id),
                 Path(args.out) if args.out else None,
             )
         elif args.command == "review-verify":
