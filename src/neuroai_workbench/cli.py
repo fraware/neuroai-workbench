@@ -11,6 +11,7 @@ from typing import Any, cast
 
 from . import __version__
 from .assistance import (
+    apply_assistance_proposal,
     create_assistance_request,
     dispose_assistance_response,
     record_assistance_response,
@@ -40,6 +41,7 @@ from .observatory import (
 from .programme_adapter import adapt_programme_file
 from .reports import write_assessment_markdown, write_gap_markdown
 from .review import (
+    apply_review_proposal,
     create_review_assignment,
     dispose_review_appeal,
     dispose_review_statement,
@@ -254,6 +256,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--actor", default="cli-user")
     p.add_argument("--out")
 
+    p = sub.add_parser(
+        "assist-apply",
+        help="Apply an accepted assistance proposal through an ordinary assessment edit",
+    )
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--expected-assessment-sha256", required=True)
+    p.add_argument("--patches-file", required=True, help="JSON list of {target_path, value} patches")
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--allow-invalid", action="store_true")
+    p.add_argument("--out")
+
     p = sub.add_parser("assist-verify", help="Verify request, response, and disposition integrity")
     p.add_argument("workspace")
     p.add_argument("case_id")
@@ -316,6 +331,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("disposition")
     p.add_argument("--rationale", required=True)
     p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser(
+        "review-apply",
+        help="Apply an accepted review proposal through an ordinary assessment edit",
+    )
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("statement_id")
+    p.add_argument("--expected-assessment-sha256", required=True)
+    p.add_argument("--patches-file", required=True, help="JSON list of {target_path, value} patches")
+    p.add_argument("--actor", required=True)
+    p.add_argument("--allow-invalid", action="store_true")
     p.add_argument("--out")
 
     p = sub.add_parser("review-appeal-file", help="File an append-only appeal against a review statement")
@@ -573,6 +601,20 @@ def main(argv: list[str] | None = None) -> int:
                 ),
                 Path(args.out) if args.out else None,
             )
+        elif args.command == "review-apply":
+            patches = json.loads(Path(args.patches_file).read_text(encoding="utf-8"))
+            emit(
+                apply_review_proposal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.statement_id,
+                    actor=args.actor,
+                    expected_assessment_sha256=args.expected_assessment_sha256,
+                    field_patches=patches,
+                    require_valid=not args.allow_invalid,
+                ),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "review-appeal-file":
             emit(
                 file_review_appeal(
@@ -705,6 +747,18 @@ def main(argv: list[str] | None = None) -> int:
                 args.disposition,
                 args.notes,
                 actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-apply":
+            patches = json.loads(Path(args.patches_file).read_text(encoding="utf-8"))
+            result = apply_assistance_proposal(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                actor=args.actor,
+                expected_assessment_sha256=args.expected_assessment_sha256,
+                field_patches=patches,
+                require_valid=not args.allow_invalid,
             )
             emit(result, Path(args.out) if args.out else None)
         elif args.command == "assist-verify":

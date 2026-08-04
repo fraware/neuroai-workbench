@@ -37,7 +37,7 @@ Statements are immutable records. They do not edit the assessment.
 
 ## Dispositions
 
-A lead assessor or decision authority with a covering effective assignment may record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review.
+A lead assessor or decision authority with a covering effective assignment may record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review. `review-apply` bridges `ACCEPTED` or `PARTIALLY_ACCEPTED` dispositions into that ordinary edit with explicit field patches, optimistic concurrency, recoverable prior assessment history, and a `REVIEW_PROPOSAL_APPLIED` event; it leaves statement and disposition bytes unchanged.
 
 ## Appeals and dissent preservation
 
@@ -77,6 +77,11 @@ neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGR
 
 neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED \
   --rationale "Record the disagreement; edit separately." --actor lead-assessor
+
+neuroai-workbench review-apply WORKSPACE CASE STATEMENT_ID \
+  --expected-assessment-sha256 CURRENT_SHA256 \
+  --patches-file patches.json \
+  --actor lead-assessor
 
 neuroai-workbench review-appeal-file WORKSPACE CASE STATEMENT_ID MINORITY_REPORT \
   --grounds "The minority position remains material." \

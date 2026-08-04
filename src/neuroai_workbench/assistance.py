@@ -6,6 +6,7 @@ import uuid
 from pathlib import Path
 from typing import Any, cast
 
+from .assessment_paths import apply_field_patches, normalize_target_path
 from .events import append_event
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file, utc_now
 from .validation import validate_assessment
@@ -20,7 +21,9 @@ TASK_TYPES = {
     "DRAFT_REPORT_SECTION",
 }
 DISPOSITIONS = {"ACCEPTED_AS_DRAFT", "PARTIALLY_USED", "REJECTED"}
+APPLYABLE_DISPOSITIONS = frozenset({"ACCEPTED_AS_DRAFT", "PARTIALLY_USED"})
 PENDING_REVIEW_STATE = "PENDING_REVIEW"
+ASSISTANCE_PROPOSAL_APPLIED_EVENT = "ASSISTANCE_PROPOSAL_APPLIED"
 SENSITIVE_PATTERNS = (
     ("PRIVATE_KEY", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
     ("AWS_ACCESS_KEY", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
@@ -53,6 +56,7 @@ def _case_assistance_dir(workspace: Workspace, case_id: str) -> Path:
     (root / "requests").mkdir(parents=True, exist_ok=True)
     (root / "responses").mkdir(parents=True, exist_ok=True)
     (root / "dispositions").mkdir(parents=True, exist_ok=True)
+    (root / "applications").mkdir(parents=True, exist_ok=True)
     return root
 
 
@@ -397,4 +401,165 @@ def verify_assistance_record(workspace: Workspace, case_id: str, request_id: str
         "disposition_recorded": disposition_path.exists(),
         "errors": errors,
         "boundary": "Integrity verification confirms record linkage only; it does not validate the model's substantive suggestions.",
+    }
+
+
+def _normalize_field_patches(field_patches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not isinstance(field_patches, list) or not field_patches:
+        raise ValueError("Explicit field_patches are required; acceptance is not application")
+    normalized: list[dict[str, Any]] = []
+    for index, patch in enumerate(field_patches):
+        if not isinstance(patch, dict):
+            raise ValueError(f"field_patches[{index}] must be an object")
+        path = normalize_target_path(str(patch.get("target_path", "")))
+        if "value" not in patch:
+            raise ValueError(f"field_patches[{index}] requires value")
+        normalized.append({"target_path": path, "value": patch["value"]})
+    return normalized
+
+
+def apply_assistance_proposal(
+    workspace: Workspace,
+    case_id: str,
+    request_id: str,
+    *,
+    actor: str,
+    expected_assessment_sha256: str,
+    field_patches: list[dict[str, Any]],
+    require_valid: bool = True,
+) -> dict[str, Any]:
+    """Apply a human-disposed assistance proposal through ordinary ``save_case``.
+
+    Disposition remains separate from assessment authority. ``ACCEPTED_AS_DRAFT`` and
+    ``PARTIALLY_USED`` stay draft dispositions until this explicit apply command supplies
+    field patches. Proposal and disposition bytes are left unchanged. No model is invoked.
+    """
+    ensure_identifier(request_id, "request ID")
+    ensure_identifier(actor, "actor ID")
+    if not expected_assessment_sha256 or not isinstance(expected_assessment_sha256, str):
+        raise ValueError("expected_assessment_sha256 is required")
+    patches = _normalize_field_patches(field_patches)
+
+    root = _case_assistance_dir(workspace, case_id)
+    application_path = root / "applications" / f"{request_id}.json"
+    if application_path.exists():
+        raise ValueError(f"Assistance proposal {request_id} has already been applied")
+
+    request = load_assistance_request(workspace, case_id, request_id)
+    if request.get("request_sha256") != _hash_record(request, "request_sha256"):
+        raise ValueError("Assistance request hash is invalid")
+
+    response_path = root / "responses" / f"{request_id}.json"
+    if not response_path.is_file():
+        raise FileNotFoundError(f"No response recorded for {request_id}")
+    response = json.loads(response_path.read_text(encoding="utf-8"))
+    if response.get("response_sha256") != _hash_record(response, "response_sha256"):
+        raise ValueError("Assistance response hash is invalid")
+
+    disposition_path = root / "dispositions" / f"{request_id}.json"
+    if not disposition_path.is_file():
+        raise ValueError(f"No disposition recorded for {request_id}; acceptance is required before apply")
+    disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
+    if disposition.get("disposition_sha256") != _hash_record(disposition, "disposition_sha256"):
+        raise ValueError("Assistance disposition hash is invalid")
+    if disposition.get("response_sha256") != response.get("response_sha256"):
+        raise ValueError("Disposition does not reference the current response hash")
+    disposition_value = disposition.get("disposition")
+    if disposition_value not in APPLYABLE_DISPOSITIONS:
+        raise ValueError(
+            f"Disposition {disposition_value!r} cannot be applied; "
+            "only ACCEPTED_AS_DRAFT or PARTIALLY_USED may be applied with explicit field patches"
+        )
+
+    assessment_path = workspace.case_path(case_id) / "assessment.json"
+    current_sha = sha256_file(assessment_path)
+    if current_sha != expected_assessment_sha256:
+        raise ValueError("Stale assessment: expected_assessment_sha256 does not match the current assessment")
+    if request.get("assessment_sha256") != current_sha:
+        raise ValueError(
+            "ASSESSMENT_DRIFT: assistance request assessment_sha256 no longer matches the current assessment"
+        )
+
+    suggestions = response.get("output", {}).get("suggestions")
+    if not isinstance(suggestions, list):
+        raise ValueError("Assistance response suggestions are missing")
+    allowed_paths = {
+        normalize_target_path(str(item.get("target_path")))
+        for item in suggestions
+        if isinstance(item, dict) and item.get("target_path")
+    }
+    for patch in patches:
+        if patch["target_path"] not in allowed_paths:
+            raise ValueError(f"Field path outside proposal: {patch['target_path']}")
+
+    request_path = root / "requests" / f"{request_id}.json"
+    proposal_bytes_before = request_path.read_bytes()
+    response_bytes_before = response_path.read_bytes()
+    disposition_bytes_before = disposition_path.read_bytes()
+
+    assessment = workspace.load_case(case_id)
+    patched = apply_field_patches(assessment, patches)
+    planned_bytes = json.dumps(patched, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
+    planned_after = sha256_bytes(planned_bytes)
+    applied_at = utc_now()
+    application: dict[str, Any] = {
+        "schema_version": ASSISTANCE_SCHEMA_VERSION,
+        "application_id": f"APP-{request_id}",
+        "request_id": request_id,
+        "request_sha256": request["request_sha256"],
+        "response_sha256": response["response_sha256"],
+        "disposition": disposition_value,
+        "disposition_sha256": disposition["disposition_sha256"],
+        "actor": actor,
+        "applied_at": applied_at,
+        "field_patches": patches,
+        "before_assessment_sha256": current_sha,
+        "after_assessment_sha256": planned_after,
+        "assessment_mutation": "ORDINARY_SAVE_CASE",
+        "model_invocation": "NONE",
+        "authority_boundary": (
+            "Application records a human-controlled assessment edit provenance link only. "
+            "It does not grant the model decision authority and does not rewrite assistance records."
+        ),
+    }
+    application["application_sha256"] = _hash_record(application, "application_sha256")
+    event_metadata = {
+        "proposal_kind": "ASSISTANCE",
+        "proposal_id": request_id,
+        "proposal_sha256": request["request_sha256"],
+        "disposition_sha256": disposition["disposition_sha256"],
+        "response_sha256": response["response_sha256"],
+        "disposition": disposition_value,
+        "applied_paths": [item["target_path"] for item in patches],
+        "model_invocation": "NONE",
+        "before_assessment_sha256": current_sha,
+        "after_assessment_sha256": planned_after,
+        "application_sha256": application["application_sha256"],
+    }
+    save_result = workspace.save_case(
+        case_id,
+        patched,
+        actor=actor,
+        require_valid=require_valid,
+        expected_sha256=expected_assessment_sha256,
+        event_metadata=event_metadata,
+        additional_events=[(ASSISTANCE_PROPOSAL_APPLIED_EVENT, event_metadata)],
+        exclusive_records=[(application_path, application)],
+    )
+    if save_result.get("after_sha256") != planned_after:
+        raise RuntimeError("Assessment digest after ordinary save did not match the planned apply digest")
+    if request_path.read_bytes() != proposal_bytes_before:
+        raise RuntimeError("Assistance request bytes changed during apply")
+    if response_path.read_bytes() != response_bytes_before:
+        raise RuntimeError("Assistance response bytes changed during apply")
+    if disposition_path.read_bytes() != disposition_bytes_before:
+        raise RuntimeError("Assistance disposition bytes changed during apply")
+    return {
+        "application": application,
+        "path": str(application_path),
+        "save": save_result,
+        "boundary": (
+            "Assistance disposition remains separate from assessment authority. "
+            "This record links an ordinary assessment edit to a human-accepted proposal."
+        ),
     }

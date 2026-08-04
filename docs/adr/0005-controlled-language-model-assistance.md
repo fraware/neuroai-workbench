@@ -45,7 +45,7 @@ The first implementation uses deterministic prompt-package export and response i
 9. records `disclosure_policy: ATTESTATION_PLUS_SECRET_SCAN_ONLY` after scanning the prompt and full exported context JSON for obvious secret patterns;
 10. rejects response import when the request `assessment_sha256` no longer matches the current assessment.
 
-Field-level application of accepted drafts remains a separate future workflow and must use the ordinary controlled assessment-edit path. Field-level classification is required before any provider adapter; attestation plus secret scan is not proof that context is public or synthetic.
+Field-level application of accepted drafts uses the ordinary controlled assessment-edit path (`assist-apply` / `review-apply`): optimistic concurrency, explicit field patches, recoverable prior assessment history on `save_case`, and a provenance event. Disposition remains separate from assessment authority. Field-level classification is required before any provider adapter; attestation plus secret scan is not proof that context is public or synthetic.
 
 ## Consequences
 

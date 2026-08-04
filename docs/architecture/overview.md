@@ -34,7 +34,7 @@ flowchart LR
 - `observatory.py` validates and imports full baselines and compact successor snapshots without overwriting predecessors.
 - `review.py` records claimed local review assignments, statements, disagreements, appeals, and human dispositions without mutating assessments or authenticating identities.
 - `exchange.py` creates minimum-necessary evidence-custodian requests and records out-of-band holder responses without transferring evidence bytes.
-- `assistance.py` records bounded provider-neutral model requests, candidate responses, hashes, and human dispositions without calling a provider or granting decision authority.
+- `assistance.py` records bounded provider-neutral model requests, candidate responses, hashes, and human dispositions without calling a provider or granting decision authority. Accepted drafts are applied only through an explicit ordinary assessment edit.
 - `reports.py` renders deterministic assessment, evidence-gap, and review projections from stored records.
 - `server.py` exposes the local HTTP API and static application.
 - `cli.py` provides reproducible command-line operations.
@@ -57,13 +57,17 @@ workspace/
         dispositions/*.json
         appeals/*.json
         appeal_dispositions/*.json
+        applications/*.json
       assistance/
         requests/*.json
         responses/*.json
         dispositions/*.json
+        applications/*.json
       exchanges/
         requests/*.json
         responses/*.json
+      history/
+        assessments/<sha256>.json
       snapshots/<timestamp-label>/
       exports/
   observatory/
@@ -71,7 +75,7 @@ workspace/
   tmp/
 ```
 
-Review, assistance, and protected-evidence exchange records are append-oriented sidecar records. A statement, disposition, or model response does not edit `assessment.json`. A later accepted change must pass through an ordinary human-controlled assessment edit with its own provenance.
+Review, assistance, and protected-evidence exchange records are append-oriented sidecar records. A statement, disposition, or model response does not edit `assessment.json`. A later accepted change must pass through an ordinary human-controlled assessment edit with its own provenance. Canonical `save_case` preserves content-addressed prior assessment bytes under `history/assessments/` so prior finding state remains recoverable.
 
 ## Trust boundaries
 
