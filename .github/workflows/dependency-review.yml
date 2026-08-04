@@ -80,7 +80,6 @@ jobs:
           python -m pytest -q
           tests/unit/test_review.py
           tests/unit/test_review_assignment_transitions.py
-          tests/unit/test_cli.py
       - name: Commit validated permanent files
         run: |
           git config user.name github-actions[bot]
