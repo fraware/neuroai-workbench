@@ -61,7 +61,10 @@ def test_review_lifecycle_is_attributable_and_non_mutating(tmp_path: Path) -> No
         "assignments": 2,
         "statements": 1,
         "dispositions": 1,
+        "appeals": 0,
+        "appeal_dispositions": 0,
         "open_statements": 0,
+        "open_appeals": 0,
         "disagreements": 1,
         "stale_statements": 0,
     }
