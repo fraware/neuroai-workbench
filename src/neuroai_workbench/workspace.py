@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 
@@ -15,6 +16,7 @@ from .validation import validate_assessment
 
 WORKSPACE_FILE = "workspace.json"
 CASE_FILE = "assessment.json"
+ASSESSMENT_HISTORY_DIR = "history/assessments"
 
 
 class Workspace:
@@ -152,20 +154,71 @@ class Workspace:
             raise WorkspaceError(f"Unknown case {case_id!r}")
         return cast(dict[str, Any], load_json(path))
 
+    def assessment_history_path(self, case_id: str, assessment_sha256: str) -> Path:
+        ensure_identifier(case_id, "case ID")
+        digest = assessment_sha256.strip().lower()
+        if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
+            raise ValueError(f"Invalid assessment history digest {assessment_sha256!r}")
+        return self.case_path(case_id) / ASSESSMENT_HISTORY_DIR / f"{digest}.json"
+
+    def load_assessment_history(self, case_id: str, assessment_sha256: str) -> dict[str, Any]:
+        path = self.assessment_history_path(case_id, assessment_sha256)
+        if not path.is_file():
+            raise WorkspaceError(f"No recoverable assessment history for digest {assessment_sha256}")
+        return cast(dict[str, Any], load_json(path))
+
+    def _record_assessment_history(self, case_path: Path, assessment_path: Path) -> dict[str, Any] | None:
+        """Persist content-addressed prior assessment bytes on the canonical save path."""
+        if not assessment_path.is_file():
+            return None
+        before = sha256_file(assessment_path)
+        history_dir = case_path / ASSESSMENT_HISTORY_DIR
+        history_dir.mkdir(parents=True, exist_ok=True)
+        history_path = history_dir / f"{before}.json"
+        if not history_path.exists():
+            shutil.copy2(assessment_path, history_path)
+            copied = sha256_file(history_path)
+            if copied != before:
+                history_path.unlink(missing_ok=True)
+                raise WorkspaceError("Failed to preserve recoverable prior assessment state")
+        return {
+            "prior_assessment_sha256": before,
+            "history_path": str(history_path.relative_to(case_path).as_posix()),
+        }
+
     def save_case(
-        self, case_id: str, assessment: dict[str, Any], actor: str = "local-user", require_valid: bool = False
+        self,
+        case_id: str,
+        assessment: dict[str, Any],
+        actor: str = "local-user",
+        require_valid: bool = False,
+        *,
+        expected_sha256: str | None = None,
+        event_metadata: Mapping[str, Any] | None = None,
+        additional_events: Sequence[tuple[str, Mapping[str, Any]]] | None = None,
+        exclusive_records: Sequence[tuple[Path, Mapping[str, Any]]] | None = None,
     ) -> dict[str, Any]:
         path = self.case_path(case_id)
         if not path.is_dir():
             raise WorkspaceError(f"Unknown case {case_id!r}")
         with case_mutation_lock(path):
+            target = path / CASE_FILE
+            before = sha256_file(target) if target.exists() else None
+            if expected_sha256 is not None and before != expected_sha256:
+                raise WorkspaceError(
+                    "Optimistic concurrency refusal: assessment digest no longer matches "
+                    f"expected_assessment_sha256 ({expected_sha256})"
+                )
+            for record_path, _payload in exclusive_records or ():
+                if record_path.exists():
+                    raise WorkspaceError(f"Exclusive record already exists: {record_path.name}")
+
             report = validate_assessment(assessment)
             if require_valid and not report.valid:
                 raise WorkspaceError("Assessment failed the required validation gate")
             validation_state = "VALID" if report.valid else "DRAFT_INVALID"
             persisted_as = "valid" if report.valid else "draft_invalid"
-            target = path / CASE_FILE
-            before = sha256_file(target) if target.exists() else None
+            history = self._record_assessment_history(path, target) if target.exists() else None
             atomic_write_json(target, assessment)
             after = sha256_file(target)
             atomic_write_json(
@@ -183,23 +236,33 @@ class Workspace:
                     ),
                 },
             )
-            append_event(
-                path / "events.jsonl",
-                "ASSESSMENT_SAVED",
-                actor,
-                {
-                    "before_sha256": before,
-                    "after_sha256": after,
-                    "valid": report.valid,
-                    "validation_state": validation_state,
-                    "persisted_as": persisted_as,
-                    "schema_errors": len(report.schema_issues),
-                    "semantic_errors": len(report.semantic_issues),
-                },
-            )
+            for record_path, payload in exclusive_records or ():
+                if record_path.exists():
+                    raise WorkspaceError(f"Exclusive record already exists: {record_path.name}")
+                atomic_write_json(record_path, dict(payload))
+            saved_payload: dict[str, Any] = {
+                "before_sha256": before,
+                "after_sha256": after,
+                "valid": report.valid,
+                "validation_state": validation_state,
+                "persisted_as": persisted_as,
+                "schema_errors": len(report.schema_issues),
+                "semantic_errors": len(report.semantic_issues),
+            }
+            if history is not None:
+                saved_payload["prior_history"] = history
+            if event_metadata:
+                saved_payload["apply_provenance"] = dict(event_metadata)
+            append_event(path / "events.jsonl", "ASSESSMENT_SAVED", actor, saved_payload)
+            for action, payload in additional_events or ():
+                append_event(path / "events.jsonl", action, actor, dict(payload))
             result = report.to_dict()
             result["validation_state"] = validation_state
             result["persisted_as"] = persisted_as
+            result["before_sha256"] = before
+            result["after_sha256"] = after
+            if history is not None:
+                result["prior_history"] = history
             return result
 
     def snapshot(self, case_id: str, actor: str = "local-user", label: str = "snapshot") -> dict[str, Any]:

@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .assessment_paths import apply_field_patches, normalize_target_path, path_within_review_target
 from .case_lock import case_mutation_lock
 from .events import append_event, load_events, verify_chain
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file
@@ -23,6 +24,8 @@ REVIEW_ROLES = {
 }
 POSITIONS = {"AGREE", "AGREE_WITH_CONDITIONS", "DISAGREE", "ABSTAIN"}
 DISPOSITIONS = {"ACCEPTED", "PARTIALLY_ACCEPTED", "REJECTED", "DEFERRED"}
+APPLYABLE_REVIEW_DISPOSITIONS = frozenset({"ACCEPTED", "PARTIALLY_ACCEPTED"})
+REVIEW_PROPOSAL_APPLIED_EVENT = "REVIEW_PROPOSAL_APPLIED"
 APPEAL_TYPES = {
     "RECONSIDERATION",
     "PROCEDURAL_OBJECTION",
@@ -81,7 +84,7 @@ def _review_root(workspace: Workspace, case_id: str) -> Path:
     if not (case / "assessment.json").is_file():
         raise ValueError(f"Unknown case {case_id!r}")
     root = case / "reviews"
-    for name in ("assignments", "statements", "dispositions", "appeals", "appeal_dispositions"):
+    for name in ("assignments", "statements", "dispositions", "appeals", "appeal_dispositions", "applications"):
         (root / name).mkdir(parents=True, exist_ok=True)
     return root
 
@@ -827,6 +830,157 @@ def dispose_review_statement(
             },
         )
         return {"disposition": record, "path": str(output)}
+
+
+def apply_review_proposal(
+    workspace: Workspace,
+    case_id: str,
+    statement_id: str,
+    *,
+    actor: str,
+    expected_assessment_sha256: str,
+    field_patches: list[dict[str, Any]],
+    require_valid: bool = True,
+) -> dict[str, Any]:
+    """Apply an ACCEPTED or PARTIALLY_ACCEPTED review disposition via ordinary ``save_case``.
+
+    Acceptance is not application. Statement and disposition bytes remain unchanged.
+    Only an active covering decision role may authorize the assessment edit.
+    """
+    ensure_identifier(statement_id, "statement ID")
+    ensure_identifier(actor, "actor ID")
+    if not expected_assessment_sha256 or not isinstance(expected_assessment_sha256, str):
+        raise ValueError("expected_assessment_sha256 is required")
+    if not isinstance(field_patches, list) or not field_patches:
+        raise ValueError("Explicit field_patches are required; acceptance is not application")
+
+    root = _review_root(workspace, case_id)
+    application_path = root / "applications" / f"{statement_id}.json"
+    if application_path.exists():
+        raise ValueError(f"Review proposal {statement_id} has already been applied")
+
+    statement_path = root / "statements" / f"{statement_id}.json"
+    if not statement_path.is_file():
+        raise FileNotFoundError(f"Unknown review statement {statement_id}")
+    statement = json.loads(statement_path.read_text(encoding="utf-8"))
+    if statement.get("statement_sha256") != _hash_record(statement, "statement_sha256"):
+        raise ValueError("Review statement hash is invalid")
+
+    disposition_path = root / "dispositions" / f"{statement_id}.json"
+    if not disposition_path.is_file():
+        raise ValueError(f"No disposition recorded for {statement_id}; acceptance is required before apply")
+    disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
+    if disposition.get("disposition_sha256") != _hash_record(disposition, "disposition_sha256"):
+        raise ValueError("Review disposition hash is invalid")
+    if disposition.get("statement_sha256") != statement.get("statement_sha256"):
+        raise ValueError("Disposition does not reference the current statement hash")
+    disposition_value = disposition.get("disposition")
+    if disposition_value not in APPLYABLE_REVIEW_DISPOSITIONS:
+        raise ValueError(
+            f"Disposition {disposition_value!r} cannot be applied; "
+            "only ACCEPTED or PARTIALLY_ACCEPTED may be applied with explicit field patches"
+        )
+    if disposition_value == "PARTIALLY_ACCEPTED" and not field_patches:
+        raise ValueError("PARTIALLY_ACCEPTED apply is ambiguous without an explicit field list")
+
+    assessment_path = workspace.case_path(case_id) / "assessment.json"
+    current_sha = sha256_file(assessment_path)
+    if current_sha != expected_assessment_sha256:
+        raise ValueError("Stale assessment: expected_assessment_sha256 does not match the current assessment")
+    if statement.get("assessment_sha256") != current_sha:
+        raise ValueError("Review statement is stale: assessment_sha256 no longer matches the current assessment")
+
+    assignments = _active_assignments(workspace, case_id, actor)
+    target_type = str(statement.get("target_type"))
+    target_id = str(statement.get("target_id"))
+    authorized = any(
+        item.get("role") in DECISION_ROLES and _scope_allows(item.get("scope", []), target_type, target_id)
+        for item in assignments
+    )
+    if not authorized:
+        raise ValueError(
+            f"Actor {actor!r} has no active assessment-edit decision role covering {target_type}:{target_id}"
+        )
+
+    statement_bytes_before = statement_path.read_bytes()
+    disposition_bytes_before = disposition_path.read_bytes()
+
+    patches_for_record: list[dict[str, Any]] = []
+    for index, patch in enumerate(field_patches):
+        if not isinstance(patch, dict):
+            raise ValueError(f"field_patches[{index}] must be an object")
+        if "target_path" not in patch or "value" not in patch:
+            raise ValueError(f"field_patches[{index}] requires target_path and value")
+        path = normalize_target_path(str(patch["target_path"]))
+        if not path_within_review_target(path, target_type, target_id):
+            raise ValueError(f"Field path outside proposal target {target_type}:{target_id}: {path}")
+        patches_for_record.append({"target_path": path, "value": patch["value"]})
+
+    assessment = workspace.load_case(case_id)
+    patched = apply_field_patches(assessment, patches_for_record)
+    planned_bytes = json.dumps(patched, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
+    planned_after = sha256_bytes(planned_bytes)
+    applied_at = _review_timestamp()
+
+    application: dict[str, Any] = {
+        "schema_version": REVIEW_SCHEMA_VERSION,
+        "application_id": f"RAPP-{statement_id}",
+        "statement_id": statement_id,
+        "statement_sha256": statement["statement_sha256"],
+        "disposition": disposition_value,
+        "disposition_sha256": disposition["disposition_sha256"],
+        "actor": actor,
+        "assignment_ids": sorted(item["assignment_id"] for item in assignments),
+        "applied_at": applied_at,
+        "field_patches": patches_for_record,
+        "before_assessment_sha256": current_sha,
+        "after_assessment_sha256": planned_after,
+        "assessment_mutation": "ORDINARY_SAVE_CASE",
+        "model_invocation": "NONE",
+        "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
+        "authority_boundary": (
+            "Application attributes a local workflow assessment edit. It does not establish "
+            "legal or institutional authority and does not rewrite review records in place."
+        ),
+    }
+    application["application_sha256"] = _hash_record(application, "application_sha256")
+    event_metadata = {
+        "proposal_kind": "REVIEW",
+        "proposal_id": statement_id,
+        "proposal_sha256": statement["statement_sha256"],
+        "disposition_sha256": disposition["disposition_sha256"],
+        "disposition": disposition_value,
+        "applied_paths": [item["target_path"] for item in patches_for_record],
+        "model_invocation": "NONE",
+        "before_assessment_sha256": current_sha,
+        "after_assessment_sha256": planned_after,
+        "application_sha256": application["application_sha256"],
+    }
+    save_result = workspace.save_case(
+        case_id,
+        patched,
+        actor=actor,
+        require_valid=require_valid,
+        expected_sha256=expected_assessment_sha256,
+        event_metadata=event_metadata,
+        additional_events=[(REVIEW_PROPOSAL_APPLIED_EVENT, event_metadata)],
+        exclusive_records=[(application_path, application)],
+    )
+    if save_result.get("after_sha256") != planned_after:
+        raise RuntimeError("Assessment digest after ordinary save did not match the planned apply digest")
+    if statement_path.read_bytes() != statement_bytes_before:
+        raise RuntimeError("Review statement bytes changed during apply")
+    if disposition_path.read_bytes() != disposition_bytes_before:
+        raise RuntimeError("Review disposition bytes changed during apply")
+    return {
+        "application": application,
+        "path": str(application_path),
+        "save": save_result,
+        "boundary": (
+            "Review disposition remains separate from assessment mutation. "
+            "This record links an ordinary assessment edit to a human-accepted review proposal."
+        ),
+    }
 
 
 def file_review_appeal(

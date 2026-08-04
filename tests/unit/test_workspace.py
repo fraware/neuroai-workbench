@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from neuroai_workbench.errors import WorkspaceError
+from neuroai_workbench.util import sha256_file
 
 
 def test_create_and_list_case(workspace):
@@ -47,16 +48,59 @@ def test_import_invalid_example_is_rejected(workspace, example_assessment, tmp_p
 
 def test_save_and_snapshot(workspace):
     assessment = workspace.create_case("CASE-001", "Example case")
+    original_purpose = assessment["assessment_metadata"]["assessment_purpose"]
     assessment["assessment_metadata"]["assessment_purpose"] = "Controlled test purpose"
+    before_sha = sha256_file(workspace.case_path("CASE-001") / "assessment.json")
     report = workspace.save_case("CASE-001", assessment, require_valid=True)
     assert report["valid"] is True
     assert report["validation_state"] == "VALID"
     assert report["persisted_as"] == "valid"
+    assert report["prior_history"]["prior_assessment_sha256"] == before_sha
+    recovered = workspace.load_assessment_history("CASE-001", before_sha)
+    assert recovered["assessment_metadata"]["assessment_purpose"] == original_purpose
+    assert (workspace.case_path("CASE-001") / "history" / "assessments" / f"{before_sha}.json").is_file()
     persistence = json.loads((workspace.case_path("CASE-001") / "persistence.json").read_text(encoding="utf-8"))
     assert persistence["validation_state"] == "VALID"
     snapshot = workspace.snapshot("CASE-001", label="freeze")
     assert snapshot["assessment_sha256"]
     assert (workspace.case_path("CASE-001") / "snapshots" / snapshot["snapshot_id"] / "assessment.json").is_file()
+
+
+def test_save_optimistic_concurrency_refusal(workspace):
+    assessment = workspace.create_case("CASE-001", "Example case")
+    with pytest.raises(WorkspaceError, match="Optimistic concurrency"):
+        workspace.save_case("CASE-001", assessment, expected_sha256="0" * 64)
+
+
+def test_assessment_history_helpers_and_exclusive_records(workspace, tmp_path: Path):
+    assessment = workspace.create_case("CASE-001", "Example case")
+    with pytest.raises(ValueError, match="Invalid assessment history digest"):
+        workspace.assessment_history_path("CASE-001", "not-a-digest")
+    with pytest.raises(WorkspaceError, match="No recoverable assessment history"):
+        workspace.load_assessment_history("CASE-001", "0" * 64)
+
+    marker = workspace.case_path("CASE-001") / "exclusive.json"
+    marker.write_text("{}\n", encoding="utf-8")
+    with pytest.raises(WorkspaceError, match="Exclusive record already exists"):
+        workspace.save_case(
+            "CASE-001",
+            assessment,
+            exclusive_records=[(marker, {"ok": True})],
+        )
+
+    assessment["assessment_metadata"]["assessment_purpose"] = "Second save"
+    first = workspace.save_case("CASE-001", assessment, require_valid=True)
+    # Second save with identical prior digest reuses history file.
+    assessment["assessment_metadata"]["assessment_purpose"] = "Third save"
+    second = workspace.save_case(
+        "CASE-001",
+        assessment,
+        require_valid=True,
+        expected_sha256=first["after_sha256"],
+        event_metadata={"note": "meta"},
+        additional_events=[("CUSTOM_TEST_EVENT", {"x": 1})],
+    )
+    assert second["prior_history"]["prior_assessment_sha256"] == first["after_sha256"]
 
 
 def test_draft_invalid_save_is_labeled(workspace):
