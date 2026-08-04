@@ -387,13 +387,12 @@ def scaffold_dual_human_review(
         ),
         "recording_cli": "scripts/record_shadow_dual_review.py",
         "steps": [
-            "Each reviewer independently claims a lease on each OPEN queue item.",
-            "Each reviewer records an opinion (SUPPORT / OPPOSE / DEFER / ABSTAIN / NEEDS_EVIDENCE).",
-            "Preserve disagreement and abstention; do not erase dissent.",
-            "Use scripts/record_shadow_dual_review.py assess after both reviewers finish.",
-            "Owners may record a formal disposition only after dual review; software refuses forged GO.",
-            "Do not mutate canonical observatory state or assessments from this evaluation workspace.",
-            f"Formal GO / release authority remains deferred to {GOVERNANCE_ISSUE}.",
+            "status → list OPEN item IDs.",
+            "REV-SHADOW-A and REV-SHADOW-B each record an opinion on every OPEN item (disagreement optional).",
+            "assess → confirm dual_review_complete.",
+            "Owners record formal-disposition; software refuses forged GO.",
+            "Do not write a canonical successor from this workspace.",
+            f"Canonical release remains deferred to {GOVERNANCE_ISSUE}.",
         ],
         "open_item_ids": [item["item_id"] for item in items if item.get("queue_status") == "OPEN"],
         "completion_state": "SCAFFOLDED_AWAITING_HUMAN_OPINIONS",
@@ -428,7 +427,7 @@ def build_human_residual_checklist(*, dual_review_complete: bool) -> dict[str, A
     go_state = "READY_FOR_OWNER" if dual_review_complete else "BLOCKED_HUMAN"
     return {
         "metadata": {
-            "title": "Human residual checklist for shadow governance overlay",
+            "title": "Small-team residual checklist (shadow #101)",
             "status": SHADOW_EVALUATION_STATUS,
             "generated_at": utc_now(),
             "core_issue": "#43",
@@ -439,35 +438,35 @@ def build_human_residual_checklist(*, dual_review_complete: bool) -> dict[str, A
                 "id": "DUAL_REVIEW_OPINIONS",
                 "state": dual_state,
                 "detail": (
-                    "Two distinct humans must record opinions via the review queue "
-                    f"(REV-SHADOW-A and REV-SHADOW-B). Tracked under {GOVERNANCE_ISSUE}."
+                    "REV-SHADOW-A and REV-SHADOW-B each record an opinion on every OPEN item "
+                    f"(claimed local IDs only). Tracked under {GOVERNANCE_ISSUE}."
                 ),
             },
             {
                 "id": "DISAGREEMENT_PRESERVATION",
                 "state": "PENDING_HUMAN" if not dual_review_complete else "REQUIRED",
-                "detail": "Any OPPOSE/ABSTAIN/NEEDS_EVIDENCE/DEFER must remain on record.",
+                "detail": "Keep any disagreement or abstention on record; do not erase dissent.",
             },
             {
                 "id": "FORMAL_GO_AUTHORIZATION",
                 "state": go_state,
                 "detail": (
-                    "GO requires completed dual review plus owner recording; software refuses "
-                    f"forged GO. Release authority remains under {GOVERNANCE_ISSUE}."
+                    "After dual review, owners record formal disposition; software refuses forged GO. "
+                    f"Canonical release stays under {GOVERNANCE_ISSUE}."
                 ),
             },
             {
                 "id": "UNRESOLVED_RETRIEVAL_URLS",
                 "state": "PENDING_HUMAN",
                 "detail": (
-                    "Owners disposition SRC-0041 / SRC-0115 / SRC-14-007 with finding_effect=NONE; "
-                    "do not invent FAIL findings."
+                    "SRC-0041 / SRC-0115 / SRC-14-007: KEEP_AS_TYPED_FAILURE; "
+                    "finding_effect=NONE; do not invent FAIL findings."
                 ),
             },
             {
                 "id": "PROTECTED_ARCHIVE_APPROVALS",
                 "state": "EXTERNAL",
-                "detail": "Archive/network approvals tracked under #44 remain separate.",
+                "detail": "Archive/network approvals remain under #44.",
             },
         ],
         "status": SHADOW_EVALUATION_STATUS,
@@ -871,11 +870,11 @@ def record_formal_disposition(
         "dual_review_complete": dual_review_complete,
         "owners": owners,
         "closure_conditions": [
-            "Two distinct human reviewers complete opinions on the sampled change candidates.",
-            "Disagreement and abstention records are preserved.",
-            "Formal GO is recorded only after dual review and threshold review by owners.",
+            "REV-SHADOW-A and REV-SHADOW-B record opinions on sampled candidates.",
+            "Disagreement and abstention remain on record when present.",
+            "Formal GO only after dual review plus owner recording; software refuses forged GO.",
             "No canonical observatory successor is written from this shadow evaluation.",
-            f"Release authority and canonical gates remain deferred to {GOVERNANCE_ISSUE}.",
+            f"Canonical AUTHORIZED/PUBLISHED gates remain deferred to {GOVERNANCE_ISSUE}.",
         ],
         "residual_checklist": residual_checklist,
         "typed_retry_outcomes": typed_retry_outcomes or [],
@@ -948,9 +947,9 @@ def build_public_closure_summary(
         "formal_disposition": formal_disposition,
         "withheld_claims": [
             "Public digests and metrics only; protected capture bodies remain outside git.",
-            "Formal disposition WITHHELD/NO_GO while dual human review is incomplete.",
-            "Does not authorize a canonical observatory successor.",
-            f"Human governance and release authority remain under {GOVERNANCE_ISSUE}.",
+            "Formal disposition does not authorize a canonical observatory successor.",
+            "Claimed local reviewer profiles are not authenticated institutional identities.",
+            f"Canonical AUTHORIZED/PUBLISHED gates remain deferred to {GOVERNANCE_ISSUE}.",
         ],
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,

@@ -198,42 +198,54 @@ Core closure requires:
 
 Closing #43 does not authorize a canonical successor. All development successors remain non-canonical until #101 is completed.
 
-## Residual blockers (post core completion)
+## Small-team residual (#101)
 
-Issue #43 core engineering is complete (`docs/operations/shadow-cycle-43-execution.json`, `acceptance_status: PASS`). The remaining programme residual is human governance, not missing core software:
+Issue #43 core engineering is complete. For a team of ≤5, governance is a short local procedure — not an institutional workflow.
 
-| Residual | Owner | Notes |
-|---|---|---|
-| Dual human review on observed candidates | Humans / #101 | Use `scripts/record_shadow_dual_review.py`; never forge opinions |
-| Formal GO / NO_GO / WITHHELD with release authority | Owners / #101 | Software refuses forged `GO` while dual review is incomplete |
-| Unresolved retrieval URLs (`SRC-0041`, `SRC-0115`, `SRC-14-007`) | Humans | Typed outcomes only; `finding_effect = NONE`; do not invent FAIL findings |
-| Archive / network approvals | #44 | Separate custody boundary |
-| Canonical `AUTHORIZED` / `PUBLISHED` successor | #101 / #41 | Deferred release gates |
+**Fail-closed rules (keep):** profiles are claimed local IDs only; never forge opinions or `GO`; never invent `FAIL` from typed HTTP failures; never write a canonical successor from shadow evaluation.
 
-Wave 2 public digests remain `SHADOW_EVALUATION_NOT_CANONICAL` with metrics recommendation `NO_GO` and formal disposition `WITHHELD` until humans complete dual review.
+### Procedure
 
-## Dual human review recording CLI
-
-Humans record attributable local opinions against an already-scaffolded evaluation workspace (Wave 2 `evaluation_workspace` with `REV-SHADOW-A` / `REV-SHADOW-B`):
+```text
+status → opinion A/B on each OPEN item → assess → formal-disposition
+```
 
 ```bash
 export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
-python scripts/record_shadow_dual_review.py status --markdown
+
+# 1. List OPEN RQI item IDs
+python scripts/record_shadow_dual_review.py status
+
+# 2. Record opinions (same SUPPORT is fine; disagreement allowed but not required)
 python scripts/record_shadow_dual_review.py opinion \
   --profile REV-SHADOW-A --item-id RQI-... \
-  --position SUPPORT --rationale "Independent human rationale"
+  --position SUPPORT --rationale "First-capture shadow rehearsal; no baseline; non-canonical."
 python scripts/record_shadow_dual_review.py opinion \
   --profile REV-SHADOW-B --item-id RQI-... \
-  --position OPPOSE --rationale "Disagreement preserved"
-python scripts/record_shadow_dual_review.py assess --output-dir "$NEUROAI_OPS_WORKSPACE/runs/shadow-refresh-202608-live/wave2-closure"
+  --position SUPPORT --rationale "First-capture shadow rehearsal; no baseline; non-canonical."
+
+# 3. Confirm dual_review_complete
+python scripts/record_shadow_dual_review.py assess \
+  --output-dir "$NEUROAI_OPS_WORKSPACE/runs/shadow-refresh-202608-live/wave2-closure"
+
+# 4. Owners accept metrics NO_GO → formal NO_GO (WITHHELD only if dual review incomplete)
+python scripts/record_shadow_dual_review.py formal-disposition \
+  --run-id CRUN-... \
+  --owners programme-owner \
+  --metrics-recommendation NO_GO \
+  --output-dir "$NEUROAI_OPS_WORKSPACE/runs/shadow-refresh-202608-live/wave2-closure"
 ```
 
-Boundaries:
+### URL residual (typed only)
 
-- Profile IDs are claimed local workflow identities, not authenticated institutional authority.
-- The CLI never invents opinions or capture bodies.
-- `formal-disposition` refuses `GO` while dual review is incomplete.
-- Completing dual review here does not authorize a canonical successor; that remains under #101.
+`SRC-0041`, `SRC-0115`, `SRC-14-007`: keep as typed retrieval failure (`KEEP_AS_TYPED_FAILURE`); `finding_effect = NONE`. Do not invent FAIL findings.
+
+### Still deferred
+
+- Archive / network approvals: #44
+- Canonical `AUTHORIZED` / `PUBLISHED` successor: #101 / #41
+
+Wave 2 digests stay `SHADOW_EVALUATION_NOT_CANONICAL`. Completing this procedure does not authorize a canonical successor.
 
 ## Full non-canonical evaluation cycle
 
