@@ -6,7 +6,7 @@ Accepted for the local reference profile.
 
 ## Context
 
-Model-assistance responses and review statements may contain candidate wording. Their human dispositions deliberately perform zero assessment mutation. Issue #22 calls for a controlled bridge from an accepted proposal to an ordinary assessment edit without granting authority to the proposal, disposition, or model output and without rewriting historical finding state in place.
+Model-assistance responses and review statements may contain candidate wording. Their human dispositions deliberately perform zero assessment mutation. Issue #22 delivered a controlled bridge from an accepted proposal to an ordinary assessment edit without granting authority to the proposal, disposition, or model output and without rewriting historical finding state in place.
 
 A direct write from an assistance or review module would create a second mutation path, obscure the predecessor assessment, weaken optimistic concurrency, and blur the distinction between proposal acceptance and assessment authority.
 

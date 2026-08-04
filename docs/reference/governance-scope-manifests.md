@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A governance scope manifest defines the exact immutable object set presented to later reviewers, owners, policy evaluators, and release authorities. It is the first additive layer introduced by issue #101 after completion of the non-canonical observatory core.
+A governance scope manifest defines the exact immutable object set presented to later reviewers, owners, policy evaluators, and release authorities. It is an additive #101 layer available after completion of the non-canonical observatory core.
 
 The manifest provides byte-identity and storage-boundary controls. It grants no review, owner, scientific, regulatory, institutional, UNESCO, or release authority.
 

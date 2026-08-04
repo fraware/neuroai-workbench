@@ -35,15 +35,26 @@ Every command that reports validity includes a boundary statement. Scripts must 
 
 ```bash
 neuroai-workbench review-assign WORKSPACE CASE REVIEWER DOMAIN_REVIEWER --scope FINDING:NK-01-R01 --actor lead-assessor
+neuroai-workbench review-supersede WORKSPACE CASE ASSIGNMENT_ID REVIEWER_2 METHODS_REVIEWER \
+  --scope FINDING:NK-01-R01 --rationale "Transfer the methods review." --actor lead-assessor
+neuroai-workbench review-revoke WORKSPACE CASE ASSIGNMENT_ID \
+  --rationale "Reviewer availability ended." --actor REVIEWER
 neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGREE --rationale "Bound the claim" --evidence-id EV-PR-001
 neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED --rationale "Edit separately" --actor lead-assessor
 neuroai-workbench review-apply WORKSPACE CASE STATEMENT_ID --expected-assessment-sha256 CURRENT_SHA256 --patches-file patches.json --actor lead-assessor
+neuroai-workbench review-appeal-file WORKSPACE CASE STATEMENT_ID MINORITY_REPORT \
+  --grounds "The minority position remains material." \
+  --requested-resolution "Preserve the disagreement in the final record." \
+  --appellant-id REVIEWER
+neuroai-workbench review-appeal-dispose WORKSPACE CASE APPEAL_ID DENIED \
+  --rationale "The original disposition stands; dissent remains recorded." --actor lead-assessor
+neuroai-workbench review-appeal-list WORKSPACE CASE
 neuroai-workbench review-verify WORKSPACE CASE
 neuroai-workbench review-report WORKSPACE CASE --output review.md
 neuroai-workbench gap-report --assessment assessment.json --output gaps.md
 ```
 
-Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings.
+Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings. Accepted proposals apply only through an explicit ordinary assessment edit (`review-apply` / `assist-apply`).
 
 ## Protected-evidence metadata exchange
 
