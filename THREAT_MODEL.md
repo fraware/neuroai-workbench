@@ -79,7 +79,7 @@
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
 - Discovery query execution is offline-first; opt-in network mode requires `NEUROAI_LIVE_DISCOVERY=1`, reuses collector public-URL SSRF checks, emits candidate source proposals only, and refuses silent registry overwrite in favour of append-only successor drafts (ADR 0010).
 - Shadow-refresh evaluation handoff samples only quarantine records already `APPROVED_FOR_HANDOFF`; `approve_handoff` / `--approve-handoff` consents to that handoff and does not auto-approve pending captures.
-- The active core shadow-refresh cycle uses development-only dispositions and creates no reviewer-governance or release-authority state. Human governance is deferred to issue #101.
+- The #43 core shadow-refresh cycle used development-only dispositions. Small-team dual review records claimed local opinions and a formal disposition without granting release authority. Canonical `AUTHORIZED` / `PUBLISHED` gates remain deferred to issue #101.
 
 ## Residual risks
 
