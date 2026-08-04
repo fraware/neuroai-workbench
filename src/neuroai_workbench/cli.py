@@ -43,7 +43,9 @@ from .review import (
     create_review_assignment,
     dispose_review_statement,
     render_review_markdown,
+    revoke_review_assignment,
     submit_review_statement,
+    supersede_review_assignment,
     verify_review_records,
 )
 from .server import serve
@@ -271,6 +273,25 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--actor", default="cli-user")
     p.add_argument("--out")
 
+    p = sub.add_parser("review-revoke", help="Append an immutable revocation successor for an assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("assignment_id")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-supersede", help="Append an immutable successor review assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("assignment_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("role")
+    p.add_argument("--scope", action="append", required=True)
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
     p = sub.add_parser("review-submit", help="Submit an immutable review statement or disagreement")
     p.add_argument("workspace")
     p.add_argument("case_id")
@@ -465,6 +486,31 @@ def main(argv: list[str] | None = None) -> int:
                     args.reviewer_id,
                     args.role,
                     args.scope,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-revoke":
+            emit(
+                revoke_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.assignment_id,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-supersede":
+            emit(
+                supersede_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.assignment_id,
+                    args.reviewer_id,
+                    args.role,
+                    args.scope,
+                    args.rationale,
                     actor=args.actor,
                 ),
                 Path(args.out) if args.out else None,
