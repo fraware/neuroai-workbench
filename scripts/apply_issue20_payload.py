@@ -63,6 +63,44 @@ def main() -> int:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
 
+    review_path = ROOT / "src/neuroai_workbench/review.py"
+    review = review_path.read_text(encoding="utf-8")
+    old_fallback = '''    except ValueError as exc:
+        assignments = {
+            str(item.get("assignment_id")): item
+            for item in records["assignments"]
+            if item.get("assignment_id") is not None
+        }
+        successors = {}
+        errors.append(str(exc))
+
+    for assignment_id, item in assignments.items():
+'''
+    new_fallback = '''    except ValueError as exc:
+        assignments = {
+            str(item.get("assignment_id")): item
+            for item in records["assignments"]
+            if item.get("assignment_id") is not None
+        }
+        successors = {}
+        errors.append(str(exc))
+        for assignment_id, item in assignments.items():
+            if item.get("assignment_sha256") != _hash_record(item, "assignment_sha256"):
+                errors.append(f"assignment {assignment_id}: hash mismatch")
+            if item.get("role") not in REVIEW_ROLES:
+                errors.append(f"assignment {assignment_id}: unsupported role")
+            if item.get("state") not in ASSIGNMENT_STATES:
+                errors.append(f"assignment {assignment_id}: unsupported state")
+            if _assignment_transition(item) not in ASSIGNMENT_TRANSITIONS:
+                errors.append(f"assignment {assignment_id}: unsupported transition")
+
+    for assignment_id, item in assignments.items():
+'''
+    review_path.write_text(
+        replace_once(review, old_fallback, new_fallback, "assignment diagnostic fallback"),
+        encoding="utf-8",
+    )
+
     threat_path = ROOT / "THREAT_MODEL.md"
     threat = threat_path.read_text(encoding="utf-8")
     threat = replace_once(
