@@ -36,9 +36,13 @@ from ..monitoring import (
     record_snapshot,
 )
 from ..review_queue import (
+    claim_lease,
     initialize_review_queue,
     list_queue_items,
+    load_item_opinions,
     register_reviewer_profile,
+    release_lease,
+    submit_opinion,
 )
 from ..util import atomic_write_json, load_json, sha256_bytes, utc_now
 from .live import run_live_cohort_collection
@@ -49,6 +53,9 @@ DEFAULT_FAILED_SOURCE_IDS = ("SRC-0041", "SRC-0115", "SRC-14-007")
 EVAL_ACTOR = "shadow-eval-scaffolding"
 REVIEWER_A = "REV-SHADOW-A"
 REVIEWER_B = "REV-SHADOW-B"
+REQUIRED_SHADOW_REVIEWERS = (REVIEWER_A, REVIEWER_B)
+GOVERNANCE_ISSUE = "#101"
+ALLOWED_OPINION_POSITIONS = frozenset({"SUPPORT", "OPPOSE", "DEFER", "ABSTAIN", "NEEDS_EVIDENCE"})
 
 
 def classify_retrieval_failure(failure: dict[str, Any]) -> dict[str, Any]:
@@ -367,21 +374,26 @@ def scaffold_dual_human_review(
     items = list_queue_items(evaluation_workspace, persist_projection=True)
     instructions = {
         "metadata": {
-            "title": "Dual human review instructions for shadow evaluation #43",
+            "title": "Dual human review instructions for shadow evaluation candidates",
             "status": SHADOW_EVALUATION_STATUS,
             "generated_at": utc_now(),
+            "core_issue": "#43",
+            "governance_issue": GOVERNANCE_ISSUE,
         },
         "required_reviewers": [REVIEWER_A, REVIEWER_B],
         "identity_boundary": (
             "Reviewer profile IDs are claimed local workflow identities only. "
             "They do not authenticate persons or establish institutional authority."
         ),
+        "recording_cli": "scripts/record_shadow_dual_review.py",
         "steps": [
             "Each reviewer independently claims a lease on each OPEN queue item.",
             "Each reviewer records an opinion (SUPPORT / OPPOSE / DEFER / ABSTAIN / NEEDS_EVIDENCE).",
             "Preserve disagreement and abstention; do not erase dissent.",
-            "A lead monitoring reviewer may adjudicate only after both opinions are recorded or explicitly withheld.",
+            "Use scripts/record_shadow_dual_review.py assess after both reviewers finish.",
+            "Owners may record a formal disposition only after dual review; software refuses forged GO.",
             "Do not mutate canonical observatory state or assessments from this evaluation workspace.",
+            f"Formal GO / release authority remains deferred to {GOVERNANCE_ISSUE}.",
         ],
         "open_item_ids": [item["item_id"] for item in items if item.get("queue_status") == "OPEN"],
         "completion_state": "SCAFFOLDED_AWAITING_HUMAN_OPINIONS",
@@ -391,37 +403,7 @@ def scaffold_dual_human_review(
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     atomic_write_json(output_dir / "dual_review_instructions.json", instructions)
-    residual = {
-        "metadata": {
-            "title": "Human residual checklist for closing #43",
-            "status": SHADOW_EVALUATION_STATUS,
-            "generated_at": utc_now(),
-        },
-        "checklist": [
-            {
-                "id": "DUAL_REVIEW_OPINIONS",
-                "state": "BLOCKED_HUMAN",
-                "detail": "Two distinct human reviewers must record opinions on the sampled candidates.",
-            },
-            {
-                "id": "DISAGREEMENT_PRESERVATION",
-                "state": "PENDING_HUMAN",
-                "detail": "Any OPPOSE/ABSTAIN/NEEDS_EVIDENCE must remain on record.",
-            },
-            {
-                "id": "FORMAL_GO_AUTHORIZATION",
-                "state": "BLOCKED_HUMAN",
-                "detail": "GO requires completed dual review; software must not close as GO without it.",
-            },
-            {
-                "id": "PROTECTED_ARCHIVE_APPROVALS",
-                "state": "EXTERNAL",
-                "detail": "Archive/network approvals tracked under #44 remain separate.",
-            },
-        ],
-        "status": SHADOW_EVALUATION_STATUS,
-        "boundary": SHADOW_REFRESH_BOUNDARY,
-    }
+    residual = build_human_residual_checklist(dual_review_complete=False)
     atomic_write_json(output_dir / "human_residual_checklist.json", residual)
     return {
         "profiles": {
@@ -435,6 +417,213 @@ def scaffold_dual_human_review(
         "instructions_path": str(output_dir / "dual_review_instructions.json"),
         "residual_checklist_path": str(output_dir / "human_residual_checklist.json"),
         "dual_review_complete": False,
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def build_human_residual_checklist(*, dual_review_complete: bool) -> dict[str, Any]:
+    """Build the residual human checklist without inventing review opinions."""
+    dual_state = "SATISFIED" if dual_review_complete else "BLOCKED_HUMAN"
+    go_state = "READY_FOR_OWNER" if dual_review_complete else "BLOCKED_HUMAN"
+    return {
+        "metadata": {
+            "title": "Human residual checklist for shadow governance overlay",
+            "status": SHADOW_EVALUATION_STATUS,
+            "generated_at": utc_now(),
+            "core_issue": "#43",
+            "governance_issue": GOVERNANCE_ISSUE,
+        },
+        "checklist": [
+            {
+                "id": "DUAL_REVIEW_OPINIONS",
+                "state": dual_state,
+                "detail": (
+                    "Two distinct humans must record opinions via the review queue "
+                    f"(REV-SHADOW-A and REV-SHADOW-B). Tracked under {GOVERNANCE_ISSUE}."
+                ),
+            },
+            {
+                "id": "DISAGREEMENT_PRESERVATION",
+                "state": "PENDING_HUMAN" if not dual_review_complete else "REQUIRED",
+                "detail": "Any OPPOSE/ABSTAIN/NEEDS_EVIDENCE/DEFER must remain on record.",
+            },
+            {
+                "id": "FORMAL_GO_AUTHORIZATION",
+                "state": go_state,
+                "detail": (
+                    "GO requires completed dual review plus owner recording; software refuses "
+                    f"forged GO. Release authority remains under {GOVERNANCE_ISSUE}."
+                ),
+            },
+            {
+                "id": "UNRESOLVED_RETRIEVAL_URLS",
+                "state": "PENDING_HUMAN",
+                "detail": (
+                    "Owners disposition SRC-0041 / SRC-0115 / SRC-14-007 with finding_effect=NONE; "
+                    "do not invent FAIL findings."
+                ),
+            },
+            {
+                "id": "PROTECTED_ARCHIVE_APPROVALS",
+                "state": "EXTERNAL",
+                "detail": "Archive/network approvals tracked under #44 remain separate.",
+            },
+        ],
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def assess_dual_human_review(
+    evaluation_workspace: Path,
+    *,
+    required_reviewers: tuple[str, ...] = REQUIRED_SHADOW_REVIEWERS,
+) -> dict[str, Any]:
+    """Assess whether every OPEN queue item has opinions from both required reviewers.
+
+    Never forges opinions. Disagreement and abstention count toward completeness.
+    """
+    items = list_queue_items(evaluation_workspace, persist_projection=True)
+    open_items = [item for item in items if item.get("queue_status") == "OPEN"]
+    required = tuple(required_reviewers)
+    per_item: list[dict[str, Any]] = []
+    agreements = 0
+    disagreements = 0
+    missing_pairs = 0
+
+    for item in open_items:
+        item_id = str(item["item_id"])
+        opinions = load_item_opinions(evaluation_workspace, item_id)
+        by_reviewer: dict[str, list[dict[str, Any]]] = {}
+        for opinion in opinions:
+            profile = str(opinion.get("reviewer_profile_id") or "")
+            by_reviewer.setdefault(profile, []).append(opinion)
+        present = [profile for profile in required if profile in by_reviewer]
+        missing = [profile for profile in required if profile not in by_reviewer]
+        positions = sorted(
+            {
+                str(opinion.get("position"))
+                for profile in present
+                for opinion in by_reviewer[profile]
+                if opinion.get("position")
+            }
+        )
+        complete = not missing
+        if not complete:
+            missing_pairs += 1
+        elif len(positions) <= 1:
+            agreements += 1
+        else:
+            disagreements += 1
+        per_item.append(
+            {
+                "item_id": item_id,
+                "source_id": item.get("source_id"),
+                "candidate_id": item.get("candidate_id"),
+                "required_reviewers": list(required),
+                "present_reviewers": present,
+                "missing_reviewers": missing,
+                "positions": positions,
+                "opinion_count": len(opinions),
+                "complete": complete,
+            }
+        )
+
+    dual_complete = bool(open_items) and missing_pairs == 0
+    if not open_items:
+        dual_complete = False
+
+    return {
+        "metadata": {
+            "title": "Dual human review assessment for shadow evaluation candidates",
+            "assessed_at": utc_now(),
+            "status": SHADOW_EVALUATION_STATUS,
+            "core_issue": "#43",
+            "governance_issue": GOVERNANCE_ISSUE,
+        },
+        "required_reviewers": list(required),
+        "open_item_count": len(open_items),
+        "complete_item_count": sum(1 for row in per_item if row["complete"]),
+        "incomplete_item_count": missing_pairs,
+        "review_agreements": agreements,
+        "review_disagreements": disagreements,
+        "dual_review_complete": dual_complete,
+        "forged_completions": False,
+        "items": per_item,
+        "residual": build_human_residual_checklist(dual_review_complete=dual_complete),
+        "identity_boundary": (
+            "Reviewer profile IDs are claimed local workflow identities only. "
+            "They do not authenticate persons or establish institutional authority."
+        ),
+        "status": SHADOW_EVALUATION_STATUS,
+        "boundary": SHADOW_REFRESH_BOUNDARY,
+    }
+
+
+def record_human_review_opinion(
+    evaluation_workspace: Path,
+    *,
+    item_id: str,
+    reviewer_profile_id: str,
+    position: str,
+    rationale: str,
+    ttl_seconds: int = 3600,
+    role: str | None = None,
+) -> dict[str, Any]:
+    """Claim a lease (if needed) and record one human opinion. Never forges content."""
+    if reviewer_profile_id not in REQUIRED_SHADOW_REVIEWERS:
+        raise ValueError(
+            f"Shadow dual-review recorder accepts only {REQUIRED_SHADOW_REVIEWERS}; got {reviewer_profile_id!r}"
+        )
+    if position not in ALLOWED_OPINION_POSITIONS:
+        raise ValueError(f"Unsupported opinion position {position!r}; allowed={sorted(ALLOWED_OPINION_POSITIONS)}")
+    rationale = rationale.strip()
+    if not rationale:
+        raise ValueError("Opinion rationale must not be empty")
+
+    items = {str(item["item_id"]): item for item in list_queue_items(evaluation_workspace)}
+    if item_id not in items:
+        raise ValueError(f"Unknown queue item {item_id!r}")
+
+    active_lease = items[item_id].get("active_lease") or {}
+    lease_record: dict[str, Any] | None = None
+    if active_lease.get("reviewer_profile_id") == reviewer_profile_id:
+        lease_record = dict(active_lease)
+    else:
+        claimed = claim_lease(
+            evaluation_workspace,
+            item_id,
+            reviewer_profile_id,
+            ttl_seconds=ttl_seconds,
+            actor=reviewer_profile_id,
+        )
+        lease_record = claimed["lease"]
+
+    submitted = submit_opinion(
+        evaluation_workspace,
+        item_id,
+        reviewer_profile_id,
+        position,
+        rationale,
+        role=role,
+        actor=reviewer_profile_id,
+    )
+    release = release_lease(
+        evaluation_workspace,
+        str(lease_record["lease_id"]),
+        reviewer_profile_id,
+        reason="RELEASED",
+        actor=reviewer_profile_id,
+    )
+    assessment = assess_dual_human_review(evaluation_workspace)
+    return {
+        "lease": lease_record,
+        "lease_release": release["release"],
+        "opinion": submitted["opinion"],
+        "opinion_path": submitted["path"],
+        "assessment": assessment,
+        "dual_review_complete": assessment["dual_review_complete"],
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,
     }
@@ -669,9 +858,11 @@ def record_formal_disposition(
 
     return {
         "metadata": {
-            "title": "Formal shadow refresh disposition for issue #43",
+            "title": "Formal shadow refresh disposition",
             "recorded_at": utc_now(),
             "status": SHADOW_EVALUATION_STATUS,
+            "core_issue": "#43",
+            "governance_issue": GOVERNANCE_ISSUE,
             "evaluation_issue": "#43",
         },
         "run_id": run_id,
@@ -684,6 +875,7 @@ def record_formal_disposition(
             "Disagreement and abstention records are preserved.",
             "Formal GO is recorded only after dual review and threshold review by owners.",
             "No canonical observatory successor is written from this shadow evaluation.",
+            f"Release authority and canonical gates remain deferred to {GOVERNANCE_ISSUE}.",
         ],
         "residual_checklist": residual_checklist,
         "typed_retry_outcomes": typed_retry_outcomes or [],
@@ -692,6 +884,7 @@ def record_formal_disposition(
             "Capture digests prove retrieval bytes only and do not establish substantive truth.",
             "Claimed local reviewer profiles are not authenticated identities.",
             "Unresolved retrieval access was not converted into FAIL findings.",
+            f"Core engineering completeness for #43 does not complete governance under {GOVERNANCE_ISSUE}.",
         ],
         "canonical_successor_written": False,
         "status": SHADOW_EVALUATION_STATUS,
@@ -724,6 +917,7 @@ def build_public_closure_summary(
             "status": SHADOW_EVALUATION_STATUS,
             "run_id": run_id,
             "evaluation_issue": "#43",
+            "governance_issue": GOVERNANCE_ISSUE,
             "boundary": SHADOW_REFRESH_BOUNDARY,
         },
         "network_retrieval": "EXECUTED_LIVE_QUARANTINE_ONLY",
@@ -756,6 +950,7 @@ def build_public_closure_summary(
             "Public digests and metrics only; protected capture bodies remain outside git.",
             "Formal disposition WITHHELD/NO_GO while dual human review is incomplete.",
             "Does not authorize a canonical observatory successor.",
+            f"Human governance and release authority remain under {GOVERNANCE_ISSUE}.",
         ],
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,
