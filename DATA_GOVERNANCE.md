@@ -53,7 +53,7 @@ Terminal transaction metadata follows the case audit-retention schedule. Non-ter
 
 ## Collaborative review records
 
-Review assignments, statements, disagreements and dispositions are stored as integrity-addressed local records. Reviewer identifiers and roles are claimed workflow metadata; the reference implementation does not authenticate a person, institution, licence, mandate or delegated authority. Review text may contain sensitive interpretations even in the absence of evidence bytes, so institutions must classify, retain, disclose and redact these records deliberately.
+Review assignments, assignment-transition rationales, statements, disagreements and dispositions are stored as integrity-addressed local records. Assignment changes append predecessor-bound `SUPERSEDES` or `REVOKES` records; predecessor files remain immutable, and effective authority is derived from the unique lineage tip. Reviewer identifiers and roles are claimed workflow metadata; the reference implementation does not authenticate a person, institution, licence, mandate or delegated authority. Review and transition text may contain sensitive interpretations, personnel information, availability information, or conflict context even in the absence of evidence bytes, so institutions must classify, retain, disclose and redact these records deliberately.
 
 A disposition records how a local workflow handled a statement. It does not edit the assessment and does not itself establish scientific, legal, clinical or institutional authority. Accepted changes enter the assessment through a separate controlled change with ordinary provenance.
 

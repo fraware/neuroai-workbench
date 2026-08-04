@@ -32,6 +32,7 @@
 21. Recovery overwrites an external change outside the recorded predecessor/successor transaction states.
 22. A transaction journal or predecessor/successor snapshot is altered before recovery.
 23. A transaction directory loses its journal and is incorrectly treated as harmless cleanup.
+24. A review assignment is silently overwritten, branches into multiple successors, or remains effective after revocation.
 
 ## Implemented controls
 
@@ -70,6 +71,7 @@
 - Reproducible tests, checksum manifests and Git history.
 - Integrity-addressed review assignments, statements and dispositions linked to the case event chain.
 - Review-role scope checks, refusal of decision-role self-assignment, and explicit local-identity and authority boundaries (`LOCAL_UNAUTHENTICATED_ATTRIBUTION`).
+- Append-only review-assignment lineage with predecessor ID/digest binding, unique-successor and cycle checks, case-lock serialization, effective-state derivation, timestamp-scoped historical authorization, and event-linked supersession/revocation records.
 - Provider-neutral model-assistance records with selected context, credential-pattern guards over prompt and context, evidence-reference checks, stale-request rejection, hashes and mandatory human disposition.
 - No automatic assessment mutation from review or model-assistance records.
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
@@ -86,5 +88,7 @@ Event-chain locking coordinates cooperative writers through filesystem primitive
 Evidence journaling coordinates one case on a cooperative filesystem. It does not provide cross-case transactions, remote database isolation, hostile-writer fencing, evidence authentication, legal custody, or disclosure authorization. Active transaction directories and journal-less quarantines may contain duplicate evidence and assessment state; they inherit the case's strongest protection, backup, retention, access-control, and incident-response requirements. A `RECOVERY_BLOCKED` journal or `UNKNOWN_FAIL_CLOSED` orphan requires controlled intervention. The software preserves divergent state instead of overwriting it.
 
 File and directory `fsync` reduce crash windows under the operating-system and filesystem guarantees available to the process. Storage-controller caches, hardware faults, network-filesystem semantics, privileged tampering, and incomplete backup sets remain outside those guarantees.
+
+Review-assignment lineage coordinates cooperative local writers and preserves claimed attribution. It does not authenticate actors, prove institutional delegation, prevent a privileged writer from replacing the complete case tree, or establish that a transition rationale is truthful. Timestamp-scoped authorization depends on the recorded UTC order and event-chain integrity.
 
 The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Discovery result counts do not prove registry completeness or evidence authenticity. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment, institutional identity, canonical release governance, and direct provider integration require separate architectures and independent review.
