@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/governance-reviewer-opinion-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "opinion_id",
+    "scope_id",
+    "scope_sha256",
+    "review_track",
+    "opinion_state",
+    "reviewer_claim",
+    "recorded_at",
+    "recorded_by",
+    "rationale",
+    "release_authorization_performed",
+    "authority_profile",
+    "boundary",
+    "opinion_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1"},
+    "opinion_id": {"type": "string", "pattern": "^GOVOP-[0-9a-f]{32}$"},
+    "scope_id": {"type": "string", "pattern": "^GOVSCOPE-[0-9a-f]{32}$"},
+    "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "review_track": {
+      "enum": [
+        "SECURITY",
+        "METHODOLOGY",
+        "DATA_GOVERNANCE",
+        "ACCESSIBILITY",
+        "DOMAIN",
+        "AFFECTED_COMMUNITY"
+      ]
+    },
+    "opinion_state": {
+      "enum": [
+        "SUPPORT",
+        "SUPPORT_WITH_CONDITIONS",
+        "OBJECT",
+        "ABSTAIN",
+        "REQUEST_EVIDENCE"
+      ]
+    },
+    "reviewer_claim": {
+      "type": "object",
+      "required": [
+        "reviewer_key",
+        "name_or_role",
+        "accountability_state",
+        "independence_statement",
+        "conflict_of_interest_disclosure"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reviewer_key": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "name_or_role": {"type": "string", "minLength": 1},
+        "organization": {"type": "string", "minLength": 1},
+        "accountability_state": {"type": "string", "minLength": 1},
+        "independence_statement": {"type": "string", "minLength": 1},
+        "conflict_of_interest_disclosure": {"type": "string", "minLength": 1}
+      }
+    },
+    "recorded_at": {"type": "string", "minLength": 10},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "evidence_requests": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "evidence_references": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["label", "sha256", "storage_boundary", "locator"],
+        "additionalProperties": false,
+        "properties": {
+          "label": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "storage_boundary": {
+            "enum": ["PUBLIC_GIT", "GENERATED_OUTPUT", "PROTECTED_WORKSPACE", "ARCHIVE"]
+          },
+          "locator": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "supersedes_opinion_id": {"type": "string", "pattern": "^GOVOP-[0-9a-f]{32}$"},
+    "supersedes_opinion_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "release_authorization_performed": {"const": false},
+    "authority_profile": {"const": "CLAIMED_REVIEW_ATTRIBUTION"},
+    "boundary": {
+      "const": "Governance reviewer opinions preserve claimed attribution, disagreement, abstention, evidence requests, and supersession over an exact governance scope. Record integrity does not authenticate a reviewer, establish independence or institutional delegation, resolve substantive disputes, or authorize release."
+    },
+    "opinion_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"required": ["supersedes_opinion_id"]},
+      "then": {"required": ["supersedes_opinion_sha256"]}
+    },
+    {
+      "if": {"required": ["supersedes_opinion_sha256"]},
+      "then": {"required": ["supersedes_opinion_id"]}
+    },
+    {
+      "if": {"properties": {"opinion_state": {"const": "SUPPORT_WITH_CONDITIONS"}}},
+      "then": {"required": ["conditions"]}
+    },
+    {
+      "if": {"properties": {"opinion_state": {"const": "REQUEST_EVIDENCE"}}},
+      "then": {"required": ["evidence_requests"]}
+    }
+  ]
+}
