@@ -192,10 +192,7 @@ def analyze_portfolio(assessments: list[dict[str, Any]]) -> dict[str, Any]:
         present_statuses = [status for status in statuses if status != "MISSING"]
         weak_cases = [case_id for case_id in case_ids if status_by_case.get(case_id) in WEAK_STATUSES]
         weakness_score = sum(WEAKNESS_WEIGHTS.get(status_by_case.get(case_id, "UNRESOLVED"), 1) for case_id in case_ids)
-        evidence_by_case = {
-            case_id: int(finding.get("evidence_count") or 0)
-            for case_id, finding in entries
-        }
+        evidence_by_case = {case_id: int(finding.get("evidence_count") or 0) for case_id, finding in entries}
         row = {
             "requirement_id": requirement_id,
             "module_id": first.get("module_id"),
@@ -219,7 +216,11 @@ def analyze_portfolio(assessments: list[dict[str, Any]]) -> dict[str, Any]:
             )
         if len(entries) == len(case_ids) and present_statuses and all(status == "PASS" for status in present_statuses):
             common_strengths.append(row)
-        if len(entries) == len(case_ids) and present_statuses and all(status == "NOT_ASSESSED" for status in present_statuses):
+        if (
+            len(entries) == len(case_ids)
+            and present_statuses
+            and all(status == "NOT_ASSESSED" for status in present_statuses)
+        ):
             universal_blind_spots.append(row)
 
         for case_id in case_ids:
@@ -258,7 +259,9 @@ def analyze_portfolio(assessments: list[dict[str, Any]]) -> dict[str, Any]:
             str(item["requirement_id"]),
         )
     )
-    common_strengths.sort(key=lambda item: (_priority_rank(str(item.get("priority") or "")), str(item["requirement_id"])))
+    common_strengths.sort(
+        key=lambda item: (_priority_rank(str(item.get("priority") or "")), str(item["requirement_id"]))
+    )
     universal_blind_spots.sort(
         key=lambda item: (_priority_rank(str(item.get("priority") or "")), str(item["requirement_id"]))
     )
