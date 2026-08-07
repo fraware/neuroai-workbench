@@ -352,9 +352,7 @@ def test_review_apply_refuses_statement_assessment_drift(workspace) -> None:
     statement_path.write_text(json.dumps(statement, indent=2) + "\n", encoding="utf-8")
     _rehash(statement_path, "statement_sha256")
     disposition = json.loads(disposition_path.read_text(encoding="utf-8"))
-    disposition["statement_sha256"] = json.loads(statement_path.read_text(encoding="utf-8"))[
-        "statement_sha256"
-    ]
+    disposition["statement_sha256"] = json.loads(statement_path.read_text(encoding="utf-8"))["statement_sha256"]
     disposition_path.write_text(json.dumps(disposition, indent=2) + "\n", encoding="utf-8")
     _rehash(disposition_path, "disposition_sha256")
     with pytest.raises(ValueError, match="statement is stale"):
@@ -449,9 +447,7 @@ def test_review_apply_refuses_duplicate_application(workspace) -> None:
             "review-case",
             statement_id,
             actor="lead-1",
-            expected_assessment_sha256=sha256_file(
-                workspace.case_path("review-case") / "assessment.json"
-            ),
+            expected_assessment_sha256=sha256_file(workspace.case_path("review-case") / "assessment.json"),
             field_patches=[{"target_path": TARGET, "value": TEXT}],
         )
 
