@@ -492,9 +492,7 @@ def apply_assistance_proposal(
     for index, item in enumerate(suggestions):
         if not isinstance(item, dict) or not item.get("target_path") or "proposed_text" not in item:
             raise ValueError(f"Assistance suggestion {index} is malformed")
-        normalized_suggestions.append(
-            (normalize_target_path(str(item["target_path"])), item["proposed_text"])
-        )
+        normalized_suggestions.append((normalize_target_path(str(item["target_path"])), item["proposed_text"]))
     if len(set(normalized_suggestions)) != len(normalized_suggestions):
         raise ValueError("Assistance response contains duplicate path/text suggestions")
 
@@ -525,13 +523,8 @@ def apply_assistance_proposal(
 
     assessment = workspace.load_case(case_id)
     authority_targets = [review_target_for_path(assessment, patch["target_path"]) for patch in patches]
-    authority_assignments = assessment_edit_authority_assignments(
-        workspace, case_id, actor, authority_targets
-    )
-    authority_digests = {
-        str(item["assignment_id"]): str(item["assignment_sha256"])
-        for item in authority_assignments
-    }
+    authority_assignments = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
+    authority_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in authority_assignments}
 
     patches_for_record: list[dict[str, Any]] = []
     for patch in patches:
@@ -589,10 +582,7 @@ def apply_assistance_proposal(
 
     def revalidate_authority() -> None:
         current = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
-        current_digests = {
-            str(item["assignment_id"]): str(item["assignment_sha256"])
-            for item in current
-        }
+        current_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in current}
         for assignment_id, digest in authority_digests.items():
             if current_digests.get(assignment_id) != digest:
                 raise ValueError("Assessment-edit authority changed before persistence")
