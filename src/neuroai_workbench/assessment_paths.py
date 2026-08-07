@@ -11,6 +11,13 @@ import copy
 import re
 from typing import Any
 
+REVIEW_TARGET_TYPES: dict[str, str] = {
+    "requirement_findings": "FINDING",
+    "claim_register": "CLAIM",
+    "decision_register": "DECISION",
+    "gap_register": "GAP",
+}
+
 COLLECTION_ID_FIELDS: dict[str, str] = {
     "requirement_findings": "requirement_id",
     "claim_register": "claim_id",
@@ -71,6 +78,27 @@ def get_at_path(assessment: dict[str, Any], path: str) -> Any:
             raise ValueError(f"Unknown field path {normalized}")
         cursor = cursor[segment]
     return cursor
+
+
+def review_target_for_path(assessment: dict[str, Any], path: str) -> tuple[str, str]:
+    """Return the bounded review target controlled by an assessment field path."""
+    normalized = normalize_target_path(path)
+    segments = normalized.strip("/").split("/")
+    root_key = segments[0]
+    if root_key == "assessment_metadata":
+        if len(segments) < 2:
+            raise ValueError(f"Assessment path must include a field: {normalized}")
+        get_at_path(assessment, normalized)
+        metadata = assessment.get("assessment_metadata")
+        assessment_id = metadata.get("assessment_id") if isinstance(metadata, dict) else None
+        if not isinstance(assessment_id, str) or not assessment_id:
+            raise ValueError("Assessment metadata is missing assessment_id")
+        return "ASSESSMENT", assessment_id
+    target_type = REVIEW_TARGET_TYPES.get(root_key)
+    if target_type is None or len(segments) < 3:
+        raise ValueError(f"Field path {normalized} has no supported review-authority target")
+    get_at_path(assessment, normalized)
+    return target_type, segments[1]
 
 
 def apply_field_patches(assessment: dict[str, Any], patches: list[dict[str, Any]]) -> dict[str, Any]:

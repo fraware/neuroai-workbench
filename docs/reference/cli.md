@@ -24,37 +24,95 @@ Use `neuroai-workbench <command> --help` for complete arguments.
 | `report` | Render a deterministic Markdown assessment report. |
 | `assist-request` | Create a bounded provider-neutral model-assistance request. |
 | `assist-record` | Validate and record a structured model response. |
-| `assist-dispose` | Record human acceptance, partial use, rejection, or pending review. |
-| `assist-apply` | Apply an accepted assistance proposal through an ordinary assessment edit. |
+| `assist-dispose` | Record human acceptance, partial use, or rejection without assessment mutation. |
+| `assist-apply` | Apply exact accepted assistance wording through the ordinary transactional assessment-save path. |
 | `assist-verify` | Verify assistance request, response, and disposition hashes and references. |
 | `compare` | Compare existing finding states across cases. |
 
 Every command that reports validity includes a boundary statement. Scripts must preserve that statement in downstream reporting.
 
+## Proposal-application invariants
+
+`assist-apply` and `review-apply` are separate from disposition. They require an explicit `--expected-assessment-sha256`, an explicit patches file, and an actor with an active covering local `LEAD_ASSESSOR` or `DECISION_AUTHORITY` assignment.
+
+The patches file is not free-form authorization:
+
+- assistance patch values must exactly equal recorded `proposed_text` values for the same normalized target paths;
+- `ACCEPTED_AS_DRAFT` assistance applies all suggestions; `PARTIALLY_USED` applies a non-empty proper subset;
+- review application accepts one patch whose value exactly equals the accepted statement's `proposed_change` and whose path lies inside the statement target;
+- `PARTIALLY_ACCEPTED` review dispositions are not executable; record a successor statement with exact accepted wording first.
+
+Application rechecks assignment authority and predecessor field values inside the case mutation lock. It uses the ordinary recoverable `Workspace.save_case` transaction and writes one physical `ASSESSMENT_SAVED` event. Logical proposal-apply actions appear under that event's `related_events` payload.
+
+Local review roles are workflow claims. They do not authenticate identities or create institutional, publication, canonical-release, scientific, clinical, regulatory, legal, or UNESCO authority.
+
+## Controlled model assistance
+
+```bash
+neuroai-workbench assist-request WORKSPACE CASE DRAFT_FINDING \
+  --prompt "Draft bounded wording." \
+  --requirement-id NK-01-R01 \
+  --out request.json
+
+neuroai-workbench assist-record WORKSPACE CASE REQUEST_ID response.json \
+  --provider approved-provider --model exact-model-id
+
+neuroai-workbench assist-dispose WORKSPACE CASE REQUEST_ID ACCEPTED_AS_DRAFT \
+  --notes "Accepted as draft wording only; apply separately."
+
+neuroai-workbench assist-apply WORKSPACE CASE REQUEST_ID \
+  --expected-assessment-sha256 CURRENT_SHA256 \
+  --patches-file patches.json \
+  --actor lead-assessor
+
+neuroai-workbench assist-verify WORKSPACE CASE REQUEST_ID
+```
+
 ## Collaborative review
 
 ```bash
-neuroai-workbench review-assign WORKSPACE CASE REVIEWER DOMAIN_REVIEWER --scope FINDING:NK-01-R01 --actor lead-assessor
+neuroai-workbench review-assign WORKSPACE CASE REVIEWER DOMAIN_REVIEWER \
+  --scope FINDING:NK-01-R01 --actor lead-assessor
+
 neuroai-workbench review-supersede WORKSPACE CASE ASSIGNMENT_ID REVIEWER_2 METHODS_REVIEWER \
-  --scope FINDING:NK-01-R01 --rationale "Transfer the methods review." --actor lead-assessor
+  --scope FINDING:NK-01-R01 \
+  --rationale "Transfer the methods review." \
+  --actor lead-assessor
+
 neuroai-workbench review-revoke WORKSPACE CASE ASSIGNMENT_ID \
-  --rationale "Reviewer availability ended." --actor REVIEWER
-neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGREE --rationale "Bound the claim" --evidence-id EV-PR-001
-neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED --rationale "Edit separately" --actor lead-assessor
-neuroai-workbench review-apply WORKSPACE CASE STATEMENT_ID --expected-assessment-sha256 CURRENT_SHA256 --patches-file patches.json --actor lead-assessor
+  --rationale "Reviewer availability ended." \
+  --actor REVIEWER
+
+neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGREE \
+  --rationale "Bound the claim" \
+  --proposed-change "Exact successor wording." \
+  --evidence-id EV-PR-001
+
+neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID ACCEPTED \
+  --rationale "Apply the exact proposed wording separately." \
+  --actor lead-assessor
+
+neuroai-workbench review-apply WORKSPACE CASE STATEMENT_ID \
+  --expected-assessment-sha256 CURRENT_SHA256 \
+  --patches-file patches.json \
+  --actor lead-assessor
+
 neuroai-workbench review-appeal-file WORKSPACE CASE STATEMENT_ID MINORITY_REPORT \
   --grounds "The minority position remains material." \
   --requested-resolution "Preserve the disagreement in the final record." \
   --appellant-id REVIEWER
+
 neuroai-workbench review-appeal-dispose WORKSPACE CASE APPEAL_ID DENIED \
-  --rationale "The original disposition stands; dissent remains recorded." --actor lead-assessor
+  --rationale "The original disposition stands; dissent remains recorded." \
+  --actor lead-assessor
+
 neuroai-workbench review-appeal-list WORKSPACE CASE
 neuroai-workbench review-verify WORKSPACE CASE
 neuroai-workbench review-report WORKSPACE CASE --output review.md
 neuroai-workbench gap-report --assessment assessment.json --output gaps.md
 ```
 
-Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings. Accepted proposals apply only through an explicit ordinary assessment edit (`review-apply` / `assist-apply`).
+Review records are attributable local workflow objects. They do not authenticate identities, confer institutional authority, or mutate assessment findings. Accepted proposals apply only through the explicit ordinary edit path described above.
 
 ## Protected-evidence metadata exchange
 

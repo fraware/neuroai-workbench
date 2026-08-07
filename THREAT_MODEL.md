@@ -6,6 +6,7 @@
 - Exact system and configuration records.
 - Assessment findings, dissent records and decision objects.
 - Evidence custody, hashes, snapshots and event history.
+- Review/model proposals, dispositions, application records, assessment history, and transaction journals.
 
 ## Adversaries and failure modes
 
@@ -34,6 +35,13 @@
 23. A transaction directory loses its journal and is incorrectly treated as harmless cleanup.
 24. A review assignment is silently overwritten, branches into multiple successors, or remains effective after revocation.
 25. An appeal or minority dissent is erased, overwritten, or omitted after a later statement or appeal disposition.
+26. An accepted assistance or review proposal is treated as path authorization, allowing text different from the accepted proposal to enter the assessment.
+27. A user without an active covering decision role applies an accepted proposal, or authority is revoked/superseded between the initial check and persistence.
+28. A concurrent writer changes the target field after application planning but before persistence.
+29. Assessment, persistence, history, or application-record files become durable even though the corresponding assessment-save event does not commit.
+30. A forged or corrupt content-addressed assessment-history object is trusted because its filename matches the expected digest.
+31. An application record path escapes the controlled case tree, or recovery deletes/overwrites a record outside the transaction boundary.
+32. A crash leaves an assessment-save transaction `PREPARED` and later recovery incorrectly assumes commit or rollback despite a corrupt event chain, journal, snapshot, or divergent third state.
 
 ## Implemented controls
 
@@ -75,11 +83,29 @@
 - Append-only review-assignment lineage with predecessor ID/digest binding, unique-successor and cycle checks, case-lock serialization, effective-state derivation, timestamp-scoped historical authorization, and event-linked supersession/revocation records.
 - Append-only appeal and dissent records that bind source-statement digests, refuse silent erasure after later dispositions, require decision-role authority at disposition time, and verify event correspondence without mutating assessments.
 - Provider-neutral model-assistance records with selected context, credential-pattern guards over prompt and context, evidence-reference checks, stale-request rejection, hashes and mandatory human disposition.
-- No automatic assessment mutation from review or model-assistance disposition records. Accepted proposals apply only through an explicit ordinary `save_case` edit with optimistic concurrency, field-patch limits, recoverable prior assessment history, and a provenance event; proposal and disposition bytes remain unchanged.
+- Accepted-proposal application hardening:
+  - application is a separate explicit operation; disposition alone never mutates the assessment;
+  - assistance patches must match exact `(target_path, proposed_text)` suggestions; `ACCEPTED_AS_DRAFT` applies the complete set and `PARTIALLY_USED` a non-empty proper subset;
+  - review application accepts one exact `proposed_change`; `PARTIALLY_ACCEPTED` is refused until a successor statement records exact accepted wording;
+  - the actor must hold an active `LEAD_ASSESSOR` or `DECISION_AUTHORITY` assignment covering every target;
+  - assignment hashes, lineage, event correspondence, event-chain validity, and trailer validity are checked before authority is accepted;
+  - authority and field predecessor values are rechecked inside the case mutation lock immediately before persistence;
+  - application records bind before/after field values and hashes, assessment digests, proposal/disposition digests, and authority-assignment digests;
+  - proposal, response, statement, and disposition source bytes are checked unchanged after application;
+  - application-record paths are resolved inside the controlled case tree and path escape is refused.
+- Transactional ordinary assessment saves:
+  - `transactions/assessment-saves/<transaction_id>/transaction.json` is self-hashed and uses `PREPARED`, `COMMITTED`, and `ROLLED_BACK` states;
+  - predecessor assessment and persistence snapshots are retained only as needed for recovery;
+  - assessment history under `history/assessments/<sha256>.json` is re-hashed before trust or reuse;
+  - a pre-event failure rolls back assessment, persistence, new application records, and newly created history;
+  - a durable transaction-keyed `ASSESSMENT_SAVED` event is the commit witness;
+  - logical `ASSISTANCE_PROPOSAL_APPLIED` and `REVIEW_PROPOSAL_APPLIED` actions are embedded in the single physical save event under `related_events`;
+  - recovery of a remaining `PREPARED` journal either verifies durable commit or performs exact rollback;
+  - invalid event chains, corrupt journals/snapshots, duplicate transaction events, or divergent committed state block automatic recovery.
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
 - Discovery query execution is offline-first; opt-in network mode requires `NEUROAI_LIVE_DISCOVERY=1`, reuses collector public-URL SSRF checks, emits candidate source proposals only, and refuses silent registry overwrite in favour of append-only successor drafts (ADR 0010).
 - Shadow-refresh evaluation handoff samples only quarantine records already `APPROVED_FOR_HANDOFF`; `approve_handoff` / `--approve-handoff` consents to that handoff and does not auto-approve pending captures.
-- The #43 core shadow-refresh cycle used development-only dispositions. Small-team dual review records claimed local opinions and a formal disposition without granting release authority. Canonical `AUTHORIZED` / `PUBLISHED` gates remain deferred to issue #101.
+- The #43 core shadow-refresh cycle is complete. Small-team dual review records claimed local opinions and a formal `NO_GO`; typed URL residual remains `KEEP_AS_TYPED_FAILURE` with `finding_effect = NONE`. Canonical `AUTHORIZED` / `PUBLISHED` gates remain deferred to issue #101.
 
 ## Residual risks
 
@@ -89,10 +115,14 @@ Event-chain locking coordinates cooperative writers through filesystem primitive
 
 Evidence journaling coordinates one case on a cooperative filesystem. It does not provide cross-case transactions, remote database isolation, hostile-writer fencing, evidence authentication, legal custody, or disclosure authorization. Active transaction directories and journal-less quarantines may contain duplicate evidence and assessment state; they inherit the case's strongest protection, backup, retention, access-control, and incident-response requirements. A `RECOVERY_BLOCKED` journal or `UNKNOWN_FAIL_CLOSED` orphan requires controlled intervention. The software preserves divergent state instead of overwriting it.
 
+Assessment-save journaling likewise coordinates cooperative local filesystem mutation only. It does not provide hostile-writer fencing, remote database isolation, hardware-level atomicity, or institutional authorization. A privileged actor can replace the case tree, event log, journals, and backups together. Recovery depends on integrity of the recorded event chain and predecessor snapshots; if those are corrupt or inconsistent, automatic recovery intentionally stops instead of inferring a safe state.
+
 File and directory `fsync` reduce crash windows under the operating-system and filesystem guarantees available to the process. Storage-controller caches, hardware faults, network-filesystem semantics, privileged tampering, and incomplete backup sets remain outside those guarantees.
 
 Review-assignment lineage coordinates cooperative local writers and preserves claimed attribution. It does not authenticate actors, prove institutional delegation, prevent a privileged writer from replacing the complete case tree, or establish that a transition rationale is truthful. Timestamp-scoped authorization depends on the recorded UTC order and event-chain integrity.
 
 Appeal and dissent records preserve attributable disagreement under the same local-claim profile. Digests and event correspondence detect alteration of stored bytes; they do not prove that an appeal outcome is substantively correct or institutionally authorized.
+
+Exact proposal binding proves that the applied text matches recorded accepted wording; it does not prove that the wording is correct, safe, clinically appropriate, legally valid, or authorized for publication. Local decision-role checks prove consistency with the reference workflow's stored assignment graph, not real-world identity or mandate.
 
 The model-assistance guard is a bounded structural control (`ATTESTATION_PLUS_SECRET_SCAN_ONLY`), not a complete secret detector, redaction system, field-level classification, prompt-injection defence or provider-security assessment. Discovery result counts do not prove registry completeness or evidence authenticity. Quarantine `APPROVED_FOR_HANDOFF` and `--approve-handoff` remain local workflow gates, not authenticated institutional authority. Production deployment, institutional identity, canonical release governance, and direct provider integration require separate architectures and independent review.
