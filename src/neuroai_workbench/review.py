@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _review_records as _records
+from . import proposal_application as _proposal_application
 from ._review_records import *  # noqa: F403
 
 # Typed compatibility hooks used by proposal_application.py and existing tests.
@@ -22,10 +23,8 @@ _review_timestamp = _records._review_timestamp
 _scope_allows = _records._scope_allows
 _verify_assignment_event_correspondence = _records._verify_assignment_event_correspondence
 
-from .proposal_application import (  # noqa: E402
-    apply_review_proposal as apply_review_proposal,
-    assessment_edit_authority_assignments as assessment_edit_authority_assignments,
-)
+apply_review_proposal = _proposal_application.apply_review_proposal
+assessment_edit_authority_assignments = _proposal_application.assessment_edit_authority_assignments
 
 # The private record engine predates #122 and contains the superseded proposal-apply
 # callable. Remove it from that module object; all supported application paths resolve
