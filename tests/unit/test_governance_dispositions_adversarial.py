@@ -6,9 +6,10 @@ from typing import Any
 
 import pytest
 
-from neuroai_workbench import governance_dispositions as gd
 from neuroai_workbench.util import atomic_write_json
 from neuroai_workbench.workspace import Workspace
+
+gd = __import__("neuroai_workbench.governance_dispositions", fromlist=["*"])
 
 
 VALID_SCOPE_ID = "GOVSCOPE-" + "1" * 32
