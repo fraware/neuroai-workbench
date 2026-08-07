@@ -162,9 +162,10 @@ def test_wave2_public_summary_fixture_remains_non_canonical() -> None:
     )
     summary = load_json(path)
     assert summary["metadata"]["status"] == "SHADOW_EVALUATION_NOT_CANONICAL"
-    assert summary["formal_disposition"] == "WITHHELD"
-    assert summary["dual_review_complete"] is False
+    assert summary["formal_disposition"] == "NO_GO"
+    assert summary["dual_review_complete"] is True
     assert summary["metrics_recommendation"] == "NO_GO"
+    assert summary.get("url_owner_disposition") == "KEEP_AS_TYPED_FAILURE"
     assert summary["metadata"]["governance_issue"] == "#101"
     assert len(summary["retry_outcomes"]) == 3
     assert all(item.get("finding_effect") == "NONE" for item in summary["retry_outcomes"])
