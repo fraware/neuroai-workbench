@@ -206,9 +206,15 @@ def test_duplicate_indexes_are_refused() -> None:
     ("claim", "message"),
     [
         ("owner", "must be an object"),
-        ({"owner_key": "bad owner", "name_or_role": "Owner", "accountability_state": "CLAIMED"}, "owner_claim.owner_key"),
+        (
+            {"owner_key": "bad owner", "name_or_role": "Owner", "accountability_state": "CLAIMED"},
+            "owner_claim.owner_key",
+        ),
         ({"owner_key": "owner", "name_or_role": "", "accountability_state": "CLAIMED"}, "name_or_role is required"),
-        ({"owner_key": "owner", "name_or_role": "Owner", "accountability_state": ""}, "accountability_state is required"),
+        (
+            {"owner_key": "owner", "name_or_role": "Owner", "accountability_state": ""},
+            "accountability_state is required",
+        ),
     ],
 )
 def test_owner_claim_validation(claim: Any, message: str) -> None:
@@ -526,7 +532,9 @@ def test_verify_covers_corruption_matrix(tmp_path: Path, monkeypatch: pytest.Mon
     record["condition_register"] = _register(conditions=[])
 
     monkeypatch.setattr(gd, "load_governance_owner_dispositions", lambda workspace: [record, dict(record)])
-    monkeypatch.setattr(gd, "verify_governance_reviewer_opinions", lambda workspace: {"valid": False, "errors": ["bad"]})
+    monkeypatch.setattr(
+        gd, "verify_governance_reviewer_opinions", lambda workspace: {"valid": False, "errors": ["bad"]}
+    )
     monkeypatch.setattr(gd, "load_governance_reviewer_opinions", lambda workspace: [opinion])
     monkeypatch.setattr(gd, "load_events", lambda path: [])
     monkeypatch.setattr(gd, "_schema_errors", lambda value: [{"message": "schema"}])
@@ -534,7 +542,12 @@ def test_verify_covers_corruption_matrix(tmp_path: Path, monkeypatch: pytest.Mon
     monkeypatch.setattr(
         gd,
         "verify_chain",
-        lambda path: {"valid": False, "errors": ["chain-bad"], "trailer_valid": False, "trailer_errors": ["trailer-bad"]},
+        lambda path: {
+            "valid": False,
+            "errors": ["chain-bad"],
+            "trailer_valid": False,
+            "trailer_errors": ["trailer-bad"],
+        },
     )
 
     result = gd.verify_governance_owner_dispositions(workspace)
@@ -563,7 +576,9 @@ def test_verify_covers_corruption_matrix(tmp_path: Path, monkeypatch: pytest.Mon
         assert expected in joined
 
 
-def test_verify_detects_scope_mismatches_and_accept_with_action_empty(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_verify_detects_scope_mismatches_and_accept_with_action_empty(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     workspace = _workspace(tmp_path)
     opinion = _opinion(scope_id="GOVSCOPE-" + "8" * 32, scope_sha="8" * 64)
     record = _record(state="ACCEPT_WITH_ACTION", register=_register(conditions=[]))
@@ -572,7 +587,9 @@ def test_verify_detects_scope_mismatches_and_accept_with_action_empty(tmp_path: 
     monkeypatch.setattr(gd, "load_governance_reviewer_opinions", lambda workspace: [opinion])
     monkeypatch.setattr(gd, "load_events", lambda path: [])
     monkeypatch.setattr(gd, "_schema_errors", lambda value: [])
-    monkeypatch.setattr(gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []})
+    monkeypatch.setattr(
+        gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []}
+    )
     result = gd.verify_governance_owner_dispositions(workspace)
     joined = "\n".join(result["errors"])
     assert "ACCEPT_WITH_ACTION requires conditions" in joined
@@ -589,7 +606,9 @@ def test_verify_handles_duplicate_opinion_index_and_event_load_error(
     monkeypatch.setattr(gd, "verify_governance_reviewer_opinions", lambda workspace: {"valid": True, "errors": []})
     monkeypatch.setattr(gd, "load_governance_reviewer_opinions", lambda workspace: [opinion, dict(opinion)])
     monkeypatch.setattr(gd, "load_events", lambda path: (_ for _ in ()).throw(ValueError("bad events")))
-    monkeypatch.setattr(gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []})
+    monkeypatch.setattr(
+        gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []}
+    )
     result = gd.verify_governance_owner_dispositions(workspace)
     assert result["valid"] is False
     assert any("Duplicate governance opinion ID" in error for error in result["errors"])
@@ -602,7 +621,9 @@ def test_verify_warns_about_unaddressed_active_opinion(tmp_path: Path, monkeypat
     monkeypatch.setattr(gd, "verify_governance_reviewer_opinions", lambda workspace: {"valid": True, "errors": []})
     monkeypatch.setattr(gd, "load_governance_reviewer_opinions", lambda workspace: [_opinion()])
     monkeypatch.setattr(gd, "load_events", lambda path: [])
-    monkeypatch.setattr(gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []})
+    monkeypatch.setattr(
+        gd, "verify_chain", lambda path: {"valid": True, "errors": [], "trailer_valid": True, "trailer_errors": []}
+    )
     result = gd.verify_governance_owner_dispositions(workspace)
     assert result["valid"] is True
     assert result["counts"]["unaddressed_active_opinions"] == 1
