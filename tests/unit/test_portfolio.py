@@ -178,7 +178,11 @@ def test_analyze_portfolio_surfaces_recurrent_patterns() -> None:
     assert [item["requirement_id"] for item in analysis["universal_blind_spots"]] == ["NK-02-R01"]
 
     weakness_ids = [item["requirement_id"] for item in analysis["recurrent_weaknesses"]]
-    assert weakness_ids[0] == "NK-04-R01"
+    assert weakness_ids[0] == "NK-02-R01"
+    nk02 = next(item for item in analysis["recurrent_weaknesses"] if item["requirement_id"] == "NK-02-R01")
+    assert nk02["weak_case_count"] == 3
+    assert nk02["weakness_score"] == 9
+    assert nk02["status_counts"]["NOT_ASSESSED"] == 3
     nk04 = next(item for item in analysis["recurrent_weaknesses"] if item["requirement_id"] == "NK-04-R01")
     assert nk04["weak_case_count"] == 3
     assert nk04["weakness_score"] == 8
