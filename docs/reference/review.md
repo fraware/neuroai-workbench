@@ -4,7 +4,7 @@ The workbench records local reviewer assignments, assignment lineage, review sta
 
 ## Authority boundary
 
-The reference workflow records a claimed reviewer identifier and role under `authority_profile: LOCAL_UNAUTHENTICATED_ATTRIBUTION`. It does not authenticate a person, verify an institutional appointment, or confer legal, scientific, clinical, regulatory, or release authority. Authentication and delegated authority belong to the separate institutional deployment and final governance architectures.
+The reference workflow records a claimed reviewer identifier and role under `authority_profile: LOCAL_UNAUTHENTICATED_ATTRIBUTION`. It does not authenticate a person, verify an institutional appointment, or confer legal, scientific, clinical, regulatory, canonical-release, publication, or UNESCO authority. Authentication and delegated authority belong to separate institutional deployment and governance architectures.
 
 Self-assignment of `LEAD_ASSESSOR` or `DECISION_AUTHORITY` remains refused so a distinct assigning actor is recorded within the local profile.
 
@@ -19,7 +19,7 @@ Every successor binds the predecessor assignment ID and SHA-256, records the tra
 
 Effective authority is derived from the unique lineage tip. A predecessor with a `SUPERSEDES` successor is reported as `SUPERSEDED`. A predecessor with a `REVOKES` successor is reported as `REVOKED`. Only an active lineage tip may authorize a new statement or disposition.
 
-The current-assignment assigner (tip `assigned_by`) or a covering active decision-role assignment may supersede an assignment. The assigned reviewer may relinquish their own assignment through revocation, yet may not appoint a successor. Prior assigners in the lineage do not retain perpetual transition authority after supersession. This is a local workflow rule and carries no external authority claim.
+The current-assignment assigner (tip `assigned_by`) or a covering active decision-role assignment may supersede an assignment. The assigned reviewer may relinquish their own assignment through revocation, but may not appoint a successor. Prior assigners in the lineage do not retain perpetual transition authority after supersession. This is a local workflow rule and carries no external authority claim.
 
 ## Historical statements
 
@@ -31,13 +31,40 @@ Supported roles include lead assessor, decision authority, domain reviewer, meth
 
 ## Statements
 
-A reviewer statement targets an assessment, finding, claim, decision, or gap. It records the reviewer position, rationale, evidence references, conditions, proposed change, assessment hash, and assignment linkage. Positions include agreement, conditional agreement, disagreement, and abstention.
+A reviewer statement targets an assessment, finding, claim, decision, or gap. It records the reviewer position, rationale, evidence references, conditions, optional `proposed_change`, assessment hash, and assignment linkage. Positions include agreement, conditional agreement, disagreement, and abstention.
 
 Statements are immutable records. They do not edit the assessment.
 
 ## Dispositions
 
-A lead assessor or decision authority with a covering effective assignment may record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is immutable and cannot update the assessment. Any resulting assessment edit must use the ordinary save workflow, with its own attribution, validation, event, and review. `review-apply` bridges `ACCEPTED` or `PARTIALLY_ACCEPTED` dispositions into that ordinary edit with explicit field patches, optimistic concurrency, recoverable prior assessment history, and a `REVIEW_PROPOSAL_APPLIED` event; it leaves statement and disposition bytes unchanged.
+A lead assessor or decision authority with a covering effective assignment may record an accepted, partially accepted, rejected, or deferred disposition only when the statement's `assessment_sha256` still matches the current assessment. Stale statements must be reaffirmed or succeeded before disposition. A disposition is immutable and cannot update the assessment.
+
+Application has stricter semantics than disposition:
+
+- `ACCEPTED` may be applied only when the statement contains one exact, non-empty `proposed_change`.
+- `review-apply` requires exactly one explicit field patch whose value equals that `proposed_change` byte-for-value and whose path lies within the statement target.
+- `PARTIALLY_ACCEPTED` is deliberately refused by `review-apply` because one free-text proposal does not encode the exact accepted substring or successor wording. Record a successor statement containing the exact accepted wording, dispose that successor, then apply it.
+- `REJECTED` and `DEFERRED` cannot be applied.
+
+Acceptance is not application. Statement and disposition bytes remain unchanged.
+
+## Assessment-edit authority
+
+`review-apply` requires an active local `LEAD_ASSESSOR` or `DECISION_AUTHORITY` assignment covering the statement target. Assignment records must have valid hashes, valid lineage, and exactly matching assignment events on a valid event chain.
+
+The application record binds the statement digest, disposition digest, before-assessment digest, planned after-assessment digest, exact predecessor field value, exact accepted successor value, before/after field digests, application digest, and authority-assignment IDs and digests.
+
+Authority is revalidated inside the case mutation lock immediately before persistence. The predecessor field value is also rechecked inside that lock. Revocation, supersession, event-chain corruption, or concurrent field mutation causes the operation to fail closed.
+
+These local assignments do not authenticate the actor or establish institutional delegation, scientific correctness, release authority, or regulatory/legal effect.
+
+## Transaction and event semantics
+
+`review-apply` uses transactional `Workspace.save_case`. The ordinary save path preserves the content-addressed predecessor assessment, writes the successor assessment and persistence state, writes the application record as an exclusive case-contained record, and commits one physical `ASSESSMENT_SAVED` event.
+
+The logical `REVIEW_PROPOSAL_APPLIED` action appears inside that event's `related_events` payload. It is not a second independently committed event. This prevents an assessment/application mutation from becoming durable without corresponding event provenance, or a proposal-apply event from becoming durable independently of the assessment save.
+
+A pre-event failure rolls back the assessment, persistence record, application record, and any newly created history object. A later save recovers any remaining `PREPARED` transaction by verifying whether its transaction-keyed `ASSESSMENT_SAVED` event committed. Corrupt journals, predecessor snapshots, event chains, or divergent durable state block automatic recovery.
 
 ## Appeals and dissent preservation
 
@@ -51,11 +78,11 @@ Reports display the original position, appeal type and grounds, requested resolu
 
 ## Integrity and concurrency
 
-Assignment creation, supersession, revocation, statement submission, disposition, appeal filing, and appeal disposition are serialized through the case mutation lock. This prevents cooperative writers from creating two successors or accepting a statement or appeal concurrently with revocation. Assignment, statement, disposition, appeal, and appeal-disposition records remain individually hashed and linked to the case event chain.
+Assignment creation, supersession, revocation, statement submission, disposition, appeal filing, appeal disposition, and proposal application use the case mutation lock at their mutation boundary. Proposal application additionally performs optimistic assessment-digest checks and field-level predecessor checks.
 
 Verification detects altered records, unresolved targets, unknown evidence references, invalid assignment lineages, missing assignment authority at the recorded time, duplicate dispositions, invalid decision-role linkage, and missing appeal or appeal-disposition event correspondence.
 
-Hash validity proves record consistency only. It does not prove reviewer identity, independence, reasoning quality, or institutional authority.
+Hash validity proves record consistency only. It does not prove reviewer identity, independence, reasoning quality, substantive correctness, or institutional authority.
 
 ## CLI
 
@@ -73,10 +100,13 @@ neuroai-workbench review-revoke WORKSPACE CASE ASSIGNMENT_ID \
   --actor REVIEWER
 
 neuroai-workbench review-submit WORKSPACE CASE REVIEWER FINDING NK-01-R01 DISAGREE \
-  --rationale "The claim should remain bounded." --evidence-id EV-PR-001
+  --rationale "The claim should remain bounded." \
+  --proposed-change "Exact successor wording." \
+  --evidence-id EV-PR-001
 
-neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID PARTIALLY_ACCEPTED \
-  --rationale "Record the disagreement; edit separately." --actor lead-assessor
+neuroai-workbench review-dispose WORKSPACE CASE STATEMENT_ID ACCEPTED \
+  --rationale "Exact proposed wording accepted for separate application." \
+  --actor lead-assessor
 
 neuroai-workbench review-apply WORKSPACE CASE STATEMENT_ID \
   --expected-assessment-sha256 CURRENT_SHA256 \
@@ -93,7 +123,6 @@ neuroai-workbench review-appeal-dispose WORKSPACE CASE APPEAL_ID DENIED \
   --actor lead-assessor
 
 neuroai-workbench review-appeal-list WORKSPACE CASE
-
 neuroai-workbench review-verify WORKSPACE CASE
 neuroai-workbench review-report WORKSPACE CASE --output review.md
 ```

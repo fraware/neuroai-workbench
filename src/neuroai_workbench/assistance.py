@@ -6,8 +6,14 @@ import uuid
 from pathlib import Path
 from typing import Any, cast
 
-from .assessment_paths import apply_field_patches, normalize_target_path
+from .assessment_paths import (
+    apply_field_patches,
+    get_at_path,
+    normalize_target_path,
+    review_target_for_path,
+)
 from .events import append_event
+from .proposal_application import assessment_edit_authority_assignments
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file, utc_now
 from .validation import validate_assessment
 from .workspace import Workspace
@@ -408,10 +414,14 @@ def _normalize_field_patches(field_patches: list[dict[str, Any]]) -> list[dict[s
     if not isinstance(field_patches, list) or not field_patches:
         raise ValueError("Explicit field_patches are required; acceptance is not application")
     normalized: list[dict[str, Any]] = []
+    seen: set[str] = set()
     for index, patch in enumerate(field_patches):
         if not isinstance(patch, dict):
             raise ValueError(f"field_patches[{index}] must be an object")
         path = normalize_target_path(str(patch.get("target_path", "")))
+        if path in seen:
+            raise ValueError(f"Duplicate field patch for {path}")
+        seen.add(path)
         if "value" not in patch:
             raise ValueError(f"field_patches[{index}] requires value")
         normalized.append({"target_path": path, "value": patch["value"]})
@@ -428,12 +438,7 @@ def apply_assistance_proposal(
     field_patches: list[dict[str, Any]],
     require_valid: bool = True,
 ) -> dict[str, Any]:
-    """Apply a human-disposed assistance proposal through ordinary ``save_case``.
-
-    Disposition remains separate from assessment authority. ``ACCEPTED_AS_DRAFT`` and
-    ``PARTIALLY_USED`` stay draft dispositions until this explicit apply command supplies
-    field patches. Proposal and disposition bytes are left unchanged. No model is invoked.
-    """
+    """Apply an exactly bound human-disposed proposal through ordinary ``save_case``."""
     ensure_identifier(request_id, "request ID")
     ensure_identifier(actor, "actor ID")
     if not expected_assessment_sha256 or not isinstance(expected_assessment_sha256, str):
@@ -481,16 +486,35 @@ def apply_assistance_proposal(
         )
 
     suggestions = response.get("output", {}).get("suggestions")
-    if not isinstance(suggestions, list):
+    if not isinstance(suggestions, list) or not suggestions:
         raise ValueError("Assistance response suggestions are missing")
-    allowed_paths = {
-        normalize_target_path(str(item.get("target_path")))
-        for item in suggestions
-        if isinstance(item, dict) and item.get("target_path")
-    }
+    normalized_suggestions: list[tuple[str, Any]] = []
+    for index, item in enumerate(suggestions):
+        if not isinstance(item, dict) or not item.get("target_path") or "proposed_text" not in item:
+            raise ValueError(f"Assistance suggestion {index} is malformed")
+        normalized_suggestions.append((normalize_target_path(str(item["target_path"])), item["proposed_text"]))
+    if len(set(normalized_suggestions)) != len(normalized_suggestions):
+        raise ValueError("Assistance response contains duplicate path/text suggestions")
+
+    selected_indices: set[int] = set()
     for patch in patches:
-        if patch["target_path"] not in allowed_paths:
-            raise ValueError(f"Field path outside proposal: {patch['target_path']}")
+        matches = [
+            index
+            for index, suggestion in enumerate(normalized_suggestions)
+            if suggestion == (patch["target_path"], patch["value"])
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"Field patch is not exactly bound to one accepted proposal suggestion: {patch['target_path']}"
+            )
+        selected_indices.add(matches[0])
+    if len(selected_indices) != len(patches):
+        raise ValueError("Multiple field patches select the same assistance suggestion")
+    all_indices = set(range(len(normalized_suggestions)))
+    if disposition_value == "ACCEPTED_AS_DRAFT" and selected_indices != all_indices:
+        raise ValueError("ACCEPTED_AS_DRAFT must apply every accepted suggestion exactly")
+    if disposition_value == "PARTIALLY_USED" and selected_indices == all_indices:
+        raise ValueError("PARTIALLY_USED must apply a non-empty proper subset of accepted suggestions")
 
     request_path = root / "requests" / f"{request_id}.json"
     proposal_bytes_before = request_path.read_bytes()
@@ -498,6 +522,22 @@ def apply_assistance_proposal(
     disposition_bytes_before = disposition_path.read_bytes()
 
     assessment = workspace.load_case(case_id)
+    authority_targets = [review_target_for_path(assessment, patch["target_path"]) for patch in patches]
+    authority_assignments = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
+    authority_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in authority_assignments}
+
+    patches_for_record: list[dict[str, Any]] = []
+    for patch in patches:
+        before_value = get_at_path(assessment, patch["target_path"])
+        patches_for_record.append(
+            {
+                "target_path": patch["target_path"],
+                "expected_value": before_value,
+                "value": patch["value"],
+                "before_value_sha256": sha256_bytes(canonical_json_bytes(before_value)),
+                "after_value_sha256": sha256_bytes(canonical_json_bytes(patch["value"])),
+            }
+        )
     patched = apply_field_patches(assessment, patches)
     planned_bytes = json.dumps(patched, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
     planned_after = sha256_bytes(planned_bytes)
@@ -511,15 +551,17 @@ def apply_assistance_proposal(
         "disposition": disposition_value,
         "disposition_sha256": disposition["disposition_sha256"],
         "actor": actor,
+        "authority_assignments": authority_digests,
         "applied_at": applied_at,
-        "field_patches": patches,
+        "field_patches": patches_for_record,
         "before_assessment_sha256": current_sha,
         "after_assessment_sha256": planned_after,
         "assessment_mutation": "ORDINARY_SAVE_CASE",
         "model_invocation": "NONE",
+        "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "authority_boundary": (
-            "Application records a human-controlled assessment edit provenance link only. "
-            "It does not grant the model decision authority and does not rewrite assistance records."
+            "Active local decision-role records authorize this workflow edit only. "
+            "They do not authenticate identity or establish institutional or release authority."
         ),
     }
     application["application_sha256"] = _hash_record(application, "application_sha256")
@@ -530,12 +572,25 @@ def apply_assistance_proposal(
         "disposition_sha256": disposition["disposition_sha256"],
         "response_sha256": response["response_sha256"],
         "disposition": disposition_value,
-        "applied_paths": [item["target_path"] for item in patches],
+        "applied_paths": [item["target_path"] for item in patches_for_record],
+        "authority_assignments": authority_digests,
         "model_invocation": "NONE",
         "before_assessment_sha256": current_sha,
         "after_assessment_sha256": planned_after,
         "application_sha256": application["application_sha256"],
     }
+
+    def revalidate_authority() -> None:
+        current = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
+        current_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in current}
+        for assignment_id, digest in authority_digests.items():
+            if current_digests.get(assignment_id) != digest:
+                raise ValueError("Assessment-edit authority changed before persistence")
+        current_assessment = workspace.load_case(case_id)
+        for patch in patches_for_record:
+            if get_at_path(current_assessment, patch["target_path"]) != patch["expected_value"]:
+                raise ValueError(f"Field value changed before persistence: {patch['target_path']}")
+
     save_result = workspace.save_case(
         case_id,
         patched,
@@ -545,6 +600,7 @@ def apply_assistance_proposal(
         event_metadata=event_metadata,
         additional_events=[(ASSISTANCE_PROPOSAL_APPLIED_EVENT, event_metadata)],
         exclusive_records=[(application_path, application)],
+        precondition=revalidate_authority,
     )
     if save_result.get("after_sha256") != planned_after:
         raise RuntimeError("Assessment digest after ordinary save did not match the planned apply digest")

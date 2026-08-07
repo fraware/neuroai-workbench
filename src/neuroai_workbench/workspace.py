@@ -2,21 +2,33 @@ from __future__ import annotations
 
 import json
 import shutil
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
+from uuid import uuid4
 
 from . import __version__
 from .case_lock import case_mutation_lock
 from .errors import WorkspaceError
-from .events import append_event, verify_chain
+from .events import append_event, load_events, verify_chain
 from .resource_loader import read_resource_bytes
-from .util import atomic_write_json, ensure_identifier, load_json, safe_join, sha256_file, utc_now
+from .util import (
+    atomic_write_bytes,
+    atomic_write_json,
+    canonical_json_bytes,
+    ensure_identifier,
+    load_json,
+    safe_join,
+    sha256_bytes,
+    sha256_file,
+    utc_now,
+)
 from .validation import validate_assessment
 
 WORKSPACE_FILE = "workspace.json"
 CASE_FILE = "assessment.json"
 ASSESSMENT_HISTORY_DIR = "history/assessments"
+ASSESSMENT_SAVE_TRANSACTION_DIR = "transactions/assessment-saves"
 
 
 class Workspace:
@@ -165,26 +177,138 @@ class Workspace:
         path = self.assessment_history_path(case_id, assessment_sha256)
         if not path.is_file():
             raise WorkspaceError(f"No recoverable assessment history for digest {assessment_sha256}")
+        if sha256_file(path) != assessment_sha256.lower():
+            raise WorkspaceError(f"Assessment history digest mismatch for {assessment_sha256}")
         return cast(dict[str, Any], load_json(path))
 
-    def _record_assessment_history(self, case_path: Path, assessment_path: Path) -> dict[str, Any] | None:
-        """Persist content-addressed prior assessment bytes on the canonical save path."""
-        if not assessment_path.is_file():
-            return None
-        before = sha256_file(assessment_path)
-        history_dir = case_path / ASSESSMENT_HISTORY_DIR
-        history_dir.mkdir(parents=True, exist_ok=True)
-        history_path = history_dir / f"{before}.json"
-        if not history_path.exists():
-            shutil.copy2(assessment_path, history_path)
-            copied = sha256_file(history_path)
-            if copied != before:
-                history_path.unlink(missing_ok=True)
-                raise WorkspaceError("Failed to preserve recoverable prior assessment state")
-        return {
-            "prior_assessment_sha256": before,
-            "history_path": str(history_path.relative_to(case_path).as_posix()),
-        }
+    @staticmethod
+    def _json_bytes(value: Any) -> bytes:
+        return json.dumps(value, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
+
+    @staticmethod
+    def _transaction_hash(record: dict[str, Any]) -> str:
+        return sha256_bytes(
+            canonical_json_bytes({key: value for key, value in record.items() if key != "transaction_sha256"})
+        )
+
+    @classmethod
+    def _write_transaction_record(cls, path: Path, record: dict[str, Any]) -> None:
+        controlled = dict(record)
+        controlled["transaction_sha256"] = cls._transaction_hash(controlled)
+        atomic_write_json(path, controlled)
+
+    @classmethod
+    def _load_transaction_record(cls, path: Path) -> dict[str, Any]:
+        value = load_json(path)
+        if not isinstance(value, dict):
+            raise WorkspaceError(f"Assessment-save transaction must be an object: {path}")
+        record = cast(dict[str, Any], value)
+        if record.get("transaction_sha256") != cls._transaction_hash(record):
+            raise WorkspaceError(f"Assessment-save transaction hash mismatch: {path}")
+        return record
+
+    @staticmethod
+    def _case_relative_path(case_path: Path, candidate: Path, label: str) -> str:
+        resolved_case = case_path.resolve()
+        resolved = candidate.resolve()
+        if resolved == resolved_case or resolved_case not in resolved.parents:
+            raise WorkspaceError(f"{label} escapes the controlled case directory: {candidate}")
+        return resolved.relative_to(resolved_case).as_posix()
+
+    @staticmethod
+    def _transaction_event_committed(case_path: Path, transaction_id: str, after_sha256: str) -> bool:
+        event_path = case_path / "events.jsonl"
+        report = verify_chain(event_path)
+        if not report.get("valid") or not report.get("trailer_valid"):
+            raise WorkspaceError("Event chain is invalid during assessment-save transaction recovery")
+        matches = [
+            event
+            for event in load_events(event_path)
+            if event.get("action") == "ASSESSMENT_SAVED"
+            and isinstance(event.get("payload"), dict)
+            and event["payload"].get("transaction_id") == transaction_id
+        ]
+        if len(matches) > 1:
+            raise WorkspaceError(f"Duplicate ASSESSMENT_SAVED transaction event {transaction_id}")
+        if not matches:
+            return False
+        return bool(matches[0]["payload"].get("after_sha256") == after_sha256)
+
+    def _rollback_save_transaction(self, case_path: Path, transaction_path: Path, record: dict[str, Any]) -> None:
+        transaction_dir = transaction_path.parent
+        before_assessment = transaction_dir / "before-assessment.json"
+        expected_before = str(record["before_assessment_sha256"])
+        if not before_assessment.is_file() or sha256_file(before_assessment) != expected_before:
+            raise WorkspaceError(f"Assessment-save rollback snapshot is missing or corrupt: {transaction_dir}")
+
+        exclusive_records = record.get("exclusive_records")
+        if not isinstance(exclusive_records, list):
+            raise WorkspaceError(f"Assessment-save transaction has invalid exclusive records: {transaction_dir}")
+        for item in exclusive_records:
+            if not isinstance(item, dict):
+                raise WorkspaceError(f"Assessment-save transaction has invalid exclusive record: {transaction_dir}")
+            path = safe_join(case_path, str(item["path"]))
+            if path.exists():
+                if sha256_file(path) != item.get("sha256"):
+                    raise WorkspaceError(f"Exclusive record diverged during rollback: {path}")
+                path.unlink()
+
+        atomic_write_bytes(case_path / CASE_FILE, before_assessment.read_bytes())
+        persistence_path = case_path / "persistence.json"
+        before_persistence = transaction_dir / "before-persistence.json"
+        if record.get("persistence_existed"):
+            expected_persistence = record.get("before_persistence_sha256")
+            if not before_persistence.is_file() or sha256_file(before_persistence) != expected_persistence:
+                raise WorkspaceError(f"Persistence rollback snapshot is missing or corrupt: {transaction_dir}")
+            atomic_write_bytes(persistence_path, before_persistence.read_bytes())
+        else:
+            persistence_path.unlink(missing_ok=True)
+
+        if record.get("history_created"):
+            history_path = safe_join(case_path, str(record["history_path"]))
+            if history_path.exists():
+                if sha256_file(history_path) != expected_before:
+                    raise WorkspaceError(f"Assessment history diverged during rollback: {history_path}")
+                history_path.unlink()
+
+        rolled_back = dict(record)
+        rolled_back["state"] = "ROLLED_BACK"
+        rolled_back["completed_at"] = utc_now()
+        self._write_transaction_record(transaction_path, rolled_back)
+        before_assessment.unlink(missing_ok=True)
+        before_persistence.unlink(missing_ok=True)
+
+    def _recover_save_transactions(self, case_path: Path) -> None:
+        root = case_path / ASSESSMENT_SAVE_TRANSACTION_DIR
+        if not root.exists():
+            return
+        for transaction_dir in sorted(path for path in root.iterdir() if path.is_dir()):
+            transaction_path = transaction_dir / "transaction.json"
+            if not transaction_path.is_file():
+                raise WorkspaceError(f"Assessment-save transaction lacks transaction.json: {transaction_dir}")
+            record = self._load_transaction_record(transaction_path)
+            if record.get("state") != "PREPARED":
+                continue
+            transaction_id = str(record["transaction_id"])
+            after_sha256 = str(record["after_assessment_sha256"])
+            if self._transaction_event_committed(case_path, transaction_id, after_sha256):
+                target = case_path / CASE_FILE
+                if not target.is_file() or sha256_file(target) != after_sha256:
+                    raise WorkspaceError(
+                        f"Committed assessment-save transaction has divergent assessment: {transaction_id}"
+                    )
+                for item in record.get("exclusive_records", []):
+                    path = safe_join(case_path, str(item["path"]))
+                    if not path.is_file() or sha256_file(path) != item.get("sha256"):
+                        raise WorkspaceError(f"Committed assessment-save transaction has divergent record: {path}")
+                committed = dict(record)
+                committed["state"] = "COMMITTED"
+                committed["completed_at"] = utc_now()
+                self._write_transaction_record(transaction_path, committed)
+                (transaction_dir / "before-assessment.json").unlink(missing_ok=True)
+                (transaction_dir / "before-persistence.json").unlink(missing_ok=True)
+                continue
+            self._rollback_save_transaction(case_path, transaction_path, record)
 
     def save_case(
         self,
@@ -197,50 +321,106 @@ class Workspace:
         event_metadata: Mapping[str, Any] | None = None,
         additional_events: Sequence[tuple[str, Mapping[str, Any]]] | None = None,
         exclusive_records: Sequence[tuple[Path, Mapping[str, Any]]] | None = None,
+        precondition: Callable[[], None] | None = None,
     ) -> dict[str, Any]:
         path = self.case_path(case_id)
         if not path.is_dir():
             raise WorkspaceError(f"Unknown case {case_id!r}")
         with case_mutation_lock(path):
+            self._recover_save_transactions(path)
+            if precondition is not None:
+                precondition()
+
             target = path / CASE_FILE
             before = sha256_file(target) if target.exists() else None
+            if before is None:
+                raise WorkspaceError(f"Case {case_id!r} has no assessment.json")
             if expected_sha256 is not None and before != expected_sha256:
                 raise WorkspaceError(
                     "Optimistic concurrency refusal: assessment digest no longer matches "
                     f"expected_assessment_sha256 ({expected_sha256})"
                 )
-            for record_path, _payload in exclusive_records or ():
-                if record_path.exists():
-                    raise WorkspaceError(f"Exclusive record already exists: {record_path.name}")
 
             report = validate_assessment(assessment)
             if require_valid and not report.valid:
                 raise WorkspaceError("Assessment failed the required validation gate")
             validation_state = "VALID" if report.valid else "DRAFT_INVALID"
             persisted_as = "valid" if report.valid else "draft_invalid"
-            history = self._record_assessment_history(path, target) if target.exists() else None
-            atomic_write_json(target, assessment)
-            after = sha256_file(target)
-            atomic_write_json(
-                path / "persistence.json",
-                {
-                    "validation_state": validation_state,
-                    "persisted_as": persisted_as,
-                    "require_valid": require_valid,
-                    "assessment_sha256": after,
-                    "updated_at": utc_now(),
-                    "actor": actor,
-                    "boundary": (
-                        "validation_state records schema/semantic gate outcome only; "
-                        "it does not establish substantive truth or conformance."
-                    ),
-                },
-            )
+            desired_assessment = self._json_bytes(assessment)
+            after = sha256_bytes(desired_assessment)
+            history_path = path / ASSESSMENT_HISTORY_DIR / f"{before}.json"
+            history_created = not history_path.exists()
+            if history_path.exists() and sha256_file(history_path) != before:
+                raise WorkspaceError(f"Assessment history digest mismatch: {history_path}")
+
+            persistence_path = path / "persistence.json"
+            persistence_before = persistence_path.read_bytes() if persistence_path.exists() else None
+            history_relative = history_path.relative_to(path).as_posix()
+            persistence = {
+                "validation_state": validation_state,
+                "persisted_as": persisted_as,
+                "require_valid": require_valid,
+                "assessment_sha256": after,
+                "previous_assessment_sha256": before,
+                "history_path": history_relative,
+                "updated_at": utc_now(),
+                "actor": actor,
+                "boundary": (
+                    "validation_state records schema/semantic gate outcome only; "
+                    "it does not establish substantive truth or conformance."
+                ),
+            }
+            desired_persistence = self._json_bytes(persistence)
+
+            normalized_records: list[tuple[Path, bytes, str]] = []
+            seen_record_paths: set[str] = set()
             for record_path, payload in exclusive_records or ():
+                relative = self._case_relative_path(path, record_path, "exclusive record")
+                if relative in seen_record_paths:
+                    raise WorkspaceError(f"Duplicate exclusive record path: {relative}")
+                seen_record_paths.add(relative)
                 if record_path.exists():
                     raise WorkspaceError(f"Exclusive record already exists: {record_path.name}")
-                atomic_write_json(record_path, dict(payload))
+                data = self._json_bytes(dict(payload))
+                normalized_records.append((record_path.resolve(), data, relative))
+
+            transaction_id = f"AST-{uuid4().hex}"
+            transaction_dir = path / ASSESSMENT_SAVE_TRANSACTION_DIR / transaction_id
+            transaction_dir.mkdir(parents=True)
+            before_assessment_bytes = target.read_bytes()
+            atomic_write_bytes(transaction_dir / "before-assessment.json", before_assessment_bytes)
+            if persistence_before is not None:
+                atomic_write_bytes(transaction_dir / "before-persistence.json", persistence_before)
+            transaction_path = transaction_dir / "transaction.json"
+            transaction: dict[str, Any] = {
+                "schema_version": "1",
+                "transaction_id": transaction_id,
+                "state": "PREPARED",
+                "prepared_at": utc_now(),
+                "actor": actor,
+                "before_assessment_sha256": before,
+                "after_assessment_sha256": after,
+                "persistence_existed": persistence_before is not None,
+                "before_persistence_sha256": (
+                    sha256_bytes(persistence_before) if persistence_before is not None else None
+                ),
+                "after_persistence_sha256": sha256_bytes(desired_persistence),
+                "history_path": history_relative,
+                "history_created": history_created,
+                "exclusive_records": [
+                    {"path": relative, "sha256": sha256_bytes(data)}
+                    for _record_path, data, relative in normalized_records
+                ],
+                "authority_profile": "LOCAL_FILESYSTEM_TRANSACTION",
+                "boundary": (
+                    "This journal coordinates recoverable local file mutation only; "
+                    "it establishes no source, identity, custody, or substantive authority."
+                ),
+            }
+            self._write_transaction_record(transaction_path, transaction)
+
             saved_payload: dict[str, Any] = {
+                "transaction_id": transaction_id,
                 "before_sha256": before,
                 "after_sha256": after,
                 "valid": report.valid,
@@ -248,21 +428,49 @@ class Workspace:
                 "persisted_as": persisted_as,
                 "schema_errors": len(report.schema_issues),
                 "semantic_errors": len(report.semantic_issues),
+                "prior_history": {
+                    "prior_assessment_sha256": before,
+                    "history_path": history_relative,
+                },
             }
-            if history is not None:
-                saved_payload["prior_history"] = history
             if event_metadata:
                 saved_payload["apply_provenance"] = dict(event_metadata)
-            append_event(path / "events.jsonl", "ASSESSMENT_SAVED", actor, saved_payload)
-            for action, payload in additional_events or ():
-                append_event(path / "events.jsonl", action, actor, dict(payload))
+            if additional_events:
+                saved_payload["related_events"] = [
+                    {"action": action, "payload": dict(payload)} for action, payload in additional_events
+                ]
+
+            try:
+                if history_created:
+                    atomic_write_bytes(history_path, before_assessment_bytes)
+                if sha256_file(history_path) != before:
+                    raise WorkspaceError("Failed to preserve recoverable prior assessment state")
+                atomic_write_bytes(target, desired_assessment)
+                atomic_write_bytes(persistence_path, desired_persistence)
+                for record_path, data, _relative in normalized_records:
+                    atomic_write_bytes(record_path, data)
+                append_event(path / "events.jsonl", "ASSESSMENT_SAVED", actor, saved_payload)
+            except Exception:
+                if self._transaction_event_committed(path, transaction_id, after):
+                    pass
+                else:
+                    self._rollback_save_transaction(path, transaction_path, transaction)
+                    raise
+
+            committed = dict(transaction)
+            committed["state"] = "COMMITTED"
+            committed["completed_at"] = utc_now()
+            self._write_transaction_record(transaction_path, committed)
+            (transaction_dir / "before-assessment.json").unlink(missing_ok=True)
+            (transaction_dir / "before-persistence.json").unlink(missing_ok=True)
+
             result = report.to_dict()
             result["validation_state"] = validation_state
             result["persisted_as"] = persisted_as
             result["before_sha256"] = before
             result["after_sha256"] = after
-            if history is not None:
-                result["prior_history"] = history
+            result["prior_history"] = saved_payload["prior_history"]
+            result["transaction_id"] = transaction_id
             return result
 
     def snapshot(self, case_id: str, actor: str = "local-user", label: str = "snapshot") -> dict[str, Any]:
