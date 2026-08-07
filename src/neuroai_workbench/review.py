@@ -1,42 +1,20 @@
-"""Public collaborative-review API.
+"""Public collaborative-review compatibility boundary.
 
-Review assignments, lineage, statements, dispositions, appeals, and reporting remain
-implemented in the private record engine. Accepted-proposal application is exported
-from the hardened proposal-application module so import order cannot select the
-legacy permissive implementation.
+The record engine remains private, and the supported review module object pins
+proposal application to the hardened implementation deterministically.
 """
 
 from __future__ import annotations
 
-from typing import Any
+import sys
 
 from . import _review_records as _records
 from . import proposal_application as _proposal_application
-from ._review_records import *  # noqa: F403
 
-# Typed compatibility hooks used by proposal_application.py and existing tests.
-_hash_record = _records._hash_record
-_assignment_index = _records._assignment_index
-_load_records = _records._load_records
-_review_root = _records._review_root
-_review_timestamp = _records._review_timestamp
-_scope_allows = _records._scope_allows
-_verify_assignment_event_correspondence = _records._verify_assignment_event_correspondence
-
-apply_review_proposal = _proposal_application.apply_review_proposal
-assessment_edit_authority_assignments = _proposal_application.assessment_edit_authority_assignments
-
-# The private record engine predates #122 and contains the superseded proposal-apply
-# callable. Remove it from that module object; all supported application paths resolve
-# to proposal_application.py.
-if hasattr(_records, "apply_review_proposal"):
-    delattr(_records, "apply_review_proposal")
-
-
-def __getattr__(name: str) -> Any:
-    """Preserve private compatibility helpers without re-exporting proposal apply."""
-    if name == "apply_review_proposal":
-        return apply_review_proposal
-    if name == "assessment_edit_authority_assignments":
-        return assessment_edit_authority_assignments
-    return getattr(_records, name)
+setattr(_records, "apply_review_proposal", _proposal_application.apply_review_proposal)
+setattr(
+    _records,
+    "assessment_edit_authority_assignments",
+    _proposal_application.assessment_edit_authority_assignments,
+)
+sys.modules[__name__] = _records
