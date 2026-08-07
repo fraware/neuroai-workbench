@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/governance-owner-disposition-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "disposition_id",
+    "scope_id",
+    "scope_sha256",
+    "addressed_opinions",
+    "disposition_state",
+    "owner_claim",
+    "recorded_at",
+    "recorded_by",
+    "rationale",
+    "condition_register",
+    "release_authorization_performed",
+    "authority_profile",
+    "boundary",
+    "disposition_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1"},
+    "disposition_id": {"type": "string", "pattern": "^GOVDISP-[0-9a-f]{32}$"},
+    "scope_id": {"type": "string", "pattern": "^GOVSCOPE-[0-9a-f]{32}$"},
+    "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "addressed_opinions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["opinion_id", "opinion_sha256", "review_track", "opinion_state", "reviewer_key"],
+        "additionalProperties": false,
+        "properties": {
+          "opinion_id": {"type": "string", "pattern": "^GOVOP-[0-9a-f]{32}$"},
+          "opinion_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "review_track": {
+            "enum": ["SECURITY", "METHODOLOGY", "DATA_GOVERNANCE", "ACCESSIBILITY", "DOMAIN", "AFFECTED_COMMUNITY"]
+          },
+          "opinion_state": {
+            "enum": ["SUPPORT", "SUPPORT_WITH_CONDITIONS", "OBJECT", "ABSTAIN", "REQUEST_EVIDENCE"]
+          },
+          "reviewer_key": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}
+        }
+      }
+    },
+    "disposition_state": {
+      "enum": ["ACCEPT", "ACCEPT_WITH_ACTION", "REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"]
+    },
+    "owner_claim": {
+      "type": "object",
+      "required": ["owner_key", "name_or_role", "accountability_state"],
+      "additionalProperties": false,
+      "properties": {
+        "owner_key": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "name_or_role": {"type": "string", "minLength": 1},
+        "organization": {"type": "string", "minLength": 1},
+        "accountability_state": {"type": "string", "minLength": 1}
+      }
+    },
+    "recorded_at": {"type": "string", "minLength": 10},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "condition_register": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "register_id",
+        "disposition_id",
+        "scope_id",
+        "scope_sha256",
+        "conditions",
+        "release_authorization_performed",
+        "authority_profile",
+        "boundary",
+        "register_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": "1"},
+        "register_id": {"type": "string", "pattern": "^GOVCONDREG-[0-9a-f]{32}$"},
+        "disposition_id": {"type": "string", "pattern": "^GOVDISP-[0-9a-f]{32}$"},
+        "scope_id": {"type": "string", "pattern": "^GOVSCOPE-[0-9a-f]{32}$"},
+        "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "required": [
+              "condition_id",
+              "description",
+              "owner",
+              "priority",
+              "status",
+              "release_effect",
+              "closure_evidence_reference"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "condition_id": {"type": "string", "pattern": "^GOVCOND-[0-9a-f]{32}$"},
+              "description": {"type": "string", "minLength": 1},
+              "owner": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+              "priority": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
+              "status": {"enum": ["OPEN", "IN_PROGRESS", "RESOLVED"]},
+              "release_effect": {"enum": ["BLOCKS_RELEASE", "NON_BLOCKING"]},
+              "closure_evidence_reference": {
+                "type": ["object", "null"],
+                "required": ["label", "sha256", "storage_boundary", "locator"],
+                "additionalProperties": false,
+                "properties": {
+                  "label": {"type": "string", "minLength": 1},
+                  "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                  "storage_boundary": {"enum": ["PUBLIC_GIT", "GENERATED_OUTPUT", "PROTECTED_WORKSPACE", "ARCHIVE"]},
+                  "locator": {"type": "string", "minLength": 1}
+                }
+              }
+            }
+          }
+        },
+        "supersedes_register_id": {"type": "string", "pattern": "^GOVCONDREG-[0-9a-f]{32}$"},
+        "supersedes_register_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "release_authorization_performed": {"const": false},
+        "authority_profile": {"const": "UNRESOLVED_CONDITION_TRACKING"},
+        "boundary": {
+          "const": "The unresolved-condition register preserves condition lineage, ownership, status, closure evidence, and explicit release effect. Register integrity does not establish substantive closure or release authority."
+        },
+        "register_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["supersedes_register_id"]},
+          "then": {"required": ["supersedes_register_sha256"]}
+        },
+        {
+          "if": {"required": ["supersedes_register_sha256"]},
+          "then": {"required": ["supersedes_register_id"]}
+        }
+      ]
+    },
+    "supersedes_disposition_id": {"type": "string", "pattern": "^GOVDISP-[0-9a-f]{32}$"},
+    "supersedes_disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "release_authorization_performed": {"const": false},
+    "authority_profile": {"const": "CLAIMED_OWNER_ATTRIBUTION"},
+    "boundary": {
+      "const": "Owner dispositions preserve claimed local owner attribution over exact governance-scope and reviewer-opinion digests. They do not erase reviewer disagreement, convert unresolved evidence into failure, authenticate institutional delegation, establish release readiness, or authorize publication."
+    },
+    "disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"required": ["supersedes_disposition_id"]},
+      "then": {"required": ["supersedes_disposition_sha256"]}
+    },
+    {
+      "if": {"required": ["supersedes_disposition_sha256"]},
+      "then": {"required": ["supersedes_disposition_id"]}
+    },
+    {
+      "if": {"properties": {"disposition_state": {"const": "ACCEPT_WITH_ACTION"}}},
+      "then": {
+        "properties": {
+          "condition_register": {
+            "properties": {"conditions": {"minItems": 1}}
+          }
+        }
+      }
+    }
+  ]
+}
