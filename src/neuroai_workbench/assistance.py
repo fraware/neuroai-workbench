@@ -13,7 +13,7 @@ from .assessment_paths import (
     review_target_for_path,
 )
 from .events import append_event
-from .review import assessment_edit_authority_assignments
+from .proposal_application import assessment_edit_authority_assignments
 from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, sha256_bytes, sha256_file, utc_now
 from .validation import validate_assessment
 from .workspace import Workspace
