@@ -64,7 +64,7 @@ def _schema_errors(value: Any) -> list[dict[str, Any]]:
             "path": ".".join(str(part) for part in error.absolute_path),
             "message": error.message,
         }
-        for error in sorted(validator.iter_errors(value), key=lambda item: list(error.absolute_path))
+        for error in sorted(validator.iter_errors(value), key=lambda item: list(item.absolute_path))
     ]
 
 
