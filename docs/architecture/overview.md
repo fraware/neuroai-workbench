@@ -10,8 +10,8 @@ The workbench is a local evidence and decision environment for exact, versioned 
 - `workspace.py` controls case lifecycle, ordinary assessment saves, assessment history, and recoverable save transactions.
 - `evidence.py` preserves evidence bytes and checks digests.
 - `events.py` appends and verifies the event hash chain.
-- `review.py` is the public collaborative-review API. It exposes the review-record workflow and binds proposal application explicitly to the hardened implementation.
-- `_review_records.py` is the private compatibility engine for review assignments, lineage, statements, dispositions, appeals, dissent, and reporting. Its superseded proposal-apply callable is removed from the normal module object; supported application paths resolve to `proposal_application.py`.
+- `review.py` is the public collaborative-review compatibility boundary. It resolves to the record-engine module object and deterministically pins proposal application to the hardened implementation.
+- `_review_records.py` is the private record engine for review assignments, lineage, statements, dispositions, appeals, dissent, and reporting. At the public `review` boundary, its superseded proposal-apply callable is replaced by the hardened `proposal_application.py` callable so existing review-module patching semantics and the hardened apply path remain aligned.
 - `proposal_application.py` applies exact accepted review wording and derives local assessment-edit authority from active review assignments.
 - `assistance.py` records provider-neutral model requests, responses, dispositions, and exact accepted assistance application without calling a provider.
 - `exchange.py` records minimum-necessary custodian metadata exchange.
