@@ -285,7 +285,7 @@ def test_addressed_opinion_refs_edge_cases() -> None:
     opinion = _opinion()
     with pytest.raises(ValueError, match="At least one"):
         gd._addressed_opinion_refs([opinion], scope_id=VALID_SCOPE_ID, scope_sha256=VALID_SCOPE_SHA, opinion_ids=[])
-    with pytest.raises(ValueError, match="opinion ID"):
+    with pytest.raises(ValueError, match="Invalid opinion_id"):
         gd._addressed_opinion_refs(
             [opinion], scope_id=VALID_SCOPE_ID, scope_sha256=VALID_SCOPE_SHA, opinion_ids=["bad id"]
         )
@@ -446,6 +446,17 @@ def test_supersession_errors_detect_self_removed_conditions_and_field_drift() ->
 
     errors = gd._supersession_errors([self_ref])
     assert any("cannot supersede itself" in error for error in errors)
+
+    removed_successor = _record(
+        disposition_id="GOVDISP-" + "a" * 32,
+        register=_register(disposition_id="GOVDISP-" + "a" * 32, conditions=[]),
+    )
+    removed_successor["supersedes_disposition_id"] = predecessor["disposition_id"]
+    removed_successor["supersedes_disposition_sha256"] = predecessor["disposition_sha256"]
+    removed_register = removed_successor["condition_register"]
+    removed_register["supersedes_register_id"] = predecessor["condition_register"]["register_id"]
+    removed_register["supersedes_register_sha256"] = predecessor["condition_register"]["register_sha256"]
+    errors = gd._supersession_errors([predecessor, removed_successor])
     assert any("condition IDs removed" in error for error in errors)
 
     successor = _record(disposition_id="GOVDISP-" + "6" * 32, register=_register(disposition_id="GOVDISP-" + "6" * 32))
