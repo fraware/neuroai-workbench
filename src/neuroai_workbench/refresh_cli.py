@@ -48,8 +48,7 @@ def build_update_summary(package: dict[str, Any]) -> dict[str, Any]:
     attention = [
         item
         for item in outcomes
-        if item.get("outcome_type") not in _STABLE_OUTCOMES
-        and item.get("outcome_type") not in _CHANGED_OUTCOMES
+        if item.get("outcome_type") not in _STABLE_OUTCOMES and item.get("outcome_type") not in _CHANGED_OUTCOMES
     ]
 
     candidate_stage = _mapping(stage_results.get("create_change_candidate"))
@@ -60,17 +59,9 @@ def build_update_summary(package: dict[str, Any]) -> dict[str, Any]:
     apply_stage = _mapping(stage_results.get("apply_delta"))
 
     changed_source_ids = sorted({str(item.get("source_id")) for item in changed if item.get("source_id")})
-    attention_source_ids = sorted(
-        {str(item.get("source_id")) for item in attention if item.get("source_id")}
-    )
-    candidate_source_ids = sorted(
-        {str(item.get("source_id")) for item in candidates if item.get("source_id")}
-    )
-    products = {
-        str(name): str(path)
-        for name, path in _mapping(publication_stage.get("products")).items()
-        if path
-    }
+    attention_source_ids = sorted({str(item.get("source_id")) for item in attention if item.get("source_id")})
+    candidate_source_ids = sorted({str(item.get("source_id")) for item in candidates if item.get("source_id")})
+    products = {str(name): str(path) for name, path in _mapping(publication_stage.get("products")).items() if path}
 
     next_actions: list[str] = []
     handoff_count = int(snapshot_stage.get("count") or 0)
@@ -80,13 +71,9 @@ def build_update_summary(package: dict[str, Any]) -> dict[str, Any]:
             "Approve the successful captures you want to use, then rerun the refresh to compare them with their baselines."
         )
     if attention_source_ids:
-        next_actions.append(
-            "Review retrieval problems for: " + ", ".join(attention_source_ids)
-        )
+        next_actions.append("Review retrieval problems for: " + ", ".join(attention_source_ids))
     if candidate_source_ids:
-        next_actions.append(
-            "Inspect candidate changes for: " + ", ".join(candidate_source_ids)
-        )
+        next_actions.append("Inspect candidate changes for: " + ", ".join(candidate_source_ids))
     reopening_count = int(reopening_stage.get("recommendation_count") or 0)
     if reopening_count:
         next_actions.append(
