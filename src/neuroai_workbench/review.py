@@ -68,16 +68,23 @@ def _assignment_index(
     )
 
 
-def create_review_assignment(*args: Any, **kwargs: Any) -> dict[str, Any]:
+def _compat_create_review_assignment(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.create_review_assignment, *args, **kwargs))
 
 
-def file_review_appeal(*args: Any, **kwargs: Any) -> dict[str, Any]:
+def _compat_file_review_appeal(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.file_review_appeal, *args, **kwargs))
 
 
-def verify_review_records(*args: Any, **kwargs: Any) -> dict[str, Any]:
+def _compat_verify_review_records(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.verify_review_records, *args, **kwargs))
+
+
+# Preserve the imported API's static signatures for mypy and install only the three
+# runtime bridges needed by historical private-hook tests.
+globals()["create_review_assignment"] = _compat_create_review_assignment
+globals()["file_review_appeal"] = _compat_file_review_appeal
+globals()["verify_review_records"] = _compat_verify_review_records
 
 
 def __getattr__(name: str) -> Any:
