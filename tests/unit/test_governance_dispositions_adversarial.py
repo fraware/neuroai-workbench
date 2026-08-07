@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-import neuroai_workbench.governance_dispositions as gd
+from neuroai_workbench import governance_dispositions as gd
 from neuroai_workbench.util import atomic_write_json
 from neuroai_workbench.workspace import Workspace
 
