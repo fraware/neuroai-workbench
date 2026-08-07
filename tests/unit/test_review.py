@@ -61,7 +61,10 @@ def test_review_lifecycle_is_attributable_and_non_mutating(tmp_path: Path) -> No
         "assignments": 2,
         "statements": 1,
         "dispositions": 1,
+        "appeals": 0,
+        "appeal_dispositions": 0,
         "open_statements": 0,
+        "open_appeals": 0,
         "disagreements": 1,
         "stale_statements": 0,
     }
@@ -244,7 +247,7 @@ def test_review_input_and_integrity_error_branches(tmp_path: Path) -> None:
 def test_duplicate_timestamp_records_are_rejected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     workspace, case_id = _workspace(tmp_path)
     finding_id = workspace.load_case(case_id)["requirement_findings"][0]["requirement_id"]
-    monkeypatch.setattr("neuroai_workbench.review.utc_now", lambda: "2026-07-30T12:00:00Z")
+    monkeypatch.setattr("neuroai_workbench.review._review_timestamp", lambda: "2026-07-30T12:00:00Z")
 
     create_review_assignment(
         workspace, case_id, "reviewer-1", "DOMAIN_REVIEWER", [f"FINDING:{finding_id}"], actor="lead-1"

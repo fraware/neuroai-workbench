@@ -37,7 +37,7 @@ Each run directory should contain, at minimum:
 - `evaluation-cycle-package.json` — full non-canonical cycle record;
 - reconciled XLSX, DOCX, PDF, and dashboard products when generated.
 
-The current compatibility layer serializes deterministic development dispositions through the monitoring decision-record format used by downstream delta code. Those records carry development-only rationale, `governance_layer_applied=false`, no substantive authority, and no release authority. #101 will add governance as a separate overlay without rewriting these records.
+The current compatibility layer serializes deterministic development dispositions through the monitoring decision-record format used by downstream delta code. Those records carry development-only rationale, `governance_layer_applied=false`, no substantive authority, and no release authority. Small-team dual review and formal disposition are a separate residual procedure; canonical `AUTHORIZED` / `PUBLISHED` gates remain under #101 and do not rewrite these development records.
 
 Example public scaffolding lives under `examples/shadow_refresh/`. Synthetic fixtures under `tests/fixtures/shadow_refresh/` support schema and engineering tests only.
 
@@ -83,9 +83,9 @@ Before retrieval, record SHA-256 identities for:
 - entity-resolution rules;
 - extraction configuration;
 - development-disposition configuration;
-- governance state, recorded as `DEFERRED` with issue `#101` during core development.
+- governance state for canonical release, recorded as deferred to issue `#101`.
 
-Reviewer rosters and release-authority records are added only by the final governance overlay.
+Small-team dual-review profiles are claimed local IDs only. Named release-authority records for canonical publication remain under #101.
 
 See `examples/shadow_refresh/SHADOW_REFRESH_FREEZE_MANIFEST_v202608.example.json`.
 
@@ -104,7 +104,7 @@ Core execution measures:
 - publication reconciliation errors;
 - operational cost by source class.
 
-Candidate precision, recall, reviewer agreement, disagreement, adjudication time, and final release decisions belong to the deferred governance overlay in #101. Existing synthetic go/no-go fixtures remain non-canonical test assets and do not gate core development.
+Candidate precision, recall, and canonical release decisions belong to #101. Small-team dual review may record local opinions and a formal disposition without unlocking `AUTHORIZED` / `PUBLISHED`. Existing synthetic go/no-go fixtures remain non-canonical test assets.
 
 ## Fixture commands
 
@@ -182,7 +182,7 @@ It creates no reviewer profiles, opinions, human residual checklist, owner dispo
 
 ## Core completion criteria for #43
 
-Issue #43 tracks the non-canonical engineering cycle only. Human reviewers, owner sign-off, and release authority are deferred to #101 and do not block core development.
+Issue #43 tracked the non-canonical engineering cycle only and is complete. Canonical release authority remains under #101 and does not block core closure.
 
 Core closure requires:
 
@@ -196,7 +196,57 @@ Core closure requires:
 - full-depth product generation and cross-format reconciliation;
 - end-to-end provenance, manifests, hashes, and protected-data boundary verification.
 
-Closing #43 does not authorize a canonical successor. All development successors remain non-canonical until #101 is completed.
+Closing #43 did not authorize a canonical successor. All development successors remain non-canonical until #101 completes the release-authority overlay.
+
+## Small-team residual (#101)
+
+Issue #43 core engineering is complete. For a team of ≤5, governance is a short local procedure — not an institutional workflow.
+
+**Fail-closed rules (keep):** profiles are claimed local IDs only; never forge opinions or `GO`; never invent `FAIL` from typed HTTP failures; never write a canonical successor from shadow evaluation.
+
+### Procedure
+
+```text
+status → opinion A/B on each OPEN item → assess → formal-disposition
+```
+
+```bash
+export NEUROAI_OPS_WORKSPACE=/path/to/NeuroAI_Operations_Starter_v0.1.0
+
+# 1. List OPEN RQI item IDs
+python scripts/record_shadow_dual_review.py status
+
+# 2. Record opinions (same SUPPORT is fine; disagreement allowed but not required)
+python scripts/record_shadow_dual_review.py opinion \
+  --profile REV-SHADOW-A --item-id RQI-... \
+  --position SUPPORT --rationale "First-capture shadow rehearsal; no baseline; non-canonical."
+python scripts/record_shadow_dual_review.py opinion \
+  --profile REV-SHADOW-B --item-id RQI-... \
+  --position SUPPORT --rationale "First-capture shadow rehearsal; no baseline; non-canonical."
+
+# 3. Confirm dual_review_complete
+python scripts/record_shadow_dual_review.py assess \
+  --output-dir "$NEUROAI_OPS_WORKSPACE/runs/shadow-refresh-202608-live/wave2-closure"
+
+# 4. Owners accept metrics NO_GO → formal NO_GO (WITHHELD only if dual review incomplete)
+python scripts/record_shadow_dual_review.py formal-disposition \
+  --run-id CRUN-... \
+  --owners programme-owner \
+  --metrics-recommendation NO_GO \
+  --output-dir "$NEUROAI_OPS_WORKSPACE/runs/shadow-refresh-202608-live/wave2-closure"
+```
+
+### URL residual (typed only)
+
+`SRC-0041`, `SRC-0115`, `SRC-14-007`: keep as typed retrieval failure (`KEEP_AS_TYPED_FAILURE`); `finding_effect = NONE`. Do not invent FAIL findings.
+
+### Still deferred
+
+- Canonical `AUTHORIZED` / `PUBLISHED` successor and named release-authority gates: #101
+
+Archive/data-store boundary (#44) and successor-generation mechanics (#41) are complete; they do not by themselves authorize a published canonical release.
+
+Wave 2 digests stay `SHADOW_EVALUATION_NOT_CANONICAL`. Completing the small-team procedure does not authorize a canonical successor.
 
 ## Full non-canonical evaluation cycle
 
@@ -235,5 +285,5 @@ Live mode requires both environment gates plus explicit `--approve-handoff`. The
 - Development dispositions exercise deterministic mechanics only and carry no substantive or release authority.
 - Candidate successors remain outside `AUTHORIZED` and `PUBLISHED` gates.
 - Reopening analysis does not mutate assessments.
-- Human governance and canonical release authorization remain deferred to #101.
+- Small-team dual review is available; canonical release authorization remains deferred to #101.
 - CI stays network-free; live paths remain ops-gated.

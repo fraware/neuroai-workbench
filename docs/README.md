@@ -21,7 +21,7 @@ Audience-oriented index for the NeuroAI Workbench. Every page below has a distin
 
 ## Architecture decision records
 
-Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Current records: offline-first local-only, filesystem workspaces, no aggregate conformance score, normative kernel change control, controlled language-model assistance, single-writer event chain, transactional evidence registration, collector deployment boundary, canonical data and evidence stores, discovery query streams.
+Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Current records: offline-first local-only, filesystem workspaces, no aggregate conformance score, normative kernel change control, controlled language-model assistance, single-writer event chain, transactional evidence registration, collector deployment boundary, canonical data and evidence stores, discovery query streams, append-only review-assignment lineage, accepted-proposal ordinary assessment save.
 
 ## Operations
 
@@ -34,7 +34,9 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | [ai-agent-development.md](operations/ai-agent-development.md) | Cursor/agent handoff protocol and eval harness |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
 | [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
-| [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh rehearsal |
+| [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh rehearsal and small-team residual |
+| [shadow-cycle-43-execution.md](operations/shadow-cycle-43-execution.md) | #43 core-cycle acceptance summary |
+| [deferred-governance.md](operations/deferred-governance.md) | #101 status: what remains for canonical release |
 | [governing-input-migration.md](operations/governing-input-migration.md) | Governing-input lineage and migration |
 | [public-data-release.md](operations/public-data-release.md) | Bootstrap and publish to `neuroai-observatory-data` |
 | [post-publication-withdrawal-drill.md](operations/post-publication-withdrawal-drill.md) | Withdrawal and correction drill |

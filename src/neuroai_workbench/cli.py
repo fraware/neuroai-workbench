@@ -11,6 +11,7 @@ from typing import Any, cast
 
 from . import __version__
 from .assistance import (
+    apply_assistance_proposal,
     create_assistance_request,
     dispose_assistance_response,
     record_assistance_response,
@@ -40,10 +41,16 @@ from .observatory import (
 from .programme_adapter import adapt_programme_file
 from .reports import write_assessment_markdown, write_gap_markdown
 from .review import (
+    apply_review_proposal,
     create_review_assignment,
+    dispose_review_appeal,
     dispose_review_statement,
+    file_review_appeal,
+    list_review_appeals,
     render_review_markdown,
+    revoke_review_assignment,
     submit_review_statement,
+    supersede_review_assignment,
     verify_review_records,
 )
 from .server import serve
@@ -249,6 +256,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--actor", default="cli-user")
     p.add_argument("--out")
 
+    p = sub.add_parser(
+        "assist-apply",
+        help="Apply an accepted assistance proposal through an ordinary assessment edit",
+    )
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("request_id")
+    p.add_argument("--expected-assessment-sha256", required=True)
+    p.add_argument("--patches-file", required=True, help="JSON list of {target_path, value} patches")
+    p.add_argument("--actor", default="cli-user")
+    p.add_argument("--allow-invalid", action="store_true")
+    p.add_argument("--out")
+
     p = sub.add_parser("assist-verify", help="Verify request, response, and disposition integrity")
     p.add_argument("workspace")
     p.add_argument("case_id")
@@ -269,6 +289,25 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("role")
     p.add_argument("--scope", action="append", required=True)
     p.add_argument("--actor", default="cli-user")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-revoke", help="Append an immutable revocation successor for an assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("assignment_id")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-supersede", help="Append an immutable successor review assignment")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("assignment_id")
+    p.add_argument("reviewer_id")
+    p.add_argument("role")
+    p.add_argument("--scope", action="append", required=True)
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
     p.add_argument("--out")
 
     p = sub.add_parser("review-submit", help="Submit an immutable review statement or disagreement")
@@ -292,6 +331,45 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("disposition")
     p.add_argument("--rationale", required=True)
     p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser(
+        "review-apply",
+        help="Apply an accepted review proposal through an ordinary assessment edit",
+    )
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("statement_id")
+    p.add_argument("--expected-assessment-sha256", required=True)
+    p.add_argument("--patches-file", required=True, help="JSON list of {target_path, value} patches")
+    p.add_argument("--actor", required=True)
+    p.add_argument("--allow-invalid", action="store_true")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-appeal-file", help="File an append-only appeal against a review statement")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("source_statement_id")
+    p.add_argument("appeal_type")
+    p.add_argument("--grounds", required=True)
+    p.add_argument("--requested-resolution", required=True)
+    p.add_argument("--appellant-id", required=True)
+    p.add_argument("--evidence-id", action="append", default=[])
+    p.add_argument("--actor")
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-appeal-dispose", help="Record an authorized disposition for a review appeal")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
+    p.add_argument("appeal_id")
+    p.add_argument("outcome")
+    p.add_argument("--rationale", required=True)
+    p.add_argument("--actor", required=True)
+    p.add_argument("--out")
+
+    p = sub.add_parser("review-appeal-list", help="List appeals and dissent preservation outcomes")
+    p.add_argument("workspace")
+    p.add_argument("case_id")
     p.add_argument("--out")
 
     p = sub.add_parser("review-verify", help="Verify review records, role linkage, and event-chain integrity")
@@ -469,6 +547,31 @@ def main(argv: list[str] | None = None) -> int:
                 ),
                 Path(args.out) if args.out else None,
             )
+        elif args.command == "review-revoke":
+            emit(
+                revoke_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.assignment_id,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-supersede":
+            emit(
+                supersede_review_assignment(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.assignment_id,
+                    args.reviewer_id,
+                    args.role,
+                    args.scope,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
         elif args.command == "review-submit":
             emit(
                 submit_review_statement(
@@ -496,6 +599,52 @@ def main(argv: list[str] | None = None) -> int:
                     args.rationale,
                     actor=args.actor,
                 ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-apply":
+            patches = json.loads(Path(args.patches_file).read_text(encoding="utf-8"))
+            emit(
+                apply_review_proposal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.statement_id,
+                    actor=args.actor,
+                    expected_assessment_sha256=args.expected_assessment_sha256,
+                    field_patches=patches,
+                    require_valid=not args.allow_invalid,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-file":
+            emit(
+                file_review_appeal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.source_statement_id,
+                    args.appeal_type,
+                    args.grounds,
+                    args.requested_resolution,
+                    appellant_id=args.appellant_id,
+                    evidence_ids=args.evidence_id,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-dispose":
+            emit(
+                dispose_review_appeal(
+                    _workspace(args.workspace),
+                    args.case_id,
+                    args.appeal_id,
+                    args.outcome,
+                    args.rationale,
+                    actor=args.actor,
+                ),
+                Path(args.out) if args.out else None,
+            )
+        elif args.command == "review-appeal-list":
+            emit(
+                list_review_appeals(_workspace(args.workspace), args.case_id),
                 Path(args.out) if args.out else None,
             )
         elif args.command == "review-verify":
@@ -598,6 +747,18 @@ def main(argv: list[str] | None = None) -> int:
                 args.disposition,
                 args.notes,
                 actor=args.actor,
+            )
+            emit(result, Path(args.out) if args.out else None)
+        elif args.command == "assist-apply":
+            patches = json.loads(Path(args.patches_file).read_text(encoding="utf-8"))
+            result = apply_assistance_proposal(
+                _workspace(args.workspace),
+                args.case_id,
+                args.request_id,
+                actor=args.actor,
+                expected_assessment_sha256=args.expected_assessment_sha256,
+                field_patches=patches,
+                require_valid=not args.allow_invalid,
             )
             emit(result, Path(args.out) if args.out else None)
         elif args.command == "assist-verify":

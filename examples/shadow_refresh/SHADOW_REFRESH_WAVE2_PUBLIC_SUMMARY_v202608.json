@@ -4,6 +4,7 @@
     "status": "SHADOW_EVALUATION_NOT_CANONICAL",
     "run_id": "CRUN-92f1b84184f241269aadc30df5dab9d3",
     "evaluation_issue": "#43",
+    "governance_issue": "#101",
     "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
   },
   "network_retrieval": "EXECUTED_LIVE_QUARANTINE_ONLY",
@@ -172,13 +173,21 @@
     }
   ],
   "candidate_count": 5,
-  "dual_review_complete": false,
+  "dual_review_complete": true,
   "metrics_recommendation": "NO_GO",
-  "formal_disposition": "WITHHELD",
+  "formal_disposition": "NO_GO",
+  "url_owner_disposition": "KEEP_AS_TYPED_FAILURE",
+  "post_integrity_http_error_retry": {
+    "executed_at": "2026-08-04T08:32:19Z",
+    "live_retry_executed": true,
+    "outcomes_unchanged": true,
+    "note": "Retried SRC-0041 / SRC-0115 / SRC-14-007 after #20-#22 landed; typed outcomes unchanged; finding_effect remains NONE; owner disposition KEEP_AS_TYPED_FAILURE."
+  },
   "withheld_claims": [
     "Public digests and metrics only; protected capture bodies remain outside git.",
-    "Formal disposition WITHHELD/NO_GO while dual human review is incomplete.",
-    "Does not authorize a canonical observatory successor."
+    "Formal disposition NO_GO after dual review; does not authorize a canonical observatory successor.",
+    "Claimed local reviewer profiles are not authenticated institutional identities.",
+    "Canonical AUTHORIZED/PUBLISHED gates remain deferred to #101."
   ],
   "status": "SHADOW_EVALUATION_NOT_CANONICAL",
   "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision.",
