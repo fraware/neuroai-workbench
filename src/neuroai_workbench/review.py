@@ -72,6 +72,10 @@ def _compat_create_review_assignment(*args: Any, **kwargs: Any) -> dict[str, Any
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.create_review_assignment, *args, **kwargs))
 
 
+def _compat_submit_review_statement(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    return cast(dict[str, Any], _invoke_with_compat_hooks(_records.submit_review_statement, *args, **kwargs))
+
+
 def _compat_file_review_appeal(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.file_review_appeal, *args, **kwargs))
 
@@ -80,9 +84,10 @@ def _compat_verify_review_records(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return cast(dict[str, Any], _invoke_with_compat_hooks(_records.verify_review_records, *args, **kwargs))
 
 
-# Preserve the imported API's static signatures for mypy and install only the three
-# runtime bridges needed by historical private-hook tests.
+# Preserve the imported API's static signatures for mypy and install only the runtime
+# bridges needed by historical private-hook tests.
 globals()["create_review_assignment"] = _compat_create_review_assignment
+globals()["submit_review_statement"] = _compat_submit_review_statement
 globals()["file_review_appeal"] = _compat_file_review_appeal
 globals()["verify_review_records"] = _compat_verify_review_records
 
