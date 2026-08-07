@@ -295,8 +295,7 @@ class Workspace:
                 target = case_path / CASE_FILE
                 if not target.is_file() or sha256_file(target) != after_sha256:
                     raise WorkspaceError(
-                        "Committed assessment-save transaction has divergent assessment: "
-                        f"{transaction_id}"
+                        f"Committed assessment-save transaction has divergent assessment: {transaction_id}"
                     )
                 for item in record.get("exclusive_records", []):
                     path = safe_join(case_path, str(item["path"]))
