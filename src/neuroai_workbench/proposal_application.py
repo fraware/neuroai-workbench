@@ -50,8 +50,7 @@ def assessment_edit_authority_assignments(
         covering = [item for item in active if _scope_allows(item.get("scope", []), target_type, target_id)]
         if not covering:
             raise ValueError(
-                f"Actor {actor!r} has no active assessment-edit decision role covering "
-                f"{target_type}:{target_id}"
+                f"Actor {actor!r} has no active assessment-edit decision role covering {target_type}:{target_id}"
             )
         for item in covering:
             used[str(item["assignment_id"])] = item
@@ -153,9 +152,7 @@ def apply_review_proposal(
     ]
     authority_targets = [(target_type, target_id)]
     authority_assignments = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
-    authority_digests = {
-        str(item["assignment_id"]): str(item["assignment_sha256"]) for item in authority_assignments
-    }
+    authority_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in authority_assignments}
 
     patched = apply_field_patches(assessment, [{"target_path": path, "value": patch["value"]}])
     planned_bytes = json.dumps(patched, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
@@ -198,9 +195,7 @@ def apply_review_proposal(
 
     def revalidate_authority() -> None:
         current = assessment_edit_authority_assignments(workspace, case_id, actor, authority_targets)
-        current_digests = {
-            str(item["assignment_id"]): str(item["assignment_sha256"]) for item in current
-        }
+        current_digests = {str(item["assignment_id"]): str(item["assignment_sha256"]) for item in current}
         for assignment_id, digest in authority_digests.items():
             if current_digests.get(assignment_id) != digest:
                 raise ValueError("Assessment-edit authority changed before persistence")
