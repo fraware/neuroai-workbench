@@ -25,7 +25,8 @@ The workbench preserves exact system boundaries, typed evidence states, requirem
 - Four public reference assessments covering Brain2Qwerty, FDA adaptive DBS, BrainGate2 T15, and PRIMA.
 - Loss-aware conversion from programme completed-assessment records into the native v4.2 object model.
 - Deterministic human-readable Markdown assessment, evidence-gap, and review reports.
-- Attributable local review assignments, immutable agreement/disagreement statements, scoped human dispositions, and tamper verification.
+- Attributable local review assignments with append-only supersession and revocation, immutable agreement/disagreement statements, appeals, scoped human dispositions, and tamper verification.
+- Ordinary assessment application of accepted review or assistance proposals without rewriting historical finding state in place.
 - Protected-evidence metadata requests and out-of-band custodian-response records with no evidence-byte transfer.
 - Provider-neutral GPT assistance request, response, disposition, and integrity records with no direct model API call or automatic assessment mutation.
 
@@ -73,7 +74,7 @@ neuroai-workbench report \
 
 ## Collaborative review
 
-The local reference workflow records claimed reviewer identities, typed roles, scoped assignments, agreement or disagreement statements, and human dispositions as separate integrity-addressed records. It does not authenticate a person or institution, and no review record edits the assessment automatically. See [collaborative review](docs/reference/review.md).
+The local reference workflow records claimed reviewer identities, typed roles, scoped assignments, agreement or disagreement statements, appeals, and human dispositions as separate integrity-addressed records. Assignment changes append supersession or revocation successors; accepted proposals apply only through an ordinary assessment edit. The workflow does not authenticate a person or institution, and no review record edits the assessment automatically. See [collaborative review](docs/reference/review.md).
 
 ## Protected-evidence metadata exchange
 
