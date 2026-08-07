@@ -69,9 +69,7 @@ def _schema_errors(value: Any) -> list[dict[str, Any]]:
 
 
 def _hash_record(value: dict[str, Any], hash_field: str) -> str:
-    controlled = {
-        key: item for key, item in value.items() if key != hash_field and key not in RUNTIME_PRIVATE_KEYS
-    }
+    controlled = {key: item for key, item in value.items() if key != hash_field and key not in RUNTIME_PRIVATE_KEYS}
     return sha256_bytes(canonical_json_bytes(controlled))
 
 
@@ -140,17 +138,13 @@ def load_governance_owner_dispositions(workspace: Workspace) -> list[dict[str, A
 
 
 def _active_opinions(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    superseded = {
-        str(record.get("supersedes_opinion_id")) for record in records if record.get("supersedes_opinion_id")
-    }
+    superseded = {str(record.get("supersedes_opinion_id")) for record in records if record.get("supersedes_opinion_id")}
     return [record for record in records if str(record.get("opinion_id")) not in superseded]
 
 
 def _active_dispositions(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     superseded = {
-        str(record.get("supersedes_disposition_id"))
-        for record in records
-        if record.get("supersedes_disposition_id")
+        str(record.get("supersedes_disposition_id")) for record in records if record.get("supersedes_disposition_id")
     }
     return [record for record in records if str(record.get("disposition_id")) not in superseded]
 
@@ -379,9 +373,7 @@ def record_governance_owner_disposition(
         if predecessor not in active:
             raise ValueError("supersedes_disposition_id must identify the current active disposition")
         predecessor_ids = {
-            str(item.get("opinion_id"))
-            for item in predecessor.get("addressed_opinions", [])
-            if isinstance(item, dict)
+            str(item.get("opinion_id")) for item in predecessor.get("addressed_opinions", []) if isinstance(item, dict)
         }
         if requested_ids != predecessor_ids:
             raise ValueError("A superseding owner disposition must address the exact predecessor opinion set")
@@ -390,9 +382,7 @@ def record_governance_owner_disposition(
     else:
         for record in active:
             active_ids = {
-                str(item.get("opinion_id"))
-                for item in record.get("addressed_opinions", [])
-                if isinstance(item, dict)
+                str(item.get("opinion_id")) for item in record.get("addressed_opinions", []) if isinstance(item, dict)
             }
             overlap = sorted(requested_ids & active_ids)
             if overlap:
@@ -526,9 +516,7 @@ def _supersession_errors(records: list[dict[str, Any]]) -> list[str]:
                 if isinstance(item, dict)
             }
             current_conditions = {
-                str(item.get("condition_id")): item
-                for item in register.get("conditions", [])
-                if isinstance(item, dict)
+                str(item.get("condition_id")): item for item in register.get("conditions", []) if isinstance(item, dict)
             }
             missing = sorted(set(prior_conditions) - set(current_conditions))
             if missing:
@@ -642,8 +630,7 @@ def verify_governance_owner_dispositions(workspace: Workspace) -> dict[str, Any]
             str(event.get("payload", {}).get("scope_sha256")),
         )
         for event in events
-        if event.get("action") == "GOVERNANCE_OWNER_DISPOSITION_RECORDED"
-        and isinstance(event.get("payload"), dict)
+        if event.get("action") == "GOVERNANCE_OWNER_DISPOSITION_RECORDED" and isinstance(event.get("payload"), dict)
     )
 
     seen_ids: set[str] = set()
