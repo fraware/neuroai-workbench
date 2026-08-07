@@ -232,7 +232,7 @@ class Workspace:
             raise WorkspaceError(f"Duplicate ASSESSMENT_SAVED transaction event {transaction_id}")
         if not matches:
             return False
-        return matches[0]["payload"].get("after_sha256") == after_sha256
+        return bool(matches[0]["payload"].get("after_sha256") == after_sha256)
 
     def _rollback_save_transaction(self, case_path: Path, transaction_path: Path, record: dict[str, Any]) -> None:
         transaction_dir = transaction_path.parent
