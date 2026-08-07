@@ -16,7 +16,7 @@ def assessment_edit_authority_assignments(
     targets: list[tuple[str, str]],
 ) -> list[dict[str, Any]]:
     """Return active, event-linked local decision assignments covering every target."""
-    from .review import (
+    from ._review_records import (
         DECISION_ROLES,
         _assignment_index,
         _load_records,
@@ -68,7 +68,7 @@ def apply_review_proposal(
     require_valid: bool = True,
 ) -> dict[str, Any]:
     """Apply exact accepted review wording through the ordinary save transaction."""
-    from .review import (
+    from ._review_records import (
         REVIEW_PROPOSAL_APPLIED_EVENT,
         REVIEW_SCHEMA_VERSION,
         _hash_record,
