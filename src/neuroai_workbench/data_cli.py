@@ -1,4 +1,4 @@
-"""Researcher CLI for NeuroAI observatory data health, search, and propagation tracing."""
+"""Researcher CLI for NeuroAI data health, search, tracing, and evidence crosswalks."""
 
 from __future__ import annotations
 
@@ -12,13 +12,14 @@ from typing import Any
 from .data_health import build_data_health, write_data_health_outputs
 from .data_search import build_search_index, search_index, write_search_outputs
 from .data_trace import trace_propagation, write_trace_outputs
+from .evidence_crosswalk import build_evidence_crosswalk, write_crosswalk_outputs
 from .util import load_json
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="neuroai-data",
-        description="Inspect freshness, search, and trace NeuroAI observatory records.",
+        description="Inspect freshness, search, traceability, and evidence joinability across NeuroAI data.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -50,6 +51,26 @@ def _parser() -> argparse.ArgumentParser:
     )
     trace.add_argument("--output-dir", type=Path, default=Path("data-trace"))
     trace.add_argument("--json", action="store_true")
+
+    crosswalk = sub.add_parser("crosswalk", help="Crosswalk assessment evidence into a current source universe")
+    crosswalk.add_argument(
+        "--source-universe",
+        dest="source_universes",
+        type=Path,
+        action="append",
+        required=True,
+        help="Controlled source JSON/JSONL payload; repeat to compose the effective source universe.",
+    )
+    crosswalk.add_argument(
+        "--assessment",
+        dest="assessments",
+        type=Path,
+        action="append",
+        required=True,
+        help="Completed assessment JSON; repeat for multiple assessments.",
+    )
+    crosswalk.add_argument("--output-dir", type=Path, default=Path("evidence-crosswalk"))
+    crosswalk.add_argument("--json", action="store_true")
     return parser
 
 
@@ -60,6 +81,23 @@ def _load(path: Path | None) -> Any | None:
     if not resolved.is_file():
         raise ValueError(f"Input not found: {resolved}")
     return load_json(resolved)
+
+
+def _load_source_universe(path: Path) -> Any:
+    resolved = path.expanduser().resolve()
+    if not resolved.is_file():
+        raise ValueError(f"Input not found: {resolved}")
+    if resolved.suffix.casefold() != ".jsonl":
+        return load_json(resolved)
+    rows: list[Any] = []
+    for line_number, line in enumerate(resolved.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Invalid JSONL at {resolved}:{line_number}: {exc.msg}") from exc
+    return rows
 
 
 def _require_input(release: Any | None, registry: Any | None) -> None:
@@ -144,6 +182,29 @@ def _trace(args: argparse.Namespace) -> int:
     return 0
 
 
+def _crosswalk(args: argparse.Namespace) -> int:
+    source_payloads = [_load_source_universe(path) for path in args.source_universes]
+    assessments = [_load(path) for path in args.assessments]
+    crosswalk = build_evidence_crosswalk(source_payloads, assessments)
+    outputs = write_crosswalk_outputs(crosswalk, args.output_dir.expanduser().resolve())
+    metadata = crosswalk["metadata"]
+    summary = crosswalk["summary"]
+    sys.stdout.write(
+        f"Evidence crosswalk: {metadata['source_count']} current sources | "
+        f"{metadata['assessment_count']} assessment(s) | {metadata['evidence_count']} evidence records\n"
+    )
+    sys.stdout.write(
+        f"Matched: {summary['matched_evidence_count']} | ambiguous: {summary['ambiguous_evidence_count']} | "
+        f"unresolved: {summary['unresolved_evidence_count']} | "
+        f"safe migration: {summary['safe_migration_candidate_count']} | "
+        f"registration candidates: {summary['source_registration_candidate_count']}\n"
+    )
+    sys.stdout.write(f"JSON: {outputs['json']}\nCSV: {outputs['csv']}\nMarkdown: {outputs['markdown']}\n")
+    if args.json:
+        sys.stdout.write(json.dumps(crosswalk, indent=2, sort_keys=True) + "\n")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
@@ -153,6 +214,8 @@ def main(argv: list[str] | None = None) -> int:
             return _search(args)
         if args.command == "trace":
             return _trace(args)
+        if args.command == "crosswalk":
+            return _crosswalk(args)
         raise ValueError(f"Unknown command: {args.command}")
     except (OSError, TypeError, ValueError) as exc:
         sys.stderr.write(f"ERROR {exc}\n")
