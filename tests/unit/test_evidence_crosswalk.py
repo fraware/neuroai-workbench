@@ -217,9 +217,7 @@ def test_explicit_id_conflict_fails_closed_as_ambiguous() -> None:
             "url_or_path": "https://example.org/url",
         }
     ]
-    assessment["requirement_findings"] = [
-        {"requirement_id": "NK-X", "evidence_ids": ["EV-CONFLICTING-EXPLICIT"]}
-    ]
+    assessment["requirement_findings"] = [{"requirement_id": "NK-X", "evidence_ids": ["EV-CONFLICTING-EXPLICIT"]}]
     row = build_evidence_crosswalk([_sources()], [assessment])["crosswalk"][0]
     assert row["crosswalk_state"] == "AMBIGUOUS_EXACT"
     assert row["candidate_source_ids"] == ["SRC-1", "SRC-2"]
