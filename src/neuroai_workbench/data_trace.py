@@ -59,8 +59,14 @@ def _checksum(record: dict[str, Any]) -> str | None:
 
 
 def _url(record: dict[str, Any]) -> str | None:
-    value = _first(record, URL_FIELDS)
-    return normalize_url(value)
+    return normalize_url(_first(record, URL_FIELDS))
+
+
+def _source_ids(record: dict[str, Any]) -> list[str]:
+    values = [str(item) for item in _items(record.get("source_ids")) if item is not None]
+    if record.get("source_id"):
+        values.append(str(record["source_id"]))
+    return sorted(dict.fromkeys(values))
 
 
 def _is_public_url(value: str | None) -> bool:
@@ -85,15 +91,14 @@ def _assessment_evidence(assessment: dict[str, Any], assessment_id: str) -> list
     for ordinal, raw in enumerate(evidence):
         if not isinstance(raw, dict):
             continue
-        evidence_id = str(raw.get("evidence_id") or raw.get("source_id") or f"evidence:{ordinal}")
         rows.append(
             {
                 "assessment_id": assessment_id,
-                "evidence_id": evidence_id,
+                "evidence_id": str(raw.get("evidence_id") or raw.get("source_id") or f"evidence:{ordinal}"),
                 "title": raw.get("title"),
+                "source_ids": _source_ids(raw),
                 "url": _url(raw),
                 "checksum": _checksum(raw),
-                "raw": raw,
             }
         )
     return rows
@@ -112,50 +117,54 @@ def _requirements_by_evidence(assessment: dict[str, Any]) -> dict[str, list[str]
     return {key: sorted(values) for key, values in index.items()}
 
 
+def _source_row(raw: dict[str, Any], fallback: str) -> dict[str, Any]:
+    return {
+        "source_id": str(raw.get("source_id") or fallback),
+        "title": raw.get("title"),
+        "publisher": raw.get("publisher"),
+        "source_class": raw.get("source_class"),
+        "url": _url(raw),
+        "checksum": _checksum(raw),
+    }
+
+
 def _release_sources(release: dict[str, Any]) -> list[dict[str, Any]]:
-    sources: list[dict[str, Any]] = []
-    for ordinal, raw in enumerate(_items(release.get("sources"))):
-        if not isinstance(raw, dict):
-            continue
-        sources.append(
-            {
-                "source_id": str(raw.get("source_id") or f"source:{ordinal}"),
-                "title": raw.get("title"),
-                "publisher": raw.get("publisher"),
-                "source_class": raw.get("source_class"),
-                "url": _url(raw),
-                "checksum": _checksum(raw),
-                "raw": raw,
-            }
-        )
+    sources = [
+        _source_row(raw, f"source:{ordinal}")
+        for ordinal, raw in enumerate(_items(release.get("sources")))
+        if isinstance(raw, dict)
+    ]
     delta = _mapping(release.get("delta"))
     for section, values in sorted(delta.items()):
         if "source" not in str(section).casefold():
             continue
-        for ordinal, raw in enumerate(_items(values)):
-            if not isinstance(raw, dict) or not raw.get("source_id"):
-                continue
-            sources.append(
-                {
-                    "source_id": str(raw["source_id"]),
-                    "title": raw.get("title"),
-                    "publisher": raw.get("publisher"),
-                    "source_class": raw.get("source_class"),
-                    "url": _url(raw),
-                    "checksum": _checksum(raw),
-                    "raw": raw,
-                }
-            )
+        sources.extend(
+            _source_row(raw, f"delta.{section}:{ordinal}")
+            for ordinal, raw in enumerate(_items(values))
+            if isinstance(raw, dict) and raw.get("source_id")
+        )
+
     deduped: dict[str, dict[str, Any]] = {}
     for source in sources:
         source_id = str(source["source_id"])
         existing = deduped.get(source_id)
         if existing is None:
             deduped[source_id] = source
-            continue
-        if existing.get("url") != source.get("url") or existing.get("checksum") != source.get("checksum"):
+        elif existing.get("url") != source.get("url") or existing.get("checksum") != source.get("checksum"):
             raise ValueError(f"Conflicting duplicate source_id {source_id!r}")
     return [deduped[key] for key in sorted(deduped)]
+
+
+def _dependency_record(record_type: str, raw: dict[str, Any], ordinal: int) -> dict[str, Any] | None:
+    ids = _source_ids(raw)
+    if not ids:
+        return None
+    return {
+        "record_type": record_type,
+        "record_id": _record_id(raw, f"{record_type}:{ordinal}"),
+        "name": _first(raw, ("name", "system", "subject", "organization", "canonical_name", "title", "event")),
+        "source_ids": ids,
+    }
 
 
 def _records_with_source_ids(release: dict[str, Any]) -> list[dict[str, Any]]:
@@ -167,44 +176,28 @@ def _records_with_source_ids(release: dict[str, Any]) -> list[dict[str, Any]]:
         if section == "delta" and isinstance(values, dict):
             for delta_section, delta_values in sorted(values.items()):
                 for ordinal, raw in enumerate(_items(delta_values)):
-                    if not isinstance(raw, dict):
-                        continue
-                    ids = sorted({str(item) for item in _items(raw.get("source_ids")) if item is not None})
-                    if ids:
-                        records.append(
-                            {
-                                "record_type": f"delta.{delta_section}",
-                                "record_id": _record_id(raw, f"delta.{delta_section}:{ordinal}"),
-                                "name": _first(raw, ("name", "system", "subject", "organization", "title", "event")),
-                                "source_ids": ids,
-                            }
-                        )
+                    if isinstance(raw, dict):
+                        row = _dependency_record(f"delta.{delta_section}", raw, ordinal)
+                        if row:
+                            records.append(row)
             continue
         for ordinal, raw in enumerate(_items(values)):
-            if not isinstance(raw, dict):
-                continue
-            ids = sorted({str(item) for item in _items(raw.get("source_ids")) if item is not None})
-            if not ids:
-                continue
-            records.append(
-                {
-                    "record_type": str(section),
-                    "record_id": _record_id(raw, f"{section}:{ordinal}"),
-                    "name": _first(raw, ("name", "system", "subject", "organization", "canonical_name", "title", "event")),
-                    "source_ids": ids,
-                }
-            )
-    records.sort(key=lambda row: (str(row["record_type"]), str(row["record_id"])))
-    return records
+            if isinstance(raw, dict):
+                row = _dependency_record(str(section), raw, ordinal)
+                if row:
+                    records.append(row)
+    return sorted(records, key=lambda row: (str(row["record_type"]), str(row["record_id"])))
 
 
 def _match_rule(source: dict[str, Any], evidence: dict[str, Any]) -> str | None:
-    source_url = source.get("url")
-    evidence_url = evidence.get("url")
-    source_checksum = source.get("checksum")
-    evidence_checksum = evidence.get("checksum")
-    url_match = bool(source_url and evidence_url and source_url == evidence_url)
-    checksum_match = bool(source_checksum and evidence_checksum and source_checksum == evidence_checksum)
+    if str(source["source_id"]) in evidence.get("source_ids", []):
+        return "SOURCE_ID"
+    url_match = bool(source.get("url") and evidence.get("url") and source["url"] == evidence["url"])
+    checksum_match = bool(
+        source.get("checksum")
+        and evidence.get("checksum")
+        and source["checksum"] == evidence["checksum"]
+    )
     if url_match and checksum_match:
         return "URL_AND_CHECKSUM"
     if checksum_match:
@@ -219,6 +212,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         raise ValueError("Observatory release must be a JSON object")
     if not assessments:
         raise ValueError("At least one completed assessment is required")
+
     normalized_assessments: list[dict[str, Any]] = []
     all_evidence: list[dict[str, Any]] = []
     requirements: dict[str, dict[str, list[str]]] = {}
@@ -264,11 +258,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         requirement_ids = sorted({req for path in paths for req in path["requirement_ids"]})
         source_rows.append(
             {
-                "source_id": source_id,
-                "title": source.get("title"),
-                "publisher": source.get("publisher"),
-                "source_class": source.get("source_class"),
-                "url": source.get("url"),
+                **{key: source.get(key) for key in ("source_id", "title", "publisher", "source_class", "url")},
                 "assessment_paths": paths,
                 "assessment_count": len({path["assessment_id"] for path in paths}),
                 "requirement_ids": requirement_ids,
@@ -291,7 +281,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
                 for path in source["assessment_paths"]
             }
         )
-        unresolved_source_ids = sorted(
+        untraced = sorted(
             source_id
             for source_id in record["source_ids"]
             if source_id not in source_index or not source_index[source_id]["assessment_paths"]
@@ -301,27 +291,33 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
                 **record,
                 "assessment_ids": assessment_ids,
                 "requirement_ids": requirement_ids,
-                "traced_source_count": len(record["source_ids"]) - len(unresolved_source_ids),
-                "untraced_source_ids": unresolved_source_ids,
+                "traced_source_count": len(record["source_ids"]) - len(untraced),
+                "untraced_source_ids": untraced,
                 "trace_state": "TRACED_TO_REQUIREMENTS"
                 if requirement_ids
                 else ("PARTIAL_OR_EVIDENCE_ONLY" if assessment_ids else "UNTRACED"),
             }
         )
 
-    unmatched_evidence = [
-        {
-            "assessment_id": str(evidence["assessment_id"]),
-            "evidence_id": str(evidence["evidence_id"]),
-            "title": evidence.get("title"),
-            "url": evidence.get("url"),
-            "checksum": evidence.get("checksum"),
-            "requirement_ids": requirements.get(str(evidence["assessment_id"]), {}).get(str(evidence["evidence_id"]), []),
-        }
-        for evidence in all_evidence
-        if (str(evidence["assessment_id"]), str(evidence["evidence_id"])) not in matched_evidence_keys
-        and (_is_public_url(evidence.get("url")) or evidence.get("checksum"))
-    ]
+    unmatched_evidence = []
+    for evidence in all_evidence:
+        evidence_key = (str(evidence["assessment_id"]), str(evidence["evidence_id"]))
+        if evidence_key in matched_evidence_keys:
+            continue
+        if not (_is_public_url(evidence.get("url")) or evidence.get("checksum") or evidence.get("source_ids")):
+            continue
+        assessment_id, evidence_id = evidence_key
+        unmatched_evidence.append(
+            {
+                "assessment_id": assessment_id,
+                "evidence_id": evidence_id,
+                "title": evidence.get("title"),
+                "source_ids": evidence.get("source_ids", []),
+                "url": evidence.get("url"),
+                "checksum": evidence.get("checksum"),
+                "requirement_ids": requirements.get(assessment_id, {}).get(evidence_id, []),
+            }
+        )
     unmatched_evidence.sort(key=lambda row: (row["assessment_id"], row["evidence_id"]))
 
     urls: dict[str, list[str]] = defaultdict(list)
@@ -342,7 +338,6 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
             for evidence in all_evidence
             if evidence["assessment_id"] == assessment_id
         }
-        matched = evidence_keys & matched_evidence_keys
         linked_requirements = sorted(
             {
                 req
@@ -352,6 +347,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
                 for req in path["requirement_ids"]
             }
         )
+        matched = evidence_keys & matched_evidence_keys
         assessment_stats.append(
             {
                 **assessment,
@@ -371,7 +367,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
             "release_version": metadata.get("version"),
             "source_count": len(source_rows),
             "assessment_count": len(normalized_assessments),
-            "matching": ["EXACT_NORMALIZED_URL", "EXACT_CHECKSUM"],
+            "matching": ["EXACT_SOURCE_ID", "EXACT_NORMALIZED_URL", "EXACT_CHECKSUM"],
             "fuzzy_matching": False,
         },
         "summary": {
@@ -414,13 +410,18 @@ def render_trace_markdown(trace: dict[str, Any], *, limit: int = 50) -> str:
         "| Source | Title | Assessments | Requirements | State |",
         "| --- | --- | ---: | ---: | --- |",
     ]
-    traced = [row for row in _items(trace.get("source_traces")) if isinstance(row, dict) and row.get("assessment_paths")]
-    for row in traced[:limit]:
-        lines.append(
-            f"| {row.get('source_id')} | {row.get('title') or '—'} | {row.get('assessment_count', 0)} | "
-            f"{row.get('requirement_count', 0)} | {row.get('trace_state')} |"
-        )
-    if not traced:
+    traced = [
+        row
+        for row in _items(trace.get("source_traces"))
+        if isinstance(row, dict) and row.get("assessment_paths")
+    ]
+    if traced:
+        for row in traced[:limit]:
+            lines.append(
+                f"| {row.get('source_id')} | {row.get('title') or '—'} | {row.get('assessment_count', 0)} | "
+                f"{row.get('requirement_count', 0)} | {row.get('trace_state')} |"
+            )
+    else:
         lines.append("| — | No exact cross-layer matches | — | — | — |")
 
     lines.extend(["", "## Unmatched assessment evidence", ""])
@@ -428,12 +429,7 @@ def render_trace_markdown(trace: dict[str, Any], *, limit: int = 50) -> str:
     if not unmatched:
         lines.append("No unmatched public/hashed assessment evidence.")
     else:
-        lines.extend(
-            [
-                "| Assessment | Evidence | Title | Requirements |",
-                "| --- | --- | --- | ---: |",
-            ]
-        )
+        lines.extend(["| Assessment | Evidence | Title | Requirements |", "| --- | --- | --- | ---: |"])
         for row in unmatched[:limit]:
             lines.append(
                 f"| {row.get('assessment_id')} | {row.get('evidence_id')} | {row.get('title') or '—'} | "
