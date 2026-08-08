@@ -170,7 +170,9 @@ def _resolve_evidence(
             has_checksum=bool(checksum),
         )
 
-    safe_migration = evidence.get("namespace_state") != "SHARED_SOURCE_ID" and state in MATCHED_STATES and len(candidates) == 1
+    safe_migration = (
+        evidence.get("namespace_state") != "SHARED_SOURCE_ID" and state in MATCHED_STATES and len(candidates) == 1
+    )
     registration_candidate = state == "UNRESOLVED" and bool(url or checksum) and not valid_explicit
     return {
         "assessment_id": evidence.get("assessment_id"),
@@ -237,8 +239,12 @@ def build_evidence_crosswalk(source_payloads: list[Any], assessments: list[Any])
                 "ambiguous_evidence_count": sum(row["crosswalk_state"] == "AMBIGUOUS_EXACT" for row in subset),
                 "unresolved_evidence_count": sum(row["crosswalk_state"] == "UNRESOLVED" for row in subset),
                 "safe_migration_candidate_count": sum(bool(row["safe_migration_candidate"]) for row in subset),
-                "source_registration_candidate_count": sum(bool(row["source_registration_candidate"]) for row in subset),
-                "missing_explicit_source_reference_count": sum(bool(row["missing_explicit_source_ids"]) for row in subset),
+                "source_registration_candidate_count": sum(
+                    bool(row["source_registration_candidate"]) for row in subset
+                ),
+                "missing_explicit_source_reference_count": sum(
+                    bool(row["missing_explicit_source_ids"]) for row in subset
+                ),
                 "matched_requirement_count": len(reached),
                 "requirement_count": len(total_requirements),
                 "matched_requirement_ids": reached,
