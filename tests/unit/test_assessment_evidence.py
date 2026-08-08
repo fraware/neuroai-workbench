@@ -238,9 +238,7 @@ def test_duplicate_and_dangling_evidence_are_explicit() -> None:
     assert analysis["health"]["duplicate_evidence_ids"] == [
         {"assessment_id": "LEGACY-1", "evidence_id": "EV-URL", "count": 2}
     ]
-    assert analysis["health"]["dangling_evidence_links"] == [
-        {"assessment_id": "LEGACY-1", "evidence_id": "EV-MISSING"}
-    ]
+    assert analysis["health"]["dangling_evidence_links"] == [{"assessment_id": "LEGACY-1", "evidence_id": "EV-MISSING"}]
 
 
 def test_invalid_assessment_inputs_fail_clearly() -> None:
@@ -282,10 +280,7 @@ def test_outputs_are_flat_machine_readable_and_human_readable(tmp_path: Path) ->
     for path in outputs.values():
         assert Path(path).is_file()
 
-    jsonl_rows = [
-        json.loads(line)
-        for line in Path(outputs["evidence_jsonl"]).read_text(encoding="utf-8").splitlines()
-    ]
+    jsonl_rows = [json.loads(line) for line in Path(outputs["evidence_jsonl"]).read_text(encoding="utf-8").splitlines()]
     assert len(jsonl_rows) == 6
     assert jsonl_rows[0]["raw"]
 
