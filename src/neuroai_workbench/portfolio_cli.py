@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .portfolio import analyze_portfolio, normalize_assessment, write_portfolio_outputs
+from .research_agenda import build_research_agenda, write_research_agenda_outputs
 from .util import load_json
 
 
@@ -35,7 +36,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         assessments = [_load(path) for path in args.assessments]
         analysis = analyze_portfolio(assessments)
-        outputs = write_portfolio_outputs(analysis, args.output_dir.expanduser().resolve())
+        agenda = build_research_agenda(assessments, analysis)
+        analysis["research_agenda"] = agenda
+        output_dir = args.output_dir.expanduser().resolve()
+        outputs = write_portfolio_outputs(analysis, output_dir)
+        priority_outputs = write_research_agenda_outputs(agenda, output_dir)
     except (OSError, TypeError, ValueError) as exc:
         sys.stderr.write(f"ERROR {exc}\n")
         return 2
@@ -58,7 +63,17 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write(
             f"Top recurrent weakness: {top['requirement_id']} — weak in {top['weak_case_count']}/{metadata['case_count']} cases\n"
         )
-    sys.stdout.write(f"Analysis: {outputs['analysis']}\nMatrix: {outputs['matrix']}\nSummary: {outputs['summary']}\n")
+    if agenda:
+        top_priority = agenda[0]
+        sys.stdout.write(
+            f"Next evidence priority: {top_priority['requirement_id']} — {top_priority['recommended_focus']}\n"
+        )
+    sys.stdout.write(
+        f"Analysis: {outputs['analysis']}\n"
+        f"Matrix: {outputs['matrix']}\n"
+        f"Summary: {outputs['summary']}\n"
+        f"Evidence priorities: {priority_outputs['markdown']}\n"
+    )
     if args.json:
         sys.stdout.write(json.dumps(analysis, indent=2, sort_keys=True) + "\n")
     return 0
