@@ -298,11 +298,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         evidence_key = (str(evidence_row["assessment_id"]), str(evidence_row["evidence_id"]))
         if evidence_key in matched_evidence_keys:
             continue
-        if not (
-            _is_public_url(evidence_row.get("url"))
-            or evidence_row.get("checksum")
-            or evidence_row.get("source_ids")
-        ):
+        if not (_is_public_url(evidence_row.get("url")) or evidence_row.get("checksum") or evidence_row.get("source_ids")):
             continue
         assessment_id, evidence_id = evidence_key
         unmatched_evidence.append(
