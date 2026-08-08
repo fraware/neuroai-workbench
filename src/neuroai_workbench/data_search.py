@@ -209,11 +209,7 @@ def search_index(
                 previews.append(value)
         if score <= 0:
             continue
-        coverage = sum(
-            1
-            for token in query_tokens
-            if any(token in str(value).casefold() for _, value in fields)
-        )
+        coverage = sum(1 for token in query_tokens if any(token in str(value).casefold() for _, value in fields))
         if coverage == len(query_tokens):
             score += 12
         results.append(
