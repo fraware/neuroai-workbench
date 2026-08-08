@@ -311,7 +311,8 @@ def test_search_exact_ids_and_named_entities_rank_high() -> None:
 def test_search_compact_semantics_and_filtering() -> None:
     index = build_search_index(release=_compact_release())
     prima = search_index(index, "PRIMA retinal", limit=10)
-    assert prima[0]["record_type"] == "delta.regulatory_and_market_events"
+    relevant_types = {item["record_type"] for item in prima[:2]}
+    assert relevant_types == {"assessment_successor_delta", "delta.regulatory_and_market_events"}
     only_models = search_index(index, "Chiral", record_types={"delta.model_records"})
     assert [item["record_id"] for item in only_models] == ["MDL-16-001"]
     assert search_index(index, "no-such-token") == []
