@@ -194,9 +194,7 @@ def _match_rule(source: dict[str, Any], evidence: dict[str, Any]) -> str | None:
         return "SOURCE_ID"
     url_match = bool(source.get("url") and evidence.get("url") and source["url"] == evidence["url"])
     checksum_match = bool(
-        source.get("checksum")
-        and evidence.get("checksum")
-        and source["checksum"] == evidence["checksum"]
+        source.get("checksum") and evidence.get("checksum") and source["checksum"] == evidence["checksum"]
     )
     if url_match and checksum_match:
         return "URL_AND_CHECKSUM"
@@ -275,11 +273,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         source_paths = [source_index[source_id] for source_id in record["source_ids"] if source_id in source_index]
         requirement_ids = sorted({req for source in source_paths for req in source["requirement_ids"]})
         assessment_ids = sorted(
-            {
-                str(path["assessment_id"])
-                for source in source_paths
-                for path in source["assessment_paths"]
-            }
+            {str(path["assessment_id"]) for source in source_paths for path in source["assessment_paths"]}
         )
         untraced = sorted(
             source_id
@@ -325,9 +319,7 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         if source.get("url"):
             urls[str(source["url"])].append(str(source["source_id"]))
     ambiguous_source_urls = [
-        {"url": url, "source_ids": sorted(ids), "count": len(ids)}
-        for url, ids in sorted(urls.items())
-        if len(ids) > 1
+        {"url": url, "source_ids": sorted(ids), "count": len(ids)} for url, ids in sorted(urls.items()) if len(ids) > 1
     ]
 
     assessment_stats: list[dict[str, Any]] = []
@@ -411,9 +403,7 @@ def render_trace_markdown(trace: dict[str, Any], *, limit: int = 50) -> str:
         "| --- | --- | ---: | ---: | --- |",
     ]
     traced = [
-        row
-        for row in _items(trace.get("source_traces"))
-        if isinstance(row, dict) and row.get("assessment_paths")
+        row for row in _items(trace.get("source_traces")) if isinstance(row, dict) and row.get("assessment_paths")
     ]
     if traced:
         for row in traced[:limit]:
