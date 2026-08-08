@@ -13,9 +13,7 @@ from neuroai_workbench.data_trace import render_trace_markdown, trace_propagatio
 def _release() -> dict[str, Any]:
     return {
         "metadata": {"version": "v-test"},
-        "organizations": [
-            {"organization_id": "ORG-1", "canonical_name": "Meta AI", "source_ids": ["SRC-1"]}
-        ],
+        "organizations": [{"organization_id": "ORG-1", "canonical_name": "Meta AI", "source_ids": ["SRC-1"]}],
         "representative_model_records": [
             {
                 "model_id": "MDL-1",
@@ -56,9 +54,7 @@ def _release() -> dict[str, Any]:
             },
         ],
         "delta": {
-            "market_events": [
-                {"event_id": "EVT-1", "system": "Brain2Qwerty", "source_ids": ["SRC-1", "SRC-X"]}
-            ],
+            "market_events": [{"event_id": "EVT-1", "system": "Brain2Qwerty", "source_ids": ["SRC-1", "SRC-X"]}],
             "new_sources": [
                 {
                     "source_id": "SRC-5",
@@ -134,9 +130,7 @@ def _current_assessment() -> dict[str, Any]:
                 "url": "https://different.example/current",
             }
         ],
-        "requirement_findings": [
-            {"requirement_id": "NK-03-R01", "status": "PASS", "evidence_ids": ["EV-CURRENT"]}
-        ],
+        "requirement_findings": [{"requirement_id": "NK-03-R01", "status": "PASS", "evidence_ids": ["EV-CURRENT"]}],
     }
 
 
@@ -283,10 +277,5 @@ def test_trace_cli_rejects_missing_input(tmp_path: Path, capsys: pytest.CaptureF
     missing = tmp_path / "missing.json"
     assessment = tmp_path / "assessment.json"
     assessment.write_text(json.dumps(_legacy_assessment()), encoding="utf-8")
-    assert (
-        data_cli.main(
-            ["trace", "--release", str(missing), "--assessment", str(assessment)]
-        )
-        == 2
-    )
+    assert data_cli.main(["trace", "--release", str(missing), "--assessment", str(assessment)]) == 2
     assert "Input not found" in capsys.readouterr().err
