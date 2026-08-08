@@ -276,9 +276,7 @@ def build_assessment_evidence_analysis(assessments: list[Any]) -> dict[str, Any]
         "health": {
             "by_assessment": by_assessment,
             "namespace_counts": dict(sorted(namespace_counts.items())),
-            "evidence_reuse_distribution": {
-                str(count): total for count, total in sorted(reuse_distribution.items())
-            },
+            "evidence_reuse_distribution": {str(count): total for count, total in sorted(reuse_distribution.items())},
             "orphan_evidence_count": sum(1 for row in evidence if row["cited_requirement_count"] == 0),
             "zero_evidence_requirement_count": sum(1 for row in findings if row["evidence_count"] == 0),
             "shared_source_id_evidence_count": namespace_counts.get("SHARED_SOURCE_ID", 0),
