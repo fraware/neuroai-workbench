@@ -11,7 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 # Per-module line-coverage floors (percent). Aggregate remain fail_under=90 in pyproject.
 MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/assistance.py": 90.0,
+    "neuroai_workbench/assessment_evidence.py": 90.0,
+    "neuroai_workbench/data_trace.py": 90.0,
     "neuroai_workbench/evidence.py": 95.0,
+    "neuroai_workbench/evidence_crosswalk.py": 90.0,
     "neuroai_workbench/evidence_transactions.py": 90.0,
     "neuroai_workbench/observatory.py": 95.0,
     "neuroai_workbench/monitoring.py": 95.0,
