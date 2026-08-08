@@ -243,7 +243,6 @@ def build_assessment_evidence_analysis(assessments: list[Any]) -> dict[str, Any]
     reuse_distribution = Counter(int(row["cited_requirement_count"]) for row in evidence)
     by_assessment: list[dict[str, Any]] = []
     for package in packages:
-        assessment_id = str(package["identity"]["assessment_id"])
         evidence_rows = package["evidence"]
         finding_rows = package["findings"]
         link_rows = package["links"]
