@@ -221,21 +221,21 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         assessment_id = identity["assessment_id"]
         if any(item["assessment_id"] == assessment_id for item in normalized_assessments):
             raise ValueError(f"Duplicate assessment_id {assessment_id!r}")
-        evidence = _assessment_evidence(raw, assessment_id)
-        normalized_assessments.append({**identity, "evidence_count": len(evidence)})
-        all_evidence.extend(evidence)
+        evidence_rows = _assessment_evidence(raw, assessment_id)
+        normalized_assessments.append({**identity, "evidence_count": len(evidence_rows)})
+        all_evidence.extend(evidence_rows)
         requirements[assessment_id] = _requirements_by_evidence(raw)
 
     sources = _release_sources(release)
     paths_by_source: dict[str, list[dict[str, Any]]] = defaultdict(list)
     matched_evidence_keys: set[tuple[str, str]] = set()
     for source in sources:
-        for evidence in all_evidence:
-            rule = _match_rule(source, evidence)
+        for evidence_row in all_evidence:
+            rule = _match_rule(source, evidence_row)
             if rule is None:
                 continue
-            assessment_id = str(evidence["assessment_id"])
-            evidence_id = str(evidence["evidence_id"])
+            assessment_id = str(evidence_row["assessment_id"])
+            evidence_id = str(evidence_row["evidence_id"])
             matched_evidence_keys.add((assessment_id, evidence_id))
             paths_by_source[str(source["source_id"])].append(
                 {
@@ -294,21 +294,25 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
         )
 
     unmatched_evidence = []
-    for evidence in all_evidence:
-        evidence_key = (str(evidence["assessment_id"]), str(evidence["evidence_id"]))
+    for evidence_row in all_evidence:
+        evidence_key = (str(evidence_row["assessment_id"]), str(evidence_row["evidence_id"]))
         if evidence_key in matched_evidence_keys:
             continue
-        if not (_is_public_url(evidence.get("url")) or evidence.get("checksum") or evidence.get("source_ids")):
+        if not (
+            _is_public_url(evidence_row.get("url"))
+            or evidence_row.get("checksum")
+            or evidence_row.get("source_ids")
+        ):
             continue
         assessment_id, evidence_id = evidence_key
         unmatched_evidence.append(
             {
                 "assessment_id": assessment_id,
                 "evidence_id": evidence_id,
-                "title": evidence.get("title"),
-                "source_ids": evidence.get("source_ids", []),
-                "url": evidence.get("url"),
-                "checksum": evidence.get("checksum"),
+                "title": evidence_row.get("title"),
+                "source_ids": evidence_row.get("source_ids", []),
+                "url": evidence_row.get("url"),
+                "checksum": evidence_row.get("checksum"),
                 "requirement_ids": requirements.get(assessment_id, {}).get(evidence_id, []),
             }
         )
@@ -326,9 +330,9 @@ def trace_propagation(release: Any, assessments: list[Any]) -> dict[str, Any]:
     for assessment in normalized_assessments:
         assessment_id = str(assessment["assessment_id"])
         evidence_keys = {
-            (assessment_id, str(evidence["evidence_id"]))
-            for evidence in all_evidence
-            if evidence["assessment_id"] == assessment_id
+            (assessment_id, str(evidence_row["evidence_id"]))
+            for evidence_row in all_evidence
+            if evidence_row["assessment_id"] == assessment_id
         }
         linked_requirements = sorted(
             {
