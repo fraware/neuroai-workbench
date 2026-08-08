@@ -95,12 +95,9 @@ def _search(args: argparse.Namespace) -> int:
     sys.stdout.write(f"Search: {args.query} | indexed {len(index)} records | matches {len(results)}\n")
     for rank, item in enumerate(results[:10], start=1):
         sys.stdout.write(
-            f"{rank}. [{item['record_type']}] {item['record_id']} — {item['title']} "
-            f"(score {item['score']})\n"
+            f"{rank}. [{item['record_type']}] {item['record_id']} — {item['title']} (score {item['score']})\n"
         )
-    sys.stdout.write(
-        f"JSON: {outputs['json']}\nCSV: {outputs['csv']}\nMarkdown: {outputs['markdown']}\n"
-    )
+    sys.stdout.write(f"JSON: {outputs['json']}\nCSV: {outputs['csv']}\nMarkdown: {outputs['markdown']}\n")
     if args.json:
         sys.stdout.write(json.dumps({"query": args.query, "results": results}, indent=2, sort_keys=True) + "\n")
     return 0
