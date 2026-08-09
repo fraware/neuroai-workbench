@@ -229,7 +229,7 @@ def test_date_filters_use_substantive_dates_only() -> None:
     monitor = search_index(index, "Monitor", after="2026-07-01")
     assert monitor == []
 
-    before = search_index(index, "Old", before="2026-02-01")
+    before = search_index(index, "Old decoder", before="2026-02-01")
     assert [item["record_id"] for item in before] == ["ASSESS-1:EV-2"]
 
 
