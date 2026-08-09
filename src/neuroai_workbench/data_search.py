@@ -16,6 +16,7 @@ from .util import atomic_write_json
 
 TOKEN_RE = re.compile(r"[A-Za-z0-9]+(?:[-_.:/][A-Za-z0-9]+)*")
 ID_FIELDS = (
+    "record_id",
     "organization_id",
     "source_id",
     "monitor_id",
@@ -182,7 +183,7 @@ def _index_one(
         "title": _title(record, resolved_id),
         "origin": origin,
         **_typed_metadata(record),
-        "fields": _flatten(record),
+        "fields": [("record_id", resolved_id), *_flatten(record)],
     }
 
 
