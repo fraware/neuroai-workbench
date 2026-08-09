@@ -30,11 +30,41 @@ def _parser() -> argparse.ArgumentParser:
     health.add_argument("--output-dir", type=Path, default=Path("data-analysis"))
     health.add_argument("--json", action="store_true")
 
-    search = sub.add_parser("search", help="Search observatory releases and source registries")
+    search = sub.add_parser("search", help="Search observatory, assessment, and evidence-priority records")
     search.add_argument("query")
     search.add_argument("--release", type=Path)
     search.add_argument("--registry", type=Path)
+    search.add_argument(
+        "--assessment-file",
+        dest="assessments",
+        type=Path,
+        action="append",
+        default=[],
+        help="Completed assessment JSON; repeat for multiple assessments.",
+    )
+    search.add_argument(
+        "--research-agenda",
+        "--evidence-priority",
+        dest="evidence_priorities",
+        type=Path,
+        action="append",
+        default=[],
+        help="Evidence-priority/research-agenda JSON; repeat for multiple payloads.",
+    )
     search.add_argument("--type", dest="record_types", action="append", default=[])
+    search.add_argument("--system", dest="systems", action="append", default=[])
+    search.add_argument("--assessment", dest="assessment_filters", action="append", default=[])
+    search.add_argument("--source-class", dest="source_classes", action="append", default=[])
+    search.add_argument("--priority", dest="priorities", action="append", default=[])
+    search.add_argument("--status", dest="statuses", action="append", default=[])
+    search.add_argument(
+        "--after",
+        help="Keep records with a substantive/publication/event date strictly after YYYY-MM-DD.",
+    )
+    search.add_argument(
+        "--before",
+        help="Keep records with a substantive/publication/event date strictly before YYYY-MM-DD.",
+    )
     search.add_argument("--limit", type=int, default=20)
     search.add_argument("--output-dir", type=Path, default=Path("data-search"))
     search.add_argument("--json", action="store_true")
@@ -135,12 +165,25 @@ def _health(args: argparse.Namespace) -> int:
 def _search(args: argparse.Namespace) -> int:
     release = _load(args.release)
     registry = _load(args.registry)
-    _require_input(release, registry)
-    index = build_search_index(release=release, registry=registry)
+    assessments = [_load(path) for path in args.assessments]
+    evidence_priorities = [_load(path) for path in args.evidence_priorities]
+    index = build_search_index(
+        release=release,
+        registry=registry,
+        assessments=assessments,
+        evidence_priorities=evidence_priorities,
+    )
     results = search_index(
         index,
         args.query,
         record_types=set(args.record_types) if args.record_types else None,
+        systems=set(args.systems) if args.systems else None,
+        assessments=set(args.assessment_filters) if args.assessment_filters else None,
+        source_classes=set(args.source_classes) if args.source_classes else None,
+        priorities=set(args.priorities) if args.priorities else None,
+        statuses=set(args.statuses) if args.statuses else None,
+        after=args.after,
+        before=args.before,
         limit=args.limit,
     )
     outputs = write_search_outputs(args.query, results, args.output_dir.expanduser().resolve())
