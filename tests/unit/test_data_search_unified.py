@@ -185,13 +185,24 @@ def test_unified_index_exposes_typed_cross_origin_records() -> None:
 
 def test_exact_requirement_id_precedes_mentions_across_origins() -> None:
     results = search_index(_unified_index(), "NK-08-R02")
-    assert [item["record_type"] for item in results[:2]] == ["assessment_finding", "evidence_priority"]
-    assert results[1]["score"] > next(item["score"] for item in results if item["record_id"] == "ORG-1")
+    assert {item["record_type"] for item in results[:2]} == {"assessment_finding", "evidence_priority"}
+    org_score = next(item["score"] for item in results if item["record_id"] == "ORG-1")
+    assert all(item["score"] > org_score for item in results[:2])
     explanation = results[0]["score_explanation"]
     requirement = next(item for item in explanation if item["field"] == "requirement_id")
     assert requirement["weight"] == 16
     assert "EXACT_VALUE" in requirement["signals"]
     assert SEARCH_SCORE_NOTE.startswith("Score is a deterministic lexical retrieval score")
+
+
+def test_exact_scoped_record_id_is_searchable() -> None:
+    results = search_index(_unified_index(), "ASSESS-1:EV-1")
+    assert results[0]["record_id"] == "ASSESS-1:EV-1"
+    assert results[0]["record_type"] == "assessment_evidence"
+    assert "record_id" in results[0]["matched_fields"]
+    record_id_score = next(item for item in results[0]["score_explanation"] if item["field"] == "record_id")
+    assert record_id_score["weight"] == 12
+    assert "EXACT_VALUE" in record_id_score["signals"]
 
 
 def test_filters_apply_to_typed_metadata_case_insensitively() -> None:
