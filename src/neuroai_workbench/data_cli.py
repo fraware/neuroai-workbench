@@ -35,7 +35,7 @@ def _parser() -> argparse.ArgumentParser:
     search.add_argument("--release", type=Path)
     search.add_argument("--registry", type=Path)
     search.add_argument(
-        "--assessment",
+        "--assessment-file",
         dest="assessments",
         type=Path,
         action="append",
@@ -53,7 +53,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     search.add_argument("--type", dest="record_types", action="append", default=[])
     search.add_argument("--system", dest="systems", action="append", default=[])
-    search.add_argument("--assessment-id", "--assessment-filter", dest="assessment_filters", action="append", default=[])
+    search.add_argument("--assessment", dest="assessment_filters", action="append", default=[])
     search.add_argument("--source-class", dest="source_classes", action="append", default=[])
     search.add_argument("--priority", dest="priorities", action="append", default=[])
     search.add_argument("--status", dest="statuses", action="append", default=[])
