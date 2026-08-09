@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/assistance.py": 90.0,
     "neuroai_workbench/assessment_evidence.py": 90.0,
+    "neuroai_workbench/data_search.py": 90.0,
     "neuroai_workbench/data_trace.py": 90.0,
     "neuroai_workbench/evidence.py": 95.0,
     "neuroai_workbench/evidence_crosswalk.py": 90.0,
@@ -78,7 +79,7 @@ def main() -> int:
             continue
         summary = data.get("summary", {})
         percent = summary.get("percent_covered")
-        if not isinstance(percent, (int, float)):
+        if not isinstance(percent, int | float):
             print(f"ERROR: missing percent_covered for {file_path}", file=sys.stderr)
             return 1
         observed[key] = float(percent)
