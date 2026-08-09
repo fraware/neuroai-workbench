@@ -241,7 +241,8 @@ def test_date_filters_use_substantive_dates_only() -> None:
     assert monitor == []
 
     before = search_index(index, "Old decoder", before="2026-02-01")
-    assert [item["record_id"] for item in before] == ["ASSESS-1:EV-2"]
+    assert {item["record_id"] for item in before} == {"ASSESS-1:EV-2", "SRC-RETRIEVED"}
+    assert all(item["substantive_date"] < "2026-02-01" for item in before)
 
 
 def test_date_filters_fail_closed_on_invalid_or_inverted_windows() -> None:
