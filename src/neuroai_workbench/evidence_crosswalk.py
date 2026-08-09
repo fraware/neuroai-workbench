@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -50,11 +49,11 @@ def _walk_source_records(value: Any) -> list[dict[str, Any]]:
         if record is not None:
             records.append(record)
         for child in value.values():
-            if isinstance(child, (dict, list)):
+            if isinstance(child, dict | list):
                 records.extend(_walk_source_records(child))
     elif isinstance(value, list):
         for child in value:
-            if isinstance(child, (dict, list)):
+            if isinstance(child, dict | list):
                 records.extend(_walk_source_records(child))
     return records
 
@@ -65,7 +64,7 @@ def build_source_universe(payloads: list[Any]) -> list[dict[str, Any]]:
         raise ValueError("At least one source-universe payload is required")
     deduped: dict[str, dict[str, Any]] = {}
     for payload_index, payload in enumerate(payloads):
-        if not isinstance(payload, (dict, list)):
+        if not isinstance(payload, dict | list):
             raise ValueError(f"Source-universe payload {payload_index} must be a JSON object or array")
         for source in _walk_source_records(payload):
             source_id = str(source["source_id"])
