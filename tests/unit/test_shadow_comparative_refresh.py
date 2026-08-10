@@ -81,7 +81,11 @@ def _collect(
     bodies: dict[str, bytes],
 ) -> dict[str, object]:
     responses = {
-        str(row["url"]): (200, {"content-type": "application/json" if bodies[str(row["source_id"])].startswith(b"{") else "text/html"}, bodies[str(row["source_id"])])
+        str(row["url"]): (
+            200,
+            {"content-type": "application/json" if bodies[str(row["source_id"])].startswith(b"{") else "text/html"},
+            bodies[str(row["source_id"])],
+        )
         for row in registry
         if str(row["source_id"]) in bodies
     }
@@ -201,9 +205,7 @@ def test_technical_approval_is_scoped_to_current_successes(tmp_path: Path) -> No
     )
     assert approval["count"] == 2
     assert approval["substantive_authority"] is False
-    assert {row["approval_scope"] for row in approval["records"]} == {
-        "EVALUATION_HANDOFF_ONLY_NOT_SUBSTANTIVE_REVIEW"
-    }
+    assert {row["approval_scope"] for row in approval["records"]} == {"EVALUATION_HANDOFF_ONLY_NOT_SUBSTANTIVE_REVIEW"}
     for row in approval["records"]:
         record = load_json(quarantine / "records" / f"{row['quarantine_id']}.json")
         assert record["approval_state"] == "APPROVED_FOR_HANDOFF"
@@ -325,9 +327,7 @@ def test_full_comparative_runner_executes_true_live_to_live_comparison(
     baseline_summary = tmp_path / "baseline-summary.json"
     atomic_write_json(baseline_summary, baseline_package)
     url = str(registry[0]["url"])
-    current_transport = FakeTransport(
-        responses={url: (200, {"content-type": "text/html"}, b"<html>changed</html>")}
-    )
+    current_transport = FakeTransport(responses={url: (200, {"content-type": "text/html"}, b"<html>changed</html>")})
 
     package = run_comparative_live_refresh(
         evaluation_workspace=tmp_path / "ws",
@@ -367,9 +367,7 @@ def test_full_comparative_runner_executes_true_live_to_live_comparison(
     )
     encoded = json.dumps(report, sort_keys=True)
     assert report["execution"]["true_comparison_count"] == 1
-    assert report["execution"]["comparison_classification_counts"] == {
-        "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE": 1
-    }
+    assert report["execution"]["comparison_classification_counts"] == {"SUBSTANTIVE_NORMALIZED_TEXT_CHANGE": 1}
     assert report["safety"]["protected_capture_bytes_in_report"] is False
     assert report["safety"]["protected_paths_in_report"] is False
     assert str(tmp_path) not in encoded
@@ -429,9 +427,7 @@ def test_runner_records_second_success_without_prior_baseline_as_first_capture(
     assert package["stats"]["candidates"]["generated"] == 1
 
 
-def test_runner_keeps_identical_capture_out_of_candidate_path(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_runner_keeps_identical_capture_out_of_candidate_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
     registry = _registry()
     registry_path = tmp_path / "registry.json"
@@ -461,9 +457,7 @@ def test_runner_keeps_identical_capture_out_of_candidate_path(
         evidence_cutoff="2026-08-10",
         apply_id="apply-v23-same",
         baseline_binding=_binding(),
-        transport=FakeTransport(
-            responses={str(registry[0]["url"]): (200, {"content-type": "text/html"}, body)}
-        ),
+        transport=FakeTransport(responses={str(registry[0]["url"]): (200, {"content-type": "text/html"}, body)}),
         dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
         actor="issue-120-test",
     )

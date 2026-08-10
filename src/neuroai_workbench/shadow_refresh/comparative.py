@@ -146,7 +146,10 @@ def _verify_capture_record(
     expected_size = int(digest_record.get("size_bytes") or 0)
     if expected_size <= 0:
         raise ValueError(f"Baseline size missing for {source_id}")
-    if int(quarantine_record.get("size_bytes") or 0) != expected_size or int(result.get("size_bytes") or 0) != expected_size:
+    if (
+        int(quarantine_record.get("size_bytes") or 0) != expected_size
+        or int(result.get("size_bytes") or 0) != expected_size
+    ):
         raise ValueError(f"Baseline size metadata mismatch for {source_id}")
     body_path = safe_join(quarantine_root, str(quarantine_record.get("quarantine_path") or ""))
     if not body_path.is_file():
@@ -208,7 +211,9 @@ def seed_verified_baselines(
             media_type=str(result.get("media_type") or "application/octet-stream"),
             retrieved_at=str(result.get("retrieved_at") or quarantine_record.get("captured_at") or ""),
             retrieval_url=str(result.get("final_url") or result.get("requested_url") or ""),
-            original_filename=str(quarantine_record.get("original_filename") or result.get("original_filename") or "capture.bin"),
+            original_filename=str(
+                quarantine_record.get("original_filename") or result.get("original_filename") or "capture.bin"
+            ),
             actor=actor,
         )
         if snapshot["sha256"] != digest_record["sha256"]:
@@ -344,7 +349,9 @@ def classify_capture_pair(
         classification = "INCOMPARABLE_CONTENT_TYPE_TRANSITION"
     elif older["sha256"] == newer["sha256"]:
         classification = "BYTE_IDENTICAL"
-    elif older.get("normalized_text_sha256") and older.get("normalized_text_sha256") == newer.get("normalized_text_sha256"):
+    elif older.get("normalized_text_sha256") and older.get("normalized_text_sha256") == newer.get(
+        "normalized_text_sha256"
+    ):
         classification = "REPRESENTATION_ONLY_CHANGE"
     elif "json" in older_media.casefold() and "json" in newer_media.casefold():
         older_path = safe_join(evaluation_workspace, str(older["stored_path"]))
@@ -490,9 +497,7 @@ def run_comparative_live_refresh(
             continue
         source_id = str(digest.get("source_id") or "")
         source_outcomes.append(
-            classify_cycle_source_outcome(
-                success={"source_id": source_id, "http_status": digest.get("http_status")}
-            )
+            classify_cycle_source_outcome(success={"source_id": source_id, "http_status": digest.get("http_status")})
         )
         if source_id:
             current_result_by_source[source_id] = load_collection_result(quarantine_root, str(digest["result_id"]))
@@ -532,7 +537,10 @@ def run_comparative_live_refresh(
             )
             detailed_comparisons.append(detailed)
             for outcome in source_outcomes:
-                if outcome.get("source_id") == source_id and outcome.get("outcome_type") in {"SUCCESS", "NOT_MODIFIED_304"}:
+                if outcome.get("source_id") == source_id and outcome.get("outcome_type") in {
+                    "SUCCESS",
+                    "NOT_MODIFIED_304",
+                }:
                     outcome.update(
                         classify_cycle_source_outcome(
                             success={"source_id": source_id, "http_status": outcome.get("http_status")},
@@ -555,7 +563,9 @@ def run_comparative_live_refresh(
                 if outcome.get("source_id") == source_id:
                     outcome["outcome_type"] = "MANUAL_FIRST_CAPTURE"
                     outcome["comparison_classification"] = None
-                    outcome["notes"] = "Source had no successful protected #43 baseline; current success is a first valid comparison capture."
+                    outcome["notes"] = (
+                        "Source had no successful protected #43 baseline; current success is a first valid comparison capture."
+                    )
                     break
             candidates.append(
                 create_change_candidate(
