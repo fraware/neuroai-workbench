@@ -21,6 +21,18 @@
     "operational_registry_sha256": "8ff60a0e8714f38ee58f529b8df8bf8bb34fe5964cfa89a00590171dc1659910",
     "predecessor_sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70"
   },
+  "execution_contract": {
+    "runner_requires_expected_predecessor_sha256": true,
+    "runner_requires_expected_baseline_summary_sha256_for_controlled_execution": true,
+    "runner_supports_expected_operational_registry_sha256": true,
+    "runner_supports_expected_reviewed_plan_sha256": true,
+    "baseline_source_must_exist_in_reviewed_registry": true,
+    "baseline_requested_url_must_match_reviewed_registry_target": true,
+    "baseline_monitor_id_must_match_reviewed_registry_monitor": true,
+    "first_success_without_comparable_baseline_state": "MANUAL_FIRST_CAPTURE",
+    "first_success_without_comparable_baseline_generates_change_candidate": false,
+    "candidate_precondition": "MECHANICALLY_EVIDENCED_PRIOR_TO_CURRENT_COMPARISON"
+  },
   "verified_baseline_shape": {
     "reviewed_logical_sources": 25,
     "successful_capture_digests": 22,
