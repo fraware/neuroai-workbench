@@ -1,0 +1,113 @@
+name: Temporary stage issue 120 public package
+
+on:
+  push:
+    branches: [agent/120-public-artifact-stage]
+    paths: [.github/workflows/tmp-stage-issue120-public.yml]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    env:
+      PUBLIC_ARTIFACT_ID: "9091216656"
+      PUBLIC_ARTIFACT_SHA256: 7c17293e9356f64f857941b36882d0e786bd5450243b79596d802d9783d5d1d5
+      REPORT_SHA256: 323bccc3c7ff0a2cb911b4668ada24d3693ea6c705cf0a32ce7c33f856f6d6dc
+      PROJECTION_SHA256: 0175cd1b0575d7fba90a4fdfd43af8b9712b3aaed9e8c163e158e73624aba031
+      EXECUTION_SHA256: 42bd226102729fe8e6e529e55a791b5048a420cb99c04f647de08e2323798be9
+      MANIFEST_SHA256: 02d13acf4ae5ad2e2bba6c6993409ab9bd22de9a0ab75d2cca9ae5467f04a1e8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/120-public-artifact-stage
+          fetch-depth: 0
+      - name: Download and verify exact public artifact
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/issue120-public"
+          mkdir -p "$ROOT"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${PUBLIC_ARTIFACT_ID}/zip" \
+            -o "$ROOT/public.zip"
+          echo "$PUBLIC_ARTIFACT_SHA256  $ROOT/public.zip" | sha256sum --check --strict
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import zipfile
+          from pathlib import Path, PurePosixPath
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "issue120-public"
+          expected = {
+              "comparative-refresh-report.json": os.environ["REPORT_SHA256"],
+              "public-projection-manifest.json": os.environ["PROJECTION_SHA256"],
+              "execution-record.json": os.environ["EXECUTION_SHA256"],
+              "SHA256_MANIFEST.json": os.environ["MANIFEST_SHA256"],
+          }
+          with zipfile.ZipFile(root / "public.zip") as archive:
+              names = archive.namelist()
+              if set(names) != set(expected) or len(names) != len(expected):
+                  raise SystemExit(f"Unexpected public artifact members: {names}")
+              for name in names:
+                  parts = PurePosixPath(name).parts
+                  if name.startswith("/") or ".." in parts:
+                      raise SystemExit(f"Unsafe public member: {name}")
+                  data = archive.read(name)
+                  digest = hashlib.sha256(data).hexdigest()
+                  if digest != expected[name]:
+                      raise SystemExit(f"Digest mismatch for {name}: {digest}")
+                  (root / name).write_bytes(data)
+
+          manifest = json.loads((root / "SHA256_MANIFEST.json").read_text(encoding="utf-8"))
+          for entry in manifest.values():
+              path = root / entry["path"]
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              if digest != entry["sha256"]:
+                  raise SystemExit(f"Internal manifest mismatch for {path.name}")
+
+          forbidden_keys = {"quarantine_path", "stored_path", "evaluation_workspace", "output_dir", "successor_path"}
+          forbidden_fragments = ["/home/runner/", "/tmp/", "protected/quarantine/", "current-quarantine/", "evaluation-workspace/", "cycle-output/"]
+          for name in expected:
+              value = json.loads((root / name).read_text(encoding="utf-8"))
+              stack = [value]
+              while stack:
+                  item = stack.pop()
+                  if isinstance(item, dict):
+                      overlap = forbidden_keys & set(item)
+                      if overlap:
+                          raise SystemExit(f"Forbidden keys in {name}: {sorted(overlap)}")
+                      stack.extend(item.values())
+                  elif isinstance(item, list):
+                      stack.extend(item)
+                  elif isinstance(item, str):
+                      for fragment in forbidden_fragments:
+                          if fragment in item:
+                              raise SystemExit(f"Forbidden path fragment in {name}: {fragment}")
+          PY
+      - name: Commit exact public package and remove staging workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/issue120-public"
+          DEST="docs/operations/issue-120-comparative-execution"
+          mkdir -p "$DEST"
+          cp "$ROOT/comparative-refresh-report.json" "$DEST/comparative-refresh-report.json"
+          cp "$ROOT/public-projection-manifest.json" "$DEST/public-projection-manifest.json"
+          cp "$ROOT/execution-record.json" "$DEST/execution-record.json"
+          cp "$ROOT/SHA256_MANIFEST.json" "$DEST/SHA256_MANIFEST.json"
+          git rm .github/workflows/tmp-stage-issue120-public.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git diff --cached --check
+          git commit -m "docs: add verified issue 120 comparative execution record"
+          git push origin HEAD:agent/120-public-artifact-stage
