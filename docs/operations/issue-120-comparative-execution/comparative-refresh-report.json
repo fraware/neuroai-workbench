@@ -1,0 +1,923 @@
+{
+  "schema_version": "1.0",
+  "artifact": "issue_120_public_comparative_refresh_report",
+  "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+  "generated_at": "2026-08-11T06:27:26Z",
+  "inputs": {
+    "baseline_artifact": {
+      "artifact_id": "8865433109",
+      "artifact_name": "protected-shadow-cycle-43",
+      "artifact_sha256": "b1833340fbbd77a12af179fa1b95551c997e905776f2fcb04ac482d32b82aab9",
+      "workflow_run_id": "30837442076",
+      "workbench_commit": "b960baa27f22e4d8d90d6873eed6f18af754af1a"
+    },
+    "baseline_summary_sha256": "478b4ac525802c7c000c1b816235a4950a87d3ff9cdf8bff309e90d0b16d05ef",
+    "predecessor_sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70",
+    "registry_sha256": "8ff60a0e8714f38ee58f529b8df8bf8bb34fe5964cfa89a00590171dc1659910"
+  },
+  "execution": {
+    "baseline_verified_count": 22,
+    "second_cycle_collection_run_id": "CRUN-2948ed474a7c4aa0941f49bffc91a8c4",
+    "second_cycle_capture_count": 21,
+    "second_cycle_failure_count": 4,
+    "source_outcome_count": 25,
+    "source_outcome_counts": {
+      "CONTENT_CHANGED": 14,
+      "HTTP_ERROR_UNCLASSIFIED": 3,
+      "NO_CHANGE": 7,
+      "TIMEOUT": 1
+    },
+    "true_comparison_count": 21,
+    "first_capture_without_baseline": 0,
+    "comparison_classification_counts": {
+      "BYTE_IDENTICAL": 7,
+      "STRUCTURED_RECORD_FIELD_CHANGE": 1,
+      "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE": 13
+    },
+    "candidate_count": 14,
+    "development_disposition_count": 14,
+    "development_disposition_scope": "DEVELOPMENT_PIPELINE_ONLY",
+    "delta_operation_count": 14,
+    "reopening_recommendation_count": 112,
+    "publication_reconciled": true
+  },
+  "comparisons": [
+    {
+      "source_id": "SRC-0004",
+      "older_snapshot_id": "SNAP-SRC-0004-20260803T173615000000Z-367429fdffa3",
+      "newer_snapshot_id": "SNAP-SRC-0004-20260811T062655000000Z-8a36a2d08033",
+      "older_sha256": "367429fdffa3fe9339add946351e979abd6525bf7297f5202326b9b3d1c91872",
+      "newer_sha256": "8a36a2d08033f628d8336f410c3241a4bfbc5ed4e00871b45d578fbeaa897f93",
+      "older_size_bytes": 1731,
+      "newer_size_bytes": 1731,
+      "older_media_type": "application/json",
+      "newer_media_type": "application/json",
+      "older_retrieved_at": "2026-08-03T17:36:15Z",
+      "newer_retrieved_at": "2026-08-11T06:26:55Z",
+      "retrieval_target": "https://api.fda.gov/device/510k.json?search=k_number%3A%22DEN250013%22&limit=1",
+      "classification": "STRUCTURED_RECORD_FIELD_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "fda_device",
+        "newer_id": "fda_device",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [
+        "meta.last_updated"
+      ],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0013",
+      "older_snapshot_id": "SNAP-SRC-0013-20260803T173616000000Z-728ecc9d3c2e",
+      "newer_snapshot_id": "SNAP-SRC-0013-20260811T062655000000Z-21c8e283a308",
+      "older_sha256": "728ecc9d3c2ea516b5db644721c927e05760f2c55e51643d7d48ce790aa0bad8",
+      "newer_sha256": "21c8e283a30817eb27b0ba72268872c462fe333213cb04e7f4cd717edc26e900",
+      "older_size_bytes": 57292,
+      "newer_size_bytes": 57281,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:16Z",
+      "newer_retrieved_at": "2026-08-11T06:26:55Z",
+      "retrieval_target": "https://paradromics.com/news/paradromics-completes-first-human-brain-computer-interface-bci-implantation",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-14-041",
+      "older_snapshot_id": "SNAP-SRC-14-041-20260803T173636000000Z-2affa1c41221",
+      "newer_snapshot_id": "SNAP-SRC-14-041-20260811T062725000000Z-81ce26fde92e",
+      "older_sha256": "2affa1c412219358b6cd0001a6535f5557b6240819abb6a40924219dc09a2893",
+      "newer_sha256": "81ce26fde92eecf643713222c673426a6dd14bf9c0a4054d8a84eb3773fc607e",
+      "older_size_bytes": 67571,
+      "newer_size_bytes": 67918,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:36Z",
+      "newer_retrieved_at": "2026-08-11T06:27:25Z",
+      "retrieval_target": "https://zenodo.org/records/15794193",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-14-031",
+      "older_snapshot_id": "SNAP-SRC-14-031-20260803T173632000000Z-c432837f1dcd",
+      "newer_snapshot_id": "SNAP-SRC-14-031-20260811T062723000000Z-c432837f1dcd",
+      "older_sha256": "c432837f1dcdb1942b9d4777910d44c373723b28a29c2ff9824ce42692cae97e",
+      "newer_sha256": "c432837f1dcdb1942b9d4777910d44c373723b28a29c2ff9824ce42692cae97e",
+      "older_size_bytes": 12939,
+      "newer_size_bytes": 12939,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:32Z",
+      "newer_retrieved_at": "2026-08-11T06:27:23Z",
+      "retrieval_target": "https://neuralink.com/updates/neuralink-raises-650m-series-e",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0174",
+      "older_snapshot_id": "SNAP-SRC-0174-20260803T173630000000Z-60bb794a576c",
+      "newer_snapshot_id": "SNAP-SRC-0174-20260811T062721000000Z-60bb794a576c",
+      "older_sha256": "60bb794a576c185e7aa475125eafd56dada89be5f76871b1ba39789189540f61",
+      "newer_sha256": "60bb794a576c185e7aa475125eafd56dada89be5f76871b1ba39789189540f61",
+      "older_size_bytes": 44811,
+      "newer_size_bytes": 44811,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:30Z",
+      "newer_retrieved_at": "2026-08-11T06:27:21Z",
+      "retrieval_target": "https://arxiv.org/abs/2603.02268",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-14-032",
+      "older_snapshot_id": "SNAP-SRC-14-032-20260803T173634000000Z-ed4da97406cc",
+      "newer_snapshot_id": "SNAP-SRC-14-032-20260811T062724000000Z-bf6bae98b3cc",
+      "older_sha256": "ed4da97406cc13222d6f578e8681f9a8bcc0f023350b47aa203f02649ccb7cc5",
+      "newer_sha256": "bf6bae98b3ccb2794c09676c43c97cee33578983e194a473a2c1d6b367826084",
+      "older_size_bytes": 44430,
+      "newer_size_bytes": 43098,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:34Z",
+      "newer_retrieved_at": "2026-08-11T06:27:24Z",
+      "retrieval_target": "https://tether.io/news/tether-takes-strategic-stake-in-leading-brain-computer-interface-company-blackrock-neurotech",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0034",
+      "older_snapshot_id": "SNAP-SRC-0034-20260803T173617000000Z-c5a0c76deb5c",
+      "newer_snapshot_id": "SNAP-SRC-0034-20260811T062656000000Z-9290abd2fe5b",
+      "older_sha256": "c5a0c76deb5c624dc9b4d5e7e9e02608c8ea3c16fc15c2632f5802272ac08615",
+      "newer_sha256": "9290abd2fe5bfe5784692982500573030979d2b80fdd352f581c64d2821d7fb1",
+      "older_size_bytes": 129901,
+      "newer_size_bytes": 129981,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:17Z",
+      "newer_retrieved_at": "2026-08-11T06:26:56Z",
+      "retrieval_target": "https://science.xyz/",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0063",
+      "older_snapshot_id": "SNAP-SRC-0063-20260803T173626000000Z-36335e825604",
+      "newer_snapshot_id": "SNAP-SRC-0063-20260811T062704000000Z-3c37f15a8638",
+      "older_sha256": "36335e8256047db9f42ddaf54999dc2e7e1a13fca10c5c45b23f831785a12354",
+      "newer_sha256": "3c37f15a86380120abf63edcd2b6bff84ab6847f484cb74528721519ffe24487",
+      "older_size_bytes": 280993,
+      "newer_size_bytes": 281080,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:26Z",
+      "newer_retrieved_at": "2026-08-11T06:27:04Z",
+      "retrieval_target": "https://cortec-neuro.com/products-components",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0079",
+      "older_snapshot_id": "SNAP-SRC-0079-20260803T173627000000Z-f0370ffe2a43",
+      "newer_snapshot_id": "SNAP-SRC-0079-20260811T062704000000Z-cd5be8f0e1c0",
+      "older_sha256": "f0370ffe2a43ff8e9290ab106e99f5e1698937499d9c77fb071d1049bfd6cc5b",
+      "newer_sha256": "cd5be8f0e1c016a67a0daeaac738f76a8d46af07863f07bce7040ae6a2f9b875",
+      "older_size_bytes": 221512,
+      "newer_size_bytes": 221335,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:27Z",
+      "newer_retrieved_at": "2026-08-11T06:27:04Z",
+      "retrieval_target": "https://www.heraeus-medevio.com/en",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0040",
+      "older_snapshot_id": "SNAP-SRC-0040-20260803T173618000000Z-f4d04589c85c",
+      "newer_snapshot_id": "SNAP-SRC-0040-20260811T062657000000Z-e5046176c968",
+      "older_sha256": "f4d04589c85cb990b92c08494941ecd9a36a9db40fba45ef8533edd4645dba40",
+      "newer_sha256": "e5046176c968faad7ad4d5b4c06a907be8a4302e721c4e99a56329a453cd813e",
+      "older_size_bytes": 54951,
+      "newer_size_bytes": 54949,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:18Z",
+      "newer_retrieved_at": "2026-08-11T06:26:57Z",
+      "retrieval_target": "https://www.braingate.org/",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0046",
+      "older_snapshot_id": "SNAP-SRC-0046-20260803T173620000000Z-da1b400b0b14",
+      "newer_snapshot_id": "SNAP-SRC-0046-20260811T062658000000Z-dc3507a8a2c8",
+      "older_sha256": "da1b400b0b148285e5f48f177ddbe4fe57b92b8ff896bdb4f49271b2c40bdfc4",
+      "newer_sha256": "dc3507a8a2c8b70ebccbc0bed0b29f8991c2f79c2c4510392bfb75808c7f1042",
+      "older_size_bytes": 124298,
+      "newer_size_bytes": 124383,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:20Z",
+      "newer_retrieved_at": "2026-08-11T06:26:58Z",
+      "retrieval_target": "https://science.xyz/patients",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-14-039",
+      "older_snapshot_id": "SNAP-SRC-14-039-20260803T173635000000Z-2574f3a88301",
+      "newer_snapshot_id": "SNAP-SRC-14-039-20260811T062725000000Z-2574f3a88301",
+      "older_sha256": "2574f3a8830188528d903588356f72500e33314c2ea7faafd3d48ae4377ec6c2",
+      "newer_sha256": "2574f3a8830188528d903588356f72500e33314c2ea7faafd3d48ae4377ec6c2",
+      "older_size_bytes": 9186,
+      "newer_size_bytes": 9186,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:35Z",
+      "newer_retrieved_at": "2026-08-11T06:27:25Z",
+      "retrieval_target": "https://neuralink.com/trials",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0030",
+      "older_snapshot_id": "SNAP-SRC-0030-20260803T173616000000Z-c32f8d34967e",
+      "newer_snapshot_id": "SNAP-SRC-0030-20260811T062655000000Z-c32f8d34967e",
+      "older_sha256": "c32f8d34967e890eb6bc26c7e53c8afb2ca00201df1413e115b4c5169ba6e15c",
+      "newer_sha256": "c32f8d34967e890eb6bc26c7e53c8afb2ca00201df1413e115b4c5169ba6e15c",
+      "older_size_bytes": 8487,
+      "newer_size_bytes": 8487,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:16Z",
+      "newer_retrieved_at": "2026-08-11T06:26:55Z",
+      "retrieval_target": "https://neuralink.com/trials/device-control",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "clinicaltrials_gov",
+        "newer_id": "clinicaltrials_gov",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0062",
+      "older_snapshot_id": "SNAP-SRC-0062-20260803T173623000000Z-ee3fbed61a26",
+      "newer_snapshot_id": "SNAP-SRC-0062-20260811T062701000000Z-6f902656b82e",
+      "older_sha256": "ee3fbed61a2614a16938c098fe7957b36d3c226846a2513dc79de0cd960d1872",
+      "newer_sha256": "6f902656b82e6f90588ec1866efa08fd20af735340036e29a33e229ac1aefa16",
+      "older_size_bytes": 255069,
+      "newer_size_bytes": 255156,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:23Z",
+      "newer_retrieved_at": "2026-08-11T06:27:01Z",
+      "retrieval_target": "https://cortec-neuro.com/brain-interchange-fda-tap-third-patient",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0031",
+      "older_snapshot_id": "SNAP-SRC-0031-20260803T173616000000Z-e8db9b98c7da",
+      "newer_snapshot_id": "SNAP-SRC-0031-20260811T062655000000Z-e8db9b98c7da",
+      "older_sha256": "e8db9b98c7daf141f62371829f11e08da3a0718f6328fd3a4e2e0e707267d1da",
+      "newer_sha256": "e8db9b98c7daf141f62371829f11e08da3a0718f6328fd3a4e2e0e707267d1da",
+      "older_size_bytes": 45066,
+      "newer_size_bytes": 45066,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:16Z",
+      "newer_retrieved_at": "2026-08-11T06:26:55Z",
+      "retrieval_target": "https://synchron.com/",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0169",
+      "older_snapshot_id": "SNAP-SRC-0169-20260803T173630000000Z-479fae46163e",
+      "newer_snapshot_id": "SNAP-SRC-0169-20260811T062721000000Z-1123eabc17c1",
+      "older_sha256": "479fae46163e916fb7bae09a087ad85a6ae17f03bcec7ec77532618f2939100b",
+      "newer_sha256": "1123eabc17c1c456acc34a432994972f9643cc787becdac4e94769442acc6b06",
+      "older_size_bytes": 71280,
+      "newer_size_bytes": 71269,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:30Z",
+      "newer_retrieved_at": "2026-08-11T06:27:21Z",
+      "retrieval_target": "https://paradromics.com/connexus",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0047",
+      "older_snapshot_id": "SNAP-SRC-0047-20260803T173620000000Z-1a529e9c9b35",
+      "newer_snapshot_id": "SNAP-SRC-0047-20260811T062658000000Z-15f076e101c6",
+      "older_sha256": "1a529e9c9b357d9d4588cfc5c727888367de40e5a0a5fd4bb35ac77784307a08",
+      "newer_sha256": "15f076e101c61c2393bcec1d2bec97dc8fce0e00084909850220ce624fa6f529",
+      "older_size_bytes": 96565,
+      "newer_size_bytes": 101863,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:20Z",
+      "newer_retrieved_at": "2026-08-11T06:26:58Z",
+      "retrieval_target": "https://paradromics.com/company",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-14-033",
+      "older_snapshot_id": "SNAP-SRC-14-033-20260803T173634000000Z-731364dc29aa",
+      "newer_snapshot_id": "SNAP-SRC-14-033-20260811T062724000000Z-731364dc29aa",
+      "older_sha256": "731364dc29aab2cb7e94eecaec51974d1b04254df47411c66262385e91493fc2",
+      "newer_sha256": "731364dc29aab2cb7e94eecaec51974d1b04254df47411c66262385e91493fc2",
+      "older_size_bytes": 98196,
+      "newer_size_bytes": 98196,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:34Z",
+      "newer_retrieved_at": "2026-08-11T06:27:24Z",
+      "retrieval_target": "https://www.precisionneuro.io/articles/company-news/precision-neuroscience-and-sci-ventures-partner-to-bring-brain-computer-interfaces-to-people-living-with-paralysis",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0045",
+      "older_snapshot_id": "SNAP-SRC-0045-20260803T173619000000Z-7aa0acb8f505",
+      "newer_snapshot_id": "SNAP-SRC-0045-20260811T062658000000Z-7aa0acb8f505",
+      "older_sha256": "7aa0acb8f505e86a0fe3ea7f67eb123776ba51ad5bcc5770f9df9adcb8f76e23",
+      "newer_sha256": "7aa0acb8f505e86a0fe3ea7f67eb123776ba51ad5bcc5770f9df9adcb8f76e23",
+      "older_size_bytes": 123412,
+      "newer_size_bytes": 123412,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:19Z",
+      "newer_retrieved_at": "2026-08-11T06:26:58Z",
+      "retrieval_target": "https://synchron.com/research",
+      "classification": "BYTE_IDENTICAL",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0038",
+      "older_snapshot_id": "SNAP-SRC-0038-20260803T173618000000Z-ed437462e583",
+      "newer_snapshot_id": "SNAP-SRC-0038-20260811T062657000000Z-451cfcb86fcc",
+      "older_sha256": "ed437462e58362851e652752d33592a6aab0cb9ca51107f024a09b5e1cfce1a5",
+      "newer_sha256": "451cfcb86fcccef048a9f83e5332523888d864c66bf0fd809a22397472f171a8",
+      "older_size_bytes": 170753,
+      "newer_size_bytes": 169206,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:18Z",
+      "newer_retrieved_at": "2026-08-11T06:26:57Z",
+      "retrieval_target": "https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    },
+    {
+      "source_id": "SRC-0121",
+      "older_snapshot_id": "SNAP-SRC-0121-20260803T173627000000Z-995f9522a7a4",
+      "newer_snapshot_id": "SNAP-SRC-0121-20260811T062705000000Z-26d031b51fa3",
+      "older_sha256": "995f9522a7a4d865f1b17f073dbc23c7587764adc89c5bcc3a6fedfbefd5900e",
+      "newer_sha256": "26d031b51fa3aa9743c94dad4f31c2f451fced4c38a3277d55aabb134cfe7ee2",
+      "older_size_bytes": 89070,
+      "newer_size_bytes": 89070,
+      "older_media_type": "text/html",
+      "newer_media_type": "text/html",
+      "older_retrieved_at": "2026-08-03T17:36:27Z",
+      "newer_retrieved_at": "2026-08-11T06:27:05Z",
+      "retrieval_target": "https://health.ec.europa.eu/medical-devices-sector_en",
+      "classification": "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE",
+      "normalization_version": "TEXT_NORMALIZATION_v1",
+      "adapter_binding": {
+        "older_id": "html",
+        "newer_id": "html",
+        "same_adapter": true,
+        "older_implementation_version": "0.3.0.dev0-live-shadow",
+        "newer_implementation_version": "0.3.0.dev0-live-shadow",
+        "same_implementation_version": true
+      },
+      "collector_configuration": {
+        "older": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "newer": "eb287ffdc7b994cc0825469ae08614508111fcff7da8c8e901afb1a95e233281",
+        "same": true
+      },
+      "changed_structured_paths": [],
+      "comparison_timestamp": "2026-08-11T06:27:26Z"
+    }
+  ],
+  "source_outcomes": [
+    {
+      "source_id": "SRC-0004",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0013",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0030",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-0031",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-0034",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0038",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0040",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0041",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null
+    },
+    {
+      "source_id": "SRC-0045",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-0046",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0047",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0062",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0063",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0079",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0115",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null
+    },
+    {
+      "source_id": "SRC-0121",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0124",
+      "outcome_type": "TIMEOUT",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "TIMEOUT",
+      "comparison_classification": null
+    },
+    {
+      "source_id": "SRC-0169",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-0174",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-14-007",
+      "outcome_type": "HTTP_ERROR_UNCLASSIFIED",
+      "finding_effect": "NONE",
+      "http_status": null,
+      "failure_class": "HTTP_ERROR",
+      "comparison_classification": null
+    },
+    {
+      "source_id": "SRC-14-031",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-14-032",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    },
+    {
+      "source_id": "SRC-14-033",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-14-039",
+      "outcome_type": "NO_CHANGE",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "NO_CHANGE"
+    },
+    {
+      "source_id": "SRC-14-041",
+      "outcome_type": "CONTENT_CHANGED",
+      "finding_effect": "NONE",
+      "http_status": 200,
+      "failure_class": null,
+      "comparison_classification": "CONTENT_CHANGED_REQUIRES_REVIEW"
+    }
+  ],
+  "safety": {
+    "predecessor_unchanged": true,
+    "assessment_mutation_performed": false,
+    "canonical_successor_written": false,
+    "governance_layer_applied": false,
+    "release_authority_state": "DEFERRED",
+    "protected_capture_bytes_in_report": false,
+    "protected_paths_in_report": false
+  },
+  "development_delta_boundary": "Delta operations, if present, exercise development-only pipeline mechanics. They must not be interpreted as evidence-derived substantive observatory events or as authorized source/finding changes.",
+  "withheld_claims": [
+    "Cycle artifacts remain SHADOW_EVALUATION_NOT_CANONICAL.",
+    "Candidate successor is not an AUTHORIZED or PUBLISHED observatory release (#41).",
+    "Development dispositions exercise mechanics only and carry no substantive authority.",
+    "Human governance and release authorization are deferred to issue #101.",
+    "Retrieval/comparison outcomes are typed operations evidence, not FAIL findings.",
+    "Reopening analysis does not mutate assessments.",
+    "Publication products are views of the candidate successor only.",
+    "This digest-only public report exposes no protected capture bodies or protected filesystem paths.",
+    "Comparison evidence does not itself establish scientific materiality, regulatory status, clinical effect, conformance, or publication authority."
+  ],
+  "boundary": "Shadow refresh evaluation records operational rehearsal metrics only. They do not establish canonical observatory state, substantive findings, regulatory authorization, clinical effectiveness, conformance, or an assessment decision."
+}
