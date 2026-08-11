@@ -1,0 +1,14 @@
+{
+  "comparative_refresh_report": {
+    "path": "comparative-refresh-report.json",
+    "sha256": "323bccc3c7ff0a2cb911b4668ada24d3693ea6c705cf0a32ce7c33f856f6d6dc"
+  },
+  "execution_record": {
+    "path": "execution-record.json",
+    "sha256": "42bd226102729fe8e6e529e55a791b5048a420cb99c04f647de08e2323798be9"
+  },
+  "public_projection_manifest": {
+    "path": "public-projection-manifest.json",
+    "sha256": "0175cd1b0575d7fba90a4fdfd43af8b9712b3aaed9e8c163e158e73624aba031"
+  }
+}
