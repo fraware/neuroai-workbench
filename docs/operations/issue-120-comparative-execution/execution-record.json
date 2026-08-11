@@ -1,0 +1,85 @@
+{
+  "artifact": "issue_120_comparative_execution_record",
+  "authority_boundary": {
+    "assessment_mutation_performed": false,
+    "canonical_successor_written": false,
+    "governance_layer_applied": false,
+    "protected_capture_bytes_committed_to_git": false,
+    "protected_filesystem_paths_committed_to_git": false,
+    "release_authority_state": "DEFERRED",
+    "substantive_authority": false
+  },
+  "baseline": {
+    "artifact_id": "8865433109",
+    "artifact_name": "protected-shadow-cycle-43",
+    "baseline_summary_sha256": "478b4ac525802c7c000c1b816235a4950a87d3ff9cdf8bff309e90d0b16d05ef",
+    "github_artifact_sha256": "b1833340fbbd77a12af179fa1b95551c997e905776f2fcb04ac482d32b82aab9",
+    "inner_tar_gz_sha256": "84d108f8bdb119a95f94b7468040cdb2388226743ef998bb839dca3834b34b9d",
+    "operational_registry_sha256": "8ff60a0e8714f38ee58f529b8df8bf8bb34fe5964cfa89a00590171dc1659910",
+    "predecessor_sha256": "9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70",
+    "reviewed_plan_sha256": "0a5867616b339a0940e9a4210c9f44a7efc961bbe52847d47de74b72910915e7"
+  },
+  "boundary": "Digest-only execution record for the noncanonical issue #120 comparative cycle. It grants no scientific, clinical, regulatory, conformance, institutional, UNESCO, governance, release, or canonical publication authority.",
+  "executed_date": "2026-08-11",
+  "execution": {
+    "baseline_verified_count": 22,
+    "candidate_count": 14,
+    "comparison_classification_counts": {
+      "BYTE_IDENTICAL": 7,
+      "STRUCTURED_RECORD_FIELD_CHANGE": 1,
+      "SUBSTANTIVE_NORMALIZED_TEXT_CHANGE": 13
+    },
+    "delta_operation_count": 14,
+    "development_disposition_count": 14,
+    "development_disposition_scope": "DEVELOPMENT_PIPELINE_ONLY",
+    "first_capture_without_baseline": 0,
+    "publication_reconciled": true,
+    "reopening_recommendation_count": 112,
+    "second_cycle_capture_count": 21,
+    "second_cycle_collection_run_id": "CRUN-2948ed474a7c4aa0941f49bffc91a8c4",
+    "second_cycle_failure_count": 4,
+    "source_outcome_count": 25,
+    "source_outcome_counts": {
+      "CONTENT_CHANGED": 14,
+      "HTTP_ERROR_UNCLASSIFIED": 3,
+      "NO_CHANGE": 7,
+      "TIMEOUT": 1
+    },
+    "true_comparison_count": 21
+  },
+  "execution_workflow_commit": "f61b29fd5dff17e94db45422b46dca180dd7f66d",
+  "github_actions_run_id": "31465091651",
+  "issue": "#120",
+  "public_artifacts": {
+    "comparative_refresh_report_sha256": "323bccc3c7ff0a2cb911b4668ada24d3693ea6c705cf0a32ce7c33f856f6d6dc",
+    "public_projection_manifest_sha256": "0175cd1b0575d7fba90a4fdfd43af8b9712b3aaed9e8c163e158e73624aba031"
+  },
+  "public_projection_safety": {
+    "assessment_mutation_performed": false,
+    "canonical_successor_written": false,
+    "contains_delta_operations": false,
+    "contains_protected_capture_bytes": false,
+    "contains_protected_paths": false,
+    "governance_layer_applied": false,
+    "release_authority_state": "DEFERRED"
+  },
+  "safety": {
+    "assessment_mutation_performed": false,
+    "canonical_successor_written": false,
+    "governance_layer_applied": false,
+    "predecessor_unchanged": true,
+    "protected_capture_bytes_in_report": false,
+    "protected_paths_in_report": false,
+    "release_authority_state": "DEFERRED"
+  },
+  "schema_version": 1,
+  "second_cycle_protected_artifact": {
+    "artifact_id": "9091216410",
+    "artifact_name": "protected-issue-120-comparative-cycle-31465091651",
+    "github_artifact_digest": "6499812177ed08e11867642ec39e5f3bf7557c14caff77fe5b1eb3f85731fbb5",
+    "inner_tar_gz_sha256": "f3bc3f7e696a3385150c96d51b1a9e4ca3de5395f6d381574c8e28601ba932e1",
+    "retention_days": 90
+  },
+  "status": "SHADOW_EVALUATION_NOT_CANONICAL",
+  "validated_software_head": "83c64a9656ebff6f31556ca9ccf5cbb92685963c"
+}

@@ -11,6 +11,13 @@ class CollectorAdapter(Protocol):
 
     def supports_source_class(self, source_class: str) -> bool: ...
 
+    def resolve_request(
+        self,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any] | None = None,
+    ) -> dict[str, Any]: ...
+
     def collect(
         self,
         request: dict[str, Any],
@@ -28,6 +35,15 @@ class HttpCollectorAdapter:
 
     def supports_source_class(self, source_class: str) -> bool:
         return True
+
+    def resolve_request(
+        self,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        del source_record
+        return dict(request)
 
     def collect(
         self,

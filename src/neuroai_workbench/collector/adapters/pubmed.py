@@ -198,6 +198,18 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
         validate_or_raise(record, NORMALIZED_PUBLICATION_SCHEMA)
         return record
 
+    def resolve_request(
+        self,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        extracted = self.extract_publication_id(source_record, request)
+        if extracted is None:
+            return dict(request)
+        id_type, identifier = extracted
+        return {**request, "requested_url": self.build_retrieval_url(id_type, identifier)}
+
     def collect(
         self,
         request: dict[str, Any],
@@ -206,9 +218,5 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
         attempt_count: int = 1,
         source_record: dict[str, Any] | None = None,
     ) -> CollectionOutcome:
-        extracted = self.extract_publication_id(source_record, request)
-        if extracted is None:
-            return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)
-        id_type, identifier = extracted
-        rewritten = {**request, "requested_url": self.build_retrieval_url(id_type, identifier)}
-        return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)
+        resolved = self.resolve_request(request, source_record=source_record)
+        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)
