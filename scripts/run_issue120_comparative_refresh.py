@@ -113,7 +113,7 @@ def main() -> int:
             "baseline_artifact": binding.as_dict(),
         },
         "public_artifacts": {
-            "comparative_refresh_report": report_record,
+            "comparative_refresh_report": {**report_record, "path": report_path.name},
             "candidate_successor_sha256": sha256_file(Path(package["stage_results"]["apply_delta"]["successor_path"])),
             "adjudicated_delta_sha256": sha256_file(
                 Path(package["stage_results"]["compile_adjudicated_delta"]["path"])
