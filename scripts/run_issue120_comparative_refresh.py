@@ -45,6 +45,8 @@ def main() -> int:
     parser.add_argument("--baseline-workbench-commit", required=True)
     parser.add_argument("--expected-predecessor-sha256")
     parser.add_argument("--expected-baseline-summary-sha256")
+    parser.add_argument("--expected-registry-sha256")
+    parser.add_argument("--expected-plan-sha256")
     args = parser.parse_args()
 
     registry = args.registry.resolve()
@@ -55,6 +57,10 @@ def main() -> int:
         raise ValueError("Predecessor SHA-256 does not match the issue #120 execution contract")
     if args.expected_baseline_summary_sha256 and sha256_file(baseline_summary) != args.expected_baseline_summary_sha256:
         raise ValueError("Baseline summary SHA-256 does not match the issue #120 execution contract")
+    if args.expected_registry_sha256 and sha256_file(registry) != args.expected_registry_sha256:
+        raise ValueError("Operational registry SHA-256 does not match the issue #120 execution contract")
+    if args.expected_plan_sha256 and sha256_file(plan_path) != args.expected_plan_sha256:
+        raise ValueError("Reviewed plan SHA-256 does not match the issue #120 execution contract")
 
     plan = _load_object(plan_path, "Reviewed plan")
     if _load_object(args.registry.resolve(), "Operational registry").get("metadata") is None:

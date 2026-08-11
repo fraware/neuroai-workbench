@@ -180,6 +180,12 @@ def seed_verified_baselines(
     baseline_summary_path = baseline_summary_path.resolve()
     if not baseline_summary_path.is_file():
         raise ValueError("Baseline summary is missing")
+    registry = load_source_registry(registry_path)
+    source_index = {
+        str(record["source_id"]): record
+        for record in registry.get("sources", [])
+        if isinstance(record, dict) and record.get("source_id")
+    }
     initialize_monitoring(evaluation_workspace, registry_path, actor=actor)
     state_path = evaluation_workspace / "observatory" / "monitoring" / "state.json"
     state = load_json(state_path)
@@ -203,6 +209,15 @@ def seed_verified_baselines(
             digest_record=digest_record,
             quarantine_record=quarantine_record,
         )
+        source_record = source_index.get(source_id)
+        if source_record is None:
+            raise ValueError(f"Verified baseline source is absent from reviewed registry: {source_id}")
+        expected_target = _public_url(source_record.get("url"))
+        observed_target = _public_url(result.get("requested_url"))
+        if expected_target is None or observed_target != expected_target:
+            raise ValueError(f"Baseline reviewed registry retrieval target mismatch for {source_id}")
+        if str(result.get("monitor_id") or "") != str(source_record.get("monitor_id") or ""):
+            raise ValueError(f"Baseline reviewed registry monitor mismatch for {source_id}")
         snapshot = record_snapshot(
             evaluation_workspace,
             source_id,
@@ -566,16 +581,6 @@ def run_comparative_live_refresh(
                         "Source had no successful protected #43 baseline; current success is a first valid comparison capture."
                     )
                     break
-            candidates.append(
-                create_change_candidate(
-                    evaluation_workspace,
-                    source_id,
-                    current_id,
-                    previous_snapshot_id=None,
-                    summary="First valid capture after unresolved protected #43 baseline; no live-to-live comparison is claimed.",
-                    actor=actor,
-                )
-            )
 
     for candidate in candidates:
         adjudications.append(

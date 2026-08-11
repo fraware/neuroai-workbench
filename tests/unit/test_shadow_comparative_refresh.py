@@ -150,6 +150,34 @@ def test_verified_baseline_seed_is_read_only_and_hash_bound(tmp_path: Path) -> N
     assert before == after
 
 
+def test_baseline_seed_rejects_reviewed_registry_target_drift(tmp_path: Path) -> None:
+    registry = _registry()
+    registry_path = tmp_path / "registry.json"
+    _write_registry(registry_path, registry)
+    plan = _plan(registry)
+    quarantine = tmp_path / "baseline-q"
+    package = _collect(
+        registry_path=registry_path,
+        registry=registry,
+        plan=plan,
+        quarantine_root=quarantine,
+        bodies={"SRC-0001": b"<html>baseline</html>"},
+    )
+    summary_path = tmp_path / "baseline-summary.json"
+    atomic_write_json(summary_path, package)
+
+    drifted = [dict(registry[0])]
+    drifted[0]["url"] = "https://pages.example.org/moved-source"
+    _write_registry(registry_path, drifted)
+    with pytest.raises(ValueError, match="reviewed registry retrieval target mismatch"):
+        seed_verified_baselines(
+            evaluation_workspace=tmp_path / "ws-drift",
+            registry_path=registry_path,
+            baseline_quarantine_root=quarantine,
+            baseline_summary_path=summary_path,
+        )
+
+
 def test_baseline_seed_rejects_corrupt_or_ambiguous_capture(tmp_path: Path) -> None:
     registry = _registry()
     registry_path = tmp_path / "registry.json"
@@ -427,7 +455,8 @@ def test_runner_records_second_success_without_prior_baseline_as_first_capture(
     by_source = {row["source_id"]: row for row in package["source_outcomes"]}
     assert by_source["SRC-0001"]["outcome_type"] == "NO_CHANGE"
     assert by_source["SRC-0002"]["outcome_type"] == "MANUAL_FIRST_CAPTURE"
-    assert package["stats"]["candidates"]["generated"] == 1
+    assert package["stats"]["candidates"]["generated"] == 0
+    assert package["stage_results"]["development_disposition"]["count"] == 0
 
 
 def test_runner_keeps_identical_capture_out_of_candidate_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
