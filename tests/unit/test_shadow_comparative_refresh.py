@@ -399,6 +399,13 @@ def test_full_comparative_runner_executes_true_live_to_live_comparison(
     encoded = json.dumps(report, sort_keys=True)
     assert report["execution"]["true_comparison_count"] == 1
     assert report["execution"]["comparison_classification_counts"] == {"SUBSTANTIVE_NORMALIZED_TEXT_CHANGE": 1}
+    adapter_binding = report["comparisons"][0]["adapter_binding"]
+    assert adapter_binding["older_id"]
+    assert adapter_binding["newer_id"]
+    assert adapter_binding["same_adapter"] is True
+    assert adapter_binding["older_implementation_version"] == "0.3.0.dev0-live-shadow"
+    assert adapter_binding["newer_implementation_version"] == "0.3.0.dev0-live-shadow"
+    assert adapter_binding["same_implementation_version"] is True
     assert report["safety"]["protected_capture_bytes_in_report"] is False
     assert report["safety"]["protected_paths_in_report"] is False
     assert str(tmp_path) not in encoded

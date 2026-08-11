@@ -112,6 +112,22 @@ def _capture_index(summary: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return by_source
 
 
+def _collection_outcome_index(package: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    collection_run = _mapping(package.get("collection_run"))
+    outcomes = _items(collection_run.get("outcomes"))
+    by_source: dict[str, dict[str, Any]] = {}
+    for ordinal, raw in enumerate(outcomes):
+        if not isinstance(raw, dict):
+            raise ValueError(f"Collection outcome[{ordinal}] must be an object")
+        source_id = str(raw.get("source_id") or "")
+        if not source_id:
+            raise ValueError(f"Collection outcome[{ordinal}] lacks source identity")
+        if source_id in by_source:
+            raise ValueError(f"Ambiguous collection outcome: duplicate source {source_id}")
+        by_source[source_id] = raw
+    return by_source
+
+
 def _quarantine_by_result(quarantine_root: Path) -> dict[str, dict[str, Any]]:
     by_result: dict[str, dict[str, Any]] = {}
     for record in list_quarantine_successes(quarantine_root):
@@ -196,6 +212,7 @@ def seed_verified_baselines(
     if not isinstance(summary, dict):
         raise ValueError("Baseline summary must be a JSON object")
     capture_by_source = _capture_index(summary)
+    outcome_by_source = _collection_outcome_index(summary)
     record_by_result = _quarantine_by_result(baseline_quarantine_root)
     seeded: list[dict[str, Any]] = []
     for source_id in sorted(capture_by_source):
@@ -218,6 +235,14 @@ def seed_verified_baselines(
             raise ValueError(f"Baseline reviewed registry retrieval target mismatch for {source_id}")
         if str(result.get("monitor_id") or "") != str(source_record.get("monitor_id") or ""):
             raise ValueError(f"Baseline reviewed registry monitor mismatch for {source_id}")
+        collection_outcome = outcome_by_source.get(source_id)
+        if collection_outcome is None:
+            raise ValueError(f"Baseline collection outcome missing for {source_id}")
+        if collection_outcome.get("status") != "RESULT" or str(collection_outcome.get("record_id") or "") != result_id:
+            raise ValueError(f"Baseline collection outcome/result binding mismatch for {source_id}")
+        adapter_id = str(collection_outcome.get("adapter_id") or "")
+        if not adapter_id:
+            raise ValueError(f"Baseline adapter identity missing for {source_id}")
         snapshot = record_snapshot(
             evaluation_workspace,
             source_id,
@@ -242,6 +267,7 @@ def seed_verified_baselines(
                 "media_type": snapshot["media_type"],
                 "retrieved_at": snapshot["retrieved_at"],
                 "retrieval_target": _public_url(snapshot.get("retrieval_url")),
+                "adapter_id": adapter_id,
                 "collector_version": result.get("collector_version"),
                 "collector_configuration_hash": result.get("configuration_hash"),
             }
@@ -347,6 +373,10 @@ def classify_capture_pair(
     newer_snapshot_id: str,
     older_collector_configuration_hash: str | None,
     newer_collector_configuration_hash: str | None,
+    older_adapter_id: str | None = None,
+    newer_adapter_id: str | None = None,
+    older_collector_version: str | None = None,
+    newer_collector_version: str | None = None,
 ) -> dict[str, Any]:
     """Return an issue-#120 comparison classification richer than the core candidate gate."""
     older = load_snapshot(evaluation_workspace, source_id, older_snapshot_id)
@@ -393,6 +423,14 @@ def classify_capture_pair(
         "retrieval_target": older_target if older_target == newer_target else None,
         "classification": classification,
         "normalization_version": COMPARISON_NORMALIZATION_VERSION,
+        "adapter_binding": {
+            "older_id": older_adapter_id,
+            "newer_id": newer_adapter_id,
+            "same_adapter": older_adapter_id == newer_adapter_id,
+            "older_implementation_version": older_collector_version,
+            "newer_implementation_version": newer_collector_version,
+            "same_implementation_version": older_collector_version == newer_collector_version,
+        },
         "collector_configuration": {
             "older": older_collector_configuration_hash,
             "newer": newer_collector_configuration_hash,
@@ -506,6 +544,7 @@ def run_comparative_live_refresh(
 
     source_outcomes: list[dict[str, Any]] = []
     current_result_by_source: dict[str, dict[str, Any]] = {}
+    current_outcome_by_source = _collection_outcome_index(live_package)
     for digest in _items(live_package.get("capture_digests")):
         if not isinstance(digest, dict):
             continue
@@ -539,6 +578,14 @@ def run_comparative_live_refresh(
             comparison = compare_snapshots(evaluation_workspace, source_id, str(previous_id), current_id)
             core_comparisons.append(comparison)
             current_result = current_result_by_source[source_id]
+            current_outcome = current_outcome_by_source.get(source_id)
+            if current_outcome is None or current_outcome.get("status") != "RESULT":
+                raise ValueError(f"Current collection outcome missing successful adapter binding for {source_id}")
+            if str(current_outcome.get("record_id") or "") != str(current_result.get("result_id") or ""):
+                raise ValueError(f"Current collection outcome/result binding mismatch for {source_id}")
+            current_adapter_id = str(current_outcome.get("adapter_id") or "")
+            if not current_adapter_id:
+                raise ValueError(f"Current adapter identity missing for {source_id}")
             detailed = classify_capture_pair(
                 evaluation_workspace=evaluation_workspace,
                 source_id=source_id,
@@ -548,6 +595,10 @@ def run_comparative_live_refresh(
                 newer_collector_configuration_hash=(
                     str(current_result.get("configuration_hash")) if current_result.get("configuration_hash") else None
                 ),
+                older_adapter_id=str(baseline_row.get("adapter_id") or ""),
+                newer_adapter_id=current_adapter_id,
+                older_collector_version=str(baseline_row.get("collector_version") or ""),
+                newer_collector_version=str(current_result.get("collector_version") or ""),
             )
             detailed_comparisons.append(detailed)
             for outcome in source_outcomes:
@@ -710,6 +761,7 @@ def build_public_comparative_report(
                     "retrieval_target",
                     "classification",
                     "normalization_version",
+                    "adapter_binding",
                     "collector_configuration",
                     "changed_structured_paths",
                     "comparison_timestamp",
