@@ -255,6 +255,27 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
             ),
         }
 
+    def resolve_request(
+        self,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        nct_id = self.extract_nct_id(source_record, request)
+        if nct_id is not None:
+            return {**request, "requested_url": self.build_study_url(nct_id)}
+        query = self.extract_search_query(source_record)
+        if query is not None:
+            return {
+                **request,
+                "requested_url": self.build_search_url(
+                    query,
+                    page_size=self.extract_page_size(source_record),
+                    page_token=self.extract_page_token(source_record),
+                ),
+            }
+        return dict(request)
+
     def collect(
         self,
         request: dict[str, Any],
@@ -263,19 +284,5 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
         attempt_count: int = 1,
         source_record: dict[str, Any] | None = None,
     ) -> CollectionOutcome:
-        nct_id = self.extract_nct_id(source_record, request)
-        if nct_id is not None:
-            rewritten = {**request, "requested_url": self.build_study_url(nct_id)}
-            return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)
-
-        query = self.extract_search_query(source_record)
-        if query is not None:
-            search_url = self.build_search_url(
-                query,
-                page_size=self.extract_page_size(source_record),
-                page_token=self.extract_page_token(source_record),
-            )
-            rewritten = {**request, "requested_url": search_url}
-            return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)
-
-        return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)
+        resolved = self.resolve_request(request, source_record=source_record)
+        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)

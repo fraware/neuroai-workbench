@@ -18,12 +18,14 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
+from ..collector.adapters.registry import adapter_for_source, build_adapters
 from ..collector.dns import DnsGuard
 from ..collector.handoff import (
     approve_quarantine_record,
     load_collection_result,
 )
 from ..collector.http_client import HttpTransport
+from ..collector.transport import StdlibHttpTransport
 from ..monitoring import (
     adjudicate_change_candidate,
     compare_snapshots,
@@ -41,7 +43,7 @@ from .cycle import (
     _finish_cycle_after_adjudication,
     classify_cycle_source_outcome,
 )
-from .live import require_live_collection_enabled, run_live_cohort_collection
+from .live import default_live_collector_config, require_live_collection_enabled, run_live_cohort_collection
 from .schemas import SHADOW_EVALUATION_STATUS, SHADOW_REFRESH_BOUNDARY
 
 COMPARISON_NORMALIZATION_VERSION = "TEXT_NORMALIZATION_v1"
@@ -202,6 +204,11 @@ def seed_verified_baselines(
         for record in registry.get("sources", [])
         if isinstance(record, dict) and record.get("source_id")
     }
+    baseline_adapters = build_adapters(
+        config=default_live_collector_config(),
+        transport=StdlibHttpTransport(),
+        quarantine_root=baseline_quarantine_root,
+    )
     initialize_monitoring(evaluation_workspace, registry_path, actor=actor)
     state_path = evaluation_workspace / "observatory" / "monitoring" / "state.json"
     state = load_json(state_path)
@@ -229,10 +236,19 @@ def seed_verified_baselines(
         source_record = source_index.get(source_id)
         if source_record is None:
             raise ValueError(f"Verified baseline source is absent from reviewed registry: {source_id}")
-        expected_target = _public_url(source_record.get("url"))
+        selected_adapter = adapter_for_source(baseline_adapters, source_record)
+        resolved_request = selected_adapter.resolve_request(
+            {
+                "source_id": source_id,
+                "monitor_id": source_record.get("monitor_id"),
+                "requested_url": source_record.get("url"),
+            },
+            source_record=source_record,
+        )
+        expected_target = _public_url(resolved_request.get("requested_url"))
         observed_target = _public_url(result.get("requested_url"))
         if expected_target is None or observed_target != expected_target:
-            raise ValueError(f"Baseline reviewed registry retrieval target mismatch for {source_id}")
+            raise ValueError(f"Baseline adapter-resolved retrieval target mismatch for {source_id}")
         if str(result.get("monitor_id") or "") != str(source_record.get("monitor_id") or ""):
             raise ValueError(f"Baseline reviewed registry monitor mismatch for {source_id}")
         collection_outcome = outcome_by_source.get(source_id)
@@ -243,6 +259,8 @@ def seed_verified_baselines(
         adapter_id = str(collection_outcome.get("adapter_id") or "")
         if not adapter_id:
             raise ValueError(f"Baseline adapter identity missing for {source_id}")
+        if adapter_id != selected_adapter.adapter_id:
+            raise ValueError(f"Baseline adapter selection mismatch for {source_id}")
         snapshot = record_snapshot(
             evaluation_workspace,
             source_id,

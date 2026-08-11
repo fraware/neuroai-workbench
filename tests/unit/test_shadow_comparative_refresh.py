@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
+from neuroai_workbench.collector.adapters.registry import adapter_for_source, build_adapters
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.monitoring import initialize_monitoring, record_snapshot
 from neuroai_workbench.shadow_refresh import LIVE_COLLECTION_ENV
@@ -20,7 +21,7 @@ from neuroai_workbench.shadow_refresh.comparative import (
     run_comparative_live_refresh,
     seed_verified_baselines,
 )
-from neuroai_workbench.shadow_refresh.live import run_live_cohort_collection
+from neuroai_workbench.shadow_refresh.live import default_live_collector_config, run_live_cohort_collection
 from neuroai_workbench.util import atomic_write_json, load_json, sha256_file
 from tests.unit.test_collector_adapters_scheduler import FakeTransport, global_getaddrinfo
 
@@ -150,6 +151,36 @@ def test_verified_baseline_seed_is_read_only_and_hash_bound(tmp_path: Path) -> N
     assert before == after
 
 
+def test_structured_adapter_resolves_reviewed_registry_url_without_network(tmp_path: Path) -> None:
+    source = {
+        "monitor_id": "MON-SRC-FDA",
+        "source_id": "SRC-FDA",
+        "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/denovo.cfm?knumber=DEN250013&start_search=1",
+        "publisher": "U.S. Food and Drug Administration",
+        "source_class": "REGULATORY_RECORD",
+        "cadence": "WEEKLY",
+    }
+    adapters = build_adapters(
+        config=default_live_collector_config(),
+        transport=FakeTransport(responses={}),
+        quarantine_root=tmp_path / "q",
+        dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
+    )
+    adapter = adapter_for_source(adapters, source)
+    assert adapter.adapter_id == "fda_device"
+    resolved = adapter.resolve_request(
+        {
+            "source_id": source["source_id"],
+            "monitor_id": source["monitor_id"],
+            "requested_url": source["url"],
+        },
+        source_record=source,
+    )
+    assert resolved["requested_url"] == (
+        "https://api.fda.gov/device/510k.json?search=k_number%3A%22DEN250013%22&limit=1"
+    )
+
+
 def test_baseline_seed_rejects_reviewed_registry_target_drift(tmp_path: Path) -> None:
     registry = _registry()
     registry_path = tmp_path / "registry.json"
@@ -169,7 +200,7 @@ def test_baseline_seed_rejects_reviewed_registry_target_drift(tmp_path: Path) ->
     drifted = [dict(registry[0])]
     drifted[0]["url"] = "https://pages.example.org/moved-source"
     _write_registry(registry_path, drifted)
-    with pytest.raises(ValueError, match="reviewed registry retrieval target mismatch"):
+    with pytest.raises(ValueError, match="adapter-resolved retrieval target mismatch"):
         seed_verified_baselines(
             evaluation_workspace=tmp_path / "ws-drift",
             registry_path=registry_path,

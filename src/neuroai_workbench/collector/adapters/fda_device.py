@@ -225,6 +225,17 @@ class FdaDeviceAdapter(HttpCollectorAdapter):
             ),
         }
 
+    def resolve_request(
+        self,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        device_id = self.extract_device_id(source_record, request)
+        if device_id is None:
+            return dict(request)
+        return {**request, "requested_url": self.build_openfda_url(device_id)}
+
     def collect(
         self,
         request: dict[str, Any],
@@ -233,8 +244,5 @@ class FdaDeviceAdapter(HttpCollectorAdapter):
         attempt_count: int = 1,
         source_record: dict[str, Any] | None = None,
     ) -> CollectionOutcome:
-        device_id = self.extract_device_id(source_record, request)
-        if device_id is None:
-            return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)
-        rewritten = {**request, "requested_url": self.build_openfda_url(device_id)}
-        return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)
+        resolved = self.resolve_request(request, source_record=source_record)
+        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)
