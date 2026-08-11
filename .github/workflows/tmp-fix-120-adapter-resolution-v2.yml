@@ -1,0 +1,138 @@
+name: Temporary issue 120 adapter-resolution repair v2
+
+on:
+  push:
+    branches: [agent/120-comparative-live-refresh]
+    paths: [.github/workflows/tmp-fix-120-adapter-resolution-v2.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/120-comparative-live-refresh
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - name: Apply deterministic adapter request-resolution contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def repl(path_s, old, new, count=1):
+              path = Path(path_s)
+              text = path.read_text(encoding="utf-8")
+              observed = text.count(old)
+              if observed != count:
+                  raise SystemExit(f"{path}: expected {count}, found {observed}: {old[:100]!r}")
+              path.write_text(text.replace(old, new), encoding="utf-8")
+
+          repl(
+              "src/neuroai_workbench/collector/adapters/base.py",
+              "class CollectorAdapter(Protocol):\n    adapter_id: str\n\n    def supports_source_class(self, source_class: str) -> bool: ...\n\n    def collect(\n",
+              "class CollectorAdapter(Protocol):\n    adapter_id: str\n\n    def supports_source_class(self, source_class: str) -> bool: ...\n\n    def resolve_request(\n        self,\n        request: dict[str, Any],\n        *,\n        source_record: dict[str, Any] | None = None,\n    ) -> dict[str, Any]: ...\n\n    def collect(\n",
+          )
+          repl(
+              "src/neuroai_workbench/collector/adapters/base.py",
+              "    def supports_source_class(self, source_class: str) -> bool:\n        return True\n\n    def collect(\n",
+              "    def supports_source_class(self, source_class: str) -> bool:\n        return True\n\n    def resolve_request(\n        self,\n        request: dict[str, Any],\n        *,\n        source_record: dict[str, Any] | None = None,\n    ) -> dict[str, Any]:\n        del source_record\n        return dict(request)\n\n    def collect(\n",
+          )
+
+          repl(
+              "src/neuroai_workbench/collector/adapters/fda_device.py",
+              '''    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        device_id = self.extract_device_id(source_record, request)\n        if device_id is None:\n            return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)\n        rewritten = {**request, "requested_url": self.build_openfda_url(device_id)}\n        return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+              '''    def resolve_request(\n        self,\n        request: dict[str, Any],\n        *,\n        source_record: dict[str, Any] | None = None,\n    ) -> dict[str, Any]:\n        device_id = self.extract_device_id(source_record, request)\n        if device_id is None:\n            return dict(request)\n        return {**request, "requested_url": self.build_openfda_url(device_id)}\n\n    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        resolved = self.resolve_request(request, source_record=source_record)\n        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+          )
+
+          repl(
+              "src/neuroai_workbench/collector/adapters/clinicaltrials.py",
+              '''    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        nct_id = self.extract_nct_id(source_record, request)\n        if nct_id is not None:\n            rewritten = {**request, "requested_url": self.build_study_url(nct_id)}\n            return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)\n\n        query = self.extract_search_query(source_record)\n        if query is not None:\n            search_url = self.build_search_url(\n                query,\n                page_size=self.extract_page_size(source_record),\n                page_token=self.extract_page_token(source_record),\n            )\n            rewritten = {**request, "requested_url": search_url}\n            return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)\n\n        return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+              '''    def resolve_request(\n        self,\n        request: dict[str, Any],\n        *,\n        source_record: dict[str, Any] | None = None,\n    ) -> dict[str, Any]:\n        nct_id = self.extract_nct_id(source_record, request)\n        if nct_id is not None:\n            return {**request, "requested_url": self.build_study_url(nct_id)}\n        query = self.extract_search_query(source_record)\n        if query is not None:\n            return {\n                **request,\n                "requested_url": self.build_search_url(\n                    query,\n                    page_size=self.extract_page_size(source_record),\n                    page_token=self.extract_page_token(source_record),\n                ),\n            }\n        return dict(request)\n\n    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        resolved = self.resolve_request(request, source_record=source_record)\n        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+          )
+
+          repl(
+              "src/neuroai_workbench/collector/adapters/pubmed.py",
+              '''    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        extracted = self.extract_publication_id(source_record, request)\n        if extracted is None:\n            return super().collect(request, prior_capture=prior_capture, attempt_count=attempt_count)\n        id_type, identifier = extracted\n        rewritten = {**request, "requested_url": self.build_retrieval_url(id_type, identifier)}\n        return super().collect(rewritten, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+              '''    def resolve_request(\n        self,\n        request: dict[str, Any],\n        *,\n        source_record: dict[str, Any] | None = None,\n    ) -> dict[str, Any]:\n        extracted = self.extract_publication_id(source_record, request)\n        if extracted is None:\n            return dict(request)\n        id_type, identifier = extracted\n        return {**request, "requested_url": self.build_retrieval_url(id_type, identifier)}\n\n    def collect(\n        self,\n        request: dict[str, Any],\n        *,\n        prior_capture: PriorCapture | None = None,\n        attempt_count: int = 1,\n        source_record: dict[str, Any] | None = None,\n    ) -> CollectionOutcome:\n        resolved = self.resolve_request(request, source_record=source_record)\n        return super().collect(resolved, prior_capture=prior_capture, attempt_count=attempt_count)\n''',
+          )
+
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              "from ..collector.dns import DnsGuard\n",
+              "from ..collector.adapters.registry import adapter_for_source, build_adapters\nfrom ..collector.dns import DnsGuard\n",
+          )
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              "from ..collector.http_client import HttpTransport\n",
+              "from ..collector.http_client import HttpTransport\nfrom ..collector.transport import StdlibHttpTransport\n",
+          )
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              "from .live import require_live_collection_enabled, run_live_cohort_collection\n",
+              "from .live import default_live_collector_config, require_live_collection_enabled, run_live_cohort_collection\n",
+          )
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              '''    source_index = {\n        str(record["source_id"]): record\n        for record in registry.get("sources", [])\n        if isinstance(record, dict) and record.get("source_id")\n    }\n    initialize_monitoring(evaluation_workspace, registry_path, actor=actor)\n''',
+              '''    source_index = {\n        str(record["source_id"]): record\n        for record in registry.get("sources", [])\n        if isinstance(record, dict) and record.get("source_id")\n    }\n    baseline_adapters = build_adapters(\n        config=default_live_collector_config(),\n        transport=StdlibHttpTransport(),\n        quarantine_root=baseline_quarantine_root,\n    )\n    initialize_monitoring(evaluation_workspace, registry_path, actor=actor)\n''',
+          )
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              '''        expected_target = _public_url(source_record.get("url"))\n        observed_target = _public_url(result.get("requested_url"))\n        if expected_target is None or observed_target != expected_target:\n            raise ValueError(f"Baseline reviewed registry retrieval target mismatch for {source_id}")\n        if str(result.get("monitor_id") or "") != str(source_record.get("monitor_id") or ""):\n            raise ValueError(f"Baseline reviewed registry monitor mismatch for {source_id}")\n        collection_outcome = outcome_by_source.get(source_id)\n''',
+              '''        selected_adapter = adapter_for_source(baseline_adapters, source_record)\n        resolved_request = selected_adapter.resolve_request(\n            {\n                "source_id": source_id,\n                "monitor_id": source_record.get("monitor_id"),\n                "requested_url": source_record.get("url"),\n            },\n            source_record=source_record,\n        )\n        expected_target = _public_url(resolved_request.get("requested_url"))\n        observed_target = _public_url(result.get("requested_url"))\n        if expected_target is None or observed_target != expected_target:\n            raise ValueError(f"Baseline adapter-resolved retrieval target mismatch for {source_id}")\n        if str(result.get("monitor_id") or "") != str(source_record.get("monitor_id") or ""):\n            raise ValueError(f"Baseline reviewed registry monitor mismatch for {source_id}")\n        collection_outcome = outcome_by_source.get(source_id)\n''',
+          )
+          repl(
+              "src/neuroai_workbench/shadow_refresh/comparative.py",
+              '''        adapter_id = str(collection_outcome.get("adapter_id") or "")\n        if not adapter_id:\n            raise ValueError(f"Baseline adapter identity missing for {source_id}")\n        snapshot = record_snapshot(\n''',
+              '''        adapter_id = str(collection_outcome.get("adapter_id") or "")\n        if not adapter_id:\n            raise ValueError(f"Baseline adapter identity missing for {source_id}")\n        if adapter_id != selected_adapter.adapter_id:\n            raise ValueError(f"Baseline adapter selection mismatch for {source_id}")\n        snapshot = record_snapshot(\n''',
+          )
+
+          test_path = Path("tests/unit/test_shadow_comparative_refresh.py")
+          test_text = test_path.read_text(encoding="utf-8")
+          test_text = test_text.replace(
+              "from neuroai_workbench.collector.dns import DnsGuard\n",
+              "from neuroai_workbench.collector.adapters.registry import adapter_for_source, build_adapters\nfrom neuroai_workbench.collector.dns import DnsGuard\n",
+              1,
+          )
+          test_text = test_text.replace(
+              "from neuroai_workbench.shadow_refresh.live import run_live_cohort_collection\n",
+              "from neuroai_workbench.shadow_refresh.live import default_live_collector_config, run_live_cohort_collection\n",
+              1,
+          )
+          test_text = test_text.replace(
+              'with pytest.raises(ValueError, match="reviewed registry retrieval target mismatch"):\n',
+              'with pytest.raises(ValueError, match="adapter-resolved retrieval target mismatch"):\n',
+              1,
+          )
+          marker = "\ndef test_baseline_seed_rejects_reviewed_registry_target_drift(tmp_path: Path) -> None:\n"
+          if test_text.count(marker) != 1:
+              raise SystemExit("test marker not unique")
+          regression = '''\ndef test_structured_adapter_resolves_reviewed_registry_url_without_network(tmp_path: Path) -> None:\n    source = {\n        "monitor_id": "MON-SRC-FDA",\n        "source_id": "SRC-FDA",\n        "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/denovo.cfm?knumber=DEN250013&start_search=1",\n        "publisher": "U.S. Food and Drug Administration",\n        "source_class": "REGULATORY_RECORD",\n        "cadence": "WEEKLY",\n    }\n    adapters = build_adapters(\n        config=default_live_collector_config(),\n        transport=FakeTransport(responses={}),\n        quarantine_root=tmp_path / "q",\n        dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),\n    )\n    adapter = adapter_for_source(adapters, source)\n    assert adapter.adapter_id == "fda_device"\n    resolved = adapter.resolve_request(\n        {\n            "source_id": source["source_id"],\n            "monitor_id": source["monitor_id"],\n            "requested_url": source["url"],\n        },\n        source_record=source,\n    )\n    assert resolved["requested_url"] == (\n        "https://api.fda.gov/device/510k.json?search=k_number%3A%22DEN250013%22&limit=1"\n    )\n\n'''
+          test_path.write_text(test_text.replace(marker, regression + marker), encoding="utf-8")
+          PY
+      - name: Validate repair
+        run: |
+          python -m ruff format src/neuroai_workbench/collector/adapters/base.py src/neuroai_workbench/collector/adapters/fda_device.py src/neuroai_workbench/collector/adapters/clinicaltrials.py src/neuroai_workbench/collector/adapters/pubmed.py src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
+          python -m ruff check src/neuroai_workbench/collector/adapters/base.py src/neuroai_workbench/collector/adapters/fda_device.py src/neuroai_workbench/collector/adapters/clinicaltrials.py src/neuroai_workbench/collector/adapters/pubmed.py src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
+          python -m pytest tests/unit/test_shadow_comparative_refresh.py tests/unit/test_collector_adapters_scheduler.py -q
+          python -m mypy src/neuroai_workbench/collector/adapters src/neuroai_workbench/shadow_refresh/comparative.py
+          python -m compileall -q src/neuroai_workbench/collector/adapters src/neuroai_workbench/shadow_refresh/comparative.py
+      - name: Remove workflow and commit validated repair
+        shell: bash
+        run: |
+          git rm .github/workflows/tmp-fix-120-adapter-resolution-v2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/neuroai_workbench/collector/adapters/base.py src/neuroai_workbench/collector/adapters/fda_device.py src/neuroai_workbench/collector/adapters/clinicaltrials.py src/neuroai_workbench/collector/adapters/pubmed.py src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
+          git diff --cached --check
+          git commit -m "fix: verify adapter-resolved baseline targets"
+          git push origin HEAD:agent/120-comparative-live-refresh
