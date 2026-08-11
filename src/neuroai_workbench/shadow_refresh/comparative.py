@@ -22,7 +22,6 @@ from ..collector.dns import DnsGuard
 from ..collector.handoff import (
     approve_quarantine_record,
     load_collection_result,
-    load_quarantine_record,
 )
 from ..collector.http_client import HttpTransport
 from ..monitoring import (

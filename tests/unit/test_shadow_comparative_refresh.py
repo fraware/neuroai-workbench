@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -33,7 +35,7 @@ def _registry(source_ids: tuple[str, ...] = ("SRC-0001",)) -> list[dict[str, obj
             {
                 "monitor_id": f"MON-{source_id}",
                 "source_id": source_id,
-                "url": f"https://example.org/source-{index}",
+                "url": f"https://pages.example.org/source-{index}",
                 "publisher": "Example publisher",
                 "source_class": "OFFICIAL_COMPANY_PAGE",
                 "cadence": "WEEKLY",
@@ -90,18 +92,19 @@ def _collect(
         if str(row["source_id"]) in bodies
     }
     transport = FakeTransport(responses=responses)
-    return run_live_cohort_collection(
-        plan=plan,
-        registry={"metadata": {"version": "test"}, "sources": registry},
-        registry_sha256=sha256_file(registry_path),
-        quarantine_root=quarantine_root,
-        transport=transport,
-        dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
-    )
+    with patch.dict(os.environ, {LIVE_COLLECTION_ENV: "1"}):
+        return run_live_cohort_collection(
+            plan=plan,
+            registry={"sources": registry},
+            registry_sha256=sha256_file(registry_path),
+            quarantine_root=quarantine_root,
+            transport=transport,
+            dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
+        )
 
 
 def _write_registry(path: Path, registry: list[dict[str, object]]) -> None:
-    atomic_write_json(path, {"metadata": {"version": "test"}, "sources": registry})
+    atomic_write_json(path, registry)
 
 
 def _binding() -> ProtectedBaselineBinding:
@@ -158,7 +161,7 @@ def test_baseline_seed_rejects_corrupt_or_ambiguous_capture(tmp_path: Path) -> N
         registry=registry,
         plan=plan,
         quarantine_root=quarantine,
-        bodies={"SRC-0001": b"baseline"},
+        bodies={"SRC-0001": b"<html>baseline</html>"},
     )
     summary_path = tmp_path / "summary.json"
     atomic_write_json(summary_path, package)
@@ -196,7 +199,7 @@ def test_technical_approval_is_scoped_to_current_successes(tmp_path: Path) -> No
         registry=registry,
         plan=plan,
         quarantine_root=quarantine,
-        bodies={"SRC-0001": b"one", "SRC-0002": b"two"},
+        bodies={"SRC-0001": b"<html>one</html>", "SRC-0002": b"<html>two</html>"},
     )
     approval = approve_collection_for_evaluation(
         live_package=package,
@@ -394,13 +397,13 @@ def test_runner_records_second_success_without_prior_baseline_as_first_capture(
         registry=registry,
         plan=baseline_plan,
         quarantine_root=baseline_q,
-        bodies={"SRC-0001": b"baseline-one"},
+        bodies={"SRC-0001": b"<html>baseline-one</html>"},
     )
     baseline_summary = tmp_path / "baseline-summary.json"
     atomic_write_json(baseline_summary, baseline_package)
     responses = {
-        str(registry[0]["url"]): (200, {"content-type": "text/html"}, b"baseline-one"),
-        str(registry[1]["url"]): (200, {"content-type": "text/html"}, b"first-two"),
+        str(registry[0]["url"]): (200, {"content-type": "text/html"}, b"<html>baseline-one</html>"),
+        str(registry[1]["url"]): (200, {"content-type": "text/html"}, b"<html>first-two</html>"),
     }
     package = run_comparative_live_refresh(
         evaluation_workspace=tmp_path / "ws",
