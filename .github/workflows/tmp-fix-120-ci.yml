@@ -36,6 +36,11 @@ jobs:
           test_text = test_path.read_text(encoding="utf-8")
           replacements = [
               (
+                  "import json\nfrom pathlib import Path\n",
+                  "import json\nimport os\nfrom pathlib import Path\nfrom unittest.mock import patch\n",
+                  1,
+              ),
+              (
                   '"url": f"https://example.org/source-{index}",',
                   '"url": f"https://pages.example.org/source-{index}",',
                   1,
@@ -50,6 +55,16 @@ jobs:
                   'atomic_write_json(path, registry)',
                   1,
               ),
+              (
+                  "    return run_live_cohort_collection(\n",
+                  '    with patch.dict(os.environ, {LIVE_COLLECTION_ENV: "1"}):\n        return run_live_cohort_collection(\n',
+                  1,
+              ),
+              ('b"baseline"', 'b"<html>baseline</html>"', 1),
+              ('b"one"', 'b"<html>one</html>"', 1),
+              ('b"two"', 'b"<html>two</html>"', 1),
+              ('b"baseline-one"', 'b"<html>baseline-one</html>"', 2),
+              ('b"first-two"', 'b"<html>first-two</html>"', 1),
           ]
           for old, new, expected in replacements:
               observed = test_text.count(old)
@@ -68,6 +83,7 @@ jobs:
           PY
       - name: Validate focused repair
         run: |
+          python -m ruff format src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
           python -m ruff format --check src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
           python -m ruff check src/neuroai_workbench/shadow_refresh/comparative.py tests/unit/test_shadow_comparative_refresh.py
           python -m pytest tests/unit/test_shadow_comparative_refresh.py -q
