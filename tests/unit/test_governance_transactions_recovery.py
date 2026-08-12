@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 import neuroai_workbench.governance_transactions as tx
-from neuroai_workbench.util import atomic_write_json, canonical_json_bytes, sha256_bytes
+from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 from neuroai_workbench.workspace import Workspace
 
 
