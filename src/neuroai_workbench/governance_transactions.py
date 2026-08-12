@@ -134,7 +134,10 @@ def _load_and_validate_journal(path: Path) -> dict[str, Any]:
         raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} has conflicting identity")
     if journal.get("state") != TRANSACTION_STATE_PREPARED:
         raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} has unsupported state")
-    if journal.get("authority_profile") != TRANSACTION_AUTHORITY_PROFILE or journal.get("boundary") != TRANSACTION_BOUNDARY:
+    if (
+        journal.get("authority_profile") != TRANSACTION_AUTHORITY_PROFILE
+        or journal.get("boundary") != TRANSACTION_BOUNDARY
+    ):
         raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} has invalid authority boundary")
     if journal.get("journal_sha256") != _journal_hash(journal):
         raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} hash mismatch")
@@ -143,10 +146,14 @@ def _load_and_validate_journal(path: Path) -> dict[str, Any]:
     _assert_digest(journal.get("event_payload_sha256"), "event_payload_sha256")
     secondary = journal.get("secondary_digests")
     if not isinstance(secondary, dict):
-        raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} secondary_digests must be an object")
+        raise GovernanceRecoveryBlocked(
+            f"Governance transaction journal {path.name} secondary_digests must be an object"
+        )
     for key, digest in secondary.items():
         if not isinstance(key, str) or not key:
-            raise GovernanceRecoveryBlocked(f"Governance transaction journal {path.name} has invalid secondary digest key")
+            raise GovernanceRecoveryBlocked(
+                f"Governance transaction journal {path.name} has invalid secondary digest key"
+            )
         _assert_digest(digest, f"secondary_digests.{key}")
     return journal
 
