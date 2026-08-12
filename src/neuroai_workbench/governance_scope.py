@@ -9,9 +9,9 @@ from uuid import uuid4
 
 from jsonschema import Draft202012Validator
 
-from .events import append_event, load_events, verify_chain
+from .events import load_events, verify_chain
+from .governance_transactions import append_governance_record_locked, governance_serialized
 from .util import (
-    atomic_write_json,
     canonical_json_bytes,
     ensure_identifier,
     load_json,
@@ -326,6 +326,7 @@ def verify_governance_scope_manifest(
     }
 
 
+@governance_serialized
 def record_governance_scope_manifest(
     workspace: Workspace,
     *,
@@ -368,12 +369,15 @@ def record_governance_scope_manifest(
     output = _scopes_root(workspace) / f"{scope_id}.json"
     if output.exists():
         raise ValueError(f"A governance scope manifest already exists: {scope_id}")
-    atomic_write_json(output, manifest)
-    append_event(
-        workspace.root / "events.jsonl",
-        "GOVERNANCE_SCOPE_RECORDED",
-        actor,
-        {
+    append_governance_record_locked(
+        workspace,
+        record_path=output,
+        record=manifest,
+        record_id=scope_id,
+        record_sha256=str(manifest["manifest_sha256"]),
+        event_action="GOVERNANCE_SCOPE_RECORDED",
+        actor=actor,
+        event_payload={
             "scope_id": scope_id,
             "manifest_sha256": manifest["manifest_sha256"],
             "object_count": len(objects),
