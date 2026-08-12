@@ -9,9 +9,10 @@ from uuid import uuid4
 
 from jsonschema import Draft202012Validator
 
-from .events import append_event, load_events, verify_chain
+from .events import load_events, verify_chain
 from .governance_scope import GOVERNANCE_SCOPE_BOUNDARY, load_governance_scope_manifests
-from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, utc_now
+from .governance_transactions import append_governance_record_locked, governance_serialized
+from .util import canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, utc_now
 from .workspace import Workspace
 
 OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
@@ -226,6 +227,7 @@ def _active_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [record for record in records if str(record.get("opinion_id")) not in superseded]
 
 
+@governance_serialized
 def record_governance_reviewer_opinion(
     workspace: Workspace,
     *,
@@ -363,12 +365,15 @@ def record_governance_reviewer_opinion(
     output = _opinions_root(workspace) / f"{opinion_id}.json"
     if output.exists():
         raise ValueError(f"A governance reviewer opinion already exists: {opinion_id}")
-    atomic_write_json(output, record)
-    append_event(
-        workspace.root / "events.jsonl",
-        "GOVERNANCE_REVIEWER_OPINION_RECORDED",
-        actor,
-        {
+    append_governance_record_locked(
+        workspace,
+        record_path=output,
+        record=record,
+        record_id=opinion_id,
+        record_sha256=str(record["opinion_sha256"]),
+        event_action="GOVERNANCE_REVIEWER_OPINION_RECORDED",
+        actor=actor,
+        event_payload={
             "opinion_id": opinion_id,
             "opinion_sha256": record["opinion_sha256"],
             "scope_id": scope_id,
