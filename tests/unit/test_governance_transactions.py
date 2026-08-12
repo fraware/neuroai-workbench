@@ -300,7 +300,9 @@ def test_governance_lock_serializes_semantic_check_and_commit(tmp_path: Path) ->
     assert len(load_events(workspace.root / "events.jsonl")) == 1
 
 
-def test_prepared_journal_contains_no_record_body_or_protected_bytes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_prepared_journal_contains_no_record_body_or_protected_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     workspace = _workspace(tmp_path)
 
     class StopRecovery(BaseException):
