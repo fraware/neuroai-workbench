@@ -9,13 +9,14 @@ from uuid import uuid4
 
 from jsonschema import Draft202012Validator
 
-from .events import append_event, load_events, verify_chain
+from .events import load_events, verify_chain
 from .governance_opinions import (
     GOVERNANCE_OPINION_BOUNDARY,
     load_governance_reviewer_opinions,
     verify_governance_reviewer_opinions,
 )
-from .util import atomic_write_json, canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, utc_now
+from .governance_transactions import append_governance_record_locked, governance_serialized
+from .util import canonical_json_bytes, ensure_identifier, load_json, sha256_bytes, utc_now
 from .workspace import Workspace
 
 OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
@@ -311,6 +312,7 @@ def _addressed_opinion_refs(
     return refs
 
 
+@governance_serialized
 def record_governance_owner_disposition(
     workspace: Workspace,
     *,
@@ -442,12 +444,15 @@ def record_governance_owner_disposition(
     output = _dispositions_root(workspace) / f"{disposition_id}.json"
     if output.exists():
         raise ValueError(f"A governance owner disposition already exists: {disposition_id}")
-    atomic_write_json(output, record)
-    append_event(
-        workspace.root / "events.jsonl",
-        "GOVERNANCE_OWNER_DISPOSITION_RECORDED",
-        actor,
-        {
+    append_governance_record_locked(
+        workspace,
+        record_path=output,
+        record=record,
+        record_id=disposition_id,
+        record_sha256=str(record["disposition_sha256"]),
+        event_action="GOVERNANCE_OWNER_DISPOSITION_RECORDED",
+        actor=actor,
+        event_payload={
             "disposition_id": disposition_id,
             "disposition_sha256": record["disposition_sha256"],
             "condition_register_id": register["register_id"],
@@ -460,6 +465,7 @@ def record_governance_owner_disposition(
             "supersedes_disposition_id": supersedes_disposition_id,
             "release_authorization_performed": False,
         },
+        secondary_digests={"condition_register_sha256": str(register["register_sha256"])},
     )
     return {"disposition": record, "path": str(output)}
 
