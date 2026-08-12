@@ -5,7 +5,7 @@ from collections.abc import Callable, Iterator, Mapping
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path, PurePosixPath
-from typing import Any, ParamSpec, TypeVar, cast
+from typing import Any, Concatenate, ParamSpec, TypeVar, cast
 from uuid import uuid4
 
 from .events import _exclusive_lock, append_event, load_events, verify_chain
@@ -62,6 +62,11 @@ def _events_path(workspace: Workspace) -> Path:
 def _events_lock_path(workspace: Workspace) -> Path:
     path = _events_path(workspace)
     return path.with_suffix(path.suffix + ".lock")
+
+
+def _events_head_path(workspace: Workspace) -> Path:
+    path = _events_path(workspace)
+    return path.with_suffix(path.suffix + ".head")
 
 
 def _journal_hash(journal: dict[str, Any]) -> str:
@@ -149,6 +154,14 @@ def _load_and_validate_journal(path: Path) -> dict[str, Any]:
 def _event_snapshot(workspace: Workspace) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     events_path = _events_path(workspace)
     with _exclusive_lock(_events_lock_path(workspace)):
+        if not events_path.exists() and not _events_head_path(workspace).exists():
+            return [], {
+                "valid": True,
+                "trailer_valid": True,
+                "event_count": 0,
+                "head_hash": "0" * 64,
+                "verification_scope": "ABSENT_EMPTY_CHAIN",
+            }
         report = verify_chain(events_path)
         if not report.get("valid") or report.get("trailer_valid") is not True:
             raise GovernanceRecoveryBlocked(
@@ -255,7 +268,9 @@ def governance_write_lock(workspace: Workspace) -> Iterator[dict[str, Any]]:
         yield {"lock_id": owner["lock_id"], "recovery": recovery}
 
 
-def governance_serialized(function: Callable[P, R]) -> Callable[P, R]:
+def governance_serialized(
+    function: Callable[Concatenate[Workspace, P], R],
+) -> Callable[Concatenate[Workspace, P], R]:
     """Serialize a governance recorder whose first positional argument is a Workspace."""
 
     @wraps(function)
@@ -263,7 +278,7 @@ def governance_serialized(function: Callable[P, R]) -> Callable[P, R]:
         with governance_write_lock(workspace):
             return function(workspace, *args, **kwargs)
 
-    return cast(Callable[P, R], wrapped)
+    return cast(Callable[Concatenate[Workspace, P], R], wrapped)
 
 
 def append_governance_record_locked(
@@ -332,8 +347,8 @@ def append_governance_record_locked(
 
     checkpoint("BEFORE_JOURNAL_WRITE")
     atomic_write_json(journal_path, journal)
-    checkpoint("AFTER_JOURNAL_WRITE")
     try:
+        checkpoint("AFTER_JOURNAL_WRITE")
         atomic_write_json(record_path, dict(record))
         checkpoint("AFTER_RECORD_WRITE")
         if sha256_file(record_path) != bytes_sha256:
