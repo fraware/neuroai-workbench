@@ -136,7 +136,8 @@ def test_diagnostic_is_non_authorizing(tmp_path: Path) -> None:
     assert report["valid"] is True
     assert report["prepared"] == 0
     assert report["release_authorization_performed"] is False
-    assert "does not" in report["boundary"]
+    assert "do not authenticate governance actors" in report["boundary"]
+    assert "authorize a successor release" in report["boundary"]
 
 
 def test_record_path_escape_is_rejected(tmp_path: Path) -> None:
