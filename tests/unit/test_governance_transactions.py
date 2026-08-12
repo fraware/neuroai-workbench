@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import json
 import threading
 import time
 from pathlib import Path
 
 import pytest
 
-from neuroai_workbench.events import append_event, load_events, verify_chain
+from neuroai_workbench.events import load_events, verify_chain
 from neuroai_workbench.governance_transactions import (
     GovernanceRecoveryBlocked,
     append_governance_record_locked,
