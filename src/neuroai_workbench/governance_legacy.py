@@ -25,7 +25,12 @@ class LegacyRecordSpec:
 LEGACY_RECORD_SPECS = (
     LegacyRecordSpec("scopes", "scope_id", "manifest_sha256", "GOVERNANCE_SCOPE_RECORDED"),
     LegacyRecordSpec("opinions", "opinion_id", "opinion_sha256", "GOVERNANCE_REVIEWER_OPINION_RECORDED"),
-    LegacyRecordSpec("dispositions", "disposition_id", "disposition_sha256", "GOVERNANCE_OWNER_DISPOSITION_RECORDED"),
+    LegacyRecordSpec(
+        "owner-dispositions",
+        "disposition_id",
+        "disposition_sha256",
+        "GOVERNANCE_OWNER_DISPOSITION_RECORDED",
+    ),
 )
 
 
