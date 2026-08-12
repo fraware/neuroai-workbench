@@ -208,9 +208,10 @@ def test_post_event_disposition_error_remains_committed(tmp_path: Path, monkeypa
         if event["action"] == "GOVERNANCE_OWNER_DISPOSITION_RECORDED"
     ]
     assert len(events) == 1
-    assert events[0]["payload"]["transaction_secondary_digests"]["condition_register_sha256"] == records[0][
-        "condition_register"
-    ]["register_sha256"]
+    assert (
+        events[0]["payload"]["transaction_secondary_digests"]["condition_register_sha256"]
+        == records[0]["condition_register"]["register_sha256"]
+    )
 
 
 def test_concurrent_overlapping_dispositions_have_one_winner(tmp_path: Path) -> None:
