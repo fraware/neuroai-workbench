@@ -17,7 +17,9 @@ from neuroai_workbench.governance_release import (
     verify_governance_release_decisions,
 )
 from neuroai_workbench.governance_scope import record_governance_scope_manifest, scope_object_for_path
-from neuroai_workbench.governance_transactions import append_governance_record_locked as real_append_governance_record_locked
+from neuroai_workbench.governance_transactions import (
+    append_governance_record_locked as real_append_governance_record_locked,
+)
 from neuroai_workbench.successor import generate_from_observatory_release
 from neuroai_workbench.util import atomic_write_json
 from neuroai_workbench.workspace import Workspace
@@ -28,6 +30,11 @@ PRODUCTS = [{"product_id": "TEST-FIXTURE-PRODUCT", "sha256": "a" * 64}]
 
 
 def _workspace_scope_candidate(tmp_path: Path) -> tuple[Workspace, dict[str, Any], dict[str, Any]]:
+    candidate = generate_from_observatory_release(
+        SUCCESSOR,
+        version="v1.8-release-transaction-fixture",
+        actor="test-fixture",
+    )
     workspace = Workspace.initialize(tmp_path / "workspace")
     public = tmp_path / "public"
     generated = tmp_path / "generated"
@@ -43,7 +50,10 @@ def _workspace_scope_candidate(tmp_path: Path) -> tuple[Workspace, dict[str, Any
         "claims": public / "claims.json",
     }
     for label, path in fixture_paths.items():
-        atomic_write_json(path, {"test_fixture_only": label})
+        if label == "candidate":
+            atomic_write_json(path, candidate)
+        else:
+            atomic_write_json(path, {"test_fixture_only": label})
     objects = [
         scope_object_for_path(
             role="PREDECESSOR_RELEASE",
@@ -120,11 +130,6 @@ def _workspace_scope_candidate(tmp_path: Path) -> tuple[Workspace, dict[str, Any
                 rationale="TEST FIXTURE ONLY support opinion.",
                 actor="test-fixture",
             )
-    candidate = generate_from_observatory_release(
-        SUCCESSOR,
-        version="v1.8-release-transaction-fixture",
-        actor="test-fixture",
-    )
     return workspace, scope, candidate
 
 
@@ -234,6 +239,7 @@ def test_publication_post_event_interruption_preserves_exact_committed_publicati
 
     def injected_append(*args: Any, **kwargs: Any) -> dict[str, Any]:
         if kwargs.get("event_action") == "GOVERNANCE_RELEASE_PUBLICATION_RECORDED":
+
             def hook(phase: str) -> None:
                 if phase == "AFTER_EVENT_APPEND":
                     raise RuntimeError("TEST FIXTURE publication post-event interruption")
