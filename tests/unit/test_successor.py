@@ -7,6 +7,7 @@ import pytest
 
 from neuroai_workbench.successor import (
     advance_release_gate,
+    classify_legacy_release_gate,
     generate_from_observatory_release,
     generate_successor_candidate,
     reconcile_reopening_register,
@@ -19,8 +20,8 @@ from neuroai_workbench.util import canonical_json_bytes
 ROOT = Path(__file__).resolve().parents[2]
 SUCCESSOR = ROOT / "examples" / "observatory" / "canonical_successor_snapshot_v1.7.json"
 
-AUTHORITY = {
-    "name_or_role": "Release control reviewer",
+LOCAL_CLAIM = {
+    "name_or_role": "Local release-control reviewer",
     "authority_basis": "Local programme release checklist",
     "organization": "Local workflow",
     "accountability_state": "CLAIMED LOCAL IDENTITY ONLY",
@@ -33,84 +34,94 @@ def test_generate_candidate_from_v17_release():
     assert summary["valid"] is True
     assert summary["current_gate"] == "CANDIDATE"
     assert summary["operation_count"] == 9
+    assert summary["legacy_gate_classification"] == "NON_AUTHORIZING_CORE_GATE"
+    assert summary["governance_release_authorization_established"] is False
     assert len(candidate["withheld_claims"]) >= 3
 
 
-def test_gate_progression_candidate_to_published():
+def test_core_gate_progression_stops_at_reviewed():
     candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-candidate")
-    reviewed, gate1 = advance_release_gate(
+    reviewed, gate = advance_release_gate(
         candidate,
         target_gate="REVIEWED",
-        authority_claim=AUTHORITY,
+        authority_claim=LOCAL_CLAIM,
         rationale="Schema, predecessor hash, and reopening reconciliation reviewed.",
     )
     assert reviewed["metadata"]["status"] == "REVIEWED"
-    authorized, gate2 = advance_release_gate(
-        reviewed,
-        target_gate="AUTHORIZED",
-        authority_claim=AUTHORITY,
-        rationale="Domain and security review complete for bounded delta.",
-    )
-    published, gate3 = advance_release_gate(
-        authorized,
-        target_gate="PUBLISHED",
-        authority_claim={
-            **AUTHORITY,
-            "name_or_role": "Named release authority",
-            "authority_basis": "Explicit release decision record",
-        },
-        rationale="Named release authority approves publication.",
-    )
-    assert published["metadata"]["status"] == "PUBLISHED"
-    assert gate3["automatic_publication_performed"] is False
-    assert len(published["release_gate"]["history"]) == 3
-
-
-def test_authorized_published_without_independent_review_dispositions():
-    """Successor AUTHORIZED/PUBLISHED must not require issue #10 independent-review tracks."""
-    import neuroai_workbench.successor as successor_mod
-
-    assert "independent_review" not in successor_mod.__dict__
-    assert "summarize_independent_review_acceptance" not in dir(successor_mod)
-
-    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-no-ind-review")
-    reviewed, _ = advance_release_gate(
-        candidate,
-        target_gate="REVIEWED",
-        authority_claim=AUTHORITY,
-        rationale="Technical checks recorded without independent-review dispositions.",
-    )
-    authorized, _ = advance_release_gate(
-        reviewed,
-        target_gate="AUTHORIZED",
-        authority_claim=AUTHORITY,
-        rationale="Programme authority claim without #10 track completeness.",
-    )
-    published, gate = advance_release_gate(
-        authorized,
-        target_gate="PUBLISHED",
-        authority_claim={
-            **AUTHORITY,
-            "name_or_role": "Named release authority",
-            "authority_basis": "Explicit release decision record",
-        },
-        rationale="Named release authority approves publication without #10 gate.",
-    )
-    assert authorized["metadata"]["status"] == "AUTHORIZED"
-    assert published["metadata"]["status"] == "PUBLISHED"
+    assert reviewed["release_gate"]["current_gate"] == "REVIEWED"
+    assert gate["target_gate"] == "REVIEWED"
     assert gate["automatic_publication_performed"] is False
-    assert "independent_review" not in json.dumps(published)
 
 
-def test_gate_advancement_cannot_skip():
-    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-skip")
-    with pytest.raises(ValueError, match="sequentially"):
+def test_local_claim_cannot_create_authorized_or_published_gate():
+    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-local-blocked")
+    with pytest.raises(ValueError, match="governance release-authority decision path"):
         advance_release_gate(
             candidate,
             target_gate="AUTHORIZED",
-            authority_claim=AUTHORITY,
-            rationale="Attempted skip.",
+            authority_claim=LOCAL_CLAIM,
+            rationale="Attempt local authorization.",
         )
+    reviewed, _ = advance_release_gate(
+        candidate,
+        target_gate="REVIEWED",
+        authority_claim=LOCAL_CLAIM,
+        rationale="Technical review complete.",
+    )
+    with pytest.raises(ValueError, match="governance release-authority decision path"):
+        advance_release_gate(
+            reviewed,
+            target_gate="PUBLISHED",
+            authority_claim=LOCAL_CLAIM,
+            rationale="Attempt local publication.",
+        )
+
+
+def test_non_authorizing_gate_cannot_repeat_or_use_unknown_target():
+    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-repeat")
+    reviewed, _ = advance_release_gate(
+        candidate,
+        target_gate="REVIEWED",
+        authority_claim=LOCAL_CLAIM,
+        rationale="Technical review complete.",
+    )
+    with pytest.raises(ValueError, match="current gate"):
+        advance_release_gate(
+            reviewed,
+            target_gate="REVIEWED",
+            authority_claim=LOCAL_CLAIM,
+            rationale="Attempt repeated review gate.",
+        )
+    with pytest.raises(ValueError, match="Unsupported non-authorizing target gate"):
+        advance_release_gate(
+            candidate,
+            target_gate="CANDIDATE",
+            authority_claim=LOCAL_CLAIM,
+            rationale="Attempt invalid target.",
+        )
+
+
+def test_legacy_authorizing_gate_is_classified_without_upgrade():
+    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-legacy")
+    candidate["release_gate"]["current_gate"] = "AUTHORIZED"
+    candidate["release_gate"]["history"] = [
+        {
+            "target_gate": "AUTHORIZED",
+            "authority_claim": {"accountability_state": "CLAIMED LOCAL IDENTITY ONLY"},
+        }
+    ]
+    report = classify_legacy_release_gate(candidate)
+    assert report["classification"] == "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
+    assert report["legacy_authorizing_record_count"] == 1
+    assert report["governance_complete"] is False
+
+
+def test_malformed_gate_is_classified_fail_closed():
+    candidate = generate_from_observatory_release(SUCCESSOR, version="v1.8-bad-gate")
+    candidate["release_gate"] = "invalid"
+    report = classify_legacy_release_gate(candidate)
+    assert report["classification"] == "INVALID_GATE_STATE"
+    assert report["governance_complete"] is False
 
 
 def test_predecessor_hash_mismatch_detected():
