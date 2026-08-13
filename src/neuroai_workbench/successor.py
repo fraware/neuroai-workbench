@@ -16,17 +16,21 @@ OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
 CANDIDATE_SCHEMA = "SUCCESSOR_CANDIDATE.schema.json"
 GATE_SCHEMA = "SUCCESSOR_RELEASE_GATE.schema.json"
 
+# AUTHORIZED/PUBLISHED remain in the historical schema so legacy records stay readable.
+# New core gate advancement is intentionally restricted to CANDIDATE -> REVIEWED.
 RELEASE_GATES = ("CANDIDATE", "REVIEWED", "AUTHORIZED", "PUBLISHED")
 GATE_ORDER = {gate: index for index, gate in enumerate(RELEASE_GATES)}
+NON_AUTHORIZING_RELEASE_GATES = frozenset({"CANDIDATE", "REVIEWED"})
 
 SUCCESSOR_BOUNDARY = (
-    "Successor packages are release-control artifacts. Gate advancement records local authority claims only. "
-    "Publication never occurs automatically and does not establish substantive truth, authorization, or conformance."
+    "Successor packages are release-control artifacts. Core gate advancement is non-authorizing and stops at REVIEWED. "
+    "AUTHORIZED and PUBLISHED require the separate governance release-decision path. Publication never occurs "
+    "automatically and no gate state establishes substantive truth, regulatory authorization, or conformance."
 )
 
 DEFAULT_WITHHELD_CLAIMS = [
     "Candidate successor status does not confer canonical observatory authority.",
-    "Gate advancement records named local authority claims only; they are not authenticated institutional delegation.",
+    "Core gate advancement stops at REVIEWED; canonical authorization requires the governance release-decision path.",
     "No UNESCO endorsement, regulatory authorization, clinical recommendation, or conformance determination is created.",
     "Historical predecessor releases remain immutable.",
     "Missing or inaccessible evidence is not converted into demonstrated failure.",
@@ -192,6 +196,34 @@ def _next_gate(current: str) -> str | None:
     return RELEASE_GATES[order + 1]
 
 
+def classify_legacy_release_gate(candidate: dict[str, Any]) -> dict[str, Any]:
+    """Classify historical local gate records without rewriting or upgrading them."""
+    release_gate = candidate.get("release_gate")
+    if not isinstance(release_gate, dict):
+        return {
+            "classification": "INVALID_GATE_STATE",
+            "legacy_authorizing_record_count": 0,
+            "governance_complete": False,
+        }
+    history = release_gate.get("history", [])
+    if not isinstance(history, list):
+        history = []
+    authorizing_records = [
+        item
+        for item in history
+        if isinstance(item, dict) and item.get("target_gate") in {"AUTHORIZED", "PUBLISHED"}
+    ]
+    current = release_gate.get("current_gate")
+    legacy = current in {"AUTHORIZED", "PUBLISHED"} or bool(authorizing_records)
+    return {
+        "classification": (
+            "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE" if legacy else "NON_AUTHORIZING_CORE_GATE"
+        ),
+        "legacy_authorizing_record_count": len(authorizing_records),
+        "governance_complete": False,
+    }
+
+
 def advance_release_gate(
     candidate: dict[str, Any],
     *,
@@ -201,14 +233,18 @@ def advance_release_gate(
     actor: str = "local-user",
     verification_checks: list[str] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Advance a successor candidate one sequential release gate.
+    """Advance only the non-authorizing core gate from CANDIDATE to REVIEWED.
 
-    AUTHORIZED and PUBLISHED require named local authority claims and sequential
-    progression only. They do not require issue #10 independent-review disposition
-    completeness. Independent review remains optional follow-up documentation.
+    AUTHORIZED and PUBLISHED are intentionally unavailable here. They require the
+    governance release-decision path in ``governance_release`` and exact #109-#112
+    bindings. Historical local gate records remain readable but are never upgraded.
     """
-    if target_gate not in RELEASE_GATES or target_gate == "CANDIDATE":
-        raise ValueError(f"Unsupported target gate {target_gate!r}")
+    if target_gate in {"AUTHORIZED", "PUBLISHED"}:
+        raise ValueError(
+            f"{target_gate} requires the governance release-authority decision path; local gate advancement is prohibited"
+        )
+    if target_gate != "REVIEWED":
+        raise ValueError(f"Unsupported non-authorizing target gate {target_gate!r}")
     if not rationale.strip():
         raise ValueError("Gate advancement rationale is required")
     for field in ("name_or_role", "authority_basis", "accountability_state"):
@@ -221,22 +257,18 @@ def advance_release_gate(
 
     release_gate = candidate.get("release_gate", {})
     current_gate = release_gate.get("current_gate", "CANDIDATE")
-    if current_gate not in GATE_ORDER:
-        raise ValueError(f"Unsupported current gate {current_gate!r}")
-    expected_next = _next_gate(current_gate)
-    if target_gate != expected_next:
-        raise ValueError(f"Gate advancement must proceed sequentially; expected {expected_next!r}, got {target_gate!r}")
+    if current_gate != "CANDIDATE":
+        raise ValueError(f"Core gate advancement requires current gate 'CANDIDATE', got {current_gate!r}")
 
     metadata = dict(candidate.get("metadata", {}))
     candidate_id = str(metadata.get("candidate_id"))
     candidate_sha256 = str(metadata.get("canonical_sha256"))
-
     gate_record = {
         "gate_record_id": f"GATE-{uuid4().hex[:12].upper()}",
         "candidate_id": candidate_id,
         "candidate_sha256": candidate_sha256,
         "prior_gate": current_gate,
-        "target_gate": target_gate,
+        "target_gate": "REVIEWED",
         "advanced_at": utc_now(),
         "advanced_by": actor,
         "authority_claim": {
@@ -260,15 +292,11 @@ def advance_release_gate(
         raise ValueError(f"Release gate record failed validation: {json.dumps(gate_errors, ensure_ascii=False)}")
 
     updated = json.loads(json.dumps(candidate))
-    updated["metadata"]["status"] = target_gate
-    updated["release_gate"]["current_gate"] = target_gate
+    updated["metadata"]["status"] = "REVIEWED"
+    updated["release_gate"]["current_gate"] = "REVIEWED"
     updated["release_gate"]["history"].append(gate_record)
     updated["metadata"].pop("canonical_sha256", None)
     updated["metadata"]["canonical_sha256"] = sha256_bytes(canonical_json_bytes(updated))
-
-    if target_gate == "PUBLISHED" and current_gate != "AUTHORIZED":
-        raise ValueError("Publication requires prior AUTHORIZED gate; automatic publication is prohibited")
-
     return updated, gate_record
 
 
@@ -352,6 +380,7 @@ def generate_from_observatory_release(
 def summarize_successor_candidate(value: dict[str, Any]) -> dict[str, Any]:
     report = validate_successor_candidate(value)
     metadata = value.get("metadata", {}) if isinstance(value.get("metadata"), dict) else {}
+    legacy = classify_legacy_release_gate(value)
     return {
         "valid": report["valid"],
         "candidate_id": metadata.get("candidate_id"),
@@ -359,6 +388,8 @@ def summarize_successor_candidate(value: dict[str, Any]) -> dict[str, Any]:
         "predecessor_version": metadata.get("predecessor_version"),
         "current_gate": value.get("release_gate", {}).get("current_gate"),
         "operation_count": value.get("delta_reference", {}).get("operation_count"),
+        "legacy_gate_classification": legacy["classification"],
+        "governance_release_authorization_established": False,
         "withheld_claims": value.get("withheld_claims", []),
         "boundary": SUCCESSOR_BOUNDARY,
     }
