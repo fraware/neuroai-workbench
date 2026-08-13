@@ -209,9 +209,7 @@ def classify_legacy_release_gate(candidate: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(history, list):
         history = []
     authorizing_records = [
-        item
-        for item in history
-        if isinstance(item, dict) and item.get("target_gate") in {"AUTHORIZED", "PUBLISHED"}
+        item for item in history if isinstance(item, dict) and item.get("target_gate") in {"AUTHORIZED", "PUBLISHED"}
     ]
     current = release_gate.get("current_gate")
     legacy = current in {"AUTHORIZED", "PUBLISHED"} or bool(authorizing_records)
