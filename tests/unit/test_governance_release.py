@@ -174,9 +174,10 @@ def test_complete_six_track_package_is_readiness_only(tmp_path: Path) -> None:
     assert len(package["reviewer_opinions"]) == 12
     assert package["owner_dispositions"] == []
     assert package["package_id"].startswith("GOVREADY-")
-    assert package["candidate_reference"]["candidate_artifact_sha256"] == package["candidate_reference"][
-        "scope_artifact_sha256"
-    ]
+    assert (
+        package["candidate_reference"]["candidate_artifact_sha256"]
+        == package["candidate_reference"]["scope_artifact_sha256"]
+    )
 
 
 def test_different_valid_candidate_cannot_reuse_governance_scope(tmp_path: Path) -> None:
@@ -191,9 +192,10 @@ def test_different_valid_candidate_cannot_reuse_governance_scope(tmp_path: Path)
     )
     assert package["readiness_state"] == "NOT_READY"
     assert "SCOPE_CANDIDATE_ARTIFACT_MISMATCH" in package["blocker_codes"]
-    assert package["candidate_reference"]["candidate_artifact_sha256"] != package["candidate_reference"][
-        "scope_artifact_sha256"
-    ]
+    assert (
+        package["candidate_reference"]["candidate_artifact_sha256"]
+        != package["candidate_reference"]["scope_artifact_sha256"]
+    )
 
 
 def test_local_and_synthetic_authority_claims_fail_closed(tmp_path: Path) -> None:
@@ -248,9 +250,10 @@ def test_reserved_structural_fixture_can_exercise_authorization_path_without_aut
     assert decision["external_authority_authenticated"] is False
     assert decision["automatic_publication_performed"] is False
     assert decision["release_authority_claim"]["name_or_role"].startswith("TEST FIXTURE ONLY")
-    assert decision["candidate_reference"]["candidate_artifact_sha256"] == decision["candidate_reference"][
-        "scope_artifact_sha256"
-    ]
+    assert (
+        decision["candidate_reference"]["candidate_artifact_sha256"]
+        == decision["candidate_reference"]["scope_artifact_sha256"]
+    )
     assert verify_governance_release_decisions(workspace)["valid"] is True
 
 
