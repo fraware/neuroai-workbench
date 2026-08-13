@@ -114,20 +114,13 @@ def _active(
     id_field: str,
     supersedes_field: str,
 ) -> list[dict[str, Any]]:
-    superseded = {
-        str(record.get(supersedes_field))
-        for record in records
-        if record.get(supersedes_field)
-    }
+    superseded = {str(record.get(supersedes_field)) for record in records if record.get(supersedes_field)}
     return [record for record in records if str(record.get(id_field)) not in superseded]
 
 
 def _starts_with_marker(value: str, markers: list[str]) -> bool:
     normalized = value.strip().upper()
-    return any(
-        normalized == marker.upper() or normalized.startswith(f"{marker.upper()}:")
-        for marker in markers
-    )
+    return any(normalized == marker.upper() or normalized.startswith(f"{marker.upper()}:") for marker in markers)
 
 
 def _consensus_state(counts: Counter[str]) -> str:
@@ -260,40 +253,19 @@ def _track_result(
     support_ok = len(supporting) >= int(policy["minimum_supporting_reviewer_claims"])
     organization_ok = len(organizations) >= int(policy["minimum_distinct_organizations"])
     independence_ok = int(metrics["independent"]) == len(human) and reviewer_ok
-    conflict_ok = (
-        not conflicts
-        and not unclassified
-        and int(metrics["no_conflict"]) == len(human)
-        and reviewer_ok
-    )
+    conflict_ok = not conflicts and not unclassified and int(metrics["no_conflict"]) == len(human) and reviewer_ok
 
     blocking_states = set(policy["blocking_opinion_states"])
     blocking = [
-        str(item.get("opinion_id", ""))
-        for item in opinions
-        if str(item.get("opinion_state", "")) in blocking_states
+        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in blocking_states
     ]
-    objections = [
-        str(item.get("opinion_id", ""))
-        for item in opinions
-        if item.get("opinion_state") == "OBJECT"
-    ]
-    requests = [
-        str(item.get("opinion_id", ""))
-        for item in opinions
-        if item.get("opinion_state") == "REQUEST_EVIDENCE"
-    ]
-    abstentions = [
-        str(item.get("opinion_id", ""))
-        for item in opinions
-        if item.get("opinion_state") == "ABSTAIN"
-    ]
+    objections = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "OBJECT"]
+    requests = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "REQUEST_EVIDENCE"]
+    abstentions = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "ABSTAIN"]
 
     owner_required = set(policy["owner_disposition_required_for_states"])
     required_owner = [
-        str(item.get("opinion_id", ""))
-        for item in opinions
-        if str(item.get("opinion_state", "")) in owner_required
+        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in owner_required
     ]
     missing_owner = sorted(item for item in required_owner if item not in disposition_map)
     blocking_owner, unresolved = _condition_metrics(
@@ -302,9 +274,7 @@ def _track_result(
         set(policy["blocking_owner_disposition_states"]),
     )
     release_blockers = sorted(
-        str(item.get("condition_id", ""))
-        for item in unresolved
-        if item.get("release_effect") == "BLOCKS_RELEASE"
+        str(item.get("condition_id", "")) for item in unresolved if item.get("release_effect") == "BLOCKS_RELEASE"
     )
 
     if conflicts:
@@ -365,11 +335,7 @@ def _same_scope_records(
     scope_id: str,
     scope_sha256: str,
 ) -> list[dict[str, Any]]:
-    return [
-        item
-        for item in records
-        if item.get("scope_id") == scope_id and item.get("scope_sha256") == scope_sha256
-    ]
+    return [item for item in records if item.get("scope_id") == scope_id and item.get("scope_sha256") == scope_sha256]
 
 
 def _input_binding(
@@ -431,11 +397,7 @@ def evaluate_governance_completion(
 
     opinion_verification = verify_governance_reviewer_opinions(workspace)
     disposition_verification = verify_governance_owner_dispositions(workspace)
-    scopes = [
-        item
-        for item in load_governance_scope_manifests(workspace)
-        if item.get("scope_id") == scope_id
-    ]
+    scopes = [item for item in load_governance_scope_manifests(workspace) if item.get("scope_id") == scope_id]
     scope_valid = len(scopes) == 1 and scopes[0].get("manifest_sha256") == scope_sha256
 
     opinions = _same_scope_records(
@@ -475,9 +437,7 @@ def evaluate_governance_completion(
         no_conflict = [str(item) for item in selected["no_conflict_markers"]]
         declared_conflict = [str(item) for item in selected["declared_conflict_markers"]]
         for track in sorted(REVIEW_TRACKS):
-            track_opinions = [
-                item for item in active_opinions if item.get("review_track") == track
-            ]
+            track_opinions = [item for item in active_opinions if item.get("review_track") == track]
             tracks[track] = _track_result(
                 track,
                 policy_tracks[track],
@@ -496,19 +456,14 @@ def evaluate_governance_completion(
             disposition_verification.get("valid") is True,
         )
     )
-    coverage_complete = bool(tracks) and all(
-        result["coverage_state"] == "COMPLETE" for result in tracks.values()
-    )
+    coverage_complete = bool(tracks) and all(result["coverage_state"] == "COMPLETE" for result in tracks.values())
     disagreement = any(result["objection_opinion_ids"] for result in tracks.values())
-    evidence_requests = any(
-        result["evidence_request_opinion_ids"] for result in tracks.values()
-    )
-    affected_gap = (
-        "AFFECTED_COMMUNITY" not in tracks
-        or tracks["AFFECTED_COMMUNITY"]["coverage_state"] != "COMPLETE"
-    )
-    ready = integrity_valid and bool(tracks) and all(
-        result["release_readiness"] == "SATISFIED" for result in tracks.values()
+    evidence_requests = any(result["evidence_request_opinion_ids"] for result in tracks.values())
+    affected_gap = "AFFECTED_COMMUNITY" not in tracks or tracks["AFFECTED_COMMUNITY"]["coverage_state"] != "COMPLETE"
+    ready = (
+        integrity_valid
+        and bool(tracks)
+        and all(result["release_readiness"] == "SATISFIED" for result in tracks.values())
     )
     evaluation: dict[str, Any] = {
         "schema_version": "1",
