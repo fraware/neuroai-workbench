@@ -199,12 +199,9 @@ def test_legacy_gate_classifier_covers_malformed_and_authorizing_history() -> No
         )
         == "NON_AUTHORIZING_CORE_GATE"
     )
-    assert (
-        release_mod._legacy_gate_classification(
-            {"release_gate": {"current_gate": "AUTHORIZED", "history": []}}
-        )
-        == "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
-    )
+    assert release_mod._legacy_gate_classification(
+        {"release_gate": {"current_gate": "AUTHORIZED", "history": []}}
+    ) == "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
     assert (
         release_mod._legacy_gate_classification(
             {
@@ -452,7 +449,10 @@ def test_authority_claim_normalization_rejects_every_bypass_axis() -> None:
     with pytest.raises(ValueError, match="authority_evidence_sha256"):
         release_mod._normalize_authority_claim(malformed)
 
-    assert release_mod._normalize_authority_claim(claim)["execution_mode"] == release_mod.REAL_GOVERNANCE_EXECUTION_MODE
+    assert (
+        release_mod._normalize_authority_claim(claim)["execution_mode"]
+        == release_mod.REAL_GOVERNANCE_EXECUTION_MODE
+    )
 
 
 def test_publication_evidence_package_reference_and_readiness_guards() -> None:
@@ -910,6 +910,6 @@ def test_schema_hash_and_candidate_artifact_helpers() -> None:
     original = release_mod._decision_hash(record)
     assert release_mod._decision_hash({**record, "_path": "/tmp/test"}) == original
     assert release_mod._decision_hash({**record, "recorded_by": "other"}) != original
-    assert release_mod._candidate_artifact_sha256({"x": "é", "y": 1}) != release_mod._candidate_artifact_sha256(
-        {"y": 1, "x": "é"}
-    )
+    assert release_mod._candidate_artifact_sha256(
+        {"x": "é", "y": 1}
+    ) != release_mod._candidate_artifact_sha256({"y": 1, "x": "é"})
