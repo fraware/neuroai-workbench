@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator
 
 from .events import load_events, verify_chain
 from .governance_policy import evaluate_governance_completion
+from .governance_scope import load_governance_scope_manifests
 from .governance_transactions import append_governance_record_locked, governance_serialized
 from .successor import validate_successor_candidate
 from .util import canonical_json_bytes, load_json, sha256_bytes, utc_now
@@ -66,9 +67,7 @@ def _decisions_root(workspace: Workspace) -> Path:
 
 def _decision_hash(record: dict[str, Any]) -> str:
     controlled = {
-        key: value
-        for key, value in record.items()
-        if key not in RUNTIME_PRIVATE_KEYS and key != "decision_sha256"
+        key: value for key, value in record.items() if key not in RUNTIME_PRIVATE_KEYS and key != "decision_sha256"
     }
     return sha256_bytes(canonical_json_bytes(controlled))
 
@@ -115,14 +114,46 @@ def _legacy_gate_classification(candidate: dict[str, Any]) -> str:
         return "INVALID_GATE_STATE"
     current = str(gate.get("current_gate", ""))
     history = gate.get("history", [])
+    if not isinstance(history, list):
+        history = []
     authorizing_history = any(
-        isinstance(item, dict) and item.get("target_gate") in {"AUTHORIZED", "PUBLISHED"}
-        for item in history
-        if isinstance(history, list)
+        isinstance(item, dict) and item.get("target_gate") in {"AUTHORIZED", "PUBLISHED"} for item in history
     )
     if current in {"AUTHORIZED", "PUBLISHED"} or authorizing_history:
         return "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
     return "NON_AUTHORIZING_CORE_GATE"
+
+
+def _candidate_artifact_sha256(candidate: dict[str, Any]) -> str:
+    """Hash the exact UTF-8 JSON serialization used by atomic_write_json."""
+    payload = json.dumps(candidate, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
+    return sha256_bytes(payload)
+
+
+def _scope_candidate_artifact_sha256(
+    workspace: Workspace,
+    *,
+    scope_id: str,
+    scope_sha256: str,
+) -> str | None:
+    manifests = [
+        manifest
+        for manifest in load_governance_scope_manifests(workspace)
+        if manifest.get("scope_id") == scope_id and manifest.get("manifest_sha256") == scope_sha256
+    ]
+    if len(manifests) != 1:
+        return None
+    objects = manifests[0].get("objects")
+    if not isinstance(objects, list):
+        return None
+    candidates = [item for item in objects if isinstance(item, dict) and item.get("role") == "SUCCESSOR_CANDIDATE"]
+    if len(candidates) != 1:
+        return None
+    digest = candidates[0].get("sha256")
+    try:
+        return _assert_digest(digest, "governance_scope.SUCCESSOR_CANDIDATE.sha256")
+    except ValueError:
+        return None
 
 
 def _evaluation_refs(evaluation: dict[str, Any]) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
@@ -170,8 +201,14 @@ def build_release_readiness_package(
         raise ValueError("Candidate metadata and predecessor reference are required")
     candidate_id = str(metadata.get("candidate_id", ""))
     candidate_sha256 = _assert_digest(metadata.get("canonical_sha256"), "candidate.metadata.canonical_sha256")
+    candidate_artifact_sha256 = _candidate_artifact_sha256(candidate)
     predecessor_sha256 = _assert_digest(predecessor.get("sha256"), "candidate.predecessor_reference.sha256")
     scope_sha256 = _assert_digest(scope_sha256, "scope_sha256")
+    scope_artifact_sha256 = _scope_candidate_artifact_sha256(
+        workspace,
+        scope_id=scope_id,
+        scope_sha256=scope_sha256,
+    )
 
     evaluation = evaluate_governance_completion(
         workspace,
@@ -183,6 +220,10 @@ def build_release_readiness_package(
     legacy_classification = _legacy_gate_classification(candidate)
     if legacy_classification != "NON_AUTHORIZING_CORE_GATE":
         blockers.append("LEGACY_LOCAL_AUTHORITY_GATE_PRESENT")
+    if scope_artifact_sha256 is None:
+        blockers.append("SCOPE_CANDIDATE_ARTIFACT_MISSING")
+    elif scope_artifact_sha256 != candidate_artifact_sha256:
+        blockers.append("SCOPE_CANDIDATE_ARTIFACT_MISMATCH")
     if evaluation.get("integrity_valid") is not True:
         blockers.append("GOVERNANCE_INPUT_INTEGRITY_INVALID")
     if evaluation.get("release_readiness") != "SATISFIED":
@@ -219,6 +260,8 @@ def build_release_readiness_package(
         "candidate_reference": {
             "candidate_id": candidate_id,
             "candidate_sha256": candidate_sha256,
+            "candidate_artifact_sha256": candidate_artifact_sha256,
+            "scope_artifact_sha256": scope_artifact_sha256,
         },
         "predecessor_reference": {
             "release_version": str(predecessor.get("release_version", "")),
@@ -345,6 +388,8 @@ def _event_payload(record: dict[str, Any]) -> dict[str, Any]:
         "decision_state": record["decision_state"],
         "candidate_id": record["candidate_reference"]["candidate_id"],
         "candidate_sha256": record["candidate_reference"]["candidate_sha256"],
+        "candidate_artifact_sha256": record["candidate_reference"]["candidate_artifact_sha256"],
+        "scope_candidate_artifact_sha256": record["candidate_reference"]["scope_artifact_sha256"],
         "scope_id": record["governance_scope_reference"]["scope_id"],
         "scope_sha256": record["governance_scope_reference"]["scope_sha256"],
         "readiness_package_sha256": record["readiness_package_reference"]["package_sha256"],
@@ -409,6 +454,8 @@ def record_release_authorization(
         event_payload=_event_payload(record),
         secondary_digests={
             "candidate_sha256": str(record["candidate_reference"]["candidate_sha256"]),
+            "candidate_artifact_sha256": str(record["candidate_reference"]["candidate_artifact_sha256"]),
+            "scope_candidate_artifact_sha256": str(record["candidate_reference"]["scope_artifact_sha256"]),
             "readiness_package_sha256": str(record["readiness_package_reference"]["package_sha256"]),
             "policy_evaluation_sha256": str(record["policy_evaluation_reference"]["evaluation_sha256"]),
             "authority_evidence_sha256": str(claim["authority_evidence_sha256"]),
@@ -490,6 +537,8 @@ def record_release_publication(
         event_payload=_event_payload(record),
         secondary_digests={
             "candidate_sha256": str(record["candidate_reference"]["candidate_sha256"]),
+            "candidate_artifact_sha256": str(record["candidate_reference"]["candidate_artifact_sha256"]),
+            "scope_candidate_artifact_sha256": str(record["candidate_reference"]["scope_artifact_sha256"]),
             "readiness_package_sha256": str(record["readiness_package_reference"]["package_sha256"]),
             "prior_authorization_sha256": str(authorization["decision_sha256"]),
             "publication_evidence_sha256": str(evidence["sha256"]),
@@ -539,6 +588,11 @@ def verify_governance_release_decisions(workspace: Workspace) -> dict[str, Any]:
             errors.append(f"decision {decision_id}: external authority authentication must remain false")
         if record.get("automatic_publication_performed") is not False:
             errors.append(f"decision {decision_id}: automatic publication must remain false")
+        candidate_reference = record.get("candidate_reference")
+        if isinstance(candidate_reference, dict) and (
+            candidate_reference.get("candidate_artifact_sha256") != candidate_reference.get("scope_artifact_sha256")
+        ):
+            errors.append(f"decision {decision_id}: candidate artifact differs from governance-scope artifact")
         action = (
             "GOVERNANCE_RELEASE_AUTHORIZATION_RECORDED"
             if record.get("decision_type") == "AUTHORIZATION"
@@ -614,7 +668,9 @@ def verify_release_decision_binding(
 ) -> dict[str, Any]:
     store = verify_governance_release_decisions(workspace)
     errors = list(store["errors"])
-    matches = [record for record in load_governance_release_decisions(workspace) if record.get("decision_id") == decision_id]
+    matches = [
+        record for record in load_governance_release_decisions(workspace) if record.get("decision_id") == decision_id
+    ]
     if len(matches) != 1:
         errors.append(f"decision {decision_id}: expected exactly one stored decision")
         return {"valid": False, "errors": errors, "boundary": RELEASE_DECISION_BOUNDARY}
