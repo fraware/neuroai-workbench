@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/governance-release-decision-1.0.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "decision_id",
+    "decision_type",
+    "decision_state",
+    "recorded_at",
+    "recorded_by",
+    "candidate_reference",
+    "predecessor_reference",
+    "governance_scope_reference",
+    "reviewer_opinions",
+    "owner_dispositions",
+    "policy_evaluation_reference",
+    "products",
+    "withheld_claims_sha256",
+    "readiness_package_reference",
+    "release_authority_claim",
+    "automatic_publication_performed",
+    "external_authority_authenticated",
+    "authority_profile",
+    "boundary",
+    "decision_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1"},
+    "decision_id": {"type": "string", "pattern": "^GOVREL-[A-Z0-9-]+$"},
+    "decision_type": {"enum": ["AUTHORIZATION", "PUBLICATION"]},
+    "decision_state": {"enum": ["AUTHORIZED", "PUBLISHED"]},
+    "recorded_at": {"type": "string", "minLength": 10},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "candidate_reference": {
+      "type": "object",
+      "required": ["candidate_id", "candidate_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "predecessor_reference": {
+      "type": "object",
+      "required": ["release_version", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "release_version": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "governance_scope_reference": {
+      "type": "object",
+      "required": ["scope_id", "scope_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "scope_id": {"type": "string", "minLength": 1},
+        "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "reviewer_opinions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["opinion_id", "opinion_sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "opinion_id": {"type": "string", "minLength": 1},
+          "opinion_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "owner_dispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["disposition_id", "disposition_sha256", "condition_register_sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "disposition_id": {"type": "string", "minLength": 1},
+          "disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "condition_register_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "policy_evaluation_reference": {
+      "type": "object",
+      "required": [
+        "evaluation_id",
+        "evaluation_sha256",
+        "input_binding_sha256",
+        "policy_id",
+        "policy_version",
+        "policy_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evaluation_id": {"type": "string", "minLength": 1},
+        "evaluation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "input_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "policy_id": {"type": "string", "minLength": 1},
+        "policy_version": {"type": "string", "minLength": 1},
+        "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["product_id", "sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "product_id": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "withheld_claims_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "readiness_package_reference": {
+      "type": "object",
+      "required": ["package_id", "package_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "package_id": {"type": "string", "minLength": 1},
+        "package_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "release_authority_claim": {
+      "type": "object",
+      "required": [
+        "name_or_role",
+        "organization",
+        "authority_basis",
+        "accountability_state",
+        "execution_mode",
+        "authority_evidence_reference",
+        "authority_evidence_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name_or_role": {"type": "string", "minLength": 1},
+        "organization": {"type": "string", "minLength": 1},
+        "authority_basis": {"type": "string", "minLength": 1},
+        "accountability_state": {"const": "CLAIMED_EXTERNAL_RELEASE_AUTHORITY"},
+        "execution_mode": {"const": "PROTECTED_REAL_GOVERNANCE"},
+        "authority_evidence_reference": {"type": "string", "pattern": "^protected-ref:[A-Za-z0-9._:/-]+$"},
+        "authority_evidence_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "prior_authorization_reference": {
+      "type": "object",
+      "required": ["decision_id", "decision_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "decision_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "publication_evidence": {
+      "type": "object",
+      "required": ["reference", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "reference": {"type": "string", "pattern": "^(public-ref|protected-ref):[A-Za-z0-9._:/-]+$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "automatic_publication_performed": {"const": false},
+    "external_authority_authenticated": {"const": false},
+    "authority_profile": {"const": "CLAIMED_EXTERNAL_RELEASE_AUTHORITY_WORKFLOW_RECORD"},
+    "boundary": {
+      "const": "Release-decision records bind claimed external authority workflow evidence to exact governance and release inputs. The software does not authenticate the claimant, establish institutional or legal delegation, establish scientific or regulatory truth, confer UNESCO endorsement, or perform publication automatically."
+    },
+    "decision_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision_type": {"const": "AUTHORIZATION"}}},
+      "then": {
+        "properties": {"decision_state": {"const": "AUTHORIZED"}},
+        "not": {"anyOf": [{"required": ["prior_authorization_reference"]}, {"required": ["publication_evidence"]}]}
+      }
+    },
+    {
+      "if": {"properties": {"decision_type": {"const": "PUBLICATION"}}},
+      "then": {
+        "properties": {"decision_state": {"const": "PUBLISHED"}},
+        "required": ["prior_authorization_reference", "publication_evidence"]
+      }
+    }
+  ]
+}
