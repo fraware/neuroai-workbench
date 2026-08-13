@@ -47,7 +47,9 @@ This classification preserves historical evidence and prevents silent promotion 
 
 The software constructs a deterministic release-readiness package from current verified inputs. The package binds:
 
-- successor candidate ID and SHA-256;
+- successor candidate ID and internal canonical SHA-256;
+- exact successor-candidate artifact byte SHA-256 computed from the UTF-8, two-space-indented, newline-terminated JSON serialization used by `atomic_write_json`;
+- the `SUCCESSOR_CANDIDATE` artifact SHA-256 recorded in the exact governance scope;
 - immutable predecessor release version and SHA-256;
 - governance-scope ID and SHA-256;
 - complete same-scope reviewer-opinion history by ID and SHA-256;
@@ -56,11 +58,13 @@ The software constructs a deterministic release-readiness package from current v
 - release product IDs and SHA-256 digests;
 - withheld-claims SHA-256.
 
+The candidate has two intentional digest domains. Its internal canonical SHA binds the candidate's semantic JSON content under the successor format. Its artifact SHA binds the exact bytes placed into the governance scope. The release package records both and requires the recomputed artifact SHA to equal the scope's `SUCCESSOR_CANDIDATE` artifact SHA. A second independently valid candidate therefore cannot reuse another candidate's governance package.
+
 A package can reach:
 
 `READY_FOR_REAL_AUTHORITY_REVIEW`
 
-only when the candidate is valid, the governance input store is valid, the six-track policy is satisfied, no unresolved `BLOCKS_RELEASE` conditions remain, and no legacy local authorizing gate is present.
+only when the candidate is valid, the candidate artifact exactly matches the candidate reviewed by the governance scope, the governance input store is valid, the six-track policy is satisfied, no unresolved `BLOCKS_RELEASE` conditions remain, and no legacy local authorizing gate is present.
 
 This state is readiness evidence. It does not authorize a canonical successor and does not authorize publication.
 
@@ -113,13 +117,14 @@ The persistence invariant is:
 - ambiguous or corrupt states fail closed;
 - the governance-wide write lock serializes semantic validation and commit, preventing duplicate concurrent authorizations or publications.
 
-Decision transactions bind secondary digests for the candidate, readiness package, policy evaluation, authority evidence, prior authorization, and publication evidence as applicable.
+Decision transactions bind secondary digests for the candidate's canonical digest, candidate artifact digest, scope candidate-artifact digest, readiness package, policy evaluation, authority evidence, prior authorization, and publication evidence as applicable.
 
 ### 7. Verification is recomputational
 
 A stored release decision is not accepted solely on its stored hashes. Verification recomputes the current readiness package against the supplied candidate, scope, products, and current governance store and detects:
 
-- substituted or altered candidates;
+- substituted or altered candidates, including an independently valid candidate with a different artifact digest;
+- candidate-artifact drift from the exact `SUCCESSOR_CANDIDATE` reviewed by the governance scope;
 - stale governance scopes;
 - reviewer-opinion or owner-disposition drift;
 - policy-evaluation drift;
