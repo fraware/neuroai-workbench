@@ -18,7 +18,7 @@ from neuroai_workbench.governance_release import (
 )
 from neuroai_workbench.governance_scope import record_governance_scope_manifest, scope_object_for_path
 from neuroai_workbench.successor import generate_from_observatory_release
-from neuroai_workbench.util import atomic_write_json
+from neuroai_workbench.util import atomic_write_json, canonical_json_bytes, sha256_bytes
 from neuroai_workbench.workspace import Workspace
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -26,7 +26,14 @@ SUCCESSOR = ROOT / "examples" / "observatory" / "canonical_successor_snapshot_v1
 PRODUCTS = [{"product_id": "synthetic-public-projection", "sha256": "a" * 64}]
 
 
-def _workspace_and_scope(tmp_path: Path) -> tuple[Workspace, dict[str, Any]]:
+def _candidate(version: str) -> dict[str, Any]:
+    return generate_from_observatory_release(SUCCESSOR, version=version, actor="test-fixture")
+
+
+def _workspace_and_scope(
+    tmp_path: Path,
+    candidate: dict[str, Any],
+) -> tuple[Workspace, dict[str, Any]]:
     workspace = Workspace.initialize(tmp_path / "workspace")
     public = tmp_path / "public"
     generated = tmp_path / "generated"
@@ -42,7 +49,10 @@ def _workspace_and_scope(tmp_path: Path) -> tuple[Workspace, dict[str, Any]]:
         "claims": public / "claims.json",
     }
     for label, path in fixture_paths.items():
-        atomic_write_json(path, {"test_fixture_only": label})
+        if label == "candidate":
+            atomic_write_json(path, candidate)
+        else:
+            atomic_write_json(path, {"test_fixture_only": label})
     objects = [
         scope_object_for_path(
             role="PREDECESSOR_RELEASE",
@@ -125,10 +135,6 @@ def _populate_six_track_support(workspace: Workspace, scope: dict[str, Any]) -> 
             )
 
 
-def _candidate(version: str) -> dict[str, Any]:
-    return generate_from_observatory_release(SUCCESSOR, version=version, actor="test-fixture")
-
-
 def _reserved_test_authority_claim() -> dict[str, str]:
     return {
         "name_or_role": "TEST FIXTURE ONLY release authority role",
@@ -142,9 +148,10 @@ def _reserved_test_authority_claim() -> dict[str, str]:
 
 
 def _ready_fixture(tmp_path: Path) -> tuple[Workspace, dict[str, Any], dict[str, Any]]:
-    workspace, scope = _workspace_and_scope(tmp_path)
+    candidate = _candidate("v1.8-release-fixture")
+    workspace, scope = _workspace_and_scope(tmp_path, candidate)
     _populate_six_track_support(workspace, scope)
-    return workspace, scope, _candidate("v1.8-release-fixture")
+    return workspace, scope, candidate
 
 
 def test_complete_six_track_package_is_readiness_only(tmp_path: Path) -> None:
@@ -167,6 +174,26 @@ def test_complete_six_track_package_is_readiness_only(tmp_path: Path) -> None:
     assert len(package["reviewer_opinions"]) == 12
     assert package["owner_dispositions"] == []
     assert package["package_id"].startswith("GOVREADY-")
+    assert package["candidate_reference"]["candidate_artifact_sha256"] == package["candidate_reference"][
+        "scope_artifact_sha256"
+    ]
+
+
+def test_different_valid_candidate_cannot_reuse_governance_scope(tmp_path: Path) -> None:
+    workspace, scope, _ = _ready_fixture(tmp_path)
+    substituted = _candidate("v1.8-substituted-candidate")
+    package = build_release_readiness_package(
+        workspace,
+        candidate=substituted,
+        scope_id=scope["scope_id"],
+        scope_sha256=scope["manifest_sha256"],
+        products=PRODUCTS,
+    )
+    assert package["readiness_state"] == "NOT_READY"
+    assert "SCOPE_CANDIDATE_ARTIFACT_MISMATCH" in package["blocker_codes"]
+    assert package["candidate_reference"]["candidate_artifact_sha256"] != package["candidate_reference"][
+        "scope_artifact_sha256"
+    ]
 
 
 def test_local_and_synthetic_authority_claims_fail_closed(tmp_path: Path) -> None:
@@ -221,6 +248,9 @@ def test_reserved_structural_fixture_can_exercise_authorization_path_without_aut
     assert decision["external_authority_authenticated"] is False
     assert decision["automatic_publication_performed"] is False
     assert decision["release_authority_claim"]["name_or_role"].startswith("TEST FIXTURE ONLY")
+    assert decision["candidate_reference"]["candidate_artifact_sha256"] == decision["candidate_reference"][
+        "scope_artifact_sha256"
+    ]
     assert verify_governance_release_decisions(workspace)["valid"] is True
 
 
@@ -335,8 +365,6 @@ def test_legacy_authorized_candidate_is_not_ready_for_new_authority_path(tmp_pat
     candidate["metadata"]["status"] = "AUTHORIZED"
     candidate["release_gate"]["history"] = [{"target_gate": "AUTHORIZED"}]
     candidate["metadata"].pop("canonical_sha256", None)
-    from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
-
     candidate["metadata"]["canonical_sha256"] = sha256_bytes(canonical_json_bytes(candidate))
     package = build_release_readiness_package(
         workspace,
