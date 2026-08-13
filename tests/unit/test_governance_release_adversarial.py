@@ -194,14 +194,13 @@ def test_product_normalization_fail_closed_edges() -> None:
 def test_legacy_gate_classifier_covers_malformed_and_authorizing_history() -> None:
     assert release_mod._legacy_gate_classification({"release_gate": "invalid"}) == "INVALID_GATE_STATE"
     assert (
-        release_mod._legacy_gate_classification(
-            {"release_gate": {"current_gate": "CANDIDATE", "history": "invalid"}}
-        )
+        release_mod._legacy_gate_classification({"release_gate": {"current_gate": "CANDIDATE", "history": "invalid"}})
         == "NON_AUTHORIZING_CORE_GATE"
     )
-    assert release_mod._legacy_gate_classification(
-        {"release_gate": {"current_gate": "AUTHORIZED", "history": []}}
-    ) == "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
+    assert (
+        release_mod._legacy_gate_classification({"release_gate": {"current_gate": "AUTHORIZED", "history": []}})
+        == "LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE"
+    )
     assert (
         release_mod._legacy_gate_classification(
             {
@@ -449,25 +448,19 @@ def test_authority_claim_normalization_rejects_every_bypass_axis() -> None:
     with pytest.raises(ValueError, match="authority_evidence_sha256"):
         release_mod._normalize_authority_claim(malformed)
 
-    assert (
-        release_mod._normalize_authority_claim(claim)["execution_mode"]
-        == release_mod.REAL_GOVERNANCE_EXECUTION_MODE
-    )
+    assert release_mod._normalize_authority_claim(claim)["execution_mode"] == release_mod.REAL_GOVERNANCE_EXECUTION_MODE
 
 
 def test_publication_evidence_package_reference_and_readiness_guards() -> None:
     for reference in ("https://example.invalid", "public-ref:", "protected-ref:"):
         with pytest.raises(ValueError):
-            release_mod._normalize_publication_evidence(
-                {"reference": reference, "sha256": D64_A}
-            )
+            release_mod._normalize_publication_evidence({"reference": reference, "sha256": D64_A})
     with pytest.raises(ValueError, match="publication_evidence.sha256"):
-        release_mod._normalize_publication_evidence(
-            {"reference": "public-ref:test", "sha256": "bad"}
-        )
-    assert release_mod._normalize_publication_evidence(
-        {"reference": "protected-ref:test", "sha256": D64_A}
-    )["sha256"] == D64_A
+        release_mod._normalize_publication_evidence({"reference": "public-ref:test", "sha256": "bad"})
+    assert (
+        release_mod._normalize_publication_evidence({"reference": "protected-ref:test", "sha256": D64_A})["sha256"]
+        == D64_A
+    )
     with pytest.raises(ValueError, match="readiness_package.package_sha256"):
         release_mod._package_reference({"package_id": "x", "package_sha256": "bad"})
 
@@ -910,6 +903,6 @@ def test_schema_hash_and_candidate_artifact_helpers() -> None:
     original = release_mod._decision_hash(record)
     assert release_mod._decision_hash({**record, "_path": "/tmp/test"}) == original
     assert release_mod._decision_hash({**record, "recorded_by": "other"}) != original
-    assert release_mod._candidate_artifact_sha256(
-        {"x": "é", "y": 1}
-    ) != release_mod._candidate_artifact_sha256({"y": 1, "x": "é"})
+    assert release_mod._candidate_artifact_sha256({"x": "é", "y": 1}) != release_mod._candidate_artifact_sha256(
+        {"y": 1, "x": "é"}
+    )
