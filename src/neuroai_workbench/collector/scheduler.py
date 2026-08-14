@@ -449,9 +449,7 @@ class CollectionScheduler:
                 if isinstance(attempt, dict) and attempt.get("recovered_from_durable_record") is True
             )
             hosts = {
-                str(attempt.get("host"))
-                for attempt in attempts
-                if isinstance(attempt, dict) and attempt.get("host")
+                str(attempt.get("host")) for attempt in attempts if isinstance(attempt, dict) and attempt.get("host")
             }
             for host in sorted(hosts):
                 per_host[host]["targets"] += 1

@@ -53,8 +53,12 @@ def test_scheduler_private_normalizers_cover_nested_sets_tuples_and_scalars() ->
 def test_retry_classifier_handles_transient_permanent_malformed_and_other_failures() -> None:
     assert _failure_is_retryable({"failure_class": "TIMEOUT"}) is True
     assert _failure_is_retryable({"failure_class": "NETWORK_ERROR"}) is True
-    assert _failure_is_retryable({"failure_class": "HTTP_ERROR", "failure_message": "Unexpected HTTP status 503"}) is True
-    assert _failure_is_retryable({"failure_class": "HTTP_ERROR", "failure_message": "Unexpected HTTP status 404"}) is False
+    assert (
+        _failure_is_retryable({"failure_class": "HTTP_ERROR", "failure_message": "Unexpected HTTP status 503"}) is True
+    )
+    assert (
+        _failure_is_retryable({"failure_class": "HTTP_ERROR", "failure_message": "Unexpected HTTP status 404"}) is False
+    )
     assert _failure_is_retryable({"failure_class": "HTTP_ERROR", "failure_message": "missing status"}) is False
     assert _failure_is_retryable({"failure_class": "POLICY_BLOCK"}) is False
 

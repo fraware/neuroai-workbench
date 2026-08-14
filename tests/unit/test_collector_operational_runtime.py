@@ -139,10 +139,7 @@ def _index(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 
 
 def test_scheduler_executes_targets_concurrently_with_per_host_bound(tmp_path: Path) -> None:
-    records = [
-        _source(f"SRC-{index:04d}", f"https://host{index % 4}.example.org/item/{index}")
-        for index in range(32)
-    ]
+    records = [_source(f"SRC-{index:04d}", f"https://host{index % 4}.example.org/item/{index}") for index in range(32)]
     transport = ConcurrentTransport(delay_seconds=0.02)
     scheduler = _scheduler(tmp_path, transport, max_workers=8, per_host=2)
 
@@ -371,7 +368,9 @@ def test_output_order_is_deterministic_despite_concurrent_completion(tmp_path: P
     transport = ConcurrentTransport(delay_seconds=0.01)
     scheduler = _scheduler(tmp_path, transport, max_workers=3, per_host=1)
 
-    run = scheduler.run_plan(_plan(records, plan_id="PLAN-ORDER"), registry_sha256=REGISTRY_HASH, source_index=_index(records))
+    run = scheduler.run_plan(
+        _plan(records, plan_id="PLAN-ORDER"), registry_sha256=REGISTRY_HASH, source_index=_index(records)
+    )
 
     assert [item["source_id"] for item in run["outcomes"]] == ["SRC-A", "SRC-M", "SRC-Z"]
     target_ids = [item["retrieval_target_id"] for item in run["retrieval_targets"]]
