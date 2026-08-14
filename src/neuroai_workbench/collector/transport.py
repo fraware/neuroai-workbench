@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import http.client
-import ssl
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
@@ -26,11 +25,15 @@ class StdlibHttpTransport:
             path = f"{path}?{parsed.query}"
 
         if parsed.scheme == "https":
+            # Let HTTPSConnection construct Python's secure default TLS context.
+            # Supplying our own otherwise-unmodified SSLContext changes the TLS
+            # client profile and has caused standards-compliant upstream edges
+            # to reject requests. The implicit context retains certificate and
+            # hostname verification and Python's current HTTPS defaults.
             connection: http.client.HTTPConnection = http.client.HTTPSConnection(
                 parsed.hostname,
                 port,
                 timeout=connect_timeout,
-                context=ssl.create_default_context(),
             )
         else:
             connection = http.client.HTTPConnection(parsed.hostname, port, timeout=connect_timeout)
