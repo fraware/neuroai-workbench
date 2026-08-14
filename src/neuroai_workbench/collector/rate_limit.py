@@ -69,9 +69,9 @@ class RateLimiter:
                 if len(window) < self.requests_per_minute:
                     window.append(current)
                     return waited
-                delay = max(0.0, window[0] + 60.0 - current)
-            # Avoid a zero-delay busy loop around floating-point boundaries.
-            if delay <= 0.0:
-                delay = 1e-6
+                # Because _prune removes every event at or before current-60,
+                # a non-empty saturated window always yields a strictly
+                # positive finite delay for a finite monotonic clock value.
+                delay = window[0] + 60.0 - current
             sleeper(delay)
             waited += delay
