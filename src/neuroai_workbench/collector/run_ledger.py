@@ -110,7 +110,6 @@ def ensure_run_manifest(
         value = load_json(path)
         if not isinstance(value, dict):
             raise ValueError("Collector run manifest must be a JSON object")
-        manifest = value
         verify_run_manifest(value, expected_binding=binding)
         return value
 
