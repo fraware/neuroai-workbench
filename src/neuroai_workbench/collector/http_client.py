@@ -115,13 +115,16 @@ class HttpClient:
         conditional_headers: dict[str, str] | None = None,
     ) -> HttpResponse:
         validate_public_url(url)
-        self.dns_guard.reset()
+        # DNS-rebinding observations are meaningful inside one redirect chain.
+        # A request-local session prevents concurrent independent fetches from
+        # clearing or mutating each other's security state.
+        dns_guard = self.dns_guard.new_session()
         redirect_chain: list[str] = []
         current_url = url
         last_dns: DnsResolutionRecord | None = None
 
         for _ in range(self.config.max_redirects + 1):
-            last_dns = self.dns_guard.resolve(current_url)
+            last_dns = dns_guard.resolve(current_url)
             headers = {
                 "User-Agent": self.config.user_agent,
                 "Accept-Encoding": "gzip, deflate",

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -52,11 +54,17 @@ class HttpCollector:
         config: CollectorConfig,
         transport: HttpTransport,
         quarantine_root: Path,
+        pace_rate_limits: bool = False,
+        sleeper: Callable[[float], None] = time.sleep,
+        monotonic_clock: Callable[[], float] = time.monotonic,
     ) -> None:
         self.config = config
         self.http_client = HttpClient(config=config, transport=transport)
         self.quarantine_root = quarantine_root
         self.rate_limiter = RateLimiter(config.requests_per_host_per_minute)
+        self.pace_rate_limits = pace_rate_limits
+        self.sleeper = sleeper
+        self.monotonic_clock = monotonic_clock
 
     def collect(
         self,
@@ -67,7 +75,14 @@ class HttpCollector:
     ) -> CollectionOutcome:
         validate_or_raise(request, REQUEST_SCHEMA)
         try:
-            self.rate_limiter.check(str(request["requested_url"]))
+            if self.pace_rate_limits:
+                self.rate_limiter.acquire(
+                    str(request["requested_url"]),
+                    sleeper=self.sleeper,
+                    clock=self.monotonic_clock,
+                )
+            else:
+                self.rate_limiter.check(str(request["requested_url"]))
         except ValueError as exc:
             return CollectionOutcome(
                 kind="failure",
@@ -231,10 +246,14 @@ class HttpCollector:
     ) -> dict[str, Any]:
         failed_at = _normalize_timestamp()
         exhausted = attempt_count >= self.config.max_attempts
+        retry_delay_seconds = min(
+            self.config.retry_max_delay_seconds,
+            self.config.retry_initial_delay_seconds * (2 ** max(0, attempt_count - 1)),
+        )
         next_retry_at = (
             None
             if exhausted
-            else (datetime.fromisoformat(failed_at.replace("Z", "+00:00")) + timedelta(minutes=5))
+            else (datetime.fromisoformat(failed_at.replace("Z", "+00:00")) + timedelta(seconds=retry_delay_seconds))
             .replace(microsecond=0)
             .isoformat()
             .replace("+00:00", "Z")

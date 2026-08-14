@@ -26,6 +26,15 @@ class DnsGuard:
     getaddrinfo: GetAddrInfo = socket.getaddrinfo
     _seen_addresses: dict[str, frozenset[str]] = field(default_factory=dict)
 
+    def new_session(self) -> DnsGuard:
+        """Return an isolated request session using the same resolver.
+
+        Rebinding state is intentionally scoped to one logical HTTP fetch so
+        redirects inside that fetch are compared with each other, while
+        concurrent independent fetches never clear or overwrite shared state.
+        """
+        return DnsGuard(getaddrinfo=self.getaddrinfo)
+
     def reset(self) -> None:
         self._seen_addresses.clear()
 

@@ -62,22 +62,36 @@ class AuthenticatedDownloadStub(HttpCollectorAdapter):
         prior_capture: PriorCapture | None = None,
         attempt_count: int = 1,
     ) -> CollectionOutcome:
+        """Collect with request-local credential transport.
+
+        The shared collector transport is never mutated. A transient collector
+        shares only the synchronized host-rate limiter and the DNS resolver
+        configuration, so concurrent authenticated and public requests cannot
+        inherit each other's transport or credentials.
+        """
         refuse_embedded_secrets_in_request(request)
         source_id = str(request["source_id"])
-        original_transport = self.collector.http_client.transport
-        self.collector.http_client.transport = AuthHeaderTransport(
-            original_transport,
-            self.credential_provider,
-            source_id,
+        local = HttpCollector(
+            config=self.collector.config,
+            transport=AuthHeaderTransport(
+                self.collector.http_client.transport,
+                self.credential_provider,
+                source_id,
+            ),
+            quarantine_root=self.collector.quarantine_root,
+            pace_rate_limits=self.collector.pace_rate_limits,
+            sleeper=self.collector.sleeper,
+            monotonic_clock=self.collector.monotonic_clock,
         )
-        try:
-            outcome = super().collect(
-                request,
-                prior_capture=prior_capture,
-                attempt_count=attempt_count,
-            )
-        finally:
-            self.collector.http_client.transport = original_transport
+        local.rate_limiter = self.collector.rate_limiter
+        local.http_client.dns_guard = self.collector.http_client.dns_guard
+        outcome = local.collect(
+            request,
+            prior_capture=prior_capture,
+            attempt_count=attempt_count,
+        )
         if outcome.kind == "result":
             refuse_secrets_in_value(outcome.record, label="collection result")
+        elif outcome.kind == "failure":
+            refuse_secrets_in_value(outcome.record, label="collection failure")
         return outcome
