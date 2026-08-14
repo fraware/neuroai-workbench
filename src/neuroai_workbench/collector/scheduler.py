@@ -39,6 +39,7 @@ from .run_ledger import (
 from .schemas import REQUEST_SCHEMA, validate_or_raise
 from .service import CollectionOutcome
 from .url_normalize import RetrievalTargetGroup, group_plan_items_by_retrieval_target
+from .url_policy import public_url_error
 
 HTTP_RETRY_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
 RETRYABLE_FAILURE_CLASSES = frozenset({"TIMEOUT", "NETWORK_ERROR"})
@@ -206,6 +207,18 @@ class CollectionScheduler:
                     }
                 )
                 continue
+            policy_error = public_url_error(requested_url)
+            if policy_error is not None:
+                pre_outcomes.append(
+                    {
+                        "source_id": source_id,
+                        "status": "FAILURE",
+                        "reason": "POLICY_BLOCK",
+                        "failure_class": "POLICY_BLOCK",
+                        "message": policy_error,
+                    }
+                )
+                continue
             adapter = adapter_for_source(adapters, source_record)
             if adapter.adapter_id in self.scheduler_config.disabled_adapter_ids:
                 pre_outcomes.append(
@@ -313,7 +326,6 @@ class CollectionScheduler:
         *,
         run_id: str,
         group: RetrievalTargetGroup,
-        target: dict[str, Any],
         checkpoint: dict[str, Any],
         adapter: CollectorAdapter,
         source_record: dict[str, Any],
@@ -432,7 +444,9 @@ class CollectionScheduler:
             attempts = checkpoint.get("attempts", [])
             total_attempts += len(attempts)
             recovered_attempts += sum(
-                1 for attempt in attempts if isinstance(attempt, dict) and attempt.get("recovered_from_durable_record") is True
+                1
+                for attempt in attempts
+                if isinstance(attempt, dict) and attempt.get("recovered_from_durable_record") is True
             )
             hosts = {
                 str(attempt.get("host"))
@@ -513,7 +527,10 @@ class CollectionScheduler:
             "coalesced_source_count": coalesced_source_count,
             "logical_sources": source_total - skipped,
             "collection_attempts": total_attempts,
-            "retries": max(0, total_attempts - sum(1 for checkpoint in checkpoints.values() if checkpoint.get("attempts"))),
+            "retries": max(
+                0,
+                total_attempts - sum(1 for checkpoint in checkpoints.values() if checkpoint.get("attempts")),
+            ),
             "recovered_attempts": recovered_attempts,
             "resumed_targets": len(resumed_target_ids),
             "retryable_failures_exhausted": retryable_final_failures,
@@ -613,7 +630,10 @@ class CollectionScheduler:
             if checkpoints[target_id].get("state") not in TERMINAL_TARGET_STATES
         ]
         if pending_ids:
-            with ThreadPoolExecutor(max_workers=self.scheduler_config.max_workers, thread_name_prefix="neuroai-collector") as pool:
+            with ThreadPoolExecutor(
+                max_workers=self.scheduler_config.max_workers,
+                thread_name_prefix="neuroai-collector",
+            ) as pool:
                 futures = {}
                 for target_id in pending_ids:
                     target = target_by_id[target_id]
@@ -624,7 +644,6 @@ class CollectionScheduler:
                         self._execute_target,
                         run_id=run_id,
                         group=group,
-                        target=target,
                         checkpoint=checkpoints[target_id],
                         adapter=adapter,
                         source_record=source_record,
