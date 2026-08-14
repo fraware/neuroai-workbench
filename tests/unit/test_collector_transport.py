@@ -81,9 +81,7 @@ def test_https_uses_python_secure_default_context_without_override(monkeypatch: 
     assert connection.connected is True
     assert connection.sock is not None
     assert connection.sock.timeouts == [13.0]
-    assert connection.requests == [
-        ("GET", "/api/v2/studies/NCT04676854?format=json", {"Accept": "application/json"})
-    ]
+    assert connection.requests == [("GET", "/api/v2/studies/NCT04676854?format=json", {"Accept": "application/json"})]
     assert connection.closed is True
     assert status == 200
     assert headers == {"Content-Type": "application/json"}
