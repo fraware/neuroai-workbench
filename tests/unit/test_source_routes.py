@@ -219,8 +219,7 @@ def test_failover_failure_classifier_is_deliberately_narrow() -> None:
     assert route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "TIMEOUT"}) is True
     assert route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "NETWORK_ERROR"}) is True
     assert (
-        route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 503})
-        is True
+        route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 503}) is True
     )
     assert (
         route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 401})

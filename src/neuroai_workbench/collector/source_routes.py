@@ -309,9 +309,7 @@ def evaluate_source_route_availability(
         "route_metrics": {
             "registered_routes": len(specs),
             "observed_routes": len(observed_specs),
-            "failed_routes": sum(
-                1 for item in normalized_observations.values() if item.get("outcome") == "FAILURE"
-            ),
+            "failed_routes": sum(1 for item in normalized_observations.values() if item.get("outcome") == "FAILURE"),
             "fallback_routes_observed": sum(1 for spec in observed_specs if spec.role == "FALLBACK"),
         },
         "route_policy": [spec.as_dict() for spec in specs],

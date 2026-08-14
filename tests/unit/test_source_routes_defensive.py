@@ -86,9 +86,7 @@ def test_priority_role_and_route_class_validation() -> None:
 
 def test_http_status_bool_never_counts_as_failover_status() -> None:
     assert (
-        route_failure_allows_failover(
-            {"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": True}
-        )
+        route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": True})
         is False
     )
 
