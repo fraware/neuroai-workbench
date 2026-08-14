@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import urlparse
@@ -291,6 +292,7 @@ def evaluate_source_route_availability(
         availability_state = UNRESOLVED
         evidence_substitution_allowed = False
 
+    observed_specs = [spec for spec in specs if spec.route_id in normalized_observations]
     semantic = {
         "schema_version": "1",
         "source_id": source_id,
@@ -300,6 +302,16 @@ def evaluate_source_route_availability(
         "selected_route_class": selected.route_class if selected is not None else None,
         "evidence_substitution_allowed": evidence_substitution_allowed,
         "route_failover_used": selected is not None and selected.role == "FALLBACK",
+        "route_metrics": {
+            "registered_routes": len(specs),
+            "observed_routes": len(observed_specs),
+            "failed_routes": sum(
+                1
+                for item in normalized_observations.values()
+                if item.get("outcome") == "FAILURE"
+            ),
+            "fallback_routes_observed": sum(1 for spec in observed_specs if spec.role == "FALLBACK"),
+        },
         "route_policy": [spec.as_dict() for spec in specs],
         "route_observations": [normalized_observations[key] for key in sorted(normalized_observations)],
         "diagnostics": diagnostics,
@@ -311,6 +323,36 @@ def evaluate_source_route_availability(
     report = dict(semantic)
     report["report_sha256"] = sha256_bytes(canonical_json_bytes(semantic))
     return report
+
+
+def run_registered_route_failover(
+    *,
+    source_record: dict[str, Any],
+    probe: Callable[[RouteSpec], dict[str, Any]],
+    lifecycle_assertion: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    observations: list[dict[str, Any]] = []
+    for spec in parse_route_policy(source_record):
+        raw = probe(spec)
+        if not isinstance(raw, dict):
+            raise ValueError("route probe must return an observation object")
+        observation = {**raw, "route_id": spec.route_id}
+        observations.append(observation)
+        report = evaluate_source_route_availability(
+            source_record=source_record,
+            observations=observations,
+            lifecycle_assertion=lifecycle_assertion,
+        )
+        if report["availability_state"] in {AVAILABLE_PRIMARY, AVAILABLE_FALLBACK, RETIRED}:
+            return report
+        if observation.get("outcome") == "FAILURE" and route_failure_allows_failover(observation):
+            continue
+        return report
+    return evaluate_source_route_availability(
+        source_record=source_record,
+        observations=observations,
+        lifecycle_assertion=lifecycle_assertion,
+    )
 
 
 def verify_source_route_report(
