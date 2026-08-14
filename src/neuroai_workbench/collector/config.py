@@ -15,6 +15,8 @@ class CollectorConfig:
     read_timeout_seconds: float = 30.0
     total_timeout_seconds: float = 60.0
     max_attempts: int = 3
+    retry_initial_delay_seconds: float = 1.0
+    retry_max_delay_seconds: float = 30.0
     requests_per_host_per_minute: int = 30
     allowed_content_types: frozenset[str] = frozenset(
         {
