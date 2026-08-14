@@ -251,9 +251,11 @@ class CollectionScheduler:
         return groups, targets, pre_outcomes
 
     def _retry_delay(self, attempt_count: int) -> float:
-        return min(
-            self.collector_config.retry_max_delay_seconds,
-            self.collector_config.retry_initial_delay_seconds * (2 ** max(0, attempt_count - 1)),
+        return float(
+            min(
+                self.collector_config.retry_max_delay_seconds,
+                self.collector_config.retry_initial_delay_seconds * (2 ** max(0, attempt_count - 1)),
+            )
         )
 
     def _invoke_adapter(
@@ -460,7 +462,8 @@ class CollectionScheduler:
             state = str(checkpoint.get("state"))
             if state in TERMINAL_TARGET_STATES:
                 terminal_targets += 1
-            outcome = checkpoint.get("outcome") if isinstance(checkpoint.get("outcome"), dict) else {}
+            outcome_raw = checkpoint.get("outcome")
+            outcome: dict[str, Any] = outcome_raw if isinstance(outcome_raw, dict) else {}
             if state == "FAILURE" and outcome.get("retryable") is True:
                 retryable_final_failures += 1
             record_id = outcome.get("record_id")
