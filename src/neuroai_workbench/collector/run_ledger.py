@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -220,14 +221,24 @@ def write_target_checkpoint(quarantine_root: Path, checkpoint: dict[str, Any]) -
 
 
 def scan_persisted_attempt_records(quarantine_root: Path) -> dict[str, dict[str, Any]]:
-    """Index already-durable collector results/failures by deterministic request ID."""
+    """Index parseable durable collector results/failures by deterministic request ID.
+
+    Historical quarantine directories can contain malformed diagnostic files. They
+    remain visible to dedicated quarantine-integrity tooling but do not block an
+    unrelated due-cycle resume. A malformed record cannot be used as a commit
+    witness; only a parseable object with one exact request ID participates in
+    recovery. Duplicate parseable request IDs still fail closed.
+    """
     records: dict[str, dict[str, Any]] = {}
     for directory in ("results", "failures"):
         root = safe_join(quarantine_root, directory)
         if not root.exists():
             continue
         for path in sorted(root.glob("*.json")):
-            value = load_json(path)
+            try:
+                value = load_json(path)
+            except (OSError, json.JSONDecodeError, UnicodeError):
+                continue
             if not isinstance(value, dict):
                 continue
             request_id = value.get("request_id")
