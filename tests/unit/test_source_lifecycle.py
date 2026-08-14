@@ -183,11 +183,14 @@ def test_verifier_detects_tampering() -> None:
     route_report = _route_report()
     assertion = _assertion()
     report = evaluate_source_lifecycle(route_report=route_report, lifecycle_assertion=assertion)
-    assert verify_source_lifecycle_report(
-        report,
-        route_report=route_report,
-        lifecycle_assertion=assertion,
-    )["valid"] is True
+    assert (
+        verify_source_lifecycle_report(
+            report,
+            route_report=route_report,
+            lifecycle_assertion=assertion,
+        )["valid"]
+        is True
+    )
 
     tampered = copy.deepcopy(report)
     tampered["lifecycle_state"] = "RETIRED"
