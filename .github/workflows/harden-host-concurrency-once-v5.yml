@@ -1,0 +1,93 @@
+name: Harden host concurrency once v5
+
+on:
+  push:
+    branches:
+      - agent/153-operational-99-due-cycle
+    paths:
+      - .github/workflows/harden-host-concurrency-once-v5.yml
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/153-operational-99-due-cycle
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m pip install --no-deps -e .
+      - name: Prepare audited candidate and canonicalize migrated import
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("tests/unit/test_collector_scheduler_defensive.py")
+          text = path.read_text(encoding="utf-8")
+          text = text.replace("    _HostPermitPool,\n", "", 1)
+          text = text.replace(
+              "from neuroai_workbench.collector.service import CollectionOutcome\n",
+              "from neuroai_workbench.collector.host_limit import HostPermitPool, host_from_url\n"
+              "from neuroai_workbench.collector.service import CollectionOutcome\n",
+              1,
+          )
+          text = text.replace(
+              "    pool = _HostPermitPool(1)\n    assert pool._host(\"relative-path\") == \"unknown\"\n",
+              "    pool = HostPermitPool(1)\n    assert host_from_url(\"relative-path\") == \"unknown\"\n",
+              1,
+          )
+          path.write_text(text, encoding="utf-8")
+
+          lines = Path(".github/workflows/harden-host-concurrency-once-v2.yml").read_text(encoding="utf-8").splitlines()
+          marker = "      - name: Move host limit to actual HTTP send boundary"
+          start = lines.index(marker)
+          run_line = start + 1
+          body: list[str] = []
+          for line in lines[run_line + 1 :]:
+              if line.startswith("      - name:"):
+                  break
+              normalized = line[10:] if line.startswith("          ") else line
+              if normalized.startswith("python -m pytest -q --cov=src/neuroai_workbench"):
+                  break
+              body.append(normalized)
+          Path("/tmp/harden-host-candidate.sh").write_text(
+              "set -euo pipefail\n" + "\n".join(body) + "\n", encoding="utf-8"
+          )
+          PY
+          bash /tmp/harden-host-candidate.sh
+          python -m ruff check --fix tests/unit/test_collector_scheduler_defensive.py
+          python -m ruff format tests/unit/test_collector_scheduler_defensive.py
+      - name: Remove every temporary workflow before repository proof
+        run: |
+          git rm .github/workflows/harden-host-concurrency-once.yml \
+                 .github/workflows/harden-host-concurrency-once-v2.yml \
+                 .github/workflows/harden-host-concurrency-once-v3.yml \
+                 .github/workflows/harden-host-concurrency-once-v4.yml \
+                 .github/workflows/harden-host-concurrency-once-v5.yml
+      - name: Prove exact candidate
+        run: |
+          python -m ruff format --check .
+          python -m ruff check .
+          python -m mypy src/neuroai_workbench
+          python -m pytest -q --cov=src/neuroai_workbench --cov-report=json --cov-report=term-missing
+          python scripts/check_module_coverage.py
+          git diff --check
+      - name: Commit exact proven candidate
+        run: |
+          git add src/neuroai_workbench/collector/host_limit.py \
+                  src/neuroai_workbench/collector/scheduler.py \
+                  tests/unit/test_collector_operational_runtime.py \
+                  tests/unit/test_collector_scheduler_defensive.py \
+                  scripts/check_module_coverage.py
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Enforce per-host concurrency at every HTTP send"
+          git push origin HEAD:agent/153-operational-99-due-cycle
