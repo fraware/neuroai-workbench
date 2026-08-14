@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       as_of:
-        description: Optional YYYY-MM-DD planning date
+        description: Optional YYYY-MM-DD planning date for the sample fixture
         required: false
         type: string
   schedule:
@@ -31,6 +31,15 @@ jobs:
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
       - run: python -m pip install --no-deps -e .
       - run: mkdir -p artifacts workspaces/monitor-plan
+      - name: Declare sample-fixture boundary
+        run: |
+          echo "This workflow validates planner mechanics against examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json only."
+          echo "It is not production-registry, 248-source, or live-observatory operational evidence."
+          {
+            echo "## Observatory monitor-plan fixture smoke test"
+            echo "This job uses \`SOURCE_MONITOR_REGISTRY_SAMPLE.json\` only."
+            echo "It validates planner mechanics and must not be cited as production-registry, 248-source, or live-observatory evidence."
+          } >> "$GITHUB_STEP_SUMMARY"
       - run: >-
           neuroai-monitor registry-validate
           examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
@@ -40,7 +49,7 @@ jobs:
           workspaces/monitor-plan
           examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
           --out artifacts/monitor-init.json
-      - name: Build due-source plan
+      - name: Build sample-fixture due-source plan
         shell: bash
         run: |
           args=(workspaces/monitor-plan --out artifacts/monitor-plan.json)
@@ -50,7 +59,7 @@ jobs:
           neuroai-monitor plan "${args[@]}"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: observatory-monitor-plan
+          name: observatory-sample-monitor-plan
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
