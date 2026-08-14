@@ -33,6 +33,7 @@ class ConcurrentTransport:
     delay_seconds: float = 0.0
     transient_failures: dict[str, int] = field(default_factory=dict)
     permanent_statuses: dict[str, int] = field(default_factory=dict)
+    redirects: dict[str, str] = field(default_factory=dict)
     internal_error_urls: set[str] = field(default_factory=set)
     calls: list[HttpRequest] = field(default_factory=list)
     call_counts: Counter[str] = field(default_factory=Counter)
@@ -65,6 +66,8 @@ class ConcurrentTransport:
         try:
             if self.delay_seconds:
                 time.sleep(self.delay_seconds)
+            if request.url in self.redirects:
+                return 302, {"Location": self.redirects[request.url]}, b""
             if request.url in self.internal_error_urls:
                 raise RuntimeError("injected internal transport defect")
             if call_number <= self.transient_failures.get(request.url, 0):
@@ -153,6 +156,25 @@ def test_scheduler_executes_targets_concurrently_with_per_host_bound(tmp_path: P
     assert transport.max_active <= 8
     assert transport.max_active_by_host
     assert max(transport.max_active_by_host.values()) <= 2
+
+
+def test_redirect_convergence_respects_actual_destination_host_limit(tmp_path: Path) -> None:
+    records = []
+    redirects = {}
+    for index in range(12):
+        initial = f"https://entry{index}.example.org/start/{index}"
+        final = f"https://shared.example.org/final/{index}"
+        records.append(_source(f"SRC-REDIRECT-{index:02d}", initial))
+        redirects[initial] = final
+    transport = ConcurrentTransport(delay_seconds=0.02, redirects=redirects)
+    scheduler = _scheduler(tmp_path, transport, max_workers=8, per_host=2)
+
+    run = scheduler.run_plan(_plan(records), registry_sha256=REGISTRY_HASH, source_index=_index(records))
+
+    assert run["execution_status"] == "COMPLETE"
+    assert transport.max_active > 2
+    assert transport.max_active_by_host["shared.example.org"] <= 2
+    assert sum(transport.call_counts.values()) == 24
 
 
 def test_retry_policy_retries_transient_timeout_and_not_permanent_404(tmp_path: Path) -> None:

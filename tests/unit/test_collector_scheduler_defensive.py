@@ -6,11 +6,11 @@ from typing import Any
 import pytest
 
 from neuroai_workbench.collector.config import CollectorConfig
+from neuroai_workbench.collector.host_limit import HostPermitPool, host_from_url
 from neuroai_workbench.collector.scheduler import (
     CollectionScheduler,
     SchedulerConfig,
     _failure_is_retryable,
-    _HostPermitPool,
     _jsonable,
     _outcome_from_persisted,
     _record_id,
@@ -76,8 +76,8 @@ def test_persisted_outcome_rehydration_and_record_id_defensive_paths() -> None:
 
 
 def test_host_permit_pool_has_explicit_unknown_host_bucket_and_reuses_semaphore() -> None:
-    pool = _HostPermitPool(1)
-    assert pool._host("relative-path") == "unknown"
+    pool = HostPermitPool(1)
+    assert host_from_url("relative-path") == "unknown"
     first = pool._permit("example.org")
     second = pool._permit("example.org")
     assert first is second

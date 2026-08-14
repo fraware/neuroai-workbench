@@ -4,12 +4,10 @@ import inspect
 import re
 import time
 from collections import defaultdict
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from contextlib import contextmanager
 from dataclasses import dataclass, field, fields
 from pathlib import Path
-from threading import BoundedSemaphore, Lock
 from typing import Any
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -22,6 +20,7 @@ from .config import CollectorConfig
 from .credentials import CredentialProvider
 from .dns import DnsGuard
 from .handoff import prepare_monitoring_handoff
+from .host_limit import HostLimitedTransport, host_from_url
 from .http_client import HttpTransport
 from .ids import new_request_id
 from .run_ledger import (
@@ -106,35 +105,6 @@ class SchedulerConfig:
             raise ValueError("max_workers_per_host must be >= 1")
         if self.max_workers_per_host > self.max_workers:
             raise ValueError("max_workers_per_host cannot exceed max_workers")
-
-
-class _HostPermitPool:
-    def __init__(self, limit: int) -> None:
-        self.limit = limit
-        self._lock = Lock()
-        self._permits: dict[str, BoundedSemaphore] = {}
-
-    def _host(self, url: str) -> str:
-        hostname = urlparse(url).hostname
-        return hostname.lower().rstrip(".") if hostname else "unknown"
-
-    def _permit(self, host: str) -> BoundedSemaphore:
-        with self._lock:
-            permit = self._permits.get(host)
-            if permit is None:
-                permit = BoundedSemaphore(self.limit)
-                self._permits[host] = permit
-            return permit
-
-    @contextmanager
-    def acquire(self, url: str) -> Iterator[str]:
-        host = self._host(url)
-        permit = self._permit(host)
-        permit.acquire()
-        try:
-            yield host
-        finally:
-            permit.release()
 
 
 @dataclass
@@ -333,7 +303,6 @@ class CollectionScheduler:
         source_record: dict[str, Any],
         registry_sha256: str,
         persisted_records: dict[str, dict[str, Any]],
-        host_permits: _HostPermitPool,
     ) -> dict[str, Any]:
         if checkpoint.get("state") in TERMINAL_TARGET_STATES:
             return checkpoint
@@ -395,15 +364,14 @@ class CollectionScheduler:
                 checkpoint.pop("internal_error", None)
                 checkpoint = write_target_checkpoint(self.quarantine_root, checkpoint)
 
-                with host_permits.acquire(resolved_url) as host:
-                    attempt["host"] = host
-                    checkpoint = write_target_checkpoint(self.quarantine_root, checkpoint)
-                    outcome = self._invoke_adapter(
-                        adapter,
-                        request,
-                        source_record=source_record,
-                        attempt_count=attempt_count,
-                    )
+                attempt["host"] = host_from_url(resolved_url)
+                checkpoint = write_target_checkpoint(self.quarantine_root, checkpoint)
+                outcome = self._invoke_adapter(
+                    adapter,
+                    request,
+                    source_record=source_record,
+                    attempt_count=attempt_count,
+                )
 
                 checkpoint, terminal = self._apply_attempt_outcome(
                     checkpoint,
@@ -574,9 +542,13 @@ class CollectionScheduler:
         if not self.scheduler_config.collection_enabled:
             return self._killed_run(plan, reason="collection_disabled")
 
+        bounded_transport = HostLimitedTransport(
+            self.transport,
+            max_workers_per_host=self.scheduler_config.max_workers_per_host,
+        )
         adapters = build_adapters(
             config=self.collector_config,
-            transport=self.transport,
+            transport=bounded_transport,
             quarantine_root=self.quarantine_root,
             credential_provider=self.credential_provider,
             dns_guard=self.dns_guard,
@@ -624,7 +596,6 @@ class CollectionScheduler:
             if checkpoint.get("state") in TERMINAL_TARGET_STATES:
                 resumed_target_ids.add(target_id)
 
-        host_permits = _HostPermitPool(self.scheduler_config.max_workers_per_host)
         pending_ids = [
             target_id
             for target_id in sorted(target_by_id)
@@ -650,7 +621,6 @@ class CollectionScheduler:
                         source_record=source_record,
                         registry_sha256=registry_sha256,
                         persisted_records=persisted_records,
-                        host_permits=host_permits,
                     )
                     futures[future] = target_id
                 for future in as_completed(futures):
