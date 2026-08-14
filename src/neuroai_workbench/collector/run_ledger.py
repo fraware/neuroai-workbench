@@ -12,6 +12,7 @@ RUN_LEDGER_BOUNDARY = (
     "convert retrieval failure into assessment failure, or authorize governance or release decisions."
 )
 TERMINAL_TARGET_STATES = frozenset({"RESULT", "FAILURE", "POLICY_BLOCK"})
+TARGET_STATES = frozenset({"PENDING", "ATTEMPTING", "RETRY_WAIT", "INTERNAL_ERROR", *TERMINAL_TARGET_STATES})
 
 
 def _hash_record(record: dict[str, Any], hash_field: str) -> str:
@@ -200,7 +201,7 @@ def verify_target_checkpoint(
     if checkpoint.get("checkpoint_sha256") != _hash_record(checkpoint, "checkpoint_sha256"):
         raise ValueError(f"Collector target checkpoint {target_id} hash mismatch")
     state = checkpoint.get("state")
-    if state not in {"PENDING", "ATTEMPTING", "RETRY_WAIT", *TERMINAL_TARGET_STATES}:
+    if state not in TARGET_STATES:
         raise ValueError(f"Collector target checkpoint {target_id} has invalid state {state!r}")
     attempts = checkpoint.get("attempts")
     if not isinstance(attempts, list):
