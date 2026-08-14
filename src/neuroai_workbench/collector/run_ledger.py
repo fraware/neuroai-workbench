@@ -111,8 +111,8 @@ def ensure_run_manifest(
         if not isinstance(value, dict):
             raise ValueError("Collector run manifest must be a JSON object")
         manifest = value
-        verify_run_manifest(manifest, expected_binding=binding)
-        return manifest
+        verify_run_manifest(value, expected_binding=binding)
+        return value
 
     manifest: dict[str, Any] = {
         "schema_version": RUN_LEDGER_SCHEMA_VERSION,
@@ -176,9 +176,8 @@ def load_target_checkpoint(
     value = load_json(path)
     if not isinstance(value, dict):
         raise ValueError(f"Collector target checkpoint {target['retrieval_target_id']} must be a JSON object")
-    checkpoint = value
-    verify_target_checkpoint(checkpoint, run_id=run_id, expected_target=target)
-    return checkpoint
+    verify_target_checkpoint(value, run_id=run_id, expected_target=target)
+    return value
 
 
 def verify_target_checkpoint(
@@ -259,6 +258,6 @@ def load_run_summary(quarantine_root: Path, run_id: str) -> dict[str, Any] | Non
         raise ValueError("Collector run summary hash mismatch")
     if value.get("run_id") != run_id:
         raise ValueError("Collector run summary run_id mismatch")
-    if value.get("boundary") != RUN_LEDGER_BOUNDARY:
-        raise ValueError("Collector run summary authority boundary mismatch")
+    if value.get("run_ledger_boundary") != RUN_LEDGER_BOUNDARY:
+        raise ValueError("Collector run summary ledger boundary mismatch")
     return value
