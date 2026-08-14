@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+from collections.abc import Callable
 from typing import Any
 
 from ..config import CollectorConfig
@@ -50,8 +52,18 @@ def build_adapters(
     quarantine_root,
     credential_provider: CredentialProvider | None = None,
     dns_guard: DnsGuard | None = None,
+    pace_rate_limits: bool = False,
+    sleeper: Callable[[float], None] = time.sleep,
+    monotonic_clock: Callable[[], float] = time.monotonic,
 ) -> dict[str, CollectorAdapter]:
-    collector = HttpCollector(config=config, transport=transport, quarantine_root=quarantine_root)
+    collector = HttpCollector(
+        config=config,
+        transport=transport,
+        quarantine_root=quarantine_root,
+        pace_rate_limits=pace_rate_limits,
+        sleeper=sleeper,
+        monotonic_clock=monotonic_clock,
+    )
     if dns_guard is not None:
         collector.http_client.dns_guard = dns_guard
     adapters: dict[str, CollectorAdapter] = {
