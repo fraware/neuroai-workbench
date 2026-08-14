@@ -138,9 +138,11 @@ def parse_route_policy(source_record: dict[str, Any]) -> list[RouteSpec]:
 
         identity_check = None
         corroboration_check = None
-        if route_class == IDENTITY_EQUIVALENT:
+        if route_class in {PRIMARY, IDENTITY_EQUIVALENT} and raw.get("identity_check") is not None:
             identity_check = _check_map(raw.get("identity_check"), f"{route_id}.identity_check")
-        elif route_class == LIVENESS_CORROBORATION:
+        if route_class == IDENTITY_EQUIVALENT and identity_check is None:
+            raise ValueError(f"{route_id}.identity_check must be an object")
+        if route_class == LIVENESS_CORROBORATION:
             corroboration_check = _check_map(raw.get("corroboration_check"), f"{route_id}.corroboration_check")
 
         specs.append(
@@ -181,6 +183,8 @@ def _successful_route_usable(spec: RouteSpec, observation: dict[str, Any]) -> tu
     if observation.get("outcome") != "SUCCESS":
         return False, None
     if spec.route_class == PRIMARY:
+        if spec.identity_check is not None and observation.get("identity_match") is not True:
+            return False, "IDENTITY_MISMATCH"
         return True, None
     if spec.route_class == IDENTITY_EQUIVALENT:
         if observation.get("identity_match") is True:
@@ -306,9 +310,7 @@ def evaluate_source_route_availability(
             "registered_routes": len(specs),
             "observed_routes": len(observed_specs),
             "failed_routes": sum(
-                1
-                for item in normalized_observations.values()
-                if item.get("outcome") == "FAILURE"
+                1 for item in normalized_observations.values() if item.get("outcome") == "FAILURE"
             ),
             "fallback_routes_observed": sum(1 for spec in observed_specs if spec.role == "FALLBACK"),
         },
