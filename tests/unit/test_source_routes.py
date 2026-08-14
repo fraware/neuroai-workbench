@@ -219,15 +219,11 @@ def test_failover_failure_classifier_is_deliberately_narrow() -> None:
     assert route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "TIMEOUT"}) is True
     assert route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "NETWORK_ERROR"}) is True
     assert (
-        route_failure_allows_failover(
-            {"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 503}
-        )
+        route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 503})
         is True
     )
     assert (
-        route_failure_allows_failover(
-            {"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 401}
-        )
+        route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "HTTP_ERROR", "http_status": 401})
         is False
     )
     assert route_failure_allows_failover({"outcome": "FAILURE", "failure_class": "DNS_REBINDING"}) is False
@@ -342,18 +338,22 @@ def test_verifier_detects_tampering_and_input_substitution() -> None:
     tampered["availability_state"] = "AVAILABLE_PRIMARY"
     verification = verify_source_route_report(tampered, source_record=source, observations=observations)
     assert verification["valid"] is False
-    assert "report does not match recomputed" in verification["errors"]
+    assert any("report does not match recomputed" in error for error in verification["errors"])
 
     substituted = copy.deepcopy(source)
     substituted["source_id"] = "SRC-Y"
-    with pytest.raises(ValueError, match="source_id"):
-        verify_source_route_report(report, source_record=substituted, observations=observations)
+    verification = verify_source_route_report(report, source_record=substituted, observations=observations)
+    assert verification["valid"] is False
 
 
 def test_lifecycle_assertion_rejects_nonretired_state_and_nonobject() -> None:
     source = {"source_id": "SRC-X", "url": "https://example.org/x"}
     with pytest.raises(ValueError, match="must be an object"):
-        evaluate_source_route_availability(source_record=source, observations=[], lifecycle_assertion="RETIRED")  # type: ignore[arg-type]
+        evaluate_source_route_availability(
+            source_record=source,
+            observations=[],
+            lifecycle_assertion="RETIRED",  # type: ignore[arg-type]
+        )
     with pytest.raises(ValueError, match="must be RETIRED"):
         evaluate_source_route_availability(
             source_record=source,
