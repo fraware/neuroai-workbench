@@ -1,4 +1,4 @@
-name: Observatory sample monitor-plan smoke test
+name: Observatory monitoring plan
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   plan:
-    name: sample-fixture-plan
+    name: plan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -31,10 +31,10 @@ jobs:
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
       - run: python -m pip install --no-deps -e .
       - run: mkdir -p artifacts workspaces/monitor-plan
-      - name: Declare fixture boundary
+      - name: Declare sample-fixture boundary
         run: |
           echo "This workflow validates planner mechanics against examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json only."
-          echo "It is not production-registry or full-universe operational evidence."
+          echo "It is not production-registry, 248-source, or live-observatory operational evidence."
           {
             echo "## Observatory monitor-plan fixture smoke test"
             echo "This job uses \`SOURCE_MONITOR_REGISTRY_SAMPLE.json\` only."
@@ -49,7 +49,7 @@ jobs:
           workspaces/monitor-plan
           examples/operations/SOURCE_MONITOR_REGISTRY_SAMPLE.json
           --out artifacts/monitor-init.json
-      - name: Build sample due-source plan
+      - name: Build sample-fixture due-source plan
         shell: bash
         run: |
           args=(workspaces/monitor-plan --out artifacts/monitor-plan.json)
