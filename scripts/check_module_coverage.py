@@ -49,6 +49,7 @@ MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/collector/service.py": 95.0,
     "neuroai_workbench/collector/source_lifecycle.py": 95.0,
     "neuroai_workbench/collector/source_routes.py": 95.0,
+    "neuroai_workbench/collector/transport.py": 95.0,
     "neuroai_workbench/collector/url_policy.py": 95.0,
 }
 
