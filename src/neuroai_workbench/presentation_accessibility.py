@@ -174,9 +174,9 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
     for element in elements:
         for attribute in _IDREF_ATTRIBUTES:
             value = (element.attrs.get(attribute) or "").strip()
-            for target in value.split():
-                if len(ids.get(target, [])) != 1:
-                    add("A11Y002", element, f"{attribute} references non-unique or missing id {target!r}")
+            for target_id in value.split():
+                if len(ids.get(target_id, [])) != 1:
+                    add("A11Y002", element, f"{attribute} references non-unique or missing id {target_id!r}")
 
     labels_for = {
         (element.attrs.get("for") or "").strip()
@@ -189,7 +189,7 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
         identifier = (element.attrs.get("id") or "").strip()
         aria_label = (element.attrs.get("aria-label") or "").strip()
         labelledby = (element.attrs.get("aria-labelledby") or "").split()
-        has_aria_labelledby = bool(labelledby) and all(len(ids.get(target, [])) == 1 for target in labelledby)
+        has_aria_labelledby = bool(labelledby) and all(len(ids.get(target_id, [])) == 1 for target_id in labelledby)
         if not (
             aria_label
             or (identifier and identifier in labels_for)
@@ -226,10 +226,10 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
         if len(targets) != 1:
             add("A11Y005", link, f"skip link target {target_id!r} is missing or non-unique")
             continue
-        target = targets[0]
-        if target.tag != "main":
+        skip_target = targets[0]
+        if skip_target.tag != "main":
             add("A11Y005", link, "skip link must target the main landmark")
-        if target.attrs.get("tabindex") != "-1":
+        if skip_target.attrs.get("tabindex") != "-1":
             add("A11Y005", link, "skip target must use tabindex=-1 for deterministic focus transfer")
 
     tablists = [element for element in elements if (element.attrs.get("role") or "").lower() == "tablist"]
@@ -261,13 +261,13 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
             if not tab_id or len(controls) != 1:
                 add("A11Y006", tab, "tab requires a unique id and exactly one aria-controls target")
                 continue
-            target_id = controls[0]
-            targets = ids.get(target_id, [])
-            if len(targets) != 1:
-                add("A11Y006", tab, f"tab panel {target_id!r} is missing or non-unique")
+            panel_id = controls[0]
+            panel_targets = ids.get(panel_id, [])
+            if len(panel_targets) != 1:
+                add("A11Y006", tab, f"tab panel {panel_id!r} is missing or non-unique")
                 continue
-            panel = targets[0]
-            controlled_panel_ids.add(target_id)
+            panel = panel_targets[0]
+            controlled_panel_ids.add(panel_id)
             if (panel.attrs.get("role") or "").lower() != "tabpanel":
                 add("A11Y006", tab, "aria-controls target must have role=tabpanel")
             if tab_id not in (panel.attrs.get("aria-labelledby") or "").split():
