@@ -32,7 +32,6 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | [pilot-runbook.md](operations/pilot-runbook.md) | Controlled local pilot procedure |
 | [release-process.md](operations/release-process.md) | Software release integrity and separation from canonical observatory governance |
 | [github-governance-setup.md](operations/github-governance-setup.md) | Branch protection and required checks |
-| [ai-agent-development.md](operations/ai-agent-development.md) | Cursor/agent handoff protocol and eval harness |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
 | [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
 | [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh rehearsal and small-team residual |
@@ -43,7 +42,7 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | [governing-input-migration.md](operations/governing-input-migration.md) | Governing-input lineage and migration |
 | [public-data-release.md](operations/public-data-release.md) | Bootstrap and publish to `neuroai-observatory-data` |
 | [post-publication-withdrawal-drill.md](operations/post-publication-withdrawal-drill.md) | Withdrawal and correction drill |
-| [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional independent-review tracks and checklists |
+| [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional external independent-review evidence and checklists; distinct from mandatory v2 governance |
 
 ## Reference
 
