@@ -274,3 +274,74 @@ def test_ordered_records_requires_identifier() -> None:
 
     with pytest.raises(ValueError, match="missing required identifier"):
         review_state._ordered_records([{}], "profile_id")
+
+
+def test_sanitizer_recurses_lists_and_strips_internal_path() -> None:
+    from neuroai_workbench import review_state
+
+    value = [{"_path": "/private/path", "nested": [{"value": 1}]}]
+    assert review_state._sanitize(value) == [{"nested": [{"value": 1}]}]
+
+
+def test_stored_records_refuses_non_mapping_normalization(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from neuroai_workbench import review_state
+
+    root = tmp_path / "observatory" / "review_queue" / "profiles"
+    root.mkdir(parents=True)
+    atomic_write_json(root / "profile.json", {"profile_id": "reviewer-a"})
+    monkeypatch.setattr(review_state, "_sanitize", lambda _value: [])
+
+    with pytest.raises(ValueError, match="could not be normalized"):
+        review_state._stored_records(tmp_path, "profiles")
+
+
+def test_verifier_rejects_non_mapping_top_level_collections_after_resign(tmp_path: Path) -> None:
+    workspace, _ = _review_workspace(tmp_path)
+    snapshot = build_review_state_snapshot(workspace.root)
+    snapshot["counts"] = []
+    snapshot["records"] = []
+    _resign(snapshot)
+
+    result = verify_review_state_snapshot(snapshot)
+
+    assert result["valid"] is False
+    assert any("schema:" in error and "counts" in error for error in result["errors"])
+    assert any("schema:" in error and "records" in error for error in result["errors"])
+
+
+def test_verifier_rejects_non_list_record_category_after_resign(tmp_path: Path) -> None:
+    workspace, _ = _review_workspace(tmp_path)
+    snapshot = build_review_state_snapshot(workspace.root)
+    snapshot["records"]["profiles"] = {}
+    snapshot["counts"]["profiles"] = 0
+    _resign(snapshot)
+
+    result = verify_review_state_snapshot(snapshot)
+
+    assert result["valid"] is False
+    assert any("schema:" in error and "records.profiles" in error for error in result["errors"])
+
+
+def test_verifier_rejects_scalar_record_after_resign(tmp_path: Path) -> None:
+    workspace, _ = _review_workspace(tmp_path)
+    snapshot = build_review_state_snapshot(workspace.root)
+    snapshot["records"]["profiles"] = ["malformed"]
+    snapshot["counts"]["profiles"] = 1
+    _resign(snapshot)
+
+    result = verify_review_state_snapshot(snapshot)
+
+    assert result["valid"] is False
+    assert any("schema:" in error and "records.profiles" in error for error in result["errors"])
+
+
+def test_verifier_rejects_non_string_record_identifier_after_resign(tmp_path: Path) -> None:
+    workspace, _ = _review_workspace(tmp_path)
+    snapshot = build_review_state_snapshot(workspace.root)
+    snapshot["records"]["profiles"][0]["profile_id"] = 7
+    _resign(snapshot)
+
+    result = verify_review_state_snapshot(snapshot)
+
+    assert result["valid"] is False
+    assert any("records.profiles[0] schema" in error for error in result["errors"])
