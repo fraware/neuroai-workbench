@@ -1,0 +1,85 @@
+name: Implement #166 retry once
+
+on:
+  push:
+    branches:
+      - agent/166-presentation-i18n
+    paths:
+      - ".github/workflows/implement-166-retry-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/166-presentation-i18n
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Replay implementation and repair type boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          workflow = Path('.github/workflows/implement-166-once.yml').read_text(encoding='utf-8').splitlines()
+          step = '      - name: Implement presentation-only i18n architecture'
+          try:
+              start = workflow.index(step)
+          except ValueError as exc:
+              raise SystemExit('original implementation step not found') from exc
+          run_index = start + 1
+          while run_index < len(workflow) and workflow[run_index] != '        run: |':
+              run_index += 1
+          if run_index >= len(workflow):
+              raise SystemExit('original implementation run block not found')
+          script_lines: list[str] = []
+          for line in workflow[run_index + 1:]:
+              if line.startswith('      - name:'):
+                  break
+              if line.startswith('          '):
+                  script_lines.append(line[10:])
+              elif not line.strip():
+                  script_lines.append('')
+              else:
+                  raise SystemExit(f'unexpected implementation indentation: {line!r}')
+          if not script_lines:
+              raise SystemExit('original implementation run block was empty')
+          Path('/tmp/implement-166.sh').write_text('\n'.join(script_lines) + '\n', encoding='utf-8')
+          PY
+          bash /tmp/implement-166.sh
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/neuroai_workbench/presentation_i18n.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''        normalized = normalize_locale(candidate)\n        selected = _match_supported(normalized)\n        if selected is not None:\n            return LocaleResolution(\n                requested_locale=normalized,\n                selected_locale=selected,\n                source="accept-language",\n                fallback_used=normalized != selected,\n            )\n'''
+          new = '''        normalized = normalize_locale(candidate)\n        matched_locale = _match_supported(normalized)\n        if matched_locale is not None:\n            return LocaleResolution(\n                requested_locale=normalized,\n                selected_locale=matched_locale,\n                source="accept-language",\n                fallback_used=normalized != matched_locale,\n            )\n'''
+          if text.count(old) != 1:
+              raise SystemExit('expected nullable locale-match block not found exactly once')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Install exact dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Verify implementation surface
+        run: |
+          python -m ruff format src/neuroai_workbench/presentation_i18n.py tests/unit/test_presentation_i18n.py tests/integration/test_server.py scripts/check_module_coverage.py
+          python -m ruff check src/neuroai_workbench/presentation_i18n.py tests/unit/test_presentation_i18n.py tests/integration/test_server.py scripts/check_module_coverage.py
+          python -m mypy src/neuroai_workbench
+          python -m pytest tests/unit/test_presentation_i18n.py tests/integration/test_server.py tests/integration/test_review_ui_server.py -q
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/neuroai_workbench/presentation_i18n.py src/neuroai_workbench/server.py src/neuroai_workbench/static/messages.en.json src/neuroai_workbench/static/i18n.js src/neuroai_workbench/static/index.html src/neuroai_workbench/static/review.html tests/unit/test_presentation_i18n.py tests/integration/test_server.py scripts/check_module_coverage.py docs/architecture/presentation-internationalization.md
+          git diff --cached --check
+          git commit -m "Add presentation-only internationalization architecture"
+          git push origin HEAD:agent/166-presentation-i18n
