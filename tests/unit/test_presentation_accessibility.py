@@ -21,8 +21,9 @@ def valid_document() -> str:
 </div>
 <section id="panel-one" role="tabpanel" aria-labelledby="tab-one"></section>
 <section id="panel-two" role="tabpanel" aria-labelledby="tab-two" hidden></section>
-<div id="status" role="status" aria-live="polite"></div>
-<div id="alert" role="alert" aria-live="assertive"></div>
+<div id="status" role="status" aria-live="polite" aria-atomic="true" data-announcer="status"></div>
+<div id="alert" role="alert" aria-live="assertive" aria-atomic="true" data-announcer="alert"></div>
+<div id="toast" aria-hidden="true" data-toast-announcer hidden></div>
 </main>
 </body></html>"""
 
@@ -162,13 +163,11 @@ def test_tab_outside_tablist_and_empty_tablist_are_rejected() -> None:
         ('id="panel-two" role="tabpanel"', 'id="panel-two" role="region"', "role=tabpanel"),
         ('aria-labelledby="tab-two" hidden', 'aria-labelledby="tab-one" hidden', "must reference its controlling tab"),
         ('aria-labelledby="tab-two" hidden', 'aria-labelledby="tab-two"', "unselected tabpanel must be hidden"),
-        ('aria-selected="true" tabindex="0">One', 'aria-selected="true" tabindex="0">One', ""),
     ],
 )
 def test_tab_relationship_defects_are_detected(old: str, new: str, expected: str) -> None:
     html = valid_document().replace(old, new, 1)
-    if expected:
-        assert any(expected in message for message in messages(html, "A11Y006"))
+    assert any(expected in message for message in messages(html, "A11Y006"))
 
 
 def test_selected_panel_must_not_be_hidden() -> None:
@@ -179,19 +178,36 @@ def test_selected_panel_must_not_be_hidden() -> None:
     assert "selected tabpanel must be exposed" in messages(html, "A11Y006")
 
 
-def test_orphan_tabpanel_is_rejected() -> None:
-    html = valid_document().replace(
+def test_orphan_and_multiply_controlled_tabpanels_are_rejected() -> None:
+    orphan = valid_document().replace(
         '<div id="status" role="status"',
         '<section id="orphan" role="tabpanel" aria-labelledby="tab-one"></section><div id="status" role="status"',
     )
-    assert any("tabpanel must be controlled" in message for message in messages(html, "A11Y006"))
+    assert "tabpanel must be controlled by exactly one tab; found 0" in messages(orphan, "A11Y006")
+
+    multiply_controlled = valid_document().replace('aria-controls="panel-two"', 'aria-controls="panel-one"', 1)
+    assert "tabpanel must be controlled by exactly one tab; found 2" in messages(multiply_controlled, "A11Y006")
 
 
-def test_live_regions_are_required_with_explicit_politess() -> None:
-    without_status = valid_document().replace('role="status" aria-live="polite"', 'role="region"')
-    without_alert = valid_document().replace('role="alert" aria-live="assertive"', 'role="alert" aria-live="polite"')
-    assert any("persistent polite status" in message for message in messages(without_status, "A11Y008"))
-    assert any("persistent assertive alert" in message for message in messages(without_alert, "A11Y008"))
+def test_live_announcement_contract_fails_closed() -> None:
+    status_role = valid_document().replace('role="status" aria-live="polite"', 'role="region" aria-live="polite"', 1)
+    status_atomic = valid_document().replace('aria-atomic="true" data-announcer="status"', 'aria-atomic="false" data-announcer="status"')
+    status_hidden = valid_document().replace('data-announcer="status"></div>', 'data-announcer="status" hidden></div>')
+    alert_live = valid_document().replace('role="alert" aria-live="assertive"', 'role="alert" aria-live="polite"', 1)
+    duplicate_status = valid_document().replace(
+        '<div id="alert" role="alert"',
+        '<div data-announcer="status"></div><div id="alert" role="alert"',
+    )
+    missing_toast = valid_document().replace('<div id="toast" aria-hidden="true" data-toast-announcer hidden></div>\n', "")
+    exposed_toast = valid_document().replace('id="toast" aria-hidden="true"', 'id="toast" aria-hidden="false"')
+
+    assert "status announcer must use role=status" in messages(status_role, "A11Y008")
+    assert "status announcer must use aria-atomic=true" in messages(status_atomic, "A11Y008")
+    assert any("remain exposed" in message for message in messages(status_hidden, "A11Y008"))
+    assert "alert announcer must use aria-live=assertive" in messages(alert_live, "A11Y008")
+    assert "document requires exactly one status announcer; found 2" in messages(duplicate_status, "A11Y008")
+    assert "document requires exactly one visual toast announcement source; found 0" in messages(missing_toast, "A11Y008")
+    assert "visual toast announcement source must use aria-hidden=true" in messages(exposed_toast, "A11Y008")
 
 
 def test_malformed_markup_and_non_text_source_fail_closed() -> None:
@@ -228,6 +244,7 @@ def test_packaged_primary_surfaces_pass_and_load_shared_interaction_layer() -> N
     assert '<script src="accessibility.js" defer></script>' in review
     assert 'data-announcer="status"' in index and 'data-announcer="alert"' in index
     assert 'data-announcer="status"' in review and 'data-announcer="alert"' in review
+    assert 'data-toast-announcer' in index and 'data-toast-announcer' in review
     assert "MutationObserver" in interaction
     assert "ArrowRight" in interaction and "ArrowLeft" in interaction
     assert "a:focus-visible" in styles
@@ -243,10 +260,7 @@ def test_assessment_tab_state_is_owned_by_shared_interaction_layer() -> None:
 
 
 def test_parser_boundary_branches_and_generic_focusability() -> None:
-    self_closing = valid_document().replace(
-        '<div id="status" role="status" aria-live="polite"></div>',
-        '<br/><div id="status" role="status" aria-live="polite"></div>',
-    )
+    self_closing = valid_document().replace('<div id="status"', '<br/><div id="status"', 1)
     assert validate_document(self_closing, document_name="fixture.html").valid
 
     unexpected = valid_document().replace("<html><body>", "<html><body></aside>")
