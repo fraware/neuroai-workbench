@@ -158,7 +158,7 @@ def test_pdf_stub_remains_deterministic_without_optional_dependency(
     tmp_path: Path,
 ) -> None:
     query = query_release(COMPACT, depth="full", limit=None)
-    monkeypatch.setitem(sys.modules, "reportlab", None)
+    monkeypatch.setattr(pdf_module, "render_pdf", lambda _query: None)
     output = tmp_path / "report.pdf"
 
     metadata = pdf_module.write_pdf(query, output)
