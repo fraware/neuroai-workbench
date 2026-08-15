@@ -18,6 +18,7 @@ from .evidence import add_evidence_base64, list_evidence_files, verify_evidence_
 from .exporter import export_case_bundle
 from .metrics import summarize
 from .monitoring import adjudicate_change_candidate
+from .presentation_i18n import build_presentation_catalog
 from .resource_loader import read_resource_bytes
 from .review_queue import (
     claim_lease,
@@ -172,6 +173,18 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                         "workspace_configured": True,
                         "bind_boundary": "This development server is intended for local trusted use only.",
                     }
+                )
+                return
+            if segments == ["api", "presentation", "catalog"]:
+                parsed = urllib.parse.urlparse(self.path)
+                query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+                requested_values = query.get("locale")
+                requested_locale = requested_values[0] if requested_values else None
+                self._send_json(
+                    build_presentation_catalog(
+                        requested_locale=requested_locale,
+                        accept_language=self.headers.get("Accept-Language"),
+                    )
                 )
                 return
             if segments == ["api", "review", "health"]:
