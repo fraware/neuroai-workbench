@@ -57,6 +57,12 @@ jobs:
               '        ),',
           ]
           lines[index:index + len(expected)] = replacement
+          old_condition_id = 'GOVCOND-SYNTHETIC-RELEASE-BLOCKER'
+          new_condition_id = 'GOVCOND-00000000000000000000000000000001'
+          condition_hits = sum(old_condition_id in line for line in lines)
+          if condition_hits != 1:
+              raise SystemExit(f'expected one source condition-id occurrence, found {condition_hits}')
+          lines = [line.replace(old_condition_id, new_condition_id) for line in lines]
           source_path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
           test_path = Path('tests/unit/test_governance_rehearsal.py')
@@ -65,6 +71,9 @@ jobs:
           if old_path not in test:
               raise SystemExit('stale reviewer-opinions path not found')
           test = test.replace(old_path, 'workspace.root / "governance" / "opinions"', 1)
+          if test.count(old_condition_id) != 1:
+              raise SystemExit(f'expected one test condition-id occurrence, found {test.count(old_condition_id)}')
+          test = test.replace(old_condition_id, new_condition_id, 1)
           lines = test.splitlines()
           state_assert = '    assert {"SUPPORT", "OBJECT", "REQUEST_EVIDENCE", "ABSTAIN", "SUPPORT_WITH_CONDITIONS"} <= states'
           if state_assert not in lines:
