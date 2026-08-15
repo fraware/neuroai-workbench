@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
@@ -90,7 +89,12 @@ def _record_opinion(
         opinion_state=state,
         reviewer_claim=_synthetic_reviewer_claim(track, reviewer_key),
         rationale=f"TEST FIXTURE ONLY synthetic {state} opinion for governance rehearsal.",
-        requested_actions=(
+        conditions=(
+            ["TEST FIXTURE ONLY: retain the synthetic domain condition for rehearsal."]
+            if state == "SUPPORT_WITH_CONDITIONS"
+            else []
+        ),
+        evidence_requests=(
             ["TEST FIXTURE ONLY: supply additional evidence for the rehearsal branch."]
             if state == "REQUEST_EVIDENCE"
             else []
@@ -151,9 +155,7 @@ def _record_fixture_opinions(
 def _active_fixture(records: list[dict[str, Any]], *, track: str) -> dict[str, Any]:
     track_records = [record for record in records if record.get("review_track") == track]
     superseded = {
-        str(record.get("supersedes_opinion_id"))
-        for record in track_records
-        if record.get("supersedes_opinion_id")
+        str(record.get("supersedes_opinion_id")) for record in track_records if record.get("supersedes_opinion_id")
     }
     active = [record for record in track_records if str(record.get("opinion_id")) not in superseded]
     if len(active) != 1:
@@ -204,7 +206,7 @@ def _record_fixture_dispositions(
             rationale="TEST FIXTURE ONLY: synthetic domain condition is tracked as release-blocking.",
             conditions=[
                 {
-                    "condition_id": "GOVCOND-SYNTHETIC-RELEASE-BLOCKER",
+                    "condition_id": "GOVCOND-00000000000000000000000000000001",
                     "description": "TEST FIXTURE ONLY unresolved domain action for rehearsal.",
                     "owner": "synthetic-rehearsal-owner",
                     "priority": "HIGH",
@@ -338,8 +340,7 @@ def run_synthetic_governance_rehearsal(
         "authoritative": False,
         "scope_reference": {"scope_id": scope_id, "scope_sha256": scope_sha256},
         "synthetic_opinion_records": [
-            {"opinion_id": str(item["opinion_id"]), "opinion_sha256": str(item["opinion_sha256"])}
-            for item in opinions
+            {"opinion_id": str(item["opinion_id"]), "opinion_sha256": str(item["opinion_sha256"])} for item in opinions
         ],
         "synthetic_disposition_records": [
             {

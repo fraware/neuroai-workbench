@@ -124,9 +124,9 @@ def test_synthetic_rehearsal_exercises_full_stack_without_authority(tmp_path: Pa
     assert certificate["policy_evaluation_reference"]["release_readiness"] == "UNSATISFIED"
     assert certificate["release_readiness_package_reference"]["readiness_state"] == "NOT_READY"
     assert "GOVERNANCE_POLICY_UNSATISFIED" in certificate["release_readiness_package_reference"]["blocker_codes"]
-    assert "UNRESOLVED_RELEASE_BLOCKING_CONDITIONS" in certificate["release_readiness_package_reference"][
-        "blocker_codes"
-    ]
+    assert (
+        "UNRESOLVED_RELEASE_BLOCKING_CONDITIONS" in certificate["release_readiness_package_reference"]["blocker_codes"]
+    )
     assert certificate["authority_boundary_probe"]["attempted"] is True
     assert certificate["authority_boundary_probe"]["blocked"] is True
     assert "Synthetic or local execution" in certificate["authority_boundary_probe"]["error"]
@@ -160,13 +160,21 @@ def test_rehearsal_preserves_required_synthetic_semantic_states(tmp_path: Path) 
         candidate=candidate,
         products=PRODUCTS,
     )
-    opinions_root = workspace.root / "governance" / "reviewer-opinions"
+    opinions_root = workspace.root / "governance" / "opinions"
     records = [json.loads(path.read_text(encoding="utf-8")) for path in opinions_root.glob("*.json")]
     states = {record["opinion_state"] for record in records}
     assert {"SUPPORT", "OBJECT", "REQUEST_EVIDENCE", "ABSTAIN", "SUPPORT_WITH_CONDITIONS"} <= states
+    evidence_request = next(record for record in records if record["opinion_state"] == "REQUEST_EVIDENCE")
+    assert evidence_request["evidence_requests"] == [
+        "TEST FIXTURE ONLY: supply additional evidence for the rehearsal branch."
+    ]
+    assert "conditions" not in evidence_request
+    conditioned = next(record for record in records if record["opinion_state"] == "SUPPORT_WITH_CONDITIONS")
+    assert conditioned["conditions"] == ["TEST FIXTURE ONLY: retain the synthetic domain condition for rehearsal."]
+    assert "evidence_requests" not in conditioned
     security = [record for record in records if record["review_track"] == "SECURITY"]
     assert len(security) == 2
-    assert any(record["supersedes_opinion_id"] for record in security)
+    assert any(record.get("supersedes_opinion_id") for record in security)
 
     disposition_root = workspace.root / "governance" / "owner-dispositions"
     dispositions = [json.loads(path.read_text(encoding="utf-8")) for path in disposition_root.glob("*.json")]
@@ -175,13 +183,9 @@ def test_rehearsal_preserves_required_synthetic_semantic_states(tmp_path: Path) 
         "REQUEST_FURTHER_REVIEW",
         "ACCEPT_WITH_ACTION",
     }
-    conditions = [
-        condition
-        for record in dispositions
-        for condition in record["condition_register"]["conditions"]
-    ]
+    conditions = [condition for record in dispositions for condition in record["condition_register"]["conditions"]]
     assert any(
-        condition["condition_id"] == "GOVCOND-SYNTHETIC-RELEASE-BLOCKER"
+        condition["condition_id"] == "GOVCOND-00000000000000000000000000000001"
         and condition["release_effect"] == "BLOCKS_RELEASE"
         and condition["status"] == "OPEN"
         for condition in conditions
@@ -222,7 +226,7 @@ def test_handoff_template_is_deterministic_and_contains_only_placeholders() -> N
     serialized = json.dumps(first, sort_keys=True)
     assert "TEST FIXTURE ONLY" not in serialized
     assert "<REAL_REVIEWER_TO_BE_SUPPLIED_OUTSIDE_SYNTHETIC_REHEARSAL>" in serialized
-    assert "protected_evidence_included\": false" in serialized
+    assert 'protected_evidence_included": false' in serialized
 
 
 def test_handoff_template_never_embeds_real_governance_completion_claims() -> None:
