@@ -108,31 +108,31 @@ def _workspace_and_scope(
         scope_label="TEST FIXTURE ONLY - release governance",
         objects=objects,
         boundary_roots={"PUBLIC_GIT": public, "GENERATED_OUTPUT": generated, "ARCHIVE": archive},
-        actor="test-fixture",
+        actor="fraware",
     )["manifest"]
     return workspace, scope
 
 
 def _populate_six_track_support(workspace: Workspace, scope: dict[str, Any]) -> None:
     for track in sorted(REVIEW_TRACKS):
-        for suffix in ("a", "b"):
-            record_governance_reviewer_opinion(
-                workspace,
-                scope_id=scope["scope_id"],
-                scope_sha256=scope["manifest_sha256"],
-                review_track=track,
-                opinion_state="SUPPORT",
-                reviewer_claim={
-                    "reviewer_key": f"test-{track.lower()}-{suffix}",
-                    "name_or_role": f"TEST FIXTURE ONLY reviewer {track} {suffix}",
-                    "organization": f"TEST FIXTURE ONLY {track} organization {suffix}",
-                    "accountability_state": "CLAIMED_HUMAN_REVIEWER",
-                    "independence_statement": "TEST FIXTURE ONLY claimed independence; not authenticated.",
-                    "conflict_of_interest_disclosure": "NO_CONFLICT_DECLARED: TEST FIXTURE ONLY",
-                },
-                rationale="TEST FIXTURE ONLY support opinion for release-gate verification.",
-                actor="test-fixture",
-            )
+        record_governance_reviewer_opinion(
+            workspace,
+            scope_id=scope["scope_id"],
+            scope_sha256=scope["manifest_sha256"],
+            review_track=track,
+            opinion_state="SUPPORT",
+            reviewer_claim={
+                "reviewer_key": "fraware",
+                "name_or_role": "TEST FIXTURE ONLY designated repository authority",
+                "organization": "Repository governance",
+                "accountability_state": "CLAIMED_HUMAN_REVIEWER",
+                "independence_statement": "Role consolidation is explicit under governance policy v2.",
+                "conflict_of_interest_disclosure": "CONFLICT_DECLARED: explicit role consolidation under policy v2",
+            },
+            rationale=f"TEST FIXTURE ONLY support opinion for {track} release-gate verification.",
+            recorded_by="fraware",
+            actor="fraware",
+        )
 
 
 def _reserved_test_authority_claim() -> dict[str, str]:
@@ -171,7 +171,7 @@ def test_complete_six_track_package_is_readiness_only(tmp_path: Path) -> None:
     assert package["canonical_successor_authorized"] is False
     assert package["publication_authorized"] is False
     assert package["legacy_gate_classification"] == "NON_AUTHORIZING_CORE_GATE"
-    assert len(package["reviewer_opinions"]) == 12
+    assert len(package["reviewer_opinions"]) == 6
     assert package["owner_dispositions"] == []
     assert package["package_id"].startswith("GOVREADY-")
     assert (
@@ -217,6 +217,7 @@ def test_local_and_synthetic_authority_claims_fail_closed(tmp_path: Path) -> Non
             scope_sha256=scope["manifest_sha256"],
             products=PRODUCTS,
             authority_claim=local,
+            actor="fraware",
         )
 
     synthetic = _reserved_test_authority_claim()
@@ -229,6 +230,22 @@ def test_local_and_synthetic_authority_claims_fail_closed(tmp_path: Path) -> Non
             scope_sha256=scope["manifest_sha256"],
             products=PRODUCTS,
             authority_claim=synthetic,
+            actor="fraware",
+        )
+    assert load_governance_release_decisions(workspace) == []
+
+
+def test_non_designated_actor_cannot_make_final_decision(tmp_path: Path) -> None:
+    workspace, scope, candidate = _ready_fixture(tmp_path)
+    with pytest.raises(ValueError, match="designated governance authority fraware"):
+        record_release_authorization(
+            workspace,
+            candidate=candidate,
+            scope_id=scope["scope_id"],
+            scope_sha256=scope["manifest_sha256"],
+            products=PRODUCTS,
+            authority_claim=_reserved_test_authority_claim(),
+            actor="other-human",
         )
     assert load_governance_release_decisions(workspace) == []
 
@@ -242,7 +259,7 @@ def test_reserved_structural_fixture_can_exercise_authorization_path_without_aut
         scope_sha256=scope["manifest_sha256"],
         products=PRODUCTS,
         authority_claim=_reserved_test_authority_claim(),
-        actor="test-fixture",
+        actor="fraware",
     )
     decision = result["decision"]
     assert decision["decision_type"] == "AUTHORIZATION"
@@ -266,7 +283,7 @@ def test_publication_requires_exact_prior_authorization_and_explicit_evidence(tm
         scope_sha256=scope["manifest_sha256"],
         products=PRODUCTS,
         authority_claim=_reserved_test_authority_claim(),
-        actor="test-fixture",
+        actor="fraware",
     )["decision"]
 
     with pytest.raises(ValueError, match="one exact prior authorization"):
@@ -279,6 +296,7 @@ def test_publication_requires_exact_prior_authorization_and_explicit_evidence(tm
             authorization_decision_id="GOVREL-AUTH-MISSING",
             authority_claim=_reserved_test_authority_claim(),
             publication_evidence={"reference": "public-ref:test-fixture/publication", "sha256": "c" * 64},
+            actor="fraware",
         )
 
     publication = record_release_publication(
@@ -290,7 +308,7 @@ def test_publication_requires_exact_prior_authorization_and_explicit_evidence(tm
         authorization_decision_id=authorization["decision_id"],
         authority_claim=_reserved_test_authority_claim(),
         publication_evidence={"reference": "public-ref:test-fixture/publication", "sha256": "c" * 64},
-        actor="test-fixture",
+        actor="fraware",
     )["decision"]
     assert publication["decision_state"] == "PUBLISHED"
     assert publication["prior_authorization_reference"]["decision_id"] == authorization["decision_id"]
@@ -310,7 +328,7 @@ def test_binding_verifier_detects_product_and_governance_drift(tmp_path: Path) -
         scope_sha256=scope["manifest_sha256"],
         products=PRODUCTS,
         authority_claim=_reserved_test_authority_claim(),
-        actor="test-fixture",
+        actor="fraware",
     )["decision"]
     exact = verify_release_decision_binding(
         workspace,
@@ -348,7 +366,7 @@ def test_binding_verifier_detects_product_and_governance_drift(tmp_path: Path) -
             "conflict_of_interest_disclosure": "NO_CONFLICT_DECLARED: TEST FIXTURE ONLY",
         },
         rationale="TEST FIXTURE ONLY governance drift.",
-        actor="test-fixture",
+        actor="fraware",
     )
     governance_drift = verify_release_decision_binding(
         workspace,
@@ -406,7 +424,7 @@ def test_malformed_products_and_publication_evidence_fail_closed(tmp_path: Path)
         scope_sha256=scope["manifest_sha256"],
         products=PRODUCTS,
         authority_claim=_reserved_test_authority_claim(),
-        actor="test-fixture",
+        actor="fraware",
     )["decision"]
     with pytest.raises(ValueError, match="public-ref: or protected-ref:"):
         record_release_publication(
@@ -418,6 +436,7 @@ def test_malformed_products_and_publication_evidence_fail_closed(tmp_path: Path)
             authorization_decision_id=authorization["decision_id"],
             authority_claim=_reserved_test_authority_claim(),
             publication_evidence={"reference": "https://example.invalid", "sha256": "c" * 64},
+            actor="fraware",
         )
 
 
@@ -430,7 +449,7 @@ def test_decision_store_detects_record_tampering(tmp_path: Path) -> None:
         scope_sha256=scope["manifest_sha256"],
         products=PRODUCTS,
         authority_claim=_reserved_test_authority_claim(),
-        actor="test-fixture",
+        actor="fraware",
     )
     decision = result["decision"]
     path = Path(result["path"])
@@ -449,7 +468,7 @@ def test_duplicate_authorization_is_rejected(tmp_path: Path) -> None:
         "scope_sha256": scope["manifest_sha256"],
         "products": PRODUCTS,
         "authority_claim": _reserved_test_authority_claim(),
-        "actor": "test-fixture",
+        "actor": "fraware",
     }
     record_release_authorization(workspace, **kwargs)
     with pytest.raises(ValueError, match="already has an authorization decision"):
