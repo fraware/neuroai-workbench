@@ -1,20 +1,71 @@
 # Independent review acceptance
 
-This document defines optional human acceptance scaffolding for named independent reviews (issue #10). Independent review is a recommended follow-up for institutional-pilot readiness language. It is **not** a hard gate on observatory successor `AUTHORIZED` or `PUBLISHED` status.
+## Purpose
 
-Software can record review dispositions. It cannot commission reviewers, authenticate identities, or authorize release.
+This document defines an **optional external-review evidence scaffold** for issue #10 and stronger institutional-readiness claims. It is distinct from the active v2 governance-completion policy used for canonical observatory release control.
 
-## Boundary
+The two layers intentionally share domain labels such as security, methodology, accessibility, and affected-community review, but they use different record types, authority semantics, and completion criteria.
 
-Independent review acceptance records attribute a claimed local review outcome under `authority_profile: LOCAL_UNAUTHENTICATED_ATTRIBUTION`. Automated tests, repository-author review, Cursor agents, and model-generated critiques may support preparation but do not substitute for independent expert review or affected-user testing.
+## Critical distinction
 
-Passing schema validation, hash verification, or disposition completeness does not establish institutional-pilot readiness, security acceptance, methodological correctness, or release authorization.
+### Mandatory v2 governance review
 
-Successor release gates (`CANDIDATE` → `REVIEWED` → `AUTHORIZED` → `PUBLISHED`) remain separate. Named release-authority approval for `PUBLISHED` is distinct from optional #10 independent-review track completion. Incomplete independent-review tracks must not block technical authorization or publication when ordinary release gates are satisfied.
+Canonical governance completion under `GOVPOLICY-2.0.0` requires six separate designated-authority reviewer opinions:
 
-## Recommended review tracks
+- `SECURITY`;
+- `METHODOLOGY`;
+- `DATA_GOVERNANCE`;
+- `ACCESSIBILITY`;
+- `DOMAIN`;
+- `AFFECTED_COMMUNITY`.
 
-Each track, when commissioned, should have a named reviewer, documented scope, conflict-of-interest disclosure, findings register reference where applicable, and an append-only disposition record.
+Those opinions are recorded through the governance opinion store and are evaluated by `evaluate_governance_completion()`. The designated repository authority is `fraware`.
+
+Mandatory v2 governance review is documented in [governance records and release-control semantics](../reference/governance-records.md) and the [protected governance execution runbook](protected-governance-execution.md).
+
+### Optional external independent review
+
+The scaffold on this page records additional claimed independent-review evidence through `independent_review.py`. It is useful for stronger statements about institutional readiness, external security assessment, independent methodological review, representative-user accessibility evidence, domain review, or affected-community engagement.
+
+These optional independent-review records:
+
+- do not satisfy the six mandatory v2 designated-authority opinion requirements by themselves;
+- do not authorize a canonical successor;
+- do not publish a successor;
+- do not authenticate institutional delegation;
+- do not establish scientific, clinical, regulatory, legal, conformance, or deployment claims.
+
+The designated authority may cite valid external-review artifacts as evidence in a separate v2 governance opinion. The external-review disposition itself does not become a v2 opinion automatically.
+
+## Relationship to canonical release control
+
+Optional external review is **not a universal prerequisite** for repository canonical authorization under active v2. Its absence can still matter substantively: the designated authority may record an objection, evidence request, condition, or withholding decision when external review is needed for the actual release basis.
+
+Conversely, completion of every optional external-review track does not create canonical authorization. The active canonical sequence remains:
+
+```text
+exact governance scope
+    -> six mandatory v2 reviewer opinions
+    -> required v2 owner dispositions / condition closure
+    -> governance completion evaluation
+    -> release-readiness package
+    -> authorization decision
+    -> publication decision, if separately chosen
+```
+
+Do not use the successor candidate's historical/local release-gate state as a substitute for this sequence. See [observatory successor releases](../reference/successor-releases.md).
+
+## External-review boundary
+
+Independent-review acceptance records use claimed local attribution. Software can preserve scope, claimed reviewer identity, disposition, conditions, findings references, and integrity; it cannot commission reviewers, authenticate identities, determine independence as a real-world fact, or confer authority.
+
+Automated checks and internal preparation can support an external review but do not substitute for the named independent expert, representative user, or affected-community participant when such evidence is claimed.
+
+Passing schema validation, hash verification, or disposition completeness does not establish institutional-pilot readiness, security acceptance, methodological correctness, accessibility conformance, or release authorization.
+
+## Recommended external-review tracks
+
+Each track, when commissioned, should have a named reviewer, documented scope, conflict-of-interest disclosure, findings-register reference where applicable, and an append-only disposition record.
 
 | Track | Primary focus |
 |---|---|
@@ -27,44 +78,45 @@ Each track, when commissioned, should have a named reviewer, documented scope, c
 
 ## Pre-review preparation
 
-Before commissioning reviewers:
+Before commissioning an external review:
 
-1. Freeze the review scope artifact and record its SHA-256 digest.
-2. Publish reviewer scope, independence criteria, and conflict-of-interest template.
-3. Confirm no readiness claim will be issued solely from internal or automated review.
-4. Identify residual human follow-ups that software cannot complete.
+1. Freeze the external-review scope artifact and record its SHA-256 digest.
+2. Publish or privately agree the reviewer scope, independence criteria, and conflict-of-interest template as appropriate.
+3. Identify the stronger claim for which the external evidence is relevant.
+4. Confirm that no canonical release or institutional-readiness claim will be inferred solely from the external-review disposition.
+5. Identify any protected evidence and custody constraints before access is granted.
 
 ## Security checklist
 
-- [ ] Review scope approved before testing begins.
+- [ ] Review scope fixed before testing.
 - [ ] Local-server binding, network exposure, and container defaults reviewed.
 - [ ] Path traversal, archive handling, and safe-join boundaries reviewed.
 - [ ] Evidence-byte integrity and replacement detection reviewed.
 - [ ] Event-chain tampering and append-only record semantics reviewed.
 - [ ] Dependency, supply-chain, and release-provenance controls reviewed.
-- [ ] Future authenticated deployment design reviewed separately from local reference server.
+- [ ] Future authenticated deployment design reviewed separately from the local reference server.
 - [ ] Every finding has an owner, priority, evidence, and closure condition.
-- [ ] Unresolved risks remain public or explicitly access-controlled with rationale.
+- [ ] Unresolved risks remain visible or explicitly access-controlled with rationale.
 
 ## Methodology checklist
 
-- [ ] Requirement interpretation and v4.2 kernel boundaries reviewed by an independent domain expert.
-- [ ] PASS, PARTIAL, FAIL, and NOT ASSESSED use reviewed for semantic drift.
+- [ ] Requirement interpretation and v4.2 kernel boundaries reviewed by an appropriate independent expert.
+- [ ] `PASS`, `PARTIAL`, `FAIL`, and `NOT ASSESSED` use reviewed for semantic drift.
 - [ ] Unavailable, inaccessible, and unresolved evidence remain distinct states.
 - [ ] Prohibited-inference enforcement reviewed.
 - [ ] Migration preservation and successor-record semantics reviewed.
-- [ ] Conformance-level calculation and reviewer-authority model reviewed.
+- [ ] Conformance-level calculation and authority boundaries reviewed.
 - [ ] Disagreement and abstention records preserved without erasure.
-- [ ] No readiness claim issued solely from schema validity or test success.
+- [ ] No stronger claim inferred solely from schema validity or test success.
 
-## Data governance checklist
+## Data-governance checklist
 
-- [ ] Protected-evidence exchange remains metadata-only.
-- [ ] No protected neural, participant, clinical, regulatory, or credential material in public storage.
-- [ ] Retention, disclosure, and destruction rules named for every exported copy.
+- [ ] Protected-evidence exchange remains metadata-only where required.
+- [ ] No protected neural, participant, clinical, regulatory, or credential material is placed in public storage.
+- [ ] Retention, disclosure, and destruction rules are named for exported copies.
 - [ ] Federated evidence handling preserves custody and access-state boundaries.
-- [ ] Data-governance controls updated when exchange or workspace boundaries change.
-- [ ] Withheld claims appendix reviewed for outward-facing language.
+- [ ] Data-governance controls are updated when exchange or workspace boundaries change.
+- [ ] Withheld claims are reviewed for outward-facing language.
 
 ## Accessibility checklist
 
@@ -73,12 +125,12 @@ Before commissioning reviewers:
 - [ ] Contrast and non-color status communication verified.
 - [ ] Error recovery and form comprehension verified.
 - [ ] Report and export accessibility verified.
-- [ ] Testing includes representative users, not only automated checks.
-- [ ] Accessibility findings tracked to owner and closure condition.
+- [ ] Claimed representative-user validation actually includes representative users.
+- [ ] Accessibility findings are tracked to owner and closure condition.
 
 ## Domain checklist
 
-- [ ] Independent domain expert identified and scope signed.
+- [ ] Independent domain expert identified and scope fixed.
 - [ ] Exact system, configuration, population, endpoint, context, and jurisdiction preserved.
 - [ ] Strongest supported claim boundaries reviewed against controlled evidence.
 - [ ] Capability, authorization, deployment, commercial availability, and conformance remain separate typed states.
@@ -94,70 +146,72 @@ Before commissioning reviewers:
 
 ## Disposition recording
 
-Use the append-only independent review disposition schema and module:
+Use the append-only independent-review disposition schema and module:
 
 ```python
-from neuroai_workbench.independent_review import record_independent_review_disposition, scope_sha256_for_path
+from neuroai_workbench.independent_review import (
+    record_independent_review_disposition,
+    scope_sha256_for_path,
+)
 
 record_independent_review_disposition(
     workspace,
     "SECURITY",
-    scope_label="v0.3.0.dev0 release candidate",
+    scope_label="frozen external-review scope",
     scope_sha256=scope_sha256_for_path(scope_artifact_path),
     disposition="ACCEPTED_WITH_CONDITIONS",
     reviewer_claim={
         "name_or_role": "Named security reviewer",
         "organization": "Independent reviewer organization",
         "accountability_state": "CLAIMED_LOCAL_IDENTITY",
-        "independence_statement": "No material conflict with the assessed release scope.",
-        "conflict_of_interest_disclosure": "None declared.",
+        "independence_statement": "Reviewer-supplied independence statement.",
+        "conflict_of_interest_disclosure": "Reviewer-supplied disclosure.",
     },
-    rationale="Scope reviewed; residual items tracked in findings register.",
-    conditions=["Close path-handling finding SEC-014 before institutional pilot."],
-    findings_register_ref="FINDINGS-SECURITY-2026-001",
+    rationale="Reviewer-supplied rationale for the frozen scope.",
+    conditions=["Example condition text to be replaced by the real reviewer condition."],
+    findings_register_ref="EXTERNAL-FINDINGS-REFERENCE",
 )
 ```
 
-Disposition records must keep `release_authorization_performed: false`. Release authorization remains a separate human decision outside this scaffold.
+Example values above are placeholders only. Real external-review records must contain the actual reviewer-supplied statements and exact frozen scope digest.
 
-## Optional completeness checklist
+Disposition records keep `release_authorization_performed: false`. They do not enter the v2 governance opinion store automatically.
 
-Independent review acceptance for a frozen scope is considered complete when:
+## Optional completeness
 
-1. All six review tracks have a valid, append-only disposition record for the frozen scope.
-2. Integrity verification passes without hash or schema errors.
-3. No track disposition is `REJECTED`, `DEFERRED`, or `INCOMPLETE`.
-4. Unresolved risks and conditions are tracked with owners and closure criteria.
+For a deliberately commissioned external-review programme, local completeness can be summarized when:
 
-This completeness status is optional documentation. It does **not** gate `AUTHORIZED` or `PUBLISHED` successor advancement. A separate authorized release decision is still recorded through the ordinary release process (schema, manifests, hashes, and named release authority).
+1. every commissioned track has a valid append-only disposition for the frozen external-review scope;
+2. integrity verification passes;
+3. unresolved negative dispositions and conditions remain visible;
+4. findings are tracked to owners and closure criteria.
 
-Software summary helpers may report track completeness via `incomplete_tracks`. They must never set `release_authorization_performed` or `institutional_pilot_readiness_established` to true, and they must report `release_gate_blocked: false`.
+This completeness state describes the optional external-review programme only. It must not be called v2 governance completion, canonical authorization, publication, or institutional readiness.
 
 ## Residual human follow-ups
 
-The repository cannot complete the following without named human reviewers when those reviews are commissioned:
+The repository cannot itself:
 
-- Commission and execute independent security testing beyond automated gates.
-- Conduct representative-user accessibility testing.
-- Obtain independent domain expert sign-off on substantive claim boundaries.
-- Obtain affected-community representative review where applicable.
-- Issue an institutional-pilot readiness decision (distinct from successor `AUTHORIZED`/`PUBLISHED` release-control states).
+- commission or perform independent security testing;
+- conduct representative-user accessibility testing;
+- obtain independent domain-expert judgment;
+- obtain affected-community participation;
+- determine whether a reviewer is genuinely independent;
+- issue an institutional-pilot readiness decision.
 
-See issue #10 for the optional commissioning workflow and issue #34 for programme context.
+When any of those forms of evidence are material to the real #114 decision, the designated authority should reference the evidence or record the appropriate v2 blocker instead of inferring completion from this scaffold.
 
-## Appendix E — Withheld claims
+## Withheld claims
 
-The following claims are withheld unless separately established by named competent authority and controlled evidence:
+Unless separately established by named competent authority and controlled evidence, withhold claims of:
 
-1. Global completeness of the NeuroAI observatory or assessment corpus.
-2. Scientific validity or evidence authenticity of substantive findings.
-3. Legal or regulatory authorization for any assessed system.
-4. Clinical safety or effectiveness.
-5. Production-grade cybersecurity or security acceptance of any deployment.
-6. System conformance to any external standard beyond recorded assessor entries.
-7. UNESCO endorsement, official-methodology status, or institutional authority.
-8. Institutional-pilot readiness based solely on repository tests, hashes, or disposition records.
-9. Independent review completion based solely on software-generated disposition placeholders.
-10. Release authorization implied by disposition recording or track-completeness summaries.
-
-Any change affecting outward-facing language must update this appendix and the controlled status record.
+1. global completeness of the NeuroAI observatory or assessment corpus;
+2. scientific validity or evidence authenticity of substantive findings;
+3. legal or regulatory authorization for an assessed system;
+4. clinical safety or effectiveness;
+5. production-grade cybersecurity or security acceptance of a deployment;
+6. system conformance to an external standard beyond recorded assessor entries;
+7. endorsement, official-methodology status, or institutional authority from an external body;
+8. institutional-pilot readiness based solely on repository tests, hashes, or disposition records;
+9. independent-review completion based solely on placeholders or automated preparation;
+10. canonical authorization implied by external-review disposition or track-completeness summaries.
