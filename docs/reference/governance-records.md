@@ -1,212 +1,57 @@
-# Governance records and release-control semantics
+# High-assurance governance records
 
 ## Purpose
 
-This reference describes the implemented governance record model used by the canonical observatory release-control path. It defines structural workflow semantics only. It does not authenticate a person or institution, establish substantive validity, or create release authority by itself.
+This reference describes the repository's multi-record governance machinery. It remains supported for historical verification and for programmes that intentionally choose the optional high-assurance profile. It is no longer the default canonical release path.
 
-The active completion policy is `GOVPOLICY-2.0.0`. Its authority model is `SINGLE_DESIGNATED_HUMAN_AUTHORITY`, with `fraware` as the designated repository authority. Historical policy v1 remains verifiable under its original semantics and is not retroactively reinterpreted.
+The default path is the proportional [release attestation](../architecture/release-attestation.md): one designated-maintainer record containing six domain judgments and an explicit `AUTHORIZE` or `WITHHOLD` decision, followed by a separate publication record when publication is chosen.
 
-## Record graph
+## High-assurance record graph
 
 ```text
 exact release inputs
-        |
-        v
-GOVERNANCE_SCOPE_MANIFEST
-        |
-        v
-GOVERNANCE_REVIEWER_OPINION  x 6 mandatory tracks
-        |
-        +----> superseding opinions when a judgment changes
-        |
-        v
-GOVERNANCE_OWNER_DISPOSITION  when required by policy
-        |
-        +----> condition register / closure evidence
-        |
-        v
-evaluate_governance_completion()
-        |
-        v
-build_release_readiness_package()
-        |
-        +----> NOT_READY: stop; preserve blockers
-        |
-        v
-READY_FOR_REAL_AUTHORITY_REVIEW
-        |
-        +----> explicit protected withholding note outside typed release-decision store
-        |
-        v
-GOVERNANCE_RELEASE_DECISION / AUTHORIZATION
-        |
-        v
-GOVERNANCE_RELEASE_DECISION / PUBLICATION
+    -> GOVERNANCE_SCOPE_MANIFEST
+    -> GOVERNANCE_REVIEWER_OPINION records
+    -> GOVERNANCE_OWNER_DISPOSITION records when required
+    -> evaluate_governance_completion()
+    -> build_release_readiness_package()
+    -> GOVERNANCE_RELEASE_DECISION / AUTHORIZATION
+    -> GOVERNANCE_RELEASE_DECISION / PUBLICATION, if chosen
 ```
 
-Every persisted governance record is append-only and is bound to a matching event-chain witness. Later records may supersede earlier records through explicit digest-bound references; they do not rewrite history.
+Every persisted record is append-only and has a matching event-chain witness. Explicit supersession preserves prior judgments. The governance transaction journal protects record/event consistency across interrupted writes.
 
-## Record surfaces
+## Active v2 semantics inside this profile
 
-| Surface | Storage | Primary schema / implementation | Authority effect |
-| --- | --- | --- | --- |
-| Governance scope | `governance/scopes/` | `GOVERNANCE_SCOPE_MANIFEST.schema.json`; `governance_scope.py` | Binds exact governed bytes and storage boundaries only |
-| Reviewer opinions | `governance/opinions/` | `GOVERNANCE_REVIEWER_OPINION.schema.json`; `governance_opinions.py` | Records claimed review attribution and judgment only |
-| Owner dispositions | `governance/owner-dispositions/` | `GOVERNANCE_OWNER_DISPOSITION.schema.json`; `governance_dispositions.py` | Records owner response and condition lineage only |
-| Policy evaluation | Deterministic derived object | `evaluate_governance_completion()` | Computes workflow readiness only |
-| Readiness package | Deterministic derived object | `build_release_readiness_package()` | Binds candidate, scope, policy, products, withheld claims, and blockers only |
-| Release decisions | `governance/release-decisions/` | `GOVERNANCE_RELEASE_DECISION.schema.json`; `governance_release.py` | Records positive authorization or publication workflow decisions when all admission checks pass |
+`GOVPOLICY-2.0.0` uses `SINGLE_DESIGNATED_HUMAN_AUTHORITY` with `fraware` as the designated repository authority. Historical policy v1 remains verifiable under its original semantics.
 
-The event chain and governance transaction journal provide durability and tamper evidence. See [governance transaction recovery](../operations/governance-transaction-recovery.md).
+The six review tracks are `SECURITY`, `METHODOLOGY`, `DATA_GOVERNANCE`, `ACCESSIBILITY`, `DOMAIN`, and `AFFECTED_COMMUNITY`. An active designated `OBJECT` or `REQUEST_EVIDENCE` blocks high-assurance readiness until explicitly superseded. `SUPPORT_WITH_CONDITIONS` requires the corresponding disposition, and an unresolved condition marked `BLOCKS_RELEASE` remains blocking.
 
-## Governance scope
+Role consolidation is permitted under v2. Separate opinion and disposition records therefore express stronger audit granularity; they do not create additional independent decision makers when one designated person occupies the roles.
 
-A scope manifest binds the exact objects reviewed for one release decision. Six logical roles are mandatory:
+## Release-decision semantics
 
-- `PREDECESSOR_RELEASE`;
-- `SUCCESSOR_CANDIDATE`;
-- `DELTA`;
-- `REOPENING_REGISTER`;
-- `PRODUCT_MANIFEST`;
-- `WITHHELD_CLAIMS`.
+The high-assurance `GOVERNANCE_RELEASE_DECISION` store remains positive-only. It records `AUTHORIZATION` / `AUTHORIZED` and `PUBLICATION` / `PUBLISHED`. This limitation applies only to this optional profile.
 
-`CORE_CYCLE_EXECUTION` is an optional additional role. Logical roles are unique and canonically ordered. Duplicate object digests, missing required roles, invalid locators, stale digests, or missing referenced bytes fail verification.
+The default release-attestation profile has first-class typed `AUTHORIZE` and `WITHHOLD` outcomes and does not require protected external-authority evidence from the designated repository maintainer.
 
-Storage boundaries are `PUBLIC_GIT`, `GENERATED_OUTPUT`, `PROTECTED_WORKSPACE`, and `ARCHIVE`. Protected objects use opaque `protected-ref:<identifier>` locators. Public governance records must not contain protected local paths or protected evidence bodies.
+High-assurance authorization still uses the current protected-evidence admission rules implemented by `governance_release.py`. Choosing this profile is therefore an explicit programme decision to require the additional evidence and record choreography.
 
-A recorded scope is deliberately non-authorizing: `release_authorization_performed` remains `false`.
+## When to use this profile
 
-## Mandatory review tracks
+Use the high-assurance path when the programme needs one or more of the following:
 
-The active v2 policy requires one designated-authority review on each track:
+- separately attributable review records for audit or delegation;
+- explicit owner-disposition and condition lineage;
+- protected authority-evidence binding;
+- historical compatibility with v1/v2 governance records;
+- a programme-specific control framework that requires the additional record surfaces.
 
-1. `SECURITY`
-2. `METHODOLOGY`
-3. `DATA_GOVERNANCE`
-4. `ACCESSIBILITY`
-5. `DOMAIN`
-6. `AFFECTED_COMMUNITY`
+Those properties are optional repository controls. They are not prerequisites for a default release attestation.
 
-The designated reviewer key is `fraware`, and the human accountability state admitted by the active policy is `CLAIMED_HUMAN_REVIEWER`.
+## Verification
 
-A reviewer claim also records `name_or_role`, `independence_statement`, and `conflict_of_interest_disclosure`, with `organization` optional at the schema layer. These fields remain auditable record content. Under v2, claimed independence and a no-conflict marker are not threshold requirements because explicit role consolidation is allowed.
-
-Other identities may record opinions. Their opinions remain visible in the evidence record but do not satisfy the designated-authority threshold and do not acquire repository decision or veto authority.
-
-## Opinion states under v2
-
-| State | Counts as designated support | Owner disposition required | Active release effect |
-| --- | --- | --- | --- |
-| `SUPPORT` | Yes | No | Satisfies the track if the designated-authority claim is valid |
-| `SUPPORT_WITH_CONDITIONS` | Yes | Yes | Can satisfy support; unresolved `BLOCKS_RELEASE` conditions still block release |
-| `OBJECT` | No | Yes | Active designated-authority objection blocks release |
-| `REQUEST_EVIDENCE` | No | Yes | Active designated-authority evidence request blocks release |
-| `ABSTAIN` | No | No | Preserved, but does not satisfy the support threshold |
-
-An owner disposition does **not** erase an active `OBJECT` or `REQUEST_EVIDENCE`. If the designated authority's judgment changes after review, evidence, or remediation, the earlier opinion must be explicitly superseded by a new opinion on the same scope and track. The supersession record binds the predecessor opinion ID and digest.
-
-Only one active opinion is allowed per reviewer, track, and scope. Recording a replacement without explicit supersession fails closed.
-
-## Owner dispositions and conditions
-
-Disposition states are:
-
-- `ACCEPT`;
-- `ACCEPT_WITH_ACTION`;
-- `REJECT`;
-- `DEFER`;
-- `REQUEST_FURTHER_REVIEW`.
-
-Under active v2, a disposition on the decision path must use owner key `fraware`. A disposition from another owner identity remains auditable but fails the owner-authority threshold.
-
-`REJECT`, `DEFER`, and `REQUEST_FURTHER_REVIEW` are blocking owner states. `ACCEPT_WITH_ACTION` requires at least one condition.
-
-Condition records preserve:
-
-- immutable condition identity and description;
-- owner;
-- priority: `CRITICAL`, `HIGH`, `MEDIUM`, or `LOW`;
-- status: `OPEN`, `IN_PROGRESS`, or `RESOLVED`;
-- release effect: `BLOCKS_RELEASE` or `NON_BLOCKING`;
-- closure evidence for a resolved condition.
-
-A `RESOLVED` condition requires a closure-evidence reference. An unresolved condition with `release_effect = BLOCKS_RELEASE` prevents readiness. A superseding disposition must preserve the exact predecessor opinion set and immutable condition fields.
-
-## Completion evaluation
-
-`evaluate_governance_completion()` is deterministic and non-authorizing. It binds:
-
-- scope ID and scope digest;
-- current policy ID, version, and digest;
-- every opinion ID and digest in scope;
-- every owner-disposition ID, digest, and condition-register digest in scope.
-
-The evaluation reports both visible consensus and designated-authority decision consensus. It also reports missing track coverage, missing owner dispositions, active blocking opinions, non-designated blocking opinions, blocking owner dispositions, unresolved conditions, and release-blocking conditions.
-
-`release_readiness = SATISFIED` requires all six tracks to satisfy their active v2 requirements and all structural integrity checks to pass. The evaluation itself sets `release_authorization_performed`, `canonical_successor_authorized`, and `publication_authorized` to `false`.
-
-## Readiness package
-
-`build_release_readiness_package()` recomputes the current governance evaluation and binds it to the exact successor candidate and release products. The package validates, among other things:
-
-- successor-candidate validity;
-- exact predecessor digest;
-- exact candidate artifact digest;
-- equality between the candidate artifact and the `SUCCESSOR_CANDIDATE` artifact bound in the governance scope;
-- current governance policy identity and digest;
-- reviewer-opinion and owner-disposition references;
-- product IDs and digests;
-- withheld-claims digest;
-- absence of unresolved release-blocking conditions.
-
-Only a package with `readiness_state = READY_FOR_REAL_AUTHORITY_REVIEW`, an empty `blocker_codes` list, and no release-blocking conditions can enter the final decision functions.
-
-The package remains non-authorizing and is recomputed at final decision time. A stale scope, stale policy, changed candidate, changed product set, changed opinions, changed dispositions, or changed withheld claims therefore changes the binding and fails the intended exact-input path.
-
-## Authorization and publication
-
-Canonical positive release-control decisions are persisted through `record_release_authorization()` and `record_release_publication()`.
-
-For both decision types:
-
-- the decision actor must be exactly `fraware` under the current policy;
-- the readiness package must be bound to the current v2 policy ID, version, and digest;
-- the authority claim must use accountability state `CLAIMED_EXTERNAL_RELEASE_AUTHORITY`;
-- execution mode must be `PROTECTED_REAL_GOVERNANCE`;
-- authority evidence must be represented by an opaque `protected-ref:` plus a SHA-256 digest;
-- the software records claimed authority evidence but does not authenticate external delegation.
-
-Publication additionally requires exactly one prior stored authorization for the same candidate and exact readiness package. It records publication evidence using a `public-ref:` or `protected-ref:` plus digest. The publication record does not perform publication automatically; `automatic_publication_performed` remains `false`.
-
-A candidate can have at most one authorization record, and an authorization can have at most one publication record.
-
-## Authorization withholding
-
-The current typed release-decision schema is intentionally positive-only: `decision_type` is limited to `AUTHORIZATION` or `PUBLICATION`, and `decision_state` is limited to `AUTHORIZED` or `PUBLISHED`.
-
-There is no current `WITHHELD` decision type and no `record_release_withholding()` API.
-
-A negative authorization decision therefore must **not** be represented by:
-
-- calling `record_release_authorization()`;
-- hand-writing a release-decision JSON object;
-- using the successor candidate's legacy gate as a negative-decision surrogate.
-
-Under the current implementation, an operator who withholds authorization should preserve an explicit protected programme decision note that binds the scope ID/digest, readiness-package ID/digest, real authority-evidence reference/digest, decision maker, time, and rationale, and should verify that no authorization record exists for the candidate.
-
-If a future programme rule requires withholding to be represented as a repository-native typed governance decision, the schema, recorder, verifier, transaction tests, and documentation must be extended in a separately reviewed implementation change before that negative-decision path is used.
-
-## Legacy successor gate
-
-The successor candidate contains a historical/local `release_gate` state for compatibility with earlier workflow mechanics. It is not the active canonical authorization mechanism.
-
-The current readiness builder classifies a candidate whose current gate or gate history contains `AUTHORIZED` or `PUBLISHED` as `LEGACY_LOCAL_AUTHORITY_CLAIM_NOT_GOVERNANCE_COMPLETE` and adds blocker `LEGACY_LOCAL_AUTHORITY_GATE_PRESENT`.
-
-Canonical v2 authorization and publication therefore come from governance release-decision records, not from mutating the candidate's legacy gate.
-
-## Verification surfaces
-
-The principal non-mutating verification functions are:
+The existing verifiers remain authoritative for this profile:
 
 - `verify_governance_scope_records()`;
 - `verify_governance_reviewer_opinions()`;
@@ -216,8 +61,8 @@ The principal non-mutating verification functions are:
 - `verify_governance_release_decisions()`;
 - `verify_release_decision_binding()`.
 
-A failed verifier is a stop condition. Do not repair governance history by hand. Use the transaction-recovery procedure and, where necessary, a reviewed migration with explicit before/after hashes.
+See [governance transaction recovery](../operations/governance-transaction-recovery.md) for persistence failures and [protected governance execution](../operations/protected-governance-execution.md) for the optional operator procedure.
 
 ## Authority boundary
 
-These records establish repository workflow state and cryptographic binding. They do not establish scientific truth, clinical safety or effectiveness, regulatory or legal authorization, system conformance, institutional delegation, external endorsement, or publication by an external body.
+These records establish repository workflow state only. They do not authenticate institutional delegation or establish scientific validity, clinical safety or effectiveness, regulatory or legal authorization, conformance, external endorsement, or publication by an external body.

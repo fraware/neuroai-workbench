@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/attested-publication-1.0.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "publication_id",
+    "recorded_at",
+    "recorded_by",
+    "attestation_reference",
+    "candidate_reference",
+    "publication_evidence",
+    "automatic_publication_performed",
+    "boundary",
+    "publication_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "publication_id": {"type": "string", "pattern": "^RELPUB-[A-Z0-9]+$"},
+    "recorded_at": {"type": "string", "minLength": 10},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "attestation_reference": {
+      "type": "object",
+      "required": ["attestation_id", "attestation_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "attestation_id": {"type": "string", "pattern": "^RELATT-[A-Z0-9]+$"},
+        "attestation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "candidate_reference": {
+      "type": "object",
+      "required": ["candidate_id", "candidate_sha256", "candidate_artifact_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "candidate_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "publication_evidence": {
+      "type": "object",
+      "required": ["reference", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "reference": {"type": "string", "pattern": "^(public-ref|protected-ref):[A-Za-z0-9._:/-]+$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "automatic_publication_performed": {"const": false},
+    "boundary": {
+      "const": "Publication records bind one active authorized default release attestation to explicit publication evidence. Recording publication does not publish content automatically or establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
+    },
+    "publication_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
