@@ -2,9 +2,9 @@
 
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
-const path = require("node:path");
 
 const source = fs.readFileSync(
   path.join(__dirname, "../../src/neuroai_workbench/static/accessibility.js"),
@@ -13,33 +13,50 @@ const source = fs.readFileSync(
 const context = { globalThis: {} };
 vm.createContext(context);
 vm.runInContext(source, context);
-const { applyTabState, nextTabIndex } = context.globalThis.NeuroAIAccessibility;
+const {
+  applyTabState,
+  focusSkipTarget,
+  nextTabIndex,
+  publishToastAnnouncement,
+} = context.globalThis.NeuroAIAccessibility;
+
+function fakeClassList(initial = []) {
+  const classes = new Set(initial);
+  return {
+    toggle(value, enabled) {
+      if (enabled) classes.add(value);
+      else classes.delete(value);
+    },
+    contains(value) {
+      return classes.has(value);
+    },
+  };
+}
 
 function fakeTab(name) {
-  const classes = new Set();
   const attributes = new Map();
   return {
     dataset: { tab: name },
-    classList: {
-      toggle(value, enabled) {
-        if (enabled) classes.add(value);
-        else classes.delete(value);
-      },
-      contains(value) {
-        return classes.has(value);
-      },
+    classList: fakeClassList(),
+    setAttribute(attributeName, value) {
+      attributes.set(attributeName, value);
     },
-    setAttribute(name, value) {
-      attributes.set(name, value);
-    },
-    getAttribute(name) {
-      return attributes.get(name);
+    getAttribute(attributeName) {
+      return attributes.get(attributeName);
     },
     tabIndex: -1,
     focused: false,
     focus() {
       this.focused = true;
     },
+  };
+}
+
+function fakeToast(message, { error = false, hidden = false } = {}) {
+  return {
+    hidden,
+    textContent: message,
+    classList: fakeClassList(error ? ["error"] : []),
   };
 }
 
@@ -84,4 +101,126 @@ test("activation tolerates an unknown tab name without granting focus", () => {
   assert.equal(tabs[0].getAttribute("aria-selected"), "false");
   assert.equal(tabs[0].tabIndex, -1);
   assert.equal(panels[0].hidden, true);
+});
+
+test("skip navigation prevents default, focuses the target, and scrolls it into view", () => {
+  const target = {
+    focused: false,
+    scrollOptions: null,
+    focus() {
+      this.focused = true;
+    },
+    scrollIntoView(options) {
+      this.scrollOptions = options;
+    },
+  };
+  const link = { getAttribute: () => "#main-content" };
+  const root = { getElementById: (id) => (id === "main-content" ? target : null) };
+  const event = {
+    prevented: false,
+    preventDefault() {
+      this.prevented = true;
+    },
+  };
+
+  assert.equal(focusSkipTarget(link, event, root), true);
+  assert.equal(event.prevented, true);
+  assert.equal(target.focused, true);
+  assert.equal(target.scrollOptions.block, "start");
+});
+
+test("skip navigation leaves the browser default intact when the target is missing", () => {
+  const link = { getAttribute: () => "#missing" };
+  const root = { getElementById: () => null };
+  const event = {
+    prevented: false,
+    preventDefault() {
+      this.prevented = true;
+    },
+  };
+
+  assert.equal(focusSkipTarget(link, event, root), false);
+  assert.equal(event.prevented, false);
+});
+
+test("routine and error toasts route to distinct announcement regions", () => {
+  const statusRegion = { textContent: "old status" };
+  const alertRegion = { textContent: "old alert" };
+  const callbacks = [];
+  const schedule = (callback) => callbacks.push(callback);
+  const state = { sequence: 0 };
+
+  assert.equal(
+    publishToastAnnouncement(fakeToast("Saved"), statusRegion, alertRegion, schedule, state),
+    true,
+  );
+  assert.equal(statusRegion.textContent, "");
+  assert.equal(alertRegion.textContent, "old alert");
+  callbacks.shift()();
+  assert.equal(statusRegion.textContent, "Saved");
+
+  assert.equal(
+    publishToastAnnouncement(fakeToast("Save failed", { error: true }), statusRegion, alertRegion, schedule, state),
+    true,
+  );
+  assert.equal(alertRegion.textContent, "");
+  callbacks.shift()();
+  assert.equal(alertRegion.textContent, "Save failed");
+});
+
+test("repeated identical announcements clear and republish the same message", () => {
+  const statusRegion = { textContent: "" };
+  const alertRegion = { textContent: "" };
+  const callbacks = [];
+  const schedule = (callback) => callbacks.push(callback);
+  const state = { sequence: 0 };
+  const toast = fakeToast("Updated");
+
+  publishToastAnnouncement(toast, statusRegion, alertRegion, schedule, state);
+  callbacks.shift()();
+  assert.equal(statusRegion.textContent, "Updated");
+
+  publishToastAnnouncement(toast, statusRegion, alertRegion, schedule, state);
+  assert.equal(statusRegion.textContent, "");
+  callbacks.shift()();
+  assert.equal(statusRegion.textContent, "Updated");
+});
+
+test("newer announcements suppress stale scheduled callbacks", () => {
+  const statusRegion = { textContent: "" };
+  const alertRegion = { textContent: "" };
+  const callbacks = [];
+  const schedule = (callback) => callbacks.push(callback);
+  const state = { sequence: 0 };
+  const toast = fakeToast("First");
+
+  publishToastAnnouncement(toast, statusRegion, alertRegion, schedule, state);
+  toast.textContent = "Second";
+  publishToastAnnouncement(toast, statusRegion, alertRegion, schedule, state);
+
+  callbacks[0]();
+  assert.equal(statusRegion.textContent, "");
+  callbacks[1]();
+  assert.equal(statusRegion.textContent, "Second");
+});
+
+test("hidden or empty toasts do not schedule announcements", () => {
+  const statusRegion = { textContent: "status" };
+  const alertRegion = { textContent: "alert" };
+  const callbacks = [];
+  const schedule = (callback) => callbacks.push(callback);
+  const state = { sequence: 0 };
+
+  assert.equal(
+    publishToastAnnouncement(fakeToast("Hidden", { hidden: true }), statusRegion, alertRegion, schedule, state),
+    false,
+  );
+  assert.equal(
+    publishToastAnnouncement(fakeToast("   "), statusRegion, alertRegion, schedule, state),
+    false,
+  );
+  assert.equal(callbacks.length, 0);
+  assert.equal(state.sequence, 0);
+  assert.equal(statusRegion.textContent, "status");
+  assert.equal(alertRegion.textContent, "alert");
 });
