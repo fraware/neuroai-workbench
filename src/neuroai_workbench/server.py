@@ -31,6 +31,7 @@ from .review_queue import (
     submit_opinion,
     verify_review_queue,
 )
+from .review_state import build_review_state_snapshot
 from .review_ui import (
     adjudication_fields,
     ops_health_projection,
@@ -189,6 +190,9 @@ class WorkbenchRequestHandler(BaseHTTPRequestHandler):
                 return
             if segments == ["api", "review", "health"]:
                 self._send_json(ops_health_projection(self.workspace.root))
+                return
+            if segments == ["api", "review", "snapshot"]:
+                self._send_json(build_review_state_snapshot(self.workspace.root))
                 return
             if segments == ["api", "review", "queue"]:
                 status = review_queue_status(self.workspace.root)
