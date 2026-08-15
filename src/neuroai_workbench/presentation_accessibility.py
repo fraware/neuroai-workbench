@@ -209,7 +209,13 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
         if (element.attrs.get("aria-hidden") or "").lower() == "true" and _is_focusable(element):
             add("A11Y007", element, "focusable element must not be aria-hidden")
 
+    main_landmarks = [element for element in elements if element.tag == "main"]
+    if len(main_landmarks) != 1:
+        add("A11Y005", None, f"document must contain exactly one main landmark; found {len(main_landmarks)}")
+
     skip_links = [element for element in elements if "skip-link" in _classes(element)]
+    if len(skip_links) != 1:
+        add("A11Y005", None, f"document must contain exactly one skip link; found {len(skip_links)}")
     for link in skip_links:
         href = (link.attrs.get("href") or "").strip()
         if not href.startswith("#") or len(href) == 1:
