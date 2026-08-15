@@ -20,13 +20,13 @@ For native XLSX:
 - creator system and external attributes are fixed;
 - members use `ZIP_STORED`, avoiding compressor-version variability.
 
-The CSV-in-ZIP fallback uses the same canonical archive writer, so its member ordering and metadata obey the same rules.
+The CSV-in-ZIP fallback uses the same canonical metadata writer while retaining its established public member sequence: `README.txt`, `workbook.manifest.json`, then sheet CSVs sorted by sheet name. Preserving that stable sequence avoids an unnecessary format-contract change; determinism does not require the fallback package to adopt the native package's lexicographic ordering rule.
 
 Duplicate member names are rejected instead of being normalized ambiguously.
 
 ## Verification
 
-Unit tests manufacture source archives with deliberately different timestamps, member order, comments, extra fields, and file attributes, then require canonicalization to converge to identical bytes. Native workbook tests also verify core document properties, package readability, release identity, and the canonical ZIP metadata.
+Unit tests manufacture source archives with deliberately different timestamps, member order, comments, extra fields, and file attributes, then require native-package canonicalization to converge to identical bytes. Native workbook tests also verify core document properties, package readability, release identity, and canonical ZIP metadata. Fallback tests verify both the established member sequence and the same timestamp, attribute, comment, extra-field, and storage-method normalization.
 
 The supported Python 3.10–3.14 CI lanes execute a deterministic-workbook fingerprint check over the same synthetic serializer fixture. The fingerprint is intended to be pinned after cross-version calibration. Once pinned, a byte-level drift on any supported runtime fails that lane even when workbook semantics still parse successfully.
 
