@@ -292,9 +292,7 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
     if not has_alert:
         add("A11Y008", None, "document requires a persistent assertive alert region")
 
-    ordered = tuple(
-        sorted(issues, key=lambda item: (item.document, item.code, item.element or "", item.message))
-    )
+    ordered = tuple(sorted(issues, key=lambda item: (item.document, item.code, item.element or "", item.message)))
     return AccessibilityReport(not ordered, ordered)
 
 
