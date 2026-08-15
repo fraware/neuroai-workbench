@@ -113,6 +113,20 @@ def test_skip_link_contract_fails_closed(old: str, new: str, expected: str) -> N
     assert any(expected in message for message in messages(valid_document().replace(old, new), "A11Y005"))
 
 
+def test_skip_and_main_landmark_presence_are_required() -> None:
+    missing_skip = valid_document().replace('<a class="skip-link" href="#main">Skip</a>\n', "")
+    assert "document must contain exactly one skip link; found 0" in messages(missing_skip, "A11Y005")
+
+    duplicate_skip = valid_document().replace(
+        '<a class="skip-link" href="#main">Skip</a>',
+        '<a class="skip-link" href="#main">Skip</a><a class="skip-link" href="#main">Skip again</a>',
+    )
+    assert "document must contain exactly one skip link; found 2" in messages(duplicate_skip, "A11Y005")
+
+    two_mains = valid_document().replace("</body>", '<main id="extra" tabindex="-1"></main></body>')
+    assert "document must contain exactly one main landmark; found 2" in messages(two_mains, "A11Y005")
+
+
 def test_tab_outside_tablist_and_empty_tablist_are_rejected() -> None:
     outside = valid_document().replace('<div role="tablist" aria-labelledby="views-label">', "<div>")
     assert any("not contained by a tablist" in message for message in messages(outside, "A11Y006"))
