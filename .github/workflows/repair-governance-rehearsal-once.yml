@@ -74,6 +74,11 @@ jobs:
           if test.count(old_condition_id) != 1:
               raise SystemExit(f'expected one test condition-id occurrence, found {test.count(old_condition_id)}')
           test = test.replace(old_condition_id, new_condition_id, 1)
+          stale_supersession = '    assert any(record["supersedes_opinion_id"] for record in security)'
+          current_supersession = '    assert any(record.get("supersedes_opinion_id") for record in security)'
+          if stale_supersession not in test:
+              raise SystemExit('stale supersession assertion not found')
+          test = test.replace(stale_supersession, current_supersession, 1)
           lines = test.splitlines()
           state_assert = '    assert {"SUPPORT", "OBJECT", "REQUEST_EVIDENCE", "ABSTAIN", "SUPPORT_WITH_CONDITIONS"} <= states'
           if state_assert not in lines:
