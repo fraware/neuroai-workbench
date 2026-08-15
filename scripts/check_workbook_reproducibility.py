@@ -9,9 +9,9 @@ from typing import Any
 
 from neuroai_workbench.products import excel as excel_module
 
-# Calibrated only after the same native package digest is observed on every supported
-# Python lane. A reviewed serializer change may intentionally update this value.
-EXPECTED_NATIVE_SHA256: str | None = None
+# Calibrated on the complete Python 3.10-3.14 supported-runtime matrix. A reviewed
+# serializer change may intentionally update this value only with cross-version evidence.
+EXPECTED_NATIVE_SHA256 = "042d48eda03e6963ea701d105c207261e9286cf9dd6f9670c24f8520f2a37b81"
 
 
 def _synthetic_query() -> dict[str, Any]:
@@ -55,7 +55,7 @@ def main() -> int:
 
     digest = hashlib.sha256(first).hexdigest()
     print(f"workbook-reproducibility-sha256={digest}")
-    if EXPECTED_NATIVE_SHA256 is not None and digest != EXPECTED_NATIVE_SHA256:
+    if digest != EXPECTED_NATIVE_SHA256:
         print(
             f"ERROR: workbook fingerprint drifted: {digest} != {EXPECTED_NATIVE_SHA256}",
             file=sys.stderr,
