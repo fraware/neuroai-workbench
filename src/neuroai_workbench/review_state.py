@@ -187,8 +187,7 @@ def verify_review_state_snapshot(snapshot: Any) -> dict[str, Any]:
                 if not isinstance(record, dict):
                     continue
                 errors.extend(
-                    f"records.{category}[{index}] schema: {error}"
-                    for error in _schema_errors(record, schema_name)
+                    f"records.{category}[{index}] schema: {error}" for error in _schema_errors(record, schema_name)
                 )
                 identifier = record.get(id_field)
                 if isinstance(identifier, str):
