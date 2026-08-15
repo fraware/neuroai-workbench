@@ -14,6 +14,7 @@ from .util import atomic_write_json, canonical_json_bytes, sha256_bytes, utc_now
 from .workspace import Workspace
 
 REHEARSAL_EXECUTION_MODE = "SYNTHETIC_REHEARSAL"
+REHEARSAL_RECORD_TYPE = "NON_AUTHORITATIVE_GOVERNANCE_REHEARSAL"
 SYNTHETIC_REVIEWER_STATE = "SYNTHETIC_REHEARSAL_REVIEWER"
 SYNTHETIC_OWNER_STATE = "SYNTHETIC_REHEARSAL_OWNER"
 REHEARSAL_BOUNDARY = (
@@ -262,6 +263,7 @@ def build_handoff_template(
     ]
     template: dict[str, Any] = {
         "schema_version": "1",
+        "record_type": REHEARSAL_RECORD_TYPE,
         "handoff_state": "TEMPLATE_ONLY_REAL_HUMAN_EXECUTION_DEFERRED",
         "scope_reference": {"scope_id": scope_id, "scope_sha256": scope_sha256},
         "candidate_reference": candidate_reference,
@@ -335,6 +337,7 @@ def run_synthetic_governance_rehearsal(
 
     certificate: dict[str, Any] = {
         "schema_version": "1",
+        "record_type": REHEARSAL_RECORD_TYPE,
         "certificate_id": f"GOVREHEARSAL-{uuid4().hex[:16].upper()}",
         "generated_at": utc_now(),
         "execution_mode": REHEARSAL_EXECUTION_MODE,

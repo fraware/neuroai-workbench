@@ -8,6 +8,10 @@ The rehearsal is deliberately non-authoritative. Its fixed execution mode is:
 
 `SYNTHETIC_REHEARSAL`
 
+Every repository-controlled rehearsal certificate and handoff template is explicitly typed as:
+
+`NON_AUTHORITATIVE_GOVERNANCE_REHEARSAL`
+
 Synthetic reviewer and owner records are test/workflow fixtures. They do not represent real people, organizations, independence claims, institutional delegation, scientific approval, regulatory authority, release authority, publication authority, or UNESCO endorsement.
 
 A successful rehearsal therefore proves that the machinery works **and** that synthetic execution cannot cross the release-authority boundary.
