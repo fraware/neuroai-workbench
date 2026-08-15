@@ -24,6 +24,7 @@ from .workspace import Workspace
 OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
 DEFAULT_POLICY_RESOURCE = "GOVERNANCE_COMPLETION_POLICY.v2.json"
 LEGACY_POLICY_RESOURCE = "GOVERNANCE_COMPLETION_POLICY.v1.json"
+POLICY_SCHEMA_VERSION = "1"
 POLICY_SCHEMA_VERSIONS = frozenset({"1", "2"})
 SINGLE_AUTHORITY_MODEL = "SINGLE_DESIGNATED_HUMAN_AUTHORITY"
 SUPPORT_STATES = frozenset({"SUPPORT", "SUPPORT_WITH_CONDITIONS"})
@@ -41,12 +42,12 @@ EVALUATION_BOUNDARY = (
 )
 
 
-def load_governance_completion_policy(*, version: str = "current") -> dict[str, Any]:
-    """Load the active policy, or v1 explicitly for historical verification."""
-    if version == "current" or version == "2":
-        resource_name = DEFAULT_POLICY_RESOURCE
-    elif version == "1":
+def load_governance_completion_policy(*, version: str = "1") -> dict[str, Any]:
+    """Load a versioned policy; no-argument loading preserves the historical v1 API."""
+    if version == "1":
         resource_name = LEGACY_POLICY_RESOURCE
+    elif version in {"2", "current"}:
+        resource_name = DEFAULT_POLICY_RESOURCE
     else:
         raise ValueError(f"Unsupported governance policy version {version!r}")
     resource = files(OPERATIONS_RESOURCE_PACKAGE).joinpath(resource_name)
@@ -88,8 +89,7 @@ def _validate_policy(policy: dict[str, Any]) -> list[str]:
     if single_authority:
         if policy.get("authority_model") != SINGLE_AUTHORITY_MODEL:
             errors.append("v2 policy authority_model is invalid")
-        designated = str(policy.get("designated_authority_key", "")).strip()
-        if not designated:
+        if not str(policy.get("designated_authority_key", "")).strip():
             errors.append("v2 policy designated_authority_key is required")
         if policy.get("allow_role_consolidation") is not True:
             errors.append("v2 policy must explicitly allow role consolidation")
@@ -333,7 +333,6 @@ def _track_result(
     release_blockers = sorted(
         str(item.get("condition_id", "")) for item in unresolved if item.get("release_effect") == "BLOCKS_RELEASE"
     )
-
     ready = all(
         (
             reviewer_ok,
@@ -440,15 +439,13 @@ def evaluate_governance_completion(
     policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate workflow readiness without performing or implying release authorization."""
-    selected = deepcopy(policy if policy is not None else load_governance_completion_policy())
+    selected = deepcopy(policy if policy is not None else load_governance_completion_policy(version="2"))
     policy_errors = _validate_policy(selected)
     policy_sha256 = governance_policy_sha256(selected)
-
     opinion_verification = verify_governance_reviewer_opinions(workspace)
     disposition_verification = verify_governance_owner_dispositions(workspace)
     scopes = [item for item in load_governance_scope_manifests(workspace) if item.get("scope_id") == scope_id]
     scope_valid = len(scopes) == 1 and scopes[0].get("manifest_sha256") == scope_sha256
-
     opinions = _same_scope_records(
         load_governance_reviewer_opinions(workspace), scope_id=scope_id, scope_sha256=scope_sha256
     )
@@ -468,7 +465,6 @@ def evaluate_governance_completion(
         opinions=opinions,
         dispositions=dispositions,
     )
-
     tracks: dict[str, dict[str, Any]] = {}
     if not policy_errors:
         policy_tracks = cast(dict[str, dict[str, Any]], selected["tracks"])
@@ -490,7 +486,6 @@ def evaluate_governance_completion(
                 authority_model=authority_model,
                 designated_authority_key=designated_authority_key,
             )
-
     integrity_valid = all(
         (
             not policy_errors,
@@ -507,7 +502,7 @@ def evaluate_governance_completion(
         result["release_readiness"] == "SATISFIED" for result in tracks.values()
     )
     evaluation: dict[str, Any] = {
-        "schema_version": "2" if selected.get("schema_version") == "2" else "1",
+        "schema_version": str(selected.get("schema_version", "")),
         "policy_id": selected.get("policy_id"),
         "policy_version": selected.get("policy_version"),
         "policy_sha256": policy_sha256,
