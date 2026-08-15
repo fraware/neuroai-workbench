@@ -8,6 +8,7 @@ from neuroai_workbench.governance_dispositions import verify_governance_owner_di
 from neuroai_workbench.governance_opinions import REVIEW_TRACKS, verify_governance_reviewer_opinions
 from neuroai_workbench.governance_rehearsal import (
     REHEARSAL_EXECUTION_MODE,
+    REHEARSAL_RECORD_TYPE,
     TRACK_QUESTIONS,
     build_handoff_template,
     run_synthetic_governance_rehearsal,
@@ -118,6 +119,7 @@ def test_synthetic_rehearsal_exercises_full_stack_without_authority(tmp_path: Pa
     handoff = result["handoff_template"]
 
     assert certificate["execution_mode"] == REHEARSAL_EXECUTION_MODE
+    assert certificate["record_type"] == REHEARSAL_RECORD_TYPE
     assert certificate["authoritative"] is False
     assert len(certificate["synthetic_opinion_records"]) == 7
     assert len(certificate["synthetic_disposition_records"]) == 3
@@ -136,6 +138,7 @@ def test_synthetic_rehearsal_exercises_full_stack_without_authority(tmp_path: Pa
     assert certificate["real_human_governance_completed"] is False
     assert len(certificate["required_real_human_actions"]) == 4
 
+    assert handoff["record_type"] == REHEARSAL_RECORD_TYPE
     assert handoff["handoff_state"] == "TEMPLATE_ONLY_REAL_HUMAN_EXECUTION_DEFERRED"
     assert {item["track"] for item in handoff["tracks"]} == set(REVIEW_TRACKS)
     assert handoff["protected_evidence_included"] is False
@@ -219,6 +222,7 @@ def test_handoff_template_is_deterministic_and_contains_only_placeholders() -> N
     first = build_handoff_template(**kwargs)
     second = build_handoff_template(**kwargs)
     assert first == second
+    assert first["record_type"] == REHEARSAL_RECORD_TYPE
     assert first["template_sha256"] == second["template_sha256"]
     assert len(first["tracks"]) == 6
     for track in REVIEW_TRACKS:
