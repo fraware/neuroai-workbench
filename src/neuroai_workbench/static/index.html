@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content" data-i18n="assessment.skip_link">Skip to assessment content</a>
+
   <header class="topbar">
     <div>
       <h1 data-i18n="assessment.shell_title">NeuroAI Evidence and Decision Workbench</h1>
@@ -16,7 +18,7 @@
   </header>
 
   <div class="layout">
-    <aside class="sidebar">
+    <aside class="sidebar" aria-labelledby="cases-heading">
       <div class="sidebar-actions">
         <button id="createCase" data-i18n="assessment.new_case">New case</button>
         <label class="button secondary" for="importCase" data-i18n="assessment.import_json">Import JSON</label>
@@ -24,11 +26,11 @@
         <a class="button secondary" href="/review.html" data-i18n="assessment.monitoring_review">Monitoring review</a>
       </div>
       <div id="workspaceState" class="small muted">Loading workspace…</div>
-      <h2 data-i18n="assessment.sidebar_cases">Cases</h2>
+      <h2 id="cases-heading" data-i18n="assessment.sidebar_cases">Cases</h2>
       <div id="caseList" class="case-list"></div>
     </aside>
 
-    <main class="main">
+    <main id="main-content" class="main" tabindex="-1">
       <section id="emptyState" class="empty-state">
         <h2 data-i18n="assessment.empty_title">Select or create a case</h2>
         <p data-i18n="assessment.empty_description">The workbench stores assessment JSON, evidence bytes, snapshots and a hash-chained event log in the local workspace.</p>
@@ -47,18 +49,21 @@
           </div>
         </div>
 
-        <nav class="tabs" aria-label="Case views">
-          <button data-tab="summary" class="active" data-i18n="assessment.tabs.summary">Summary</button>
-          <button data-tab="requirements" data-i18n="assessment.tabs.requirements">Requirements</button>
-          <button data-tab="evidence" data-i18n="assessment.tabs.evidence">Evidence</button>
-          <button data-tab="decisions" data-i18n="assessment.tabs.decisions">Decisions</button>
-          <button data-tab="json" data-i18n="assessment.tabs.json">JSON</button>
-          <button data-tab="events" data-i18n="assessment.tabs.event_log">Event log</button>
-        </nav>
+        <h3 id="case-views-label" class="sr-only" data-i18n="assessment.tabs.label">Case views</h3>
+        <div class="tabs" role="tablist" aria-labelledby="case-views-label">
+          <button id="tab-summary-trigger" role="tab" data-tab="summary" class="active" aria-selected="true" aria-controls="tab-summary" tabindex="0" data-i18n="assessment.tabs.summary">Summary</button>
+          <button id="tab-requirements-trigger" role="tab" data-tab="requirements" aria-selected="false" aria-controls="tab-requirements" tabindex="-1" data-i18n="assessment.tabs.requirements">Requirements</button>
+          <button id="tab-evidence-trigger" role="tab" data-tab="evidence" aria-selected="false" aria-controls="tab-evidence" tabindex="-1" data-i18n="assessment.tabs.evidence">Evidence</button>
+          <button id="tab-decisions-trigger" role="tab" data-tab="decisions" aria-selected="false" aria-controls="tab-decisions" tabindex="-1" data-i18n="assessment.tabs.decisions">Decisions</button>
+          <button id="tab-json-trigger" role="tab" data-tab="json" aria-selected="false" aria-controls="tab-json" tabindex="-1" data-i18n="assessment.tabs.json">JSON</button>
+          <button id="tab-events-trigger" role="tab" data-tab="events" aria-selected="false" aria-controls="tab-events" tabindex="-1" data-i18n="assessment.tabs.event_log">Event log</button>
+        </div>
 
-        <div id="toast" class="toast" hidden></div>
+        <div id="statusAnnouncements" class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-announcer="status"></div>
+        <div id="alertAnnouncements" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true" data-announcer="alert"></div>
+        <div id="toast" class="toast" aria-hidden="true" data-toast-announcer hidden></div>
 
-        <section id="tab-summary" class="tab-panel">
+        <section id="tab-summary" class="tab-panel" role="tabpanel" aria-labelledby="tab-summary-trigger">
           <div id="summaryCards" class="cards"></div>
           <div class="two-column">
             <article class="panel">
@@ -76,13 +81,16 @@
           </article>
         </section>
 
-        <section id="tab-requirements" class="tab-panel" hidden>
+        <section id="tab-requirements" class="tab-panel" role="tabpanel" aria-labelledby="tab-requirements-trigger" hidden>
           <div class="filterbar">
+            <label class="sr-only" for="requirementSearch" data-i18n="assessment.filters.search">Search requirements</label>
             <input id="requirementSearch" type="search" placeholder="Search requirement ID, title or finding">
+            <label class="sr-only" for="statusFilter" data-i18n="assessment.filters.status">Filter by status</label>
             <select id="statusFilter">
               <option value="">All statuses</option>
               <option>PASS</option><option>PARTIAL</option><option>FAIL</option><option>NOT ASSESSED</option>
             </select>
+            <label class="sr-only" for="priorityFilter" data-i18n="assessment.filters.priority">Filter by priority</label>
             <select id="priorityFilter">
               <option value="">All priorities</option><option>P0</option><option>P1</option><option>P2</option>
             </select>
@@ -92,7 +100,7 @@
           </tr></thead><tbody></tbody></table></div>
         </section>
 
-        <section id="tab-evidence" class="tab-panel" hidden>
+        <section id="tab-evidence" class="tab-panel" role="tabpanel" aria-labelledby="tab-evidence-trigger" hidden>
           <div class="two-column">
             <article class="panel">
               <h3>Register local evidence bytes</h3>
@@ -120,11 +128,11 @@
           </tr></thead><tbody></tbody></table></div>
         </section>
 
-        <section id="tab-decisions" class="tab-panel" hidden>
+        <section id="tab-decisions" class="tab-panel" role="tabpanel" aria-labelledby="tab-decisions-trigger" hidden>
           <div id="decisionList"></div>
         </section>
 
-        <section id="tab-json" class="tab-panel" hidden>
+        <section id="tab-json" class="tab-panel" role="tabpanel" aria-labelledby="tab-json-trigger" hidden>
           <div class="toolbar json-toolbar">
             <button id="formatJson" class="secondary">Format</button>
             <button id="saveJson">Save JSON</button>
@@ -133,7 +141,7 @@
           <textarea id="jsonEditor" spellcheck="false" aria-label="Assessment JSON editor"></textarea>
         </section>
 
-        <section id="tab-events" class="tab-panel" hidden>
+        <section id="tab-events" class="tab-panel" role="tabpanel" aria-labelledby="tab-events-trigger" hidden>
           <div id="eventVerification"></div>
           <div class="table-wrap"><table id="eventsTable"><thead><tr>
             <th>Seq</th><th>Time</th><th>Actor</th><th>Action</th><th>Hash</th>
@@ -143,9 +151,9 @@
     </main>
   </div>
 
-  <dialog id="newCaseDialog">
+  <dialog id="newCaseDialog" aria-labelledby="new-case-dialog-title">
     <form method="dialog" id="newCaseForm">
-      <h2>Create case</h2>
+      <h2 id="new-case-dialog-title">Create case</h2>
       <label>Case ID<input id="newCaseId" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}" required></label>
       <label>Title<input id="newCaseTitle" required></label>
       <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default">Create</button></div>
@@ -153,6 +161,7 @@
   </dialog>
 
   <script src="i18n.js" defer></script>
+  <script src="accessibility.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

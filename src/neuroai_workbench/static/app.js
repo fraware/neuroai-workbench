@@ -182,11 +182,6 @@ async function loadEvents() {
   for(const item of payload.events){const tr=document.createElement("tr");[item.seq,item.timestamp,item.actor,item.action,item.event_hash].forEach((value,i)=>{const td=document.createElement("td");td.textContent=escapeText(value);if(i===4)td.className="mono";tr.append(td)});tbody.append(tr)}
 }
 
-function activateTab(name) {
-  $$(".tabs button").forEach(button => button.classList.toggle("active", button.dataset.tab === name));
-  $$(".tab-panel").forEach(panel => { panel.hidden = panel.id !== `tab-${name}`; });
-}
-
 async function refreshCurrent() { if (state.activeCase) await openCase(state.activeCase); }
 
 $("#createCase").addEventListener("click", () => $("#newCaseDialog").showModal());
@@ -203,7 +198,6 @@ $("#importCase").addEventListener("change", async (event) => {
   try { const assessment=JSON.parse(await file.text()); await api("/api/import",{method:"POST",body:JSON.stringify({assessment})}); showToast("Assessment imported."); await loadCases(assessment.assessment_metadata.assessment_id); }
   catch(error){showToast(error.message,true)} finally {event.target.value=""}
 });
-$$(".tabs button").forEach(button => button.addEventListener("click", () => activateTab(button.dataset.tab)));
 [$("#requirementSearch"),$("#statusFilter"),$("#priorityFilter")].forEach(control => control.addEventListener("input", renderRequirements));
 $("#validateCase").addEventListener("click", async()=>{try{state.validation=await api(`/api/cases/${encodeURIComponent(state.activeCase)}/validate`);renderSummary();showToast(state.validation.valid?"Validation passed.":"Validation found controlled issues.",!state.validation.valid)}catch(error){showToast(error.message,true)}});
 $("#snapshotCase").addEventListener("click", async()=>{try{await api(`/api/cases/${encodeURIComponent(state.activeCase)}/snapshot`,{method:"POST",body:JSON.stringify({label:"manual"})});showToast("Snapshot created.");await loadEvents()}catch(error){showToast(error.message,true)}});
