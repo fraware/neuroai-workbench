@@ -295,7 +295,24 @@ The software does not authenticate the external authority claim. The repository 
 
 ## Phase 9 — make an explicit authorization decision
 
-If authorization is **not** granted, stop and record that withholding in the operator-controlled decision record appropriate to the programme. Do not call `record_release_authorization()` merely to create a negative placeholder; that API creates an `AUTHORIZED` decision only.
+### Typed withholding limitation
+
+The current `GOVERNANCE_RELEASE_DECISION` schema admits only:
+
+- `decision_type = AUTHORIZATION`, `decision_state = AUTHORIZED`;
+- `decision_type = PUBLICATION`, `decision_state = PUBLISHED`.
+
+There is no repository-native `WITHHELD` decision type or recorder in the current implementation.
+
+Therefore, if authorization is **not** granted:
+
+1. do **not** call `record_release_authorization()`;
+2. do **not** fabricate a `GOVERNANCE_RELEASE_DECISION` JSON record;
+3. preserve an explicit protected programme decision note that binds the scope ID/digest, readiness-package ID/digest, real authority-evidence reference/digest, decision maker, time, and rationale;
+4. verify that no authorization decision exists for the candidate;
+5. keep the canonical successor unauthorized and unpublished.
+
+If #114 completion is intended to require a repository-native typed withholding record, that capability must be implemented and reviewed **before** executing the negative-decision path. Documentation must not pretend the current positive-only schema already provides it.
 
 If authorization is granted, call `record_release_authorization()` with:
 
@@ -349,7 +366,7 @@ A completed protected execution should retain, outside public Git unless each it
 - condition-register IDs/digests and closure evidence references;
 - evaluation ID/digest and input-binding digest;
 - readiness package ID/digest;
-- authorization decision ID/digest, or explicit withholding record;
+- authorization decision ID/digest, or the explicit protected withholding note described above;
 - publication decision ID/digest if publication occurred;
 - final event-chain verification result;
 - final governance-store verification results;
