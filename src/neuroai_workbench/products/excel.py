@@ -8,15 +8,15 @@ from pathlib import Path
 from typing import Any
 
 from ..util import atomic_write_bytes, sha256_bytes
-from .archive import (
-    CANONICAL_COMPRESSION as _CANONICAL_COMPRESSION,
-    CANONICAL_DOCUMENT_TIME as _CANONICAL_DOCUMENT_TIME,
-    canonicalize_zip_payload as _canonicalize_zip_payload,
-    render_deterministic_zip as _render_deterministic_zip,
-)
+from . import archive as _archive
 from .query import query_release
 
 __all__ = ["query_release", "render_analytical_workbook_bundle", "write_analytical_workbook_bundle"]
+
+_CANONICAL_COMPRESSION = _archive.CANONICAL_COMPRESSION
+_CANONICAL_DOCUMENT_TIME = _archive.CANONICAL_DOCUMENT_TIME
+_canonicalize_zip_payload = _archive.canonicalize_zip_payload
+_render_deterministic_zip = _archive.render_deterministic_zip
 
 
 def _sheet_to_csv(rows: list[dict[str, Any]]) -> str:
