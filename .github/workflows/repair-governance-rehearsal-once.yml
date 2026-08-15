@@ -1,0 +1,109 @@
+name: Repair governance rehearsal once
+
+on:
+  push:
+    branches:
+      - agent/114-governance-rehearsal
+    paths:
+      - ".github/workflows/repair-governance-rehearsal-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/114-governance-rehearsal
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Import current coverage contract and repair rehearsal API usage
+        run: |
+          git fetch origin main
+          git checkout origin/main -- scripts/check_module_coverage.py
+          python - <<'PY'
+          from pathlib import Path
+
+          source_path = Path('src/neuroai_workbench/governance_rehearsal.py')
+          source = source_path.read_text(encoding='utf-8')
+          old = '''        requested_actions=(
+              ["TEST FIXTURE ONLY: supply additional evidence for the rehearsal branch."]
+              if state == "REQUEST_EVIDENCE"
+              else []
+          ),
+'''
+          new = '''        conditions=(
+              ["TEST FIXTURE ONLY: retain the synthetic domain condition for rehearsal."]
+              if state == "SUPPORT_WITH_CONDITIONS"
+              else []
+          ),
+          evidence_requests=(
+              ["TEST FIXTURE ONLY: supply additional evidence for the rehearsal branch."]
+              if state == "REQUEST_EVIDENCE"
+              else []
+          ),
+'''
+          if old not in source:
+              raise SystemExit('obsolete requested_actions block not found exactly')
+          source_path.write_text(source.replace(old, new, 1), encoding='utf-8')
+
+          test_path = Path('tests/unit/test_governance_rehearsal.py')
+          test = test_path.read_text(encoding='utf-8')
+          old_path = 'workspace.root / "governance" / "reviewer-opinions"'
+          new_path = 'workspace.root / "governance" / "opinions"'
+          if old_path not in test:
+              raise SystemExit('stale reviewer-opinions path not found exactly')
+          test = test.replace(old_path, new_path, 1)
+          marker = '''    states = {record["opinion_state"] for record in records}
+    assert {"SUPPORT", "OBJECT", "REQUEST_EVIDENCE", "ABSTAIN", "SUPPORT_WITH_CONDITIONS"} <= states
+'''
+          addition = '''    states = {record["opinion_state"] for record in records}
+    assert {"SUPPORT", "OBJECT", "REQUEST_EVIDENCE", "ABSTAIN", "SUPPORT_WITH_CONDITIONS"} <= states
+    evidence_request = next(record for record in records if record["opinion_state"] == "REQUEST_EVIDENCE")
+    assert evidence_request["evidence_requests"] == [
+        "TEST FIXTURE ONLY: supply additional evidence for the rehearsal branch."
+    ]
+    assert "conditions" not in evidence_request
+    conditioned = next(record for record in records if record["opinion_state"] == "SUPPORT_WITH_CONDITIONS")
+    assert conditioned["conditions"] == [
+        "TEST FIXTURE ONLY: retain the synthetic domain condition for rehearsal."
+    ]
+    assert "evidence_requests" not in conditioned
+'''
+          if marker not in test:
+              raise SystemExit('semantic-state assertion marker not found exactly')
+          test_path.write_text(test.replace(marker, addition, 1), encoding='utf-8')
+
+          coverage_path = Path('scripts/check_module_coverage.py')
+          coverage = coverage_path.read_text(encoding='utf-8')
+          floor = '    "neuroai_workbench/governance_rehearsal.py": 95.0,\n'
+          if floor not in coverage:
+              anchor = '    "neuroai_workbench/governance_release.py": 95.0,\n'
+              if anchor not in coverage:
+                  raise SystemExit('coverage insertion anchor not found')
+              coverage = coverage.replace(anchor, anchor + floor, 1)
+              coverage_path.write_text(coverage, encoding='utf-8')
+          PY
+      - name: Install exact branch dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Format and verify repaired surface
+        run: |
+          python -m ruff format src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
+          python -m ruff check src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
+          python -m pytest tests/unit/test_governance_rehearsal.py -q
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
+          git diff --cached --check
+          git commit -m "Repair governance rehearsal against current contracts"
+          git push origin HEAD:agent/114-governance-rehearsal
