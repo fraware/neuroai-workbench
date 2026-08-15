@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 from uuid import uuid4
 
 from .governance_dispositions import record_governance_owner_disposition
@@ -81,7 +81,7 @@ def _record_opinion(
     reviewer_key: str,
     supersedes_opinion_id: str | None = None,
 ) -> dict[str, Any]:
-    return record_governance_reviewer_opinion(
+    result = record_governance_reviewer_opinion(
         workspace,
         scope_id=scope_id,
         scope_sha256=scope_sha256,
@@ -101,7 +101,8 @@ def _record_opinion(
         ),
         supersedes_opinion_id=supersedes_opinion_id,
         actor="synthetic-rehearsal",
-    )["opinion"]
+    )
+    return cast(dict[str, Any], result["opinion"])
 
 
 def _record_fixture_opinions(
