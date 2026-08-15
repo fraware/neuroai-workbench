@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from ..util import atomic_write_bytes, sha256_bytes
+from .archive import CANONICAL_DOCUMENT_TIME, canonicalize_zip_payload
 from .query import iter_appendix_sheets
 
 _CELL_LIMIT = 200
@@ -32,6 +33,8 @@ def render_docx(query: dict[str, Any]) -> bytes | None:
     except ImportError:
         return None
     document = Document()
+    document.core_properties.created = CANONICAL_DOCUMENT_TIME
+    document.core_properties.modified = CANONICAL_DOCUMENT_TIME
     document.add_heading("NeuroAI observatory publication", level=1)
     document.add_paragraph(
         "Generators are views: this document restates canonical JSON projections only. "
@@ -78,7 +81,6 @@ def render_docx(query: dict[str, Any]) -> bytes | None:
                 cells = table.rows[row_index].cells
                 for col_index, value in enumerate(values):
                     cells[col_index].text = value
-            # Keep large multi-table documents navigable.
             if sheet_name != appendices[-1][0]:
                 document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
@@ -89,7 +91,7 @@ def render_docx(query: dict[str, Any]) -> bytes | None:
     )
     buffer_path_bytes = io.BytesIO()
     document.save(buffer_path_bytes)
-    return bytes(buffer_path_bytes.getvalue())
+    return canonicalize_zip_payload(buffer_path_bytes.getvalue())
 
 
 def write_docx(query: dict[str, Any], output: Path) -> dict[str, Any]:

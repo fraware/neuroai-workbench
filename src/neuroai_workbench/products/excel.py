@@ -4,19 +4,19 @@ import csv
 import io
 import json
 import zipfile
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from ..util import atomic_write_bytes, sha256_bytes
+from . import archive as _archive
 from .query import query_release
 
 __all__ = ["query_release", "render_analytical_workbook_bundle", "write_analytical_workbook_bundle"]
 
-_CANONICAL_DOCUMENT_TIME = datetime(2000, 1, 1, 0, 0, 0)
-_CANONICAL_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
-_CANONICAL_COMPRESSION = zipfile.ZIP_STORED
-_CANONICAL_EXTERNAL_ATTR = 0o600 << 16
+_CANONICAL_COMPRESSION = _archive.CANONICAL_COMPRESSION
+_CANONICAL_DOCUMENT_TIME = _archive.CANONICAL_DOCUMENT_TIME
+_canonicalize_zip_payload = _archive.canonicalize_zip_payload
+_render_deterministic_zip = _archive.render_deterministic_zip
 
 
 def _sheet_to_csv(rows: list[dict[str, Any]]) -> str:
@@ -29,40 +29,6 @@ def _sheet_to_csv(rows: list[dict[str, Any]]) -> str:
     for row in rows:
         writer.writerow({key: row.get(key, "") for key in fieldnames})
     return buffer.getvalue()
-
-
-def _canonical_zip_info(filename: str) -> zipfile.ZipInfo:
-    info = zipfile.ZipInfo(filename=filename, date_time=_CANONICAL_ZIP_DATE)
-    info.compress_type = _CANONICAL_COMPRESSION
-    info.create_system = 3
-    info.create_version = 20
-    info.extract_version = 20
-    info.flag_bits = 0
-    info.internal_attr = 0
-    info.external_attr = _CANONICAL_EXTERNAL_ATTR
-    info.extra = b""
-    info.comment = b""
-    return info
-
-
-def _render_deterministic_zip(entries: list[tuple[str, bytes]], *, sort_entries: bool = True) -> bytes:
-    filenames = [filename for filename, _ in entries]
-    if len(filenames) != len(set(filenames)):
-        raise ValueError("deterministic archive entries must have unique filenames")
-
-    ordered_entries = sorted(entries, key=lambda item: item[0]) if sort_entries else entries
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w", compression=_CANONICAL_COMPRESSION, allowZip64=True) as archive:
-        archive.comment = b""
-        for filename, payload in ordered_entries:
-            archive.writestr(_canonical_zip_info(filename), payload, compress_type=_CANONICAL_COMPRESSION)
-    return buffer.getvalue()
-
-
-def _canonicalize_zip_payload(payload: bytes) -> bytes:
-    with zipfile.ZipFile(io.BytesIO(payload), "r") as source:
-        entries = [(info.filename, source.read(info)) for info in source.infolist()]
-    return _render_deterministic_zip(entries)
 
 
 def _render_native_xlsx(query: dict[str, Any]) -> bytes | None:
