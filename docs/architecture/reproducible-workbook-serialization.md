@@ -28,9 +28,9 @@ Duplicate member names are rejected instead of being normalized ambiguously.
 
 Unit tests manufacture source archives with deliberately different timestamps, member order, comments, extra fields, and file attributes, then require native-package canonicalization to converge to identical bytes. Native workbook tests also verify core document properties, package readability, release identity, and canonical ZIP metadata. Fallback tests verify both the established member sequence and the same timestamp, attribute, comment, extra-field, and storage-method normalization.
 
-The supported Python 3.10–3.14 CI lanes execute a deterministic-workbook fingerprint check over the same synthetic serializer fixture. The fingerprint is intended to be pinned after cross-version calibration. Once pinned, a byte-level drift on any supported runtime fails that lane even when workbook semantics still parse successfully.
+The supported Python 3.10–3.14 CI lanes execute a deterministic-workbook fingerprint check over the same synthetic serializer fixture. Cross-version calibration on Python 3.10, 3.11, 3.12, 3.13, and 3.14 independently converged on SHA-256 `042d48eda03e6963ea701d105c207261e9286cf9dd6f9670c24f8520f2a37b81`. That digest is pinned in the gate; any byte-level drift on any supported runtime fails the lane even when workbook semantics still parse successfully.
 
-`neuroai_workbench/products/excel.py` has a permanent module coverage floor to keep the serialization contract exercised as it evolves.
+`neuroai_workbench/products/excel.py` has a permanent 95% module coverage floor to keep the serialization contract exercised as it evolves.
 
 ## Change protocol
 
