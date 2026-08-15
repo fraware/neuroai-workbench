@@ -25,7 +25,7 @@ def _synthetic_query() -> dict[str, Any]:
         "depth": "full",
         "withheld_claims": ["synthetic fixture"],
         "rows": {
-            "coverage_counts": [{"metric": "organizations", "value": 1}],
+            "empty": [],
             "organizations": [
                 {
                     "canonical_name": "Example Neurotech",
@@ -33,7 +33,6 @@ def _synthetic_query() -> dict[str, Any]:
                     "verification_state": "verified",
                 }
             ],
-            "release_summary": [{"field": "release_sha256", "value": release_sha256}],
             "verification": [{"field": "release_sha256", "value": release_sha256}],
         },
     }
