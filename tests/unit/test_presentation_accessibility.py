@@ -142,6 +142,24 @@ def test_tab_outside_tablist_and_empty_tablist_are_rejected() -> None:
     assert "tablist contains no tabs" in messages(empty, "A11Y006")
 
 
+def test_tablist_naming_and_roving_focus_align_with_selection() -> None:
+    unnamed = valid_document().replace('role="tablist" aria-labelledby="views-label"', 'role="tablist"', 1)
+    assert "tablist requires an explicit accessible name" in messages(unnamed, "A11Y006")
+
+    aria_labelled = valid_document().replace(
+        'role="tablist" aria-labelledby="views-label"', 'role="tablist" aria-label="Views"', 1
+    )
+    aria_labelled = aria_labelled.replace('<div id="views-label">Views</div>\n', "")
+    assert "tablist requires an explicit accessible name" not in messages(aria_labelled, "A11Y006")
+
+    misaligned = valid_document().replace('aria-selected="true" tabindex="0"', 'aria-selected="true" tabindex="-1"', 1)
+    misaligned = misaligned.replace(
+        'aria-selected="false" tabindex="-1"', 'aria-selected="false" tabindex="0"', 1
+    )
+    assert "selected tab must use tabindex=0" in messages(misaligned, "A11Y006")
+    assert "unselected tab must use tabindex=-1" in messages(misaligned, "A11Y006")
+
+
 @pytest.mark.parametrize(
     ("old", "new", "expected"),
     [
@@ -195,6 +213,9 @@ def test_live_announcement_contract_fails_closed() -> None:
         'aria-atomic="true" data-announcer="status"', 'aria-atomic="false" data-announcer="status"'
     )
     status_hidden = valid_document().replace('data-announcer="status"></div>', 'data-announcer="status" hidden></div>')
+    status_aria_hidden = valid_document().replace(
+        'data-announcer="status"></div>', 'data-announcer="status" aria-hidden="true"></div>'
+    )
     alert_live = valid_document().replace('role="alert" aria-live="assertive"', 'role="alert" aria-live="polite"', 1)
     duplicate_status = valid_document().replace(
         '<div id="alert" role="alert"',
@@ -208,6 +229,7 @@ def test_live_announcement_contract_fails_closed() -> None:
     assert "status announcer must use role=status" in messages(status_role, "A11Y008")
     assert "status announcer must use aria-atomic=true" in messages(status_atomic, "A11Y008")
     assert any("remain exposed" in message for message in messages(status_hidden, "A11Y008"))
+    assert "status announcer must not use aria-hidden=true" in messages(status_aria_hidden, "A11Y008")
     assert "alert announcer must use aria-live=assertive" in messages(alert_live, "A11Y008")
     assert "document requires exactly one status announcer; found 2" in messages(duplicate_status, "A11Y008")
     assert "document requires exactly one visual toast announcement source; found 0" in messages(
