@@ -61,6 +61,7 @@ jobs:
       - run: python -m pytest --cov=neuroai_workbench --cov-report=term-missing --cov-report=xml --cov-report=json --cov-fail-under=90
       - run: python scripts/check_module_coverage.py --coverage-json coverage.json
       - run: python scripts/check_workbook_reproducibility.py
+      - run: python scripts/check_publication_reproducibility.py
       - if: matrix.python-version == '3.13'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -172,7 +173,7 @@ jobs:
           python -c "import openpyxl, docx, reportlab; print('openpyxl', openpyxl.__version__); print('python-docx', docx.__version__); print('reportlab', reportlab.Version)"
       - name: Native XLSX/DOCX/PDF structure
         run: |
-          python -m pytest tests/unit/test_products_native.py tests/unit/test_products_excel.py tests/unit/test_products_excel_reproducibility.py tests/unit/test_products_reconciliation.py -q
+          python -m pytest tests/unit/test_products_native.py tests/unit/test_products_excel.py tests/unit/test_products_excel_reproducibility.py tests/unit/test_products_publication_reproducibility.py tests/unit/test_products_reconciliation.py -q
 
   pip-audit:
     name: pip-audit
