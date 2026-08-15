@@ -102,6 +102,7 @@ jobs:
           python -m pip install --no-deps -e .
       - name: Format and verify repaired surface
         run: |
+          python -m ruff check --fix src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
           python -m ruff format src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
           python -m ruff check src/neuroai_workbench/governance_rehearsal.py tests/unit/test_governance_rehearsal.py scripts/check_module_coverage.py
           python -m pytest tests/unit/test_governance_rehearsal.py -q
