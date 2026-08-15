@@ -312,9 +312,20 @@ def _track_result(
             independence_state = "INSUFFICIENT_CLAIMS"
         authority_state = "MULTI_PARTY_POLICY_SATISFIED" if authority_ok else "MULTI_PARTY_POLICY_INCOMPLETE"
 
+    decision_opinions = human if single_authority else opinions
+    decision_counts = Counter(str(opinion.get("opinion_state", "")) for opinion in decision_opinions)
+    decision_opinion_ids = {str(item.get("opinion_id", "")) for item in decision_opinions}
     blocking_states = set(policy["blocking_opinion_states"])
     blocking = [
-        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in blocking_states
+        str(item.get("opinion_id", ""))
+        for item in decision_opinions
+        if str(item.get("opinion_state", "")) in blocking_states
+    ]
+    non_designated_blocking = [
+        str(item.get("opinion_id", ""))
+        for item in opinions
+        if str(item.get("opinion_id", "")) not in decision_opinion_ids
+        and str(item.get("opinion_state", "")) in blocking_states
     ]
     objections = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "OBJECT"]
     requests = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "REQUEST_EVIDENCE"]
@@ -322,11 +333,26 @@ def _track_result(
 
     owner_required = set(policy["owner_disposition_required_for_states"])
     required_owner = [
-        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in owner_required
+        str(item.get("opinion_id", ""))
+        for item in decision_opinions
+        if str(item.get("opinion_state", "")) in owner_required
     ]
     missing_owner = sorted(item for item in required_owner if item not in disposition_map)
+    active_track_dispositions = {
+        str(disposition.get("disposition_id", "")): disposition
+        for opinion in decision_opinions
+        if (disposition := disposition_map.get(str(opinion.get("opinion_id", "")))) is not None
+    }
+    non_designated_owner_disposition_ids: list[str] = []
+    if single_authority:
+        for disposition_id, disposition in active_track_dispositions.items():
+            owner_claim = disposition.get("owner_claim")
+            owner_key = str(owner_claim.get("owner_key", "")) if isinstance(owner_claim, dict) else ""
+            if owner_key != designated_authority_key:
+                non_designated_owner_disposition_ids.append(disposition_id)
+    owner_authority_ok = not non_designated_owner_disposition_ids
     blocking_owner, unresolved = _condition_metrics(
-        opinions,
+        decision_opinions,
         disposition_map,
         set(policy["blocking_owner_disposition_states"]),
     )
@@ -341,6 +367,7 @@ def _track_result(
             independence_ok,
             conflict_ok,
             authority_ok,
+            owner_authority_ok,
             not blocking,
             not missing_owner,
             not blocking_owner,
@@ -352,6 +379,7 @@ def _track_result(
         "applicable": True,
         "coverage_state": "COMPLETE" if reviewer_ok else "INCOMPLETE",
         "consensus_state": _consensus_state(counts),
+        "decision_consensus_state": _consensus_state(decision_counts),
         "independence_state": independence_state,
         "authority_state": authority_state,
         "active_opinion_count": len(opinions),
@@ -360,6 +388,7 @@ def _track_result(
         "distinct_claimed_organizations": len(organizations),
         "active_state_counts": dict(sorted(counts.items())),
         "blocking_opinion_ids": sorted(blocking),
+        "non_designated_blocking_opinion_ids": sorted(non_designated_blocking),
         "objection_opinion_ids": sorted(objections),
         "evidence_request_opinion_ids": sorted(requests),
         "abstention_opinion_ids": sorted(abstentions),
@@ -371,11 +400,13 @@ def _track_result(
         "declared_conflict_reviewer_keys": sorted(conflicts),
         "unclassified_conflict_reviewer_keys": sorted(unclassified),
         "non_designated_reviewer_keys": sorted(set(wrong_authority)),
+        "non_designated_owner_disposition_ids": sorted(non_designated_owner_disposition_ids),
         "support_threshold_satisfied": support_ok,
         "organization_threshold_satisfied": organization_ok,
         "claimed_independence_threshold_satisfied": independence_ok,
         "claimed_conflict_threshold_satisfied": conflict_ok,
         "designated_authority_threshold_satisfied": authority_ok,
+        "owner_authority_threshold_satisfied": owner_authority_ok,
         "release_readiness": "SATISFIED" if ready else "UNSATISFIED",
     }
 
@@ -453,9 +484,7 @@ def evaluate_governance_completion(
         load_governance_owner_dispositions(workspace), scope_id=scope_id, scope_sha256=scope_sha256
     )
     active_opinions = _active(opinions, id_field="opinion_id", supersedes_field="supersedes_opinion_id")
-    active_dispositions = _active(
-        dispositions, id_field="disposition_id", supersedes_field="supersedes_disposition_id"
-    )
+    active_dispositions = _active(dispositions, id_field="disposition_id", supersedes_field="supersedes_disposition_id")
     disposition_map = _disposition_by_opinion(active_dispositions)
     binding = _input_binding(
         scope_id=scope_id,
@@ -498,8 +527,10 @@ def evaluate_governance_completion(
     disagreement = any(result["objection_opinion_ids"] for result in tracks.values())
     evidence_requests = any(result["evidence_request_opinion_ids"] for result in tracks.values())
     affected_gap = "AFFECTED_COMMUNITY" not in tracks or tracks["AFFECTED_COMMUNITY"]["coverage_state"] != "COMPLETE"
-    ready = integrity_valid and bool(tracks) and all(
-        result["release_readiness"] == "SATISFIED" for result in tracks.values()
+    ready = (
+        integrity_valid
+        and bool(tracks)
+        and all(result["release_readiness"] == "SATISFIED" for result in tracks.values())
     )
     evaluation: dict[str, Any] = {
         "schema_version": str(selected.get("schema_version", "")),
