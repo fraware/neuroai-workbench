@@ -32,11 +32,7 @@ def codes(html: str) -> list[str]:
 
 
 def messages(html: str, code: str) -> list[str]:
-    return [
-        issue.message
-        for issue in validate_document(html, document_name="fixture.html").issues
-        if issue.code == code
-    ]
+    return [issue.message for issue in validate_document(html, document_name="fixture.html").issues if issue.code == code]
 
 
 def test_valid_contract_passes() -> None:
@@ -49,7 +45,7 @@ def test_duplicate_ids_and_broken_idrefs_are_reported() -> None:
     html = valid_document().replace(
         '<div id="status" role="status"',
         '<div id="query"></div><div id="status" role="status"',
-    ).replace('aria-describedby', 'aria-describedby')
+    )
     html = html.replace('<input id="query">', '<input id="query" aria-describedby="missing">')
     result = codes(html)
     assert "A11Y001" in result
@@ -218,7 +214,7 @@ def test_packaged_primary_surfaces_pass_and_load_shared_interaction_layer() -> N
     assert 'data-announcer="status"' in review and 'data-announcer="alert"' in review
     assert "MutationObserver" in interaction
     assert "ArrowRight" in interaction and "ArrowLeft" in interaction
-    assert 'a:focus-visible' in styles
+    assert "a:focus-visible" in styles
     assert ".sr-only" in styles
     assert ".innerHTML" not in interaction
 
@@ -227,7 +223,7 @@ def test_assessment_tab_state_is_owned_by_shared_interaction_layer() -> None:
     root = Path(__file__).resolve().parents[2]
     app = (root / "src" / "neuroai_workbench" / "static" / "app.js").read_text(encoding="utf-8")
     assert "function activateTab" not in app
-    assert '.tabs button' not in app
+    assert ".tabs button" not in app
 
 
 def test_parser_boundary_branches_and_generic_focusability() -> None:
