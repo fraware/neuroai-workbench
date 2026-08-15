@@ -268,8 +268,7 @@ def record_release_attestation(
         if any(item["state"] == "BLOCK" for item in assessments):
             raise ValueError("AUTHORIZE is forbidden when a review domain is BLOCK")
         if any(
-            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE"
-            for item in normalized_conditions
+            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in normalized_conditions
         ):
             raise ValueError("AUTHORIZE is forbidden with an unresolved release blocker")
     metadata = candidate.get("metadata")
