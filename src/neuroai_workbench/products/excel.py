@@ -45,15 +45,16 @@ def _canonical_zip_info(filename: str) -> zipfile.ZipInfo:
     return info
 
 
-def _render_deterministic_zip(entries: list[tuple[str, bytes]]) -> bytes:
+def _render_deterministic_zip(entries: list[tuple[str, bytes]], *, sort_entries: bool = True) -> bytes:
     filenames = [filename for filename, _ in entries]
     if len(filenames) != len(set(filenames)):
         raise ValueError("deterministic archive entries must have unique filenames")
 
+    ordered_entries = sorted(entries, key=lambda item: item[0]) if sort_entries else entries
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", compression=_CANONICAL_COMPRESSION, allowZip64=True) as archive:
         archive.comment = b""
-        for filename, payload in sorted(entries, key=lambda item: item[0]):
+        for filename, payload in ordered_entries:
             archive.writestr(_canonical_zip_info(filename), payload, compress_type=_CANONICAL_COMPRESSION)
     return buffer.getvalue()
 
@@ -137,7 +138,7 @@ def _render_fallback_bundle(query: dict[str, Any]) -> bytes:
         (f"sheets/{sheet_name}.csv", _sheet_to_csv(query["rows"][sheet_name]).encode("utf-8"))
         for sheet_name in sorted(query["rows"])
     )
-    return _render_deterministic_zip(entries)
+    return _render_deterministic_zip(entries, sort_entries=False)
 
 
 def render_analytical_workbook_bundle(query: dict[str, Any]) -> bytes:
