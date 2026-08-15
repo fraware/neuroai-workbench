@@ -289,9 +289,7 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
         ("alert", "alert", "assertive"),
     ):
         announcers = [
-            element
-            for element in elements
-            if (element.attrs.get("data-announcer") or "").lower() == announcer_name
+            element for element in elements if (element.attrs.get("data-announcer") or "").lower() == announcer_name
         ]
         if len(announcers) != 1:
             add("A11Y008", None, f"document requires exactly one {announcer_name} announcer; found {len(announcers)}")
