@@ -14,6 +14,7 @@ D64_A = "a" * 64
 D64_B = "b" * 64
 D64_C = "c" * 64
 D64_D = "d" * 64
+DESIGNATED_ACTOR = "fraware"
 
 
 def _workspace(tmp_path: Path) -> Workspace:
@@ -35,16 +36,24 @@ def _candidate() -> dict[str, Any]:
     }
 
 
+def _current_policy_reference() -> dict[str, str]:
+    policy = release_mod.load_governance_completion_policy(version="current")
+    return {
+        "policy_id": str(policy["policy_id"]),
+        "policy_version": str(policy["policy_version"]),
+        "policy_sha256": release_mod.governance_policy_sha256(policy),
+    }
+
+
 def _evaluation(**overrides: Any) -> dict[str, Any]:
+    policy_reference = _current_policy_reference()
     value: dict[str, Any] = {
         "integrity_valid": True,
         "release_readiness": "SATISFIED",
         "evaluation_id": "GOVEVAL-TEST",
         "evaluation_sha256": D64_A,
         "input_binding_sha256": D64_B,
-        "policy_id": "GOVPOLICY-TEST",
-        "policy_version": "1.0.0",
-        "policy_sha256": D64_C,
+        **policy_reference,
         "input_binding": {
             "opinion_records": [],
             "owner_disposition_records": [],
@@ -56,6 +65,7 @@ def _evaluation(**overrides: Any) -> dict[str, Any]:
 
 
 def _ready_package() -> dict[str, Any]:
+    policy_reference = _current_policy_reference()
     return {
         "readiness_state": "READY_FOR_REAL_AUTHORITY_REVIEW",
         "blocker_codes": [],
@@ -77,9 +87,7 @@ def _ready_package() -> dict[str, Any]:
             "evaluation_id": "GOVEVAL-TEST",
             "evaluation_sha256": D64_A,
             "input_binding_sha256": D64_B,
-            "policy_id": "GOVPOLICY-TEST",
-            "policy_version": "1.0.0",
-            "policy_sha256": D64_C,
+            **policy_reference,
         },
         "products": [{"product_id": "TEST-FIXTURE-PRODUCT", "sha256": D64_D}],
         "withheld_claims_sha256": D64_A,
@@ -106,7 +114,7 @@ def _authorization_record() -> dict[str, Any]:
         decision_type="AUTHORIZATION",
         package=_ready_package(),
         authority_claim=_authority_claim(),
-        actor="test-fixture",
+        actor=DESIGNATED_ACTOR,
     )
     record["decision_sha256"] = release_mod._decision_hash(record)
     return record
@@ -118,7 +126,7 @@ def _publication_record(authorization: dict[str, Any]) -> dict[str, Any]:
         decision_type="PUBLICATION",
         package=_ready_package(),
         authority_claim=_authority_claim(),
-        actor="test-fixture",
+        actor=DESIGNATED_ACTOR,
     )
     record["prior_authorization_reference"] = {
         "decision_id": authorization["decision_id"],
@@ -527,6 +535,7 @@ def test_authorization_rejects_invalid_store_and_schema(
             scope_sha256=D64_A,
             products=[{"product_id": "p", "sha256": D64_A}],
             authority_claim=_authority_claim(),
+            actor=DESIGNATED_ACTOR,
         )
 
     _patch_recording_prerequisites(monkeypatch)
@@ -539,6 +548,7 @@ def test_authorization_rejects_invalid_store_and_schema(
             scope_sha256=D64_A,
             products=[{"product_id": "p", "sha256": D64_A}],
             authority_claim=_authority_claim(),
+            actor=DESIGNATED_ACTOR,
         )
 
 
@@ -555,6 +565,7 @@ def test_publication_rejects_invalid_store_and_wrong_prior(
         "products": [{"product_id": "p", "sha256": D64_A}],
         "authority_claim": _authority_claim(),
         "publication_evidence": {"reference": "public-ref:test", "sha256": D64_A},
+        "actor": DESIGNATED_ACTOR,
     }
 
     _patch_recording_prerequisites(monkeypatch, store_valid=False)
@@ -590,6 +601,7 @@ def test_publication_rejects_readiness_candidate_duplicate_and_schema_drift(
         "products": [{"product_id": "p", "sha256": D64_A}],
         "authority_claim": _authority_claim(),
         "publication_evidence": {"reference": "public-ref:test", "sha256": D64_A},
+        "actor": DESIGNATED_ACTOR,
     }
 
     stale = deepcopy(auth)
