@@ -445,16 +445,15 @@ def record_release_authorization(
         products=products,
     )
     _ensure_ready(package)
-    _require_designated_authority_actor(package, actor)
     claim = _normalize_authority_claim(authority_claim)
     existing_report = verify_governance_release_decisions(workspace)
     if existing_report["valid"] is not True:
         raise ValueError("Governance release-decision store is invalid")
     candidate_id = str(package["candidate_reference"]["candidate_id"])
-    for record in load_governance_release_decisions(workspace):
+    for existing in load_governance_release_decisions(workspace):
         if (
-            record.get("decision_type") == "AUTHORIZATION"
-            and record.get("candidate_reference", {}).get("candidate_id") == candidate_id
+            existing.get("decision_type") == "AUTHORIZATION"
+            and existing.get("candidate_reference", {}).get("candidate_id") == candidate_id
         ):
             raise ValueError(f"Candidate {candidate_id} already has an authorization decision")
 
@@ -470,6 +469,7 @@ def record_release_authorization(
     errors = _schema_errors(record)
     if errors:
         raise ValueError("Governance release authorization failed schema validation: " + "; ".join(errors))
+    _require_designated_authority_actor(package, actor)
     output = _decisions_root(workspace) / f"{decision_id}.json"
     append_governance_record_locked(
         workspace,
@@ -513,7 +513,6 @@ def record_release_publication(
         products=products,
     )
     _ensure_ready(package)
-    _require_designated_authority_actor(package, actor)
     claim = _normalize_authority_claim(authority_claim)
     evidence = _normalize_publication_evidence(publication_evidence)
     verification = verify_governance_release_decisions(workspace)
@@ -554,6 +553,7 @@ def record_release_publication(
     errors = _schema_errors(record)
     if errors:
         raise ValueError("Governance publication decision failed schema validation: " + "; ".join(errors))
+    _require_designated_authority_actor(package, actor)
     output = _decisions_root(workspace) / f"{decision_id}.json"
     append_governance_record_locked(
         workspace,
