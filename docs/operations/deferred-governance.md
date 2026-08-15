@@ -35,6 +35,8 @@ Any designated-authority `SUPPORT_WITH_CONDITIONS`, `OBJECT`, or `REQUEST_EVIDEN
 
 Only after policy evaluation is satisfied and the deterministic release-readiness package is blocker-free may the final designated actor record an authorization decision. Publication, if chosen, is a distinct subsequent decision bound to the exact prior authorization and publication evidence.
 
+If authorization is withheld, the current typed release-decision schema does not provide a `WITHHELD` decision type. The operator must not call the positive authorization recorder or fabricate a release-decision record. Under the current implementation, the negative decision is preserved as a protected programme decision note bound to the exact scope, readiness package, authority evidence, decision maker, time, and rationale, with the absence of an authorization record verified. If repository-native typed withholding is required, that capability must be implemented and reviewed before using the negative path.
+
 The operator procedure is [protected governance execution](protected-governance-execution.md). Record-level semantics are defined in [governance records and release-control semantics](../reference/governance-records.md).
 
 ## Protected-data boundary
