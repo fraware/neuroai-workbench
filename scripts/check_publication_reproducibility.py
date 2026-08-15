@@ -12,8 +12,8 @@ from neuroai_workbench.products.excel import render_analytical_workbook_bundle
 from neuroai_workbench.products.pdf import render_pdf
 
 EXPECTED_XLSX_SHA256 = "042d48eda03e6963ea701d105c207261e9286cf9dd6f9670c24f8520f2a37b81"
-EXPECTED_DOCX_SHA256: str | None = None
-EXPECTED_PDF_SHA256: str | None = None
+EXPECTED_DOCX_SHA256 = "1a659424635344b72a305d1f1730be5b13cebf0cbbb9965d953318cda63f24b4"
+EXPECTED_PDF_SHA256 = "6d02f57c1365124b9ffc86be64d960e79bc4827e8b2d5bc7af20fa9a98e4ed16"
 
 
 def _synthetic_query() -> dict[str, Any]:

@@ -28,7 +28,13 @@ Verification covers repeated byte identity, fixed invariant creation/modificatio
 
 Every supported Python lane runs the existing pinned XLSX fingerprint gate plus a publication fingerprint gate. The first exact-head matrix for this slice is calibration-only for DOCX and PDF: repeated byte identity and structure remain mandatory, the XLSX golden digest remains enforced, and DOCX/PDF digests are observed independently on Python 3.10, 3.11, 3.12, 3.13, and 3.14.
 
-DOCX/PDF digests are pinned only after all five runtimes converge. A second exact-head matrix with those values enforced is required for merge evidence. Post-merge `main` must then pass the same enforced matrix.
+Calibration head `8509e63f4e6f2becbd2568feab4fc0ad41ac6b99` converged on the same three fingerprints in all five supported Python lanes:
+
+- XLSX: `042d48eda03e6963ea701d105c207261e9286cf9dd6f9670c24f8520f2a37b81`
+- DOCX: `1a659424635344b72a305d1f1730be5b13cebf0cbbb9965d953318cda63f24b4`
+- PDF: `6d02f57c1365124b9ffc86be64d960e79bc4827e8b2d5bc7af20fa9a98e4ed16`
+
+The DOCX and PDF values are now fail-closed CI invariants. A fresh exact-head matrix with all three fingerprints enforced is required for merge evidence. Post-merge `main` must then pass the same enforced matrix.
 
 ## Change protocol
 
