@@ -153,9 +153,7 @@ def test_tablist_naming_and_roving_focus_align_with_selection() -> None:
     assert "tablist requires an explicit accessible name" not in messages(aria_labelled, "A11Y006")
 
     misaligned = valid_document().replace('aria-selected="true" tabindex="0"', 'aria-selected="true" tabindex="-1"', 1)
-    misaligned = misaligned.replace(
-        'aria-selected="false" tabindex="-1"', 'aria-selected="false" tabindex="0"', 1
-    )
+    misaligned = misaligned.replace('aria-selected="false" tabindex="-1"', 'aria-selected="false" tabindex="0"', 1)
     assert "selected tab must use tabindex=0" in messages(misaligned, "A11Y006")
     assert "unselected tab must use tabindex=-1" in messages(misaligned, "A11Y006")
 
