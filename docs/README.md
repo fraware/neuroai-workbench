@@ -9,6 +9,7 @@ Audience-oriented index for the NeuroAI Workbench. Every page below has a distin
 | [overview.md](architecture/overview.md) | System architecture and component boundaries |
 | [data-storage-boundaries.md](architecture/data-storage-boundaries.md) | Five-store model and storage roles |
 | [static-to-operational.md](architecture/static-to-operational.md) | Archive versus operational programme layout |
+| [governance-single-authority.md](architecture/governance-single-authority.md) | Active v2 authority model, state machine, and fail-closed invariants |
 | [institutional-deployment-profile.md](architecture/institutional-deployment-profile.md) | Controls required before an institutional pilot claim |
 
 ## Governance
@@ -29,18 +30,19 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | --- | --- |
 | [deployment.md](operations/deployment.md) | Local and container deployment |
 | [pilot-runbook.md](operations/pilot-runbook.md) | Controlled local pilot procedure |
-| [release-process.md](operations/release-process.md) | Software release integrity steps |
+| [release-process.md](operations/release-process.md) | Software release integrity and separation from canonical observatory governance |
 | [github-governance-setup.md](operations/github-governance-setup.md) | Branch protection and required checks |
-| [ai-agent-development.md](operations/ai-agent-development.md) | Cursor/agent handoff protocol and eval harness |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
 | [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
 | [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh rehearsal and small-team residual |
 | [shadow-cycle-43-execution.md](operations/shadow-cycle-43-execution.md) | #43 core-cycle acceptance summary |
-| [deferred-governance.md](operations/deferred-governance.md) | #101 status: what remains for canonical release |
+| [deferred-governance.md](operations/deferred-governance.md) | Current #114 boundary and remaining protected/runtime governance work |
+| [protected-governance-execution.md](operations/protected-governance-execution.md) | Exact operator runbook for real protected governance execution under v2 |
+| [governance-transaction-recovery.md](operations/governance-transaction-recovery.md) | Crash-consistent governance write recovery and corruption stop conditions |
 | [governing-input-migration.md](operations/governing-input-migration.md) | Governing-input lineage and migration |
 | [public-data-release.md](operations/public-data-release.md) | Bootstrap and publish to `neuroai-observatory-data` |
 | [post-publication-withdrawal-drill.md](operations/post-publication-withdrawal-drill.md) | Withdrawal and correction drill |
-| [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional independent-review tracks and checklists |
+| [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional external independent-review evidence and checklists; distinct from mandatory v2 governance |
 
 ## Reference
 
@@ -64,7 +66,14 @@ Individual ADRs under [`adr/`](adr/). Do not mash ADRs into a single blob. Curre
 | [analytical-workbook.md](reference/analytical-workbook.md) | Generated analytical workbook views |
 | [publication-products.md](reference/publication-products.md) | Generated publication products |
 | [reopening-engine.md](reference/reopening-engine.md) | Assessment reopening recommendations |
-| [successor-releases.md](reference/successor-releases.md) | Observatory successor release states |
+| [successor-releases.md](reference/successor-releases.md) | Successor candidate semantics and canonical governance release-control path |
+| [governance-records.md](reference/governance-records.md) | Scope, opinion, disposition, readiness, authorization, publication, and verification semantics |
+
+## Release boundaries
+
+| Document | Purpose |
+| --- | --- |
+| [v0.3-foundation-boundary.md](releases/v0.3-foundation-boundary.md) | Authoritative interpretation of v0.3 foundation, software-release, canonical-publication, and deployment states |
 
 ## Evaluation
 
