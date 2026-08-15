@@ -34,6 +34,7 @@ MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/products/pdf.py": 95.0,
     "neuroai_workbench/proposal_application.py": 95.0,
     "neuroai_workbench/review.py": 95.0,
+    "neuroai_workbench/review_state.py": 95.0,
     "neuroai_workbench/independent_review.py": 95.0,
     "neuroai_workbench/governance_scope.py": 95.0,
     "neuroai_workbench/governance_opinions.py": 95.0,

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/review-state-snapshot-1.0.json",
+  "type": "object",
+  "required": [
+    "snapshot_version",
+    "projection_version",
+    "source_integrity",
+    "authority_profile",
+    "event_chain",
+    "counts",
+    "records",
+    "boundary",
+    "snapshot_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "snapshot_version": {"const": "1"},
+    "projection_version": {"type": "string", "minLength": 1},
+    "source_integrity": {"const": "VERIFIED"},
+    "authority_profile": {"const": "LOCAL_READ_MODEL_NO_AUTHORITY"},
+    "event_chain": {
+      "type": "object",
+      "required": ["event_count", "head_hash"],
+      "additionalProperties": false,
+      "properties": {
+        "event_count": {"type": "integer", "minimum": 0},
+        "head_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["profiles", "queue_items", "leases", "lease_releases", "opinions"],
+      "additionalProperties": false,
+      "properties": {
+        "profiles": {"type": "integer", "minimum": 0},
+        "queue_items": {"type": "integer", "minimum": 0},
+        "leases": {"type": "integer", "minimum": 0},
+        "lease_releases": {"type": "integer", "minimum": 0},
+        "opinions": {"type": "integer", "minimum": 0}
+      }
+    },
+    "records": {
+      "type": "object",
+      "required": ["profiles", "queue_items", "leases", "lease_releases", "opinions"],
+      "additionalProperties": false,
+      "properties": {
+        "profiles": {"type": "array", "items": {"type": "object"}},
+        "queue_items": {"type": "array", "items": {"type": "object"}},
+        "leases": {"type": "array", "items": {"type": "object"}},
+        "lease_releases": {"type": "array", "items": {"type": "object"}},
+        "opinions": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "boundary": {"type": "string", "minLength": 1},
+    "snapshot_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
