@@ -235,7 +235,7 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
     tablists = [element for element in elements if (element.attrs.get("role") or "").lower() == "tablist"]
     tabs = [element for element in elements if (element.attrs.get("role") or "").lower() == "tab"]
     panels = [element for element in elements if (element.attrs.get("role") or "").lower() == "tabpanel"]
-    controlled_panel_ids: set[str] = set()
+    panel_controller_counts: dict[str, int] = {}
 
     for tab in tabs:
         if _nearest_ancestor_role(elements, tab, "tablist") is None:
@@ -267,7 +267,7 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
                 add("A11Y006", tab, f"tab panel {panel_id!r} is missing or non-unique")
                 continue
             panel = panel_targets[0]
-            controlled_panel_ids.add(panel_id)
+            panel_controller_counts[panel_id] = panel_controller_counts.get(panel_id, 0) + 1
             if (panel.attrs.get("role") or "").lower() != "tabpanel":
                 add("A11Y006", tab, "aria-controls target must have role=tabpanel")
             if tab_id not in (panel.attrs.get("aria-labelledby") or "").split():
@@ -280,23 +280,37 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
 
     for panel in panels:
         panel_id = (panel.attrs.get("id") or "").strip()
-        if not panel_id or panel_id not in controlled_panel_ids:
-            add("A11Y006", panel, "tabpanel must be controlled by exactly one tab relationship")
+        controller_count = panel_controller_counts.get(panel_id, 0) if panel_id else 0
+        if controller_count != 1:
+            add("A11Y006", panel, f"tabpanel must be controlled by exactly one tab; found {controller_count}")
 
-    has_status = any(
-        (element.attrs.get("role") or "").lower() == "status"
-        and (element.attrs.get("aria-live") or "").lower() == "polite"
-        for element in elements
-    )
-    has_alert = any(
-        (element.attrs.get("role") or "").lower() == "alert"
-        and (element.attrs.get("aria-live") or "").lower() == "assertive"
-        for element in elements
-    )
-    if not has_status:
-        add("A11Y008", None, "document requires a persistent polite status announcement region")
-    if not has_alert:
-        add("A11Y008", None, "document requires a persistent assertive alert region")
+    for announcer_name, expected_role, expected_live in (
+        ("status", "status", "polite"),
+        ("alert", "alert", "assertive"),
+    ):
+        announcers = [
+            element
+            for element in elements
+            if (element.attrs.get("data-announcer") or "").lower() == announcer_name
+        ]
+        if len(announcers) != 1:
+            add("A11Y008", None, f"document requires exactly one {announcer_name} announcer; found {len(announcers)}")
+        for announcer in announcers:
+            if (announcer.attrs.get("role") or "").lower() != expected_role:
+                add("A11Y008", announcer, f"{announcer_name} announcer must use role={expected_role}")
+            if (announcer.attrs.get("aria-live") or "").lower() != expected_live:
+                add("A11Y008", announcer, f"{announcer_name} announcer must use aria-live={expected_live}")
+            if (announcer.attrs.get("aria-atomic") or "").lower() != "true":
+                add("A11Y008", announcer, f"{announcer_name} announcer must use aria-atomic=true")
+            if "hidden" in announcer.attrs:
+                add("A11Y008", announcer, f"{announcer_name} announcer must remain exposed to assistive technology")
+
+    toasts = [element for element in elements if "data-toast-announcer" in element.attrs]
+    if len(toasts) != 1:
+        add("A11Y008", None, f"document requires exactly one visual toast announcement source; found {len(toasts)}")
+    for toast in toasts:
+        if (toast.attrs.get("aria-hidden") or "").lower() != "true":
+            add("A11Y008", toast, "visual toast announcement source must use aria-hidden=true")
 
     ordered = tuple(sorted(issues, key=lambda item: (item.document, item.code, item.element or "", item.message)))
     return AccessibilityReport(not ordered, ordered)
