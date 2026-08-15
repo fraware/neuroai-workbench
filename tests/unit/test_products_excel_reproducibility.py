@@ -58,11 +58,19 @@ def _source_zip(
     return buffer.getvalue()
 
 
-def _assert_canonical_zip_metadata(payload: bytes) -> None:
+def _assert_canonical_zip_metadata(
+    payload: bytes,
+    *,
+    expected_names: list[str] | None = None,
+) -> None:
     with zipfile.ZipFile(io.BytesIO(payload), "r") as archive:
         infos = archive.infolist()
+        names = [info.filename for info in infos]
         assert archive.comment == b""
-        assert [info.filename for info in infos] == sorted(info.filename for info in infos)
+        if expected_names is None:
+            assert names == sorted(names)
+        else:
+            assert names == expected_names
         assert infos
         for info in infos:
             assert info.date_time == _CANONICAL_ZIP_DATE
@@ -140,9 +148,17 @@ def test_fallback_bundle_uses_same_deterministic_archive_contract(monkeypatch: p
 
     assert first == second
     assert excel_module._detect_workbook_format(first) == "csv-in-zip-xlsx-fallback"
-    _assert_canonical_zip_metadata(first)
+    _assert_canonical_zip_metadata(
+        first,
+        expected_names=[
+            "README.txt",
+            "workbook.manifest.json",
+            "sheets/empty.csv",
+            "sheets/organizations.csv",
+            "sheets/verification.csv",
+        ],
+    )
     with zipfile.ZipFile(io.BytesIO(first), "r") as archive:
-        assert "sheets/empty.csv" in archive.namelist()
         assert archive.read("sheets/empty.csv") == b"column\n"
         assert query["release_sha256"].encode("utf-8") in archive.read("README.txt")
 
