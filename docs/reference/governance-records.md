@@ -35,6 +35,8 @@ build_release_readiness_package()
         v
 READY_FOR_REAL_AUTHORITY_REVIEW
         |
+        +----> explicit protected withholding note outside typed release-decision store
+        |
         v
 GOVERNANCE_RELEASE_DECISION / AUTHORIZATION
         |
@@ -53,7 +55,7 @@ Every persisted governance record is append-only and is bound to a matching even
 | Owner dispositions | `governance/owner-dispositions/` | `GOVERNANCE_OWNER_DISPOSITION.schema.json`; `governance_dispositions.py` | Records owner response and condition lineage only |
 | Policy evaluation | Deterministic derived object | `evaluate_governance_completion()` | Computes workflow readiness only |
 | Readiness package | Deterministic derived object | `build_release_readiness_package()` | Binds candidate, scope, policy, products, withheld claims, and blockers only |
-| Release decisions | `governance/release-decisions/` | `GOVERNANCE_RELEASE_DECISION.schema.json`; `governance_release.py` | Records authorization or publication workflow decisions when all admission checks pass |
+| Release decisions | `governance/release-decisions/` | `GOVERNANCE_RELEASE_DECISION.schema.json`; `governance_release.py` | Records positive authorization or publication workflow decisions when all admission checks pass |
 
 The event chain and governance transaction journal provide durability and tamper evidence. See [governance transaction recovery](../operations/governance-transaction-recovery.md).
 
@@ -163,7 +165,7 @@ The package remains non-authorizing and is recomputed at final decision time. A 
 
 ## Authorization and publication
 
-Canonical release-control decisions are persisted through `record_release_authorization()` and `record_release_publication()`.
+Canonical positive release-control decisions are persisted through `record_release_authorization()` and `record_release_publication()`.
 
 For both decision types:
 
@@ -177,6 +179,22 @@ For both decision types:
 Publication additionally requires exactly one prior stored authorization for the same candidate and exact readiness package. It records publication evidence using a `public-ref:` or `protected-ref:` plus digest. The publication record does not perform publication automatically; `automatic_publication_performed` remains `false`.
 
 A candidate can have at most one authorization record, and an authorization can have at most one publication record.
+
+## Authorization withholding
+
+The current typed release-decision schema is intentionally positive-only: `decision_type` is limited to `AUTHORIZATION` or `PUBLICATION`, and `decision_state` is limited to `AUTHORIZED` or `PUBLISHED`.
+
+There is no current `WITHHELD` decision type and no `record_release_withholding()` API.
+
+A negative authorization decision therefore must **not** be represented by:
+
+- calling `record_release_authorization()`;
+- hand-writing a release-decision JSON object;
+- using the successor candidate's legacy gate as a negative-decision surrogate.
+
+Under the current implementation, an operator who withholds authorization should preserve an explicit protected programme decision note that binds the scope ID/digest, readiness-package ID/digest, real authority-evidence reference/digest, decision maker, time, and rationale, and should verify that no authorization record exists for the candidate.
+
+If a future programme rule requires withholding to be represented as a repository-native typed governance decision, the schema, recorder, verifier, transaction tests, and documentation must be extended in a separately reviewed implementation change before that negative-decision path is used.
 
 ## Legacy successor gate
 
