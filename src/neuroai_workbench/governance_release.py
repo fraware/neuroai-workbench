@@ -10,7 +10,12 @@ from uuid import uuid4
 from jsonschema import Draft202012Validator
 
 from .events import load_events, verify_chain
-from .governance_policy import evaluate_governance_completion
+from .governance_policy import (
+    SINGLE_AUTHORITY_MODEL,
+    evaluate_governance_completion,
+    governance_policy_sha256,
+    load_governance_completion_policy,
+)
 from .governance_scope import load_governance_scope_manifests
 from .governance_transactions import append_governance_record_locked, governance_serialized
 from .successor import validate_successor_candidate
@@ -380,6 +385,28 @@ def _ensure_ready(package: dict[str, Any]) -> None:
         raise ValueError("Governance release package contains unresolved release-blocking conditions")
 
 
+def _require_designated_authority_actor(package: dict[str, Any], actor: str) -> str:
+    policy = load_governance_completion_policy(version="current")
+    if policy.get("authority_model") != SINGLE_AUTHORITY_MODEL:
+        raise ValueError("Current governance policy does not define a single designated authority")
+    designated = str(policy.get("designated_authority_key", "")).strip()
+    if not designated:
+        raise ValueError("Current governance policy has no designated authority")
+    policy_reference = package.get("policy_evaluation_reference")
+    if not isinstance(policy_reference, dict):
+        raise ValueError("Readiness package is missing its policy evaluation reference")
+    expected_policy_sha256 = governance_policy_sha256(policy)
+    if (
+        policy_reference.get("policy_id") != policy.get("policy_id")
+        or policy_reference.get("policy_version") != policy.get("policy_version")
+        or policy_reference.get("policy_sha256") != expected_policy_sha256
+    ):
+        raise ValueError("Readiness package is not bound to the current designated-authority policy")
+    if actor != designated:
+        raise ValueError(f"Final decision actor must match designated governance authority {designated}")
+    return designated
+
+
 def _event_payload(record: dict[str, Any]) -> dict[str, Any]:
     return {
         "decision_id": record["decision_id"],
@@ -423,10 +450,10 @@ def record_release_authorization(
     if existing_report["valid"] is not True:
         raise ValueError("Governance release-decision store is invalid")
     candidate_id = str(package["candidate_reference"]["candidate_id"])
-    for record in load_governance_release_decisions(workspace):
+    for existing in load_governance_release_decisions(workspace):
         if (
-            record.get("decision_type") == "AUTHORIZATION"
-            and record.get("candidate_reference", {}).get("candidate_id") == candidate_id
+            existing.get("decision_type") == "AUTHORIZATION"
+            and existing.get("candidate_reference", {}).get("candidate_id") == candidate_id
         ):
             raise ValueError(f"Candidate {candidate_id} already has an authorization decision")
 
@@ -442,6 +469,7 @@ def record_release_authorization(
     errors = _schema_errors(record)
     if errors:
         raise ValueError("Governance release authorization failed schema validation: " + "; ".join(errors))
+    _require_designated_authority_actor(package, actor)
     output = _decisions_root(workspace) / f"{decision_id}.json"
     append_governance_record_locked(
         workspace,
@@ -525,6 +553,7 @@ def record_release_publication(
     errors = _schema_errors(record)
     if errors:
         raise ValueError("Governance publication decision failed schema validation: " + "; ".join(errors))
+    _require_designated_authority_actor(package, actor)
     output = _decisions_root(workspace) / f"{decision_id}.json"
     append_governance_record_locked(
         workspace,

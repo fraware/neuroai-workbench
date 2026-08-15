@@ -175,7 +175,7 @@ def _evaluate(workspace: Workspace, scope: dict[str, Any], policy: dict[str, Any
         workspace,
         scope_id=scope["scope_id"],
         scope_sha256=scope["manifest_sha256"],
-        policy=policy,
+        policy=policy if policy is not None else load_governance_completion_policy(version="1"),
     )
 
 
@@ -477,6 +477,7 @@ def test_wrong_scope_hash_fails_integrity_and_binds_requested_hash(tmp_path: Pat
         workspace,
         scope_id=scope["scope_id"],
         scope_sha256="f" * 64,
+        policy=load_governance_completion_policy(version="1"),
     )
 
     assert evaluation["scope_binding_valid"] is False

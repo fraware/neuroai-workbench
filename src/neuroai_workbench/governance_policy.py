@@ -22,8 +22,11 @@ from .util import canonical_json_bytes, sha256_bytes
 from .workspace import Workspace
 
 OPERATIONS_RESOURCE_PACKAGE = "neuroai_workbench.resources.operations"
-DEFAULT_POLICY_RESOURCE = "GOVERNANCE_COMPLETION_POLICY.v1.json"
+DEFAULT_POLICY_RESOURCE = "GOVERNANCE_COMPLETION_POLICY.v2.json"
+LEGACY_POLICY_RESOURCE = "GOVERNANCE_COMPLETION_POLICY.v1.json"
 POLICY_SCHEMA_VERSION = "1"
+POLICY_SCHEMA_VERSIONS = frozenset({"1", "2"})
+SINGLE_AUTHORITY_MODEL = "SINGLE_DESIGNATED_HUMAN_AUTHORITY"
 SUPPORT_STATES = frozenset({"SUPPORT", "SUPPORT_WITH_CONDITIONS"})
 POLICY_BOUNDARY = (
     "Governance completion policy evaluates structurally recorded workflow claims over exact hashes. "
@@ -39,8 +42,15 @@ EVALUATION_BOUNDARY = (
 )
 
 
-def load_governance_completion_policy() -> dict[str, Any]:
-    resource = files(OPERATIONS_RESOURCE_PACKAGE).joinpath(DEFAULT_POLICY_RESOURCE)
+def load_governance_completion_policy(*, version: str = "1") -> dict[str, Any]:
+    """Load a versioned policy; no-argument loading preserves the historical v1 API."""
+    if version == "1":
+        resource_name = LEGACY_POLICY_RESOURCE
+    elif version in {"2", "current"}:
+        resource_name = DEFAULT_POLICY_RESOURCE
+    else:
+        raise ValueError(f"Unsupported governance policy version {version!r}")
+    resource = files(OPERATIONS_RESOURCE_PACKAGE).joinpath(resource_name)
     return cast(dict[str, Any], json.loads(resource.read_text(encoding="utf-8")))
 
 
@@ -52,9 +62,14 @@ def _string_list(value: Any) -> bool:
     return isinstance(value, list) and bool(value) and all(isinstance(item, str) and item for item in value)
 
 
+def _state_subset(value: Any, allowed: frozenset[str]) -> bool:
+    return isinstance(value, list) and set(value) <= set(allowed)
+
+
 def _validate_policy(policy: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    if policy.get("schema_version") != POLICY_SCHEMA_VERSION:
+    schema_version = str(policy.get("schema_version", ""))
+    if schema_version not in POLICY_SCHEMA_VERSIONS:
         errors.append("unsupported policy schema_version")
     if not str(policy.get("policy_id", "")).startswith("GOVPOLICY-"):
         errors.append("policy_id must use the GOVPOLICY- prefix")
@@ -70,6 +85,15 @@ def _validate_policy(policy: dict[str, Any]) -> list[str]:
         if not _string_list(policy.get(field)):
             errors.append(f"{field} must be a non-empty string list")
 
+    single_authority = schema_version == "2"
+    if single_authority:
+        if policy.get("authority_model") != SINGLE_AUTHORITY_MODEL:
+            errors.append("v2 policy authority_model is invalid")
+        if not str(policy.get("designated_authority_key", "")).strip():
+            errors.append("v2 policy designated_authority_key is required")
+        if policy.get("allow_role_consolidation") is not True:
+            errors.append("v2 policy must explicitly allow role consolidation")
+
     tracks = policy.get("tracks")
     if not isinstance(tracks, dict):
         return errors + ["tracks must be an object"]
@@ -80,19 +104,30 @@ def _validate_policy(policy: dict[str, Any]) -> list[str]:
             errors.append(f"track {track}: policy must be an object")
             continue
         if raw.get("applicable") is not True:
-            errors.append(f"track {track}: v1 policy requires explicit applicability")
-        for field in (
-            "minimum_reviewer_claims",
-            "minimum_supporting_reviewer_claims",
-            "minimum_distinct_organizations",
-        ):
+            errors.append(f"track {track}: {'v2' if single_authority else 'v1'} policy requires explicit applicability")
+        for field in ("minimum_reviewer_claims", "minimum_supporting_reviewer_claims"):
             value = raw.get(field)
             if not isinstance(value, int) or isinstance(value, bool) or value < 1:
                 errors.append(f"track {track}: {field} must be a positive integer")
-        if raw.get("require_claimed_independence") is not True:
-            errors.append(f"track {track}: claimed independence must be required")
-        if raw.get("require_no_declared_conflict") is not True:
-            errors.append(f"track {track}: no-declared-conflict claim must be required")
+        organization_minimum = raw.get("minimum_distinct_organizations")
+        minimum_allowed = 0 if single_authority else 1
+        if (
+            not isinstance(organization_minimum, int)
+            or isinstance(organization_minimum, bool)
+            or organization_minimum < minimum_allowed
+        ):
+            qualifier = "non-negative" if single_authority else "positive"
+            errors.append(f"track {track}: minimum_distinct_organizations must be a {qualifier} integer")
+        if single_authority:
+            if raw.get("require_claimed_independence") is not False:
+                errors.append(f"track {track}: v2 role consolidation must not require claimed independence")
+            if raw.get("require_no_declared_conflict") is not False:
+                errors.append(f"track {track}: v2 role consolidation must not require no-conflict status")
+        else:
+            if raw.get("require_claimed_independence") is not True:
+                errors.append(f"track {track}: claimed independence must be required")
+            if raw.get("require_no_declared_conflict") is not True:
+                errors.append(f"track {track}: no-declared-conflict claim must be required")
         if not _state_subset(raw.get("blocking_opinion_states"), OPINION_STATES):
             errors.append(f"track {track}: invalid blocking_opinion_states")
         if not _state_subset(raw.get("owner_disposition_required_for_states"), OPINION_STATES):
@@ -102,10 +137,6 @@ def _validate_policy(policy: dict[str, Any]) -> list[str]:
         if raw.get("unresolved_condition_policy") != "BLOCK_EXPLICIT_RELEASE_BLOCKERS":
             errors.append(f"track {track}: unsupported unresolved_condition_policy")
     return errors
-
-
-def _state_subset(value: Any, allowed: frozenset[str]) -> bool:
-    return isinstance(value, list) and set(value) <= set(allowed)
 
 
 def _active(
@@ -145,9 +176,7 @@ def _consensus_state(counts: Counter[str]) -> str:
     return "NO_SUPPORT"
 
 
-def _disposition_by_opinion(
-    dispositions: list[dict[str, Any]],
-) -> dict[str, dict[str, Any]]:
+def _disposition_by_opinion(dispositions: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
     for disposition in dispositions:
         for ref in disposition.get("addressed_opinions", []):
@@ -162,6 +191,7 @@ def _human_claim_metrics(
     human_states: set[str],
     no_conflict_markers: list[str],
     declared_conflict_markers: list[str],
+    designated_authority_key: str | None = None,
 ) -> dict[str, Any]:
     human: list[dict[str, Any]] = []
     supporting: list[dict[str, Any]] = []
@@ -170,11 +200,16 @@ def _human_claim_metrics(
     no_conflict = 0
     conflicts: list[str] = []
     unclassified: list[str] = []
+    wrong_authority: list[str] = []
     for opinion in opinions:
         claim = opinion.get("reviewer_claim")
         if not isinstance(claim, dict):
             continue
         if str(claim.get("accountability_state", "")) not in human_states:
+            continue
+        reviewer_key = str(claim.get("reviewer_key", ""))
+        if designated_authority_key is not None and reviewer_key != designated_authority_key:
+            wrong_authority.append(reviewer_key)
             continue
         human.append(opinion)
         if str(opinion.get("opinion_state", "")) in SUPPORT_STATES:
@@ -185,7 +220,6 @@ def _human_claim_metrics(
         if str(claim.get("independence_statement", "")).strip():
             independent += 1
         disclosure = str(claim.get("conflict_of_interest_disclosure", ""))
-        reviewer_key = str(claim.get("reviewer_key", ""))
         if _starts_with_marker(disclosure, declared_conflict_markers):
             conflicts.append(reviewer_key)
         elif _starts_with_marker(disclosure, no_conflict_markers):
@@ -200,6 +234,7 @@ def _human_claim_metrics(
         "no_conflict": no_conflict,
         "conflicts": conflicts,
         "unclassified": unclassified,
+        "wrong_authority": wrong_authority,
     }
 
 
@@ -235,29 +270,62 @@ def _track_result(
     human_states: set[str],
     no_conflict_markers: list[str],
     declared_conflict_markers: list[str],
+    authority_model: str | None = None,
+    designated_authority_key: str | None = None,
 ) -> dict[str, Any]:
     counts = Counter(str(opinion.get("opinion_state", "")) for opinion in opinions)
+    single_authority = authority_model == SINGLE_AUTHORITY_MODEL
     metrics = _human_claim_metrics(
         opinions,
         human_states=human_states,
         no_conflict_markers=no_conflict_markers,
         declared_conflict_markers=declared_conflict_markers,
+        designated_authority_key=designated_authority_key if single_authority else None,
     )
     human = cast(list[dict[str, Any]], metrics["human"])
     supporting = cast(list[dict[str, Any]], metrics["supporting"])
     organizations = cast(set[str], metrics["organizations"])
     conflicts = cast(list[str], metrics["conflicts"])
     unclassified = cast(list[str], metrics["unclassified"])
+    wrong_authority = cast(list[str], metrics["wrong_authority"])
 
     reviewer_ok = len(human) >= int(policy["minimum_reviewer_claims"])
     support_ok = len(supporting) >= int(policy["minimum_supporting_reviewer_claims"])
     organization_ok = len(organizations) >= int(policy["minimum_distinct_organizations"])
-    independence_ok = int(metrics["independent"]) == len(human) and reviewer_ok
-    conflict_ok = not conflicts and not unclassified and int(metrics["no_conflict"]) == len(human) and reviewer_ok
+    if single_authority:
+        independence_ok = True
+        conflict_ok = True
+        authority_ok = reviewer_ok and support_ok
+        independence_state = "ROLE_CONSOLIDATION_ALLOWED"
+        authority_state = "DESIGNATED_AUTHORITY_SATISFIED" if authority_ok else "DESIGNATED_AUTHORITY_MISSING"
+    else:
+        independence_ok = int(metrics["independent"]) == len(human) and reviewer_ok
+        conflict_ok = not conflicts and not unclassified and int(metrics["no_conflict"]) == len(human) and reviewer_ok
+        authority_ok = reviewer_ok
+        if conflicts:
+            independence_state = "DECLARED_CONFLICT"
+        elif unclassified:
+            independence_state = "UNVERIFIED_CONFLICT_DISCLOSURE"
+        elif reviewer_ok and organization_ok and independence_ok and conflict_ok:
+            independence_state = "STRUCTURALLY_SUFFICIENT_CLAIMS"
+        else:
+            independence_state = "INSUFFICIENT_CLAIMS"
+        authority_state = "MULTI_PARTY_POLICY_SATISFIED" if authority_ok else "MULTI_PARTY_POLICY_INCOMPLETE"
 
+    decision_opinions = human if single_authority else opinions
+    decision_counts = Counter(str(opinion.get("opinion_state", "")) for opinion in decision_opinions)
+    decision_opinion_ids = {str(item.get("opinion_id", "")) for item in decision_opinions}
     blocking_states = set(policy["blocking_opinion_states"])
     blocking = [
-        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in blocking_states
+        str(item.get("opinion_id", ""))
+        for item in decision_opinions
+        if str(item.get("opinion_state", "")) in blocking_states
+    ]
+    non_designated_blocking = [
+        str(item.get("opinion_id", ""))
+        for item in opinions
+        if str(item.get("opinion_id", "")) not in decision_opinion_ids
+        and str(item.get("opinion_state", "")) in blocking_states
     ]
     objections = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "OBJECT"]
     requests = [str(item.get("opinion_id", "")) for item in opinions if item.get("opinion_state") == "REQUEST_EVIDENCE"]
@@ -265,27 +333,32 @@ def _track_result(
 
     owner_required = set(policy["owner_disposition_required_for_states"])
     required_owner = [
-        str(item.get("opinion_id", "")) for item in opinions if str(item.get("opinion_state", "")) in owner_required
+        str(item.get("opinion_id", ""))
+        for item in decision_opinions
+        if str(item.get("opinion_state", "")) in owner_required
     ]
     missing_owner = sorted(item for item in required_owner if item not in disposition_map)
+    active_track_dispositions = {
+        str(disposition.get("disposition_id", "")): disposition
+        for opinion in decision_opinions
+        if (disposition := disposition_map.get(str(opinion.get("opinion_id", "")))) is not None
+    }
+    non_designated_owner_disposition_ids: list[str] = []
+    if single_authority:
+        for disposition_id, disposition in active_track_dispositions.items():
+            owner_claim = disposition.get("owner_claim")
+            owner_key = str(owner_claim.get("owner_key", "")) if isinstance(owner_claim, dict) else ""
+            if owner_key != designated_authority_key:
+                non_designated_owner_disposition_ids.append(disposition_id)
+    owner_authority_ok = not non_designated_owner_disposition_ids
     blocking_owner, unresolved = _condition_metrics(
-        opinions,
+        decision_opinions,
         disposition_map,
         set(policy["blocking_owner_disposition_states"]),
     )
     release_blockers = sorted(
         str(item.get("condition_id", "")) for item in unresolved if item.get("release_effect") == "BLOCKS_RELEASE"
     )
-
-    if conflicts:
-        independence_state = "DECLARED_CONFLICT"
-    elif unclassified:
-        independence_state = "UNVERIFIED_CONFLICT_DISCLOSURE"
-    elif reviewer_ok and organization_ok and independence_ok and conflict_ok:
-        independence_state = "STRUCTURALLY_SUFFICIENT_CLAIMS"
-    else:
-        independence_state = "INSUFFICIENT_CLAIMS"
-
     ready = all(
         (
             reviewer_ok,
@@ -293,6 +366,8 @@ def _track_result(
             organization_ok,
             independence_ok,
             conflict_ok,
+            authority_ok,
+            owner_authority_ok,
             not blocking,
             not missing_owner,
             not blocking_owner,
@@ -304,13 +379,16 @@ def _track_result(
         "applicable": True,
         "coverage_state": "COMPLETE" if reviewer_ok else "INCOMPLETE",
         "consensus_state": _consensus_state(counts),
+        "decision_consensus_state": _consensus_state(decision_counts),
         "independence_state": independence_state,
+        "authority_state": authority_state,
         "active_opinion_count": len(opinions),
         "claimed_human_reviewer_count": len(human),
         "supporting_claimed_human_reviewer_count": len(supporting),
         "distinct_claimed_organizations": len(organizations),
         "active_state_counts": dict(sorted(counts.items())),
         "blocking_opinion_ids": sorted(blocking),
+        "non_designated_blocking_opinion_ids": sorted(non_designated_blocking),
         "objection_opinion_ids": sorted(objections),
         "evidence_request_opinion_ids": sorted(requests),
         "abstention_opinion_ids": sorted(abstentions),
@@ -321,10 +399,14 @@ def _track_result(
         "release_blocking_condition_ids": release_blockers,
         "declared_conflict_reviewer_keys": sorted(conflicts),
         "unclassified_conflict_reviewer_keys": sorted(unclassified),
+        "non_designated_reviewer_keys": sorted(set(wrong_authority)),
+        "non_designated_owner_disposition_ids": sorted(non_designated_owner_disposition_ids),
         "support_threshold_satisfied": support_ok,
         "organization_threshold_satisfied": organization_ok,
         "claimed_independence_threshold_satisfied": independence_ok,
         "claimed_conflict_threshold_satisfied": conflict_ok,
+        "designated_authority_threshold_satisfied": authority_ok,
+        "owner_authority_threshold_satisfied": owner_authority_ok,
         "release_readiness": "SATISFIED" if ready else "UNSATISFIED",
     }
 
@@ -349,10 +431,7 @@ def _input_binding(
 ) -> dict[str, Any]:
     opinion_records = sorted(
         (
-            {
-                "opinion_id": str(item.get("opinion_id", "")),
-                "opinion_sha256": str(item.get("opinion_sha256", "")),
-            }
+            {"opinion_id": str(item.get("opinion_id", "")), "opinion_sha256": str(item.get("opinion_sha256", ""))}
             for item in opinions
         ),
         key=lambda item: item["opinion_id"],
@@ -391,35 +470,21 @@ def evaluate_governance_completion(
     policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate workflow readiness without performing or implying release authorization."""
-    selected = deepcopy(policy if policy is not None else load_governance_completion_policy())
+    selected = deepcopy(policy if policy is not None else load_governance_completion_policy(version="2"))
     policy_errors = _validate_policy(selected)
     policy_sha256 = governance_policy_sha256(selected)
-
     opinion_verification = verify_governance_reviewer_opinions(workspace)
     disposition_verification = verify_governance_owner_dispositions(workspace)
     scopes = [item for item in load_governance_scope_manifests(workspace) if item.get("scope_id") == scope_id]
     scope_valid = len(scopes) == 1 and scopes[0].get("manifest_sha256") == scope_sha256
-
     opinions = _same_scope_records(
-        load_governance_reviewer_opinions(workspace),
-        scope_id=scope_id,
-        scope_sha256=scope_sha256,
+        load_governance_reviewer_opinions(workspace), scope_id=scope_id, scope_sha256=scope_sha256
     )
     dispositions = _same_scope_records(
-        load_governance_owner_dispositions(workspace),
-        scope_id=scope_id,
-        scope_sha256=scope_sha256,
+        load_governance_owner_dispositions(workspace), scope_id=scope_id, scope_sha256=scope_sha256
     )
-    active_opinions = _active(
-        opinions,
-        id_field="opinion_id",
-        supersedes_field="supersedes_opinion_id",
-    )
-    active_dispositions = _active(
-        dispositions,
-        id_field="disposition_id",
-        supersedes_field="supersedes_disposition_id",
-    )
+    active_opinions = _active(opinions, id_field="opinion_id", supersedes_field="supersedes_opinion_id")
+    active_dispositions = _active(dispositions, id_field="disposition_id", supersedes_field="supersedes_disposition_id")
     disposition_map = _disposition_by_opinion(active_dispositions)
     binding = _input_binding(
         scope_id=scope_id,
@@ -429,13 +494,14 @@ def evaluate_governance_completion(
         opinions=opinions,
         dispositions=dispositions,
     )
-
     tracks: dict[str, dict[str, Any]] = {}
     if not policy_errors:
         policy_tracks = cast(dict[str, dict[str, Any]], selected["tracks"])
         human_states = set(str(item) for item in selected["human_accountability_states"])
         no_conflict = [str(item) for item in selected["no_conflict_markers"]]
         declared_conflict = [str(item) for item in selected["declared_conflict_markers"]]
+        authority_model = str(selected.get("authority_model", "")) or None
+        designated_authority_key = str(selected.get("designated_authority_key", "")) or None
         for track in sorted(REVIEW_TRACKS):
             track_opinions = [item for item in active_opinions if item.get("review_track") == track]
             tracks[track] = _track_result(
@@ -446,8 +512,9 @@ def evaluate_governance_completion(
                 human_states=human_states,
                 no_conflict_markers=no_conflict,
                 declared_conflict_markers=declared_conflict,
+                authority_model=authority_model,
+                designated_authority_key=designated_authority_key,
             )
-
     integrity_valid = all(
         (
             not policy_errors,
@@ -466,10 +533,13 @@ def evaluate_governance_completion(
         and all(result["release_readiness"] == "SATISFIED" for result in tracks.values())
     )
     evaluation: dict[str, Any] = {
-        "schema_version": "1",
+        "schema_version": str(selected.get("schema_version", "")),
         "policy_id": selected.get("policy_id"),
         "policy_version": selected.get("policy_version"),
         "policy_sha256": policy_sha256,
+        "authority_model": selected.get("authority_model", "MULTI_PARTY_STRUCTURAL_REVIEW"),
+        "designated_authority_key": selected.get("designated_authority_key"),
+        "role_consolidation_allowed": selected.get("allow_role_consolidation") is True,
         "scope_id": scope_id,
         "scope_sha256": scope_sha256,
         "input_binding": binding,

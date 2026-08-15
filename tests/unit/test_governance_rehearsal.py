@@ -125,10 +125,10 @@ def test_synthetic_rehearsal_exercises_full_stack_without_authority(tmp_path: Pa
     assert len(certificate["synthetic_disposition_records"]) == 3
     assert certificate["policy_evaluation_reference"]["release_readiness"] == "UNSATISFIED"
     assert certificate["release_readiness_package_reference"]["readiness_state"] == "NOT_READY"
-    assert "GOVERNANCE_POLICY_UNSATISFIED" in certificate["release_readiness_package_reference"]["blocker_codes"]
-    assert (
-        "UNRESOLVED_RELEASE_BLOCKING_CONDITIONS" in certificate["release_readiness_package_reference"]["blocker_codes"]
-    )
+    blocker_codes = certificate["release_readiness_package_reference"]["blocker_codes"]
+    assert "GOVERNANCE_POLICY_UNSATISFIED" in blocker_codes
+    assert "UNRESOLVED_RELEASE_BLOCKING_CONDITIONS" not in blocker_codes
+    assert "release_blocking_condition_ids" not in certificate["release_readiness_package_reference"]
     assert certificate["authority_boundary_probe"]["attempted"] is True
     assert certificate["authority_boundary_probe"]["blocked"] is True
     assert "Synthetic or local execution" in certificate["authority_boundary_probe"]["error"]

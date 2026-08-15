@@ -1,0 +1,94 @@
+{
+  "schema_version": "2",
+  "policy_id": "GOVPOLICY-2.0.0",
+  "policy_version": "2.0.0",
+  "effective_from": "2026-08-15",
+  "authority_profile": "WORKFLOW_COMPLETION_POLICY_ONLY",
+  "authority_model": "SINGLE_DESIGNATED_HUMAN_AUTHORITY",
+  "designated_authority_key": "fraware",
+  "allow_role_consolidation": true,
+  "human_accountability_states": [
+    "CLAIMED_HUMAN_REVIEWER"
+  ],
+  "no_conflict_markers": [
+    "NO_CONFLICT_DECLARED"
+  ],
+  "declared_conflict_markers": [
+    "CONFLICT_DECLARED"
+  ],
+  "tracks": {
+    "ACCESSIBILITY": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    },
+    "AFFECTED_COMMUNITY": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    },
+    "DATA_GOVERNANCE": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    },
+    "DOMAIN": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    },
+    "METHODOLOGY": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    },
+    "SECURITY": {
+      "applicable": true,
+      "minimum_reviewer_claims": 1,
+      "minimum_supporting_reviewer_claims": 1,
+      "minimum_distinct_organizations": 0,
+      "require_claimed_independence": false,
+      "require_no_declared_conflict": false,
+      "blocking_opinion_states": ["OBJECT", "REQUEST_EVIDENCE"],
+      "owner_disposition_required_for_states": ["SUPPORT_WITH_CONDITIONS", "OBJECT", "REQUEST_EVIDENCE"],
+      "blocking_owner_disposition_states": ["REJECT", "DEFER", "REQUEST_FURTHER_REVIEW"],
+      "unresolved_condition_policy": "BLOCK_EXPLICIT_RELEASE_BLOCKERS"
+    }
+  },
+  "boundary": "Governance completion policy evaluates structurally recorded workflow claims over exact hashes. It does not authenticate reviewers, establish scientific or clinical truth, determine regulatory status or conformance, confer institutional or UNESCO endorsement, authorize a canonical successor, or authorize publication."
+}
