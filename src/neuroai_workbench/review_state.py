@@ -121,7 +121,7 @@ def build_review_state_snapshot(workspace: Path) -> dict[str, Any]:
     event_report = verify_chain(workspace / QUEUE_ROOT_REL / "events.jsonl")
     if not event_report.get("valid"):
         errors = event_report.get("errors") or ["unknown event-chain integrity failure"]
-        raise ValueError(f"Review event-chain verification failed: {'; '.join(str(error) for errors)}")
+        raise ValueError(f"Review event-chain verification failed: {'; '.join(str(error) for error in errors)}")
 
     records = {
         "profiles": _ordered_records(_stored_records(workspace, "profiles"), "profile_id"),
