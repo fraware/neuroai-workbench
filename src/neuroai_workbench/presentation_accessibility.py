@@ -246,16 +246,28 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
         if not owned_tabs:
             add("A11Y006", tablist, "tablist contains no tabs")
             continue
+        tablist_aria_label = (tablist.attrs.get("aria-label") or "").strip()
+        tablist_labelledby = (tablist.attrs.get("aria-labelledby") or "").split()
+        has_tablist_labelledby = bool(tablist_labelledby) and all(
+            len(ids.get(target_id, [])) == 1 for target_id in tablist_labelledby
+        )
+        if not (tablist_aria_label or has_tablist_labelledby):
+            add("A11Y006", tablist, "tablist requires an explicit accessible name")
         if sum((tab.attrs.get("aria-selected") or "").lower() == "true" for tab in owned_tabs) != 1:
             add("A11Y006", tablist, "tablist must have exactly one selected tab")
         if sum(tab.attrs.get("tabindex") == "0" for tab in owned_tabs) != 1:
             add("A11Y006", tablist, "tablist must have exactly one tab with tabindex=0")
         for tab in owned_tabs:
             selected = (tab.attrs.get("aria-selected") or "").lower()
+            tabindex = tab.attrs.get("tabindex")
             if selected not in {"true", "false"}:
                 add("A11Y006", tab, "tab aria-selected must be true or false")
-            if tab.attrs.get("tabindex") not in {"0", "-1"}:
+            if tabindex not in {"0", "-1"}:
                 add("A11Y006", tab, "tab tabindex must be 0 or -1")
+            if selected == "true" and tabindex != "0":
+                add("A11Y006", tab, "selected tab must use tabindex=0")
+            if selected == "false" and tabindex != "-1":
+                add("A11Y006", tab, "unselected tab must use tabindex=-1")
             tab_id = (tab.attrs.get("id") or "").strip()
             controls = (tab.attrs.get("aria-controls") or "").split()
             if not tab_id or len(controls) != 1:
@@ -302,6 +314,8 @@ def validate_document(html: str, *, document_name: str) -> AccessibilityReport:
                 add("A11Y008", announcer, f"{announcer_name} announcer must use aria-atomic=true")
             if "hidden" in announcer.attrs:
                 add("A11Y008", announcer, f"{announcer_name} announcer must remain exposed to assistive technology")
+            if (announcer.attrs.get("aria-hidden") or "").lower() == "true":
+                add("A11Y008", announcer, f"{announcer_name} announcer must not use aria-hidden=true")
 
     toasts = [element for element in elements if "data-toast-announcer" in element.attrs]
     if len(toasts) != 1:
