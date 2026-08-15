@@ -33,7 +33,7 @@ def _workspace_scope_candidate(tmp_path: Path) -> tuple[Workspace, dict[str, Any
     candidate = generate_from_observatory_release(
         SUCCESSOR,
         version="v1.8-release-transaction-fixture",
-        actor="test-fixture",
+        actor="fraware",
     )
     workspace = Workspace.initialize(tmp_path / "workspace")
     public = tmp_path / "public"
@@ -109,27 +109,27 @@ def _workspace_scope_candidate(tmp_path: Path) -> tuple[Workspace, dict[str, Any
         scope_label="TEST FIXTURE ONLY - release transaction integration",
         objects=objects,
         boundary_roots={"PUBLIC_GIT": public, "GENERATED_OUTPUT": generated, "ARCHIVE": archive},
-        actor="test-fixture",
+        actor="fraware",
     )["manifest"]
     for track in sorted(REVIEW_TRACKS):
-        for suffix in ("a", "b"):
-            record_governance_reviewer_opinion(
-                workspace,
-                scope_id=scope["scope_id"],
-                scope_sha256=scope["manifest_sha256"],
-                review_track=track,
-                opinion_state="SUPPORT",
-                reviewer_claim={
-                    "reviewer_key": f"test-{track.lower()}-{suffix}",
-                    "name_or_role": f"TEST FIXTURE ONLY reviewer {track} {suffix}",
-                    "organization": f"TEST FIXTURE ONLY {track} org {suffix}",
-                    "accountability_state": "CLAIMED_HUMAN_REVIEWER",
-                    "independence_statement": "TEST FIXTURE ONLY claimed independence; not authenticated.",
-                    "conflict_of_interest_disclosure": "NO_CONFLICT_DECLARED: TEST FIXTURE ONLY",
-                },
-                rationale="TEST FIXTURE ONLY support opinion.",
-                actor="test-fixture",
-            )
+        record_governance_reviewer_opinion(
+            workspace,
+            scope_id=scope["scope_id"],
+            scope_sha256=scope["manifest_sha256"],
+            review_track=track,
+            opinion_state="SUPPORT",
+            reviewer_claim={
+                "reviewer_key": "fraware",
+                "name_or_role": "TEST FIXTURE ONLY designated repository authority",
+                "organization": "Repository governance",
+                "accountability_state": "CLAIMED_HUMAN_REVIEWER",
+                "independence_statement": "Role consolidation is explicit under governance policy v2.",
+                "conflict_of_interest_disclosure": "CONFLICT_DECLARED: explicit role consolidation under policy v2",
+            },
+            rationale=f"TEST FIXTURE ONLY support opinion for {track}.",
+            recorded_by="fraware",
+            actor="fraware",
+        )
     return workspace, scope, candidate
 
 
@@ -152,7 +152,7 @@ def _authorization_kwargs(scope: dict[str, Any], candidate: dict[str, Any]) -> d
         "scope_sha256": scope["manifest_sha256"],
         "products": PRODUCTS,
         "authority_claim": _authority_claim(),
-        "actor": "test-fixture",
+        "actor": "fraware",
     }
 
 
@@ -261,7 +261,7 @@ def test_publication_post_event_interruption_preserves_exact_committed_publicati
                 "reference": "public-ref:test-fixture-only/publication",
                 "sha256": "c" * 64,
             },
-            actor="test-fixture",
+            actor="fraware",
         )
 
     report = verify_governance_release_decisions(workspace)
