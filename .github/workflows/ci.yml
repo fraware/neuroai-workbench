@@ -32,6 +32,11 @@ jobs:
       - run: python -m ruff check .
       - run: python -m mypy src/neuroai_workbench
       - run: python -m compileall -q src scripts
+      - run: node --check src/neuroai_workbench/static/i18n.js
+      - run: node --check src/neuroai_workbench/static/accessibility.js
+      - run: node --check src/neuroai_workbench/static/app.js
+      - run: node --check src/neuroai_workbench/static/review.js
+      - run: node --test tests/js/test_accessibility.js
       - run: python scripts/check_repository_hygiene.py
       - run: python scripts/check_github_workflow_contract.py
       - run: python scripts/check_version_consistency.py

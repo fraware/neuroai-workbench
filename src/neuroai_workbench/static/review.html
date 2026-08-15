@@ -46,7 +46,7 @@
       </section>
     </aside>
 
-    <main id="main-content" class="main">
+    <main id="main-content" class="main" tabindex="-1">
       <section id="reviewEmpty" class="empty-state">
         <h2 data-i18n="review.empty_title">Select a queue item</h2>
         <p data-i18n="review.empty_description">Ops health counts and queue items are rebuilt from monitoring projections. They are not a second source of truth.</p>
@@ -106,11 +106,14 @@
         </article>
       </section>
 
-      <div id="reviewToast" class="toast" role="status" aria-live="assertive" hidden></div>
+      <div id="reviewStatusAnnouncements" class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-announcer="status"></div>
+      <div id="reviewAlertAnnouncements" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true" data-announcer="alert"></div>
+      <div id="reviewToast" class="toast" aria-hidden="true" data-toast-announcer hidden></div>
     </main>
   </div>
 
   <script src="i18n.js" defer></script>
+  <script src="accessibility.js" defer></script>
   <script src="review.js" defer></script>
 </body>
 </html>
