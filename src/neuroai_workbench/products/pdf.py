@@ -53,6 +53,7 @@ def render_pdf(query: dict[str, Any]) -> bytes | None:
         rightMargin=0.6 * inch,
         topMargin=0.6 * inch,
         bottomMargin=0.6 * inch,
+        invariant=1,
     )
     styles = getSampleStyleSheet()
     title_style = styles["Heading1"]
@@ -127,12 +128,10 @@ def render_pdf(query: dict[str, Any]) -> bytes | None:
             matrix = _table_data(rows)
             col_count = max(len(matrix[0]), 1)
             col_width = usable_width / col_count
-            # Wrap header/body cells so wide projections remain readable.
             wrapped: list[list[Any]] = []
-            for row_index, row in enumerate(matrix):
-                style = small_style
+            for row in matrix:
                 wrapped.append(
-                    [Paragraph(_stringify(cell).replace("&", "&amp;").replace("<", "&lt;"), style) for cell in row]
+                    [Paragraph(_stringify(cell).replace("&", "&amp;").replace("<", "&lt;"), small_style) for cell in row]
                 )
             table = Table(wrapped, colWidths=[col_width] * col_count, repeatRows=1)
             table.setStyle(
@@ -202,5 +201,4 @@ def write_pdf(query: dict[str, Any], output: Path) -> dict[str, Any]:
     }
 
 
-# Backward-compatible aliases
 write_pdf_stub = write_pdf
