@@ -9,8 +9,8 @@ import pytest
 from neuroai_workbench.governance_opinions import REVIEW_TRACKS
 from neuroai_workbench.release_attestation import (
     load_attested_publications,
-    load_release_attestations,
     load_release_attestation_policy,
+    load_release_attestations,
     record_attested_publication,
     record_release_attestation,
     release_attestation_policy_sha256,
