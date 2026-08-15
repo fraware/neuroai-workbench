@@ -26,6 +26,31 @@
     return null;
   }
 
+  function focusSkipTarget(link, event, root) {
+    const href = link.getAttribute("href");
+    const target = href && href.length > 1 ? root.getElementById(href.slice(1)) : null;
+    if (!target) return false;
+    event.preventDefault();
+    target.focus();
+    target.scrollIntoView({ block: "start" });
+    return true;
+  }
+
+  function publishToastAnnouncement(toast, statusRegion, alertRegion, schedule, state) {
+    if (toast.hidden) return false;
+    const message = toast.textContent.trim();
+    if (!message) return false;
+
+    const region = toast.classList.contains("error") ? alertRegion : statusRegion;
+    state.sequence += 1;
+    const currentSequence = state.sequence;
+    region.textContent = "";
+    schedule(() => {
+      if (currentSequence === state.sequence) region.textContent = message;
+    });
+    return true;
+  }
+
   function initializeTabList(tablist) {
     const tabs = [...tablist.querySelectorAll('[role="tab"]')];
     const panels = tabs
@@ -56,12 +81,7 @@
   function initializeSkipLinks() {
     for (const link of document.querySelectorAll('.skip-link[href^="#"]')) {
       link.addEventListener("click", (event) => {
-        const href = link.getAttribute("href");
-        const target = href && href.length > 1 ? document.getElementById(href.slice(1)) : null;
-        if (!target) return;
-        event.preventDefault();
-        target.focus();
-        target.scrollIntoView({ block: "start" });
+        focusSkipTarget(link, event, document);
       });
     }
   }
@@ -71,22 +91,15 @@
     const alertRegion = document.querySelector('[data-announcer="alert"]');
     if (!statusRegion || !alertRegion) return;
 
+    const state = { sequence: 0 };
+    const scheduleAnnouncement = (callback) => window.setTimeout(callback, 0);
+
     for (const toast of document.querySelectorAll("[data-toast-announcer]")) {
-      let sequence = 0;
       let queued = false;
 
       const publish = () => {
         queued = false;
-        if (toast.hidden) return;
-        const message = toast.textContent.trim();
-        if (!message) return;
-        const region = toast.classList.contains("error") ? alertRegion : statusRegion;
-        sequence += 1;
-        const currentSequence = sequence;
-        region.textContent = "";
-        window.setTimeout(() => {
-          if (currentSequence === sequence) region.textContent = message;
-        }, 0);
+        publishToastAnnouncement(toast, statusRegion, alertRegion, scheduleAnnouncement, state);
       };
 
       const schedule = () => {
@@ -114,7 +127,9 @@
 
   globalThis.NeuroAIAccessibility = Object.freeze({
     applyTabState,
+    focusSkipTarget,
     nextTabIndex,
+    publishToastAnnouncement,
   });
 
   if (typeof document !== "undefined") {
