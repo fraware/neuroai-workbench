@@ -3,31 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Observatory monitoring review</title>
+  <title data-i18n="review.document_title">Observatory monitoring review</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to review content</a>
+  <a class="skip-link" href="#main-content" data-i18n="review.skip_link">Skip to review content</a>
 
   <header class="topbar">
     <div>
-      <h1>Observatory monitoring review</h1>
-      <p>Local workflow UI over rebuildable review-queue projections.</p>
+      <h1 data-i18n="review.shell_title">Observatory monitoring review</h1>
+      <p data-i18n="review.shell_subtitle">Local workflow UI over rebuildable review-queue projections.</p>
     </div>
-    <div class="boundary">Projections do not authenticate reviewers or establish substantive findings.</div>
+    <div class="boundary" data-i18n="review.boundary">Projections do not authenticate reviewers or establish substantive findings.</div>
   </header>
 
   <div class="layout review-layout">
     <aside class="sidebar" aria-label="Review navigation">
       <div class="sidebar-actions">
-        <a class="button secondary" href="/">Assessment workbench</a>
-        <button id="initReviewQueue" class="secondary">Init review queue</button>
+        <a class="button secondary" href="/" data-i18n="review.assessment_workbench">Assessment workbench</a>
+        <button id="initReviewQueue" class="secondary" data-i18n="review.init_queue">Init review queue</button>
       </div>
       <div id="reviewState" class="small muted" aria-live="polite">Loading review state…</div>
 
       <section aria-labelledby="profile-heading">
-        <h2 id="profile-heading">Local reviewer profile</h2>
-        <p class="small muted">Claimed local attribution only; not an identity provider.</p>
+        <h2 id="profile-heading" data-i18n="review.local_profile">Local reviewer profile</h2>
+        <p class="small muted" data-i18n="review.profile_boundary">Claimed local attribution only; not an identity provider.</p>
         <form id="profileForm">
           <label>Profile ID<input id="profileId" name="profile_id" autocomplete="username" required pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}"></label>
           <label>Display name<input id="profileDisplayName" name="display_name" autocomplete="name" required></label>
@@ -41,15 +41,15 @@
       </section>
 
       <section aria-labelledby="queue-heading">
-        <h2 id="queue-heading">Queue items</h2>
+        <h2 id="queue-heading" data-i18n="review.queue_items">Queue items</h2>
         <div id="queueList" class="case-list" role="listbox" aria-label="Review queue items"></div>
       </section>
     </aside>
 
     <main id="main-content" class="main">
       <section id="reviewEmpty" class="empty-state">
-        <h2>Select a queue item</h2>
-        <p>Ops health counts and queue items are rebuilt from monitoring projections. They are not a second source of truth.</p>
+        <h2 data-i18n="review.empty_title">Select a queue item</h2>
+        <p data-i18n="review.empty_description">Ops health counts and queue items are rebuilt from monitoring projections. They are not a second source of truth.</p>
       </section>
 
       <section id="reviewView" hidden>
@@ -59,24 +59,24 @@
             <div id="itemMeta" class="muted"></div>
           </div>
           <div class="toolbar">
-            <button id="claimLease">Claim lease</button>
-            <button id="releaseLease" class="secondary" hidden>Release lease</button>
+            <button id="claimLease" data-i18n="review.claim_lease">Claim lease</button>
+            <button id="releaseLease" class="secondary" data-i18n="review.release_lease" hidden>Release lease</button>
           </div>
         </div>
 
         <section aria-labelledby="ops-health-heading">
-          <h2 id="ops-health-heading">Ops health</h2>
+          <h2 id="ops-health-heading" data-i18n="review.ops_health">Ops health</h2>
           <div id="opsHealthCards" class="cards" aria-live="polite"></div>
         </section>
 
         <div class="two-column">
           <article class="panel">
-            <h3>Candidate summary</h3>
+            <h3 data-i18n="review.candidate_summary">Candidate summary</h3>
             <p id="candidateSummary" class="capture-safe"></p>
             <dl id="candidateMeta" class="meta-dl"></dl>
           </article>
           <article class="panel">
-            <h3>Capture diff</h3>
+            <h3 data-i18n="review.capture_diff">Capture diff</h3>
             <p class="small muted">Untrusted capture bytes are rendered as escaped text only.</p>
             <div id="captureDiff" class="capture-sandbox" aria-label="Sandboxed capture diff"></div>
           </article>
@@ -110,6 +110,7 @@
     </main>
   </div>
 
+  <script src="i18n.js" defer></script>
   <script src="review.js" defer></script>
 </body>
 </html>

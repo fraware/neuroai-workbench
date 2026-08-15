@@ -60,6 +60,14 @@ def test_http_api_and_static_ui(workspace):
         wait_until_ready(base)
         health = request(base + "/api/health")
         assert health["status"] == "ok"
+        catalog = request(base + "/api/presentation/catalog?locale=fr-FR")
+        assert catalog["translation_scope"] == "PRESENTATION_ONLY"
+        assert catalog["locale"] == "en"
+        assert catalog["resolution"]["source"] == "query"
+        assert catalog["resolution"]["fallback_used"] is True
+        assert catalog["messages"]["assessment.shell_title"] == "NeuroAI Evidence and Decision Workbench"
+        assert len(catalog["catalog_sha256"]) == 64
+        assert workspace.list_cases() == []
         html = request(base + "/")
         assert b"NeuroAI Evidence and Decision Workbench" in html
         created = request(base + "/api/cases", "POST", {"case_id": "CASE-001", "title": "HTTP case"})

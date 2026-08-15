@@ -3,35 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NeuroAI Evidence and Decision Workbench</title>
+  <title data-i18n="assessment.document_title">NeuroAI Evidence and Decision Workbench</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <div>
-      <h1>NeuroAI Evidence and Decision Workbench</h1>
-      <p>Offline-first reference implementation for the v4.2 universal assessment instrument.</p>
+      <h1 data-i18n="assessment.shell_title">NeuroAI Evidence and Decision Workbench</h1>
+      <p data-i18n="assessment.shell_subtitle">Offline-first reference implementation for the v4.2 universal assessment instrument.</p>
     </div>
-    <div class="boundary">Software validation does not establish substantive conformance.</div>
+    <div class="boundary" data-i18n="assessment.boundary">Software validation does not establish substantive conformance.</div>
   </header>
 
   <div class="layout">
     <aside class="sidebar">
       <div class="sidebar-actions">
-        <button id="createCase">New case</button>
-        <label class="button secondary" for="importCase">Import JSON</label>
+        <button id="createCase" data-i18n="assessment.new_case">New case</button>
+        <label class="button secondary" for="importCase" data-i18n="assessment.import_json">Import JSON</label>
         <input id="importCase" type="file" accept="application/json,.json" hidden>
-        <a class="button secondary" href="/review.html">Monitoring review</a>
+        <a class="button secondary" href="/review.html" data-i18n="assessment.monitoring_review">Monitoring review</a>
       </div>
       <div id="workspaceState" class="small muted">Loading workspace…</div>
-      <h2>Cases</h2>
+      <h2 data-i18n="assessment.sidebar_cases">Cases</h2>
       <div id="caseList" class="case-list"></div>
     </aside>
 
     <main class="main">
       <section id="emptyState" class="empty-state">
-        <h2>Select or create a case</h2>
-        <p>The workbench stores assessment JSON, evidence bytes, snapshots and a hash-chained event log in the local workspace.</p>
+        <h2 data-i18n="assessment.empty_title">Select or create a case</h2>
+        <p data-i18n="assessment.empty_description">The workbench stores assessment JSON, evidence bytes, snapshots and a hash-chained event log in the local workspace.</p>
       </section>
 
       <section id="caseView" hidden>
@@ -41,19 +41,19 @@
             <div id="caseMeta" class="muted"></div>
           </div>
           <div class="toolbar">
-            <button id="validateCase">Validate</button>
-            <button id="snapshotCase" class="secondary">Snapshot</button>
-            <button id="bundleCase" class="secondary">Export bundle</button>
+            <button id="validateCase" data-i18n="assessment.validate">Validate</button>
+            <button id="snapshotCase" class="secondary" data-i18n="assessment.snapshot">Snapshot</button>
+            <button id="bundleCase" class="secondary" data-i18n="assessment.export_bundle">Export bundle</button>
           </div>
         </div>
 
         <nav class="tabs" aria-label="Case views">
-          <button data-tab="summary" class="active">Summary</button>
-          <button data-tab="requirements">Requirements</button>
-          <button data-tab="evidence">Evidence</button>
-          <button data-tab="decisions">Decisions</button>
-          <button data-tab="json">JSON</button>
-          <button data-tab="events">Event log</button>
+          <button data-tab="summary" class="active" data-i18n="assessment.tabs.summary">Summary</button>
+          <button data-tab="requirements" data-i18n="assessment.tabs.requirements">Requirements</button>
+          <button data-tab="evidence" data-i18n="assessment.tabs.evidence">Evidence</button>
+          <button data-tab="decisions" data-i18n="assessment.tabs.decisions">Decisions</button>
+          <button data-tab="json" data-i18n="assessment.tabs.json">JSON</button>
+          <button data-tab="events" data-i18n="assessment.tabs.event_log">Event log</button>
         </nav>
 
         <div id="toast" class="toast" hidden></div>
@@ -152,6 +152,7 @@
     </form>
   </dialog>
 
+  <script src="i18n.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
