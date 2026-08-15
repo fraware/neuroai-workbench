@@ -10,15 +10,15 @@ These checks operate on repository-controlled presentation assets. They do not i
 
 Each primary surface has one stable `main` target with `tabindex="-1"` for skip navigation. Form controls require a native label, `aria-label`, or a valid `aria-labelledby` relationship; placeholder and default-option text are not treated as names.
 
-Case views use the ARIA tab pattern. Exactly one tab is selected and keyboard-focusable at a time. Each tab has a stable identifier and `aria-controls` reference, and each panel has a reciprocal `aria-labelledby` reference. Governed identifiers and machine-readable values are not derived from translated labels.
+Case views use the ARIA tab pattern. Exactly one tab is selected and keyboard-focusable at a time. Each tab has a stable identifier and exactly one `aria-controls` reference. Each panel is controlled by exactly one tab and has the reciprocal `aria-labelledby` relationship. Governed identifiers and machine-readable values are not derived from translated labels.
 
-Routine confirmations are mirrored into a persistent polite status region. Errors are mirrored into a persistent assertive alert region. Visual toasts remain presentation-only and are hidden from the accessibility tree to prevent duplicate announcements. Actionable links and form controls receive an explicit `:focus-visible` treatment.
+Each primary surface has exactly one designated polite status announcer and one designated assertive alert announcer. Both remain exposed to accessibility APIs and use `aria-atomic="true"`. Routine confirmations route to the status announcer; errors route to the alert announcer. Each surface has exactly one visual-toast announcement source, which is hidden from the accessibility tree to prevent duplicate announcements. Actionable links and form controls receive an explicit `:focus-visible` treatment.
 
 ## Known limitations
 
 Repository checks establish structural and interaction regression protection for the properties they exercise. They do not establish screen-reader usability, semantic comprehension, zoom or reflow quality across environments, forced-colors behavior, cognitive accessibility, motor accessibility across devices, translation quality, assistive-technology interoperability, representative-user validation, or WCAG conformance.
 
-The dependency-free JavaScript tests exercise deterministic tab-state logic. Browser and assistive-technology interoperability remains an external validation activity.
+The dependency-free JavaScript tests exercise deterministic tab state and keyboard navigation, skip-target focus transfer, routine-versus-error announcement routing, repeated identical announcements, stale scheduled-announcement suppression, and hidden or empty toast suppression. Browser and assistive-technology interoperability remains an external validation activity.
 
 ## External validation protocol
 
