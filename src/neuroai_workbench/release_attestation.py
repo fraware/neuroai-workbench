@@ -204,7 +204,9 @@ def verify_release_attestations(workspace: Workspace) -> dict[str, Any]:
     index = {str(item.get("attestation_id", "")): item for item in records}
     if len(index) != len(records):
         errors.append("Duplicate attestation_id")
-    superseded = Counter(str(item["supersedes_attestation_id"]) for item in records if item.get("supersedes_attestation_id"))
+    superseded = Counter(
+        str(item["supersedes_attestation_id"]) for item in records if item.get("supersedes_attestation_id")
+    )
     policy_ref = {
         "policy_id": "RELATTEST-1.0.0",
         "policy_version": "1.0.0",
@@ -226,7 +228,9 @@ def verify_release_attestations(workspace: Workspace) -> dict[str, Any]:
             prior = index.get(str(prior_id))
             if prior is None:
                 errors.append(f"{attestation_id}: supersession target missing")
-            elif prior.get("candidate_reference", {}).get("candidate_artifact_sha256") != target.get("candidate_reference", {}).get("candidate_artifact_sha256"):
+            elif prior.get("candidate_reference", {}).get("candidate_artifact_sha256") != target.get(
+                "candidate_reference", {}
+            ).get("candidate_artifact_sha256"):
                 errors.append(f"{attestation_id}: supersession changes the exact candidate object")
     if any(count != 1 for count in superseded.values()):
         errors.append("An attestation is superseded more than once")
@@ -263,7 +267,10 @@ def record_release_attestation(
     if decision == "AUTHORIZE":
         if any(item["state"] == "BLOCK" for item in assessments):
             raise ValueError("AUTHORIZE is forbidden when a review domain is BLOCK")
-        if any(item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in normalized_conditions):
+        if any(
+            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE"
+            for item in normalized_conditions
+        ):
             raise ValueError("AUTHORIZE is forbidden with an unresolved release blocker")
     metadata = candidate.get("metadata")
     predecessor = candidate.get("predecessor_reference")
@@ -287,11 +294,14 @@ def record_release_attestation(
     same_object = [
         item
         for item in active
-        if item.get("candidate_reference", {}).get("candidate_artifact_sha256") == candidate_ref["candidate_artifact_sha256"]
+        if item.get("candidate_reference", {}).get("candidate_artifact_sha256")
+        == candidate_ref["candidate_artifact_sha256"]
     ]
     if supersedes_attestation_id is None and same_object:
         raise ValueError("Exact candidate object already has an active attestation")
-    if supersedes_attestation_id is not None and not any(item.get("attestation_id") == supersedes_attestation_id for item in same_object):
+    if supersedes_attestation_id is not None and not any(
+        item.get("attestation_id") == supersedes_attestation_id for item in same_object
+    ):
         raise ValueError("Supersession must reference the active attestation for the same exact object")
     policy = load_release_attestation_policy()
     attestation_id = f"RELATT-{uuid4().hex[:20].upper()}"
@@ -408,7 +418,10 @@ def record_attested_publication(
     attestation = active.get(attestation_id)
     if attestation is None or attestation.get("decision") != "AUTHORIZE":
         raise ValueError("Publication requires one active AUTHORIZE attestation")
-    if any(item.get("attestation_reference", {}).get("attestation_id") == attestation_id for item in load_attested_publications(workspace)):
+    if any(
+        item.get("attestation_reference", {}).get("attestation_id") == attestation_id
+        for item in load_attested_publications(workspace)
+    ):
         raise ValueError("Release attestation already has a publication record")
     reference = str(publication_evidence.get("reference", "")).strip()
     if not reference.startswith(("public-ref:", "protected-ref:")) or reference in {"public-ref:", "protected-ref:"}:
