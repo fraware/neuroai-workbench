@@ -131,7 +131,10 @@ def render_pdf(query: dict[str, Any]) -> bytes | None:
             wrapped: list[list[Any]] = []
             for row in matrix:
                 wrapped.append(
-                    [Paragraph(_stringify(cell).replace("&", "&amp;").replace("<", "&lt;"), small_style) for cell in row]
+                    [
+                        Paragraph(_stringify(cell).replace("&", "&amp;").replace("<", "&lt;"), small_style)
+                        for cell in row
+                    ]
                 )
             table = Table(wrapped, colWidths=[col_width] * col_count, repeatRows=1)
             table.setStyle(
