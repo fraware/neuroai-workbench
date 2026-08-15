@@ -32,7 +32,9 @@ def codes(html: str) -> list[str]:
 
 
 def messages(html: str, code: str) -> list[str]:
-    return [issue.message for issue in validate_document(html, document_name="fixture.html").issues if issue.code == code]
+    return [
+        issue.message for issue in validate_document(html, document_name="fixture.html").issues if issue.code == code
+    ]
 
 
 def test_valid_contract_passes() -> None:
