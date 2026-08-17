@@ -31,12 +31,18 @@
     },
     "candidate_reference": {
       "type": "object",
-      "required": ["candidate_id", "candidate_sha256", "candidate_artifact_sha256"],
+      "required": [
+        "candidate_id",
+        "candidate_sha256",
+        "candidate_serialization",
+        "candidate_serialized_sha256"
+      ],
       "additionalProperties": false,
       "properties": {
         "candidate_id": {"type": "string", "minLength": 1},
         "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "candidate_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "candidate_serialization": {"const": "JSON_UTF8_INDENT2_LF"},
+        "candidate_serialized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       }
     },
     "publication_evidence": {
