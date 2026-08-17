@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "policy_id": "RELATTEST-1.0.0",
+  "policy_version": "1.0.0",
+  "profile": "DEFAULT_RELEASE_ATTESTATION",
+  "designated_authority_key": "fraware",
+  "required_tracks": [
+    "SECURITY",
+    "METHODOLOGY",
+    "DATA_GOVERNANCE",
+    "ACCESSIBILITY",
+    "DOMAIN",
+    "AFFECTED_COMMUNITY"
+  ],
+  "track_states": [
+    "PASS",
+    "BLOCK"
+  ],
+  "decision_states": [
+    "AUTHORIZE",
+    "WITHHOLD"
+  ],
+  "candidate_serialization": "JSON_UTF8_INDENT2_LF",
+  "boundary": "Default release attestation records one designated maintainer's six-domain repository release judgment over a deterministic serialized candidate representation and exact product digests. It does not establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
+}
