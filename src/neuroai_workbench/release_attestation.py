@@ -241,9 +241,7 @@ def _semantic_errors(record: dict[str, Any]) -> list[str]:
     if decision == "AUTHORIZE":
         if any(item["state"] == "BLOCK" for item in assessments):
             errors.append(f"{attestation_id}: AUTHORIZE contains a blocking review domain")
-        if any(
-            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in conditions
-        ):
+        if any(item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in conditions):
             errors.append(f"{attestation_id}: AUTHORIZE contains an unresolved release blocker")
 
     reference = record.get("candidate_reference")
@@ -333,9 +331,7 @@ def verify_release_attestations(workspace: Workspace) -> dict[str, Any]:
         errors.append("Attestation supersession cycle detected")
 
     active = _active(records)
-    counts = Counter(
-        str(item.get("candidate_reference", {}).get("candidate_serialized_sha256", "")) for item in active
-    )
+    counts = Counter(str(item.get("candidate_reference", {}).get("candidate_serialized_sha256", "")) for item in active)
     if any(digest and count > 1 for digest, count in counts.items()):
         errors.append("One exact candidate representation has multiple active attestations")
     return {"valid": not errors, "errors": errors, "record_count": len(records), "active_count": len(active)}
@@ -372,8 +368,7 @@ def record_release_attestation(
         if any(item["state"] == "BLOCK" for item in assessments):
             raise ValueError("AUTHORIZE is forbidden when a review domain is BLOCK")
         if any(
-            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE"
-            for item in normalized_conditions
+            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in normalized_conditions
         ):
             raise ValueError("AUTHORIZE is forbidden with an unresolved release blocker")
 
@@ -515,10 +510,10 @@ def verify_attested_publications(workspace: Workspace) -> dict[str, Any]:
             errors.append(f"{publication_id}: publication evidence is invalid")
         else:
             evidence_reference = str(evidence.get("reference", "")).strip()
-            if (
-                not evidence_reference.startswith(("public-ref:", "protected-ref:"))
-                or evidence_reference in {"public-ref:", "protected-ref:"}
-            ):
+            if not evidence_reference.startswith(("public-ref:", "protected-ref:")) or evidence_reference in {
+                "public-ref:",
+                "protected-ref:",
+            }:
                 errors.append(f"{publication_id}: publication evidence reference is invalid")
             try:
                 _digest(evidence.get("sha256"), "publication evidence")
