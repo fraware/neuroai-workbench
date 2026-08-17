@@ -29,8 +29,7 @@ def _candidate(version: str) -> dict[str, Any]:
 
 def _assessments() -> list[dict[str, str]]:
     return [
-        {"track": track, "state": "PASS", "rationale": f"TEST FIXTURE ONLY {track}."}
-        for track in sorted(REVIEW_TRACKS)
+        {"track": track, "state": "PASS", "rationale": f"TEST FIXTURE ONLY {track}."} for track in sorted(REVIEW_TRACKS)
     ]
 
 
