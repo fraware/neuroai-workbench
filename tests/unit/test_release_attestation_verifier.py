@@ -78,7 +78,11 @@ def _patch_attestation_store(
 
 def test_attestation_verifier_reports_event_chain_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     workspace = _workspace(tmp_path)
-    monkeypatch.setattr(release_module, "_events", lambda workspace, action: (_ for _ in ()).throw(ValueError("bad chain")))
+    monkeypatch.setattr(
+        release_module,
+        "_events",
+        lambda workspace, action: (_ for _ in ()).throw(ValueError("bad chain")),
+    )
     report = verify_release_attestations(workspace)
     assert report["valid"] is False
     assert "bad chain" in report["errors"]
@@ -254,16 +258,22 @@ def _patch_publication_store(
     monkeypatch.setattr(release_module, "verify_release_attestations", lambda workspace: {"valid": True})
     monkeypatch.setattr(release_module, "load_release_attestations", lambda workspace: [attestation])
     monkeypatch.setattr(release_module, "load_attested_publications", lambda workspace: publications)
-    events = Counter(
-        (str(item["publication_id"]), str(item["publication_sha256"])) for item in publications
-    ) if include_events else Counter()
+    events = (
+        Counter((str(item["publication_id"]), str(item["publication_sha256"])) for item in publications)
+        if include_events
+        else Counter()
+    )
     monkeypatch.setattr(release_module, "_events", lambda workspace, action: events)
 
 
 def test_publication_verifier_reports_event_chain_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     workspace = _workspace(tmp_path)
     monkeypatch.setattr(release_module, "verify_release_attestations", lambda workspace: {"valid": True})
-    monkeypatch.setattr(release_module, "_events", lambda workspace, action: (_ for _ in ()).throw(ValueError("bad publication chain")))
+    monkeypatch.setattr(
+        release_module,
+        "_events",
+        lambda workspace, action: (_ for _ in ()).throw(ValueError("bad publication chain")),
+    )
     report = verify_attested_publications(workspace)
     assert report["valid"] is False
     assert "bad publication chain" in report["errors"]
