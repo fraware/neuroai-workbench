@@ -20,5 +20,6 @@
     "AUTHORIZE",
     "WITHHOLD"
   ],
-  "boundary": "Default release attestation records one designated maintainer's six-domain repository release judgment over exact candidate and product digests. It does not establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
+  "candidate_serialization": "JSON_UTF8_INDENT2_LF",
+  "boundary": "Default release attestation records one designated maintainer's six-domain repository release judgment over a deterministic serialized candidate representation and exact product digests. It does not establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
 }
