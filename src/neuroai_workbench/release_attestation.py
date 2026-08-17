@@ -24,11 +24,12 @@ PROFILE = "DEFAULT_RELEASE_ATTESTATION"
 ATTESTATION_EVENT = "RELEASE_ATTESTATION_RECORDED"
 PUBLICATION_EVENT = "ATTESTED_RELEASE_PUBLICATION_RECORDED"
 PRIVATE_KEYS = frozenset({"_path"})
+SERIALIZATION = "JSON_UTF8_INDENT2_LF"
 
 ATTESTATION_BOUNDARY = (
     "Default release attestation records one designated maintainer's six-domain repository release judgment over "
-    "exact candidate and product digests. It does not establish scientific, clinical, regulatory, legal, "
-    "conformance, institutional, or external authority."
+    "a deterministic serialized candidate representation and exact product digests. It does not establish "
+    "scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
 )
 PUBLICATION_BOUNDARY = (
     "Publication records bind one active authorized default release attestation to explicit publication evidence. "
@@ -51,6 +52,7 @@ def load_release_attestation_policy() -> dict[str, Any]:
         "designated_authority_key": "fraware",
         "track_states": ["PASS", "BLOCK"],
         "decision_states": ["AUTHORIZE", "WITHHOLD"],
+        "candidate_serialization": SERIALIZATION,
         "boundary": ATTESTATION_BOUNDARY,
     }
     if any(policy.get(key) != value for key, value in expected.items()):
@@ -84,7 +86,7 @@ def _hash(record: dict[str, Any], field: str) -> str:
     return sha256_bytes(canonical_json_bytes(controlled))
 
 
-def _candidate_artifact_sha256(candidate: dict[str, Any]) -> str:
+def _candidate_serialized_sha256(candidate: dict[str, Any]) -> str:
     payload = json.dumps(candidate, ensure_ascii=False, indent=2).encode("utf-8") + b"\n"
     return sha256_bytes(payload)
 
@@ -115,12 +117,15 @@ def load_attested_publications(workspace: Workspace) -> list[dict[str, Any]]:
     return _load(workspace, "release-publications")
 
 
-def _products(items: list[dict[str, str]]) -> list[dict[str, str]]:
-    if not items:
+def _products(items: Any) -> list[dict[str, str]]:
+    if not isinstance(items, list) or not items:
         raise ValueError("At least one product digest is required")
     result: list[dict[str, str]] = []
     seen: set[str] = set()
-    for item in items:
+    for raw in items:
+        if not isinstance(raw, dict):
+            raise ValueError("Product entries must be objects")
+        item = cast(dict[str, Any], raw)
         product_id = str(item.get("product_id", "")).strip()
         if not product_id or product_id in seen:
             raise ValueError("Product identifiers must be non-empty and unique")
@@ -129,11 +134,16 @@ def _products(items: list[dict[str, str]]) -> list[dict[str, str]]:
     return sorted(result, key=lambda item: item["product_id"])
 
 
-def _assessments(items: list[dict[str, str]]) -> list[dict[str, str]]:
+def _assessments(items: Any) -> list[dict[str, str]]:
+    if not isinstance(items, list):
+        raise ValueError("Release attestation assessments must be a list")
     required = set(REVIEW_TRACKS)
     result: list[dict[str, str]] = []
     seen: set[str] = set()
-    for item in items:
+    for raw in items:
+        if not isinstance(raw, dict):
+            raise ValueError("Release attestation assessments must be objects")
+        item = cast(dict[str, Any], raw)
         track = str(item.get("track", "")).strip()
         state = str(item.get("state", "")).strip()
         rationale = str(item.get("rationale", "")).strip()
@@ -148,10 +158,17 @@ def _assessments(items: list[dict[str, str]]) -> list[dict[str, str]]:
     return sorted(result, key=lambda item: item["track"])
 
 
-def _conditions(items: list[dict[str, str]] | None) -> list[dict[str, str]]:
+def _conditions(items: Any) -> list[dict[str, str]]:
+    if items is None:
+        items = []
+    if not isinstance(items, list):
+        raise ValueError("Conditions must be a list")
     result: list[dict[str, str]] = []
     seen: set[str] = set()
-    for item in items or []:
+    for raw in items:
+        if not isinstance(raw, dict):
+            raise ValueError("Condition entries must be objects")
+        item = cast(dict[str, Any], raw)
         condition_id = str(item.get("condition_id", "")).strip()
         status = str(item.get("status", "")).strip()
         effect = str(item.get("release_effect", "")).strip()
@@ -161,7 +178,14 @@ def _conditions(items: list[dict[str, str]] | None) -> list[dict[str, str]]:
         if status not in {"OPEN", "RESOLVED"} or effect not in {"BLOCKS_RELEASE", "NON_BLOCKING"} or not summary:
             raise ValueError(f"Condition {condition_id} is invalid")
         seen.add(condition_id)
-        result.append({"condition_id": condition_id, "status": status, "release_effect": effect, "summary": summary})
+        result.append(
+            {
+                "condition_id": condition_id,
+                "status": status,
+                "release_effect": effect,
+                "summary": summary,
+            }
+        )
     return sorted(result, key=lambda item: item["condition_id"])
 
 
@@ -193,25 +217,91 @@ def _events(workspace: Workspace, action: str) -> Counter[tuple[str, str]]:
     return result
 
 
+def _semantic_errors(record: dict[str, Any]) -> list[str]:
+    attestation_id = str(record.get("attestation_id", ""))
+    errors: list[str] = []
+    try:
+        products = _products(record.get("products"))
+        assessments = _assessments(record.get("track_assessments"))
+        conditions = _conditions(record.get("conditions"))
+    except ValueError as exc:
+        return [f"{attestation_id}: {exc}"]
+
+    if products != record.get("products"):
+        errors.append(f"{attestation_id}: products are not in canonical order")
+    if assessments != record.get("track_assessments"):
+        errors.append(f"{attestation_id}: track assessments are not in canonical order")
+    if conditions != record.get("conditions"):
+        errors.append(f"{attestation_id}: conditions are not in canonical order")
+
+    decision = str(record.get("decision", ""))
+    rationale = str(record.get("decision_rationale", "")).strip()
+    if decision not in {"AUTHORIZE", "WITHHOLD"} or not rationale:
+        errors.append(f"{attestation_id}: decision/rationale is invalid")
+    if decision == "AUTHORIZE":
+        if any(item["state"] == "BLOCK" for item in assessments):
+            errors.append(f"{attestation_id}: AUTHORIZE contains a blocking review domain")
+        if any(
+            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in conditions
+        ):
+            errors.append(f"{attestation_id}: AUTHORIZE contains an unresolved release blocker")
+
+    reference = record.get("candidate_reference")
+    if isinstance(reference, dict):
+        try:
+            _digest(reference.get("candidate_sha256"), "candidate canonical digest")
+            _digest(reference.get("candidate_serialized_sha256"), "candidate serialized digest")
+        except ValueError as exc:
+            errors.append(f"{attestation_id}: {exc}")
+        if reference.get("candidate_serialization") != SERIALIZATION:
+            errors.append(f"{attestation_id}: candidate serialization contract mismatch")
+    else:
+        errors.append(f"{attestation_id}: candidate reference is invalid")
+    return errors
+
+
+def _supersession_cycle(index: dict[str, dict[str, Any]], start_id: str) -> bool:
+    seen: set[str] = set()
+    current = start_id
+    while current:
+        if current in seen:
+            return True
+        seen.add(current)
+        record = index.get(current)
+        if record is None:
+            return False
+        current = str(record.get("supersedes_attestation_id", ""))
+    return False
+
+
 def verify_release_attestations(workspace: Workspace) -> dict[str, Any]:
     records = load_release_attestations(workspace)
+    publications = load_attested_publications(workspace)
     errors: list[str] = []
     try:
         events = _events(workspace, ATTESTATION_EVENT)
     except ValueError as exc:
         events = Counter()
         errors.append(str(exc))
+
     index = {str(item.get("attestation_id", "")): item for item in records}
     if len(index) != len(records):
         errors.append("Duplicate attestation_id")
-    superseded = Counter(
-        str(item["supersedes_attestation_id"]) for item in records if item.get("supersedes_attestation_id")
-    )
+
     policy_ref = {
         "policy_id": "RELATTEST-1.0.0",
         "policy_version": "1.0.0",
         "policy_sha256": release_attestation_policy_sha256(),
     }
+    published_ids = {
+        str(reference.get("attestation_id", ""))
+        for item in publications
+        if isinstance((reference := item.get("attestation_reference")), dict)
+    }
+    superseded = Counter(
+        str(item["supersedes_attestation_id"]) for item in records if item.get("supersedes_attestation_id")
+    )
+
     for record in records:
         target = {key: value for key, value in record.items() if key not in PRIVATE_KEYS}
         attestation_id = str(target.get("attestation_id", ""))
@@ -219,25 +309,35 @@ def verify_release_attestations(workspace: Workspace) -> dict[str, Any]:
             errors.append(f"{attestation_id}: hash mismatch")
         if _schema_errors(target, ATTESTATION_SCHEMA):
             errors.append(f"{attestation_id}: schema invalid")
+        errors.extend(_semantic_errors(target))
         if target.get("policy_reference") != policy_ref or target.get("recorded_by") != "fraware":
             errors.append(f"{attestation_id}: authority/policy binding mismatch")
         if events[(attestation_id, str(target.get("attestation_sha256", "")))] != 1:
             errors.append(f"{attestation_id}: matching append-only event missing or duplicated")
-        prior_id = target.get("supersedes_attestation_id")
+
+        prior_id = str(target.get("supersedes_attestation_id", ""))
         if prior_id:
-            prior = index.get(str(prior_id))
+            prior = index.get(prior_id)
             if prior is None:
                 errors.append(f"{attestation_id}: supersession target missing")
-            elif prior.get("candidate_reference", {}).get("candidate_artifact_sha256") != target.get(
+            elif prior.get("candidate_reference", {}).get("candidate_serialized_sha256") != target.get(
                 "candidate_reference", {}
-            ).get("candidate_artifact_sha256"):
-                errors.append(f"{attestation_id}: supersession changes the exact candidate object")
+            ).get("candidate_serialized_sha256"):
+                errors.append(f"{attestation_id}: supersession changes the exact candidate representation")
+            if prior_id in published_ids:
+                errors.append(f"{attestation_id}: published attestation cannot be superseded")
+
     if any(count != 1 for count in superseded.values()):
         errors.append("An attestation is superseded more than once")
+    if any(_supersession_cycle(index, attestation_id) for attestation_id in index):
+        errors.append("Attestation supersession cycle detected")
+
     active = _active(records)
-    counts = Counter(str(item.get("candidate_reference", {}).get("candidate_artifact_sha256", "")) for item in active)
+    counts = Counter(
+        str(item.get("candidate_reference", {}).get("candidate_serialized_sha256", "")) for item in active
+    )
     if any(digest and count > 1 for digest, count in counts.items()):
-        errors.append("One exact candidate object has multiple active attestations")
+        errors.append("One exact candidate representation has multiple active attestations")
     return {"valid": not errors, "errors": errors, "record_count": len(records), "active_count": len(active)}
 
 
@@ -259,8 +359,12 @@ def record_release_attestation(
         raise ValueError("Successor candidate failed validation")
     if verify_release_attestations(workspace)["valid"] is not True:
         raise ValueError("Release-attestation store is invalid")
+    if verify_attested_publications(workspace)["valid"] is not True:
+        raise ValueError("Attested-publication store is invalid")
+
     assessments = _assessments(track_assessments)
     normalized_conditions = _conditions(conditions)
+    normalized_products = _products(products)
     rationale = decision_rationale.strip()
     if decision not in {"AUTHORIZE", "WITHHOLD"} or not rationale:
         raise ValueError("Decision must be AUTHORIZE/WITHHOLD with a rationale")
@@ -268,9 +372,11 @@ def record_release_attestation(
         if any(item["state"] == "BLOCK" for item in assessments):
             raise ValueError("AUTHORIZE is forbidden when a review domain is BLOCK")
         if any(
-            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE" for item in normalized_conditions
+            item["status"] == "OPEN" and item["release_effect"] == "BLOCKS_RELEASE"
+            for item in normalized_conditions
         ):
             raise ValueError("AUTHORIZE is forbidden with an unresolved release blocker")
+
     metadata = candidate.get("metadata")
     predecessor = candidate.get("predecessor_reference")
     withheld_claims = candidate.get("withheld_claims")
@@ -278,10 +384,12 @@ def record_release_attestation(
         raise ValueError("Candidate metadata and predecessor reference are required")
     if not isinstance(withheld_claims, list) or not withheld_claims:
         raise ValueError("Candidate withheld claims must be non-empty")
+
     candidate_ref = {
         "candidate_id": str(metadata.get("candidate_id", "")).strip(),
         "candidate_sha256": _digest(metadata.get("canonical_sha256"), "candidate canonical digest"),
-        "candidate_artifact_sha256": _candidate_artifact_sha256(candidate),
+        "candidate_serialization": SERIALIZATION,
+        "candidate_serialized_sha256": _candidate_serialized_sha256(candidate),
     }
     predecessor_ref = {
         "release_version": str(predecessor.get("release_version", "")).strip(),
@@ -289,19 +397,25 @@ def record_release_attestation(
     }
     if not candidate_ref["candidate_id"] or not predecessor_ref["release_version"]:
         raise ValueError("Candidate and predecessor identifiers are required")
+
     active = _active(load_release_attestations(workspace))
     same_object = [
         item
         for item in active
-        if item.get("candidate_reference", {}).get("candidate_artifact_sha256")
-        == candidate_ref["candidate_artifact_sha256"]
+        if item.get("candidate_reference", {}).get("candidate_serialized_sha256")
+        == candidate_ref["candidate_serialized_sha256"]
     ]
     if supersedes_attestation_id is None and same_object:
-        raise ValueError("Exact candidate object already has an active attestation")
-    if supersedes_attestation_id is not None and not any(
-        item.get("attestation_id") == supersedes_attestation_id for item in same_object
-    ):
-        raise ValueError("Supersession must reference the active attestation for the same exact object")
+        raise ValueError("Exact candidate representation already has an active attestation")
+    if supersedes_attestation_id is not None:
+        if not any(item.get("attestation_id") == supersedes_attestation_id for item in same_object):
+            raise ValueError("Supersession must reference the active attestation for the same exact object")
+        if any(
+            item.get("attestation_reference", {}).get("attestation_id") == supersedes_attestation_id
+            for item in load_attested_publications(workspace)
+        ):
+            raise ValueError("Published attestation is immutable; use a new successor candidate for corrections")
+
     policy = load_release_attestation_policy()
     attestation_id = f"RELATT-{uuid4().hex[:20].upper()}"
     record: dict[str, Any] = {
@@ -317,7 +431,7 @@ def record_release_attestation(
         },
         "candidate_reference": candidate_ref,
         "predecessor_reference": predecessor_ref,
-        "products": _products(products),
+        "products": normalized_products,
         "withheld_claims_sha256": sha256_bytes(canonical_json_bytes(withheld_claims)),
         "track_assessments": assessments,
         "conditions": normalized_conditions,
@@ -328,9 +442,11 @@ def record_release_attestation(
     if supersedes_attestation_id is not None:
         record["supersedes_attestation_id"] = supersedes_attestation_id
     record["attestation_sha256"] = _hash(record, "attestation_sha256")
-    errors = _schema_errors(record, ATTESTATION_SCHEMA)
+
+    errors = _schema_errors(record, ATTESTATION_SCHEMA) + _semantic_errors(record)
     if errors:
-        raise ValueError("Release attestation failed schema validation: " + "; ".join(errors))
+        raise ValueError("Release attestation failed validation: " + "; ".join(errors))
+
     output = _root(workspace, "release-attestations") / f"{attestation_id}.json"
     append_governance_record_locked(
         workspace,
@@ -343,12 +459,12 @@ def record_release_attestation(
         event_payload={
             "attestation_id": attestation_id,
             "attestation_sha256": record["attestation_sha256"],
-            "candidate_artifact_sha256": candidate_ref["candidate_artifact_sha256"],
+            "candidate_serialized_sha256": candidate_ref["candidate_serialized_sha256"],
             "decision": decision,
         },
         secondary_digests={
             "candidate_sha256": str(candidate_ref["candidate_sha256"]),
-            "candidate_artifact_sha256": str(candidate_ref["candidate_artifact_sha256"]),
+            "candidate_serialized_sha256": str(candidate_ref["candidate_serialized_sha256"]),
             "policy_sha256": str(record["policy_reference"]["policy_sha256"]),
             "withheld_claims_sha256": str(record["withheld_claims_sha256"]),
         },
@@ -366,6 +482,7 @@ def verify_attested_publications(workspace: Workspace) -> dict[str, Any]:
     except ValueError as exc:
         events = Counter()
         errors.append(str(exc))
+
     active = {str(item["attestation_id"]): item for item in _active(load_release_attestations(workspace))}
     refs: Counter[str] = Counter()
     ids: Counter[str] = Counter()
@@ -379,6 +496,7 @@ def verify_attested_publications(workspace: Workspace) -> dict[str, Any]:
             errors.append(f"{publication_id}: schema invalid")
         if target.get("recorded_by") != "fraware":
             errors.append(f"{publication_id}: wrong designated authority")
+
         reference = target.get("attestation_reference", {})
         attestation_id = str(reference.get("attestation_id", "")) if isinstance(reference, dict) else ""
         refs[attestation_id] += 1
@@ -391,8 +509,25 @@ def verify_attested_publications(workspace: Workspace) -> dict[str, Any]:
             or target.get("candidate_reference") != attestation.get("candidate_reference")
         ):
             errors.append(f"{publication_id}: active authorization binding mismatch")
+
+        evidence = target.get("publication_evidence")
+        if not isinstance(evidence, dict):
+            errors.append(f"{publication_id}: publication evidence is invalid")
+        else:
+            evidence_reference = str(evidence.get("reference", "")).strip()
+            if (
+                not evidence_reference.startswith(("public-ref:", "protected-ref:"))
+                or evidence_reference in {"public-ref:", "protected-ref:"}
+            ):
+                errors.append(f"{publication_id}: publication evidence reference is invalid")
+            try:
+                _digest(evidence.get("sha256"), "publication evidence")
+            except ValueError as exc:
+                errors.append(f"{publication_id}: {exc}")
+
         if events[(publication_id, str(target.get("publication_sha256", "")))] != 1:
             errors.append(f"{publication_id}: matching append-only event missing or duplicated")
+
     if any(publication_id and count > 1 for publication_id, count in ids.items()):
         errors.append("Duplicate publication_id")
     if any(attestation_id and count > 1 for attestation_id, count in refs.items()):
@@ -413,6 +548,7 @@ def record_attested_publication(
         raise ValueError("Release-attestation store is invalid")
     if verify_attested_publications(workspace)["valid"] is not True:
         raise ValueError("Attested-publication store is invalid")
+
     active = {str(item["attestation_id"]): item for item in _active(load_release_attestations(workspace))}
     attestation = active.get(attestation_id)
     if attestation is None or attestation.get("decision") != "AUTHORIZE":
@@ -422,10 +558,15 @@ def record_attested_publication(
         for item in load_attested_publications(workspace)
     ):
         raise ValueError("Release attestation already has a publication record")
+
     reference = str(publication_evidence.get("reference", "")).strip()
     if not reference.startswith(("public-ref:", "protected-ref:")) or reference in {"public-ref:", "protected-ref:"}:
         raise ValueError("Publication evidence requires a non-empty public-ref: or protected-ref:")
-    evidence = {"reference": reference, "sha256": _digest(publication_evidence.get("sha256"), "publication evidence")}
+    evidence = {
+        "reference": reference,
+        "sha256": _digest(publication_evidence.get("sha256"), "publication evidence"),
+    }
+
     publication_id = f"RELPUB-{uuid4().hex[:20].upper()}"
     record: dict[str, Any] = {
         "schema_version": "1",
@@ -445,6 +586,7 @@ def record_attested_publication(
     errors = _schema_errors(record, PUBLICATION_SCHEMA)
     if errors:
         raise ValueError("Attested publication failed schema validation: " + "; ".join(errors))
+
     output = _root(workspace, "release-publications") / f"{publication_id}.json"
     append_governance_record_locked(
         workspace,
@@ -458,11 +600,11 @@ def record_attested_publication(
             "publication_id": publication_id,
             "publication_sha256": record["publication_sha256"],
             "attestation_id": attestation_id,
-            "candidate_artifact_sha256": attestation["candidate_reference"]["candidate_artifact_sha256"],
+            "candidate_serialized_sha256": attestation["candidate_reference"]["candidate_serialized_sha256"],
         },
         secondary_digests={
             "attestation_sha256": str(attestation["attestation_sha256"]),
-            "candidate_artifact_sha256": str(attestation["candidate_reference"]["candidate_artifact_sha256"]),
+            "candidate_serialized_sha256": str(attestation["candidate_reference"]["candidate_serialized_sha256"]),
             "publication_evidence_sha256": str(evidence["sha256"]),
         },
     )
