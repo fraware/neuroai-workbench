@@ -3,9 +3,22 @@
   "$id": "https://neuroai-workbench.example/schemas/release-attestation-1.0.json",
   "type": "object",
   "required": [
-    "schema_version", "attestation_id", "recorded_at", "recorded_by", "profile", "policy_reference",
-    "candidate_reference", "predecessor_reference", "products", "withheld_claims_sha256", "track_assessments",
-    "conditions", "decision", "decision_rationale", "boundary", "attestation_sha256"
+    "schema_version",
+    "attestation_id",
+    "recorded_at",
+    "recorded_by",
+    "profile",
+    "policy_reference",
+    "candidate_reference",
+    "predecessor_reference",
+    "products",
+    "withheld_claims_sha256",
+    "track_assessments",
+    "conditions",
+    "decision",
+    "decision_rationale",
+    "boundary",
+    "attestation_sha256"
   ],
   "additionalProperties": false,
   "properties": {
@@ -26,12 +39,18 @@
     },
     "candidate_reference": {
       "type": "object",
-      "required": ["candidate_id", "candidate_sha256", "candidate_artifact_sha256"],
+      "required": [
+        "candidate_id",
+        "candidate_sha256",
+        "candidate_serialization",
+        "candidate_serialized_sha256"
+      ],
       "additionalProperties": false,
       "properties": {
         "candidate_id": {"type": "string", "minLength": 1},
         "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "candidate_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "candidate_serialization": {"const": "JSON_UTF8_INDENT2_LF"},
+        "candidate_serialized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       }
     },
     "predecessor_reference": {
@@ -44,9 +63,12 @@
       }
     },
     "products": {
-      "type": "array", "minItems": 1,
+      "type": "array",
+      "minItems": 1,
       "items": {
-        "type": "object", "required": ["product_id", "sha256"], "additionalProperties": false,
+        "type": "object",
+        "required": ["product_id", "sha256"],
+        "additionalProperties": false,
         "properties": {
           "product_id": {"type": "string", "minLength": 1},
           "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
@@ -55,11 +77,24 @@
     },
     "withheld_claims_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "track_assessments": {
-      "type": "array", "minItems": 6, "maxItems": 6,
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
       "items": {
-        "type": "object", "required": ["track", "state", "rationale"], "additionalProperties": false,
+        "type": "object",
+        "required": ["track", "state", "rationale"],
+        "additionalProperties": false,
         "properties": {
-          "track": {"enum": ["SECURITY", "METHODOLOGY", "DATA_GOVERNANCE", "ACCESSIBILITY", "DOMAIN", "AFFECTED_COMMUNITY"]},
+          "track": {
+            "enum": [
+              "SECURITY",
+              "METHODOLOGY",
+              "DATA_GOVERNANCE",
+              "ACCESSIBILITY",
+              "DOMAIN",
+              "AFFECTED_COMMUNITY"
+            ]
+          },
           "state": {"enum": ["PASS", "BLOCK"]},
           "rationale": {"type": "string", "minLength": 1}
         }
@@ -68,7 +103,9 @@
     "conditions": {
       "type": "array",
       "items": {
-        "type": "object", "required": ["condition_id", "status", "release_effect", "summary"], "additionalProperties": false,
+        "type": "object",
+        "required": ["condition_id", "status", "release_effect", "summary"],
+        "additionalProperties": false,
         "properties": {
           "condition_id": {"type": "string", "minLength": 1},
           "status": {"enum": ["OPEN", "RESOLVED"]},
@@ -80,7 +117,9 @@
     "decision": {"enum": ["AUTHORIZE", "WITHHOLD"]},
     "decision_rationale": {"type": "string", "minLength": 1},
     "supersedes_attestation_id": {"type": "string", "pattern": "^RELATT-[A-Z0-9]+$"},
-    "boundary": {"const": "Default release attestation records one designated maintainer's six-domain repository release judgment over exact candidate and product digests. It does not establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."},
+    "boundary": {
+      "const": "Default release attestation records one designated maintainer's six-domain repository release judgment over a deterministic serialized candidate representation and exact product digests. It does not establish scientific, clinical, regulatory, legal, conformance, institutional, or external authority."
+    },
     "attestation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   }
 }
