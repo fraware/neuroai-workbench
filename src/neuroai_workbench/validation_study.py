@@ -151,7 +151,11 @@ def _reference_errors(value: Any, path: str) -> list[dict[str, str]]:
         return [_error("INVALID_REFERENCE", path, "Reference must be an object")]
     errors: list[dict[str, str]] = []
     if not _reference_token(value.get("reference")):
-        errors.append(_error("INVALID_REFERENCE", path + ".reference", "Reference must use a bounded public-ref: or protected-ref:"))
+        errors.append(
+            _error(
+                "INVALID_REFERENCE", path + ".reference", "Reference must use a bounded public-ref: or protected-ref:"
+            )
+        )
     if not _digest(value.get("sha256")):
         errors.append(_error("INVALID_DIGEST", path + ".sha256", "Reference SHA-256 is invalid"))
     return errors
@@ -194,7 +198,9 @@ def _normative_errors(value: Any, path: str) -> list[dict[str, str]]:
         return [_error("NORMATIVE_IDENTITY_INVALID", path + ".software_commit_sha", "Software commit SHA is invalid")]
     expected = current_v42_normative_identity(str(commit_sha))
     if value != expected:
-        return [_error("NORMATIVE_IDENTITY_MISMATCH", path, "Normative identity does not match packaged v4.2 resources")]
+        return [
+            _error("NORMATIVE_IDENTITY_MISMATCH", path, "Normative identity does not match packaged v4.2 resources")
+        ]
     return []
 
 
@@ -285,24 +291,36 @@ def validate_case_manifest(value: dict[str, Any]) -> dict[str, Any]:
         reference = raw.get("reference")
         access = raw.get("access")
         if not _reference_token(reference):
-            errors.append(_error("INVALID_REFERENCE", f"evidence_objects.{index}.reference", "Evidence reference is not bounded"))
+            errors.append(
+                _error("INVALID_REFERENCE", f"evidence_objects.{index}.reference", "Evidence reference is not bounded")
+            )
             continue
         if access == "PUBLIC" and not str(reference).startswith("public-ref:"):
-            errors.append(_error("ACCESS_REFERENCE_MISMATCH", f"evidence_objects.{index}", "PUBLIC evidence requires public-ref:"))
+            errors.append(
+                _error("ACCESS_REFERENCE_MISMATCH", f"evidence_objects.{index}", "PUBLIC evidence requires public-ref:")
+            )
         if access == "PROTECTED":
             protected_count += 1
             if not str(reference).startswith("protected-ref:"):
                 errors.append(
-                    _error("ACCESS_REFERENCE_MISMATCH", f"evidence_objects.{index}", "PROTECTED evidence requires protected-ref:")
+                    _error(
+                        "ACCESS_REFERENCE_MISMATCH",
+                        f"evidence_objects.{index}",
+                        "PROTECTED evidence requires protected-ref:",
+                    )
                 )
         if not _digest(raw.get("sha256")):
             errors.append(_error("INVALID_DIGEST", f"evidence_objects.{index}.sha256", "Evidence SHA-256 is invalid"))
 
     boundary = value.get("public_private_boundary")
     if protected_count and boundary != "MIXED_WITH_PROTECTED_REFERENCES":
-        errors.append(_error("PUBLIC_PRIVATE_MISMATCH", "public_private_boundary", "Protected evidence requires mixed boundary"))
+        errors.append(
+            _error("PUBLIC_PRIVATE_MISMATCH", "public_private_boundary", "Protected evidence requires mixed boundary")
+        )
     if not protected_count and boundary != "PUBLIC_ONLY":
-        errors.append(_error("PUBLIC_PRIVATE_MISMATCH", "public_private_boundary", "Public-only evidence requires PUBLIC_ONLY"))
+        errors.append(
+            _error("PUBLIC_PRIVATE_MISMATCH", "public_private_boundary", "Public-only evidence requires PUBLIC_ONLY")
+        )
 
     return {
         "valid": not errors,
@@ -364,31 +382,75 @@ def _consequential_errors(rules: Any) -> list[dict[str, str]]:
         if family == "REQUIREMENT_FINDING":
             allowed = finding_states
             if decision_type is not None:
-                errors.append(_error("UNEXPECTED_DECISION_TYPE", f"consequential_disagreements.{index}", "Finding rule cannot name decision type"))
+                errors.append(
+                    _error(
+                        "UNEXPECTED_DECISION_TYPE",
+                        f"consequential_disagreements.{index}",
+                        "Finding rule cannot name decision type",
+                    )
+                )
         elif family == "CLAIM_STATUS":
             allowed = claim_states
             if decision_type is not None:
-                errors.append(_error("UNEXPECTED_DECISION_TYPE", f"consequential_disagreements.{index}", "Claim rule cannot name decision type"))
+                errors.append(
+                    _error(
+                        "UNEXPECTED_DECISION_TYPE",
+                        f"consequential_disagreements.{index}",
+                        "Claim rule cannot name decision type",
+                    )
+                )
         elif family == "TYPED_DECISION" and decision_type in DECISION_STATE_COMPATIBILITY:
             allowed = set(DECISION_STATE_COMPATIBILITY[str(decision_type)])
         else:
-            errors.append(_error("INVALID_RULE_DOMAIN", f"consequential_disagreements.{index}", "Rule field/type is invalid"))
+            errors.append(
+                _error("INVALID_RULE_DOMAIN", f"consequential_disagreements.{index}", "Rule field/type is invalid")
+            )
             continue
         if left not in allowed:
-            errors.append(_error("INVALID_RULE_STATE", f"consequential_disagreements.{index}.left_state", "Left state is incompatible"))
+            errors.append(
+                _error(
+                    "INVALID_RULE_STATE",
+                    f"consequential_disagreements.{index}.left_state",
+                    "Left state is incompatible",
+                )
+            )
         if mode == "STATE_PAIR":
             if right not in allowed or right == left:
-                errors.append(_error("INVALID_RULE_STATE", f"consequential_disagreements.{index}.right_state", "Right state is incompatible or identical"))
+                errors.append(
+                    _error(
+                        "INVALID_RULE_STATE",
+                        f"consequential_disagreements.{index}.right_state",
+                        "Right state is incompatible or identical",
+                    )
+                )
         elif mode == "PRESENCE_ABSENCE":
             if family != "TYPED_DECISION" or right is not None:
-                errors.append(_error("INVALID_PRESENCE_RULE", f"consequential_disagreements.{index}", "Presence/absence is only valid for typed decisions and has no right_state"))
+                errors.append(
+                    _error(
+                        "INVALID_PRESENCE_RULE",
+                        f"consequential_disagreements.{index}",
+                        "Presence/absence is only valid for typed decisions and has no right_state",
+                    )
+                )
         if not str(raw.get("interval_method", "")).strip():
-            errors.append(_error("MISSING_INTERVAL_METHOD", f"consequential_disagreements.{index}.interval_method", "Interval method must be frozen"))
+            errors.append(
+                _error(
+                    "MISSING_INTERVAL_METHOD",
+                    f"consequential_disagreements.{index}.interval_method",
+                    "Interval method must be frozen",
+                )
+            )
         signatures.add(_consequential_signature(raw))
 
     missing = _required_signatures_normalized() - signatures
     if missing:
-        errors.append(_error("MISSING_CONSEQUENTIAL_RULE", "consequential_disagreements", f"Required consequential rules missing: {sorted(missing)}"))
+        errors.append(
+            _error(
+                "MISSING_CONSEQUENTIAL_RULE",
+                "consequential_disagreements",
+                f"Required consequential rules missing: {sorted(missing)}",
+            )
+        )
     return errors
 
 
@@ -405,19 +467,56 @@ def validate_study_parameter_set(
         errors.append(_error("HASH_MISMATCH", "parameter_set_sha256", "Study parameter-set canonical digest mismatch"))
 
     if not _compatibility_is_controlled():
-        errors.append(_error("INTERNAL_COMPATIBILITY_INVALID", "decision_state_compatibility", "Built-in matrix uses invalid v4.2 states"))
+        errors.append(
+            _error(
+                "INTERNAL_COMPATIBILITY_INVALID",
+                "decision_state_compatibility",
+                "Built-in matrix uses invalid v4.2 states",
+            )
+        )
     declared_compatibility = value.get("decision_state_compatibility")
     expected_compatibility = {key: list(states) for key, states in DECISION_STATE_COMPATIBILITY.items()}
     if declared_compatibility != expected_compatibility:
-        errors.append(_error("DECISION_COMPATIBILITY_MISMATCH", "decision_state_compatibility", "Decision compatibility matrix is not canonical"))
+        errors.append(
+            _error(
+                "DECISION_COMPATIBILITY_MISMATCH",
+                "decision_state_compatibility",
+                "Decision compatibility matrix is not canonical",
+            )
+        )
 
     for path, reference in (
         ("protocol_reference", value.get("protocol_reference")),
-        ("analysis_identity.code_reference", (value.get("analysis_identity") or {}).get("code_reference") if isinstance(value.get("analysis_identity"), dict) else None),
-        ("analysis_identity.environment_reference", (value.get("analysis_identity") or {}).get("environment_reference") if isinstance(value.get("analysis_identity"), dict) else None),
-        ("assessor_design.training_reference", (value.get("assessor_design") or {}).get("training_reference") if isinstance(value.get("assessor_design"), dict) else None),
-        ("precision_plan.simulation_code_reference", (value.get("precision_plan") or {}).get("simulation_code_reference") if isinstance(value.get("precision_plan"), dict) else None),
-        ("decision_usefulness.comparator_reference", (value.get("decision_usefulness") or {}).get("comparator_reference") if isinstance(value.get("decision_usefulness"), dict) else None),
+        (
+            "analysis_identity.code_reference",
+            (value.get("analysis_identity") or {}).get("code_reference")
+            if isinstance(value.get("analysis_identity"), dict)
+            else None,
+        ),
+        (
+            "analysis_identity.environment_reference",
+            (value.get("analysis_identity") or {}).get("environment_reference")
+            if isinstance(value.get("analysis_identity"), dict)
+            else None,
+        ),
+        (
+            "assessor_design.training_reference",
+            (value.get("assessor_design") or {}).get("training_reference")
+            if isinstance(value.get("assessor_design"), dict)
+            else None,
+        ),
+        (
+            "precision_plan.simulation_code_reference",
+            (value.get("precision_plan") or {}).get("simulation_code_reference")
+            if isinstance(value.get("precision_plan"), dict)
+            else None,
+        ),
+        (
+            "decision_usefulness.comparator_reference",
+            (value.get("decision_usefulness") or {}).get("comparator_reference")
+            if isinstance(value.get("decision_usefulness"), dict)
+            else None,
+        ),
     ):
         errors.extend(_reference_errors(reference, path))
 
@@ -435,7 +534,9 @@ def validate_study_parameter_set(
     manifest_digests = [str(item.get("manifest_sha256", "")) for item in cases if isinstance(item, dict)]
     duplicate_manifests = _duplicates(manifest_digests)
     if duplicate_manifests:
-        errors.append(_error("DUPLICATE_CASE_MANIFEST", "cases", f"Duplicate case-manifest digests: {duplicate_manifests}"))
+        errors.append(
+            _error("DUPLICATE_CASE_MANIFEST", "cases", f"Duplicate case-manifest digests: {duplicate_manifests}")
+        )
     unknown_strata = sorted(
         {str(item.get("case_class_id", "")) for item in cases if isinstance(item, dict)} - set(stratum_ids)
     )
@@ -450,22 +551,44 @@ def validate_study_parameter_set(
         errors.append(_error("EMPTY_CASE_STRATUM", "cases", "Every frozen stratum must contain at least one case"))
 
     precision = value.get("precision_plan") if isinstance(value.get("precision_plan"), dict) else {}
-    planned_counts = precision.get("case_counts_by_stratum") if isinstance(precision.get("case_counts_by_stratum"), list) else []
+    planned_counts = (
+        precision.get("case_counts_by_stratum") if isinstance(precision.get("case_counts_by_stratum"), list) else []
+    )
     planned = {
-        str(item.get("stratum_id", "")): item.get("case_count")
-        for item in planned_counts
-        if isinstance(item, dict)
+        str(item.get("stratum_id", "")): item.get("case_count") for item in planned_counts if isinstance(item, dict)
     }
     if planned != count_by_stratum:
-        errors.append(_error("CASE_COUNT_MISMATCH", "precision_plan.case_counts_by_stratum", "Planned case counts do not match frozen cases"))
+        errors.append(
+            _error(
+                "CASE_COUNT_MISMATCH",
+                "precision_plan.case_counts_by_stratum",
+                "Planned case counts do not match frozen cases",
+            )
+        )
     sensitivity = precision.get("disagreement_prevalence_sensitivity")
     if isinstance(sensitivity, list) and len(set(sensitivity)) != len(sensitivity):
-        errors.append(_error("DUPLICATE_SENSITIVITY_POINT", "precision_plan.disagreement_prevalence_sensitivity", "Sensitivity points must be unique"))
+        errors.append(
+            _error(
+                "DUPLICATE_SENSITIVITY_POINT",
+                "precision_plan.disagreement_prevalence_sensitivity",
+                "Sensitivity points must be unique",
+            )
+        )
 
     assessor = value.get("assessor_design") if isinstance(value.get("assessor_design"), dict) else {}
     assessor_count = assessor.get("final_assessors_per_case")
-    if isinstance(assessor_count, int) and assessor_count < 3 and not str(assessor.get("precision_override_justification", "")).strip():
-        errors.append(_error("ASSESSOR_COUNT_UNJUSTIFIED", "assessor_design.final_assessors_per_case", "Fewer than three assessors requires a frozen precision justification"))
+    if (
+        isinstance(assessor_count, int)
+        and assessor_count < 3
+        and not str(assessor.get("precision_override_justification", "")).strip()
+    ):
+        errors.append(
+            _error(
+                "ASSESSOR_COUNT_UNJUSTIFIED",
+                "assessor_design.final_assessors_per_case",
+                "Fewer than three assessors requires a frozen precision justification",
+            )
+        )
 
     analysis = value.get("analysis_identity") if isinstance(value.get("analysis_identity"), dict) else {}
     seeds = analysis.get("random_seeds") if isinstance(analysis.get("random_seeds"), list) else []
@@ -475,46 +598,104 @@ def validate_study_parameter_set(
     estimands = value.get("reliability_estimands") if isinstance(value.get("reliability_estimands"), list) else []
     families = [str(item.get("field_family", "")) for item in estimands if isinstance(item, dict)]
     if set(families) != REQUIRED_ESTIMAND_FAMILIES or len(families) != len(REQUIRED_ESTIMAND_FAMILIES):
-        errors.append(_error("ESTIMAND_COVERAGE", "reliability_estimands", "Exactly the nine required estimand families must be frozen once each"))
+        errors.append(
+            _error(
+                "ESTIMAND_COVERAGE",
+                "reliability_estimands",
+                "Exactly the nine required estimand families must be frozen once each",
+            )
+        )
     for index, item in enumerate(estimands):
         if not isinstance(item, dict):
             continue
         if set(item.get("clustering_units", [])) != {"CASE", "ASSESSOR"} or len(item.get("clustering_units", [])) != 2:
-            errors.append(_error("CLUSTERING_REQUIRED", f"reliability_estimands.{index}.clustering_units", "Confirmatory uncertainty must preserve case and assessor clustering"))
+            errors.append(
+                _error(
+                    "CLUSTERING_REQUIRED",
+                    f"reliability_estimands.{index}.clustering_units",
+                    "Confirmatory uncertainty must preserve case and assessor clustering",
+                )
+            )
         if item.get("field_family") == "REQUIREMENT_FINDING" and "NOT ASSESSED" not in item.get(
             "excluded_structural_states", []
         ):
-            errors.append(_error("STRUCTURAL_STATE_COLLAPSE", f"reliability_estimands.{index}", "NOT ASSESSED must stay outside the ordinal finding-state estimand"))
+            errors.append(
+                _error(
+                    "STRUCTURAL_STATE_COLLAPSE",
+                    f"reliability_estimands.{index}",
+                    "NOT ASSESSED must stay outside the ordinal finding-state estimand",
+                )
+            )
 
     errors.extend(_consequential_errors(value.get("consequential_disagreements")))
 
     linguistic = value.get("linguistic_validation") if isinstance(value.get("linguistic_validation"), dict) else {}
-    locales = linguistic.get("proposed_non_english_publication_locales") if isinstance(
-        linguistic.get("proposed_non_english_publication_locales"), list
-    ) else []
+    locales = (
+        linguistic.get("proposed_non_english_publication_locales")
+        if isinstance(linguistic.get("proposed_non_english_publication_locales"), list)
+        else []
+    )
     locale_rows = linguistic.get("locale_parameters") if isinstance(linguistic.get("locale_parameters"), list) else []
     if _duplicates([str(locale) for locale in locales]):
-        errors.append(_error("DUPLICATE_LOCALE", "linguistic_validation.proposed_non_english_publication_locales", "Locales must be unique"))
+        errors.append(
+            _error(
+                "DUPLICATE_LOCALE",
+                "linguistic_validation.proposed_non_english_publication_locales",
+                "Locales must be unique",
+            )
+        )
     if any(str(locale).casefold() == "en" or str(locale).casefold().startswith("en-") for locale in locales):
-        errors.append(_error("ENGLISH_IN_NON_ENGLISH_SET", "linguistic_validation.proposed_non_english_publication_locales", "English locales do not belong in the non-English publication set"))
+        errors.append(
+            _error(
+                "ENGLISH_IN_NON_ENGLISH_SET",
+                "linguistic_validation.proposed_non_english_publication_locales",
+                "English locales do not belong in the non-English publication set",
+            )
+        )
     locale_param_ids = [str(item.get("locale", "")) for item in locale_rows if isinstance(item, dict)]
     if set(locale_param_ids) != set(str(locale) for locale in locales) or len(locale_param_ids) != len(locales):
-        errors.append(_error("LOCALE_PARAMETER_MISMATCH", "linguistic_validation.locale_parameters", "Locale parameters must match the proposed non-English locale set exactly"))
+        errors.append(
+            _error(
+                "LOCALE_PARAMETER_MISMATCH",
+                "linguistic_validation.locale_parameters",
+                "Locale parameters must match the proposed non-English locale set exactly",
+            )
+        )
 
     accessibility = value.get("accessibility") if isinstance(value.get("accessibility"), dict) else {}
     tasks = accessibility.get("critical_tasks") if isinstance(accessibility.get("critical_tasks"), list) else []
     duplicate_tasks = _duplicates([str(item.get("task_id", "")) for item in tasks if isinstance(item, dict)])
     if duplicate_tasks:
-        errors.append(_error("DUPLICATE_ACCESSIBILITY_TASK", "accessibility.critical_tasks", f"Duplicate task IDs: {duplicate_tasks}"))
+        errors.append(
+            _error(
+                "DUPLICATE_ACCESSIBILITY_TASK", "accessibility.critical_tasks", f"Duplicate task IDs: {duplicate_tasks}"
+            )
+        )
 
     usefulness = value.get("decision_usefulness") if isinstance(value.get("decision_usefulness"), dict) else {}
-    defects = usefulness.get("critical_defect_taxonomy") if isinstance(usefulness.get("critical_defect_taxonomy"), list) else []
+    defects = (
+        usefulness.get("critical_defect_taxonomy")
+        if isinstance(usefulness.get("critical_defect_taxonomy"), list)
+        else []
+    )
     duplicate_defects = _duplicates([str(item) for item in defects])
     if duplicate_defects:
-        errors.append(_error("DUPLICATE_CRITICAL_DEFECT", "decision_usefulness.critical_defect_taxonomy", f"Duplicate defect definitions: {duplicate_defects}"))
+        errors.append(
+            _error(
+                "DUPLICATE_CRITICAL_DEFECT",
+                "decision_usefulness.critical_defect_taxonomy",
+                f"Duplicate defect definitions: {duplicate_defects}",
+            )
+        )
 
     if case_manifests is None:
-        errors.append(_error("CASE_MANIFESTS_REQUIRED", "cases", "Full parameter-set validation requires the referenced case manifests"))
+        errors.append(
+            _error(
+                "CASE_MANIFESTS_REQUIRED",
+                "cases",
+                "Full parameter-set validation requires the referenced case manifests",
+            )
+        )
     else:
         parameter_normative = value.get("normative_identity")
         study_wave_id = value.get("study_wave_id")
@@ -523,24 +704,52 @@ def validate_study_parameter_set(
                 continue
             case_id = str(raw.get("case_id", ""))
             if not _reference_token(raw.get("manifest_reference")):
-                errors.append(_error("INVALID_REFERENCE", f"cases.{index}.manifest_reference", "Case manifest reference is not bounded"))
+                errors.append(
+                    _error(
+                        "INVALID_REFERENCE",
+                        f"cases.{index}.manifest_reference",
+                        "Case manifest reference is not bounded",
+                    )
+                )
             manifest = case_manifests.get(case_id)
             if manifest is None:
-                errors.append(_error("CASE_MANIFEST_MISSING", f"cases.{index}", f"Case manifest {case_id!r} is missing"))
+                errors.append(
+                    _error("CASE_MANIFEST_MISSING", f"cases.{index}", f"Case manifest {case_id!r} is missing")
+                )
                 continue
             manifest_report = validate_case_manifest(manifest)
             if manifest_report["valid"] is not True:
-                errors.append(_error("CASE_MANIFEST_INVALID", f"cases.{index}", f"Case manifest {case_id!r} is invalid"))
+                errors.append(
+                    _error("CASE_MANIFEST_INVALID", f"cases.{index}", f"Case manifest {case_id!r} is invalid")
+                )
             if raw.get("manifest_sha256") != case_manifest_sha256(manifest):
-                errors.append(_error("CASE_MANIFEST_DIGEST_MISMATCH", f"cases.{index}.manifest_sha256", "Referenced case digest does not match content"))
+                errors.append(
+                    _error(
+                        "CASE_MANIFEST_DIGEST_MISMATCH",
+                        f"cases.{index}.manifest_sha256",
+                        "Referenced case digest does not match content",
+                    )
+                )
             if manifest.get("study_wave_id") != study_wave_id:
-                errors.append(_error("CASE_WAVE_MISMATCH", f"cases.{index}", "Case study wave does not match parameter set"))
+                errors.append(
+                    _error("CASE_WAVE_MISMATCH", f"cases.{index}", "Case study wave does not match parameter set")
+                )
             if manifest.get("normative_identity") != parameter_normative:
-                errors.append(_error("CASE_NORMATIVE_MISMATCH", f"cases.{index}", "Case normative identity does not match parameter set"))
+                errors.append(
+                    _error(
+                        "CASE_NORMATIVE_MISMATCH",
+                        f"cases.{index}",
+                        "Case normative identity does not match parameter set",
+                    )
+                )
             if manifest.get("case_class_id") != raw.get("case_class_id"):
                 errors.append(_error("CASE_CLASS_MISMATCH", f"cases.{index}", "Case stratum does not match manifest"))
             if manifest.get("calibration_status") != raw.get("calibration_status"):
-                errors.append(_error("CASE_CALIBRATION_MISMATCH", f"cases.{index}", "Case calibration status does not match manifest"))
+                errors.append(
+                    _error(
+                        "CASE_CALIBRATION_MISMATCH", f"cases.{index}", "Case calibration status does not match manifest"
+                    )
+                )
         extra_cases = sorted(set(case_manifests) - set(case_ids))
         if extra_cases:
             warnings.append(
@@ -577,23 +786,49 @@ def validate_protocol_amendment(
     predecessor_id = value.get("predecessor_parameter_set_id")
     successor_id = value.get("successor_parameter_set_id")
     if predecessor_id == successor_id:
-        errors.append(_error("SELF_REFERENTIAL_AMENDMENT", "successor_parameter_set_id", "Amendment must create a distinct successor parameter set"))
+        errors.append(
+            _error(
+                "SELF_REFERENTIAL_AMENDMENT",
+                "successor_parameter_set_id",
+                "Amendment must create a distinct successor parameter set",
+            )
+        )
     if value.get("predecessor_parameter_set_sha256") == value.get("successor_parameter_set_sha256"):
-        errors.append(_error("UNCHANGED_PARAMETER_DIGEST", "successor_parameter_set_sha256", "Amended parameter set must have a distinct digest"))
+        errors.append(
+            _error(
+                "UNCHANGED_PARAMETER_DIGEST",
+                "successor_parameter_set_sha256",
+                "Amended parameter set must have a distinct digest",
+            )
+        )
 
     changed_fields = value.get("changed_fields") if isinstance(value.get("changed_fields"), list) else []
     duplicate_fields = _duplicates([str(item) for item in changed_fields])
     if duplicate_fields:
-        errors.append(_error("DUPLICATE_CHANGED_FIELD", "changed_fields", f"Duplicate changed fields: {duplicate_fields}"))
+        errors.append(
+            _error("DUPLICATE_CHANGED_FIELD", "changed_fields", f"Duplicate changed fields: {duplicate_fields}")
+        )
     impact = value.get("analysis_class_impact") if isinstance(value.get("analysis_class_impact"), list) else []
     if "NO_ANALYSIS_IMPACT" in impact and len(impact) > 1:
-        errors.append(_error("ANALYSIS_IMPACT_CONFLICT", "analysis_class_impact", "NO_ANALYSIS_IMPACT cannot be combined with analysis classes"))
+        errors.append(
+            _error(
+                "ANALYSIS_IMPACT_CONFLICT",
+                "analysis_class_impact",
+                "NO_ANALYSIS_IMPACT cannot be combined with analysis classes",
+            )
+        )
     affected = sum(
         len(value.get(key, [])) if isinstance(value.get(key), list) else 0
         for key in ("affected_cases", "affected_outcomes", "affected_analyses")
     )
     if affected == 0:
-        errors.append(_error("AMENDMENT_EFFECT_UNSPECIFIED", "affected_cases", "At least one affected case, outcome, or analysis must be identified"))
+        errors.append(
+            _error(
+                "AMENDMENT_EFFECT_UNSPECIFIED",
+                "affected_cases",
+                "At least one affected case, outcome, or analysis must be identified",
+            )
+        )
 
     if parameter_sets is None:
         warnings.append(
@@ -606,12 +841,30 @@ def validate_protocol_amendment(
         predecessor = parameter_sets.get(str(predecessor_id))
         successor = parameter_sets.get(str(successor_id))
         if predecessor is None or successor is None:
-            errors.append(_error("AMENDMENT_PARAMETER_SET_MISSING", "predecessor_parameter_set_id", "Predecessor or successor parameter set is missing"))
+            errors.append(
+                _error(
+                    "AMENDMENT_PARAMETER_SET_MISSING",
+                    "predecessor_parameter_set_id",
+                    "Predecessor or successor parameter set is missing",
+                )
+            )
         else:
             if value.get("predecessor_parameter_set_sha256") != study_parameter_set_sha256(predecessor):
-                errors.append(_error("PREDECESSOR_DIGEST_MISMATCH", "predecessor_parameter_set_sha256", "Predecessor digest does not match object"))
+                errors.append(
+                    _error(
+                        "PREDECESSOR_DIGEST_MISMATCH",
+                        "predecessor_parameter_set_sha256",
+                        "Predecessor digest does not match object",
+                    )
+                )
             if value.get("successor_parameter_set_sha256") != study_parameter_set_sha256(successor):
-                errors.append(_error("SUCCESSOR_DIGEST_MISMATCH", "successor_parameter_set_sha256", "Successor digest does not match object"))
+                errors.append(
+                    _error(
+                        "SUCCESSOR_DIGEST_MISMATCH",
+                        "successor_parameter_set_sha256",
+                        "Successor digest does not match object",
+                    )
+                )
 
     return {
         "valid": not errors,
@@ -628,7 +881,9 @@ def validate_case_manifest_file(path: Path) -> dict[str, Any]:
 
 
 def validate_study_parameter_set_file(path: Path, *, case_manifest_dir: Path) -> dict[str, Any]:
-    return validate_study_parameter_set(load_validation_record(path), case_manifests=load_case_manifests(case_manifest_dir))
+    return validate_study_parameter_set(
+        load_validation_record(path), case_manifests=load_case_manifests(case_manifest_dir)
+    )
 
 
 def validate_protocol_amendment_file(

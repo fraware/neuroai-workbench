@@ -242,7 +242,9 @@ def _parameter(cases: dict[str, dict[str, Any]]) -> dict[str, Any]:
             "outcome_adjudicator_blinding": True,
         },
         "accessibility": {
-            "representative_user_strata": ["TEST FIXTURE ONLY. Representative keyboard and screen-reader user stratum."],
+            "representative_user_strata": [
+                "TEST FIXTURE ONLY. Representative keyboard and screen-reader user stratum."
+            ],
             "assistive_technology_matrix": ["TEST FIXTURE ONLY. Screen reader plus browser and keyboard workflow."],
             "critical_tasks": [
                 {
@@ -414,7 +416,12 @@ def test_parameter_set_hash_boundary_normative_and_compatibility_fail_closed() -
     params["decision_state_compatibility"] = {}
     report = validate_study_parameter_set(params, case_manifests=cases)
     codes = {error["code"] for error in report["errors"]}
-    assert {"BOUNDARY_MISMATCH", "HASH_MISMATCH", "NORMATIVE_IDENTITY_MISMATCH", "DECISION_COMPATIBILITY_MISMATCH"} <= codes
+    assert {
+        "BOUNDARY_MISMATCH",
+        "HASH_MISMATCH",
+        "NORMATIVE_IDENTITY_MISMATCH",
+        "DECISION_COMPATIBILITY_MISMATCH",
+    } <= codes
 
 
 def test_parameter_set_duplicate_and_unknown_strata_cases_and_manifests() -> None:
@@ -464,7 +471,9 @@ def test_parameter_set_assessor_seed_and_sensitivity_rules() -> None:
 
     params = _parameter(cases)
     params["assessor_design"]["final_assessors_per_case"] = 2
-    params["assessor_design"]["precision_override_justification"] = "TEST FIXTURE ONLY. Pre-outcome precision analysis supports two."
+    params["assessor_design"]["precision_override_justification"] = (
+        "TEST FIXTURE ONLY. Pre-outcome precision analysis supports two."
+    )
     params = finalize_study_parameter_set(params)
     assert not any(
         error["code"] == "ASSESSOR_COUNT_UNJUSTIFIED"
@@ -501,7 +510,12 @@ def test_consequential_rules_reject_bad_domain_state_presence_and_interval() -> 
     params = finalize_study_parameter_set(params)
     report = validate_study_parameter_set(params, case_manifests=cases)
     codes = {error["code"] for error in report["errors"]}
-    assert {"UNEXPECTED_DECISION_TYPE", "INVALID_RULE_STATE", "MISSING_INTERVAL_METHOD", "INVALID_PRESENCE_RULE"} <= codes
+    assert {
+        "UNEXPECTED_DECISION_TYPE",
+        "INVALID_RULE_STATE",
+        "MISSING_INTERVAL_METHOD",
+        "INVALID_PRESENCE_RULE",
+    } <= codes
     assert "MISSING_CONSEQUENTIAL_RULE" in codes
 
 
@@ -574,7 +588,9 @@ def test_cross_record_missing_digest_wave_normative_class_and_calibration() -> N
     wrong["CASE-A"] = deepcopy(wrong["CASE-A"])
     wrong["CASE-A"]["evidence_access_rules"] += " changed"
     report = validate_study_parameter_set(params, case_manifests=wrong)
-    assert any(error["code"] in {"CASE_MANIFEST_INVALID", "CASE_MANIFEST_DIGEST_MISMATCH"} for error in report["errors"])
+    assert any(
+        error["code"] in {"CASE_MANIFEST_INVALID", "CASE_MANIFEST_DIGEST_MISMATCH"} for error in report["errors"]
+    )
 
     for field, code, changed in (
         ("study_wave_id", "CASE_WAVE_MISMATCH", "OTHER"),
