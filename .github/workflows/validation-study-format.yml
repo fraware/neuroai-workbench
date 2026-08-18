@@ -1,0 +1,35 @@
+name: Validation study formatting
+
+on:
+  push:
+    branches:
+      - evaluation/196-study-freeze-records
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: evaluation/196-study-freeze-records
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install --require-hashes -r requirements/constraints.txt
+      - run: python -m ruff format src/neuroai_workbench/validation_study.py tests/unit/test_validation_study.py
+      - run: python -m ruff format --check src/neuroai_workbench/validation_study.py tests/unit/test_validation_study.py
+      - name: Commit formatted files when needed
+        run: |
+          if git diff --quiet -- src/neuroai_workbench/validation_study.py tests/unit/test_validation_study.py; then
+            exit 0
+          fi
+          git config user.name "repository-maintenance"
+          git config user.email "repository-maintenance@users.noreply.github.com"
+          git add src/neuroai_workbench/validation_study.py tests/unit/test_validation_study.py
+          git commit -m "Format validation study files"
+          git push origin HEAD:evaluation/196-study-freeze-records

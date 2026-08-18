@@ -81,6 +81,7 @@ Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions an
 | Document | Purpose |
 | --- | --- |
 | [assessment-validation-protocol.md](evaluation/assessment-validation-protocol.md) | Pre-outcome reliability, decision-usefulness, accessibility, and linguistic-validation protocol contract |
+| [validation-study-freeze.md](evaluation/validation-study-freeze.md) | Content-addressed case, parameter-set, and amendment semantics for preregistration |
 | [extraction-evaluation.md](evaluation/extraction-evaluation.md) | Preregistration, offline comparison, dispositions |
 | [entity-resolution-report.md](evaluation/entity-resolution-report.md) | Entity-resolution benchmark corpora and metrics |
 
