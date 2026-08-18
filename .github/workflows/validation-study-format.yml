@@ -1,9 +1,9 @@
 name: Validation study formatting
 
 on:
-  push:
+  pull_request:
     branches:
-      - evaluation/196-study-freeze-records
+      - main
 
 permissions:
   contents: read
