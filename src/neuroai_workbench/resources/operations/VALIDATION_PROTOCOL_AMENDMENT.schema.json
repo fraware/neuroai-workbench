@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "VALIDATION_PROTOCOL_AMENDMENT.schema.json",
+  "title": "Validation protocol amendment",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "amendment_id",
+    "recorded_at",
+    "predecessor_parameter_set_id",
+    "predecessor_parameter_set_sha256",
+    "successor_parameter_set_id",
+    "successor_parameter_set_sha256",
+    "rationale",
+    "changed_fields",
+    "affected_cases",
+    "affected_outcomes",
+    "affected_analyses",
+    "outcome_data_access_state",
+    "analysis_class_impact",
+    "boundary",
+    "amendment_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "amendment_id": {"type": "string", "pattern": "^VALAMD-[A-Za-z0-9._-]+$"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "predecessor_parameter_set_id": {"type": "string", "pattern": "^VALPARAM-[A-Za-z0-9._-]+$"},
+    "predecessor_parameter_set_sha256": {"$ref": "#/$defs/sha256"},
+    "successor_parameter_set_id": {"type": "string", "pattern": "^VALPARAM-[A-Za-z0-9._-]+$"},
+    "successor_parameter_set_sha256": {"$ref": "#/$defs/sha256"},
+    "rationale": {"type": "string", "minLength": 1},
+    "changed_fields": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "affected_cases": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "affected_outcomes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "affected_analyses": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "outcome_data_access_state": {"enum": ["NO_OUTCOME_DATA_ACCESSED", "AGGREGATE_OUTCOMES_ACCESSED", "UNBLINDED_OUTCOMES_ACCESSED"]},
+    "analysis_class_impact": {"type": "array", "minItems": 1, "items": {"enum": ["PRIMARY", "SECONDARY", "EXPLORATORY", "NO_ANALYSIS_IMPACT"]}},
+    "boundary": {"type": "string", "minLength": 1},
+    "amendment_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
