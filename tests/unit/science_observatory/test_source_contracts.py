@@ -11,9 +11,7 @@ from neuroai_workbench.science_observatory.source_contracts import (
     load_science_contract_bundle,
 )
 
-FROZEN_USER_AGENT = (
-    "neuroai-observatory-data/0.1 (+https://github.com/fraware/neuroai-observatory-data)"
-)
+FROZEN_USER_AGENT = "neuroai-observatory-data/0.1 (+https://github.com/fraware/neuroai-observatory-data)"
 
 
 def _protocol() -> dict:
