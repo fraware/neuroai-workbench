@@ -136,6 +136,50 @@ def test_amb003_stage2_internal_parity_is_bounded_and_noncanonical() -> None:
     assert "does not independently verify" in stage2["method"]["authority_rule"]
 
 
+def test_amb003_stage3_records_report_parity_and_blank_kernel_defect() -> None:
+    stage3 = _load(MIGRATION / "amb003_reconciliation_stage3_2026-08-25.json")
+
+    assert (
+        stage3["status"]
+        == "COMPANION_REPORT_TABULAR_PARITY_WITH_ONE_GENERATED_TABLE_DEFECT_INDEPENDENT_CANONICAL_RECONCILIATION_PENDING"
+    )
+    assert stage3["predecessor_reconciliation_id"] == "AMB-003-STAGE2-20260825"
+    assert stage3["artifacts"]["workbook"]["sha256"] == EXPECTED_XLSX_SHA256
+    assert stage3["artifacts"]["report"]["sha256"] == EXPECTED_DOCX_SHA256
+
+    summary = stage3["scope_summary"]
+    assert summary["appendices_examined"] == 23
+    assert summary["appendices_with_exact_bounded_parity"] == 22
+    assert summary["appendices_with_detected_representation_defect"] == 1
+    assert summary["exact_parity_rows_compared"] == 1376
+    assert summary["exact_parity_field_values_compared"] == 11617
+    assert summary["missing_stable_keys_in_exact_parity_appendices"] == 0
+    assert summary["extra_stable_keys_in_exact_parity_appendices"] == 0
+    assert summary["value_mismatches_in_exact_parity_appendices"] == 0
+
+    appendices = {item["appendix"]: item for item in stage3["appendix_results"]}
+    assert set(appendices) == {chr(code) for code in range(ord("A"), ord("W") + 1)}
+    assert all(item["result"] == "EXACT_BOUNDED_PARITY" for key, item in appendices.items() if key != "K")
+
+    kernel = stage3["kernel_appendix_defect"]
+    assert appendices["K"]["result"] == "GENERATED_TABLE_DATA_CELLS_EMPTY"
+    assert kernel["report_data_rows"] == 78
+    assert kernel["report_data_cells"] == 468
+    assert kernel["report_nonempty_data_cells"] == 0
+    assert kernel["ooxml_text_nodes_in_table"] == 6
+    assert kernel["ooxml_text_nodes_are_headers_only"] is True
+    assert kernel["workbook_data_rows"] == 78
+    assert kernel["workbook_nonempty_selected_cells"] == 468
+    assert kernel["classification"] == "S4_GENERATED_REPORT_REPRESENTATION_DEFECT"
+    assert kernel["canonical_corruption_established"] is False
+
+    discrepancy = stage3["authority_label_discrepancy"]
+    assert "canonical row-level analytical representation" in discrepancy["observed_historical_claim"]
+    assert "S4 generated views" in discrepancy["successor_architecture_interpretation"]
+    assert stage3["historical_records_mutated"] is False
+    assert "does not establish independent canonical correctness" in stage3["authority_boundary"]
+
+
 def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
     adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(encoding="utf-8")
 
