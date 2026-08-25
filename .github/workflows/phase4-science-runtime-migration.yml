@@ -1,0 +1,73 @@
+name: Phase 4 science runtime migration
+
+on:
+  pull_request:
+    paths:
+      - "migration/phase4_science_runtime_migration_v0.1.json"
+      - "src/neuroai_workbench/science_observatory/**"
+      - "tests/unit/science_observatory/**"
+      - ".github/required-checks.json"
+      - ".github/workflows/phase4-science-runtime-migration.yml"
+
+permissions:
+  contents: read
+
+env:
+  VALIDATION_REF: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  exact_head:
+    name: exact_head
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.VALIDATION_REF }}
+          persist-credentials: false
+      - name: Assert exact source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$VALIDATION_REF"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install locked validation environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Verify runtime and migration ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          if sys.version_info[:2] != (3, 12):
+              raise SystemExit(f"expected Python 3.12, observed {sys.version.split()[0]}")
+
+          path = Path("migration/phase4_science_runtime_migration_v0.1.json")
+          manifest = json.loads(path.read_text(encoding="utf-8"))
+          if manifest.get("entry_count") != 30:
+              raise SystemExit(f"expected 30 migration entries, observed {manifest.get('entry_count')!r}")
+          if manifest.get("configuration_boundary", {}).get("production_acquisition_authorized") is not False:
+              raise SystemExit("migration ledger must not authorize production acquisition")
+          if manifest.get("configuration_boundary", {}).get("s3_custody_demonstrated") is not False:
+              raise SystemExit("migration ledger must not claim S3 custody")
+          print(manifest["migration_id"])
+          print(manifest["source"]["head_sha"])
+          PY
+      - name: Format and lint migrated boundary surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff format --check src/neuroai_workbench/science_observatory tests/unit/science_observatory
+          python -m ruff check src/neuroai_workbench/science_observatory tests/unit/science_observatory
+      - name: Run focused migration tests
+        run: python -m pytest tests/unit/science_observatory -v
