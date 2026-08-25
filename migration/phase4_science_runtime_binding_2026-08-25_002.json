@@ -1,0 +1,92 @@
+{
+  "schema_version": "0.1.0",
+  "binding_id": "PHASE4-SCIENCE-RUNTIME-BINDING-20260825-002",
+  "recorded_at": "2026-08-25T15:14:15Z",
+  "migration_id": "PHASE4-SCIENCE-RUNTIME-MIGRATION-V0.1",
+  "supersedes_binding_id": "PHASE4-SCIENCE-RUNTIME-BINDING-20260825-001",
+  "source": {
+    "repository": "fraware/neuroai-observatory-data",
+    "head_sha": "ee51f6fcbd679d2b0ed5aeb4593424543201e496",
+    "tree_sha": "c8671f41518ecd259c7c08c25b1aed74aeb896c5"
+  },
+  "destination": {
+    "repository": "fraware/neuroai-workbench",
+    "branch": "phase4-science-runtime-migration",
+    "validated_commit_sha": "15c1b65982467182caf2d47d7176be2f428b66f1"
+  },
+  "validation": {
+    "workflow": "Phase 4 science runtime migration",
+    "workflow_run_id": 32864486351,
+    "job_id": 97856248042,
+    "exact_head_checkout": true,
+    "python_version": "3.12.14",
+    "ruff_format": "PASS",
+    "ruff_check": "PASS",
+    "focused_test_count": 45,
+    "focused_test_result": "PASS",
+    "acquisition_transport_class": "FAKE_TRANSPORT_ONLY_IN_FOCUSED_ACQUISITION_TESTS",
+    "provider_network_retrieval_executed": false,
+    "scope_note": "The 45-test exact-head result covers the migrated source-contract boundary, deterministic query compiler, fail-closed HTTP transport, transformed acquisition core exercised with fake provider transports, migration-plan invariants, and predecessor binding invariants. It does not execute live Crossref or Europe PMC retrieval, demonstrate durable S3 custody, authorize production acquisition, establish provider coverage, validate scientific claims, or create canonical graph authority."
+  },
+  "bindings": [
+    {
+      "source_path": "scripts/compile_science_queries.py",
+      "source_git_blob_sha": "32bf7d7dddefada48d0fd6df4d54224a8afb8284",
+      "destination_path": "src/neuroai_workbench/science_observatory/query_compiler.py",
+      "destination_git_blob_sha": "12fbfcd0829502e249b8e466e86240a37fffe2e0",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Repository-relative S2 inputs were removed. The compiler consumes an explicitly supplied, fail-closed validated S2 contract bundle and reproduces the exact frozen 768-unit plan identity."
+    },
+    {
+      "source_path": "tests/test_science_query_compilation.py",
+      "source_git_blob_sha": "dd3ac65f54d1087e939604dce1e6c5629def5095",
+      "destination_path": "tests/unit/science_observatory/test_query_compiler.py",
+      "destination_git_blob_sha": "5c54607cdf65a9e3fb53c375ec4fd241b123d42b",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Tests were recast around external S2 fixtures and exact frozen plan reproduction rather than repository-local science paths."
+    },
+    {
+      "source_path": "scripts/science_http_transport.py",
+      "source_git_blob_sha": "933e92b723a6e28bbe20f4f3b8f6aba01a309c44",
+      "destination_path": "src/neuroai_workbench/science_observatory/http_transport.py",
+      "destination_git_blob_sha": "560231dfdbe76dec5ff8a8c139aa81755c15d151",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "The transport keeps fail-closed no-auto-follow behavior but no longer owns a repository-local default client identity; the caller must supply the frozen S2 user-agent identity explicitly."
+    },
+    {
+      "source_path": "tests/test_science_http_transport.py",
+      "source_git_blob_sha": "c6412e93424f803377e7f2036bc79dbd9310d1a1",
+      "destination_path": "tests/unit/science_observatory/test_http_transport.py",
+      "destination_git_blob_sha": "0c42f2898b674420e7a679d1cd36defc36f4e379",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Tests verify explicit client-identity injection in addition to redirect non-following and transport parameter validation."
+    },
+    {
+      "source_path": "scripts/acquire_science_candidates.py",
+      "source_git_blob_sha": "5aecc94d943313e94f6dbde2665a7cac085ff911",
+      "destination_path": "src/neuroai_workbench/science_observatory/acquisition.py",
+      "destination_git_blob_sha": "0fb8709dbe56f85a9b5dfc3deec9bd4a2fb4cb08",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Repository-local S2 ownership and an implicit live transport were removed. The runtime accepts an externally compiled frozen plan, injected transport, and explicit repository-root boundary; validates exact plan and query-unit identity; preserves content-addressed response custody, bounded query-unit coverage, candidate-only authority, explicit-ID deduplication without canonical merge, and fail-closed cursor, denominator, tamper, and resume semantics. Validation used fake provider transports only."
+    },
+    {
+      "source_path": "tests/test_science_acquisition.py",
+      "source_git_blob_sha": "b541623ff2b3cd0a84d0141cc1ba25b2d231568d",
+      "destination_path": "tests/unit/science_observatory/test_acquisition.py",
+      "destination_git_blob_sha": "0fa5c2ae42dfed790a425e01dd6afd552cfe90f5",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Regression tests were recast as package-native pytest tests using external frozen S2 fixtures and fake transports. They exercise complete and partial traversal mechanics, source-aware provider identity, retry behavior, exact-plan enforcement, candidate-only deduplication, tamper-resistant resume, attempt archival, client-identity enforcement, and repository-output rejection without performing live provider retrieval."
+    }
+  ],
+  "binding_count": 6,
+  "supplementary_successor_files_validated_at_commit": [
+    "src/neuroai_workbench/science_observatory/source_contracts.py",
+    "tests/unit/science_observatory/test_source_contracts.py",
+    "tests/fixtures/science_observatory/external_s2/discovery-protocol-v0.1.json",
+    "tests/fixtures/science_observatory/external_s2/query-compilation-v0.2.json"
+  ],
+  "production_acquisition_authorized": false,
+  "s3_custody_demonstrated": false,
+  "live_provider_acquisition_executed": false,
+  "authority_boundary": "This cumulative successor record binds six transformed source-to-destination mappings to an exact successfully validated workbench commit while preserving predecessor binding evidence. It does not assert migration of the remaining 24 planned source entries, does not demonstrate durable S3 custody, does not authorize or execute production provider acquisition, and creates no live candidate corpus, provider coverage claim, canonical graph mutation, assessment mutation, scientific result, or release authority."
+}
