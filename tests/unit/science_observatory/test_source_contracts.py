@@ -6,7 +6,14 @@ from pathlib import Path
 
 import pytest
 
-from neuroai_workbench.science_observatory.source_contracts import ScienceContractError, load_science_contract_bundle
+from neuroai_workbench.science_observatory.source_contracts import (
+    ScienceContractError,
+    load_science_contract_bundle,
+)
+
+FROZEN_USER_AGENT = (
+    "neuroai-observatory-data/0.1 (+https://github.com/fraware/neuroai-observatory-data)"
+)
 
 
 def _protocol() -> dict:
@@ -15,13 +22,31 @@ def _protocol() -> dict:
         "schema_version": "0.1.0",
         "status": "FROZEN_PROTOCOL_NO_PRODUCTION_ACQUISITION_YET",
         "evidence_cutoff": "2026-08-20T00:00:00Z",
+        "baseline_strategy": {
+            "priority_window": {"from": "2015-01-01", "through": "2026-08-20"},
+        },
         "query_families": [
-            {"query_family_id": "QF-NEURAL-INTERFACE", "discovery_terms": ["brain-computer interface"]},
+            {
+                "query_family_id": "QF-NEURAL-INTERFACE",
+                "discovery_terms": ["brain-computer interface"],
+            },
             {"query_family_id": "QF-NEURAL-DECODING", "discovery_terms": ["neural decoding"]},
-            {"query_family_id": "QF-CLOSED-LOOP", "discovery_terms": ["closed-loop neurostimulation"]},
-            {"query_family_id": "QF-ML-NEURAL-DATA", "discovery_terms": ["machine learning neural data"]},
-            {"query_family_id": "QF-NONINVASIVE-DECODING", "discovery_terms": ["EEG decoding"]},
-            {"query_family_id": "QF-NEURAL-DATA-INFRA", "discovery_terms": ["neural dataset benchmark"]},
+            {
+                "query_family_id": "QF-CLOSED-LOOP",
+                "discovery_terms": ["closed-loop neurostimulation"],
+            },
+            {
+                "query_family_id": "QF-ML-NEURAL-DATA",
+                "discovery_terms": ["machine learning neural data"],
+            },
+            {
+                "query_family_id": "QF-NONINVASIVE-DECODING",
+                "discovery_terms": ["EEG decoding"],
+            },
+            {
+                "query_family_id": "QF-NEURAL-DATA-INFRA",
+                "discovery_terms": ["neural dataset benchmark"],
+            },
         ],
         "candidate_inclusion": {
             "relevance_adjudication_required": True,
@@ -60,14 +85,27 @@ def _compilation() -> dict:
         },
         "providers": {
             "CROSSREF": {
+                "adapter_id": "ADAPTER-CROSSREF-WORKS",
                 "source_universe_id": "SU-SCI-CROSSREF",
                 "endpoint": "https://api.crossref.org/works",
+                "client_identity": {"access_class": "PUBLIC", "user_agent": FROZEN_USER_AGENT},
+                "term_parameter": "query.title",
                 "fixed_parameters": {"rows": "1000", "select": "DOI,title,published"},
+                "date_filter_parameters": {"from": "from-pub-date", "through": "until-pub-date"},
+                "filter_parameter": "filter",
+                "cursor_parameter": "cursor",
+                "initial_cursor": "*",
             },
             "EUROPE_PMC": {
+                "adapter_id": "ADAPTER-EUROPEPMC-SEARCH",
                 "source_universe_id": "SU-SCI-EUROPEPMC",
                 "endpoint": "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+                "client_identity": {"access_class": "PUBLIC", "user_agent": FROZEN_USER_AGENT},
+                "query_parameter": "query",
+                "query_template": '(TITLE:"{term}" OR ABSTRACT:"{term}") AND FIRST_PDATE:[{from} TO {through}]',
                 "fixed_parameters": {"resultType": "lite", "format": "json", "pageSize": "1000"},
+                "cursor_parameter": "cursorMark",
+                "initial_cursor": "*",
             },
         },
         "data_minimization": {
@@ -156,6 +194,14 @@ def test_provider_response_minimization_cannot_expand_silently(tmp_path: Path) -
     compilation["providers"]["EUROPE_PMC"]["fixed_parameters"]["resultType"] = "core"
 
     with pytest.raises(ScienceContractError, match="Europe PMC minimization"):
+        _bundle(tmp_path, compilation=compilation)
+
+
+def test_frozen_client_identity_cannot_drift_silently(tmp_path: Path) -> None:
+    compilation = deepcopy(_compilation())
+    compilation["providers"]["CROSSREF"]["client_identity"]["user_agent"] = "different-client"
+
+    with pytest.raises(ScienceContractError, match="frozen client identity"):
         _bundle(tmp_path, compilation=compilation)
 
 
