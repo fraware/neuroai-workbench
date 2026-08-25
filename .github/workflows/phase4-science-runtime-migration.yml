@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "migration/phase4_science_runtime_migration_v0.1.json"
+      - "migration/phase4_science_runtime_binding_2026-08-25.json"
       - "src/neuroai_workbench/science_observatory/**"
       - "tests/unit/science_observatory/**"
       - "tests/fixtures/science_observatory/**"
@@ -41,7 +42,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --require-hashes -r requirements/constraints.txt
           python -m pip install --no-deps -e .
-      - name: Verify runtime and migration ledger
+      - name: Verify runtime and migration records
         shell: bash
         run: |
           set -euo pipefail
@@ -53,16 +54,27 @@ jobs:
           if sys.version_info[:2] != (3, 12):
               raise SystemExit(f"expected Python 3.12, observed {sys.version.split()[0]}")
 
-          path = Path("migration/phase4_science_runtime_migration_v0.1.json")
-          manifest = json.loads(path.read_text(encoding="utf-8"))
-          if manifest.get("entry_count") != 30:
-              raise SystemExit(f"expected 30 migration entries, observed {manifest.get('entry_count')!r}")
-          if manifest.get("configuration_boundary", {}).get("production_acquisition_authorized") is not False:
+          plan_path = Path("migration/phase4_science_runtime_migration_v0.1.json")
+          plan = json.loads(plan_path.read_text(encoding="utf-8"))
+          if plan.get("entry_count") != 30:
+              raise SystemExit(f"expected 30 migration entries, observed {plan.get('entry_count')!r}")
+          if plan.get("configuration_boundary", {}).get("production_acquisition_authorized") is not False:
               raise SystemExit("migration ledger must not authorize production acquisition")
-          if manifest.get("configuration_boundary", {}).get("s3_custody_demonstrated") is not False:
+          if plan.get("configuration_boundary", {}).get("s3_custody_demonstrated") is not False:
               raise SystemExit("migration ledger must not claim S3 custody")
-          print(manifest["migration_id"])
-          print(manifest["source"]["head_sha"])
+
+          binding_path = Path("migration/phase4_science_runtime_binding_2026-08-25.json")
+          binding = json.loads(binding_path.read_text(encoding="utf-8"))
+          if binding.get("binding_count") != 4:
+              raise SystemExit(f"expected 4 validated bindings, observed {binding.get('binding_count')!r}")
+          if binding.get("production_acquisition_authorized") is not False:
+              raise SystemExit("binding evidence must not authorize production acquisition")
+          if binding.get("s3_custody_demonstrated") is not False:
+              raise SystemExit("binding evidence must not claim S3 custody")
+          print(plan["migration_id"])
+          print(plan["source"]["head_sha"])
+          print(binding["binding_id"])
+          print(binding["destination"]["validated_commit_sha"])
           PY
       - name: Format and lint migrated boundary surface
         shell: bash
