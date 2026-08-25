@@ -5,6 +5,7 @@ on:
     paths:
       - "migration/phase4_science_runtime_migration_v0.1.json"
       - "migration/phase4_science_runtime_binding_2026-08-25.json"
+      - "migration/phase4_science_runtime_binding_2026-08-25_002.json"
       - "src/neuroai_workbench/science_observatory/**"
       - "tests/unit/science_observatory/**"
       - "tests/fixtures/science_observatory/**"
@@ -63,16 +64,28 @@ jobs:
           if plan.get("configuration_boundary", {}).get("s3_custody_demonstrated") is not False:
               raise SystemExit("migration ledger must not claim S3 custody")
 
-          binding_path = Path("migration/phase4_science_runtime_binding_2026-08-25.json")
+          predecessor_path = Path("migration/phase4_science_runtime_binding_2026-08-25.json")
+          predecessor = json.loads(predecessor_path.read_text(encoding="utf-8"))
+          if predecessor.get("binding_count") != 4:
+              raise SystemExit(
+                  f"expected immutable predecessor binding count 4, observed {predecessor.get('binding_count')!r}"
+              )
+
+          binding_path = Path("migration/phase4_science_runtime_binding_2026-08-25_002.json")
           binding = json.loads(binding_path.read_text(encoding="utf-8"))
-          if binding.get("binding_count") != 4:
-              raise SystemExit(f"expected 4 validated bindings, observed {binding.get('binding_count')!r}")
+          if binding.get("binding_count") != 6:
+              raise SystemExit(f"expected 6 validated bindings, observed {binding.get('binding_count')!r}")
+          if binding.get("supersedes_binding_id") != predecessor.get("binding_id"):
+              raise SystemExit("successor binding does not explicitly supersede predecessor")
           if binding.get("production_acquisition_authorized") is not False:
               raise SystemExit("binding evidence must not authorize production acquisition")
           if binding.get("s3_custody_demonstrated") is not False:
               raise SystemExit("binding evidence must not claim S3 custody")
+          if binding.get("live_provider_acquisition_executed") is not False:
+              raise SystemExit("binding evidence must not claim live provider acquisition")
           print(plan["migration_id"])
           print(plan["source"]["head_sha"])
+          print(predecessor["binding_id"])
           print(binding["binding_id"])
           print(binding["destination"]["validated_commit_sha"])
           PY
