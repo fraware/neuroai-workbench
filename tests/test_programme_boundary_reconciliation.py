@@ -52,9 +52,7 @@ def test_amb003_review_advances_accessibility_without_rewriting_predecessor() ->
     predecessor = _load(MIGRATION / "unresolved_ambiguities.json")
     review = _load(MIGRATION / "ambiguity_review_amb003_2026-08-25.json")
 
-    predecessor_amb003 = next(
-        item for item in predecessor["ambiguities"] if item["ambiguity_id"] == "AMB-003"
-    )
+    predecessor_amb003 = next(item for item in predecessor["ambiguities"] if item["ambiguity_id"] == "AMB-003")
     assert predecessor_amb003["status"] == "INACCESSIBLE"
 
     assert review["predecessor_record"]["ambiguity_id"] == "AMB-003"
@@ -65,15 +63,21 @@ def test_amb003_review_advances_accessibility_without_rewriting_predecessor() ->
 
     observed = {item["filename"]: item for item in review["observed_products"]}
     assert observed["UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx"]["sha256"] == EXPECTED_XLSX_SHA256
-    assert observed["UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx"]["sha256"] == EXPECTED_DOCX_SHA256
+    assert (
+        observed["UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx"]["sha256"]
+        == EXPECTED_DOCX_SHA256
+    )
     assert observed["UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx"]["observed_sheet_count"] == 48
-    assert observed["UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx"]["observed_word_table_count"] == 349
+    assert (
+        observed["UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx"][
+            "observed_word_table_count"
+        ]
+        == 349
+    )
 
 
 def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
-    adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(
-        encoding="utf-8"
-    )
+    adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(encoding="utf-8")
 
     for store in ("S1", "S2", "S3", "S4", "S5"):
         assert store in adr
@@ -81,4 +85,5 @@ def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
         assert layer in adr
     assert "historical graph S0 -> L0" in adr
     assert "historical graph S5 -> L5" in adr
-    assert "do not rewrite" in adr.lower()
+    assert "Historical vNext documents" in adr
+    assert "are not edited" in adr
