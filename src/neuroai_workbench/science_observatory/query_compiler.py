@@ -61,10 +61,7 @@ def _query_unit(
 ) -> dict[str, Any]:
     if provider == "CROSSREF":
         date_filters = provider_spec["date_filter_parameters"]
-        filter_value = (
-            f"{date_filters['from']}:{window_from},"
-            f"{date_filters['through']}:{window_through}"
-        )
+        filter_value = f"{date_filters['from']}:{window_from},{date_filters['through']}:{window_through}"
         parameters = {
             provider_spec["term_parameter"]: term,
             provider_spec["filter_parameter"]: filter_value,
@@ -178,9 +175,7 @@ def validate_frozen_plan_identity(plan: dict[str, Any]) -> None:
     }
     for key, value in expected.items():
         if plan.get(key) != value:
-            raise ValueError(
-                f"frozen query plan mismatch for {key}: expected {value!r}, observed {plan.get(key)!r}"
-            )
+            raise ValueError(f"frozen query plan mismatch for {key}: expected {value!r}, observed {plan.get(key)!r}")
 
 
 def write_plan(plan: dict[str, Any], output: Path) -> None:
