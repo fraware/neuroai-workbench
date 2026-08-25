@@ -99,6 +99,43 @@ def test_amb003_stage1_records_scope_difference_without_closing_ambiguity() -> N
     assert "not the S2 canonical machine-readable master" in stage1["workbook"]["authority_interpretation"]
 
 
+def test_amb003_stage2_internal_parity_is_bounded_and_noncanonical() -> None:
+    stage2 = _load(MIGRATION / "amb003_reconciliation_stage2_2026-08-25.json")
+
+    assert stage2["status"] == "INTERNAL_CROSS_VIEW_PARITY_PASS_INDEPENDENT_CANONICAL_RECONCILIATION_PENDING"
+    assert stage2["method"]["workbook_sha256"] == EXPECTED_XLSX_SHA256
+    assert stage2["predecessor_reconciliation_id"] == "AMB-003-STAGE1-20260825"
+
+    summary = stage2["scope_summary"]
+    assert summary["direct_view_sheet_count"] == 18
+    assert summary["direct_source_dataset_count"] == 18
+    assert summary["direct_records_compared"] == 554
+    assert summary["direct_field_values_compared"] == 7144
+    assert summary["assessment_view_sheet_count"] == 6
+    assert summary["assessment_source_dataset_count"] == 22
+    assert summary["assessment_records_compared"] == 525
+    assert summary["assessment_field_values_compared"] == 7375
+    assert summary["total_records_compared"] == 1079
+    assert summary["total_field_values_compared"] == 14519
+    assert summary["total_value_mismatches"] == 0
+    assert summary["total_missing_keys"] == 0
+    assert summary["total_extra_keys"] == 0
+
+    direct = stage2["direct_view_results"]
+    assessment = stage2["assessment_view_results"]
+    assert len(direct) == 18
+    assert len(assessment) == 22
+    assert all(row[-1] == 0 for row in direct)
+    assert all(row[-1] == 0 for row in assessment)
+    assert all(len(row[2]) == 64 for row in direct)
+    assert all(len(row[3]) == 64 for row in assessment)
+
+    assert stage2["historical_records_mutated"] is False
+    assert len(stage2["remaining_before_amb003_resolution"]) >= 5
+    assert "does not establish original-archive byte parity" in stage2["authority_boundary"]
+    assert "does not independently verify" in stage2["method"]["authority_rule"]
+
+
 def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
     adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(encoding="utf-8")
 
