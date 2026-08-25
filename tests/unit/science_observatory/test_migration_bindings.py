@@ -54,16 +54,15 @@ def _load(path: Path) -> dict:
 def _git_blob_sha(path: Path) -> str:
     content = path.read_bytes()
     framed = f"blob {len(content)}\0".encode() + content
-    return hashlib.sha1(framed).hexdigest()  # noqa: S324 - Git object identity, not security.
+    return hashlib.sha1(framed, usedforsecurity=False).hexdigest()
 
 
 def test_predecessor_binding_record_remains_immutable_and_bounded() -> None:
     predecessor = _load(PREDECESSOR_BINDING_PATH)
+    expected_commit = "5f65a57b2e5e174442ea9053c155777dfcba6924"
 
     assert predecessor["binding_id"] == "PHASE4-SCIENCE-RUNTIME-BINDING-20260825-001"
-    assert predecessor["destination"]["validated_commit_sha"] == (
-        "5f65a57b2e5e174442ea9053c155777dfcba6924"
-    )
+    assert predecessor["destination"]["validated_commit_sha"] == expected_commit
     assert predecessor["binding_count"] == 4
     assert len(predecessor["bindings"]) == 4
     assert predecessor["production_acquisition_authorized"] is False
