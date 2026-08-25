@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1.0",
+  "migration_id": "PHASE4-SCIENCE-RUNTIME-MIGRATION-V0.1",
+  "status": "DESTINATION_NAMESPACE_LOCKED_RUNTIME_MIGRATION_IN_PROGRESS",
+  "recorded_at": "2026-08-25T13:54:00Z",
+  "source": {
+    "repository": "fraware/neuroai-observatory-data",
+    "branch": "vnext-science-graph",
+    "head_sha": "ee51f6fcbd679d2b0ed5aeb4593424543201e496",
+    "tree_sha": "c8671f41518ecd259c7c08c25b1aed74aeb896c5",
+    "split_manifest_blob_sha": "9bc48a821ebc8d08896d94be4caf6143a8f3cf95",
+    "destination_amendment_path": "docs/migration/phase4-repository-split-destination-amendment-v0.2.json"
+  },
+  "destination": {
+    "repository": "fraware/neuroai-workbench",
+    "base_commit_sha": "2349a1f0125ceadbe4f6802e3686963e74360b7f",
+    "branch": "phase4-science-runtime-migration",
+    "runtime_package_root": "src/neuroai_workbench/science_observatory",
+    "test_root": "tests/unit/science_observatory"
+  },
+  "configuration_boundary": {
+    "state": "EXPLICIT_S2_INPUT_REQUIRED",
+    "rule": "Frozen discovery protocol and query-compilation records remain S2 release/provenance inputs. S1 runtime receives them through explicit paths or parsed objects and must not require copies inside the workbench repository.",
+    "automatic_canonical_effect": "NONE",
+    "production_acquisition_authorized": false,
+    "s3_custody_demonstrated": false
+  },
+  "entries": [
+    {"source_path":"infra/aws-phase4-custody/README.md","source_git_blob_sha":"b618d4c6be20405b234c8869fbe20c30b706b522","destination_path":"infra/observatory-custody/aws/README.md","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"infra/aws-phase4-custody/main.tf","source_git_blob_sha":"3ed53436e075e62c9c42d42948d4b6d151f44ef1","destination_path":"infra/observatory-custody/aws/main.tf","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"infra/aws-phase4-custody/outputs.tf","source_git_blob_sha":"33acb2d2b08107c73f035456c67c263ff1a5b947","destination_path":"infra/observatory-custody/aws/outputs.tf","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"infra/aws-phase4-custody/variables.tf","source_git_blob_sha":"cef210e337352b0b8b80c569bc72d2927b2da06c","destination_path":"infra/observatory-custody/aws/variables.tf","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"infra/aws-phase4-custody/versions.tf","source_git_blob_sha":"806751e89c2257cf1df4fb557566c77af1841bba","destination_path":"infra/observatory-custody/aws/versions.tf","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"science/durable-custody-architecture-v0.1.md","source_git_blob_sha":"da56bf6c9957b994f4c7fccb881ed4250ce7e745","destination_path":"docs/operations/observatory-science-custody.md","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"science/production-acquisition-runbook.md","source_git_blob_sha":"187a8acc559503908cc90b7b98cef77a8dd4cc2c","destination_path":"docs/operations/observatory-science-acquisition.md","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"science/validation-evidence-procedure-v0.1.md","source_git_blob_sha":"4cfb2bf9d4af085c8203b933871cc3d9f9e1fb0b","destination_path":"docs/operations/observatory-phase4-validation-evidence.md","state":"PLANNED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/acquire_science_candidates.py","source_git_blob_sha":"5aecc94d943313e94f6dbde2665a7cac085ff911","destination_path":"src/neuroai_workbench/science_observatory/acquisition.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/acquire_science_candidates_strict.py","source_git_blob_sha":"6cd4941241585e84bb3f937d8314ac7b41f0e718","destination_path":"src/neuroai_workbench/science_observatory/acquisition_strict.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/audit_phase4_aws_custody.py","source_git_blob_sha":"d00b9ec54b491302e529a590ae7a7ba1a29adf46","destination_path":"src/neuroai_workbench/science_observatory/custody_audit.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/compile_science_queries.py","source_git_blob_sha":"32bf7d7dddefada48d0fd6df4d54224a8afb8284","destination_path":"src/neuroai_workbench/science_observatory/query_compiler.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/preflight_science_custody.py","source_git_blob_sha":"fe6dc012d88a912cbc07a537d71e3bc363d6ac13","destination_path":"src/neuroai_workbench/science_observatory/custody_preflight.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/run_phase4_validation.py","source_git_blob_sha":"09464c7e70907a50dcfeaacce1938fc30b678521","destination_path":"src/neuroai_workbench/science_observatory/validation_evidence.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/run_science_acquisition.py","source_git_blob_sha":"4e82cb617f7720198fc2d13e330767cbbdacffdb","destination_path":"src/neuroai_workbench/science_observatory/runner.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/science_http_transport.py","source_git_blob_sha":"933e92b723a6e28bbe20f4f3b8f6aba01a309c44","destination_path":"src/neuroai_workbench/science_observatory/http_transport.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/verify_science_acquisition.py","source_git_blob_sha":"471faa562b8902e9e7a90378d63381e4d4483185","destination_path":"src/neuroai_workbench/science_observatory/acquisition_verifier.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/verify_science_candidate_provenance.py","source_git_blob_sha":"4a7d833e274fcd70a2744ba2df5772dfe635db75","destination_path":"src/neuroai_workbench/science_observatory/provenance_verifier.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"scripts/verify_science_retry_custody.py","source_git_blob_sha":"243f85f07e6766647da01b485da0499acb43f4d6","destination_path":"src/neuroai_workbench/science_observatory/retry_custody_verifier.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_phase4_custody_terraform_contract.py","source_git_blob_sha":"a4ba0d3d121328aa1ebfb922a824c577acb19edd","destination_path":"tests/unit/science_observatory/test_custody_terraform_contract.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_phase4_validation_harness.py","source_git_blob_sha":"d9eabdb8c4591622d2eef1b01d3754340277473f","destination_path":"tests/unit/science_observatory/test_validation_evidence.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_run_science_acquisition.py","source_git_blob_sha":"d7cb27b666db765269724396cb004867f7286129","destination_path":"tests/unit/science_observatory/test_runner.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_acquisition.py","source_git_blob_sha":"b541623ff2b3cd0a84d0141cc1ba25b2d231568d","destination_path":"tests/unit/science_observatory/test_acquisition.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_acquisition_verification.py","source_git_blob_sha":"9884f69f0400ce33250ed964ddb57cdb11cccee6","destination_path":"tests/unit/science_observatory/test_acquisition_verifier.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_candidate_provenance.py","source_git_blob_sha":"ded0e8df081b176604facdc5c741cdae85131844","destination_path":"tests/unit/science_observatory/test_provenance_verifier.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_custody_preflight.py","source_git_blob_sha":"c056d8f752ae3cf2607740ee35266684346f7378","destination_path":"tests/unit/science_observatory/test_custody_preflight.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_http_transport.py","source_git_blob_sha":"c6412e93424f803377e7f2036bc79dbd9310d1a1","destination_path":"tests/unit/science_observatory/test_http_transport.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_query_compilation.py","source_git_blob_sha":"dd3ac65f54d1087e939604dce1e6c5629def5095","destination_path":"tests/unit/science_observatory/test_query_compiler.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_response_custody.py","source_git_blob_sha":"68a3ac7f0bc28918a873ea8e64c7d5dc19d16d1d","destination_path":"tests/unit/science_observatory/test_response_custody.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null},
+    {"source_path":"tests/test_science_retry_custody.py","source_git_blob_sha":"4638a558feadf6564d50b23c43242ec0f25497d8","destination_path":"tests/unit/science_observatory/test_retry_custody.py","state":"PLANNED_TRANSFORM_REQUIRED","destination_git_blob_sha":null,"destination_commit_sha":null}
+  ],
+  "entry_count": 30,
+  "bound_destination_count": 0,
+  "transformed_destination_count": 0,
+  "supplementary_successor_files": [
+    "src/neuroai_workbench/science_observatory/__init__.py",
+    "src/neuroai_workbench/science_observatory/source_contracts.py",
+    "tests/unit/science_observatory/test_source_contracts.py"
+  ],
+  "authority_boundary": "This migration record preserves exact source-file identities and corrected destination intent. PLANNED and PLANNED_TRANSFORM_REQUIRED do not mean migrated. No destination entry is bound until the destination blob and commit are recorded after executable validation. No production acquisition or S3 custody claim follows from this record."
+}
