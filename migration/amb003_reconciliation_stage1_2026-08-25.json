@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "reconciliation_id": "AMB-003-STAGE1-20260825",
+  "recorded_at": "2026-08-25T12:47:00Z",
+  "archive_registration_id": "ARCHIVE-REG-20260825-BF4656C60470E87C",
+  "ambiguity_id": "AMB-003",
+  "status": "STRUCTURAL_RECONCILIATION_PASS_CONTENT_RECONCILIATION_PENDING",
+  "method": {
+    "workbook_reader": "artifact_tool",
+    "archive_byte_check": "ZIP member bytes hashed with SHA-256 after archive CRC validation",
+    "comparison_key": "SHA-256 byte identity; path similarity was not used to force matches",
+    "authority_rule": "Byte identity establishes file identity only. Spreadsheet labels, counts, formulas, and rendered values do not override canonical machine-readable records."
+  },
+  "workbook": {
+    "filename": "UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx",
+    "sha256": "db5bfca8c30e8b1945c52dc208dcbb486d1e0146adeb125b7fef9f557fcaa49a",
+    "sheet_count": 48,
+    "guide_self_description": "Canonical analytical workbook | v2.2.0 | 30 July 2026",
+    "authority_interpretation": "The workbook's self-description is preserved as source text. Under the programme store model it remains an S4 analytical/generated product, not the S2 canonical machine-readable master.",
+    "selected_used_ranges": {
+      "Organizations": "A1:T224",
+      "Sources": "A1:K225",
+      "Assessment_Findings": "A1:AG313",
+      "Raw_CSV_Rows": "A1:D10728",
+      "JSON_File_Index": "A1:F456",
+      "File_Manifest": "A1:H1437"
+    },
+    "file_manifest_data_rows": 1436,
+    "file_manifest_relationship_to_embedded_v2_1_manifest": "The workbook contains 1,436 File_Manifest data rows, matching the file_count declared by the embedded v2.1.0 MASTER_FILE_MANIFEST.json. This is a structural correspondence, not proof that the later outer ZIP contains every historical master-tree file."
+  },
+  "outer_archive": {
+    "sha256": "bf4656c60470e87cd2b454f6aea557a3b51a09cf2de8793fd6d844942b62f0f1",
+    "zip_entry_count_including_directories": 1669,
+    "file_entry_count": 1344,
+    "directory_entry_count": 325
+  },
+  "byte_identity_reconciliation": {
+    "historical_manifest_rows": 1436,
+    "historical_manifest_rows_with_sha_present_in_outer_archive": 1355,
+    "historical_manifest_rows_without_sha_present_in_outer_archive": 81,
+    "outer_archive_files": 1344,
+    "outer_archive_files_with_sha_present_in_historical_manifest": 1339,
+    "outer_archive_files_without_sha_present_in_historical_manifest": 5,
+    "explanation": "Manifest rows are path records and may describe duplicate byte-identical files, so matched manifest-row count can exceed the count of matched outer files. The comparison therefore reports both row-side and outer-file-side results instead of converting them into a single completeness percentage."
+  },
+  "historical_manifest_rows_not_represented_by_outer_file_bytes": {
+    "count": 81,
+    "top_level_path_counts": {
+      "01_CURRENT_GOVERNING_FILES": 2,
+      "03_LANDSCAPE_AND_OBSERVATORY_RELEASES": 1,
+      "07_IMPLEMENTATION_AND_OUTREACH": 50,
+      "09_PROGRAMME_CONTROL_AND_PACKAGING": 9,
+      "90_ORIGINAL_ARCHIVES": 19
+    },
+    "interpretation": "The current outer package is not a byte-complete copy of every file path recorded in the historical 1,436-row master tree. This is consistent with a later organized/curated wrapper and prevents treating the embedded v2.1.0 master manifest as the manifest of the supplied outer ZIP."
+  },
+  "outer_files_not_represented_in_historical_file_manifest": [
+    {
+      "path": "07_MANIFESTS_AND_VERIFICATION/MASTER_FILE_MANIFEST.csv",
+      "sha256": "bdf22cb110d8803ebf6b47ef8a8b03f8f4361a919fae8e6f87581a7c155535f5",
+      "size_bytes": 521039
+    },
+    {
+      "path": "07_MANIFESTS_AND_VERIFICATION/MASTER_FILE_MANIFEST.json",
+      "sha256": "0aabf397fda2e74fb96fe9b70238812c5df1bd6b58c6e793e9b87e55ddb6de14",
+      "size_bytes": 828429
+    },
+    {
+      "path": "07_MANIFESTS_AND_VERIFICATION/SHA256SUMS.txt",
+      "sha256": "e6b00456f28d7cff4ff5c80e32ee628edb44e24283226dbcbcd130f14e194264",
+      "size_bytes": 260286
+    },
+    {
+      "path": "UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx",
+      "sha256": "db5bfca8c30e8b1945c52dc208dcbb486d1e0146adeb125b7fef9f557fcaa49a",
+      "size_bytes": 1400027
+    },
+    {
+      "path": "UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx",
+      "sha256": "881db3fecc53b4c9389de63b877c4552eca11cf0ac6f81fcb73594cef6c6fb3a",
+      "size_bytes": 1374404
+    }
+  ],
+  "stage1_findings": [
+    "The previously inaccessible combined workbook is a structurally valid 48-sheet analytical package and exposes a 1,436-row historical file manifest.",
+    "The workbook's historical File_Manifest is strongly byte-linked to the supplied archive, but the supplied outer ZIP is not identical to the historical 1,436-file master tree.",
+    "The supplied outer ZIP contains 1,344 file entries. Exactly 1,339 outer files have byte identities represented in the workbook historical manifest; five wrapper/generated files are additional to that historical manifest.",
+    "Eighty-one historical manifest path records have no matching file bytes in the supplied outer ZIP. Their absence must remain explicit and must not be silently interpreted as loss of substantive canonical state without content-level reconciliation.",
+    "The workbook's phrase 'Canonical analytical workbook' is a source-level self-description. It does not supersede the programme rule that canonical machine-readable records remain master data and generated Excel products remain S4 views."
+  ],
+  "remaining_before_amb003_resolution": [
+    "Reconcile the substantive workbook sheets against the authoritative JSON/JSONL and migration exports by stable identifiers and recorded digests where possible.",
+    "Determine whether any workbook values conflict with canonical machine-readable records; preserve each conflict rather than choosing the spreadsheet automatically.",
+    "Reconcile the companion combined report's substantive release/assessment references against immutable canonical objects.",
+    "Classify the 81 historical manifest rows absent from the outer ZIP by whether their omission affects canonical data, generated products, historical-only archives, or implementation artifacts.",
+    "Issue an append-only AMB-003 resolution only after those checks pass or record an explicit residual conflict/unresolved state."
+  ],
+  "historical_records_mutated": false,
+  "authority_boundary": "Stage 1 establishes archive/workbook structure and file-byte relationships only. It does not establish substantive data correctness, archive completeness, canonical authority of spreadsheet values, scientific validity, assessment correctness, regulatory status, institutional authority, or release permission."
+}
