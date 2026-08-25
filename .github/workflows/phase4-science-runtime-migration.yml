@@ -6,6 +6,7 @@ on:
       - "migration/phase4_science_runtime_migration_v0.1.json"
       - "src/neuroai_workbench/science_observatory/**"
       - "tests/unit/science_observatory/**"
+      - "tests/fixtures/science_observatory/**"
       - ".github/required-checks.json"
       - ".github/workflows/phase4-science-runtime-migration.yml"
 
