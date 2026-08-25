@@ -11,9 +11,7 @@ EXPECTED_PROTOCOL_STATUS = "FROZEN_PROTOCOL_NO_PRODUCTION_ACQUISITION_YET"
 EXPECTED_COMPILATION_ID = "SCIENCE-QUERY-COMPILATION-V0.2"
 EXPECTED_COMPILATION_STATUS = "FROZEN_COMPILATION_NO_PRODUCTION_ACQUISITION_YET"
 EXPECTED_PROVIDER_SCOPE = ("CROSSREF", "EUROPE_PMC")
-EXPECTED_FROZEN_USER_AGENT = (
-    "neuroai-observatory-data/0.1 (+https://github.com/fraware/neuroai-observatory-data)"
-)
+EXPECTED_FROZEN_USER_AGENT = "neuroai-observatory-data/0.1 (+https://github.com/fraware/neuroai-observatory-data)"
 EXPECTED_QUERY_FAMILIES = (
     "QF-NEURAL-INTERFACE",
     "QF-NEURAL-DECODING",
@@ -41,9 +39,7 @@ class ScienceContractBundle:
 
 
 def _canonical_bytes(value: Any) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
-        "utf-8"
-    )
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
 def _sha256(raw: bytes) -> str:
@@ -124,8 +120,7 @@ def _validate_protocol(protocol: dict[str, Any]) -> None:
     dedup = protocol.get("deduplication")
     _require(isinstance(dedup, dict), "deduplication must be an object")
     _require(
-        dedup.get("exact_identifier_precedence")
-        == ["DOI", "PMID", "PMCID", "OPENALEX_WORK"],
+        dedup.get("exact_identifier_precedence") == ["DOI", "PMID", "PMCID", "OPENALEX_WORK"],
         "exact identifier precedence changed",
     )
     _require(
@@ -140,8 +135,7 @@ def _validate_protocol(protocol: dict[str, Any]) -> None:
     provider_policy = protocol.get("provider_policy")
     _require(isinstance(provider_policy, dict), "provider_policy must be an object")
     _require(
-        provider_policy.get("required_for_first_candidate_acquisition")
-        == list(EXPECTED_PROVIDER_SCOPE),
+        provider_policy.get("required_for_first_candidate_acquisition") == list(EXPECTED_PROVIDER_SCOPE),
         "first acquisition provider set changed",
     )
     _require(
@@ -234,13 +228,11 @@ def _validate_compilation(protocol: dict[str, Any], compilation: dict[str, Any])
         "Europe PMC source-universe binding mismatch",
     )
     _require(
-        europe_pmc.get("endpoint")
-        == "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+        europe_pmc.get("endpoint") == "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
         "Europe PMC endpoint changed",
     )
     _require(
-        europe_pmc.get("fixed_parameters")
-        == {"resultType": "lite", "format": "json", "pageSize": "1000"},
+        europe_pmc.get("fixed_parameters") == {"resultType": "lite", "format": "json", "pageSize": "1000"},
         "Europe PMC minimization changed",
     )
 
@@ -270,8 +262,7 @@ def _validate_compilation(protocol: dict[str, Any], compilation: dict[str, Any])
         "query-unit completion boundary changed",
     )
     _require(
-        coverage.get("aggregate_union_denominator")
-        == "NOT_CLAIMED_DUE_TO_OVERLAP_ACROSS_TERMS_AND_WINDOWS",
+        coverage.get("aggregate_union_denominator") == "NOT_CLAIMED_DUE_TO_OVERLAP_ACROSS_TERMS_AND_WINDOWS",
         "aggregate denominator must remain unclaimed",
     )
     _require(
@@ -280,9 +271,7 @@ def _validate_compilation(protocol: dict[str, Any], compilation: dict[str, Any])
     )
 
 
-def load_science_contract_bundle(
-    protocol_path: Path, compilation_path: Path
-) -> ScienceContractBundle:
+def load_science_contract_bundle(protocol_path: Path, compilation_path: Path) -> ScienceContractBundle:
     """Load and fail-closed validate frozen S2 discovery inputs.
 
     This function performs no network access, writes no files, and produces no
