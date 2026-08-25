@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.1.0",
+  "binding_id": "PHASE4-SCIENCE-RUNTIME-BINDING-20260825-001",
+  "recorded_at": "2026-08-25T14:31:00Z",
+  "migration_id": "PHASE4-SCIENCE-RUNTIME-MIGRATION-V0.1",
+  "source": {
+    "repository": "fraware/neuroai-observatory-data",
+    "head_sha": "ee51f6fcbd679d2b0ed5aeb4593424543201e496",
+    "tree_sha": "c8671f41518ecd259c7c08c25b1aed74aeb896c5"
+  },
+  "destination": {
+    "repository": "fraware/neuroai-workbench",
+    "branch": "phase4-science-runtime-migration",
+    "validated_commit_sha": "5f65a57b2e5e174442ea9053c155777dfcba6924"
+  },
+  "validation": {
+    "workflow": "Phase 4 science runtime migration",
+    "workflow_run_id": 32859648520,
+    "job_id": 97840168261,
+    "exact_head_checkout": true,
+    "python_version": "3.12.14",
+    "ruff_format": "PASS",
+    "ruff_check": "PASS",
+    "focused_test_count": 24,
+    "focused_test_result": "PASS",
+    "scope_note": "The 24-test result covers the migrated source-contract boundary, query compiler, fail-closed HTTP transport, and migration-plan invariants present at the exact validated head. It is not a full Phase 4 runtime or production-acquisition validation."
+  },
+  "bindings": [
+    {
+      "source_path": "scripts/compile_science_queries.py",
+      "source_git_blob_sha": "32bf7d7dddefada48d0fd6df4d54224a8afb8284",
+      "destination_path": "src/neuroai_workbench/science_observatory/query_compiler.py",
+      "destination_git_blob_sha": "12fbfcd0829502e249b8e466e86240a37fffe2e0",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Repository-relative S2 inputs were removed. The compiler consumes an explicitly supplied, fail-closed validated S2 contract bundle and reproduces the exact frozen 768-unit plan identity."
+    },
+    {
+      "source_path": "tests/test_science_query_compilation.py",
+      "source_git_blob_sha": "dd3ac65f54d1087e939604dce1e6c5629def5095",
+      "destination_path": "tests/unit/science_observatory/test_query_compiler.py",
+      "destination_git_blob_sha": "5c54607cdf65a9e3fb53c375ec4fd241b123d42b",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Tests were recast around external S2 fixtures and exact frozen plan reproduction rather than repository-local science paths."
+    },
+    {
+      "source_path": "scripts/science_http_transport.py",
+      "source_git_blob_sha": "933e92b723a6e28bbe20f4f3b8f6aba01a309c44",
+      "destination_path": "src/neuroai_workbench/science_observatory/http_transport.py",
+      "destination_git_blob_sha": "560231dfdbe76dec5ff8a8c139aa81755c15d151",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "The transport keeps fail-closed no-auto-follow behavior but no longer owns a repository-local default client identity; the caller must supply the frozen S2 user-agent identity explicitly."
+    },
+    {
+      "source_path": "tests/test_science_http_transport.py",
+      "source_git_blob_sha": "c6412e93424f803377e7f2036bc79dbd9310d1a1",
+      "destination_path": "tests/unit/science_observatory/test_http_transport.py",
+      "destination_git_blob_sha": "0c42f2898b674420e7a679d1cd36defc36f4e379",
+      "migration_state": "MIGRATED_TRANSFORMED_VALIDATED",
+      "transformation_boundary": "Tests now verify explicit client-identity injection in addition to redirect non-following and transport parameter validation."
+    }
+  ],
+  "binding_count": 4,
+  "supplementary_successor_files_validated_at_commit": [
+    "src/neuroai_workbench/science_observatory/source_contracts.py",
+    "tests/unit/science_observatory/test_source_contracts.py",
+    "tests/fixtures/science_observatory/external_s2/discovery-protocol-v0.1.json",
+    "tests/fixtures/science_observatory/external_s2/query-compilation-v0.2.json"
+  ],
+  "production_acquisition_authorized": false,
+  "s3_custody_demonstrated": false,
+  "authority_boundary": "This record binds four transformed source-to-destination mappings to an exact successfully validated workbench commit. It does not assert migration of the remaining 26 planned source entries, does not demonstrate durable S3 custody, and creates no provider acquisition, candidate corpus, coverage, canonical graph, assessment mutation, or release authority."
+}
