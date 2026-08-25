@@ -180,6 +180,45 @@ def test_amb003_stage3_records_report_parity_and_blank_kernel_defect() -> None:
     assert "does not establish independent canonical correctness" in stage3["authority_boundary"]
 
 
+def test_amb003_stage4_classifies_all_absent_historical_manifest_rows() -> None:
+    stage4 = _load(MIGRATION / "amb003_reconciliation_stage4_2026-08-25.json")
+
+    assert (
+        stage4["status"]
+        == "ABSENT_HISTORICAL_MANIFEST_PATHS_CLASSIFIED_BY_ARCHIVE_ROLE_CANONICAL_IMPACT_RECONCILIATION_PENDING"
+    )
+    assert stage4["predecessor_reconciliation_id"] == "AMB-003-STAGE3-20260825"
+
+    summary = stage4["scope_summary"]
+    assert summary["historical_manifest_rows_absent_by_byte_identity"] == 81
+    assert summary["unique_absent_sha256"] == 77
+    assert summary["duplicate_path_records_among_absent_rows"] == 4
+    assert summary["top_level_sections"] == 5
+    assert summary["extension_counts"][".zip"] == 19
+    assert summary["extension_counts"][".json"] == 18
+    assert summary["extension_counts"][".sha256"] == 10
+
+    classifications = {item["top_level_section"]: item for item in stage4["classifications"]}
+    assert set(classifications) == {
+        "01_CURRENT_GOVERNING_FILES",
+        "03_LANDSCAPE_AND_OBSERVATORY_RELEASES",
+        "07_IMPLEMENTATION_AND_OUTREACH",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING",
+        "90_ORIGINAL_ARCHIVES",
+    }
+    assert classifications["01_CURRENT_GOVERNING_FILES"]["historical_manifest_rows"] == 2
+    assert classifications["03_LANDSCAPE_AND_OBSERVATORY_RELEASES"]["historical_manifest_rows"] == 1
+    assert classifications["07_IMPLEMENTATION_AND_OUTREACH"]["historical_manifest_rows"] == 50
+    assert classifications["09_PROGRAMME_CONTROL_AND_PACKAGING"]["historical_manifest_rows"] == 9
+    assert classifications["90_ORIGINAL_ARCHIVES"]["historical_manifest_rows"] == 19
+    assert sum(item["historical_manifest_rows"] for item in classifications.values()) == 81
+
+    assert len(stage4["duplicate_absent_byte_identities"]) == 4
+    assert all(item["path_count"] == 2 for item in stage4["duplicate_absent_byte_identities"])
+    assert stage4["historical_records_mutated"] is False
+    assert "does not prove semantic equivalence" in stage4["authority_boundary"]
+
+
 def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
     adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(encoding="utf-8")
 
