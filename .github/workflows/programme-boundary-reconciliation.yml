@@ -1,0 +1,72 @@
+name: Programme boundary reconciliation
+
+on:
+  pull_request:
+    paths:
+      - "docs/adr/0014-programme-store-and-graph-layer-boundaries.md"
+      - "migration/archive_registration_2026-08-25.json"
+      - "migration/ambiguity_review_amb003_2026-08-25.json"
+      - "migration/amb003_reconciliation_stage1_2026-08-25.json"
+      - "tests/test_programme_boundary_reconciliation.py"
+      - ".github/workflows/programme-boundary-reconciliation.yml"
+
+permissions:
+  contents: read
+
+env:
+  VALIDATION_REF: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  exact_head:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.VALIDATION_REF }}
+          persist-credentials: false
+      - name: Assert exact source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$VALIDATION_REF"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install locked validation environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Verify runtime and structured records
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          if sys.version_info[:2] != (3, 12):
+              raise SystemExit(f"expected Python 3.12, observed {sys.version.split()[0]}")
+
+          for path in (
+              Path("migration/archive_registration_2026-08-25.json"),
+              Path("migration/ambiguity_review_amb003_2026-08-25.json"),
+              Path("migration/amb003_reconciliation_stage1_2026-08-25.json"),
+          ):
+              value = json.loads(path.read_text(encoding="utf-8"))
+              if not isinstance(value, dict):
+                  raise SystemExit(f"expected JSON object: {path}")
+              print(f"validated_json={path}")
+          PY
+      - name: Format and lint reconciliation surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff format --check tests/test_programme_boundary_reconciliation.py
+          python -m ruff check tests/test_programme_boundary_reconciliation.py
+      - name: Run focused reconciliation tests
+        run: python -m pytest tests/test_programme_boundary_reconciliation.py -v
