@@ -8,6 +8,7 @@ on:
       - "migration/ambiguity_review_amb003_2026-08-25.json"
       - "migration/amb003_reconciliation_stage1_2026-08-25.json"
       - "migration/amb003_reconciliation_stage2_2026-08-25.json"
+      - "migration/amb003_reconciliation_stage3_2026-08-25.json"
       - "tests/test_programme_boundary_reconciliation.py"
       - ".github/required-checks.json"
       - ".github/workflows/programme-boundary-reconciliation.yml"
@@ -60,6 +61,7 @@ jobs:
               Path("migration/ambiguity_review_amb003_2026-08-25.json"),
               Path("migration/amb003_reconciliation_stage1_2026-08-25.json"),
               Path("migration/amb003_reconciliation_stage2_2026-08-25.json"),
+              Path("migration/amb003_reconciliation_stage3_2026-08-25.json"),
           ):
               value = json.loads(path.read_text(encoding="utf-8"))
               if not isinstance(value, dict):
