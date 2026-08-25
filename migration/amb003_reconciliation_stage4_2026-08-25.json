@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0",
+  "reconciliation_id": "AMB-003-STAGE4-20260825",
+  "recorded_at": "2026-08-25T13:45:00Z",
+  "ambiguity_id": "AMB-003",
+  "predecessor_reconciliation_id": "AMB-003-STAGE3-20260825",
+  "status": "ABSENT_HISTORICAL_MANIFEST_PATHS_CLASSIFIED_BY_ARCHIVE_ROLE_CANONICAL_IMPACT_RECONCILIATION_PENDING",
+  "method": {
+    "source": "File_Manifest sheet in the supplied combined workbook plus SHA-256 identities from the CRC-valid supplied outer ZIP.",
+    "absence_rule": "A historical manifest path is in scope when the SHA-256 recorded for that row is absent from every file entry in the supplied outer ZIP. Path similarity is not used to declare presence.",
+    "classification_rule": "Classify each absent row by its historical top-level section, file type, and programme store/authority role. Role classification does not substitute for content-level canonical reconciliation."
+  },
+  "scope_summary": {
+    "historical_manifest_rows_absent_by_byte_identity": 81,
+    "unique_absent_sha256": 77,
+    "duplicate_path_records_among_absent_rows": 4,
+    "top_level_sections": 5,
+    "extension_counts": {
+      ".csv": 2,
+      ".docx": 4,
+      ".ics": 1,
+      ".json": 18,
+      ".md": 3,
+      ".pdf": 3,
+      ".png": 13,
+      ".sha256": 10,
+      ".txt": 6,
+      ".xlsx": 2,
+      ".zip": 19
+    }
+  },
+  "duplicate_absent_byte_identities": [
+    {
+      "sha256": "82b68d09816fbfee9eccf3e1f6d6fa7994bb9d5285425933eff3546da46415db",
+      "path_count": 2,
+      "paths": [
+        "01_CURRENT_GOVERNING_FILES/06_Implementation_and_Outreach/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1.pdf",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/01_Strategy/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1.pdf"
+      ]
+    },
+    {
+      "sha256": "cf2660dae369088fee9eccf3e1f6d6fa7994bb9d5285425933eff3546da46415db",
+      "path_count": 2,
+      "paths": [
+        "01_CURRENT_GOVERNING_FILES/06_Implementation_and_Outreach/UNESCO_NeuroAI_Outreach_Response_and_Revision_Tracker_v4.3.1.xlsx",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/05_Tracker/UNESCO_NeuroAI_Outreach_Response_and_Revision_Tracker_v4.3.1.xlsx"
+      ]
+    },
+    {
+      "sha256": "f78c512d1362cc186fb49e66788dabc979385245de0ae13bc9915964a0e41d3a",
+      "path_count": 2,
+      "paths": [
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/01_v1.0.0_Complete_Programme_Master/02_Integrity/04_Step_05_UNESCO_NeuroAI_BrainGate2_T15_Longitudinal_Home_Use_Pilot_v4.1.5.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/STAGE-105_04_Step_05_UNESCO_NeuroAI_BrainGate2_T15_Longitudinal_Home_Use_Pilot_v4.1.5.zip.sha256"
+      ]
+    },
+    {
+      "sha256": "fcdc4df1882d3a4b74b7a51af66f1cfc0b01f72e6c5f0df3426380661c6060db",
+      "path_count": 2,
+      "paths": [
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/01_v1.0.0_Complete_Programme_Master/02_Integrity/08_Step_09_UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Sequence_v4.3.1.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/STAGE-109_08_Step_09_UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Sequence_v4.3.1.zip.sha256"
+      ]
+    }
+  ],
+  "classifications": [
+    {
+      "top_level_section": "01_CURRENT_GOVERNING_FILES",
+      "historical_manifest_rows": 2,
+      "unique_sha256": 2,
+      "extension_counts": {
+        ".pdf": 1,
+        ".xlsx": 1
+      },
+      "provisional_store_role": "S4_GENERATED_OR_PRESENTATION_ARTIFACT",
+      "substantive_impact_state": "NO_DIRECT_S2_CANONICAL_FILE_IDENTIFIED_BY_PATH_CONTENT_RECONCILIATION_STILL_REQUIRED",
+      "rationale": "Both absent rows are v4.3.1 outreach XLSX/PDF generated products. Their absence from the outer wrapper does not by itself establish loss of canonical observatory data.",
+      "paths": [
+        "01_CURRENT_GOVERNING_FILES/06_Implementation_and_Outreach/UNESCO_NeuroAI_Outreach_Response_and_Revision_Tracker_v4.3.1.xlsx",
+        "01_CURRENT_GOVERNING_FILES/06_Implementation_and_Outreach/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1.pdf"
+      ]
+    },
+    {
+      "top_level_section": "03_LANDSCAPE_AND_OBSERVATORY_RELEASES",
+      "historical_manifest_rows": 1,
+      "unique_sha256": 1,
+      "extension_counts": {
+        ".docx": 1
+      },
+      "provisional_store_role": "S4_GENERATED_REPORT",
+      "substantive_impact_state": "NO_DIRECT_S2_CANONICAL_FILE_IDENTIFIED_BY_PATH_CONTENT_RECONCILIATION_STILL_REQUIRED",
+      "rationale": "The sole absent row is the v1.4 DOCX report, a generated narrative artifact. The underlying v1.4 machine-readable objects require separate verification.",
+      "paths": [
+        "03_LANDSCAPE_AND_OBSERVATORY_RELEASES/04_v1.4_Evidence_Depth_and_Observatory_Integration/01_Report/UNESCO_NeuroAI_Evidence_Depth_and_Observatory_Integration_Report_v1.4.docx"
+      ]
+    },
+    {
+      "top_level_section": "07_IMPLEMENTATION_AND_OUTREACH",
+      "historical_manifest_rows": 50,
+      "unique_sha256": 48,
+      "extension_counts": {
+        ".csv": 2,
+        ".docx": 3,
+        ".ics": 1,
+        ".json": 18,
+        ".md": 2,
+        ".pdf": 2,
+        ".png": 13,
+        ".sha256": 1,
+        ".txt": 6,
+        ".xlsx": 1,
+        ".zip": 1
+      },
+      "provisional_store_role": "MIXED_PROGRAMME_OPERATIONAL_CONTROL_AND_S4_GENERATED_ARTIFACTS",
+      "substantive_impact_state": "NON_S2_BY_PROGRAMME_FUNCTION_NOT_FULLY_DISMISSED_UNTIL_AUTHORITATIVE_OBJECT_RECONCILIATION",
+      "rationale": "This subtree contains outreach strategy/transmission products, control JSON/CSV, verification records, rendered PNGs and one transmission bundle. These are programme implementation/outreach surfaces, not the observatory S2 publication surface, but JSON/CSV control records may still matter to programme-history reconstruction.",
+      "paths": [
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/01_Strategy/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1.docx",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/01_Strategy/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1.pdf",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/02_Transmission/Primary_Transmission_Note_v4.3.1.docx",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/03_Email_Pack/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1.docx",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/03_Email_Pack/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1.pdf",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/03_Email_Pack/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/04_First_Wave_Bundle/FIRST_WAVE_ATTACHMENT_MANIFEST_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/04_First_Wave_Bundle/FIRST_WAVE_INSTRUCTIONS.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/04_First_Wave_Bundle/FIRST_WAVE_TRANSMISSION_BUNDLE_v4.3.1.zip",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/04_First_Wave_Bundle/FIRST_WAVE_TRANSMISSION_BUNDLE_v4.3.1.zip.sha256",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/05_Tracker/UNESCO_NeuroAI_Outreach_Response_and_Revision_Tracker_v4.3.1.xlsx",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/ATTACHMENT_SETS_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/CANONICAL_OUTREACH_AND_SUBMISSION_SEQUENCE_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/INSTITUTIONAL_CONTACT_REGISTER_v4.3.1.csv",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/INSTITUTIONAL_CONTACT_REGISTER_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/MESSAGE_REGISTER_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/RESPONSE_AND_REVISION_PROTOCOL_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/06_JSON/SUBMISSION_SEQUENCE_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/07_Source_Register/OFFICIAL_SOURCE_REGISTER_v4.3.1.csv",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/07_Source_Register/OFFICIAL_SOURCE_REGISTER_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/08_Calendar/RECOMMENDED_OUTREACH_CALENDAR_v4.3.1.ics",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/RELEASE_VERIFICATION_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/WORKBOOK_VERIFICATION_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/Primary_Transmission_Note_v4.3.1_A11Y.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/Primary_Transmission_Note_v4.3.1_A11Y.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1_A11Y.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1_A11Y.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1_A11Y.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/a11y/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1_A11Y.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/email_1_2.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/email_3_4.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/email_5_6.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/email_7_8.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/email_9_10.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/strategy_1_2.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/strategy_3_4.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/strategy_5_6.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/strategy_7.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/final_contact_sheets/transmission_page_1.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/pdf_inspect/Primary_Transmission_Note_v4.3.1_INSPECT.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/pdf_inspect/RECIPIENT_SPECIFIC_EMAIL_PACK_v4.3.1_INSPECT.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/pdf_inspect/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Strategy_v4.3.1_INSPECT.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/workbook_renders/contacts_v4_3_1.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/workbook_renders/dashboard_v4_3_1.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/10_Verification/workbook_renders/sequence_v4_3_1.png",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/CONTROLLED_STATUS_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/FILE_MANIFEST_v4.3.1.json",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/README.md",
+        "07_IMPLEMENTATION_AND_OUTREACH/02_v4.3.1_Targeted_Outreach_and_Submission/SHA256SUMS.txt",
+        "07_IMPLEMENTATION_AND_OUTREACH/README.md"
+      ]
+    },
+    {
+      "top_level_section": "09_PROGRAMME_CONTROL_AND_PACKAGING",
+      "historical_manifest_rows": 9,
+      "unique_sha256": 7,
+      "extension_counts": {
+        ".sha256": 9
+      },
+      "provisional_store_role": "S5_S4_INTEGRITY_REFERENCE_METADATA",
+      "substantive_impact_state": "IDENTITY_REFERENCE_ONLY_NO_DIRECT_CANONICAL_RECORD",
+      "rationale": "All nine absent rows are .sha256 reference-lock/integrity files. They support identity verification and do not themselves carry canonical observatory records.",
+      "paths": [
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/01_v1.0.0_Complete_Programme_Master/02_Integrity/04_Step_05_UNESCO_NeuroAI_BrainGate2_T15_Longitudinal_Home_Use_Pilot_v4.1.5.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/01_v1.0.0_Complete_Programme_Master/02_Integrity/08_Step_09_UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Sequence_v4.3.1.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/MASTER-100_UNESCO_NeuroAI_Complete_Programme_Final_Release_v1.0.0.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/OBS-111_UNESCO_NeuroAI_Landscape_to_Assurance_Integration_v1.1.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/OBS-113_UNESCO_NeuroAI_Field_Verification_and_Legacy_Closure_v1.3.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/OBS-114_UNESCO_NeuroAI_Evidence_Depth_and_Observatory_Integration_v1.4.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/OBS-115-ALT_UNESCO_NeuroAI_Continuous_Observatory_Operations_v1.5.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/STAGE-105_04_Step_05_UNESCO_NeuroAI_BrainGate2_T15_Longitudinal_Home_Use_Pilot_v4.1.5.zip.sha256",
+        "09_PROGRAMME_CONTROL_AND_PACKAGING/02_v2.0.0_Consolidated_Programme_Successor/05_Reference_Lock/STAGE-109_08_Step_09_UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Sequence_v4.3.1.zip.sha256"
+      ]
+    },
+    {
+      "top_level_section": "90_ORIGINAL_ARCHIVES",
+      "historical_manifest_rows": 19,
+      "unique_sha256": 19,
+      "extension_counts": {
+        ".md": 1,
+        ".zip": 18
+      },
+      "provisional_store_role": "S5_HISTORICAL_ARCHIVE_BUNDLES",
+      "substantive_impact_state": "HISTORICAL_BYTE_CUSTODY_GAP_CURRENT_CANONICAL_IMPACT_UNDETERMINED",
+      "rationale": "Eighteen absent rows are predecessor ZIP bundles and one is archive documentation. Missing predecessor bundles affect historical byte custody; current canonical impact requires comparison with extracted successor objects rather than assumption.",
+      "paths": [
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_CURRENT_DATA_AND_REPORTS_v2.0.1(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Complete_Programme_Final_Release_v1.0.0(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Consolidated_Programme_Successor_v2.0.0(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Evidence_Depth_and_Observatory_Integration_v1.4(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Field_Verification_and_Legacy_Closure_v1.3(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_First_Live_Refresh_and_Successor_Delta_v1.6(2).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Implementation_Contribution_v4.3(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Landscape_to_Assurance_Integration_v1.1(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Open_Source_Assessment_Workbench_v0.1.0(2).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_PRIMA_Controlled_Assessment_and_Observatory_Successor_v1.7(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Pilot_Calibrated_Kernel_and_Instrument_v4.2(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Targeted_Outreach_and_Submission_Sequence_v4.3.1(2).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Three_Pilot_Comparative_Calibration_v4.1.6(1).zip",
+        "90_ORIGINAL_ARCHIVES/01_User_Uploaded_Archives/UNESCO_NeuroAI_Verified_Global_Landscape_Census_v1.2(1).zip",
+        "90_ORIGINAL_ARCHIVES/02_Recovered_Stage_Archives/01_Steps_01-02_UNESCO_NeuroAI_Universal_Assessment_Instrument_v4.1.2.zip",
+        "90_ORIGINAL_ARCHIVES/02_Recovered_Stage_Archives/02_Step_03_UNESCO_NeuroAI_Brain2Qwerty_Public_Evidence_Pilot_v4.1.3.zip",
+        "90_ORIGINAL_ARCHIVES/02_Recovered_Stage_Archives/03_Step_04_UNESCO_NeuroAI_FDA_Adaptive_DBS_Public_Evidence_Pilot_v4.1.4.zip",
+        "90_ORIGINAL_ARCHIVES/02_Recovered_Stage_Archives/04_Step_05_UNESCO_NeuroAI_BrainGate2_T15_Longitudinal_Home_Use_Pilot_v4.1.5.zip",
+        "90_ORIGINAL_ARCHIVES/README.md"
+      ]
+    }
+  ],
+  "findings": [
+    "The 81 absent historical manifest rows represent 77 unique byte identities; four byte identities are each referenced by two historical paths.",
+    "Nineteen rows belong to the historical original-archive area, nine are integrity/reference-lock checksum files, fifty are implementation/outreach artifacts or control records, two are current-governing outreach generated products, and one is the v1.4 generated DOCX report.",
+    "No row in this 81-path set is classified solely from its absence as lost canonical observatory data. The file-role evidence instead shows a mixture of historical bundles, integrity metadata, implementation/outreach control surfaces, and generated reports/products.",
+    "The 18 missing predecessor ZIP bundles create a real historical byte-custody gap for those exact archive objects. That gap must remain explicit even if successor/extracted content later proves sufficient for current canonical reconstruction.",
+    "The implementation/outreach JSON/CSV records are not silently discarded: although outside the S2 observatory publication role, their programme-history significance remains subject to authoritative object reconciliation."
+  ],
+  "remaining_before_amb003_resolution": [
+    "Independently verify the governing machine-readable JSON objects and exact digests for the v4.2 kernel, v1.4 baseline, v1.6 delta, v1.7 successor and four completed assessments against available authoritative archive members.",
+    "Determine whether any of the 18 absent predecessor ZIP identities have an exact duplicate or independently verified extracted-content equivalent elsewhere in S5; do not infer equivalence from filenames.",
+    "Reconcile the v4.3.1 implementation/outreach JSON/CSV control records where they are needed for programme-history reconstruction, while keeping them outside S2 canonical-observatory authority.",
+    "Keep the appendix-K S4 report defect open until the authoritative v4.2 kernel object is independently verified.",
+    "Issue an append-only AMB-003 resolution only after the independent canonical checks pass or residual custody/conflict states are explicitly retained."
+  ],
+  "historical_records_mutated": false,
+  "authority_boundary": "Stage 4 classifies the 81 historical File_Manifest paths absent from the supplied outer ZIP by archive role and file type. It does not prove semantic equivalence of missing files, recover missing predecessor bytes, establish canonical correctness, or authorize a release."
+}
