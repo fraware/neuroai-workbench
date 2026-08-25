@@ -8,6 +8,7 @@ on:
       - "migration/ambiguity_review_amb003_2026-08-25.json"
       - "migration/amb003_reconciliation_stage1_2026-08-25.json"
       - "tests/test_programme_boundary_reconciliation.py"
+      - ".github/required-checks.json"
       - ".github/workflows/programme-boundary-reconciliation.yml"
 
 permissions:
@@ -18,6 +19,7 @@ env:
 
 jobs:
   exact_head:
+    name: exact_head
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
