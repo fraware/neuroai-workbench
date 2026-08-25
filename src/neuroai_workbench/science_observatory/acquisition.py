@@ -408,9 +408,7 @@ def _europe_pmc_candidate(
     }
 
 
-def _coverage_report(
-    unit: dict[str, Any], *, frozen_at: str, eligible: int, discovered: int
-) -> dict[str, Any]:
+def _coverage_report(unit: dict[str, Any], *, frozen_at: str, eligible: int, discovered: int) -> dict[str, Any]:
     rates: dict[str, float | None]
     if eligible == 0:
         rates = {
@@ -748,9 +746,7 @@ def acquire_query_unit(
         "status": exhaustion_state,
         "freeze": freeze,
         "coverage": coverage,
-        "coverage_state": (
-            "ISSUED_COMPLETE_QUERY_UNIT" if complete else "NOT_ISSUED_INCOMPLETE_QUERY_UNIT"
-        ),
+        "coverage_state": ("ISSUED_COMPLETE_QUERY_UNIT" if complete else "NOT_ISSUED_INCOMPLETE_QUERY_UNIT"),
         "response_manifest": responses,
         "page_manifest": pages,
         "candidates_path": f"units/{unit['query_unit_id']}/candidates.jsonl",
@@ -778,9 +774,7 @@ def _load_jsonl(path: Path) -> Iterable[dict[str, Any]]:
             yield row
 
 
-def _validate_response_custody(
-    response: dict[str, Any], *, unit_id: str, output_root: Path
-) -> None:
+def _validate_response_custody(response: dict[str, Any], *, unit_id: str, output_root: Path) -> None:
     pointer = response.get("raw_custody_pointer")
     digest = response.get("content_sha256")
     if not isinstance(pointer, str) or not isinstance(digest, str):
@@ -859,9 +853,7 @@ def _validate_existing_result_integrity(
         if freeze.get("exhaustion_state") != "COMPLETE":
             raise ValueError(f"{unit_id}: existing COMPLETE result has non-complete freeze")
         if existing.get("provider_total") != candidate_count:
-            raise ValueError(
-                f"{unit_id}: existing COMPLETE result does not reconcile to provider total"
-            )
+            raise ValueError(f"{unit_id}: existing COMPLETE result does not reconcile to provider total")
         if len(pages) != len(responses):
             raise ValueError(f"{unit_id}: existing COMPLETE result has unparsed response observations")
         if sum(page.get("record_count", -1) for page in pages) != candidate_count:
@@ -873,10 +865,7 @@ def _validate_existing_result_integrity(
     elif status in {"PARTIAL", "FAILED"}:
         if freeze.get("exhaustion_state") != status:
             raise ValueError(f"{unit_id}: existing incomplete result/freeze state mismatch")
-        if (
-            existing.get("coverage_state") != "NOT_ISSUED_INCOMPLETE_QUERY_UNIT"
-            or existing.get("coverage") is not None
-        ):
+        if existing.get("coverage_state") != "NOT_ISSUED_INCOMPLETE_QUERY_UNIT" or existing.get("coverage") is not None:
             raise ValueError(f"{unit_id}: existing incomplete result must not issue coverage")
     else:
         raise ValueError(f"{unit_id}: unsupported existing result status {status!r}")
@@ -902,9 +891,7 @@ def _archive_incomplete_attempt(
     archive_sha = _sha256_json(result_basis)
     archive_id = f"ATTEMPT-{archive_sha[:20].upper()}"
     archive_dir = output_root / "units" / unit_id / "attempts" / archive_id
-    snapshot_relative = (
-        Path("units") / unit_id / "attempts" / archive_id / "candidates.jsonl"
-    ).as_posix()
+    snapshot_relative = (Path("units") / unit_id / "attempts" / archive_id / "candidates.jsonl").as_posix()
     snapshot_path = output_root / snapshot_relative
     archive_record = {
         "archive_id": archive_id,
@@ -919,9 +906,7 @@ def _archive_incomplete_attempt(
             "auditability and is not a completeness, release, relevance, or canonical-identity claim."
         ),
     }
-    archive_bytes = (
-        json.dumps(archive_record, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    ).encode("utf-8")
+    archive_bytes = (json.dumps(archive_record, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
     archive_path = archive_dir / "attempt.json"
     if archive_path.exists():
         if archive_path.read_bytes() != archive_bytes:
@@ -938,9 +923,7 @@ def _archive_previous_run(output_root: Path) -> None:
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise RuntimeError(
-            "existing run-manifest.json is invalid; quarantine output root before continuing"
-        ) from exc
+        raise RuntimeError("existing run-manifest.json is invalid; quarantine output root before continuing") from exc
     if not isinstance(manifest, dict) or not isinstance(manifest.get("run_id"), str):
         raise RuntimeError("existing run manifest lacks a valid run_id")
     run_id = manifest["run_id"]
@@ -1144,12 +1127,8 @@ def acquire_plan(
         "failed_query_units": sum(result["status"] == "FAILED" for result in results),
         "selected_is_full_plan": selected_is_full_plan,
         "full_plan_complete": full_plan_complete,
-        "status": (
-            "COMPLETE_QUERY_PLAN" if full_plan_complete else "PARTIAL_OR_SCOPED_ACQUISITION"
-        ),
-        "query_unit_result_paths": [
-            f"units/{result['query_unit_id']}/result.json" for result in results
-        ],
+        "status": ("COMPLETE_QUERY_PLAN" if full_plan_complete else "PARTIAL_OR_SCOPED_ACQUISITION"),
+        "query_unit_result_paths": [f"units/{result['query_unit_id']}/result.json" for result in results],
         "dedup_report_path": "dedup-report.json",
         "dedup_report_sha256": _sha256_json(dedup),
         "raw_custody_root": "raw/sha256",
