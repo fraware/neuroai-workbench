@@ -7,10 +7,11 @@ import random
 import time
 import urllib.error
 import urllib.parse
+from collections.abc import Callable, Iterable
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any
 
 from .http_transport import HttpResult
 from .query_compiler import (
