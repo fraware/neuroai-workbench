@@ -76,6 +76,29 @@ def test_amb003_review_advances_accessibility_without_rewriting_predecessor() ->
     )
 
 
+def test_amb003_stage1_records_scope_difference_without_closing_ambiguity() -> None:
+    stage1 = _load(MIGRATION / "amb003_reconciliation_stage1_2026-08-25.json")
+
+    assert stage1["status"] == "STRUCTURAL_RECONCILIATION_PASS_CONTENT_RECONCILIATION_PENDING"
+    assert stage1["workbook"]["sha256"] == EXPECTED_XLSX_SHA256
+    assert stage1["workbook"]["sheet_count"] == 48
+    assert stage1["workbook"]["file_manifest_data_rows"] == 1436
+    assert stage1["outer_archive"]["sha256"] == EXPECTED_ARCHIVE_SHA256
+    assert stage1["outer_archive"]["file_entry_count"] == 1344
+
+    identity = stage1["byte_identity_reconciliation"]
+    assert identity["historical_manifest_rows"] == 1436
+    assert identity["historical_manifest_rows_with_sha_present_in_outer_archive"] == 1355
+    assert identity["historical_manifest_rows_without_sha_present_in_outer_archive"] == 81
+    assert identity["outer_archive_files"] == 1344
+    assert identity["outer_archive_files_with_sha_present_in_historical_manifest"] == 1339
+    assert identity["outer_archive_files_without_sha_present_in_historical_manifest"] == 5
+
+    assert stage1["historical_records_mutated"] is False
+    assert len(stage1["remaining_before_amb003_resolution"]) >= 4
+    assert "not the S2 canonical machine-readable master" in stage1["workbook"]["authority_interpretation"]
+
+
 def test_graph_layer_nomenclature_does_not_reclassify_store_authority() -> None:
     adr = (ROOT / "docs" / "adr" / "0014-programme-store-and-graph-layer-boundaries.md").read_text(encoding="utf-8")
 
