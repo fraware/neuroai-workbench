@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "registration_id": "ARCHIVE-REG-20260825-BF4656C60470E87C",
+  "recorded_at": "2026-08-25T12:32:00Z",
+  "archive_class": "IMMUTABLE_PREDECESSOR_S5",
+  "outer_archive": {
+    "observed_filename": "01_START_CURRENT_AND_ORIGINAL (2).zip",
+    "sha256": "bf4656c60470e87cd2b454f6aea557a3b51a09cf2de8793fd6d844942b62f0f1",
+    "size_bytes": 78309902,
+    "zip_entry_count": 1669,
+    "zip_crc_check": "PASS",
+    "bytes_committed_to_repository": false
+  },
+  "embedded_archive_identity": {
+    "declared_title": "UNESCO NeuroAI Complete Organized Master Archive v2.1.0",
+    "declared_release_type": "PACKAGING_AND_ARCHIVAL_CONSOLIDATION",
+    "declared_substantive_change": false,
+    "start_here_path": "01_START_CURRENT_AND_ORIGINAL/00_START_HERE/START_HERE.md",
+    "start_here_sha256": "89d18d64c14fda50ac7f637322e95c3534fd6f038228f67a0da3b0ed15cf2be7",
+    "package_verification_path": "07_MANIFESTS_AND_VERIFICATION/PACKAGE_VERIFICATION_v2.1.0.json",
+    "package_verification_sha256": "e466a9ea271261c922bb66fa9c42625e32ffc953adaac93fea95b5bf155df7ae",
+    "package_verification_declared_summary": {
+      "checks": 25,
+      "passed": 25,
+      "failed": 0,
+      "warnings": 0,
+      "status": "PASS"
+    },
+    "master_manifest_path": "07_MANIFESTS_AND_VERIFICATION/MASTER_FILE_MANIFEST.json",
+    "master_manifest_sha256": "0aabf397fda2e74fb96fe9b70238812c5df1bd6b58c6e793e9b87e55ddb6de14",
+    "master_manifest_declared_file_count": 1436,
+    "master_manifest_declared_total_size_bytes": 326423428
+  },
+  "outer_wrapper_observation": {
+    "status": "SUCCESSOR_WRAPPER_REQUIRES_OWN_REGISTRATION",
+    "reason": "The observed outer ZIP contains 1669 entries and root-level/generated material that is not represented as an exact outer-package identity by the embedded v2.1.0 master manifest. The embedded v2.1.0 verification remains historical evidence for its declared master tree; it is not silently promoted into a manifest of the currently supplied outer ZIP.",
+    "historical_manifests_modified": false
+  },
+  "newly_accessible_generated_products": [
+    {
+      "logical_role": "GENERATED_RECONCILIATION_VIEW",
+      "filename": "UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx",
+      "sha256": "db5bfca8c30e8b1945c52dc208dcbb486d1e0146adeb125b7fef9f557fcaa49a",
+      "size_bytes": 1400027,
+      "store_class": "S4_GENERATED_ARTIFACT",
+      "canonical_master": false,
+      "related_ambiguity": "AMB-003"
+    },
+    {
+      "logical_role": "GENERATED_RECONCILIATION_VIEW",
+      "filename": "UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx",
+      "sha256": "881db3fecc53b4c9389de63b877c4552eca11cf0ac6f81fcb73594cef6c6fb3a",
+      "size_bytes": 1374404,
+      "store_class": "S4_GENERATED_ARTIFACT",
+      "canonical_master": false,
+      "related_ambiguity": "AMB-003"
+    }
+  ],
+  "authority_boundary": "This registration records observed byte identities, package structure, and declared embedded verification metadata only. It does not validate the substantive truth of archive contents, make generated products canonical, authorize redistribution, resolve AMB-003 by itself, establish current programme state, or create scientific, assessment, regulatory, conformance, safety, institutional, or release authority.",
+  "retention_rule": "Keep the observed archive bytes outside Git as immutable S5 custody. Corrections to this registration must be additive successor records; do not rewrite embedded historical manifests to describe a later outer wrapper."
+}
