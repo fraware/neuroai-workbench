@@ -98,6 +98,17 @@
       ]
     },
     {
+      "path": ".github/workflows/programme-boundary-reconciliation.yml",
+      "name": "Programme boundary reconciliation",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  pull_request:"],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "exact_head", "name": "exact_head", "required_contexts": []}
+      ]
+    },
+    {
       "path": ".github/workflows/release.yml",
       "name": "Release",
       "pull_request_required": false,
