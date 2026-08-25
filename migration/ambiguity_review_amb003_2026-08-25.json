@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "review_id": "AMB-003-REVIEW-20260825",
+  "recorded_at": "2026-08-25T12:32:00Z",
+  "predecessor_record": {
+    "path": "migration/unresolved_ambiguities.json",
+    "ambiguity_id": "AMB-003",
+    "predecessor_status": "INACCESSIBLE",
+    "predecessor_meaning": "The combined Excel/Word reconciliation corpus was not present in the Operations Starter v0.1.0 available during the earlier migration."
+  },
+  "current_status": "ACCESSIBLE_PENDING_DETERMINISTIC_RECONCILIATION",
+  "observed_source_archive": {
+    "registration_id": "ARCHIVE-REG-20260825-BF4656C60470E87C",
+    "sha256": "bf4656c60470e87cd2b454f6aea557a3b51a09cf2de8793fd6d844942b62f0f1"
+  },
+  "observed_products": [
+    {
+      "filename": "UNESCO_NeuroAI_All_Data_Combined_v2.2.0.xlsx",
+      "sha256": "db5bfca8c30e8b1945c52dc208dcbb486d1e0146adeb125b7fef9f557fcaa49a",
+      "size_bytes": 1400027,
+      "office_package_integrity": "PASS",
+      "observed_sheet_count": 48,
+      "observed_sheet_names": [
+        "00_Guide",
+        "01_Dashboard",
+        "Assessment_Summary",
+        "Programme_State",
+        "Releases",
+        "Reports",
+        "Data_Catalog",
+        "Organizations",
+        "Systems_Models",
+        "Relationships",
+        "Sources",
+        "Org_Verification",
+        "Org_Resolution",
+        "Regional_Expansion",
+        "Capital_Ownership",
+        "Supplier_Dependencies",
+        "Trial_Sites",
+        "Participant_Authority",
+        "Model_Registry",
+        "Model_Dataset_Registry",
+        "Data_Quality",
+        "Observatory_Changes",
+        "Reopening_Decisions",
+        "Kernel_Requirements",
+        "Normative_Modules",
+        "Prohibited_Inference",
+        "Risk_Escalators",
+        "Assurance_Profiles",
+        "Conformance_Levels",
+        "Assessment_Findings",
+        "Assessment_Claims",
+        "Assessment_Evidence",
+        "Assessment_Endpoints",
+        "Assessment_Gaps",
+        "Safety_Denominators",
+        "Comparative_Matrix",
+        "Minimum_Evidence",
+        "Calibration_Changes",
+        "Module_Summary",
+        "Implementation_Indicators",
+        "Recommendation_Crosswalk",
+        "Outreach_Contacts",
+        "Original_Entities",
+        "Original_Relationships",
+        "CSV_Dataset_Index",
+        "Raw_CSV_Rows",
+        "JSON_File_Index",
+        "File_Manifest"
+      ],
+      "classification": "S4_GENERATED_ARTIFACT_NOT_MASTER_DATA"
+    },
+    {
+      "filename": "UNESCO_NeuroAI_All_Reports_Findings_and_Conclusions_Combined_v2.2.0.docx",
+      "sha256": "881db3fecc53b4c9389de63b877c4552eca11cf0ac6f81fcb73594cef6c6fb3a",
+      "size_bytes": 1374404,
+      "office_package_integrity": "PASS",
+      "observed_word_table_count": 349,
+      "classification": "S4_GENERATED_ARTIFACT_NOT_MASTER_DATA"
+    }
+  ],
+  "evidence_supported_change": "The corpus that was previously unavailable in the Operations Starter is now accessible in a separately supplied immutable archive and has stable byte identities. This resolves accessibility only.",
+  "not_yet_established": [
+    "That the two v2.2.0 products are complete reconciliations of every historical canonical JSON/CSV/source object.",
+    "That workbook/report values are authoritative when they disagree with canonical machine-readable records.",
+    "That the current outer archive is exactly the package described by the embedded v2.1.0 master manifest.",
+    "That AMB-003 can be closed without row/field-level reconciliation and an explicit successor disposition."
+  ],
+  "required_next_checks": [
+    "Reconcile the 48 workbook sheets against the known migration exports and canonical JSON families by stable identifiers and recorded digests where available.",
+    "Verify key historical counts and controlled fields without treating spreadsheet formulas or rendered values as primary authority.",
+    "Cross-check the combined document's referenced releases/assessments against immutable canonical objects and preserve any disagreement explicitly.",
+    "Produce an append-only AMB-003 resolution record only if the reconciliation passes; otherwise retain an explicit unresolved/conflict state."
+  ],
+  "historical_record_mutated": false,
+  "authority_boundary": "This successor review changes the accessibility state of the reconciliation corpus only. It does not make the workbook or document canonical, resolve substantive conflicts, modify assessments, establish scientific or regulatory truth, or authorize release."
+}
