@@ -10,6 +10,7 @@ on:
       - "tests/unit/test_pinned_http_transport.py"
       - "tests/unit/test_pinned_http_transport_identity.py"
       - "tests/unit/test_pinned_http_transport_protocol.py"
+      - "tests/unit/test_pinned_http_transport_security.py"
       - "tests/unit/test_collection_outcome_quarantine.py"
       - "tests/unit/test_collector_http.py"
       - "tests/unit/test_collector_adversarial.py"
@@ -45,6 +46,7 @@ jobs:
             tests/unit/test_pinned_http_transport.py \
             tests/unit/test_pinned_http_transport_identity.py \
             tests/unit/test_pinned_http_transport_protocol.py \
+            tests/unit/test_pinned_http_transport_security.py \
             tests/unit/test_collection_outcome_quarantine.py
 
       - name: Ruff formatting gate
@@ -57,6 +59,7 @@ jobs:
             tests/unit/test_pinned_http_transport.py \
             tests/unit/test_pinned_http_transport_identity.py \
             tests/unit/test_pinned_http_transport_protocol.py \
+            tests/unit/test_pinned_http_transport_security.py \
             tests/unit/test_collection_outcome_quarantine.py
 
       - name: Type-check collector package
@@ -68,6 +71,7 @@ jobs:
             tests/unit/test_pinned_http_transport.py \
             tests/unit/test_pinned_http_transport_identity.py \
             tests/unit/test_pinned_http_transport_protocol.py \
+            tests/unit/test_pinned_http_transport_security.py \
             tests/unit/test_collection_outcome_quarantine.py \
             tests/unit/test_collector_http.py \
             tests/unit/test_collector_adversarial.py \
