@@ -52,7 +52,7 @@ def sha256_value(value: Any) -> str:
 
 
 def json_safe(value: Any) -> Any:
-    if isinstance(value, (datetime, date)):
+    if isinstance(value, datetime | date):
         return value.isoformat()
     if isinstance(value, Decimal):
         return str(value)
@@ -265,7 +265,7 @@ def normalize_int(value: Any) -> int | None:
         return None
     if isinstance(value, bool):
         return int(value)
-    if isinstance(value, (int, float)):
+    if isinstance(value, int | float):
         return int(value)
     try:
         return int(str(value).strip())
