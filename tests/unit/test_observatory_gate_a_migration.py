@@ -5,6 +5,7 @@ import copy
 import pytest
 
 from neuroai_workbench.observatory_gate_a_migration import (
+    REMAINING_GATE_REQUIREMENTS,
     ObservatoryGateAMigrationError,
     build_gate_a_migration_checkpoint,
     verify_gate_a_migration_checkpoint,
@@ -13,7 +14,7 @@ from neuroai_workbench.observatory_gate_a_migration import (
 
 def _delta() -> dict:
     return {
-        "regulatory_and_market_events": [{"event_id": "REG-16-001"}],
+        "regulatory_and_market_events": [{"event_id": "REG-16-001", "source_ids": ["SRC-1"]}],
         "capital_and_ownership_events": [],
         "model_records": [],
         "supplier_dependency_relationships": [],
@@ -21,9 +22,30 @@ def _delta() -> dict:
     }
 
 
-def _inputs() -> tuple[dict, dict, dict, dict, dict]:
+def _monitor() -> dict:
+    return {
+        "monitor_id": "MON-SRC-1",
+        "source_id": "SRC-1",
+        "url": "https://example.test/source",
+        "publisher": "Publisher",
+        "source_class": "OFFICIAL_PAGE",
+        "cadence": "MONTHLY",
+        "last_successful_retrieval": "2026-07-29",
+        "baseline_evidence_state": "CURRENT_SOURCE_RETRIEVED",
+        "baseline_verification_state": "CURRENT_VERIFIED",
+        "baseline_claim_boundary": "Retrieval is not truth.",
+        "network_access_required": True,
+        "current_status": "BASELINE_REGISTERED",
+        "next_action": "RETRIEVE_AND_COMPARE",
+    }
+
+
+def _inputs() -> tuple[dict, dict, dict, dict, dict, list[dict], list[dict]]:
     delta = _delta()
     v14 = {
+        "metadata": {"version": "v1.4"},
+        "methodology": {"version": "v1.4"},
+        "coverage": {"scope": "bounded"},
         "organizations": [
             {
                 "organization_id": "ORG-1",
@@ -98,8 +120,17 @@ def _inputs() -> tuple[dict, dict, dict, dict, dict]:
                 "boundary": "No valuation inference.",
             }
         ],
+        "representative_model_records": [{"model_id": "MDL-OLD-1", "source_ids": ["SRC-1"]}],
+        "model_and_dataset_registry": [{"registry_id": "REGISTRY-1", "source_ids": ["SRC-1"]}],
+        "trial_site_relationships": [{"relationship_id": "REL-1", "source_ids": ["SRC-1"]}],
+        "participant_authority_relationships": [{"authority_id": "AUTH-1", "source_ids": ["SRC-1"]}],
+        "supplier_dependency_relationships": [{"dependency_id": "DEP-1", "source_ids": ["SRC-1"]}],
+        "data_quality": [{"finding_id": "DQ-1", "severity": "HIGH"}],
     }
     v16 = {
+        "metadata": {"version": "v1.6"},
+        "methodology": {"version": "v1.6"},
+        "baseline": {"predecessor": "v1.4"},
         "new_sources": [
             {
                 "source_id": "SRC-16-1",
@@ -203,25 +234,35 @@ def _inputs() -> tuple[dict, dict, dict, dict, dict]:
         "predecessor_reference": {"v1_6_archive_sha256": "b" * 64, "immutable": True},
         "assessment_successor_delta": copy.deepcopy(prima),
     }
-    return v14, v16, delta, v17, prima
+    source_register = copy.deepcopy(v14["sources"])
+    monitor = [_monitor()]
+    return v14, v16, delta, v17, prima, source_register, monitor
 
 
-def test_full_gate_a_checkpoint_composes_native_and_governed_preserved_state() -> None:
-    v14, v16, delta, v17, prima = _inputs()
+def test_full_gate_a_checkpoint_reaches_representational_completeness_without_authority() -> None:
+    v14, v16, delta, v17, prima, source_register, monitor = _inputs()
     result = build_gate_a_migration_checkpoint(
         v14_release=v14,
         v16_refresh=v16,
         delta16=delta,
         v17_successor=v17,
         prima17=prima,
+        source_register14=source_register,
+        monitor15=monitor,
     )
     assert result["mechanical_verification"] == "PASS"
     assert result["release_authorized"] is False
+    assert result["representational_scope_complete"] is True
     assert result["gate_a_complete"] is False
+    assert result["remaining_unresolved_families"] == []
+    assert result["remaining_gate_requirements"] == list(REMAINING_GATE_REQUIREMENTS)
     assert result["counts"]["native_objects"] == 5
     assert result["counts"]["governed_v14_history_records"] == 2
     assert result["counts"]["governed_v16_adjudication_records"] == 4
     assert result["counts"]["governed_successor_packages"] == 2
+    assert result["counts"]["residual_family_records"] == 7
+    assert result["counts"]["source_register_records"] == 1
+    assert result["counts"]["monitor_registry_records"] == 1
     assert result["duplicate_container_proofs"]["v16_embedded_delta_equals_delta16"] is True
     assert result["duplicate_container_proofs"]["v17_embedded_delta_equals_delta16"] is True
     assert result["duplicate_container_proofs"]["v17_embedded_prima_equals_standalone_prima"] is True
@@ -229,7 +270,7 @@ def test_full_gate_a_checkpoint_composes_native_and_governed_preserved_state() -
 
 
 def test_full_gate_a_checkpoint_rejects_v16_embedded_delta_drift() -> None:
-    v14, v16, delta, v17, prima = _inputs()
+    v14, v16, delta, v17, prima, source_register, monitor = _inputs()
     v16["adjudicated_delta"] = {"changed": True}
     with pytest.raises(ObservatoryGateAMigrationError, match="adjudicated_delta container"):
         build_gate_a_migration_checkpoint(
@@ -238,19 +279,40 @@ def test_full_gate_a_checkpoint_rejects_v16_embedded_delta_drift() -> None:
             delta16=delta,
             v17_successor=v17,
             prima17=prima,
+            source_register14=source_register,
+            monitor15=monitor,
         )
 
 
 def test_full_gate_a_verifier_detects_false_completion_claim() -> None:
-    v14, v16, delta, v17, prima = _inputs()
+    v14, v16, delta, v17, prima, source_register, monitor = _inputs()
     result = build_gate_a_migration_checkpoint(
         v14_release=v14,
         v16_refresh=v16,
         delta16=delta,
         v17_successor=v17,
         prima17=prima,
+        source_register14=source_register,
+        monitor15=monitor,
     )
     result["gate_a_complete"] = True
     report = verify_gate_a_migration_checkpoint(result, delta16=delta)
     assert report["valid"] is False
-    assert "Gate-A checkpoint must remain incomplete while unresolved families exist" in report["errors"]
+    assert "Gate-A completion must remain false until all non-representational gates close" in report["errors"]
+
+
+def test_full_gate_a_verifier_detects_false_representational_completion() -> None:
+    v14, v16, delta, v17, prima, source_register, monitor = _inputs()
+    result = build_gate_a_migration_checkpoint(
+        v14_release=v14,
+        v16_refresh=v16,
+        delta16=delta,
+        v17_successor=v17,
+        prima17=prima,
+        source_register14=source_register,
+        monitor15=monitor,
+    )
+    result["remaining_unresolved_families"] = ["V14.synthetic_unresolved"]
+    report = verify_gate_a_migration_checkpoint(result, delta16=delta)
+    assert report["valid"] is False
+    assert any("representational_scope_complete" in error for error in report["errors"])
