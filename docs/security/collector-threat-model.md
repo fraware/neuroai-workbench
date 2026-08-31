@@ -57,7 +57,8 @@ An attacker serves an initial public address record, then changes DNS so a subse
 - Resolve immediately before connect for every hop.
 - Compare resolved addresses against the blocked-address policy on every request and redirect.
 - Fail closed when resolution changes within a single retrieval attempt.
-- Record DNS decisions in the collection result for audit.
+- Production transport (`PinnedSocketHttpTransport`) connects a numeric socket to a DnsGuard-approved IP literal. It does not call `getaddrinfo`, `socket.create_connection`, or hostname fallback after validation, which closes the DNS-validation-to-connect TOCTOU/rebinding gap in `StdlibHttpTransport`.
+- Record DNS decisions and the actual connected IP on the collection result. Connected-IP provenance is per-response and concurrency-safe.
 
 **Contract mapping**
 
@@ -131,6 +132,28 @@ An attacker attempts to write outside the quarantine root using path traversal, 
 - `quarantine-record.schema.json` requires explicit `approval_state` before handoff.
 - `collection-failure.schema.json` records `QUARANTINE_REJECTED`.
 
+### 7. Unauthorized or env-only live collection
+
+An operator or script enables network capture by setting an environment variable, without an attributable authorization packet.
+
+**Controls**
+
+- `EvidenceCollectionService.collect` requires a validated authorization packet for any network retrieval.
+- `NEUROAI_LIVE_COLLECTION=1` is an additional gate, not a sufficient gate.
+- Default CLI and data builds remain offline.
+- Authorization packets are claimed local workflow permission, not institutional, legal, or source authenticity authority.
+
+### 8. In-place quarantine mutation
+
+An operator overwrites a pending quarantine record during approval or rejection, destroying the original capture state.
+
+**Controls**
+
+- Approval and rejection write successor records; the original pending file is not overwritten.
+- Lineage fields bind predecessor and root quarantine identifiers.
+- Optional rights/redistribution, retention, and content-safety scan fields are custody metadata.
+- The default scanner is fail-closed and never reports `CLEAN` as adjudication. Scanning is not substantive truth.
+
 ## Authority boundary
 
 The collector may:
@@ -161,6 +184,10 @@ The `neuroai_workbench.collector` package implements the retrieval controls abov
 - `rate_limit.py` enforces per-host request budgets.
 - `quarantine.py` writes bytes and metadata only inside the quarantine root.
 - `service.py` validates all emitted records against PR-05 schemas and records HTTP 304 responses as new capture identities with unchanged content hashes when prior capture context is supplied.
+- `pinned_transport.py` connects a numeric socket to DnsGuard-approved IP literals with Host/SNI preserved, does not call `getaddrinfo` after validation, and does not self-follow redirects.
+- `authorization.py` and `collection_service.py` require an authorization packet plus the live-collection env gate; env alone is not sufficient.
+- `handoff.py` records approval and rejection as immutable successors.
+- `scan.py` provides a fail-closed content-safety scanning hook. Scanning is not adjudication.
 
 Architecture tests assert that collector modules do not import monitoring write APIs (`record_snapshot`, `adjudicate`, or change-candidate creation).
 
