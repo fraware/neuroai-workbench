@@ -8,12 +8,14 @@ venv/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 coverage.xml
 coverage.json
 htmlcov/
 dist/
 build/
 artifacts/
+.tmp/
 *.log
 .DS_Store
 workspaces/
