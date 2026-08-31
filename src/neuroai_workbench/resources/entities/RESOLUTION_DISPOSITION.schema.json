@@ -21,8 +21,41 @@
     "proposal_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "decided_at": {"type": "string", "minLength": 10},
     "decided_by": {"type": "string", "minLength": 1},
-    "decision": {"enum": ["ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"]},
+    "decision": {
+      "enum": [
+        "ACCEPT",
+        "REJECT",
+        "DEFER",
+        "DUPLICATE",
+        "NEEDS_EVIDENCE",
+        "SAME_ENTITY",
+        "NOT_SAME_ENTITY",
+        "SUCCESSOR_OF",
+        "SUBSIDIARY_OF",
+        "ACQUIRED_BY",
+        "ALIAS_OF",
+        "UNRESOLVED"
+      ],
+      "description": "Legacy workflow decisions (ACCEPT/REJECT/...) remain valid. Identity-relation decisions (SAME_ENTITY/...) are preferred for new records. Predecessors are never deleted."
+    },
+    "identity_relation": {
+      "enum": [
+        "SAME_ENTITY",
+        "NOT_SAME_ENTITY",
+        "SUCCESSOR_OF",
+        "SUBSIDIARY_OF",
+        "ACQUIRED_BY",
+        "ALIAS_OF",
+        "UNRESOLVED"
+      ],
+      "description": "Optional explicit identity relation. When omitted, software may derive it from decision via the documented compatibility map without rewriting historical records."
+    },
     "selected_entity_id": {"type": ["string", "null"]},
+    "related_entity_id": {
+      "type": ["string", "null"],
+      "description": "Optional directed counterpart for SUCCESSOR_OF, SUBSIDIARY_OF, ACQUIRED_BY, or ALIAS_OF. Predecessors are never deleted."
+    },
+    "fuzzy_auto_merge_performed": {"const": false},
     "rationale": {"type": "string", "minLength": 1},
     "registry_mutation_performed": {"const": false},
     "boundary": {"type": "string", "minLength": 1}

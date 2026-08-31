@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 from uuid import uuid4
@@ -36,8 +37,42 @@ RESOLVER_BOUNDARY = (
 
 MATCH_LAYERS = frozenset({"EXACT_ENTITY_ID", "EXACT_ALIAS_ID", "EXACT_IDENTIFIER", "NORMALIZED_NAME", "NO_MATCH"})
 PROPOSAL_STATES = frozenset({"NEW_ENTITY", "EXISTING_ENTITY", "AMBIGUOUS", "DUPLICATE_CANDIDATE"})
-DISPOSITION_DECISIONS = frozenset({"ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"})
+LEGACY_DISPOSITION_DECISIONS = frozenset({"ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"})
+IDENTITY_RELATION_DISPOSITIONS = frozenset(
+    {
+        "SAME_ENTITY",
+        "NOT_SAME_ENTITY",
+        "SUCCESSOR_OF",
+        "SUBSIDIARY_OF",
+        "ACQUIRED_BY",
+        "ALIAS_OF",
+        "UNRESOLVED",
+    }
+)
+DISPOSITION_DECISIONS = LEGACY_DISPOSITION_DECISIONS | IDENTITY_RELATION_DISPOSITIONS
+# Compatibility map preserves historical ACCEPT/REJECT records without silent rewrite.
+LEGACY_TO_IDENTITY_RELATION: dict[str, str] = {
+    "ACCEPT": "SAME_ENTITY",
+    "REJECT": "NOT_SAME_ENTITY",
+    "DEFER": "UNRESOLVED",
+    "DUPLICATE": "ALIAS_OF",
+    "NEEDS_EVIDENCE": "UNRESOLVED",
+}
 CONFIDENCE_LEVELS = frozenset({"CERTAIN", "HIGH", "MEDIUM", "LOW", "NONE"})
+
+
+def identity_relation_for(decision: str, identity_relation: str | None = None) -> str:
+    if identity_relation is not None:
+        if identity_relation not in IDENTITY_RELATION_DISPOSITIONS:
+            raise ValueError(f"Unsupported identity_relation {identity_relation!r}")
+        return identity_relation
+    if decision in IDENTITY_RELATION_DISPOSITIONS:
+        return decision
+    mapped = LEGACY_TO_IDENTITY_RELATION.get(decision)
+    if mapped is None:
+        raise ValueError(f"Unsupported disposition decision {decision!r}")
+    return mapped
+
 
 _NORMALIZE_RE = re.compile(r"[^\w\s]", re.UNICODE)
 _SPACE_RE = re.compile(r"\s+")
@@ -462,6 +497,31 @@ def load_resolution_proposal(workspace: Path, proposal_id: str) -> dict[str, Any
     return proposal
 
 
+DIRECTED_IDENTITY_RELATIONS = frozenset({"SUCCESSOR_OF", "SUBSIDIARY_OF", "ACQUIRED_BY", "ALIAS_OF"})
+
+
+def report_batch_collisions(
+    proposals: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Report colliding candidate sets across proposals. Never auto-merges."""
+    by_entity: dict[str, list[str]] = {}
+    for proposal in proposals:
+        proposal_id = str(proposal.get("proposal_id") or "")
+        for entity_id in proposal.get("candidate_entity_ids") or []:
+            by_entity.setdefault(str(entity_id), []).append(proposal_id)
+    collisions = [
+        {"entity_id": entity_id, "proposal_ids": sorted(set(ids)), "count": len(set(ids))}
+        for entity_id, ids in sorted(by_entity.items())
+        if len(set(ids)) > 1
+    ]
+    return {
+        "collision_count": len(collisions),
+        "collisions": collisions,
+        "fuzzy_auto_merge_performed": False,
+        "boundary": RESOLVER_BOUNDARY,
+    }
+
+
 def record_resolution_disposition(
     workspace: Path,
     proposal_id: str,
@@ -469,21 +529,38 @@ def record_resolution_disposition(
     *,
     rationale: str,
     selected_entity_id: str | None = None,
+    related_entity_id: str | None = None,
+    identity_relation: str | None = None,
     actor: str = "local-user",
 ) -> dict[str, Any]:
     if decision not in DISPOSITION_DECISIONS:
         raise ValueError(f"Unsupported disposition decision {decision!r}")
     if not rationale.strip():
         raise ValueError("Disposition rationale is required")
+    relation = identity_relation_for(decision, identity_relation)
     proposal = load_resolution_proposal(workspace, proposal_id)
     if proposal.get("status") == "DISPOSITION_RECORDED":
         raise ValueError("Resolution proposal already has a recorded disposition")
-    if decision == "ACCEPT" and proposal["resolution_state"] == "AMBIGUOUS" and not selected_entity_id:
-        raise ValueError("Ambiguous proposals require selected_entity_id on ACCEPT")
+    requires_selected = decision in {
+        "ACCEPT",
+        "SAME_ENTITY",
+        "SUCCESSOR_OF",
+        "SUBSIDIARY_OF",
+        "ACQUIRED_BY",
+        "ALIAS_OF",
+    }
+    if requires_selected and proposal["resolution_state"] == "AMBIGUOUS" and not selected_entity_id:
+        raise ValueError("Ambiguous proposals require selected_entity_id for identity-accepting dispositions")
     if selected_entity_id is not None:
         ensure_identifier(selected_entity_id, "selected_entity_id")
         if selected_entity_id not in proposal.get("candidate_entity_ids", []):
             raise ValueError("selected_entity_id must be one of the proposal candidate_entity_ids")
+    if related_entity_id is not None:
+        ensure_identifier(related_entity_id, "related_entity_id")
+    if decision in DIRECTED_IDENTITY_RELATIONS and related_entity_id is None:
+        raise ValueError(f"{decision} requires related_entity_id (predecessor is never deleted)")
+    if relation == "SAME_ENTITY" and related_entity_id is not None:
+        raise ValueError("SAME_ENTITY must not set related_entity_id; use selected_entity_id only")
     disposition_id = f"RESDIS-{proposal_id.removeprefix('RES-')}"
     disposition = {
         "disposition_id": disposition_id,
@@ -492,7 +569,10 @@ def record_resolution_disposition(
         "decided_at": utc_now(),
         "decided_by": actor,
         "decision": decision,
+        "identity_relation": relation,
         "selected_entity_id": selected_entity_id,
+        "related_entity_id": related_entity_id,
+        "fuzzy_auto_merge_performed": False,
         "rationale": rationale.strip(),
         "registry_mutation_performed": False,
         "boundary": RESOLVER_BOUNDARY,
@@ -509,7 +589,12 @@ def record_resolution_disposition(
         _events_path(workspace),
         "RESOLUTION_DISPOSITION_RECORDED",
         actor,
-        {"proposal_id": proposal_id, "disposition_id": disposition_id, "decision": decision},
+        {
+            "proposal_id": proposal_id,
+            "disposition_id": disposition_id,
+            "decision": decision,
+            "identity_relation": relation,
+        },
     )
     return disposition
 
