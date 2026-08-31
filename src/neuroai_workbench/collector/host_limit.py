@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from threading import BoundedSemaphore, Lock
 from urllib.parse import urlparse
 
-from .http_client import HttpRequest, HttpTransport
+from .http_client import HttpRequest, HttpTransport, TransportResult
 
 
 def host_from_url(url: str) -> str:
@@ -61,7 +61,7 @@ class HostLimitedTransport:
         *,
         connect_timeout: float,
         read_timeout: float,
-    ) -> tuple[int, dict[str, str], bytes]:
+    ) -> TransportResult:
         with self._permits.acquire(request.url):
             return self.inner.send(
                 request,

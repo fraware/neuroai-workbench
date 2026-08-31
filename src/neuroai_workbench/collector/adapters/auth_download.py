@@ -5,7 +5,7 @@ from typing import Any
 
 from ..credentials import CredentialProvider, refuse_embedded_secrets_in_request, refuse_secrets_in_value
 from ..errors import CollectionFailureError
-from ..http_client import HttpRequest, HttpTransport
+from ..http_client import HttpRequest, HttpTransport, TransportResult
 from ..service import CollectionOutcome, HttpCollector, PriorCapture
 from .base import HttpCollectorAdapter
 
@@ -22,7 +22,7 @@ class AuthHeaderTransport:
         *,
         connect_timeout: float,
         read_timeout: float,
-    ) -> tuple[int, dict[str, str], bytes]:
+    ) -> TransportResult:
         header = self.credential_provider.authorization_header(self.source_id)
         if not header:
             raise CollectionFailureError(

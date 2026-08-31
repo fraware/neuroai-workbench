@@ -33,6 +33,7 @@ class PriorCapture:
 class CollectionOutcome:
     kind: str
     record: dict[str, Any]
+    quarantine_record: dict[str, Any] | None = None
 
 
 def _normalize_timestamp(value: str | None = None) -> str:
@@ -149,7 +150,7 @@ class HttpCollector:
                 safe_join(self.quarantine_root, "results", f"{result['result_id']}.json"),
                 result,
             )
-            return CollectionOutcome(kind="result", record=result)
+            return CollectionOutcome(kind="result", record=result, quarantine_record=quarantine_record)
 
         content_sha256 = sha256_bytes(response.body)
         original_filename = filename_from_url(response.url)
@@ -177,6 +178,7 @@ class HttpCollector:
                 "addresses": response.dns_resolution.addresses,
                 "rebinding_check": response.dns_resolution.rebinding_check,
             },
+            "connected_address": response.connected_address,
             "collector_version": self.config.collector_version,
             "configuration_hash": self.config.configuration_hash,
             "evidence_state": "RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED",
@@ -200,7 +202,7 @@ class HttpCollector:
             safe_join(self.quarantine_root, "results", f"{result['result_id']}.json"),
             result,
         )
-        return CollectionOutcome(kind="result", record=result)
+        return CollectionOutcome(kind="result", record=result, quarantine_record=quarantine_record)
 
     def _build_not_modified_result(
         self,
@@ -229,6 +231,7 @@ class HttpCollector:
                 "addresses": response.dns_resolution.addresses,
                 "rebinding_check": response.dns_resolution.rebinding_check,
             },
+            "connected_address": response.connected_address,
             "collector_version": self.config.collector_version,
             "configuration_hash": self.config.configuration_hash,
             "evidence_state": "RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED",
