@@ -5,10 +5,10 @@ from typing import Any
 
 import pytest
 
+import neuroai_workbench.collector.pinned_transport as pinned_transport
 from neuroai_workbench.collector import PinnedSocketHttpTransport
 from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpRequest
-from neuroai_workbench.collector import pinned_transport
 
 GLOBAL_IP = "93.184.216.34"
 
@@ -29,7 +29,9 @@ class FakeDirectSocket:
         self.closed = True
 
 
-def test_default_socket_factory_uses_direct_numeric_socket_without_getaddrinfo(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_default_socket_factory_uses_direct_numeric_socket_without_getaddrinfo(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     created: list[tuple[int, int, FakeDirectSocket]] = []
 
     def fail_getaddrinfo(*args: Any, **kwargs: Any) -> Any:
@@ -51,7 +53,9 @@ def test_default_socket_factory_uses_direct_numeric_socket_without_getaddrinfo(m
     assert sock.closed is False
 
 
-def test_default_socket_factory_closes_socket_when_direct_connect_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_default_socket_factory_closes_socket_when_direct_connect_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class BrokenSocket(FakeDirectSocket):
         def connect(self, target: Any) -> None:
             self.targets.append(target)
@@ -66,9 +70,10 @@ def test_default_socket_factory_closes_socket_when_direct_connect_fails(monkeypa
 
 @pytest.mark.parametrize("url", ["https://example.org:0/x", "http://example.org:0/x"])
 def test_transport_rejects_explicit_zero_port_before_opening_socket(url: str) -> None:
-    transport = PinnedSocketHttpTransport(
-        socket_factory=lambda target, timeout: pytest.fail("invalid port must be rejected before socket creation")
-    )
+    def fail_socket(target: tuple[str, int], timeout: float) -> Any:
+        pytest.fail("invalid port must be rejected before socket creation")
+
+    transport = PinnedSocketHttpTransport(socket_factory=fail_socket)
     with pytest.raises(CollectionFailureError) as exc:
         transport.send(
             HttpRequest("GET", url, {}, (GLOBAL_IP,)),
@@ -80,9 +85,10 @@ def test_transport_rejects_explicit_zero_port_before_opening_socket(url: str) ->
 
 
 def test_transport_rejects_invalid_textual_port_before_socket_creation() -> None:
-    transport = PinnedSocketHttpTransport(
-        socket_factory=lambda target, timeout: pytest.fail("invalid port must be rejected before socket creation")
-    )
+    def fail_socket(target: tuple[str, int], timeout: float) -> Any:
+        pytest.fail("invalid port must be rejected before socket creation")
+
+    transport = PinnedSocketHttpTransport(socket_factory=fail_socket)
     with pytest.raises(CollectionFailureError) as exc:
         transport.send(
             HttpRequest("GET", "https://example.org:not-a-port/x", {}, (GLOBAL_IP,)),
