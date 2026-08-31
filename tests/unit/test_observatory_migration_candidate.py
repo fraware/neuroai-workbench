@@ -89,10 +89,10 @@ def _check(source_id: str = "SRC-16-1") -> dict:
     }
 
 
-def _capital_event() -> dict:
+def _capital_event(date: str | None = "2026-03-05") -> dict:
     return {
         "event_id": "CAP-1",
-        "date": "2026-03-05",
+        "date": date,
         "event_type": "EQUITY_FINANCING",
         "subject": "Science Corporation",
         "counterparties": ["Investor A"],
@@ -106,6 +106,21 @@ def _capital_event() -> dict:
     }
 
 
+def _change_candidate() -> dict:
+    return {
+        "candidate_id": "CAND-1",
+        "event_date": "2026-07-22",
+        "discovery_class": "PRE_CUTOFF_EVIDENCE_DISCOVERED_AFTER_FREEZE",
+        "change_class": "REGULATORY_AND_MARKET_STATE_CHANGE",
+        "subject": "Science Corporation",
+        "summary": "Bounded update.",
+        "source_ids": ["SRC-16-1"],
+        "materiality": "HIGH",
+        "adjudication": "ACCEPT_WITH_EVIDENCE_BOUNDARY",
+        "reopening": "SYSTEM_RECORD_REOPEN_REQUIRED",
+    }
+
+
 def _inputs() -> tuple[dict, dict]:
     v14 = {
         "organizations": [_organization(), _legacy()],
@@ -115,11 +130,12 @@ def _inputs() -> tuple[dict, dict]:
     v16 = {
         "new_sources": [_new_source()],
         "source_checks": [_check()],
+        "change_candidates": [_change_candidate()],
     }
     return v14, v16
 
 
-def test_candidate_adds_complete_capital_event_family_to_core() -> None:
+def test_candidate_adds_complete_safe_families_to_core() -> None:
     v14, v16 = _inputs()
     result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
 
@@ -130,8 +146,10 @@ def test_candidate_adds_complete_capital_event_family_to_core() -> None:
     assert result["counts"]["native_entities"] == 1
     assert result["counts"]["native_sources"] == 2
     assert result["counts"]["native_capital_events"] == 1
-    assert result["counts"]["native_candidate_objects"] == 4
+    assert result["counts"]["native_change_candidates"] == 1
+    assert result["counts"]["native_candidate_objects"] == 5
     assert "V14.capital_and_ownership_events" not in result["remaining_unmaterialized_families"]
+    assert "V16.change_candidates" not in result["remaining_unmaterialized_families"]
     assert result["boundaries"]["candidate"] == MIGRATION_CANDIDATE_BOUNDARY
     assert verify_predecessor_migration_candidate(result)["valid"] is True
 
@@ -151,6 +169,21 @@ def test_candidate_verifier_detects_coordinated_event_subject_substitution() -> 
     assert any("exact predecessor canonical label" in error for error in report["errors"])
 
 
+def test_candidate_verifier_detects_event_temporal_invention() -> None:
+    v14, v16 = _inputs()
+    v14["capital_and_ownership_events"][0]["date"] = None
+    result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
+    result["capital_event_migration"]["events"][0]["occurred_at"] = {
+        "value": "2026-01-01",
+        "precision": "DATE",
+        "boundary": "fabricated",
+    }
+
+    report = verify_predecessor_migration_candidate(result)
+    assert report["valid"] is False
+    assert any("null predecessor date must remain absent" in error for error in report["errors"])
+
+
 def test_candidate_verifier_detects_missing_event_source() -> None:
     v14, v16 = _inputs()
     result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
@@ -158,7 +191,17 @@ def test_candidate_verifier_detects_missing_event_source() -> None:
 
     report = verify_predecessor_migration_candidate(result)
     assert report["valid"] is False
-    assert any("references missing Sources" in error for error in report["errors"])
+    assert any("source_ids binding mismatch" in error or "references missing Sources" in error for error in report["errors"])
+
+
+def test_candidate_verifier_detects_change_candidate_payload_tampering() -> None:
+    v14, v16 = _inputs()
+    result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
+    result["change_candidate_migration"]["candidates"][0]["payload"]["summary"] = "Substituted"
+
+    report = verify_predecessor_migration_candidate(result)
+    assert report["valid"] is False
+    assert any("Candidate.payload must equal exact predecessor record" in error for error in report["errors"])
 
 
 def test_candidate_package_is_deterministic_and_manifest_bound(tmp_path) -> None:
@@ -188,9 +231,11 @@ def test_candidate_package_is_deterministic_and_manifest_bound(tmp_path) -> None
         "entities.jsonl",
         "sources.jsonl",
         "events.jsonl",
+        "candidates.jsonl",
         "entity-predecessor-traces.jsonl",
         "source-predecessor-traces.jsonl",
         "event-predecessor-traces.jsonl",
+        "candidate-predecessor-traces.jsonl",
         "preserved-organizations.jsonl",
         "predecessor-observation-evidence.jsonl",
         "descriptor.json",
