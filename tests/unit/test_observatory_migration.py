@@ -8,6 +8,7 @@ from neuroai_workbench.observatory_migration import (
     materialize_predecessor_source,
     materialize_predecessor_sources,
     predecessor_time_value,
+    verify_predecessor_trace,
 )
 
 
@@ -72,6 +73,7 @@ def test_v14_source_materialization_does_not_promote_retrieved_to_publication_da
     assert trace["predecessor_record"] == predecessor
     assert trace["native_authority"] is False
     assert len(trace["predecessor_record_sha256"]) == 64
+    assert verify_predecessor_trace(trace, expected_native_object_id=source["source_id"]) == []
 
 
 def test_v16_explicit_publication_date_is_preserved() -> None:
@@ -88,6 +90,24 @@ def test_v16_explicit_publication_date_is_preserved() -> None:
 def test_unsupported_source_role_fails_closed() -> None:
     with pytest.raises(ObservatoryMigrationError, match="Unsupported predecessor source role"):
         materialize_predecessor_source(_v14_source(), role="UNKNOWN", record_index=0)
+
+
+def test_trace_verifier_detects_tampering_and_binding_substitution() -> None:
+    source, trace = materialize_predecessor_source(_v14_source(), role="V14", record_index=0)
+
+    tampered = {**trace, "predecessor_record": {**trace["predecessor_record"], "title": "Substituted"}}
+    assert "predecessor_record_sha256 mismatch" in verify_predecessor_trace(tampered)
+    assert "native_object_id binding mismatch" in verify_predecessor_trace(
+        trace,
+        expected_native_object_id="SRC-SUBSTITUTED",
+    )
+
+    wrong_role = {**trace, "role": "V16"}
+    assert "migration trace family/role mismatch" in verify_predecessor_trace(wrong_role)
+
+    elevated = {**trace, "native_authority": True}
+    assert "native_authority must remain false for migration traces" in verify_predecessor_trace(elevated)
+    assert source["source_id"] == "SRC-1"
 
 
 def test_materialize_predecessor_sources_is_noncanonical_and_complete() -> None:
