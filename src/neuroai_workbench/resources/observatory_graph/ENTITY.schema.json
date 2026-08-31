@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-entity-1.0.json",
+  "type": "object",
+  "required": ["object_class", "entity_id", "entity_type", "canonical_label", "aliases", "identifiers", "status", "lineage", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "object_class": {"const": "Entity"},
+    "entity_id": {"type": "string", "minLength": 1},
+    "entity_type": {"type": "string", "minLength": 1},
+    "canonical_label": {"type": "string", "minLength": 1},
+    "aliases": {"type": "array", "items": {"type": "string"}},
+    "identifiers": {"type": "array", "items": {"type": "object"}},
+    "status": {"enum": ["ACTIVE", "SUPERSEDED", "WITHDRAWN"]},
+    "lineage": {
+      "type": "object",
+      "required": ["predecessor_entity_ids", "successor_entity_ids", "supersession_state"],
+      "additionalProperties": false,
+      "properties": {
+        "predecessor_entity_ids": {"type": "array", "items": {"type": "string"}},
+        "successor_entity_ids": {"type": "array", "items": {"type": "string"}},
+        "supersession_state": {"enum": ["NONE", "SUPERSEDED", "MERGED_INTO"]}
+      }
+    },
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

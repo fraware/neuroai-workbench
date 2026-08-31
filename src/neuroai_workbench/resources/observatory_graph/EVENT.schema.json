@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-event-1.0.json",
+  "type": "object",
+  "required": ["object_class", "event_id", "event_type", "subject", "objects", "source_ids", "observation_ids", "evidence_state", "verification_state", "claim_boundary", "boundary"],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "identity_ref": {
+      "type": "object",
+      "required": ["kind", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["IDENTIFIER", "UNRESOLVED_LITERAL", "RESOLVED_ENTITY_REFERENCE"]},
+        "value": {"type": ["string", "null"]},
+        "entity_id": {"type": ["string", "null"]},
+        "scheme": {"type": ["string", "null"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "Event"},
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/$defs/identity_ref"},
+    "objects": {"type": "array", "items": {"$ref": "#/$defs/identity_ref"}},
+    "occurred_at": {"$ref": "#/$defs/time_value"},
+    "jurisdiction": {"type": ["string", "null"]},
+    "source_ids": {"type": "array", "items": {"type": "string"}},
+    "observation_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_state": {"type": "string", "minLength": 1},
+    "verification_state": {"type": "string", "minLength": 1},
+    "claim_boundary": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

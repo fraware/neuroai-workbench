@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-candidate-1.0.json",
+  "type": "object",
+  "required": ["object_class", "candidate_id", "candidate_class", "payload", "provenance_mode", "status", "canonical_write_performed", "boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "object_class": {"const": "Candidate"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "candidate_class": {"type": "string", "minLength": 1},
+    "payload": {"type": "object"},
+    "provenance_mode": {"enum": ["OFFLINE_FIXTURE", "OFFLINE_REPLAY", "AUTHORIZED_NETWORK"]},
+    "status": {"type": "string", "minLength": 1},
+    "identity_key": {"type": ["string", "null"]},
+    "source_universe_id": {"type": ["string", "null"]},
+    "canonical_write_performed": {"const": false},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

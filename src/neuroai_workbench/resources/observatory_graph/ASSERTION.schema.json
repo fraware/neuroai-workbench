@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-assertion-1.0.json",
+  "type": "object",
+  "required": [
+    "object_class",
+    "assertion_id",
+    "subject",
+    "predicate",
+    "source_ids",
+    "observation_ids",
+    "evidence_state",
+    "verification_state",
+    "review_state",
+    "claim_boundary",
+    "prohibited_inferences",
+    "supersedes_assertion_ids",
+    "boundary"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "identity_ref": {
+      "type": "object",
+      "required": ["kind", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["IDENTIFIER", "UNRESOLVED_LITERAL", "RESOLVED_ENTITY_REFERENCE"]},
+        "value": {"type": ["string", "null"]},
+        "entity_id": {"type": ["string", "null"]},
+        "scheme": {"type": ["string", "null"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "Assertion"},
+    "assertion_id": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/$defs/identity_ref"},
+    "predicate": {"type": "string", "minLength": 1},
+    "object_ref": {"oneOf": [{"$ref": "#/$defs/identity_ref"}, {"type": "null"}]},
+    "value": true,
+    "scope": {"type": ["string", "null"]},
+    "jurisdiction": {"type": ["string", "null"]},
+    "valid_from": {"$ref": "#/$defs/time_value"},
+    "valid_until": {"$ref": "#/$defs/time_value"},
+    "observed_at": {"$ref": "#/$defs/time_value"},
+    "source_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "observation_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "evidence_state": {"type": "string", "minLength": 1},
+    "verification_state": {"type": "string", "minLength": 1},
+    "review_state": {"type": "string", "minLength": 1},
+    "claim_boundary": {"type": "string", "minLength": 1},
+    "prohibited_inferences": {"type": "array", "items": {"type": "string"}},
+    "supersedes_assertion_ids": {"type": "array", "items": {"type": "string"}},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "anyOf": [
+    {"required": ["object_ref"], "not": {"properties": {"object_ref": {"type": "null"}}}},
+    {"required": ["value"], "not": {"properties": {"value": {"type": "null"}}}}
+  ]
+}
