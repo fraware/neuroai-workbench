@@ -9,7 +9,12 @@ from neuroai_workbench.discovery.clinicaltrials import project_search_pages
 from neuroai_workbench.discovery.workflow import execute_discovery_query
 
 
-def _study(nct_id: str, title: str, status: str = "RECRUITING") -> dict:
+def _study(
+    nct_id: str,
+    title: str,
+    status: str = "RECRUITING",
+    study_type: str = "INTERVENTIONAL",
+) -> dict:
     return {
         "protocolSection": {
             "identificationModule": {"nctId": nct_id, "briefTitle": title},
@@ -19,15 +24,13 @@ def _study(nct_id: str, title: str, status: str = "RECRUITING") -> dict:
                 "primaryCompletionDateStruct": {"date": "2027-01"},
                 "enrollmentInfo": {"count": 20},
             },
-            "designModule": {"phases": ["NA"]},
+            "designModule": {"studyType": study_type, "phases": ["NA"]},
         }
     }
 
 
 class ClinicalTrialsDiscoveryProjectionTests(unittest.TestCase):
     def setUp(self) -> None:
-        # parse_search_page/normalize_study are pure with respect to adapter instance state;
-        # bypass HttpCollector construction so these tests remain offline.
         self.adapter = ClinicalTrialsGovAdapter.__new__(ClinicalTrialsGovAdapter)
 
     def test_projects_bounded_query_traversal(self) -> None:
@@ -40,14 +43,34 @@ class ClinicalTrialsDiscoveryProjectionTests(unittest.TestCase):
             query_id="DISCOVERY-CLINICAL-TRIALS-BCI",
             query_text="brain-computer interface",
             pages=pages,
+            required_study_types=["INTERVENTIONAL"],
         )
         self.assertEqual([row["record_key"] for row in result["result_records"]], ["NCT00000001", "NCT00000002"])
         self.assertEqual(result["coverage"]["reported_total_count_state"], "CONSISTENT")
         self.assertEqual(result["coverage"]["reported_total_count"], 2)
+        self.assertEqual(result["coverage"]["required_study_types"], ["INTERVENTIONAL"])
+        self.assertEqual(result["coverage"]["excluded_by_study_type_count"], 0)
         self.assertTrue(result["coverage"]["fully_paginated"])
         self.assertFalse(result["coverage"]["registry_completeness_claim"])
         self.assertFalse(result["coverage"]["neuroai_discovery_recall_claim"])
         self.assertFalse(result["coverage"]["automatic_registry_mutation_performed"])
+
+    def test_study_type_filter_preserves_denominator_and_exclusion(self) -> None:
+        result = project_search_pages(
+            self.adapter,
+            query_id="DISCOVERY-CLINICAL-TRIALS-BCI",
+            query_text="neural interface",
+            pages=[{"payload": {"studies": [
+                _study("NCT00000008", "Interventional", study_type="INTERVENTIONAL"),
+                _study("NCT00000009", "Observational", study_type="OBSERVATIONAL"),
+            ], "totalCount": 2}}],
+            required_study_types=["INTERVENTIONAL"],
+        )
+        self.assertEqual(result["coverage"]["unique_nct_record_count_before_programme_filter"], 2)
+        self.assertEqual(result["coverage"]["included_candidate_count"], 1)
+        self.assertEqual(result["coverage"]["excluded_by_study_type_count"], 1)
+        self.assertEqual(result["coverage"]["excluded_by_study_type"][0]["nct_id"], "NCT00000009")
+        self.assertEqual(result["result_records"][0]["record_key"], "NCT00000008")
 
     def test_identical_duplicate_across_pages_deduplicates(self) -> None:
         study = _study("NCT00000003", "Repeated result")
@@ -95,6 +118,7 @@ class ClinicalTrialsDiscoveryProjectionTests(unittest.TestCase):
             query_id="DISCOVERY-CLINICAL-TRIALS-BCI",
             query_text="brain-computer interface",
             pages=[{"payload": {"studies": [_study("NCT00000007", "Candidate trial")]}}],
+            required_study_types=["INTERVENTIONAL"],
         )
         with tempfile.TemporaryDirectory() as td:
             outcome = execute_discovery_query(
