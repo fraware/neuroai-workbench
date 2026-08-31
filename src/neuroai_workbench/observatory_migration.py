@@ -22,6 +22,7 @@ MIGRATION_BOUNDARY = (
 
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _YEAR_RE = re.compile(r"^\d{4}$")
+_SOURCE_FAMILY_BY_ROLE = {"V14": "sources", "V16": "new_sources"}
 
 
 class ObservatoryMigrationError(ValueError):
@@ -84,8 +85,16 @@ def materialize_predecessor_source(
     knowledge-time evidence and would require a separate Observation migration.
     Only the explicit v1.6 `published` field may populate source publication time.
     """
+    family = _SOURCE_FAMILY_BY_ROLE.get(role)
+    if family is None:
+        raise ObservatoryMigrationError(f"Unsupported predecessor source role {role!r}")
+
     required = ("source_id", "source_class", "title", "publisher", "url")
-    missing = [field for field in required if not isinstance(record.get(field), str) or not str(record[field]).strip()]
+    missing = [
+        field
+        for field in required
+        if not isinstance(record.get(field), str) or not str(record[field]).strip()
+    ]
     if missing:
         raise ObservatoryMigrationError(f"Source record is missing required predecessor fields: {missing}")
 
@@ -109,7 +118,7 @@ def materialize_predecessor_source(
         raise ObservatoryMigrationError(f"Materialized Source is schema-invalid: {errors}")
     trace = predecessor_trace(
         role=role,
-        family="sources" if role == "V14" else "new_sources",
+        family=family,
         record_index=record_index,
         record=record,
         native_object_id=str(source["source_id"]),
