@@ -89,6 +89,35 @@ def _check(source_id: str = "SRC-16-1") -> dict:
     }
 
 
+def _resolution() -> dict:
+    return {
+        "resolution_id": "RES-1",
+        "organization_id": "ORG-1",
+        "name_before": "Science Corporation",
+        "verification_before": "CURRENT_PARTIAL",
+        "disposition": "CURRENT_VERIFIED",
+        "verification_after": "CURRENT_VERIFIED",
+        "source_ids": ["SRC-1"],
+        "rationale": "Current identity verified within bounded source universe.",
+        "effective_date": "2026-07-29",
+    }
+
+
+def _regional() -> dict:
+    return {
+        "regional_record_id": "REG-1",
+        "organization_id": "ORG-1",
+        "canonical_name": "Science Corporation",
+        "unesco_region": "Europe and North America",
+        "country_or_scope": "United States",
+        "action": "ADD",
+        "inclusion_rule": "Official source in frozen regional universe.",
+        "verification_state": "CURRENT_VERIFIED",
+        "source_ids": ["SRC-1"],
+        "claim_boundary": "Acquisition coverage only.",
+    }
+
+
 def _capital_event(date: str | None = "2026-03-05") -> dict:
     return {
         "event_id": "CAP-1",
@@ -124,6 +153,8 @@ def _change_candidate() -> dict:
 def _inputs() -> tuple[dict, dict]:
     v14 = {
         "organizations": [_organization(), _legacy()],
+        "organization_resolution": [_resolution()],
+        "regional_expansion": [_regional()],
         "sources": [_source()],
         "capital_and_ownership_events": [_capital_event()],
     }
@@ -145,13 +176,32 @@ def test_candidate_adds_complete_safe_families_to_core() -> None:
     assert result["native_v2_materialization_complete"] is False
     assert result["counts"]["native_entities"] == 1
     assert result["counts"]["native_sources"] == 2
+    assert result["counts"]["preserved_identity_resolution_history"] == 1
+    assert result["counts"]["preserved_regional_expansion_history"] == 1
+    assert result["counts"]["governed_predecessor_history_records"] == 2
     assert result["counts"]["native_capital_events"] == 1
     assert result["counts"]["native_change_candidates"] == 1
     assert result["counts"]["native_candidate_objects"] == 5
-    assert "V14.capital_and_ownership_events" not in result["remaining_unmaterialized_families"]
-    assert "V16.change_candidates" not in result["remaining_unmaterialized_families"]
+    for family in (
+        "V14.organization_resolution",
+        "V14.regional_expansion",
+        "V14.capital_and_ownership_events",
+        "V16.change_candidates",
+    ):
+        assert family not in result["remaining_unmaterialized_families"]
     assert result["boundaries"]["candidate"] == MIGRATION_CANDIDATE_BOUNDARY
     assert verify_predecessor_migration_candidate(result)["valid"] is True
+
+
+def test_candidate_verifier_detects_history_substitution() -> None:
+    v14, v16 = _inputs()
+    result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
+    result["identity_resolution_history"]["records"][0]["predecessor_record"]["verification_after"] = (
+        "CURRENT_PARTIAL"
+    )
+    report = verify_predecessor_migration_candidate(result)
+    assert report["valid"] is False
+    assert any("predecessor_record_sha256 mismatch" in error for error in report["errors"])
 
 
 def test_candidate_verifier_detects_coordinated_event_subject_substitution() -> None:
@@ -238,6 +288,8 @@ def test_candidate_package_is_deterministic_and_manifest_bound(tmp_path) -> None
         "candidate-predecessor-traces.jsonl",
         "preserved-organizations.jsonl",
         "predecessor-observation-evidence.jsonl",
+        "identity-resolution-history.jsonl",
+        "regional-expansion-history.jsonl",
         "descriptor.json",
         "manifest.json",
     ):
