@@ -22,6 +22,8 @@ def global_getaddrinfo(host: str, port: object, *args: object, **kwargs: object)
             (socket.AF_INET, socket.SOCK_STREAM, 6, "", (GLOBAL_IP, 0)),
             (socket.AF_INET, socket.SOCK_STREAM, 6, "", (SECOND_GLOBAL_IP, 0)),
         ]
+    if host == "redirect.example.org":
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (GLOBAL_IP, 0))]
     raise socket.gaierror("unknown host")
 
 
@@ -52,6 +54,35 @@ def test_http_client_passes_exact_dns_validated_addresses_to_transport() -> None
     assert len(transport.calls) == 1
     assert transport.calls[0].validated_addresses == (SECOND_GLOBAL_IP, GLOBAL_IP)
     assert tuple(response.dns_resolution.addresses) == (SECOND_GLOBAL_IP, GLOBAL_IP)
+
+
+def test_http_client_refreshes_validated_addresses_for_redirect_hop() -> None:
+    class RedirectTransport(RecordingTransport):
+        def send(
+            self,
+            request: HttpRequest,
+            *,
+            connect_timeout: float,
+            read_timeout: float,
+        ) -> tuple[int, dict[str, str], bytes]:
+            self.calls.append(request)
+            if request.url == "https://example.org/start":
+                return 302, {"Location": "https://redirect.example.org/final"}, b""
+            return 200, {"Content-Type": "application/json"}, b"{}"
+
+    transport = RedirectTransport()
+    client = HttpClient(
+        config=CollectorConfig(collector_version="test", configuration_hash="a" * 64),
+        transport=transport,
+        dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
+    )
+    client.fetch("https://example.org/start")
+    assert [call.url for call in transport.calls] == [
+        "https://example.org/start",
+        "https://redirect.example.org/final",
+    ]
+    assert transport.calls[0].validated_addresses == (SECOND_GLOBAL_IP, GLOBAL_IP)
+    assert transport.calls[1].validated_addresses == (GLOBAL_IP,)
 
 
 class SocketPairServer:
@@ -137,6 +168,29 @@ def test_http_transport_connects_to_pinned_ip_and_preserves_original_host_header
     assert status == 200
     assert headers["Content-Type"] == "text/plain"
     assert body == b"hello"
+
+
+def test_transport_retries_only_within_supplied_validated_address_set() -> None:
+    server = SocketPairServer(_response(headers=(("Content-Type", "text/plain"),), body=b"retry-ok"))
+    targets: list[tuple[str, int]] = []
+
+    def socket_factory(target: tuple[str, int], timeout: float) -> socket.socket:
+        targets.append(target)
+        if target[0] == GLOBAL_IP:
+            raise OSError("simulated first pinned address failure")
+        assert target[0] == SECOND_GLOBAL_IP
+        return server.client
+
+    transport = PinnedSocketHttpTransport(socket_factory=socket_factory)
+    status, _, body = transport.send(
+        HttpRequest("GET", "http://example.org/retry", {}, (GLOBAL_IP, SECOND_GLOBAL_IP)),
+        connect_timeout=1.0,
+        read_timeout=1.0,
+    )
+    server.finish()
+    assert targets == [(GLOBAL_IP, 80), (SECOND_GLOBAL_IP, 80)]
+    assert status == 200
+    assert body == b"retry-ok"
 
 
 class RecordingSslContext:
