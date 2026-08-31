@@ -35,6 +35,7 @@ DISPOSITIONS = {
 class Rule:
     disposition: str
     target_object_class: str | None = None
+    target_field: str | None = None
     note: str = ""
 
     def __post_init__(self) -> None:
@@ -42,12 +43,12 @@ class Rule:
             raise ValueError(f"Unknown migration disposition: {self.disposition}")
 
 
-def _native(target: str, note: str = "") -> Rule:
-    return Rule("MAPPED_NATIVE_V2", target, note)
+def _native(target: str, target_field: str | None = None, note: str = "") -> Rule:
+    return Rule("MAPPED_NATIVE_V2", target, target_field, note)
 
 
 def _legacy(note: str = "") -> Rule:
-    return Rule("PRESERVED_LEGACY_FIELD", None, note)
+    return Rule("PRESERVED_LEGACY_FIELD", None, None, note)
 
 
 FAMILY_RULES: dict[str, dict[str, Rule]] = {
@@ -105,7 +106,7 @@ FAMILY_RULES: dict[str, dict[str, Rule]] = {
         "provenance": _legacy(),
         "predecessor_reference": _legacy(),
         "assessment_successor_delta": _legacy(
-            "Embedded PRIMA successor package; separately inventoried as PRIMA17."
+            "Embedded PRIMA successor package; separately inventoried as PRIMA17 when audited standalone."
         ),
     },
     "PRIMA17": {
@@ -122,6 +123,100 @@ FAMILY_RULES: dict[str, dict[str, Rule]] = {
     },
     "SOURCE14": {"$root": _native("Source")},
     "MONITOR15": {"$root": _legacy("Operational monitoring policy is not canonical substantive graph state.")},
+}
+
+# Native mapping is field-specific. A family may belong to a native graph class
+# while carrying predecessor fields that do not have a governed native slot yet.
+FIELD_RULES: dict[tuple[str, str], dict[str, Rule]] = {
+    ("V14", "organizations"): {
+        "organization_id": _native("Entity", "entity_id"),
+        "canonical_name": _native("Entity", "canonical_label"),
+        "aliases": _native("Entity", "aliases"),
+        "organization_type": _native("Entity", "entity_type"),
+    },
+    ("V14", "capital_and_ownership_events"): {
+        "event_id": _native("Event", "event_id"),
+        "event_type": _native("Event", "event_type"),
+        "date": _native("Event", "occurred_at"),
+        "source_ids": _native("Event", "source_ids"),
+        "evidence_state": _native("Event", "evidence_state"),
+        "boundary": _native("Event", "claim_boundary"),
+    },
+    ("V14", "representative_model_records"): {
+        "model_id": _native("Entity", "entity_id"),
+        "name": _native("Entity", "canonical_label"),
+    },
+    ("V14", "trial_site_relationships"): {
+        "relationship_id": _native("Relationship", "relationship_id"),
+        "relationship_type": _native("Relationship", "relationship_type"),
+        "source_ids": _native("Relationship", "source_ids"),
+        "evidence_state": _native("Relationship", "evidence_state"),
+        "boundary": _native("Relationship", "claim_boundary"),
+    },
+    ("V14", "participant_authority_relationships"): {
+        "authority_id": _native("Relationship", "relationship_id"),
+        "authority_type": _native("Relationship", "relationship_type"),
+        "source_ids": _native("Relationship", "source_ids"),
+        "evidence_state": _native("Relationship", "evidence_state"),
+        "boundary": _native("Relationship", "claim_boundary"),
+    },
+    ("V14", "supplier_dependency_relationships"): {
+        "dependency_id": _native("Relationship", "relationship_id"),
+        "relationship_type": _native("Relationship", "relationship_type"),
+        "source_ids": _native("Relationship", "source_ids"),
+        "boundary": _native("Relationship", "claim_boundary"),
+    },
+    ("V14", "sources"): {
+        "source_id": _native("Source", "source_id"),
+        "title": _native("Source", "title"),
+        "publisher": _native("Source", "publisher"),
+        "url": _native("Source", "canonical_url_or_reference"),
+        "source_class": _native("Source", "source_class"),
+    },
+    ("V16", "source_checks"): {
+        "check_id": _native("Observation", "observation_id"),
+        "source_id": _native("Observation", "source_id"),
+        "retrieved": _native("Observation", "observed_at"),
+        "retrieval_outcome": _native("Observation", "retrieval_outcome"),
+    },
+    ("V16", "new_sources"): {
+        "source_id": _native("Source", "source_id"),
+        "title": _native("Source", "title"),
+        "publisher": _native("Source", "publisher"),
+        "url": _native("Source", "canonical_url_or_reference"),
+        "source_class": _native("Source", "source_class"),
+        "published": _native("Source", "publication_or_record_date"),
+    },
+    ("V16", "change_candidates"): {
+        "candidate_id": _native("Candidate", "candidate_id"),
+        "change_class": _native("Candidate", "candidate_class"),
+    },
+    ("DELTA16", "regulatory_and_market_events"): {
+        "event_id": _native("Event", "event_id"),
+        "event_date": _native("Event", "occurred_at"),
+        "event_type": _native("Event", "event_type"),
+        "jurisdiction": _native("Event", "jurisdiction"),
+        "source_ids": _native("Event", "source_ids"),
+        "evidence_state": _native("Event", "evidence_state"),
+    },
+    ("DELTA16", "capital_and_ownership_events"): {
+        "event_id": _native("Event", "event_id"),
+        "date": _native("Event", "occurred_at"),
+        "event_type": _native("Event", "event_type"),
+        "source_ids": _native("Event", "source_ids"),
+        "boundary": _native("Event", "claim_boundary"),
+    },
+    ("DELTA16", "model_records"): {
+        "model_id": _native("Entity", "entity_id"),
+        "name": _native("Entity", "canonical_label"),
+    },
+    ("DELTA16", "supplier_dependency_relationships"): {
+        "dependency_id": _native("Relationship", "relationship_id"),
+        "relationship_type": _native("Relationship", "relationship_type"),
+        "source_ids": _native("Relationship", "source_ids"),
+        "evidence_state": _native("Relationship", "evidence_state"),
+        "boundary": _native("Relationship", "claim_boundary"),
+    },
 }
 
 UNRESOLVED_FIELD_NAMES = frozenset({"source_ids", "last_verified", "observed_at"})
@@ -176,6 +271,15 @@ def _family_rule(role: str, family: str) -> Rule:
     )
 
 
+def _field_rule(role: str, family: str, source_field: str, family_rule: Rule) -> Rule:
+    reviewed = FIELD_RULES.get((role, family), {})
+    if source_field in reviewed:
+        return reviewed[source_field]
+    if family_rule.disposition == "MAPPED_NATIVE_V2":
+        return _legacy(f"No reviewed native field mapping for {role}:{family}.{source_field}")
+    return family_rule
+
+
 def _is_explicitly_unresolved(record: dict[str, Any], field: str, value: Any) -> bool:
     if field == "source_ids" and value == []:
         return True
@@ -205,7 +309,7 @@ def inventory_input(role: str, path: Path) -> tuple[dict[str, Any], list[dict[st
         families = [("$root", root)]
 
     for family, family_value in families:
-        rule = _family_rule(role, family)
+        family_rule = _family_rule(role, family)
         members = family_value if isinstance(family_value, list) else [family_value]
         for index, member in enumerate(members):
             record = member if isinstance(member, dict) else {"$value": member}
@@ -219,17 +323,24 @@ def inventory_input(role: str, path: Path) -> tuple[dict[str, Any], list[dict[st
                     "family": family,
                     "record_index": index if isinstance(family_value, list) else None,
                     "record_sha256": sha256_value(member),
-                    "disposition": rule.disposition,
-                    "target_object_class": rule.target_object_class,
-                    "note": rule.note,
+                    "disposition": family_rule.disposition,
+                    "target_object_class": family_rule.target_object_class,
+                    "note": family_rule.note,
                     "field_count": len(leaf_items),
                 }
             )
             for pointer, value in leaf_items:
+                relative = pointer[len(base_pointer) :].lstrip("/")
+                source_field = (
+                    relative.split("/", 1)[0].replace("~1", "/").replace("~0", "~")
+                    if relative
+                    else "$value"
+                )
                 field_name = pointer.rsplit("/", 1)[-1].replace("~1", "/").replace("~0", "~")
-                disposition = rule.disposition
-                note = rule.note
-                if _is_explicitly_unresolved(record, field_name, value):
+                field_rule = _field_rule(role, family, source_field, family_rule)
+                disposition = field_rule.disposition
+                note = field_rule.note
+                if _is_explicitly_unresolved(record, source_field, record.get(source_field)):
                     disposition = "PRESERVED_UNRESOLVED_PREDECESSOR_STATE"
                     note = (
                         "Predecessor did not establish source linkage or knowledge time; no value may be invented."
@@ -240,11 +351,13 @@ def inventory_input(role: str, path: Path) -> tuple[dict[str, Any], list[dict[st
                         "family": family,
                         "record_index": index if isinstance(family_value, list) else None,
                         "json_pointer": pointer,
+                        "source_field": source_field,
                         "field_name": field_name,
                         "value_type": type(value).__name__,
                         "value_sha256": sha256_value(value),
                         "disposition": disposition,
-                        "target_object_class": rule.target_object_class,
+                        "target_object_class": field_rule.target_object_class,
+                        "target_field": field_rule.target_field,
                         "note": note,
                     }
                 )
