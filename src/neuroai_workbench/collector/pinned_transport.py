@@ -16,7 +16,22 @@ SocketFactory = Callable[[tuple[str, int], float], socket.socket]
 
 
 def _default_socket_factory(address: tuple[str, int], timeout: float) -> socket.socket:
-    return socket.create_connection(address, timeout=timeout)
+    """Connect directly to one numeric IP literal without invoking a resolver path."""
+    host, port = address
+    try:
+        ip = ipaddress.ip_address(host)
+    except ValueError as exc:
+        raise OSError(f"Pinned socket target is not an IP literal: {host!r}") from exc
+    family = socket.AF_INET6 if ip.version == 6 else socket.AF_INET
+    sock = socket.socket(family, socket.SOCK_STREAM)
+    try:
+        sock.settimeout(timeout)
+        target: Any = (str(ip), port, 0, 0) if ip.version == 6 else (str(ip), port)
+        sock.connect(target)
+        return sock
+    except BaseException:
+        sock.close()
+        raise
 
 
 def _reject_crlf(value: str, *, label: str) -> None:
