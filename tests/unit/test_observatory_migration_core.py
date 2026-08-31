@@ -11,6 +11,7 @@ from neuroai_workbench.observatory_migration_core import (
     verify_predecessor_migration_core,
     write_predecessor_migration_core_package,
 )
+from neuroai_workbench.observatory_predecessor_evidence import PredecessorObservationEvidenceError
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
 
@@ -128,7 +129,7 @@ def test_core_requires_source_binding_for_predecessor_observation_evidence() -> 
     v14, v16 = _inputs()
     v16["source_checks"][0]["source_id"] = "SRC-MISSING"
 
-    with pytest.raises(Exception, match="non-materialized Source SRC-MISSING"):
+    with pytest.raises(PredecessorObservationEvidenceError, match="non-materialized Source SRC-MISSING"):
         build_predecessor_migration_core(v14_release=v14, v16_refresh=v16)
 
 
