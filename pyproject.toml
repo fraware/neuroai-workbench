@@ -82,11 +82,14 @@ neuroai_workbench = [
   "resources/shadow_refresh/*",
   "resources/observatory/*",
   "resources/discovery/*",
+  "resources/temporal/*",
+  "resources/observatory_graph/*",
 ]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.coverage.run]
 branch = true
@@ -106,7 +109,7 @@ exclude_also = [
 [tool.ruff]
 target-version = "py310"
 line-length = 120
-extend-exclude = ["artifacts", "workspaces"]
+extend-exclude = ["artifacts", "workspaces", ".tmp"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "UP"]
