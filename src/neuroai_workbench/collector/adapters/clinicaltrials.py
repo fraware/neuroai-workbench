@@ -41,6 +41,7 @@ _CHANGE_FIELD_KEYS = (
     "nct_id",
     "brief_title",
     "overall_status",
+    "study_type",
     "last_update_post_date",
     "primary_completion_date",
     "enrollment_count",
@@ -209,6 +210,7 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
             if isinstance(identification.get("briefTitle"), str)
             else None,
             "overall_status": status.get("overallStatus") if isinstance(status.get("overallStatus"), str) else None,
+            "study_type": design.get("studyType") if isinstance(design.get("studyType"), str) else None,
             "last_update_post_date": (
                 status.get("lastUpdatePostDateStruct", {}).get("date")
                 if isinstance(status.get("lastUpdatePostDateStruct"), dict)
