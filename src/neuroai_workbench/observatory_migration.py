@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from . import __version__
 from .observatory_graph import build_source, validate_graph_object
 from .temporal import TIME_VALUE_BOUNDARY, parse_time_value
 from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, sha256_bytes
@@ -29,6 +30,12 @@ _SOURCE_FAMILY_BY_ROLE = {"V14": "sources", "V16": "new_sources"}
 
 class ObservatoryMigrationError(ValueError):
     """Raised when predecessor state cannot be materialized without ambiguity or invention."""
+
+
+def _require_hex(value: Any, *, length: int, field: str) -> str:
+    if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
+        raise ObservatoryMigrationError(f"{field} must be a lowercase {length}-character hexadecimal identity")
+    return value
 
 
 def predecessor_time_value(value: Any) -> dict[str, Any] | None:
@@ -220,7 +227,10 @@ def write_predecessor_source_package(
     *,
     v14_input_sha256: str,
     v16_input_sha256: str,
-    producer_commit: str | None = None,
+    producer_commit: str,
+    runtime_execution_pin: str,
+    s2_predecessor_commit: str,
+    observatory_graph_schema_version: str = "1",
 ) -> dict[str, Any]:
     """Write a deterministic, manifest-bound noncanonical Source migration package."""
     if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
@@ -229,6 +239,14 @@ def write_predecessor_source_package(
     traces = result.get("predecessor_traces")
     if not isinstance(sources, list) or not isinstance(traces, list) or len(sources) != len(traces):
         raise ObservatoryMigrationError("Source migration package requires one trace per source")
+
+    input_v14 = _require_hex(v14_input_sha256, length=64, field="v14_input_sha256")
+    input_v16 = _require_hex(v16_input_sha256, length=64, field="v16_input_sha256")
+    producer = _require_hex(producer_commit, length=40, field="producer_commit")
+    runtime_pin = _require_hex(runtime_execution_pin, length=40, field="runtime_execution_pin")
+    s2_commit = _require_hex(s2_predecessor_commit, length=40, field="s2_predecessor_commit")
+    if not observatory_graph_schema_version.strip():
+        raise ObservatoryMigrationError("observatory_graph_schema_version must be non-empty")
 
     for source, trace in zip(sources, traces, strict=True):
         if not isinstance(source, dict) or not isinstance(trace, dict):
@@ -256,8 +274,12 @@ def write_predecessor_source_package(
         "object_class": "Source",
         "object_count": len(sources),
         "predecessor_trace_count": len(traces),
-        "producer_commit": producer_commit,
-        "inputs": {"V14": v14_input_sha256, "V16": v16_input_sha256},
+        "workbench_compatibility_version": __version__,
+        "producer_workbench_commit": producer,
+        "runtime_execution_pin": runtime_pin,
+        "observatory_graph_schema_version": observatory_graph_schema_version,
+        "s2_predecessor_commit": s2_commit,
+        "inputs": {"V14": input_v14, "V16": input_v16},
         "migration_generated_metadata": result.get("migration_generated_metadata"),
         "retrieved_not_promoted_to_publication_time": True,
         "boundary": MIGRATION_BOUNDARY,
