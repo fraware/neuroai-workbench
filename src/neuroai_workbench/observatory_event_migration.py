@@ -10,6 +10,7 @@ slots remain in the exact predecessor trace.
 from __future__ import annotations
 
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -28,10 +29,13 @@ from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, s
 EVENT_MIGRATION_BOUNDARY = (
     "Predecessor capital/ownership event migration. Exact controlled subjects and source ids are preserved; "
     "unresolved counterparties remain literals. MIGRATED_PREDECESSOR_STATE is migration verification metadata, "
-    "not a claim that predecessor verification occurred. Amount, currency, ownership-effect and other fields "
-    "without native Event slots remain exact trace state. No substantive truth or release authority is inferred."
+    "not a claim that predecessor verification occurred. YEAR/DATE/null event time is preserved without "
+    "fabricating precision. Amount, currency, ownership-effect and other fields without native Event slots "
+    "remain exact trace state. No substantive truth or release authority is inferred."
 )
 MIGRATED_PREDECESSOR_VERIFICATION_STATE = "MIGRATED_PREDECESSOR_STATE"
+_YEAR_RE = re.compile(r"^\d{4}$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 class ObservatoryEventMigrationError(ValueError):
@@ -50,10 +54,22 @@ def _record_digest(record: dict[str, Any]) -> str:
     return sha256_bytes(canonical_json_bytes(record))
 
 
-def _date_value(value: Any) -> dict[str, Any]:
-    if not isinstance(value, str) or not value.strip():
-        raise ObservatoryEventMigrationError("capital event requires explicit date")
-    return parse_time_value({"value": value.strip(), "precision": "DATE", "boundary": TIME_VALUE_BOUNDARY})
+def predecessor_event_time_value(value: Any) -> dict[str, Any] | None:
+    """Preserve predecessor event time at YEAR/DATE/TIMESTAMP precision or remain absent."""
+    if value is None or value == "":
+        return None
+    if not isinstance(value, str):
+        raise ObservatoryEventMigrationError("capital-event date must be a string or null")
+    text = value.strip()
+    if _YEAR_RE.fullmatch(text):
+        precision = "YEAR"
+    elif _DATE_RE.fullmatch(text):
+        precision = "DATE"
+    elif "T" in text:
+        precision = "TIMESTAMP"
+    else:
+        raise ObservatoryEventMigrationError(f"unsupported capital-event temporal literal {value!r}")
+    return parse_time_value({"value": text, "precision": precision, "boundary": TIME_VALUE_BOUNDARY})
 
 
 def _resolved(entity_id: str) -> dict[str, Any]:
@@ -105,7 +121,7 @@ def verify_capital_event_trace(
     expected_event_id: str | None = None,
     expected_subject_entity_id: str | None = None,
 ) -> list[str]:
-    """Verify exact predecessor bytes and native Event/subject binding."""
+    """Verify exact predecessor bytes and native Event/subject trace binding."""
     errors: list[str] = []
     record = trace.get("predecessor_record")
     if not isinstance(record, dict):
@@ -128,6 +144,90 @@ def verify_capital_event_trace(
         errors.append("native event id binding mismatch")
     if expected_subject_entity_id is not None and trace.get("subject_entity_id") != expected_subject_entity_id:
         errors.append("subject Entity binding mismatch")
+    expected_generated = {
+        "verification_state": MIGRATED_PREDECESSOR_VERIFICATION_STATE,
+        "observation_ids": [],
+    }
+    if trace.get("migration_generated_fields") != expected_generated:
+        errors.append("capital-event migration-generated field declaration mismatch")
+    return sorted(set(errors))
+
+
+def verify_materialized_capital_event(
+    event: dict[str, Any],
+    trace: dict[str, Any],
+    *,
+    entity_index: dict[str, dict[str, Any]],
+    known_source_ids: set[str],
+) -> list[str]:
+    """Verify every mapped Event field against predecessor state and controlled object bindings."""
+    errors: list[str] = []
+    event_id = str(event.get("event_id") or "")
+    subject = event.get("subject")
+    subject_id = str(subject.get("entity_id") or "") if isinstance(subject, dict) else ""
+    errors.extend(
+        verify_capital_event_trace(
+            trace,
+            expected_event_id=event_id,
+            expected_subject_entity_id=subject_id,
+        )
+    )
+    predecessor = trace.get("predecessor_record")
+    if not isinstance(predecessor, dict):
+        return sorted(set(errors + ["predecessor_record must be an object"]))
+
+    if event.get("event_type") != predecessor.get("event_type"):
+        errors.append("event_type binding mismatch")
+    entity = entity_index.get(subject_id)
+    if entity is None:
+        errors.append(f"resolved subject Entity {subject_id!r} is missing")
+    elif entity.get("canonical_label") != predecessor.get("subject"):
+        errors.append("subject binding does not preserve exact predecessor canonical label")
+
+    counterparties = predecessor.get("counterparties") or []
+    if not isinstance(counterparties, list):
+        errors.append("predecessor counterparties must be an array")
+        counterparties = []
+    expected_objects = [_unresolved(str(value).strip()) for value in counterparties]
+    if event.get("objects") != expected_objects:
+        errors.append("counterparty unresolved-literal binding mismatch")
+
+    try:
+        expected_time = predecessor_event_time_value(predecessor.get("date"))
+        if expected_time is None:
+            if "occurred_at" in event:
+                errors.append("null predecessor date must remain absent in native Event")
+        elif event.get("occurred_at") != expected_time:
+            errors.append("occurred_at precision/value binding mismatch")
+    except (ObservatoryEventMigrationError, ValueError) as exc:
+        errors.append(str(exc))
+
+    predecessor_sources = predecessor.get("source_ids")
+    if event.get("source_ids") != predecessor_sources:
+        errors.append("source_ids binding mismatch")
+    if isinstance(predecessor_sources, list):
+        missing_sources = sorted(str(item) for item in predecessor_sources if str(item) not in known_source_ids)
+        if missing_sources:
+            errors.append(f"references missing Sources {missing_sources}")
+    else:
+        errors.append("predecessor source_ids must be an array")
+
+    if event.get("observation_ids") != []:
+        errors.append("migration-generated observation_ids must remain empty")
+    if event.get("evidence_state") != predecessor.get("evidence_state"):
+        errors.append("evidence_state binding mismatch")
+    if event.get("verification_state") != MIGRATED_PREDECESSOR_VERIFICATION_STATE:
+        errors.append("migration verification_state mismatch")
+    if event.get("claim_boundary") != predecessor.get("boundary"):
+        errors.append("claim_boundary binding mismatch")
+    if event.get("boundary") != EVENT_MIGRATION_BOUNDARY:
+        errors.append("Event migration boundary mismatch")
+
+    schema_errors = validate_graph_object(
+        {key: value for key, value in event.items() if key != "canonical_sha256"},
+        "Event",
+    )
+    errors.extend(f"schema: {error}" for error in schema_errors)
     return sorted(set(errors))
 
 
@@ -158,13 +258,14 @@ def materialize_v14_capital_event(
     counterparties = record.get("counterparties") or []
     if not isinstance(counterparties, list) or any(not isinstance(item, str) or not item.strip() for item in counterparties):
         raise ObservatoryEventMigrationError("capital event counterparties must be an array of non-empty strings")
+    occurred_at = predecessor_event_time_value(record.get("date"))
 
     event = build_event(
         event_id=str(record["event_id"]),
         event_type=str(record["event_type"]),
         subject=_resolved(subject_entity_id),
         objects=[_unresolved(item.strip()) for item in counterparties],
-        occurred_at=_date_value(record.get("date")),
+        occurred_at=occurred_at,
         source_ids=list(source_ids),
         observation_ids=[],
         evidence_state=str(record["evidence_state"]),
@@ -172,13 +273,6 @@ def materialize_v14_capital_event(
         claim_boundary=str(record["boundary"]),
         boundary=EVENT_MIGRATION_BOUNDARY,
     )
-    schema_errors = validate_graph_object(
-        {key: value for key, value in event.items() if key != "canonical_sha256"},
-        "Event",
-    )
-    if schema_errors:
-        raise ObservatoryEventMigrationError(f"materialized capital Event is schema-invalid: {schema_errors}")
-
     trace = {
         "role": "V14",
         "family": "capital_and_ownership_events",
@@ -195,13 +289,22 @@ def materialize_v14_capital_event(
         "native_authority": False,
         "boundary": EVENT_MIGRATION_BOUNDARY,
     }
-    trace_errors = verify_capital_event_trace(
+    entity_index = {
+        subject_entity_id: {
+            "entity_id": subject_entity_id,
+            "canonical_label": str(record["subject"]),
+        }
+    }
+    verification_errors = verify_materialized_capital_event(
+        event,
         trace,
-        expected_event_id=str(event["event_id"]),
-        expected_subject_entity_id=subject_entity_id,
+        entity_index=entity_index,
+        known_source_ids=known_source_ids,
     )
-    if trace_errors:
-        raise ObservatoryEventMigrationError(f"generated capital-event trace is invalid: {trace_errors}")
+    if verification_errors:
+        raise ObservatoryEventMigrationError(
+            f"generated capital Event/trace is invalid: {verification_errors}"
+        )
     return event, trace
 
 
@@ -216,6 +319,7 @@ def materialize_v14_capital_events(
     if not isinstance(records, list):
         raise ObservatoryEventMigrationError("Expected v1.4 capital_and_ownership_events array")
     name_index = exact_entity_name_index(entities)
+    entity_index = {str(entity["entity_id"]): entity for entity in entities}
 
     events: list[dict[str, Any]] = []
     traces: list[dict[str, Any]] = []
@@ -233,6 +337,16 @@ def materialize_v14_capital_events(
         if event_id in seen_ids:
             raise ObservatoryEventMigrationError(f"duplicate predecessor capital event id {event_id}")
         seen_ids.add(event_id)
+        verification_errors = verify_materialized_capital_event(
+            event,
+            trace,
+            entity_index=entity_index,
+            known_source_ids=known_source_ids,
+        )
+        if verification_errors:
+            raise ObservatoryEventMigrationError(
+                f"capital Event {event_id} fails composed verification: {verification_errors}"
+            )
         events.append(event)
         traces.append(trace)
 
@@ -249,6 +363,7 @@ def materialize_v14_capital_events(
             "verification_state": MIGRATED_PREDECESSOR_VERIFICATION_STATE,
             "observation_ids": [],
             "counterparty_identity": "UNRESOLVED_LITERAL_UNLESS_SEPARATELY_RESOLVED",
+            "temporal_precision": "PRESERVE_YEAR_DATE_TIMESTAMP_OR_ABSENT",
             "boundary": EVENT_MIGRATION_BOUNDARY,
         },
         "boundary": EVENT_MIGRATION_BOUNDARY,
@@ -264,6 +379,8 @@ def write_capital_event_migration_package(
     result: dict[str, Any],
     output_dir: Path,
     *,
+    entities: list[dict[str, Any]],
+    known_source_ids: set[str],
     v14_input_sha256: str,
     producer_commit: str,
     runtime_execution_pin: str,
@@ -279,15 +396,18 @@ def write_capital_event_migration_package(
         raise ObservatoryEventMigrationError("capital-event package requires one trace per Event")
     if result.get("input_record_count") != len(events):
         raise ObservatoryEventMigrationError("capital-event package requires complete family materialization")
+    entity_index = {str(entity["entity_id"]): entity for entity in entities}
     for event, trace in zip(events, traces, strict=True):
         if not isinstance(event, dict) or not isinstance(trace, dict):
             raise ObservatoryEventMigrationError("capital-event package entries must be objects")
-        event_id = str(event.get("event_id") or "")
-        subject = event.get("subject")
-        subject_id = str(subject.get("entity_id") or "") if isinstance(subject, dict) else ""
-        errors = verify_capital_event_trace(trace, expected_event_id=event_id, expected_subject_entity_id=subject_id)
+        errors = verify_materialized_capital_event(
+            event,
+            trace,
+            entity_index=entity_index,
+            known_source_ids=known_source_ids,
+        )
         if errors:
-            raise ObservatoryEventMigrationError(f"capital-event trace verification failed: {errors}")
+            raise ObservatoryEventMigrationError(f"capital-event verification failed: {errors}")
 
     input_v14 = _require_hex(v14_input_sha256, length=64, field="v14_input_sha256")
     producer = _require_hex(producer_commit, length=40, field="producer_commit")
