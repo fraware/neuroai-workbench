@@ -18,11 +18,11 @@ release_authorized = false
 native_v2_materialization_complete = false
 ```
 
-A mechanical PASS therefore means only that this bounded core is internally reconciled. It is not Gate A completion.
+A mechanical PASS means only that this bounded core is internally reconciled. It is not Gate A completion.
 
 ## v1.4 organization identity partition
 
-The 223 predecessor `organizations` entries are not homogeneous organization identities. Exact-state classification over the frozen public governing corpus yields:
+The 223 predecessor `organizations` entries are heterogeneous. Exact-state classification over the frozen public governing corpus yields:
 
 ```text
 MATERIALIZE_ACTIVE_ENTITY                       153
@@ -32,44 +32,21 @@ HISTORICAL_CURRENT_IDENTITY_UNRESOLVED             1
 TOTAL                                             223
 ```
 
-### 153 identity-safe current entities
+### 153 identity-safe current organizations
 
-A record may become a native `Entity` only when:
+A record may become a native `Entity` only when its exact controlled `organization_id` is present, its verification state is one of `CURRENT_VERIFIED`, `CURRENT_PARTIAL`, `CURRENT_VERIFIED_RESCOPED`, or `CURRENT_VERIFIED_CORRECTED`, its current status is `ACTIVE_OR_CURRENTLY_REPRESENTED` or `CURRENT`, and its canonical name and aliases are structurally valid.
 
-- its exact controlled `organization_id` is present;
-- `verification_state` is one of `CURRENT_VERIFIED`, `CURRENT_PARTIAL`, `CURRENT_VERIFIED_RESCOPED`, or `CURRENT_VERIFIED_CORRECTED`;
-- `current_status` is `ACTIVE_OR_CURRENTLY_REPRESENTED` or `CURRENT`;
-- canonical name, organization type, and aliases are structurally valid.
+The exact predecessor `ORG-*` id becomes `Entity.entity_id`, the canonical name becomes `canonical_label`, and aliases are preserved. Native `entity_type` is deliberately the v2 ontology class `ORGANIZATION`; predecessor `organization_type` values such as `COMPANY`, `REGULATOR`, or `RESEARCH_INSTITUTION` remain exact predecessor state for later bounded assertion mapping. They are not substituted for the ontology class. `status=ACTIVE`, empty identifiers, and empty lineage are explicit migration-generated identity metadata bounded to the already-governed current-identity classification.
 
-The exact predecessor `ORG-*` id becomes the v2 `entity_id`. The predecessor organization type becomes `entity_type`; canonical name and aliases are preserved. Migration-generated `status=ACTIVE` is bounded strictly to the already-governed current-identity classification. All other predecessor fields remain in the exact content-addressed trace and are not silently promoted into native Entity semantics.
+### 70 records that remain predecessor state
 
-### 63 unresolved legacy endpoints
+The 63 `LEGACY_ONLY` + `LEGACY_STUB` records remain unresolved relationship endpoints. The six `NON_ORGANIZATION_PROVENANCE_NODE` + `RECLASSIFIED` entries remain provenance nodes and cannot re-enter the organization/entity denominator through migration. The single `HISTORICAL_ARCHIVED` entry remains historical/current-identity-unresolved; migration does not guess `ACTIVE`, `SUPERSEDED`, or `WITHDRAWN`.
 
-`LEGACY_ONLY` + `LEGACY_STUB` records are relationship endpoints whose current identity still requires resolution. They do not become active v2 Entities merely because the predecessor retained an `ORG-*` row.
-
-### Six provenance-only nodes
-
-Records with `verification_state=NON_ORGANIZATION_PROVENANCE_NODE` and `current_status=RECLASSIFIED` remain provenance nodes. They are expressly prohibited from re-entering the canonical organization/entity denominator through migration.
-
-### One historical/current-identity-unresolved record
-
-The `HISTORICAL_ARCHIVED` record is preserved exactly because current organizational existence was not established. Migration does not convert it to `ACTIVE`, `SUPERSEDED`, or `WITHDRAWN` by interpretation.
-
-Any new or internally inconsistent predecessor state fails closed instead of falling through to one of these classes.
+Any new or internally inconsistent predecessor state fails closed.
 
 ## Source migration
 
-The frozen corpus contains:
-
-```text
-v1.4 sources       224
-v1.6 new sources    12
-native Sources      236
-```
-
-All 236 source IDs are unique across the two predecessor sets and contain the explicit predecessor fields needed for native Source identity.
-
-The mapping is intentionally narrow:
+The frozen corpus contains 224 v1.4 sources plus 12 v1.6 new sources, yielding 236 unique native Sources. The narrow mapping is:
 
 ```text
 source_id      -> Source.source_id
@@ -77,37 +54,16 @@ title          -> Source.title
 publisher      -> Source.publisher
 url            -> Source.canonical_url_or_reference
 source_class   -> Source.source_class
-v1.6 published -> Source.publication_or_record_date (only when explicit)
+v1.6 published -> Source.publication_or_record_date, only when explicit
 ```
 
-`retrieved` is knowledge-time evidence and is never repurposed as publication time. The ten explicit v1.6 `published` values remain DATE precision; two null publication values remain absent.
-
-Because predecessor data did not adjudicate redistribution/access rights, the migration uses explicit migration metadata:
-
-```text
-access_class = UNKNOWN
-redistribution_state = UNKNOWN_NOT_ADJUDICATED
-```
-
-These are not inferred predecessor facts. Every Source retains the exact full predecessor record in a digest-bound trace sidecar.
+`retrieved` is knowledge-time evidence and is never repurposed as publication time. The ten explicit v1.6 publication values remain DATE precision; two null publication values remain absent. Because predecessor data did not adjudicate access or redistribution rights, migration metadata is explicitly `access_class=UNKNOWN` and `redistribution_state=UNKNOWN_NOT_ADJUDICATED`. Every normalized Source retains the complete predecessor record in a digest-bound trace.
 
 ## Transport-unresolved predecessor observations
 
-The 12 v1.6 source checks have the exact predecessor field set:
+The 12 v1.6 source checks preserve `check_id`, `source_id`, exact retrieval timestamp, predecessor retrieval outcome, baseline comparison, page-content-hash state, and metadata digest. They bind one-to-one to materialized Sources.
 
-```text
-check_id
-source_id
-retrieved
-retrieval_outcome
-baseline_match
-page_content_hash
-metadata_digest
-```
-
-All 12 bind one-to-one to one of the 12 v1.6 new Source IDs and carry valid metadata SHA-256 digests and explicit timestamp knowledge time.
-
-However, they do **not** govern the exact `retrieval_method` or `requested_locator` required by the ordinary v2 `Observation` schema. The migration therefore records:
+The predecessor does not govern the exact `retrieval_method` or `requested_locator` required by an ordinary v2 `Observation`. Therefore:
 
 ```text
 migration_state = PREDECESSOR_OBSERVATION_TRANSPORT_UNRESOLVED
@@ -115,11 +71,9 @@ native_observation_created = false
 unresolved_native_observation_fields = [retrieval_method, requested_locator]
 ```
 
-The migration must reject any attempt to fill those two fields by guessing `HTTP_GET`, copying a source URL, using a migration-time request, or reconstructing transport behavior after the fact.
+The migration rejects attempts to guess `HTTP_GET`, copy a source URL, use a migration-time request, or reconstruct transport behavior after the fact.
 
-## Current composed core
-
-Controlled analysis of the frozen governing corpus yields:
+## Current core counts
 
 ```text
 native Entities                              153
@@ -130,62 +84,20 @@ predecessor observation evidence records      12
 native Observations                             0
 ```
 
-The native core is currently limited to `Entity` and `Source`. The source-check evidence is a migration sidecar, not a graph `Observation`.
+The core verifier checks complete organization partitioning, every mapped Entity identity field, Source traces, source-check→Source bindings, schema validity, count reconciliation, and noncanonical authority state. Entity verification includes exact predecessor ID, canonical label and aliases plus the migration-generated `entity_type=ORGANIZATION`, `status=ACTIVE`, empty identifiers and empty lineage.
 
 ## Deterministic package
 
-`write_predecessor_migration_core_package` emits:
+`write_predecessor_migration_core_package` emits the Entity and Source JSONL sets, their predecessor traces, preserved organization records, transport-unresolved observation evidence, descriptor, and manifest. The descriptor independently binds Workbench package compatibility, exact producer commit, runtime execution pin, graph schema generation, S2 predecessor commit, and exact v1.4/v1.6 input hashes. Package-version equality is not execution evidence; manifest equality is not release authorization.
 
-```text
-entities.jsonl
-entity-predecessor-traces.jsonl
-preserved-organizations.jsonl
-sources.jsonl
-source-predecessor-traces.jsonl
-predecessor-observation-evidence.jsonl
-descriptor.json
-manifest.json
-```
+## Relationship and observation boundary
 
-The descriptor binds separately:
+The v1.4 trial-site, participant-authority, and supplier-dependency relationships are not native-ready merely because their relationship IDs and evidence fields are usable. Their endpoints are predecessor system/study/site/participant/provider literals, while the native Relationship contract requires controlled resolved entities on both sides. Migration must resolve those identities separately or retain the predecessor relationship state; it cannot manufacture endpoint entities from display strings.
 
-- Workbench package compatibility version;
-- exact producer Workbench commit;
-- exact runtime execution pin;
-- Observatory graph schema version;
-- exact S2 predecessor commit;
-- exact v1.4 and v1.6 input SHA-256 values.
-
-Package-version equality is not execution evidence. Manifest equality is not release authorization.
-
-## Verification invariants
-
-The core verifier fails closed if:
-
-- an organization input record is missing from the native/preserved partition or appears twice;
-- a legacy/provenance/historical organization is bound to a native Entity;
-- a materializable Entity changes the exact predecessor `organization_id`;
-- a Source trace is altered or rebound;
-- a source check references a non-materialized Source;
-- a source check gains an invented retrieval method or requested locator;
-- any child surface or the composed core claims publication authority;
-- the candidate claims complete native v2 materialization;
-- declared counts do not match the actual composed payload;
-- a native Entity or Source is schema-invalid.
+Likewise, field-preservation PASS and native-materialization readiness are separate properties. A predecessor field may have a plausible target field while another required native field is absent from the predecessor. The v1.6 source checks are the controlling example.
 
 ## Remaining Gate A work
 
-The migration core deliberately leaves these families unresolved:
+The composed migration candidate now extends this core with the complete five-record v1.4 capital/ownership-event family and the nine v1.6 change candidates. Remaining work includes organization-resolution/regional history, models and datasets, the three relationship families, delta regulatory/governance/dependency state, reopening/no-change state, v1.7/PRIMA successor semantics, and release-level methodology/quality/provenance/withheld-claim state.
 
-- organization-resolution and regional-expansion history;
-- capital, regulatory, governance, and ownership events;
-- model records and model/dataset registry state;
-- trial-site, participant-authority, and supplier-dependency relationships;
-- change candidates;
-- reopening decisions and no-change confirmations;
-- v1.7 successor/PRIMA transition state;
-- other release-level methodology, quality, provenance, and withheld-claim state.
-
-Each family must be mapped using exact controlled identities and predecessor-native semantics. A name match alone cannot establish a graph subject/object. Required native fields absent from the predecessor cannot be filled with plausible defaults.
-
-Only after every predecessor family is either natively materialized or represented by a governed migration state, candidate-wide typed referential/temporal integrity passes, field-loss counters remain zero, and representative human domain review is complete can Gate A be considered ready for a separate release-attestation decision.
+Each family must either receive an exact native representation or an explicit governed migration state. A name match alone cannot establish graph identity, and absent native-required fields cannot be filled with plausible defaults. Gate A can advance to a separate release-attestation decision only after candidate-wide referential/temporal integrity, zero-loss reconciliation, and representative human domain review are complete.
