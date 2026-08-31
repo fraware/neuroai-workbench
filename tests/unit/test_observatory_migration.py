@@ -85,6 +85,11 @@ def test_v16_explicit_publication_date_is_preserved() -> None:
     assert trace["record_index"] == 3
 
 
+def test_unsupported_source_role_fails_closed() -> None:
+    with pytest.raises(ObservatoryMigrationError, match="Unsupported predecessor source role"):
+        materialize_predecessor_source(_v14_source(), role="UNKNOWN", record_index=0)
+
+
 def test_materialize_predecessor_sources_is_noncanonical_and_complete() -> None:
     result = materialize_predecessor_sources(
         v14_release={"sources": [_v14_source("SRC-1"), _v14_source("SRC-2")]},
