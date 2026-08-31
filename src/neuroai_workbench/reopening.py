@@ -269,8 +269,17 @@ def recommend_reopening(
     )
     if unresolved:
         rationale += " One or more matched dependencies remain UNKNOWN or INACCESSIBLE; effect is UNDETERMINED."
+    basis_seed = {
+        "assessment_id": assessment_id,
+        "operation_id": operation.get("operation_id"),
+        "operation_section": operation.get("operation_section"),
+        "change_class": change_class,
+        "dependency_matches": matches,
+        "rule_reopening_effect": rule_effect,
+    }
+    recommendation_id = f"REC-{sha256_bytes(canonical_json_bytes(basis_seed))[:24].upper()}"
     recommendation = {
-        "recommendation_id": f"REC-{uuid4().hex[:12].upper()}",
+        "recommendation_id": recommendation_id,
         "operation_id": operation.get("operation_id"),
         "operation_section": operation.get("operation_section"),
         "assessment_id": assessment_id,
@@ -281,6 +290,9 @@ def recommend_reopening(
         "suggested_observatory_decision": EFFECT_TO_OBSERVATORY_DECISION.get(rule_effect),
         "rule_rationale": rationale,
         "dependency_matches": matches,
+        "basis_ids": list(matches),
+        "empty_basis": len(matches) == 0,
+        "empty_basis_no_reopening_is_not_nothing_changed": True,
         "resolution_state": resolution_state,
         "assessment_mutation_performed": False,
         "boundary": REOPENING_BOUNDARY,
