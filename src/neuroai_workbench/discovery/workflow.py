@@ -140,9 +140,10 @@ def execute_discovery_query(
 ) -> dict[str, Any]:
     """Execute a discovery query into a run + candidate proposals.
 
-    Default mode is offline fixture/replay. Opt-in network mode requires
-    ``NEUROAI_LIVE_DISCOVERY=1`` and validates every result URL with the collector SSRF policy.
-    Never mutates a live monitor registry.
+    ``OFFLINE_FIXTURE`` uses synthetic/controlled fixtures. ``OFFLINE_REPLAY`` requires
+    caller-supplied records from a previously captured public discovery traversal and makes no
+    network claim. ``OPT_IN_NETWORK`` requires ``NEUROAI_LIVE_DISCOVERY=1`` and validates every
+    result URL with the collector SSRF policy. No mode mutates a live monitor registry.
     """
     try:
         query = load_query(workspace, query_id)
@@ -154,6 +155,10 @@ def execute_discovery_query(
 
     if execution_mode == "OFFLINE_FIXTURE":
         records = list(result_records) if result_records is not None else get_offline_result_set(query_id)
+    elif execution_mode == "OFFLINE_REPLAY":
+        if result_records is None:
+            raise DiscoveryError("OFFLINE_REPLAY execution requires caller-supplied result_records")
+        records = list(result_records)
     elif execution_mode == "OPT_IN_NETWORK":
         network_gate = require_network_discovery_allowed()
         if result_records is None:
