@@ -4,15 +4,15 @@ Status: **noncanonical migration engineering**. This procedure does not authoriz
 
 ## Purpose
 
-`observatory_v2_migration_proof.py` is the first executable gate for the v1.4/v1.6/v1.7 → Observatory v2 transition. It answers a narrower question than semantic migration:
+`observatory_v2_migration_proof.py` answers a narrower question than semantic migration:
 
 > Has every predecessor JSON field occurrence been content-addressed and assigned an explicit migration disposition, without silently deleting or manufacturing predecessor state?
 
-The proof deliberately distinguishes field preservation from native v2 materialization. A `PASS` means the reviewed predecessor families are completely accounted at the field level. It does **not** mean every field has already been converted into a native Observatory-v2 graph object.
+Field preservation and native-materialization readiness are orthogonal. A field can have a reviewed native destination while the complete native object remains blocked by a missing required target field or unresolved identity.
 
-## Input roles
+## Frozen input roles
 
-The current public-governing proof uses the immutable S2 records:
+The proof binds the immutable public-governing records:
 
 - `V14` — `canonical_observatory_release_v1.4.json`
 - `V16` — `canonical_live_refresh_release_v1.6.json`
@@ -20,9 +20,7 @@ The current public-governing proof uses the immutable S2 records:
 - `V17` — `canonical_successor_snapshot_v1.7.json`
 - `MONITOR15` — `source_monitor_registry_v1.5.json`
 
-The v1.4 source register is represented exactly by the `sources` array in the bound v1.4 governing release and is therefore not required as a second logical migration input. The PRIMA v1.7 successor delta is embedded exactly in `canonical_successor_snapshot_v1.7.json` as `assessment_successor_delta`; a standalone duplicate may be audited separately but must not be double-counted as new logical state.
-
-The exact S2 SHA-256 values currently published for the five proof inputs are:
+Published S2 input SHA-256 values are:
 
 ```text
 V14       00985fa168b26c4e02df485895d728ee30191aea436b4e3956c60657e2ffc3be
@@ -32,33 +30,33 @@ V17       9cc36aacb4c791c9830990b58e144f223925f3ad492016abaea44727b48a0b70
 MONITOR15 1d1f9774a3ad559792fa2bc7e459a4a65c6574ec14fa0b1501240bbb18dcc315
 ```
 
-## Migration dispositions
+The v1.4 source register is already represented by the bound v1.4 `sources` array. The PRIMA v1.7 successor delta is embedded in the bound v1.7 successor and must not be double-counted as new logical state.
+
+## Field dispositions
 
 Every predecessor field occurrence receives one of:
 
-- `MAPPED_NATIVE_V2` — the field has a reviewed target object class **and target field**;
-- `PRESERVED_LEGACY_FIELD` — predecessor semantics are retained exactly until a governed native mapping exists;
-- `PRESERVED_UNRESOLVED_PREDECESSOR_STATE` — absent source linkage or knowledge time is preserved as absent and must not be synthesized;
-- `OUT_OF_SCOPE_GENERATED_PRODUCT` — generated artifacts are excluded from canonical migration inputs;
-- `BLOCKED_REQUIRES_GOVERNED_SCHEMA_CHANGE` — unreviewed predecessor state fails the proof closed.
+- `MAPPED_NATIVE_V2` — reviewed native object class and target field;
+- `PRESERVED_LEGACY_FIELD` — exact predecessor semantics retained until a governed native mapping exists;
+- `PRESERVED_UNRESOLVED_PREDECESSOR_STATE` — explicit absence/unresolved predecessor state preserved without synthesis;
+- `OUT_OF_SCOPE_GENERATED_PRODUCT`;
+- `BLOCKED_REQUIRES_GOVERNED_SCHEMA_CHANGE`.
 
-Family-level membership in a native object class is not enough to mark all fields native. For example, a v1.4 source can map `source_id`, `title`, `publisher`, `url`, and `source_class` directly into the v2 `Source` schema; predecessor `retrieved`, `evidence_state`, `supports`, `claim_boundary`, and legacy-ID fields do not have equivalent slots in that schema and remain preserved explicitly. This is intentional.
+A family-level native class never makes all predecessor fields native automatically. `organization_type` is a controlling example: values such as `COMPANY`, `REGULATOR`, or `RESEARCH_INSTITUTION` are predecessor descriptive state, not the v2 Entity ontology class. Native organization identities use migration-generated `entity_type=ORGANIZATION`; predecessor subtype remains preserved for later bounded assertion mapping.
 
-Likewise, v1.6 source-check records have several fields that correspond to `Observation`, but they do not encode every required native observation field such as the exact requested locator/retrieval-method contract. The proof identifies reviewed field-level correspondences without claiming that the record is already materializable as a complete native `Observation`.
+Likewise, a v1.6 source check has reviewed correspondences for source identity, retrieval time, and outcome but lacks the transport details required to become an ordinary native `Observation`.
 
-A new top-level predecessor family is a migration failure until explicitly reviewed. There is no catch-all “ignore” path.
+## Current corrected field-preservation accounting
 
-## Current field-preservation result
-
-A controlled execution over the exact public-governing bytes above produced:
+The previous 2,340-native-field result is superseded by the ontology correction above. The frozen corpus now accounts as:
 
 ```text
 physical predecessor record occurrences: 842
 leaf field occurrences:                 11,664
-reviewed native-field occurrences:       2,340
-preserved legacy field occurrences:      9,176
+reviewed native-field occurrences:       2,117
+preserved legacy field occurrences:      9,399
 preserved unresolved occurrences:          148
-unmapped required fields:                    0
+unmapped required predecessor fields:         0
 invented values:                             0
 claim-boundary losses:                       0
 source-reference losses:                     0
@@ -66,66 +64,54 @@ history-lineage losses:                      0
 temporal-precision losses:                   0
 ```
 
-The deterministic proof digest for that exact field-specific run, using the public S2 filenames above, was:
+These figures are deterministic consequences of the reviewed field rules and frozen corpus. The prior proof digest `1247c7fc...` is **superseded** because the mapping rules changed. A new proof digest must not be reported until the exact updated script executes against the frozen files.
+
+## Current native/preserved migration state
+
+The composed noncanonical candidate currently establishes the following bounded slices:
 
 ```text
-1247c7fcbe801db6cc18494c6f60be91cd882ebc864c621106ae9560ba2f9f79
+native organization Entities                    153
+native Sources                                  236
+native v1.4 capital/ownership Events              5
+native v1.6 change Candidates                     9
+native graph/workflow objects total             403
+preserved organization records                   70
+transport-unresolved predecessor source checks   12
+native Observations                                0
 ```
 
-These counts are **field occurrences across bound predecessor files**, not counts of unique real-world objects. Governing files intentionally repeat some state (for example v1.6 delta material inside the v1.7 successor) for predecessor/release traceability.
+### Organization identities
 
-## Command
+Only 153 current identity-safe organization records become Entities. Their exact `ORG-*` IDs, canonical labels, and aliases are preserved. `entity_type=ORGANIZATION`, `status=ACTIVE`, empty identifiers, and empty lineage are explicit migration metadata. Sixty-three legacy endpoints, six provenance-only nodes, and one historical/current-identity-unresolved record remain exact predecessor state.
 
-```bash
-python scripts/observatory_v2_migration_proof.py \
-  --input V14=/path/to/canonical_observatory_release_v1.4.json \
-  --input V16=/path/to/canonical_live_refresh_release_v1.6.json \
-  --input DELTA16=/path/to/adjudicated_delta_v1.6.json \
-  --input V17=/path/to/canonical_successor_snapshot_v1.7.json \
-  --input MONITOR15=/path/to/source_monitor_registry_v1.5.json \
-  --output /path/to/noncanonical-migration-proof
-```
+### Sources
 
-Generated output:
+All 224 v1.4 Sources plus 12 v1.6 new Sources materialize as 236 unique native Sources. `retrieved` is never promoted to publication time. Explicit v1.6 publication dates retain DATE precision; null publication dates remain absent. Access/redistribution state is explicitly migration-unknown, and each native Source is bound to the complete predecessor record digest.
+
+### Predecessor source-check evidence
+
+All 12 v1.6 source checks bind one-to-one to materialized Sources and preserve exact TIMESTAMP knowledge time and predecessor outcome/digests. They remain migration sidecars with:
 
 ```text
-migration-proof.json
-input-manifest.json
-field-ledger.jsonl
-record-ledger.jsonl
+migration_state = PREDECESSOR_OBSERVATION_TRANSPORT_UNRESOLVED
+native_observation_created = false
+unresolved_native_observation_fields = [retrieval_method, requested_locator]
 ```
 
-Operational outputs are not committed automatically.
+Any attempt to fill those transport fields by guess is rejected.
 
-## First native materialization tranche: Sources
+### v1.4 capital/ownership events
 
-`neuroai_workbench.observatory_migration` materializes the complete predecessor Source identity family that can currently be represented without semantic invention:
+All five records are native-ready under exact identity rules. Subjects resolve by exact unique canonical label to materialized Entities; source IDs resolve to materialized Sources; counterparties remain `UNRESOLVED_LITERAL` when no controlled entity ID exists. Time is preserved exactly: three DATE records, one YEAR record, and one null date with no `occurred_at` field. `MIGRATED_PREDECESSOR_STATE` is explicit migration verification metadata, not a claim that predecessor verification occurred. Amount/currency/ownership-effect fields without native Event slots remain exact trace state.
 
-- 224 v1.4 sources;
-- 12 v1.6 `new_sources`;
-- 236 total source identities, with duplicate IDs refused.
+### v1.6 change candidates
 
-The native Source object receives only predecessor fields with direct governed semantics. `published` is mapped to `publication_or_record_date` while preserving YEAR/DATE/TIMESTAMP precision. `retrieved` is explicitly **not** promoted to source publication time because it is knowledge-time evidence.
+All nine stable candidate IDs materialize as native `Candidate` objects. `candidate_class` and adjudication status are exact predecessor values; the complete predecessor record is retained as `payload`; source IDs are checked against the 236-Source set. `OFFLINE_REPLAY` describes the migration execution path only and does not re-adjudicate the candidate or resolve its free-text subject into a graph entity.
 
-The native schema requires access/redistribution metadata that the predecessor did not establish. Migration therefore emits controlled metadata:
+## Deterministic packaging and identity binding
 
-```text
-access_class = UNKNOWN
-redistribution_state = UNKNOWN_NOT_ADJUDICATED
-```
-
-Those values describe migration knowledge state, not inferred legal rights. The complete original predecessor Source record is retained in a content-addressed trace record. The trace verifier recomputes the predecessor digest and rejects payload tampering, native-ID substitution, role/family mismatch, malformed indexes, and any attempt to set migration authority true.
-
-The deterministic Source package contains:
-
-```text
-sources.jsonl
-predecessor-traces.jsonl
-descriptor.json
-manifest.json
-```
-
-The descriptor records the following as separate identities:
+The migration packages separately bind:
 
 ```text
 workbench_compatibility_version
@@ -133,43 +119,25 @@ producer_workbench_commit
 runtime_execution_pin
 observatory_graph_schema_version
 s2_predecessor_commit
-V14 input SHA-256
-V16 input SHA-256
+input SHA-256 values
 ```
 
-These identities are never inferred from each other. In particular, package line `0.3.0.dev0` is not producer-commit evidence.
+Package-line equality is not execution evidence. Manifest equality is not publication authority. All package surfaces remain `NONCANONICAL_CANDIDATE`, `release_authorized=false`, and `native_v2_materialization_complete=false`.
 
-The package writer rejects malformed digests/commit identities, trace tampering, unequal Source/trace counts, and any `release_authorized=true` input.
+## Relationship and reopening blockers
 
-## Why predecessor source checks remain legacy observation evidence
+The v1.4 trial-site, participant-authority, and supplier-dependency families encode endpoints as system/study/site/participant/provider literals. The native Relationship contract requires resolved controlled entities on both sides. Migration therefore does not invent endpoint entities from display strings.
 
-All 12 v1.6 source checks preserve `check_id`, `source_id`, exact retrieval time, outcome, baseline match, page-content-hash state, and metadata digest. They record `SUCCESS_VIA_WEB_RESEARCH`, but they do not establish the exact `requested_locator` or a transport-level retrieval method required by the ordinary v2 `Observation` schema.
+The v1.6/v1.7 reopening records likewise contain free-text target objects and basis identifiers that are not yet typed as native assertion/event references, and some successor records lack a governed decision timestamp. They remain blocked pending exact target identity, trigger typing, and temporal representation.
 
-Migration therefore does not fabricate `HTTP_GET`, a guessed URL, or equivalent transport details. These records remain content-addressed predecessor observation evidence until a governed migration representation can encode unresolved transport/locator state without weakening ordinary v2 Observation requirements.
+Model records remain preserved until model-family/checkpoint identity semantics are explicit; a model-family record must not be silently promoted to a checkpoint or validated model entity.
 
-## Fail-closed behavior
+## Validation state
 
-The field proof fails if:
+The frozen predecessor corpus has been analyzed directly for the counts and identity/time constraints above. The current execution environment cannot clone GitHub because outbound DNS is unavailable. Hosted GitHub Actions also continue to fail before executing steps. Therefore no claim is made that the current PR head has passed pytest, Ruff, mypy, CodeQL, dependency review, or package checks. Those remain mandatory before merge.
 
-- an input role is duplicated;
-- an input file is absent;
-- an input role is unknown;
-- a predecessor family has no reviewed disposition;
-- any field occurrence is consequently classified `BLOCKED_REQUIRES_GOVERNED_SCHEMA_CHANGE`.
+## Gate A remaining work
 
-Empty `source_ids`, unknown observation time, and other predecessor provenance gaps remain explicit unresolved state. They are not converted into failure, and no release date, filesystem timestamp, or migration timestamp is substituted for missing knowledge time.
+Gate A remains open. The remaining families must each receive either an exact native representation or an explicit governed migration state: organization-resolution/regional history; models/datasets; three relationship families; v1.6 delta regulatory/governance/dependency state; reopening and no-change state; v1.7/PRIMA successor semantics; and release-level methodology, quality, provenance, and withheld-claim state.
 
-## What remains before Gate A closes
-
-Field preservation and Source materialization are only early executable parts of issue #239. The remaining migration gate must:
-
-1. preserve every `PRESERVED_LEGACY_FIELD` payload in deterministic predecessor traceability until a governed native representation exists;
-2. adopt an explicit lossless representation for predecessor observation records whose transport/locator details were never governed;
-3. resolve entity subjects/objects deterministically before Event/Relationship/Assertion materialization;
-4. preserve provenance nodes as provenance nodes and avoid forcing historical/legacy identities into an unsupported ACTIVE status;
-5. run typed referential-integrity and mixed-precision temporal validation over the complete materialized candidate;
-6. prove source-reference, claim-boundary, lineage, and temporal-precision preservation against materialized output rather than the input ledger alone;
-7. bind package compatibility, producer commit, runtime execution pin, graph schema generation, and S2 predecessor identity separately across the complete candidate;
-8. undergo representative human domain review before any authorization decision.
-
-Only after those steps can the programme claim a complete lossless Observatory-v2 migration candidate. Canonical publication remains a separate release-attestation and publication decision.
+The final candidate must then pass candidate-wide typed referential and mixed-precision temporal integrity, materialized-output zero-loss reconciliation, representative human domain review, and separately executed engineering/security gates. Canonical publication remains a distinct release-attestation/publication decision.
