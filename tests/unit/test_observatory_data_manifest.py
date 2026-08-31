@@ -56,7 +56,7 @@ def test_generate_and_verify_round_trip_on_temp_tree(generate_manifest, verify_m
     manifest = tmp_path / "SHA256SUMS.txt"
 
     text = generate_manifest.render_manifest(tmp_path, exclude={manifest.resolve()})
-    manifest.write_text(text, encoding="utf-8")
+    manifest.write_bytes(text.encode("utf-8"))
 
     ok, errors = verify_manifest.verify_manifest(tmp_path, manifest)
     assert ok, errors
@@ -70,7 +70,7 @@ def test_generate_and_verify_round_trip_on_temp_tree(generate_manifest, verify_m
 def test_verify_detects_unexpected_file(generate_manifest, verify_manifest, tmp_path: Path) -> None:
     (tmp_path / "only.json").write_text("{}\n", encoding="utf-8")
     manifest = tmp_path / "SHA256SUMS.txt"
-    manifest.write_text(generate_manifest.render_manifest(tmp_path, exclude={manifest.resolve()}), encoding="utf-8")
+    manifest.write_bytes(generate_manifest.render_manifest(tmp_path, exclude={manifest.resolve()}).encode("utf-8"))
 
     (tmp_path / "extra.json").write_text("{}\n", encoding="utf-8")
     ok, errors = verify_manifest.verify_manifest(tmp_path, manifest)

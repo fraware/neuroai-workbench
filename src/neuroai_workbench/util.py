@@ -81,9 +81,26 @@ def ensure_identifier(value: str, field: str = "identifier") -> str:
     return value
 
 
+def _comparable_path(path: Path) -> Path:
+    """Normalize Windows extended paths so containment checks stay stable.
+
+    Concurrent ``Path.resolve()`` on Windows may return ``\\\\?\\C:\\...`` for one
+    side and ``C:\\...`` for the other. Those forms are the same location but fail
+    ``parents`` membership and break collector run-ledger writes under load.
+    """
+    text = os.fspath(path)
+    if text.startswith("\\\\?\\"):
+        text = text[4:]
+    if os.name == "nt":
+        text = os.path.normcase(text)
+    return Path(text)
+
+
 def safe_join(root: Path, *parts: str) -> Path:
     candidate = root.joinpath(*parts).resolve()
     root_resolved = root.resolve()
-    if candidate != root_resolved and root_resolved not in candidate.parents:
+    candidate_cmp = _comparable_path(candidate)
+    root_cmp = _comparable_path(root_resolved)
+    if candidate_cmp != root_cmp and root_cmp not in candidate_cmp.parents:
         raise ValueError("Path escapes controlled root")
     return candidate

@@ -7,30 +7,27 @@ do not establish substantive truth, authorization, or a canonical successor.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
 from ..collector import CollectionScheduler, CollectorConfig, SchedulerConfig
+from ..collector.authorization import LIVE_COLLECTION_ENV, live_collection_enabled
 from ..collector.dns import DnsGuard
 from ..collector.http_client import HttpTransport
-from ..collector.transport import StdlibHttpTransport
+from ..collector.pinned_transport import PinnedSocketHttpTransport
 from ..util import load_json, sha256_bytes, utc_now
 from .schemas import SHADOW_EVALUATION_STATUS, SHADOW_REFRESH_BOUNDARY
 
-LIVE_COLLECTION_ENV = "NEUROAI_LIVE_COLLECTION"
-
-
-def live_collection_enabled() -> bool:
-    return os.environ.get(LIVE_COLLECTION_ENV, "").strip() == "1"
+__all__ = ["LIVE_COLLECTION_ENV", "live_collection_enabled"]
 
 
 def require_live_collection_enabled() -> None:
     if not live_collection_enabled():
         raise PermissionError(
             f"{LIVE_COLLECTION_ENV}=1 is required for live shadow cohort network collection. "
-            "CI and default local runs remain network-free."
+            "CI and default local runs remain network-free. Network capture also requires an "
+            "EvidenceCollectionService authorization packet; this environment variable is not a sufficient gate alone."
         )
 
 
@@ -121,7 +118,7 @@ def run_live_cohort_collection(
     }
     scheduler = CollectionScheduler(
         collector_config=config,
-        transport=transport or StdlibHttpTransport(),
+        transport=transport or PinnedSocketHttpTransport(),
         quarantine_root=quarantine_root,
         scheduler_config=SchedulerConfig(
             collection_enabled=True,
