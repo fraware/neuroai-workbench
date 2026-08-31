@@ -76,6 +76,61 @@
     },
     "collector_version": {"type": "string", "minLength": 1},
     "configuration_hash": {"$ref": "#/$defs/sha256"},
+    "predecessor_quarantine_id": {"type": ["string", "null"], "pattern": "^(QRN-[0-9a-f]{32})?$"},
+    "root_quarantine_id": {"type": ["string", "null"], "pattern": "^(QRN-[0-9a-f]{32})?$"},
+    "disposition_rationale": {"type": ["string", "null"]},
+    "rights_redistribution": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["state"],
+          "additionalProperties": false,
+          "properties": {
+            "state": {"type": "string", "minLength": 1},
+            "notes": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "retention_policy": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["policy_id"],
+          "additionalProperties": false,
+          "properties": {
+            "policy_id": {"type": "string", "minLength": 1},
+            "retain_until": {"type": ["string", "null"]},
+            "notes": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "content_safety_scan": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["state", "scanner_id", "detail", "boundary"],
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "NOT_EXECUTED_FAIL_CLOSED",
+                "SCANNER_UNAVAILABLE_FAIL_CLOSED",
+                "UNCLEAN",
+                "CLEAN_NOT_ADJUDICATION"
+              ]
+            },
+            "scanner_id": {"type": "string", "minLength": 1},
+            "detail": {"type": "string"},
+            "boundary": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
     "boundary": {"type": "string", "minLength": 1}
   }
 }
