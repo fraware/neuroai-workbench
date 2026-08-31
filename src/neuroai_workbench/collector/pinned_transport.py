@@ -45,6 +45,18 @@ def _validated_global_addresses(values: tuple[str, ...]) -> tuple[str, ...]:
     return tuple(dict.fromkeys(normalized))
 
 
+def _network_hostname(hostname: str) -> str:
+    """Return the ASCII identity used for HTTP Host and TLS SNI/certificate validation."""
+    normalized = hostname.rstrip(".")
+    try:
+        return str(ipaddress.ip_address(normalized))
+    except ValueError:
+        try:
+            return normalized.encode("idna").decode("ascii")
+        except UnicodeError as exc:
+            raise CollectionFailureError("SSRF_BLOCKED", "HTTP hostname cannot be normalized with IDNA") from exc
+
+
 def _host_header(hostname: str, *, scheme: str, port: int) -> str:
     host = f"[{hostname}]" if ":" in hostname else hostname
     default_port = 443 if scheme == "https" else 80
@@ -52,9 +64,9 @@ def _host_header(hostname: str, *, scheme: str, port: int) -> str:
 
 
 class PinnedSocketHttpTransport:
-    """HTTP/1.1 transport that connects only to DnsGuard-approved IP literals.
+    """GET-only HTTP/1.1 transport that connects only to DnsGuard-approved IP literals.
 
-    The original URL hostname is retained for the HTTP Host header and HTTPS
+    The URL hostname is normalized and retained for the HTTP Host header and HTTPS
     SNI/certificate hostname validation. Redirects are deliberately not followed;
     `HttpClient` owns redirect validation and performs a fresh DNS-guard step for
     each accepted redirect hop.
@@ -82,6 +94,9 @@ class PinnedSocketHttpTransport:
     ) -> tuple[int, dict[str, str], bytes]:
         validate_public_url(request.url)
         _reject_crlf(request.method, label="HTTP method")
+        if request.method != "GET":
+            raise CollectionFailureError("NETWORK_ERROR", "Production collector transport permits GET only")
+
         parsed = urlsplit(request.url)
         scheme = parsed.scheme.lower()
         if scheme not in {"http", "https"}:
@@ -89,6 +104,7 @@ class PinnedSocketHttpTransport:
         hostname = parsed.hostname
         if not hostname:
             raise CollectionFailureError("SSRF_BLOCKED", "HTTP URL is missing a hostname")
+        network_hostname = _network_hostname(hostname)
         try:
             port = parsed.port or (443 if scheme == "https" else 80)
         except ValueError as exc:
@@ -110,10 +126,10 @@ class PinnedSocketHttpTransport:
                     f"Caller may not override transport-controlled header {key!r}",
                 )
             headers[key] = value
-        headers["Host"] = _host_header(hostname, scheme=scheme, port=port)
+        headers["Host"] = _host_header(network_hostname, scheme=scheme, port=port)
         headers["Connection"] = "close"
 
-        request_lines = [f"{request.method} {path} HTTP/1.1"]
+        request_lines = [f"GET {path} HTTP/1.1"]
         request_lines.extend(f"{key}: {value}" for key, value in headers.items())
         request_text = "\r\n".join(request_lines) + "\r\n\r\n"
         try:
@@ -131,7 +147,7 @@ class PinnedSocketHttpTransport:
                 raw_socket.settimeout(read_timeout)
                 stream = raw_socket
                 if scheme == "https":
-                    stream = self.ssl_context.wrap_socket(raw_socket, server_hostname=hostname)
+                    stream = self.ssl_context.wrap_socket(raw_socket, server_hostname=network_hostname)
                     stream.settimeout(read_timeout)
                 stream.sendall(request_bytes)
                 response = http.client.HTTPResponse(stream)
