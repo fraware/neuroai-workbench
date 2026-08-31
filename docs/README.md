@@ -10,6 +10,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 | [data-storage-boundaries.md](architecture/data-storage-boundaries.md) | Five-store model and storage roles |
 | [vision-and-target-architecture.md](architecture/vision-and-target-architecture.md) | Seven-layer Observatory v2 programme target and transition gates |
 | [observatory-v2-ontology.md](architecture/observatory-v2-ontology.md) | Target entities, observations, assertions, relationships, events, and assessment dependencies |
+| [observatory-v2-migration-boundary.md](architecture/observatory-v2-migration-boundary.md) | Narrow source/time-unresolved exception for lossless predecessor migration |
 | [temporal-model.md](architecture/temporal-model.md) | Valid-time, knowledge-time, observation succession, and as-of semantics |
 | [entity-identity-model.md](architecture/entity-identity-model.md) | Stable IDs, resolution proposals, lineage, and no-silent-merge rules |
 | [s2-s3-evidence-contract.md](architecture/s2-s3-evidence-contract.md) | Public evidence metadata versus protected/restricted evidence bytes |
