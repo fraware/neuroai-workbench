@@ -59,7 +59,7 @@ class WorkbenchHTTPServer(ThreadingHTTPServer):
         # Windows clients often reset loopback connections after Connection: close;
         # do not treat that transport teardown as an unhandled server failure.
         exc = sys.exc_info()[1]
-        if isinstance(exc, (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, TimeoutError)):
+        if isinstance(exc, ConnectionResetError | ConnectionAbortedError | BrokenPipeError | TimeoutError):
             LOGGER.debug("Client connection closed from %s: %s", client_address, exc)
             return
         super().handle_error(request, client_address)
