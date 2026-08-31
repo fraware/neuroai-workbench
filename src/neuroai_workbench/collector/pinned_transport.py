@@ -162,6 +162,8 @@ class PinnedSocketHttpTransport:
                 return int(response.status), response_headers, body
             except CollectionFailureError:
                 raise
+            except http.client.HTTPException as exc:
+                raise CollectionFailureError("NETWORK_ERROR", f"Malformed HTTP response: {exc}") from exc
             except TimeoutError:
                 raise
             except OSError as exc:
