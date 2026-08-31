@@ -95,5 +95,16 @@ This sequence avoids making `main` unmergeable through a check-name race.
 
 ```bash
 python scripts/check_github_workflow_contract.py
-python -m pytest tests/unit/test_github_workflow_contract.py -q
+python scripts/classify_hosted_ci_execution.py tests/fixtures/ci/hosted-job-empty-steps.json
+python -m pytest tests/unit/test_github_workflow_contract.py tests/unit/test_hosted_ci_execution.py -q
 ```
+
+## Hosted empty-steps versus ruleset parity versus historical tag peel
+
+These are three different conditions:
+
+1. **Empty `steps: []` on hosted jobs.** GitHub-hosted runners may complete without executing workflow steps. Classify that as `INFRASTRUCTURE_FAILURE` using `scripts/classify_hosted_ci_execution.py`. It is not a pytest failure and not hosted success. See [hosted-ci-empty-steps.md](hosted-ci-empty-steps.md). The repository cannot assign GitHub runners from code.
+2. **Protect-main ruleset gap (issue #4).** Ruleset ID `20116255` has been verified at 13/14. The repository contract still requires `CI / pip-audit` and `CI / product-native`. Do not loosen `.github/required-checks.json` to match the incomplete hosted ruleset.
+3. **Historical `v0.2.1` tag peel.** The published tag currently peels to the wrong commit. That is recorded in [v0.2.1-release-verification.md](../releases/v0.2.1-release-verification.md). It is not M0-blocking for a future `v0.3.0` tag and must not be repaired without explicit release authority.
+
+Do not claim hosted CI success until jobs have non-empty executed steps and logs.
