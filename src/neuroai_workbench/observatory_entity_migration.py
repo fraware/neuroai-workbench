@@ -23,16 +23,23 @@ from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, s
 
 ENTITY_MIGRATION_BOUNDARY = (
     "Exact predecessor organization identity migration only. Native Entity materialization is restricted to "
-    "already-controlled current organization ids with governed current identity state. Legacy endpoints, "
-    "provenance-only nodes, and historical/current-identity-unresolved records remain predecessor state. "
-    "Entity materialization does not establish substantive truth, current capability, regulatory status, "
-    "conformance, institutional endorsement, or release authority."
+    "already-controlled current organization ids with governed current identity state. Native entity_type is "
+    "the v2 ontology class ORGANIZATION; predecessor organization_type remains trace state for later bounded "
+    "assertion mapping. Legacy endpoints, provenance-only nodes, and historical/current-identity-unresolved "
+    "records remain predecessor state. Entity materialization does not establish substantive truth, current "
+    "capability, regulatory status, conformance, institutional endorsement, or release authority."
 )
 
 MATERIALIZE_ACTIVE_ENTITY = "MATERIALIZE_ACTIVE_ENTITY"
 LEGACY_IDENTITY_UNRESOLVED = "LEGACY_IDENTITY_UNRESOLVED"
 PROVENANCE_ONLY_NODE = "PROVENANCE_ONLY_NODE"
 HISTORICAL_CURRENT_IDENTITY_UNRESOLVED = "HISTORICAL_CURRENT_IDENTITY_UNRESOLVED"
+NATIVE_ENTITY_TYPE = "ORGANIZATION"
+DEFAULT_LINEAGE = {
+    "predecessor_entity_ids": [],
+    "successor_entity_ids": [],
+    "supersession_state": "NONE",
+}
 
 SAFE_VERIFICATION_STATES = frozenset(
     {
@@ -105,7 +112,7 @@ def classify_predecessor_organization(record: dict[str, Any]) -> str:
     )
 
 
-def _validate_core_identity(record: dict[str, Any]) -> tuple[str, str, str, list[str]]:
+def _validate_core_identity(record: dict[str, Any]) -> tuple[str, str, list[str]]:
     organization_id = record.get("organization_id")
     canonical_name = record.get("canonical_name")
     organization_type = record.get("organization_type")
@@ -116,10 +123,10 @@ def _validate_core_identity(record: dict[str, Any]) -> tuple[str, str, str, list
     if not isinstance(canonical_name, str) or not canonical_name.strip():
         raise ObservatoryEntityMigrationError("Materializable organization requires a non-empty canonical_name")
     if not isinstance(organization_type, str) or not organization_type.strip():
-        raise ObservatoryEntityMigrationError("Materializable organization requires a non-empty organization_type")
+        raise ObservatoryEntityMigrationError("Materializable organization requires predecessor organization_type")
     if not isinstance(aliases, list) or any(not isinstance(alias, str) for alias in aliases):
         raise ObservatoryEntityMigrationError("Materializable organization aliases must be an array of strings")
-    return organization_id, canonical_name, organization_type, list(aliases)
+    return organization_id, canonical_name, list(aliases)
 
 
 def _native_trace(*, record: dict[str, Any], record_index: int, entity_id: str) -> dict[str, Any]:
@@ -132,6 +139,12 @@ def _native_trace(*, record: dict[str, Any], record_index: int, entity_id: str) 
         "native_object_id": entity_id,
         "predecessor_record_sha256": _record_digest(record),
         "predecessor_record": record,
+        "migration_generated_fields": {
+            "entity_type": NATIVE_ENTITY_TYPE,
+            "status": "ACTIVE",
+            "identifiers": [],
+            "lineage": DEFAULT_LINEAGE,
+        },
         "native_authority": False,
         "boundary": ENTITY_MIGRATION_BOUNDARY,
     }
@@ -194,11 +207,54 @@ def verify_organization_migration_record(
             errors.append("native entity id must equal exact predecessor organization_id")
         if expected_native_object_id is not None and native_id != expected_native_object_id:
             errors.append("native_object_id binding mismatch")
+        expected_generated = {
+            "entity_type": NATIVE_ENTITY_TYPE,
+            "status": "ACTIVE",
+            "identifiers": [],
+            "lineage": DEFAULT_LINEAGE,
+        }
+        if trace.get("migration_generated_fields") != expected_generated:
+            errors.append("organization migration-generated field declaration mismatch")
     else:
         if native_class is not None or native_id is not None:
             errors.append("preserved organization state must not bind a native object")
+        if "migration_generated_fields" in trace:
+            errors.append("preserved organization state must not declare native generated fields")
 
-    return errors
+    return sorted(set(errors))
+
+
+def verify_materialized_organization(entity: dict[str, Any], trace: dict[str, Any]) -> list[str]:
+    """Verify every native Entity identity field against the exact predecessor record and ontology."""
+    errors = verify_organization_migration_record(
+        trace,
+        expected_native_object_id=str(entity.get("entity_id") or ""),
+    )
+    predecessor = trace.get("predecessor_record")
+    if not isinstance(predecessor, dict):
+        return sorted(set(errors + ["predecessor_record must be an object"]))
+    if entity.get("entity_id") != predecessor.get("organization_id"):
+        errors.append("Entity.entity_id binding mismatch")
+    if entity.get("canonical_label") != predecessor.get("canonical_name"):
+        errors.append("Entity.canonical_label binding mismatch")
+    if entity.get("aliases") != predecessor.get("aliases"):
+        errors.append("Entity.aliases binding mismatch")
+    if entity.get("entity_type") != NATIVE_ENTITY_TYPE:
+        errors.append("Entity.entity_type must be ORGANIZATION under v2 ontology")
+    if entity.get("status") != "ACTIVE":
+        errors.append("migration Entity.status must remain ACTIVE for materialized current identities")
+    if entity.get("identifiers") != []:
+        errors.append("migration Entity.identifiers must remain empty until separately governed")
+    if entity.get("lineage") != DEFAULT_LINEAGE:
+        errors.append("migration Entity.lineage must remain empty until separately governed")
+    if entity.get("boundary") != ENTITY_MIGRATION_BOUNDARY:
+        errors.append("Entity migration boundary mismatch")
+    schema_errors = validate_graph_object(
+        {key: value for key, value in entity.items() if key != "canonical_sha256"},
+        "Entity",
+    )
+    errors.extend(f"schema: {error}" for error in schema_errors)
+    return sorted(set(errors))
 
 
 def materialize_predecessor_organization(
@@ -206,37 +262,28 @@ def materialize_predecessor_organization(
     *,
     record_index: int,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Materialize one identity-safe current predecessor organization as a v2 Entity."""
+    """Materialize one identity-safe current predecessor organization as a v2 ORGANIZATION Entity."""
     classification = classify_predecessor_organization(record)
     if classification != MATERIALIZE_ACTIVE_ENTITY:
         raise ObservatoryEntityMigrationError(
             f"Organization classification {classification} is not eligible for native Entity materialization"
         )
 
-    organization_id, canonical_name, organization_type, aliases = _validate_core_identity(record)
+    organization_id, canonical_name, aliases = _validate_core_identity(record)
     entity = build_entity(
         entity_id=organization_id,
-        entity_type=organization_type,
+        entity_type=NATIVE_ENTITY_TYPE,
         canonical_label=canonical_name,
         aliases=aliases,
         identifiers=[],
         status="ACTIVE",
+        lineage=DEFAULT_LINEAGE,
         boundary=ENTITY_MIGRATION_BOUNDARY,
     )
-    errors = validate_graph_object(
-        {key: value for key, value in entity.items() if key != "canonical_sha256"},
-        "Entity",
-    )
-    if errors:
-        raise ObservatoryEntityMigrationError(f"Materialized Entity is schema-invalid: {errors}")
-
     trace = _native_trace(record=record, record_index=record_index, entity_id=organization_id)
-    trace_errors = verify_organization_migration_record(
-        trace,
-        expected_native_object_id=organization_id,
-    )
-    if trace_errors:
-        raise ObservatoryEntityMigrationError(f"Generated organization trace is invalid: {trace_errors}")
+    errors = verify_materialized_organization(entity, trace)
+    if errors:
+        raise ObservatoryEntityMigrationError(f"Generated organization Entity/trace is invalid: {errors}")
     return entity, trace
 
 
@@ -286,8 +333,10 @@ def materialize_predecessor_organizations(v14_release: dict[str, Any]) -> dict[s
         "predecessor_traces": traces,
         "preserved_predecessor_records": preserved,
         "migration_generated_metadata": {
+            "native_entity_type": NATIVE_ENTITY_TYPE,
             "native_status": "ACTIVE",
             "identifiers": [],
+            "lineage": DEFAULT_LINEAGE,
             "boundary": ENTITY_MIGRATION_BOUNDARY,
         },
         "boundary": ENTITY_MIGRATION_BOUNDARY,
@@ -319,7 +368,7 @@ def verify_organization_partition(result: dict[str, Any]) -> dict[str, Any]:
         if not entity_id or entity_id in entity_ids:
             errors.append(f"duplicate or empty materialized entity id {entity_id!r}")
         entity_ids.add(entity_id)
-        errors.extend(verify_organization_migration_record(trace, expected_native_object_id=entity_id))
+        errors.extend(verify_materialized_organization(entity, trace))
         if isinstance(trace.get("record_index"), int):
             indexes.append(int(trace["record_index"]))
 
@@ -350,6 +399,15 @@ def verify_organization_partition(result: dict[str, Any]) -> dict[str, Any]:
     declared_counts = result.get("classification_counts")
     if declared_counts != dict(sorted(observed_counts.items())):
         errors.append("classification_counts mismatch")
+    expected_metadata = {
+        "native_entity_type": NATIVE_ENTITY_TYPE,
+        "native_status": "ACTIVE",
+        "identifiers": [],
+        "lineage": DEFAULT_LINEAGE,
+        "boundary": ENTITY_MIGRATION_BOUNDARY,
+    }
+    if result.get("migration_generated_metadata") != expected_metadata:
+        errors.append("organization migration-generated metadata mismatch")
     if result.get("release_authorized") is not False or result.get("state") != "NONCANONICAL_CANDIDATE":
         errors.append("organization migration result must remain noncanonical and unauthorized")
 
