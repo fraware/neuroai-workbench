@@ -1,8 +1,8 @@
 """Composed noncanonical Observatory-v2 predecessor migration candidate.
 
 This layer extends the reconciled Entity/Source core with predecessor families that
-have complete governed native mappings. It remains explicitly incomplete and cannot
-be used as publication authority.
+have complete governed native mappings or explicit lossless predecessor-state
+representations. It remains incomplete and cannot be used as publication authority.
 """
 
 from __future__ import annotations
@@ -22,6 +22,12 @@ from .observatory_event_migration import (
     materialize_v14_capital_events,
     verify_materialized_capital_event,
 )
+from .observatory_history_migration import (
+    HISTORY_MIGRATION_BOUNDARY,
+    preserve_v14_organization_resolution_history,
+    preserve_v14_regional_expansion_history,
+    verify_preserved_history_record,
+)
 from .observatory_migration_core import (
     CORE_MIGRATION_BOUNDARY,
     build_predecessor_migration_core,
@@ -31,8 +37,8 @@ from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, s
 
 MIGRATION_CANDIDATE_BOUNDARY = (
     "Noncanonical Observatory-v2 predecessor migration candidate. Mechanical PASS covers only explicitly "
-    "materialized and preserved families named in this descriptor. Remaining predecessor families are still "
-    "unmaterialized. PASS does not establish complete migration, substantive truth, assessment mutation, "
+    "materialized and governed-preserved families named in this descriptor. Remaining predecessor families "
+    "are unresolved. PASS does not establish complete migration, substantive truth, assessment mutation, "
     "institutional authority, or publication authorization."
 )
 
@@ -70,7 +76,7 @@ def build_predecessor_migration_candidate(
     v14_release: dict[str, Any],
     v16_refresh: dict[str, Any],
 ) -> dict[str, Any]:
-    """Build the current candidate: migration core, v1.4 capital events, and v1.6 change candidates."""
+    """Build the current candidate across native and governed-preserved predecessor families."""
     core = build_predecessor_migration_core(v14_release=v14_release, v16_refresh=v16_refresh)
     if core.get("mechanical_verification") != "PASS":
         raise ObservatoryMigrationCandidateError("migration core must mechanically pass before extension")
@@ -78,6 +84,18 @@ def build_predecessor_migration_candidate(
     entities = core["entity_migration"]["entities"]
     sources = core["source_migration"]["sources"]
     source_ids = {str(source["source_id"]) for source in sources}
+    entity_ids = {str(entity["entity_id"]) for entity in entities}
+    organization_rows = v14_release.get("organizations")
+    if not isinstance(organization_rows, list) or any(not isinstance(item, dict) for item in organization_rows):
+        raise ObservatoryMigrationCandidateError("v1.4 organizations must be an array of objects")
+    organization_records = {
+        str(item["organization_id"]): item
+        for item in organization_rows
+        if isinstance(item.get("organization_id"), str)
+    }
+    if len(organization_records) != len(organization_rows):
+        raise ObservatoryMigrationCandidateError("v1.4 organization ids must be complete and unique")
+
     event_result = materialize_v14_capital_events(
         v14_release,
         entities=entities,
@@ -87,6 +105,17 @@ def build_predecessor_migration_candidate(
         v16_refresh,
         known_source_ids=source_ids,
     )
+    identity_history_result = preserve_v14_organization_resolution_history(
+        v14_release,
+        organization_records=organization_records,
+        known_source_ids=source_ids,
+    )
+    regional_history_result = preserve_v14_regional_expansion_history(
+        v14_release,
+        organization_records=organization_records,
+        materialized_entity_ids=entity_ids,
+        known_source_ids=source_ids,
+    )
 
     native_objects = [
         *core["native_objects"],
@@ -94,6 +123,8 @@ def build_predecessor_migration_candidate(
         *change_candidate_result["candidates"],
     ]
     retired_families = {
+        "V14.organization_resolution",
+        "V14.regional_expansion",
         "V14.capital_and_ownership_events",
         "V16.change_candidates",
     }
@@ -106,13 +137,23 @@ def build_predecessor_migration_candidate(
         "state": "NONCANONICAL_CANDIDATE",
         "release_authorized": False,
         "native_v2_materialization_complete": False,
-        "mechanical_scope": "MIGRATION_CORE_PLUS_V14_CAPITAL_EVENTS_PLUS_V16_CHANGE_CANDIDATES",
+        "mechanical_scope": (
+            "MIGRATION_CORE_PLUS_V14_HISTORY_PLUS_V14_CAPITAL_EVENTS_PLUS_V16_CHANGE_CANDIDATES"
+        ),
         "core": core,
+        "identity_resolution_history": identity_history_result,
+        "regional_expansion_history": regional_history_result,
         "capital_event_migration": event_result,
         "change_candidate_migration": change_candidate_result,
         "native_objects": native_objects,
         "counts": {
             **core["counts"],
+            "preserved_identity_resolution_history": identity_history_result["preserved_record_count"],
+            "preserved_regional_expansion_history": regional_history_result["preserved_record_count"],
+            "governed_predecessor_history_records": (
+                identity_history_result["preserved_record_count"]
+                + regional_history_result["preserved_record_count"]
+            ),
             "native_capital_events": event_result["object_count"],
             "native_change_candidates": change_candidate_result["object_count"],
             "native_candidate_objects": len(native_objects),
@@ -121,6 +162,7 @@ def build_predecessor_migration_candidate(
         "boundaries": {
             "candidate": MIGRATION_CANDIDATE_BOUNDARY,
             "core": CORE_MIGRATION_BOUNDARY,
+            "history": HISTORY_MIGRATION_BOUNDARY,
             "event": EVENT_MIGRATION_BOUNDARY,
             "change_candidate": CHANGE_CANDIDATE_MIGRATION_BOUNDARY,
         },
@@ -132,7 +174,7 @@ def build_predecessor_migration_candidate(
 
 
 def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, Any]:
-    """Verify candidate-wide identity uniqueness and exact cross-family bindings."""
+    """Verify candidate-wide identity uniqueness, trace integrity, and cross-family bindings."""
     errors: list[str] = []
     if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
         errors.append("migration candidate must remain noncanonical and unauthorized")
@@ -140,10 +182,16 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
         errors.append("migration candidate must not claim complete native v2 materialization")
 
     core = result.get("core")
+    identity_history = result.get("identity_resolution_history")
+    regional_history = result.get("regional_expansion_history")
     event_result = result.get("capital_event_migration")
     change_candidate_result = result.get("change_candidate_migration")
-    if not isinstance(core, dict) or not isinstance(event_result, dict) or not isinstance(change_candidate_result, dict):
+    if not all(
+        isinstance(item, dict)
+        for item in (core, identity_history, regional_history, event_result, change_candidate_result)
+    ):
         return {"valid": False, "errors": ["migration candidate child results are missing"]}
+
     core_report = verify_predecessor_migration_core(core)
     errors.extend(f"core: {error}" for error in core_report["errors"])
 
@@ -167,6 +215,73 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
         for source in sources
         if isinstance(source, dict) and isinstance(source.get("source_id"), str)
     }
+
+    predecessor_organizations: dict[str, dict[str, Any]] = {}
+    entity_traces = core.get("entity_migration", {}).get("predecessor_traces", [])
+    preserved_organizations = core.get("entity_migration", {}).get("preserved_predecessor_records", [])
+    for trace in [*entity_traces, *preserved_organizations]:
+        if not isinstance(trace, dict):
+            continue
+        predecessor = trace.get("predecessor_record")
+        if isinstance(predecessor, dict) and isinstance(predecessor.get("organization_id"), str):
+            predecessor_organizations[str(predecessor["organization_id"])] = predecessor
+
+    for history_name, history_result in (
+        ("organization_resolution", identity_history),
+        ("regional_expansion", regional_history),
+    ):
+        records = history_result.get("records")
+        if not isinstance(records, list):
+            errors.append(f"{history_name} history records are missing")
+            records = []
+        if history_result.get("input_record_count") != len(records):
+            errors.append(f"{history_name} history does not cover complete predecessor family")
+        if history_result.get("preserved_record_count") != len(records):
+            errors.append(f"{history_name} preserved count mismatch")
+        if history_result.get("native_object_count") != 0:
+            errors.append(f"{history_name} must not claim native graph objects")
+        if history_result.get("release_authorized") is not False:
+            errors.append(f"{history_name} history must remain unauthorized")
+        for record in records:
+            if not isinstance(record, dict):
+                errors.append(f"{history_name} history entry must be an object")
+                continue
+            errors.extend(
+                f"{history_name}:{record.get('record_id')}: {error}"
+                for error in verify_preserved_history_record(record)
+            )
+            predecessor = record.get("predecessor_record")
+            if not isinstance(predecessor, dict):
+                continue
+            org_id = str(record.get("organization_id") or "")
+            organization = predecessor_organizations.get(org_id)
+            if organization is None:
+                errors.append(f"{history_name}:{record.get('record_id')}: predecessor organization {org_id!r} missing")
+                continue
+            missing_sources = sorted(set(record.get("source_ids") or []) - source_ids)
+            if missing_sources:
+                errors.append(
+                    f"{history_name}:{record.get('record_id')}: references missing Sources {missing_sources}"
+                )
+            if history_name == "organization_resolution":
+                if predecessor.get("name_before") != organization.get("canonical_name"):
+                    errors.append(
+                        f"organization_resolution:{record.get('record_id')}: name_before binding mismatch"
+                    )
+                if predecessor.get("verification_after") != organization.get("verification_state"):
+                    errors.append(
+                        f"organization_resolution:{record.get('record_id')}: verification_after binding mismatch"
+                    )
+            else:
+                entity = entity_index.get(org_id)
+                if entity is None:
+                    errors.append(
+                        f"regional_expansion:{record.get('record_id')}: organization is not a materialized Entity"
+                    )
+                elif predecessor.get("canonical_name") != entity.get("canonical_label"):
+                    errors.append(
+                        f"regional_expansion:{record.get('record_id')}: canonical-name binding mismatch"
+                    )
 
     events = event_result.get("events")
     event_traces = event_result.get("predecessor_traces")
@@ -245,6 +360,11 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
     else:
         expected_counts = {
             **core.get("counts", {}),
+            "preserved_identity_resolution_history": len(identity_history.get("records", [])),
+            "preserved_regional_expansion_history": len(regional_history.get("records", [])),
+            "governed_predecessor_history_records": (
+                len(identity_history.get("records", [])) + len(regional_history.get("records", []))
+            ),
             "native_capital_events": len(events),
             "native_change_candidates": len(candidates),
             "native_candidate_objects": len(native_objects),
@@ -253,13 +373,17 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
             errors.append("candidate count reconciliation mismatch")
 
     remaining = result.get("remaining_unmaterialized_families")
+    retired = {
+        "V14.organization_resolution",
+        "V14.regional_expansion",
+        "V14.capital_and_ownership_events",
+        "V16.change_candidates",
+    }
     if not isinstance(remaining, list):
         errors.append("remaining-family ledger is missing")
     else:
-        if "V14.capital_and_ownership_events" in remaining:
-            errors.append("remaining-family ledger did not retire the materialized capital-event family")
-        if "V16.change_candidates" in remaining:
-            errors.append("remaining-family ledger did not retire the materialized change-candidate family")
+        for family in sorted(retired & set(remaining)):
+            errors.append(f"remaining-family ledger did not retire governed family {family}")
 
     return {"valid": not errors, "errors": sorted(set(errors))}
 
@@ -301,6 +425,8 @@ def write_predecessor_migration_candidate_package(
     observation_result = core["predecessor_observation_evidence"]
     event_result = result["capital_event_migration"]
     change_candidate_result = result["change_candidate_migration"]
+    identity_history = result["identity_resolution_history"]
+    regional_history = result["regional_expansion_history"]
     files = {
         "entities.jsonl": _jsonl_bytes(entity_result["entities"]),
         "entity-predecessor-traces.jsonl": _jsonl_bytes(entity_result["predecessor_traces"]),
@@ -308,6 +434,8 @@ def write_predecessor_migration_candidate_package(
         "sources.jsonl": _jsonl_bytes(source_result["sources"]),
         "source-predecessor-traces.jsonl": _jsonl_bytes(source_result["predecessor_traces"]),
         "predecessor-observation-evidence.jsonl": _jsonl_bytes(observation_result["records"]),
+        "identity-resolution-history.jsonl": _jsonl_bytes(identity_history["records"]),
+        "regional-expansion-history.jsonl": _jsonl_bytes(regional_history["records"]),
         "events.jsonl": _jsonl_bytes(event_result["events"]),
         "event-predecessor-traces.jsonl": _jsonl_bytes(event_result["predecessor_traces"]),
         "candidates.jsonl": _jsonl_bytes(change_candidate_result["candidates"]),
