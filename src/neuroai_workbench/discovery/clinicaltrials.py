@@ -48,18 +48,22 @@ def project_search_pages(
     query_id: str,
     query_text: str,
     pages: Sequence[Mapping[str, Any]],
+    required_study_types: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Project supplied CT.gov search pages into generic discovery result records.
 
-    Pages are interpreted in caller-supplied order. Duplicate NCT IDs are collapsed only when
-    their normalized projections are byte-for-byte-equivalent as Python values; conflicting
-    duplicates fail closed. ``fully_paginated`` describes only whether the supplied sequence
-    terminates with no next-page token. It is not a recall/completeness claim.
+    Duplicate NCT IDs are collapsed only for identical normalized projections; conflicting
+    duplicates fail closed. Optional study-type filtering is exact and post-retrieval so its
+    denominator remains visible. ``fully_paginated`` describes only whether the supplied page
+    sequence terminates with no next-page token; it is not a recall/completeness claim.
     """
     qid = _text(query_id, "query_id")
     qtext = _text(query_text, "query_text")
     if not pages:
         raise ValueError("At least one ClinicalTrials.gov search page is required")
+
+    required_types = tuple(sorted({_text(value, "required_study_types item").upper() for value in (required_study_types or [])}))
+    required_type_set = set(required_types)
 
     by_nct: dict[str, dict[str, Any]] = {}
     page_reports: list[dict[str, Any]] = []
@@ -95,9 +99,7 @@ def project_search_pages(
             elif prior == normalized:
                 duplicate_record_count += 1
             else:
-                raise ValueError(
-                    f"Conflicting normalized ClinicalTrials.gov representations for {nct_id}"
-                )
+                raise ValueError(f"Conflicting normalized ClinicalTrials.gov representations for {nct_id}")
 
         page_reports.append(
             {
@@ -125,8 +127,16 @@ def project_search_pages(
 
     result_records: list[dict[str, Any]] = []
     normalized_records: list[dict[str, Any]] = []
+    excluded_by_study_type: list[dict[str, Any]] = []
     for nct_id in sorted(by_nct):
         normalized = by_nct[nct_id]
+        study_type_raw = normalized.get("study_type")
+        study_type = study_type_raw.upper() if isinstance(study_type_raw, str) else None
+        if required_type_set and study_type not in required_type_set:
+            excluded_by_study_type.append(
+                {"nct_id": nct_id, "study_type": study_type, "reason": "STUDY_TYPE_NOT_IN_PROGRAMME_SCOPE"}
+            )
+            continue
         title = normalized.get("brief_title")
         display_title = title.strip() if isinstance(title, str) and title.strip() else nct_id
         result_records.append(
@@ -147,9 +157,13 @@ def project_search_pages(
         "adapter_id": CTGOV_ADAPTER_ID,
         "query_id": qid,
         "query_text": qtext,
+        "required_study_types": list(required_types),
         "supplied_page_count": len(pages),
         "raw_returned_record_count": raw_record_count,
-        "unique_nct_record_count": len(by_nct),
+        "unique_nct_record_count_before_programme_filter": len(by_nct),
+        "included_candidate_count": len(result_records),
+        "excluded_by_study_type_count": len(excluded_by_study_type),
+        "excluded_by_study_type": excluded_by_study_type,
         "duplicate_nct_representation_count": duplicate_record_count,
         "reported_total_count_state": total_count_state,
         "reported_total_count": reported_total_count,
@@ -162,8 +176,4 @@ def project_search_pages(
         "automatic_registry_mutation_performed": False,
         "boundary": DISCOVERY_BOUNDARY,
     }
-    return {
-        "result_records": result_records,
-        "normalized_records": normalized_records,
-        "coverage": coverage,
-    }
+    return {"result_records": result_records, "normalized_records": normalized_records, "coverage": coverage}
