@@ -13,6 +13,16 @@ make test
 
 Read `AGENTS.md`, [AI-agent development](docs/operations/ai-agent-development.md), and the applicable `.cursor/rules/` files before changing code or controlled resources.
 
+## Extending programmes and graph vocabulary
+
+See [Extending Observatory programmes](docs/operations/extending-observatory.md) for adding a source universe, collector adapter, assertion predicate, entity kind, or typed delta operation.
+
+Offline one-command reference flow (no network; mechanical candidate only):
+
+```bash
+python scripts/offline_reference_flow.py --output-dir .tmp/offline-flow
+```
+
 ## Pull-request contract
 
 - Link one bounded issue.

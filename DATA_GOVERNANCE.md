@@ -94,3 +94,13 @@ A holder response may record access conditions, a non-secret holder reference an
 ## Discovery query records
 
 Discovery runs and candidate source proposals are workflow metadata stored under an operations discovery workspace. Default execution is offline through fixtures or replay. Opt-in network discovery requires an explicit environment gate and public-URL SSRF checks. Public synthetic fixtures may enter the software repository; live result bodies and protected captures remain outside public Git. Discovery acceptance creates append-only registry successor drafts and carries no canonical publication authority.
+
+The ClinicalTrials.gov reference programme identity is `SU-TRIAL`. `SU-TRIALS` is a documentation alias only. Programme execution emits candidates and coverage reports. It does not mutate S2 or a live monitor registry.
+
+## Collector quarantine custody
+
+Quarantine records may carry optional rights/redistribution, retention-policy, and content-safety scan hooks. The default scanner is fail-closed and never reports CLEAN. Scanning is not substantive adjudication. Approval and rejection append successor records; pending capture records remain immutable. Successful retrieval remains `RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED` and does not write canonical S2.
+
+## Candidate graph releases
+
+The candidate release compiler writes descriptor, manifest, SHA256SUMS, JSONL object classes, verification report, and PENDING six-domain attestation stubs bound to the manifest digest. Mechanical PASS does not authorize publication. Attestation recording remains `release_attestation.py`.
