@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from neuroai_workbench.observatory_migration import (
@@ -9,7 +11,9 @@ from neuroai_workbench.observatory_migration import (
     materialize_predecessor_sources,
     predecessor_time_value,
     verify_predecessor_trace,
+    write_predecessor_source_package,
 )
+from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
 
 def _v14_source(source_id: str = "SRC-1") -> dict:
@@ -124,6 +128,68 @@ def test_materialize_predecessor_sources_is_noncanonical_and_complete() -> None:
     assert result["retrieved_not_promoted_to_publication_time"] is True
     assert {source["source_id"] for source in result["sources"]} == {"SRC-1", "SRC-2", "SRC-16-1"}
     assert all(trace["predecessor_record"] for trace in result["predecessor_traces"])
+
+
+def test_source_package_is_deterministic_and_manifest_bound(tmp_path) -> None:
+    result = materialize_predecessor_sources(
+        v14_release={"sources": [_v14_source("SRC-1")]},
+        v16_refresh={"new_sources": [_v16_source("SRC-16-1")]},
+    )
+    first = write_predecessor_source_package(
+        result,
+        tmp_path / "first",
+        v14_input_sha256="a" * 64,
+        v16_input_sha256="b" * 64,
+        producer_commit="c" * 40,
+    )
+    second = write_predecessor_source_package(
+        result,
+        tmp_path / "second",
+        v14_input_sha256="a" * 64,
+        v16_input_sha256="b" * 64,
+        producer_commit="c" * 40,
+    )
+
+    assert first == second
+    for filename in ("sources.jsonl", "predecessor-traces.jsonl", "descriptor.json", "manifest.json"):
+        assert (tmp_path / "first" / filename).read_bytes() == (tmp_path / "second" / filename).read_bytes()
+
+    manifest = json.loads((tmp_path / "first" / "manifest.json").read_text(encoding="utf-8"))
+    controlled = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
+    assert manifest["manifest_sha256"] == sha256_bytes(canonical_json_bytes(controlled))
+    assert manifest["release_authorized"] is False
+
+
+def test_source_package_refuses_trace_tampering(tmp_path) -> None:
+    result = materialize_predecessor_sources(
+        v14_release={"sources": [_v14_source()]},
+        v16_refresh={"new_sources": []},
+    )
+    result["predecessor_traces"][0]["predecessor_record"]["title"] = "Tampered"
+
+    with pytest.raises(ObservatoryMigrationError, match="trace verification failed"):
+        write_predecessor_source_package(
+            result,
+            tmp_path / "bad",
+            v14_input_sha256="a" * 64,
+            v16_input_sha256="b" * 64,
+        )
+
+
+def test_source_package_refuses_authority_upgrade(tmp_path) -> None:
+    result = materialize_predecessor_sources(
+        v14_release={"sources": [_v14_source()]},
+        v16_refresh={"new_sources": []},
+    )
+    result["release_authorized"] = True
+
+    with pytest.raises(ObservatoryMigrationError, match="noncanonical, unauthorized input"):
+        write_predecessor_source_package(
+            result,
+            tmp_path / "bad",
+            v14_input_sha256="a" * 64,
+            v16_input_sha256="b" * 64,
+        )
 
 
 def test_duplicate_source_ids_fail_closed() -> None:
