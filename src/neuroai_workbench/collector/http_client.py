@@ -16,6 +16,31 @@ REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 
 
 @dataclass(frozen=True)
+class TransportResponse:
+    """Concurrency-safe transport result. Connected IP is per-response, never mutable last_* state."""
+
+    status: int
+    headers: dict[str, str]
+    body: bytes
+    connected_address: str | None = None
+
+    def __iter__(self):
+        yield self.status
+        yield self.headers
+        yield self.body
+
+
+TransportResult = TransportResponse | tuple[int, dict[str, str], bytes]
+
+
+def coerce_transport_response(raw: TransportResult) -> TransportResponse:
+    if isinstance(raw, TransportResponse):
+        return raw
+    status, headers, body = raw
+    return TransportResponse(status=status, headers=headers, body=body, connected_address=None)
+
+
+@dataclass(frozen=True)
 class HttpResponse:
     url: str
     status: int
@@ -23,6 +48,7 @@ class HttpResponse:
     body: bytes
     redirect_chain: tuple[str, ...]
     dns_resolution: DnsResolutionRecord
+    connected_address: str | None = None
 
 
 @dataclass(frozen=True)
@@ -30,6 +56,7 @@ class HttpRequest:
     method: str
     url: str
     headers: dict[str, str]
+    validated_addresses: tuple[str, ...] = ()
 
 
 class HttpTransport(Protocol):
@@ -39,8 +66,14 @@ class HttpTransport(Protocol):
         *,
         connect_timeout: float,
         read_timeout: float,
-    ) -> tuple[int, dict[str, str], bytes]:
-        """Return status, headers, and raw body bytes."""
+    ) -> TransportResult:
+        """Return status, headers, raw body bytes, and optional connected IP.
+
+        Production transports must connect only to ``request.validated_addresses``.
+        The empty default exists for backwards-compatible construction in tests and
+        non-production adapters; a production transport must fail closed when the
+        validated set is absent. Connected-address provenance is per response.
+        """
 
 
 def _normalize_headers(headers: dict[str, str]) -> dict[str, str]:
@@ -133,17 +166,26 @@ class HttpClient:
                 headers.update(conditional_headers)
 
             try:
-                status, response_headers, raw_body = self.transport.send(
-                    HttpRequest("GET", current_url, headers),
-                    connect_timeout=self.config.connect_timeout_seconds,
-                    read_timeout=self.config.read_timeout_seconds,
+                transport_response = coerce_transport_response(
+                    self.transport.send(
+                        HttpRequest(
+                            "GET",
+                            current_url,
+                            headers,
+                            tuple(last_dns.addresses),
+                        ),
+                        connect_timeout=self.config.connect_timeout_seconds,
+                        read_timeout=self.config.read_timeout_seconds,
+                    )
                 )
             except TimeoutError as exc:
                 raise CollectionFailureError("TIMEOUT", "HTTP request timed out") from exc
             except OSError as exc:
                 raise CollectionFailureError("NETWORK_ERROR", f"HTTP request failed: {exc}") from exc
 
-            normalized_headers = _normalize_headers(response_headers)
+            status = transport_response.status
+            raw_body = transport_response.body
+            normalized_headers = _normalize_headers(transport_response.headers)
             if status in REDIRECT_STATUSES:
                 location = normalized_headers.get("location")
                 if not location:
@@ -164,6 +206,7 @@ class HttpClient:
                     body=b"",
                     redirect_chain=tuple(redirect_chain),
                     dns_resolution=last_dns,
+                    connected_address=transport_response.connected_address,
                 )
 
             if status < 200 or status >= 300:
@@ -187,6 +230,7 @@ class HttpClient:
                 body=body,
                 redirect_chain=tuple(redirect_chain),
                 dns_resolution=last_dns,
+                connected_address=transport_response.connected_address,
             )
 
         raise CollectionFailureError("REDIRECT_BLOCKED", f"Redirect chain exceeded {self.config.max_redirects} hops")
