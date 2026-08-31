@@ -64,6 +64,84 @@ def test_dangling_refs_and_duplicate_ids_block(tmp_path: Path) -> None:
     assert any(item["code"] == "DUPLICATE_ID" for item in duplicate["verification"]["blockers"])
 
 
+def test_typed_referential_integrity_rejects_cross_class_id_collision(tmp_path: Path) -> None:
+    from neuroai_workbench.observatory_graph import build_observation
+    from neuroai_workbench.temporal import TIME_VALUE_BOUNDARY
+
+    # An Entity with the same string id as a missing Source must not satisfy Observation.source_id.
+    colliding_entity = _entity("SRC-COLLISION", "Not a source")
+    observation = persistable(
+        build_observation(
+            observation_id="OBS-COLLISION",
+            source_id="SRC-COLLISION",
+            observed_at={"value": "2026-08-31T12:00:00Z", "precision": "TIMESTAMP", "boundary": TIME_VALUE_BOUNDARY},
+            retrieval_method="HTTP_GET",
+            retrieval_outcome="RETRIEVED",
+            requested_locator="https://example.org/collision",
+        )
+    )
+
+    result = ReleaseCompiler().build(
+        [colliding_entity, observation],
+        tmp_path / "typed-collision",
+        candidate_id="CAND-TYPED-COLLISION",
+    )
+    blocker = next(item for item in result["verification"]["blockers"] if item["code"] == "DANGLING_REF")
+    assert "OBS-COLLISION.source_id->SRC-COLLISION" in blocker["detail"]
+    assert result["verification"]["mechanical_verification"] == "FAIL"
+
+
+def test_event_object_and_entity_lineage_refs_are_checked(tmp_path: Path) -> None:
+    from neuroai_workbench.observatory_graph import build_event
+    from neuroai_workbench.temporal import TIME_VALUE_BOUNDARY
+
+    subject = _entity("ENT-SUBJECT", "Subject")
+    event = persistable(
+        build_event(
+            event_id="EVT-DANGLE",
+            event_type="OWNERSHIP_TRANSITION",
+            subject={
+                "kind": KIND_RESOLVED_ENTITY_REFERENCE,
+                "entity_id": "ENT-SUBJECT",
+                "boundary": GRAPH_BOUNDARY,
+            },
+            objects=[
+                {
+                    "kind": KIND_RESOLVED_ENTITY_REFERENCE,
+                    "entity_id": "ENT-MISSING-OBJECT",
+                    "boundary": GRAPH_BOUNDARY,
+                }
+            ],
+            occurred_at={"value": "2026-08-31", "precision": "DATE", "boundary": TIME_VALUE_BOUNDARY},
+            evidence_state="SOURCE_STATED",
+            verification_state="UNVERIFIED",
+            claim_boundary="test",
+        )
+    )
+    lineage = persistable(
+        build_entity(
+            entity_id="ENT-LINEAGE",
+            entity_type="SYSTEM",
+            canonical_label="Lineage",
+            lineage={
+                "predecessor_entity_ids": ["ENT-MISSING-PREDECESSOR"],
+                "successor_entity_ids": [],
+                "supersession_state": "NONE",
+            },
+        )
+    )
+
+    result = ReleaseCompiler().build(
+        [subject, event, lineage],
+        tmp_path / "nested-dangling",
+        candidate_id="CAND-NESTED-DANGLE",
+    )
+    blocker = next(item for item in result["verification"]["blockers"] if item["code"] == "DANGLING_REF")
+    assert "EVT-DANGLE.objects[0]->ENT-MISSING-OBJECT" in blocker["detail"]
+    assert "ENT-LINEAGE.lineage.predecessor_entity_ids->ENT-MISSING-PREDECESSOR" in blocker["detail"]
+    assert result["verification"]["mechanical_verification"] == "FAIL"
+
+
 def test_protected_byte_scan_and_count_mismatch(tmp_path: Path) -> None:
     dirty = _entity("ENT-DIRTY", "label")
     dirty["canonical_label"] = "-----BEGIN RSA PRIVATE KEY----- abc"
