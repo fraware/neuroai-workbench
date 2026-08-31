@@ -1,0 +1,41 @@
+{
+  "universe_id": "SU-GRANTS",
+  "universe_version": "0.2.0-offline",
+  "documentation_aliases": ["SU-FUNDING"],
+  "purpose": "Discover public funder and grant records relevant to NeuroAI systems via offline fixture or replay pages. Does not infer control from capital.",
+  "inclusion": [
+    "Public NIH / funder award records with durable award identifiers",
+    "Public patents-and-grants corpus rows when identity keys are exact"
+  ],
+  "exclusion": [
+    "Inferring ownership control, governance authority, or system capability from funding alone",
+    "Automatic S2 or monitor-registry mutation",
+    "Treating capital events as regulatory authorization",
+    "Live HTTP inside the discovery package"
+  ],
+  "authoritative_sources": ["https://reporter.nih.gov/", "https://api.reporter.nih.gov/"],
+  "identity_key": {
+    "name": "award_or_grant_id",
+    "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{2,127}$",
+    "match_rule": "Exact award or grant identifier. Distinct award IDs must not fuzzy-merge."
+  },
+  "query_streams": ["DISCOVERY-GRANTS-NEURAL-DECODING"],
+  "denominator_policy": "Caller-supplied result-set size is a raw denominator. It is not funding-universe completeness.",
+  "pagination_policy": "Terminal pagination must be explicit. Missing continuation on non-final pages fails closed.",
+  "known_identity_reconciliation": "Optional award id to source_id map. Exact matches emit DUPLICATE.",
+  "language": "en",
+  "jurisdiction": "PUBLIC_FUNDER_RECORDS",
+  "cadence": "Human-gated. Offline fixture/replay only in this programme maturity.",
+  "raw_input_boundary": "Caller supplies already-retrieved grant payloads. Discovery has no embedded live HTTP client.",
+  "candidate_schema": "CANDIDATE_SOURCE_PROPOSAL.schema.json",
+  "human_review_path": "Candidate proposals remain PENDING_HUMAN_ACCEPTANCE until adjudicate_candidate_source.",
+  "evaluation": {
+    "precision_method": "Sampled human review of NEW candidates (not executed by this software).",
+    "maturity": "OFFLINE_EXECUTABLE",
+    "promotes_from_adapter": "patents_grants",
+    "prohibited_inference": "investor_or_funder_to_control",
+    "offline_fixture_replay_supported": true,
+    "network_execution_in_programme": false
+  },
+  "boundary": "SU-GRANTS offline programme execution emits candidates and coverage. Funding evidence is not control, capability, or authorization."
+}

@@ -1,0 +1,40 @@
+{
+  "universe_id": "SU-REG",
+  "universe_version": "0.2.0-offline",
+  "documentation_aliases": ["SU-REGULATION"],
+  "purpose": "Discover regulatory and market-authorization public records (FDA device listings) via offline fixture or replay pages.",
+  "inclusion": [
+    "Public FDA device / clearance listing records with durable identifiers",
+    "Official EU or national public sources only where legal and technical access is explicit"
+  ],
+  "exclusion": [
+    "Inferring authorization, commercial availability, or clinical benefit from a listing alone",
+    "Treating eu_ctis scaffold adapter presence as programme completeness",
+    "Automatic S2 or monitor-registry mutation",
+    "Live HTTP inside the discovery package"
+  ],
+  "authoritative_sources": ["https://www.accessdata.fda.gov/", "https://api.fda.gov/"],
+  "identity_key": {
+    "name": "regulatory_record_id",
+    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$",
+    "match_rule": "Exact regulatory record identifier from the authoritative source. Conflicting same-id representations fail closed."
+  },
+  "query_streams": ["DISCOVERY-FDA-NEURAL-INTERFACE"],
+  "denominator_policy": "Use source-reported totals when requested and consistent. Cursor termination is not registry completeness.",
+  "pagination_policy": "Reject non-final pages without continuation tokens. fully_paginated is not recall.",
+  "known_identity_reconciliation": "Optional regulatory id to source_id map. Exact matches emit DUPLICATE.",
+  "language": "en",
+  "jurisdiction": "US_FDA_PUBLIC_PLUS_EXPLICIT_EU_NATIONAL",
+  "cadence": "Human-gated. Offline fixture/replay only in this programme maturity.",
+  "raw_input_boundary": "Caller supplies already-retrieved regulatory payloads. Discovery has no embedded live HTTP client.",
+  "candidate_schema": "CANDIDATE_SOURCE_PROPOSAL.schema.json",
+  "human_review_path": "Candidate proposals remain PENDING_HUMAN_ACCEPTANCE until adjudicate_candidate_source.",
+  "evaluation": {
+    "precision_method": "Sampled human review of NEW candidates (not executed by this software).",
+    "maturity": "OFFLINE_EXECUTABLE",
+    "promotes_from_adapter": "fda_device",
+    "offline_fixture_replay_supported": true,
+    "network_execution_in_programme": false
+  },
+  "boundary": "SU-REG offline programme execution emits candidates and coverage. A regulatory listing is not legal authorization, conformance, or deployment readiness."
+}
