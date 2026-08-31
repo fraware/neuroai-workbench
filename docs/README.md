@@ -8,10 +8,19 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 | --- | --- |
 | [overview.md](architecture/overview.md) | System architecture and component boundaries |
 | [data-storage-boundaries.md](architecture/data-storage-boundaries.md) | Five-store model and storage roles |
+| [vision-and-target-architecture.md](architecture/vision-and-target-architecture.md) | Seven-layer Observatory v2 programme target and transition gates |
+| [observatory-v2-ontology.md](architecture/observatory-v2-ontology.md) | Target entities, observations, assertions, relationships, events, and assessment dependencies |
+| [observatory-v2-migration-boundary.md](architecture/observatory-v2-migration-boundary.md) | Narrow source/time-unresolved exception for lossless predecessor migration |
+| [temporal-model.md](architecture/temporal-model.md) | Valid-time, knowledge-time, observation succession, and as-of semantics |
+| [entity-identity-model.md](architecture/entity-identity-model.md) | Stable IDs, resolution proposals, lineage, and no-silent-merge rules |
+| [s2-s3-evidence-contract.md](architecture/s2-s3-evidence-contract.md) | Public evidence metadata versus protected/restricted evidence bytes |
+| [release-model-v2.md](architecture/release-model-v2.md) | Immutable S2 authority, projection boundary, and v2 migration release gates |
+| [compatibility-identity.md](architecture/compatibility-identity.md) | Package version, runtime pin, S2 WORKBENCH_VERSION, producer commit, and schema version |
 | [static-to-operational.md](architecture/static-to-operational.md) | Archive versus operational programme layout |
 | [release-attestation.md](architecture/release-attestation.md) | Default proportional release-control profile |
 | [governance-single-authority.md](architecture/governance-single-authority.md) | Designated authority and default/high-assurance profiles |
 | [institutional-deployment-profile.md](architecture/institutional-deployment-profile.md) | Controls required before an institutional pilot claim |
+| [compatibility-identity.md](architecture/compatibility-identity.md) | Package version, runtime pin, S2 WORKBENCH_VERSION, producer commit, and schema version |
 
 ## Governance
 
@@ -23,7 +32,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 
 ## Architecture decision records
 
-Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale.
+Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale. ADR 0014 is the accepted temporal implementation ADR. ADR 0015 and ADR 0016 are implementation ADRs for provenance and identity references. ADR 0017 expands the typed delta vocabulary without RFC-6902 patch.
 
 ## Operations
 
@@ -33,6 +42,10 @@ Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions an
 | [pilot-runbook.md](operations/pilot-runbook.md) | Controlled local pilot procedure |
 | [release-process.md](operations/release-process.md) | Software release integrity and canonical release attestation |
 | [github-governance-setup.md](operations/github-governance-setup.md) | Branch protection and required checks |
+| [github-required-checks.md](operations/github-required-checks.md) | Repository-owned required-check contract |
+| [hosted-ci-empty-steps.md](operations/hosted-ci-empty-steps.md) | Hosted jobs with empty `steps: []` are infrastructure failure, not test results |
+| [extending-observatory.md](operations/extending-observatory.md) | Contributor guide for programmes, adapters, predicates, entity kinds, delta ops |
+| [pr-229-231-233-integration.md](operations/pr-229-231-233-integration.md) | Local integration of Observatory v2 docs, CT.gov discovery, and pinned transport |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
 | [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
 | [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh evaluation |
@@ -91,5 +104,6 @@ Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions an
 | [review-checklist.md](security/review-checklist.md) | Local-profile security review checklist |
 | [model-assistance-boundary.md](security/model-assistance-boundary.md) | Assistance authority boundary |
 | [collector-threat-model.md](security/collector-threat-model.md) | Collector-specific threat analysis |
+| [pinned-dns-transport.md](collector/pinned-dns-transport.md) | DNS-pinned production HTTP transport boundary |
 
 Root `THREAT_MODEL.md` and `SECURITY.md` remain the programme-level threat and reporting entrypoints.
