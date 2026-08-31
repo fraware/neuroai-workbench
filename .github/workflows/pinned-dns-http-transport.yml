@@ -1,0 +1,63 @@
+name: Pinned DNS HTTP transport
+
+on:
+  pull_request:
+    paths:
+      - "src/neuroai_workbench/collector/http_client.py"
+      - "src/neuroai_workbench/collector/pinned_transport.py"
+      - "src/neuroai_workbench/collector/__init__.py"
+      - "tests/unit/test_pinned_http_transport.py"
+      - "tests/unit/test_pinned_http_transport_identity.py"
+      - "tests/unit/test_collector_http.py"
+      - "tests/unit/test_collector_adversarial.py"
+      - ".github/workflows/pinned-dns-http-transport.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-transport-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package and development checks
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Ruff lint changed collector surface
+        run: |
+          ruff check \
+            src/neuroai_workbench/collector/http_client.py \
+            src/neuroai_workbench/collector/pinned_transport.py \
+            src/neuroai_workbench/collector/__init__.py \
+            tests/unit/test_pinned_http_transport.py \
+            tests/unit/test_pinned_http_transport_identity.py
+
+      - name: Ruff formatting gate
+        run: |
+          ruff format --check \
+            src/neuroai_workbench/collector/http_client.py \
+            src/neuroai_workbench/collector/pinned_transport.py \
+            src/neuroai_workbench/collector/__init__.py \
+            tests/unit/test_pinned_http_transport.py \
+            tests/unit/test_pinned_http_transport_identity.py
+
+      - name: Type-check collector package
+        run: mypy src/neuroai_workbench/collector
+
+      - name: Run pinned transport and existing collector regression tests
+        run: |
+          pytest -q \
+            tests/unit/test_pinned_http_transport.py \
+            tests/unit/test_pinned_http_transport_identity.py \
+            tests/unit/test_collector_http.py \
+            tests/unit/test_collector_adversarial.py \
+            tests/unit/test_collector_adapters_scheduler.py
