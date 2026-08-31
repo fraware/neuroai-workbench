@@ -132,7 +132,9 @@ FIELD_RULES: dict[tuple[str, str], dict[str, Rule]] = {
         "organization_id": _native("Entity", "entity_id"),
         "canonical_name": _native("Entity", "canonical_label"),
         "aliases": _native("Entity", "aliases"),
-        "organization_type": _native("Entity", "entity_type"),
+        # predecessor organization_type (COMPANY, REGULATOR, etc.) is descriptive
+        # state, not the v2 Entity ontology class. Native organization Entities use
+        # entity_type=ORGANIZATION and retain organization_type in predecessor state.
     },
     ("V14", "capital_and_ownership_events"): {
         "event_id": _native("Event", "event_id"),
