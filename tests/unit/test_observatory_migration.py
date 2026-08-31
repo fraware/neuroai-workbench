@@ -4,6 +4,7 @@ import json
 
 import pytest
 
+from neuroai_workbench import __version__
 from neuroai_workbench.observatory_migration import (
     MIGRATION_BOUNDARY,
     ObservatoryMigrationError,
@@ -14,6 +15,14 @@ from neuroai_workbench.observatory_migration import (
     write_predecessor_source_package,
 )
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
+
+IDENTITIES = {
+    "v14_input_sha256": "a" * 64,
+    "v16_input_sha256": "b" * 64,
+    "producer_commit": "c" * 40,
+    "runtime_execution_pin": "d" * 40,
+    "s2_predecessor_commit": "e" * 40,
+}
 
 
 def _v14_source(source_id: str = "SRC-1") -> dict:
@@ -130,29 +139,24 @@ def test_materialize_predecessor_sources_is_noncanonical_and_complete() -> None:
     assert all(trace["predecessor_record"] for trace in result["predecessor_traces"])
 
 
-def test_source_package_is_deterministic_and_manifest_bound(tmp_path) -> None:
+def test_source_package_is_deterministic_manifest_bound_and_identity_explicit(tmp_path) -> None:
     result = materialize_predecessor_sources(
         v14_release={"sources": [_v14_source("SRC-1")]},
         v16_refresh={"new_sources": [_v16_source("SRC-16-1")]},
     )
-    first = write_predecessor_source_package(
-        result,
-        tmp_path / "first",
-        v14_input_sha256="a" * 64,
-        v16_input_sha256="b" * 64,
-        producer_commit="c" * 40,
-    )
-    second = write_predecessor_source_package(
-        result,
-        tmp_path / "second",
-        v14_input_sha256="a" * 64,
-        v16_input_sha256="b" * 64,
-        producer_commit="c" * 40,
-    )
+    first = write_predecessor_source_package(result, tmp_path / "first", **IDENTITIES)
+    second = write_predecessor_source_package(result, tmp_path / "second", **IDENTITIES)
 
     assert first == second
     for filename in ("sources.jsonl", "predecessor-traces.jsonl", "descriptor.json", "manifest.json"):
         assert (tmp_path / "first" / filename).read_bytes() == (tmp_path / "second" / filename).read_bytes()
+
+    descriptor = json.loads((tmp_path / "first" / "descriptor.json").read_text(encoding="utf-8"))
+    assert descriptor["workbench_compatibility_version"] == __version__
+    assert descriptor["producer_workbench_commit"] == IDENTITIES["producer_commit"]
+    assert descriptor["runtime_execution_pin"] == IDENTITIES["runtime_execution_pin"]
+    assert descriptor["s2_predecessor_commit"] == IDENTITIES["s2_predecessor_commit"]
+    assert descriptor["observatory_graph_schema_version"] == "1"
 
     manifest = json.loads((tmp_path / "first" / "manifest.json").read_text(encoding="utf-8"))
     controlled = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
@@ -168,12 +172,7 @@ def test_source_package_refuses_trace_tampering(tmp_path) -> None:
     result["predecessor_traces"][0]["predecessor_record"]["title"] = "Tampered"
 
     with pytest.raises(ObservatoryMigrationError, match="trace verification failed"):
-        write_predecessor_source_package(
-            result,
-            tmp_path / "bad",
-            v14_input_sha256="a" * 64,
-            v16_input_sha256="b" * 64,
-        )
+        write_predecessor_source_package(result, tmp_path / "bad", **IDENTITIES)
 
 
 def test_source_package_refuses_authority_upgrade(tmp_path) -> None:
@@ -184,12 +183,17 @@ def test_source_package_refuses_authority_upgrade(tmp_path) -> None:
     result["release_authorized"] = True
 
     with pytest.raises(ObservatoryMigrationError, match="noncanonical, unauthorized input"):
-        write_predecessor_source_package(
-            result,
-            tmp_path / "bad",
-            v14_input_sha256="a" * 64,
-            v16_input_sha256="b" * 64,
-        )
+        write_predecessor_source_package(result, tmp_path / "bad", **IDENTITIES)
+
+
+def test_source_package_refuses_malformed_identity_bindings(tmp_path) -> None:
+    result = materialize_predecessor_sources(
+        v14_release={"sources": [_v14_source()]},
+        v16_refresh={"new_sources": []},
+    )
+    bad = {**IDENTITIES, "producer_commit": "NOT-A-COMMIT"}
+    with pytest.raises(ObservatoryMigrationError, match="producer_commit must be"):
+        write_predecessor_source_package(result, tmp_path / "bad", **bad)
 
 
 def test_duplicate_source_ids_fail_closed() -> None:
