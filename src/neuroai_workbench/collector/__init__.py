@@ -25,6 +25,7 @@ from .handoff import (
     reject_quarantine_record,
 )
 from .local_adapter import LocalContentAddressedAdapter
+from .pinned_transport import PinnedSocketHttpTransport
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
@@ -45,6 +46,7 @@ __all__ = [
     "JsonApiAdapter",
     "LocalContentAddressedAdapter",
     "MonitoringHandoffPayload",
+    "PinnedSocketHttpTransport",
     "PriorCapture",
     "SchedulerConfig",
     "StaticCredentialProvider",
