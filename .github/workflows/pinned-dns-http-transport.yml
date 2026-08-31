@@ -8,6 +8,7 @@ on:
       - "src/neuroai_workbench/collector/__init__.py"
       - "tests/unit/test_pinned_http_transport.py"
       - "tests/unit/test_pinned_http_transport_identity.py"
+      - "tests/unit/test_pinned_http_transport_protocol.py"
       - "tests/unit/test_collector_http.py"
       - "tests/unit/test_collector_adversarial.py"
       - ".github/workflows/pinned-dns-http-transport.yml"
@@ -39,7 +40,8 @@ jobs:
             src/neuroai_workbench/collector/pinned_transport.py \
             src/neuroai_workbench/collector/__init__.py \
             tests/unit/test_pinned_http_transport.py \
-            tests/unit/test_pinned_http_transport_identity.py
+            tests/unit/test_pinned_http_transport_identity.py \
+            tests/unit/test_pinned_http_transport_protocol.py
 
       - name: Ruff formatting gate
         run: |
@@ -48,7 +50,8 @@ jobs:
             src/neuroai_workbench/collector/pinned_transport.py \
             src/neuroai_workbench/collector/__init__.py \
             tests/unit/test_pinned_http_transport.py \
-            tests/unit/test_pinned_http_transport_identity.py
+            tests/unit/test_pinned_http_transport_identity.py \
+            tests/unit/test_pinned_http_transport_protocol.py
 
       - name: Type-check collector package
         run: mypy src/neuroai_workbench/collector
@@ -58,6 +61,7 @@ jobs:
           pytest -q \
             tests/unit/test_pinned_http_transport.py \
             tests/unit/test_pinned_http_transport_identity.py \
+            tests/unit/test_pinned_http_transport_protocol.py \
             tests/unit/test_collector_http.py \
             tests/unit/test_collector_adversarial.py \
             tests/unit/test_collector_adapters_scheduler.py
