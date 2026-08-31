@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from neuroai_workbench.observatory_migration_candidate_delta import (
+    DELTA16_RESIDUAL_FAMILIES,
     build_predecessor_migration_candidate_with_delta,
     verify_predecessor_migration_candidate_with_delta,
 )
@@ -127,6 +128,10 @@ def test_delta_extension_adds_complete_family_without_authority_upgrade() -> Non
     assert result["native_v2_materialization_complete"] is False
     assert result["counts"]["native_delta16_capital_events"] == 2
     assert result["counts"]["native_candidate_objects_with_delta"] == len(result["native_objects"])
+    remaining = result["remaining_unmaterialized_families"]
+    assert "DELTA16.*" not in remaining
+    assert "DELTA16.capital_and_ownership_events" not in remaining
+    assert set(DELTA16_RESIDUAL_FAMILIES).issubset(remaining)
     assert verify_predecessor_migration_candidate_with_delta(result)["valid"] is True
 
 
@@ -141,3 +146,16 @@ def test_delta_extension_verifier_detects_mapped_event_tampering() -> None:
     report = verify_predecessor_migration_candidate_with_delta(result)
     assert report["valid"] is False
     assert any("claim_boundary binding mismatch" in error for error in report["errors"])
+
+
+def test_delta_extension_verifier_rejects_wildcard_regression() -> None:
+    v14, v16, delta16 = _inputs()
+    result = build_predecessor_migration_candidate_with_delta(
+        v14_release=v14,
+        v16_refresh=v16,
+        delta16=delta16,
+    )
+    result["remaining_unmaterialized_families"].append("DELTA16.*")
+    report = verify_predecessor_migration_candidate_with_delta(result)
+    assert report["valid"] is False
+    assert "DELTA16 wildcard remains after partial family materialization" in report["errors"]
