@@ -15,9 +15,8 @@ from . import __version__
 from .observatory_event_migration import (
     EVENT_MIGRATION_BOUNDARY,
     materialize_v14_capital_events,
-    verify_capital_event_trace,
+    verify_materialized_capital_event,
 )
-from .observatory_graph import validate_graph_object
 from .observatory_migration_core import (
     CORE_MIGRATION_BOUNDARY,
     build_predecessor_migration_core,
@@ -108,7 +107,7 @@ def build_predecessor_migration_candidate(
 
 
 def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, Any]:
-    """Verify candidate-wide class/id uniqueness and exact Event subject/source bindings."""
+    """Verify candidate-wide class/id uniqueness and exact cross-object event bindings."""
     errors: list[str] = []
     if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
         errors.append("migration candidate must remain noncanonical and unauthorized")
@@ -159,37 +158,13 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
             errors.append("capital Event/trace entries must be objects")
             continue
         event_id = str(event.get("event_id") or "")
-        subject = event.get("subject")
-        subject_id = str(subject.get("entity_id") or "") if isinstance(subject, dict) else ""
-        trace_errors = verify_capital_event_trace(
+        mapped_errors = verify_materialized_capital_event(
+            event,
             trace,
-            expected_event_id=event_id,
-            expected_subject_entity_id=subject_id,
+            entity_index=entity_index,
+            known_source_ids=source_ids,
         )
-        errors.extend(f"event:{event_id}: {error}" for error in trace_errors)
-
-        predecessor = trace.get("predecessor_record")
-        predecessor_subject = predecessor.get("subject") if isinstance(predecessor, dict) else None
-        entity = entity_index.get(subject_id)
-        if entity is None:
-            errors.append(f"event:{event_id}: resolved subject Entity {subject_id!r} is missing")
-        elif entity.get("canonical_label") != predecessor_subject:
-            errors.append(
-                f"event:{event_id}: subject binding does not preserve exact predecessor canonical label"
-            )
-        event_sources = event.get("source_ids")
-        if not isinstance(event_sources, list):
-            errors.append(f"event:{event_id}: source_ids missing")
-        else:
-            missing = sorted(str(item) for item in event_sources if str(item) not in source_ids)
-            if missing:
-                errors.append(f"event:{event_id}: references missing Sources {missing}")
-
-        schema = validate_graph_object(
-            {key: value for key, value in event.items() if key != "canonical_sha256"},
-            "Event",
-        )
-        errors.extend(f"event:{event_id}: {error}" for error in schema)
+        errors.extend(f"event:{event_id}: {error}" for error in mapped_errors)
 
     native_objects = result.get("native_objects")
     if not isinstance(native_objects, list):
