@@ -24,6 +24,12 @@ DELTA_CANDIDATE_BOUNDARY = (
     "delta. Mechanical PASS covers only the explicitly materialized/preserved families in the descriptor. "
     "Remaining families are unresolved; no complete migration or publication authority is established."
 )
+DELTA16_RESIDUAL_FAMILIES = (
+    "DELTA16.regulatory_and_market_events",
+    "DELTA16.model_records",
+    "DELTA16.supplier_dependency_relationships",
+    "DELTA16.governance_and_leadership_events",
+)
 
 
 class DeltaMigrationCandidateError(ValueError):
@@ -34,6 +40,20 @@ def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
         raise DeltaMigrationCandidateError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
+
+
+def _residual_families(base_remaining: Any) -> list[str]:
+    if not isinstance(base_remaining, list) or any(not isinstance(item, str) for item in base_remaining):
+        raise DeltaMigrationCandidateError("base remaining-family ledger is invalid")
+    result: list[str] = []
+    for item in base_remaining:
+        if item == "DELTA16.*":
+            result.extend(DELTA16_RESIDUAL_FAMILIES)
+        elif item != "DELTA16.capital_and_ownership_events":
+            result.append(item)
+    if "DELTA16.*" in result or "DELTA16.capital_and_ownership_events" in result:
+        raise DeltaMigrationCandidateError("DELTA16 capital family was not retired exactly")
+    return result
 
 
 def build_predecessor_migration_candidate_with_delta(
@@ -56,11 +76,7 @@ def build_predecessor_migration_candidate_with_delta(
         known_source_ids=source_ids,
     )
     native_objects = [*base["native_objects"], *delta_result["events"]]
-    remaining = [
-        item
-        for item in base["remaining_unmaterialized_families"]
-        if item != "DELTA16.capital_and_ownership_events"
-    ]
+    remaining = _residual_families(base.get("remaining_unmaterialized_families"))
     result = {
         "state": "NONCANONICAL_CANDIDATE",
         "release_authorized": False,
@@ -175,11 +191,18 @@ def verify_predecessor_migration_candidate_with_delta(result: dict[str, Any]) ->
     }
     if counts != expected_counts:
         errors.append("delta candidate count ledger mismatch")
+
     remaining = result.get("remaining_unmaterialized_families")
     if not isinstance(remaining, list):
         errors.append("delta candidate remaining-family ledger is missing")
-    elif "DELTA16.capital_and_ownership_events" in remaining:
-        errors.append("materialized DELTA16 capital family remains listed as unresolved")
+    else:
+        if "DELTA16.*" in remaining:
+            errors.append("DELTA16 wildcard remains after partial family materialization")
+        if "DELTA16.capital_and_ownership_events" in remaining:
+            errors.append("materialized DELTA16 capital family remains listed as unresolved")
+        missing_residual = sorted(set(DELTA16_RESIDUAL_FAMILIES) - set(remaining))
+        if missing_residual:
+            errors.append(f"DELTA16 residual-family ledger is incomplete: {missing_residual}")
 
     return {"valid": not errors, "errors": sorted(set(errors))}
 
