@@ -30,6 +30,7 @@ class HttpRequest:
     method: str
     url: str
     headers: dict[str, str]
+    validated_addresses: tuple[str, ...] = ()
 
 
 class HttpTransport(Protocol):
@@ -40,7 +41,13 @@ class HttpTransport(Protocol):
         connect_timeout: float,
         read_timeout: float,
     ) -> tuple[int, dict[str, str], bytes]:
-        """Return status, headers, and raw body bytes."""
+        """Return status, headers, and raw body bytes.
+
+        Production transports must connect only to ``request.validated_addresses``.
+        The empty default exists for backwards-compatible construction in tests and
+        non-production adapters; a production transport must fail closed when the
+        validated set is absent.
+        """
 
 
 def _normalize_headers(headers: dict[str, str]) -> dict[str, str]:
@@ -134,7 +141,12 @@ class HttpClient:
 
             try:
                 status, response_headers, raw_body = self.transport.send(
-                    HttpRequest("GET", current_url, headers),
+                    HttpRequest(
+                        "GET",
+                        current_url,
+                        headers,
+                        tuple(last_dns.addresses),
+                    ),
                     connect_timeout=self.config.connect_timeout_seconds,
                     read_timeout=self.config.read_timeout_seconds,
                 )
