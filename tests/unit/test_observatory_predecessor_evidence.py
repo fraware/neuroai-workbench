@@ -13,6 +13,7 @@ from neuroai_workbench.observatory_predecessor_evidence import (
     verify_preserved_source_check,
     write_predecessor_observation_evidence_package,
 )
+from neuroai_workbench.temporal import TemporalValueError
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
 
@@ -62,7 +63,7 @@ def test_source_check_rejects_unreviewed_field_shape() -> None:
 def test_source_check_requires_exact_timestamp_and_metadata_digest() -> None:
     predecessor = _check()
     predecessor["retrieved"] = "2026-07-29"
-    with pytest.raises(Exception):
+    with pytest.raises(TemporalValueError, match="TIMESTAMP TimeValue must include"):
         preserve_source_check(predecessor, record_index=0)
 
     predecessor = _check()
