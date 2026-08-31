@@ -9,11 +9,13 @@ from neuroai_workbench.observatory_entity_migration import (
     HISTORICAL_CURRENT_IDENTITY_UNRESOLVED,
     LEGACY_IDENTITY_UNRESOLVED,
     MATERIALIZE_ACTIVE_ENTITY,
+    NATIVE_ENTITY_TYPE,
     PROVENANCE_ONLY_NODE,
     ObservatoryEntityMigrationError,
     classify_predecessor_organization,
     materialize_predecessor_organization,
     materialize_predecessor_organizations,
+    verify_materialized_organization,
     verify_organization_migration_record,
     verify_organization_partition,
     write_predecessor_entity_package,
@@ -105,20 +107,35 @@ def test_unreviewed_identity_state_fails_closed() -> None:
         classify_predecessor_organization(record)
 
 
-def test_active_entity_materialization_preserves_exact_controlled_id() -> None:
+def test_active_entity_materialization_uses_v2_organization_type_not_predecessor_subtype() -> None:
     predecessor = _active("ORG-EXACT")
     entity, trace = materialize_predecessor_organization(predecessor, record_index=4)
 
     assert entity["entity_id"] == "ORG-EXACT"
     assert entity["canonical_label"] == predecessor["canonical_name"]
-    assert entity["entity_type"] == predecessor["organization_type"]
+    assert entity["entity_type"] == NATIVE_ENTITY_TYPE == "ORGANIZATION"
+    assert entity["entity_type"] != predecessor["organization_type"]
     assert entity["aliases"] == predecessor["aliases"]
     assert entity["status"] == "ACTIVE"
     assert entity["identifiers"] == []
     assert entity["boundary"] == ENTITY_MIGRATION_BOUNDARY
     assert trace["predecessor_record"] == predecessor
     assert trace["native_object_class"] == "Entity"
+    assert trace["migration_generated_fields"]["entity_type"] == "ORGANIZATION"
     assert verify_organization_migration_record(trace, expected_native_object_id="ORG-EXACT") == []
+    assert verify_materialized_organization(entity, trace) == []
+
+
+def test_native_entity_verifier_detects_coordinated_field_tampering() -> None:
+    entity, trace = materialize_predecessor_organization(_active("ORG-A"), record_index=0)
+    entity["canonical_label"] = "Substituted"
+    assert "Entity.canonical_label binding mismatch" in verify_materialized_organization(entity, trace)
+
+    entity, trace = materialize_predecessor_organization(_active("ORG-A"), record_index=0)
+    entity["entity_type"] = "COMPANY"
+    assert "Entity.entity_type must be ORGANIZATION under v2 ontology" in verify_materialized_organization(
+        entity, trace
+    )
 
 
 def test_non_native_states_cannot_be_materialized() -> None:
@@ -142,6 +159,7 @@ def test_complete_partition_contains_every_input_exactly_once() -> None:
         MATERIALIZE_ACTIVE_ENTITY: 1,
         PROVENANCE_ONLY_NODE: 1,
     }
+    assert result["migration_generated_metadata"]["native_entity_type"] == "ORGANIZATION"
     assert verify_organization_partition(result)["valid"] is True
 
 
