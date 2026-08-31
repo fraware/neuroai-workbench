@@ -121,9 +121,12 @@ class PinnedSocketHttpTransport:
             raise CollectionFailureError("SSRF_BLOCKED", "HTTP URL is missing a hostname")
         network_hostname = _network_hostname(hostname)
         try:
-            port = parsed.port or (443 if scheme == "https" else 80)
+            explicit_port = parsed.port
         except ValueError as exc:
             raise CollectionFailureError("SSRF_BLOCKED", "HTTP URL contains an invalid port") from exc
+        port = (443 if scheme == "https" else 80) if explicit_port is None else explicit_port
+        if port < 1 or port > 65535:
+            raise CollectionFailureError("SSRF_BLOCKED", f"HTTP URL port {port} is outside the allowed range")
 
         addresses = _validated_global_addresses(request.validated_addresses)
         path = urlunsplit(("", "", parsed.path or "/", parsed.query, ""))
