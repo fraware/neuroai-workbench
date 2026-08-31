@@ -73,6 +73,40 @@ def predecessor_trace(
     }
 
 
+def verify_predecessor_trace(
+    trace: dict[str, Any],
+    *,
+    expected_native_object_id: str | None = None,
+) -> list[str]:
+    """Independently verify predecessor-byte identity and native-object binding."""
+    errors: list[str] = []
+    record = trace.get("predecessor_record")
+    if not isinstance(record, dict):
+        errors.append("predecessor_record must be an object")
+    else:
+        observed = sha256_bytes(canonical_json_bytes(record))
+        if trace.get("predecessor_record_sha256") != observed:
+            errors.append("predecessor_record_sha256 mismatch")
+    if trace.get("native_authority") is not False:
+        errors.append("native_authority must remain false for migration traces")
+    if trace.get("boundary") != MIGRATION_BOUNDARY:
+        errors.append("migration trace boundary mismatch")
+    role = str(trace.get("role") or "")
+    expected_family = _SOURCE_FAMILY_BY_ROLE.get(role)
+    if expected_family is None:
+        errors.append(f"unsupported migration trace role {role!r}")
+    elif trace.get("family") != expected_family:
+        errors.append("migration trace family/role mismatch")
+    if not isinstance(trace.get("record_index"), int) or int(trace["record_index"]) < 0:
+        errors.append("record_index must be a non-negative integer")
+    native_object_id = trace.get("native_object_id")
+    if not isinstance(native_object_id, str) or not native_object_id:
+        errors.append("native_object_id must be a non-empty string")
+    if expected_native_object_id is not None and native_object_id != expected_native_object_id:
+        errors.append("native_object_id binding mismatch")
+    return errors
+
+
 def materialize_predecessor_source(
     record: dict[str, Any],
     *,
@@ -123,6 +157,9 @@ def materialize_predecessor_source(
         record=record,
         native_object_id=str(source["source_id"]),
     )
+    trace_errors = verify_predecessor_trace(trace, expected_native_object_id=str(source["source_id"]))
+    if trace_errors:
+        raise ObservatoryMigrationError(f"Generated predecessor trace is invalid: {trace_errors}")
     return source, trace
 
 
