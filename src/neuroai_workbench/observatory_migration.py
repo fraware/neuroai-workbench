@@ -7,12 +7,14 @@ silently discard predecessor semantics that are not represented by the native sc
 
 from __future__ import annotations
 
+import json
 import re
+from pathlib import Path
 from typing import Any
 
 from .observatory_graph import build_source, validate_graph_object
 from .temporal import TIME_VALUE_BOUNDARY, parse_time_value
-from .util import canonical_json_bytes, sha256_bytes
+from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, sha256_bytes
 
 MIGRATION_BOUNDARY = (
     "Migrated predecessor source identity only. UNKNOWN access and redistribution states are controlled "
@@ -205,3 +207,68 @@ def materialize_predecessor_sources(
         "retrieved_not_promoted_to_publication_time": True,
         "boundary": MIGRATION_BOUNDARY,
     }
+
+
+def _jsonl_bytes(records: list[dict[str, Any]]) -> bytes:
+    lines = [json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":")) for record in records]
+    return ("\n".join(lines) + ("\n" if lines else "")).encode("utf-8")
+
+
+def write_predecessor_source_package(
+    result: dict[str, Any],
+    output_dir: Path,
+    *,
+    v14_input_sha256: str,
+    v16_input_sha256: str,
+    producer_commit: str | None = None,
+) -> dict[str, Any]:
+    """Write a deterministic, manifest-bound noncanonical Source migration package."""
+    if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
+        raise ObservatoryMigrationError("Source migration package requires noncanonical, unauthorized input")
+    sources = result.get("sources")
+    traces = result.get("predecessor_traces")
+    if not isinstance(sources, list) or not isinstance(traces, list) or len(sources) != len(traces):
+        raise ObservatoryMigrationError("Source migration package requires one trace per source")
+
+    for source, trace in zip(sources, traces, strict=True):
+        if not isinstance(source, dict) or not isinstance(trace, dict):
+            raise ObservatoryMigrationError("Source migration package contains a non-object record")
+        source_id = str(source.get("source_id") or "")
+        errors = verify_predecessor_trace(trace, expected_native_object_id=source_id)
+        if errors:
+            raise ObservatoryMigrationError(f"Source trace verification failed for {source_id}: {errors}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    source_bytes = _jsonl_bytes(sources)
+    trace_bytes = _jsonl_bytes(traces)
+    atomic_write_bytes(output_dir / "sources.jsonl", source_bytes)
+    atomic_write_bytes(output_dir / "predecessor-traces.jsonl", trace_bytes)
+
+    file_digests = {
+        "sources.jsonl": sha256_bytes(source_bytes),
+        "predecessor-traces.jsonl": sha256_bytes(trace_bytes),
+    }
+    descriptor = {
+        "schema_version": "1",
+        "package_type": "OBSERVATORY_V2_PREDECESSOR_SOURCE_MIGRATION",
+        "state": "NONCANONICAL_CANDIDATE",
+        "release_authorized": False,
+        "object_class": "Source",
+        "object_count": len(sources),
+        "predecessor_trace_count": len(traces),
+        "producer_commit": producer_commit,
+        "inputs": {"V14": v14_input_sha256, "V16": v16_input_sha256},
+        "migration_generated_metadata": result.get("migration_generated_metadata"),
+        "retrieved_not_promoted_to_publication_time": True,
+        "boundary": MIGRATION_BOUNDARY,
+    }
+    manifest = {
+        "files": [{"path": path, "sha256": digest} for path, digest in sorted(file_digests.items())],
+        "descriptor_sha256": sha256_bytes(canonical_json_bytes(descriptor)),
+        "release_authorized": False,
+        "boundary": MIGRATION_BOUNDARY,
+    }
+    manifest["manifest_sha256"] = sha256_bytes(canonical_json_bytes(manifest))
+    atomic_write_json(output_dir / "descriptor.json", descriptor)
+    atomic_write_json(output_dir / "manifest.json", manifest)
+    return {"descriptor": descriptor, "manifest": manifest}
