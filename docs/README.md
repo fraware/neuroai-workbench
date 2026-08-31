@@ -8,6 +8,12 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 | --- | --- |
 | [overview.md](architecture/overview.md) | System architecture and component boundaries |
 | [data-storage-boundaries.md](architecture/data-storage-boundaries.md) | Five-store model and storage roles |
+| [vision-and-target-architecture.md](architecture/vision-and-target-architecture.md) | Seven-layer Observatory v2 programme target and transition gates |
+| [observatory-v2-ontology.md](architecture/observatory-v2-ontology.md) | Target entities, observations, assertions, relationships, events, and assessment dependencies |
+| [temporal-model.md](architecture/temporal-model.md) | Valid-time, knowledge-time, observation succession, and as-of semantics |
+| [entity-identity-model.md](architecture/entity-identity-model.md) | Stable IDs, resolution proposals, lineage, and no-silent-merge rules |
+| [s2-s3-evidence-contract.md](architecture/s2-s3-evidence-contract.md) | Public evidence metadata versus protected/restricted evidence bytes |
+| [release-model-v2.md](architecture/release-model-v2.md) | Immutable S2 authority, projection boundary, and v2 migration release gates |
 | [static-to-operational.md](architecture/static-to-operational.md) | Archive versus operational programme layout |
 | [release-attestation.md](architecture/release-attestation.md) | Default proportional release-control profile |
 | [governance-single-authority.md](architecture/governance-single-authority.md) | Designated authority and default/high-assurance profiles |
@@ -23,7 +29,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 
 ## Architecture decision records
 
-Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale.
+Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale. ADR 0014 proposes the Observatory v2 temporal assertion model and remains non-normative until reviewed.
 
 ## Operations
 
