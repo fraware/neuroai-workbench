@@ -2,7 +2,7 @@
 
 Supports:
 - NCT identifier rewrite to the CT.gov studies API
-- Search query URL construction with pagination tokens
+- Search query URL construction with pagination tokens and explicit total-count requests
 - Normalized study projection and field-level digest comparison
 
 Capture proves retrieval of the selected study or search payload only — not
@@ -132,6 +132,29 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
                 return value
         return default
 
+    def extract_count_total(self, source_record: dict[str, Any] | None) -> bool:
+        """Return whether a search request explicitly asks CT.gov for ``totalCount``.
+
+        The default remains false so existing monitoring/search behavior is unchanged. Discovery
+        programmes that require a denominator must opt in explicitly. ClinicalTrials.gov returns
+        ``totalCount`` only when ``countTotal=true`` is requested.
+        """
+        if not source_record:
+            return False
+        raw: Any = source_record.get("count_total")
+        metadata = source_record.get("metadata")
+        if raw is None and isinstance(metadata, dict):
+            raw = metadata.get("count_total", metadata.get("countTotal"))
+        if isinstance(raw, bool):
+            return raw
+        if isinstance(raw, str):
+            normalized = raw.strip().lower()
+            if normalized == "true":
+                return True
+            if normalized == "false":
+                return False
+        return False
+
     def build_study_url(self, nct_id: str) -> str:
         return f"{CTGOV_API_PREFIX}{nct_id.upper()}"
 
@@ -141,6 +164,7 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
         *,
         page_size: int = 10,
         page_token: str | None = None,
+        count_total: bool = False,
     ) -> str:
         params: dict[str, str] = {
             "query.term": query,
@@ -149,6 +173,8 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
         }
         if page_token:
             params["pageToken"] = page_token
+        if count_total:
+            params["countTotal"] = "true"
         return f"{CTGOV_SEARCH_URL}?{urlencode(params)}"
 
     def parse_search_page(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -161,7 +187,7 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
         else:
             next_token = next_token.strip()
         total = payload.get("totalCount")
-        if not isinstance(total, int):
+        if not isinstance(total, int) or isinstance(total, bool):
             total = None
         return {
             "studies": studies,
@@ -196,7 +222,7 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
 
         enrollment = status.get("enrollmentInfo")
         enrollment_count = None
-        if isinstance(enrollment, dict) and isinstance(enrollment.get("count"), int):
+        if isinstance(enrollment, dict) and isinstance(enrollment.get("count"), int) and not isinstance(enrollment.get("count"), bool):
             enrollment_count = enrollment["count"]
 
         phases = design.get("phases")
@@ -274,6 +300,7 @@ class ClinicalTrialsGovAdapter(HttpCollectorAdapter):
                     query,
                     page_size=self.extract_page_size(source_record),
                     page_token=self.extract_page_token(source_record),
+                    count_total=self.extract_count_total(source_record),
                 ),
             }
         return dict(request)
