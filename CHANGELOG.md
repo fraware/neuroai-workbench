@@ -7,7 +7,11 @@ All notable changes are recorded here. Release integrity does not establish subs
 
 ### Added
 
-- Collaborative review assignments, immutable disagreements, human dispositions, and integrity verification.
+- Precision-safe `TimeValue` types, observatory-graph object schemas with deterministic digests, missing `ENTITY_REGISTRY.schema.json`, source-universe programme contracts (`SU-TRIAL` executable reference plus offline-executable `SU-PUBS`/`SU-REG`/`SU-GRANTS`/`SU-MODEL` projections), DNS-pinned HTTP transport, authorization-packet collection service, immutable quarantine successors, and a candidate release compiler that never sets `release_authorized=true`.
+- Hosted-CI empty-steps classifier and compatibility-identity document (package vs runtime pin vs S2 WORKBENCH_VERSION vs producer commit vs schema).
+- Entity identity-relation dispositions (including directed `related_entity_id` for succession/acquisition), typed delta vocabulary expansion (ADR 0017), temporal graph compiler with adversarial integrity checks, and non-authoritative derived loaders.
+- Monitor onboarding lifecycle, typed change/no-change classification, reopening service facade with reproducible recommendation/basis ids (no assessment mutation), and public read-only `/v1` API with why/provenance/timeline/diff routes over release artifacts (ADR 0018).
+- Assessment-validation cohort manifests, reviewer isolation, and deidentified disagreement export; institutional OIDC/SAML/RBAC/audit/S3 profile adapters with fail-closed LOCAL vs INSTITUTIONAL separation (not ThreadingHTTPServer auth); ops/DR/security runbook hooks; contributor extension guide and offline reference flow script; and a `v1.0` readiness-gate document that authorizes neither a tag nor institutional readiness.
 - Deterministic review and evidence-gap reports.
 - Protected-evidence metadata requests, custodian-response records, path and secret guards, and exchange integrity verification.
 - Loss-aware programme completed-assessment adapter with a checked-in native PRIMA v4.2.1 reference case.

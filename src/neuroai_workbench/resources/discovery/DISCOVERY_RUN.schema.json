@@ -27,7 +27,7 @@
     },
     "executed_at": {"type": "string", "minLength": 10},
     "executed_by": {"type": "string", "minLength": 1},
-    "execution_mode": {"enum": ["OFFLINE_FIXTURE", "OPT_IN_NETWORK"]},
+    "execution_mode": {"enum": ["OFFLINE_FIXTURE", "OFFLINE_REPLAY", "OPT_IN_NETWORK"]},
     "execution_date": {
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"

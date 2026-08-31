@@ -156,6 +156,12 @@ def validate(root: Path) -> list[str]:
             errors.append(f"{relative}: permissions {observed_permissions!r} != contract {expected_permissions!r}")
 
         errors.extend(_action_pin_errors(relative, text))
+        if re.search(r"(?m)^\s+steps:\s*\[\s*\]\s*$", text):
+            errors.append(
+                f"{relative}: declares empty steps: [] — this is an infrastructure/contract failure, "
+                "not a test result. Hosted jobs that complete with empty steps must be classified as "
+                "INFRASTRUCTURE_FAILURE (see scripts/classify_hosted_ci_execution.py)."
+            )
 
         expected_jobs = {str(item["id"]): item for item in spec.get("jobs", [])}
         observed_jobs = _jobs(text)

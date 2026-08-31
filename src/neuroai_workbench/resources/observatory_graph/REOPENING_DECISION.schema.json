@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-reopening-decision-1.0.json",
+  "type": "object",
+  "required": ["object_class", "reopening_decision_id", "subject", "decision", "decided_at", "trigger_assertion_ids", "trigger_event_ids", "required_actions", "assessment_mutated", "boundary"],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "identity_ref": {
+      "type": "object",
+      "required": ["kind", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["IDENTIFIER", "UNRESOLVED_LITERAL", "RESOLVED_ENTITY_REFERENCE"]},
+        "value": {"type": ["string", "null"]},
+        "entity_id": {"type": ["string", "null"]},
+        "scheme": {"type": ["string", "null"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "ReopeningDecision"},
+    "reopening_decision_id": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/$defs/identity_ref"},
+    "decision": {"type": "string", "minLength": 1},
+    "decided_at": {"$ref": "#/$defs/time_value"},
+    "trigger_assertion_ids": {"type": "array", "items": {"type": "string"}},
+    "trigger_event_ids": {"type": "array", "items": {"type": "string"}},
+    "required_actions": {"type": "array", "items": {"type": "string"}},
+    "provenance": {"type": ["string", "null"]},
+    "assessment_mutated": {"const": false},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

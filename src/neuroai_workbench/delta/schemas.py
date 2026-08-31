@@ -20,8 +20,26 @@ OPERATION_TYPES = frozenset(
         "ADD_ALIAS",
         "RECORD_SOURCE_INACCESSIBILITY",
         "QUEUE_ASSESSMENT_REVIEW",
+        "ADD_ENTITY",
+        "ADD_SOURCE",
+        "ADD_OBSERVATION",
+        "ADD_ASSERTION",
+        "SUPERSEDE_ASSERTION",
+        "SUPERSEDE_ENTITY",
+        "RECORD_SOURCE_SUCCESSOR_ROUTE",
+        "RECORD_REOPENING_DECISION",
+        "RECORD_NO_CHANGE_COMPARISON",
     }
 )
+
+# Explicit mapping only. Do not silently rename historical ADD_RECORD / SUPERSEDE_RECORD ops.
+LEGACY_OPERATION_MAPPING: dict[str, str] = {
+    "ADD_RECORD": "ADD_RECORD",
+    "SUPERSEDE_RECORD": "SUPERSEDE_RECORD",
+}
+
+GRAPH_NATIVE_ADD_OPS = frozenset({"ADD_ENTITY", "ADD_SOURCE", "ADD_OBSERVATION", "ADD_ASSERTION"})
+GRAPH_NATIVE_SUPERSEDE_OPS = frozenset({"SUPERSEDE_ASSERTION", "SUPERSEDE_ENTITY"})
 
 DISPOSITION_DECISIONS = frozenset({"ACCEPT", "REJECT", "DEFER", "DUPLICATE", "NEEDS_EVIDENCE"})
 
@@ -35,7 +53,8 @@ DECISION_TO_REGISTER: dict[str, str] = {
 
 DELTA_BOUNDARY = (
     "An adjudicated delta records proposed canonical changes supported by human decisions. "
-    "It is not a canonical successor release and does not establish substantive correctness."
+    "It is not a canonical successor release and does not establish substantive correctness. "
+    "Unrestricted RFC-6902 JSON Patch is forbidden."
 )
 
 

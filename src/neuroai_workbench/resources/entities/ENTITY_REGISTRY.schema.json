@@ -1,1 +1,27 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://neuroai-workbench.example/schemas/entity-registry-1.0.json","type":"object","required":["metadata","entities"],"additionalProperties":false,"properties":{"metadata":{"type":"object","required":["title","version","status","record_count","boundary"],"additionalProperties":true,"properties":{"title":{"type":"string","minLength":1},"version":{"type":"string","minLength":1},"status":{"type":"string","minLength":1},"record_count":{"type":"integer","minimum":0},"boundary":{"type":"string","minLength":1}}},"entities":{"type":"array","items":{"type":"object","required":["entity_id","entity_type","display_name","status","created_at","boundary"],"additionalProperties":true,"properties":{"entity_id":{"type":"string","minLength":1},"entity_type":{"type":"string","minLength":1},"display_name":{"type":"string","minLength":1},"status":{"type":"string","minLength":1},"created_at":{"type":"string","minLength":1},"boundary":{"type":"string","minLength":1}}}}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/entity-registry-1.0.json",
+  "title": "ENTITY_REGISTRY",
+  "description": "Container for the controlled entity registry. Record counts are mechanical; they do not establish entity existence, identity, or substantive correspondence.",
+  "type": "object",
+  "required": ["metadata", "entities"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["title", "version", "status", "record_count", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "status": {"type": "string", "minLength": 1},
+        "record_count": {"type": "integer", "minimum": 0},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {"type": "object"}
+    }
+  }
+}

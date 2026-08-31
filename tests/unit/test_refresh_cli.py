@@ -159,7 +159,12 @@ def test_main_json_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsy
     assert payload["sources"]["changed_source_ids"] == ["SRC-2"]
 
 
-def test_main_fails_fast_on_missing_inputs(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_fails_fast_on_missing_inputs(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(refresh_cli.OPS_ENV, raising=False)
     missing = tmp_path / "missing.json"
     result = refresh_cli.main(["--predecessor", str(missing)])
     assert result == 2

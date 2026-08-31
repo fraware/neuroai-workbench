@@ -27,7 +27,7 @@
 14. A provider response or human disposition is applied automatically and silently changes the assessment.
 15. A metadata exchange leaks a local path, credential, participant detail, or protected evidence excerpt, or overstates an out-of-band reference as verified receipt.
 16. A discovery query or opt-in network result is treated as an authorized registry source, or silent in-place registry overwrite bypasses human acceptance and append-only succession.
-17. A stale, malformed, expired, or replaced event lock is treated as valid ownership, or one writer deletes another writer's successor lock.
+17. A stale, malformed, expired, or replaced event lock is treated as valid ownership, or one writer deletes another writer's successor lock. On Windows, lock liveness checks must not use `os.kill(pid, 0)` (CTRL_C_EVENT); owner unlock and contended reads must tolerate brief sharing violations without leaving an unrecoverable live-PID lock.
 18. A trailer sidecar is trusted after historical log replacement or tampering.
 19. A writer crashes after persisting event bytes and before persisting the corresponding trailer.
 20. Evidence registration crashes between object, index, assessment, persistence, and event writes, leaving partial or divergent state.
@@ -45,7 +45,14 @@
 32. A crash leaves an assessment-save transaction `PREPARED` and later recovery incorrectly assumes commit or rollback despite a corrupt event chain, journal, snapshot, or divergent third state.
 33. A release attestation is persisted with a semantically impossible `AUTHORIZE` state even though one required domain blocks release or an unresolved `BLOCKS_RELEASE` condition exists.
 34. A published authorization is superseded later, invalidating the publication's active-authorization binding after the publication record was validly created.
-35. A deterministic candidate-object digest is overstated as a digest of arbitrary original source-file bytes with different formatting or encoding.
+35. Concurrent path containment checks treat Windows extended (`\\?\`) and ordinary path forms as different roots and refuse legitimate writes inside a controlled quarantine tree.
+36. A collector transport reconnects by hostname after DNS validation, allowing DNS rebinding between check and connect.
+37. Network capture proceeds because `NEUROAI_LIVE_COLLECTION=1` is set, without an attributable authorization packet.
+38. Quarantine approval overwrites the pending capture record, erasing the pending state.
+39. A candidate compiler mechanical PASS is treated as `release_authorized=true` or as six-domain attestation PASS.
+40. An institutional OIDC/SAML adapter stub is treated as verified authentication, or auth is bound to the local `ThreadingHTTPServer` and called production.
+41. Empty-basis `NO_REOPENING` / `NO_EFFECT` recommendations are misread as “nothing changed,” or non-deterministic recommendation ids prevent reproducible review.
+42. Fuzzy name similarity auto-merges entities, or directed identity relations delete predecessor ids.
 
 ## Implemented controls
 
@@ -55,6 +62,7 @@
 - No remote JavaScript, CSS, fonts, or analytics.
 - Content Security Policy and defensive HTTP headers.
 - Controlled path resolution and identifiers via `ensure_identifier` / `safe_join`.
+- `safe_join` compares extended and ordinary Windows path forms so concurrent resolve results inside a controlled root are not rejected as escapes.
 
 The network overlay is not an authenticated or TLS-terminated institutional deployment.
 
@@ -94,6 +102,10 @@ The network overlay is not an authenticated or TLS-terminated institutional depl
 - Metadata-only evidence requests, public-URL filtering, local-path rejection, credential-pattern guards, explicit no-byte flags, and out-of-band `NOT_VERIFIED_BY_WORKBENCH` material states.
 - Discovery is offline-first. Opt-in network discovery reuses public-URL SSRF controls, emits candidate source proposals only, and refuses silent registry overwrite in favour of append-only successor drafts.
 - Shadow-refresh handoff samples only quarantine records already `APPROVED_FOR_HANDOFF`; approval does not convert pending captures into accepted evidence automatically.
+- Production HTTP collection uses `PinnedSocketHttpTransport`, which connects only to DnsGuard-approved IP literals, preserves Host/SNI, does not self-follow redirects, and records the connected address per response without mutable `last_connected_address` state.
+- `EvidenceCollectionService` requires an authorization packet; `NEUROAI_LIVE_COLLECTION=1` is an additional gate, not a sufficient gate. Default CLI and data builds remain offline.
+- Quarantine approval and rejection write immutable successor records. Scanning, rights, and retention hooks are custody metadata and are not substantive adjudication.
+- The candidate release compiler binds attestation stubs to the candidate manifest digest, starts six domains at PENDING, and never sets `release_authorized=true`.
 
 ### Release attestation and publication
 

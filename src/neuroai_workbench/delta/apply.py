@@ -26,8 +26,19 @@ LIST_SECTIONS = frozenset(
         "supplier_dependency_relationships",
         "assessment_reviews",
         "entity_aliases",
+        "entities",
+        "observations",
+        "assertions",
+        "source_successor_routes",
+        "reopening_decisions",
+        "no_change_comparisons",
     }
 )
+
+GRAPH_ADD_TYPES = frozenset(
+    {"ADD_RECORD", "ADD_RELATIONSHIP", "ADD_EVENT", "ADD_ENTITY", "ADD_SOURCE", "ADD_OBSERVATION", "ADD_ASSERTION"}
+)
+GRAPH_SUPERSEDE_TYPES = frozenset({"SUPERSEDE_RECORD", "SUPERSEDE_ASSERTION", "SUPERSEDE_ENTITY"})
 
 
 def _delta_sha256(delta: dict[str, Any]) -> str:
@@ -45,7 +56,7 @@ def _apply_operation(successor: dict[str, Any], operation: dict[str, Any], prede
     operation_type = operation["operation_type"]
     target_section = operation["target_section"]
 
-    if operation_type in {"ADD_RECORD", "ADD_RELATIONSHIP", "ADD_EVENT"}:
+    if operation_type in GRAPH_ADD_TYPES:
         record = operation.get("record")
         if not isinstance(record, dict):
             raise DeltaApplyError(f"{operation_type} requires a record object")
@@ -94,7 +105,7 @@ def _apply_operation(successor: dict[str, Any], operation: dict[str, Any], prede
         succ_section[succ_index] = updated
         return
 
-    if operation_type == "SUPERSEDE_RECORD":
+    if operation_type in GRAPH_SUPERSEDE_TYPES:
         record_id_field = operation["record_id_field"]
         record_id = operation["record_id"]
         section = successor.setdefault(target_section, [])
@@ -108,6 +119,7 @@ def _apply_operation(successor: dict[str, Any], operation: dict[str, Any], prede
             raise DeltaApplyError("Superseded record must be an object")
         updated["superseded_by"] = operation["superseded_by"]
         updated["tombstone"] = copy.deepcopy(operation["tombstone"])
+        # Predecessors remain addressable; never delete the prior id.
         section[index] = updated
         return
 
@@ -148,6 +160,47 @@ def _apply_operation(successor: dict[str, Any], operation: dict[str, Any], prede
             "status": "QUEUED_FOR_HUMAN_REVIEW",
         }
         reviews.append(entry)
+        return
+
+    if operation_type == "RECORD_SOURCE_SUCCESSOR_ROUTE":
+        routes = successor.setdefault("source_successor_routes", [])
+        if not isinstance(routes, list):
+            raise DeltaApplyError("source_successor_routes must be a list")
+        entry = {
+            "route_id": operation["route_id"],
+            "predecessor_source_id": operation["predecessor_source_id"],
+            "successor_source_id": operation["successor_source_id"],
+            "rationale": operation["rationale"],
+        }
+        if any(isinstance(item, dict) and item.get("route_id") == entry["route_id"] for item in routes):
+            raise DeltaApplyError(f"Route {entry['route_id']!r} already exists")
+        routes.append(entry)
+        return
+
+    if operation_type == "RECORD_REOPENING_DECISION":
+        decisions = successor.setdefault("reopening_decisions", [])
+        if not isinstance(decisions, list):
+            raise DeltaApplyError("reopening_decisions must be a list")
+        decision = operation.get("reopening_decision")
+        if not isinstance(decision, dict):
+            raise DeltaApplyError("RECORD_REOPENING_DECISION requires a reopening_decision object")
+        decisions.append(copy.deepcopy(decision))
+        return
+
+    if operation_type == "RECORD_NO_CHANGE_COMPARISON":
+        comparisons = successor.setdefault("no_change_comparisons", [])
+        if not isinstance(comparisons, list):
+            raise DeltaApplyError("no_change_comparisons must be a list")
+        scope = operation.get("comparison_scope")
+        if not isinstance(scope, str) or not scope.strip():
+            raise DeltaApplyError("RECORD_NO_CHANGE_COMPARISON requires explicit comparison_scope")
+        entry = {
+            "source_id": operation["source_id"],
+            "comparison_scope": scope.strip(),
+            "comparison_result": operation["comparison_result"],
+            "rationale": operation["rationale"],
+        }
+        comparisons.append(entry)
         return
 
     raise DeltaApplyError(f"Unsupported operation type {operation_type!r}")

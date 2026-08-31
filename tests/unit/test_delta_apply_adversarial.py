@@ -383,3 +383,114 @@ def test_apply_operation_type_guard_branches() -> None:
             },
             predecessor,
         )
+    with pytest.raises(DeltaApplyError, match="source_successor_routes must be a list"):
+        _apply_operation(
+            {"source_successor_routes": "bad"},
+            {
+                "operation_type": "RECORD_SOURCE_SUCCESSOR_ROUTE",
+                "target_section": "source_successor_routes",
+                "route_id": "ROUTE-1",
+                "predecessor_source_id": "SRC-A",
+                "successor_source_id": "SRC-B",
+                "rationale": "route",
+            },
+            predecessor,
+        )
+    successor = {"source_successor_routes": [{"route_id": "ROUTE-1"}]}
+    with pytest.raises(DeltaApplyError, match="already exists"):
+        _apply_operation(
+            successor,
+            {
+                "operation_type": "RECORD_SOURCE_SUCCESSOR_ROUTE",
+                "target_section": "source_successor_routes",
+                "route_id": "ROUTE-1",
+                "predecessor_source_id": "SRC-A",
+                "successor_source_id": "SRC-B",
+                "rationale": "route",
+            },
+            predecessor,
+        )
+    _apply_operation(
+        successor,
+        {
+            "operation_type": "RECORD_SOURCE_SUCCESSOR_ROUTE",
+            "target_section": "source_successor_routes",
+            "route_id": "ROUTE-2",
+            "predecessor_source_id": "SRC-A",
+            "successor_source_id": "SRC-C",
+            "rationale": "route",
+        },
+        predecessor,
+    )
+    assert any(item.get("route_id") == "ROUTE-2" for item in successor["source_successor_routes"])
+    with pytest.raises(DeltaApplyError, match="reopening_decisions must be a list"):
+        _apply_operation(
+            {"reopening_decisions": "bad"},
+            {
+                "operation_type": "RECORD_REOPENING_DECISION",
+                "target_section": "reopening_decisions",
+                "reopening_decision": {"decision_id": "D-1"},
+            },
+            predecessor,
+        )
+    with pytest.raises(DeltaApplyError, match="requires a reopening_decision object"):
+        _apply_operation(
+            {"reopening_decisions": []},
+            {
+                "operation_type": "RECORD_REOPENING_DECISION",
+                "target_section": "reopening_decisions",
+                "reopening_decision": "bad",
+            },
+            predecessor,
+        )
+    decisions: dict = {"reopening_decisions": []}
+    _apply_operation(
+        decisions,
+        {
+            "operation_type": "RECORD_REOPENING_DECISION",
+            "target_section": "reopening_decisions",
+            "reopening_decision": {"decision_id": "D-1"},
+        },
+        predecessor,
+    )
+    assert decisions["reopening_decisions"][0]["decision_id"] == "D-1"
+    with pytest.raises(DeltaApplyError, match="no_change_comparisons must be a list"):
+        _apply_operation(
+            {"no_change_comparisons": "bad"},
+            {
+                "operation_type": "RECORD_NO_CHANGE_COMPARISON",
+                "target_section": "no_change_comparisons",
+                "source_id": "SRC-1",
+                "comparison_scope": "TITLE",
+                "comparison_result": "UNCHANGED",
+                "rationale": "same",
+            },
+            predecessor,
+        )
+    with pytest.raises(DeltaApplyError, match="requires explicit comparison_scope"):
+        _apply_operation(
+            {"no_change_comparisons": []},
+            {
+                "operation_type": "RECORD_NO_CHANGE_COMPARISON",
+                "target_section": "no_change_comparisons",
+                "source_id": "SRC-1",
+                "comparison_scope": "  ",
+                "comparison_result": "UNCHANGED",
+                "rationale": "same",
+            },
+            predecessor,
+        )
+    comparisons: dict = {"no_change_comparisons": []}
+    _apply_operation(
+        comparisons,
+        {
+            "operation_type": "RECORD_NO_CHANGE_COMPARISON",
+            "target_section": "no_change_comparisons",
+            "source_id": "SRC-1",
+            "comparison_scope": "TITLE",
+            "comparison_result": "UNCHANGED",
+            "rationale": "same",
+        },
+        predecessor,
+    )
+    assert comparisons["no_change_comparisons"][0]["comparison_scope"] == "TITLE"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ctypes
 import json
 import os
 import socket
@@ -21,6 +22,9 @@ _LOCK_POLL_SECONDS = 0.01
 _LOCK_LEASE_SECONDS = 60.0
 _TRAILER_VERSION = 1
 _LOCK_VERSION = 1
+# Windows defaults os.open to text mode and expands \n to \r\n; event-chain and lock
+# bytes must stay exact so trailer size and hashes remain stable across platforms.
+_O_BINARY = int(getattr(os, "O_BINARY", 0))
 
 
 def _event_hash(event: dict[str, Any]) -> str:
@@ -271,14 +275,41 @@ def _process_start_token(pid: int) -> str | None:
     return fields[19] if len(fields) > 19 else None
 
 
-def _pid_alive(pid: int, token: str | None) -> bool:
+def _windows_process_exists(pid: int) -> bool:
+    """Return whether *pid* names a live Win32 process without sending console events.
+
+    On Windows, ``os.kill(pid, 0)`` is ``CTRL_C_EVENT`` (value 0), so the Unix
+    existence-check convention would interrupt the local process during lock
+    polling. OpenProcess is coordination-only and is not identity proof.
+    """
+    if pid <= 0:
+        return False
+    # PROCESS_QUERY_LIMITED_INFORMATION — enough to prove the handle opened.
+    handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, int(pid))
+    if handle:
+        ctypes.windll.kernel32.CloseHandle(handle)
+        return True
+    # ERROR_ACCESS_DENIED (5): process exists but this caller cannot query it.
+    return ctypes.GetLastError() == 5
+
+
+def _process_exists(pid: int) -> bool:
+    """Return whether *pid* appears alive on this host (best-effort, local only)."""
+    if os.name == "nt":
+        return _windows_process_exists(pid)
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
     except PermissionError:  # pragma: no cover - platform permission boundary
-        pass
+        return True
     except OSError:
+        return False
+    return True
+
+
+def _pid_alive(pid: int, token: str | None) -> bool:
+    if not _process_exists(pid):
         return False
     observed = _process_start_token(pid)
     return token is None or observed is None or observed == token
@@ -309,8 +340,11 @@ def _lock_bytes(record: dict[str, Any]) -> bytes:
 def _create_lock(path: Path, record: dict[str, Any]) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        fd = os.open(str(path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        fd = os.open(str(path), os.O_CREAT | os.O_EXCL | os.O_WRONLY | _O_BINARY, 0o600)
     except FileExistsError:
+        return False
+    except PermissionError:
+        # Windows may deny create while another thread still holds the path open.
         return False
     try:
         data = _lock_bytes(record)
@@ -324,10 +358,24 @@ def _create_lock(path: Path, record: dict[str, Any]) -> bool:
 
 
 def _read_lock(path: Path) -> tuple[dict[str, Any] | None, bytes | None]:
-    try:
-        raw = path.read_bytes()
-    except FileNotFoundError:
-        return None, None
+    deadline = time.monotonic() + min(1.0, _LOCK_TIMEOUT_SECONDS)
+    while True:
+        try:
+            raw = path.read_bytes()
+            break
+        except FileNotFoundError:
+            return None, None
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(_LOCK_POLL_SECONDS)
+            continue
+        except OSError as exc:  # pragma: no cover - platform-specific sharing codes
+            winerror = getattr(exc, "winerror", None)
+            if winerror != 32 or time.monotonic() >= deadline:
+                raise
+            time.sleep(_LOCK_POLL_SECONDS)
+            continue
     try:
         value = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -414,14 +462,36 @@ def _exclusive_lock(
     finally:
         current, _ = _read_lock(lock_path)
         if current is not None and current.get("lock_id") == owner["lock_id"]:
+            _release_lock_file(lock_path)
+
+
+def _release_lock_file(lock_path: Path) -> None:
+    """Unlink an owned lock file, retrying Windows sharing violations briefly.
+
+    Contending readers may briefly hold the lock path open during ``read_bytes``.
+    Failing the owner unlink would leave a live-PID lock that never recovers.
+    """
+    deadline = time.monotonic() + min(1.0, _LOCK_TIMEOUT_SECONDS)
+    while True:
+        try:
             lock_path.unlink(missing_ok=True)
             fsync_directory(lock_path.parent)
+            return
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(_LOCK_POLL_SECONDS)
+        except OSError as exc:  # pragma: no cover - platform-specific sharing codes
+            winerror = getattr(exc, "winerror", None)
+            if winerror != 32 or time.monotonic() >= deadline:
+                raise
+            time.sleep(_LOCK_POLL_SECONDS)
 
 
 def _append_fsync(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     created = not path.exists()
-    fd = os.open(str(path), os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)
+    fd = os.open(str(path), os.O_CREAT | os.O_APPEND | os.O_WRONLY | _O_BINARY, 0o600)
     try:
         view = memoryview(data)
         while view:

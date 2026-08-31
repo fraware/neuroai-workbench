@@ -1,0 +1,40 @@
+{
+  "universe_id": "SU-PUBS",
+  "universe_version": "0.2.0-offline",
+  "documentation_aliases": ["SU-PUBLICATIONS"],
+  "purpose": "Discover publication and bibliographic candidates (PubMed / Crossref lineage) for NeuroAI-relevant literature via offline fixture or replay pages.",
+  "inclusion": [
+    "Public bibliographic records with durable identifiers (PMID, DOI)",
+    "Retraction and correction lifecycle metadata when present in the source"
+  ],
+  "exclusion": [
+    "Treating a bibliographic hit as clinical evidence or regulatory authorization",
+    "Automatic S2 or monitor-registry mutation",
+    "Inferring system capability from a paper title alone",
+    "Live HTTP inside the discovery package"
+  ],
+  "authoritative_sources": ["https://pubmed.ncbi.nlm.nih.gov/", "https://api.crossref.org/"],
+  "identity_key": {
+    "name": "doi_or_pmid",
+    "pattern": "^(10\\.\\S+|PMID:\\d+)$",
+    "match_rule": "Exact DOI or PMID. Case-fold DOI namespace only; never fuzzy-merge distinct DOIs."
+  },
+  "query_streams": ["DISCOVERY-PUBMED-NEUROAI"],
+  "denominator_policy": "Caller-supplied result-set size is a raw denominator. Cursor completion is not literature recall.",
+  "pagination_policy": "Terminal pagination must be explicit in coverage. Missing next-page tokens on non-final pages fail closed.",
+  "known_identity_reconciliation": "Optional DOI/PMID to source_id map. Exact identity matches emit DUPLICATE.",
+  "language": "en",
+  "jurisdiction": "PUBLIC_BIBLIOGRAPHIC",
+  "cadence": "Human-gated. Offline fixture/replay only in this programme maturity.",
+  "raw_input_boundary": "Caller supplies already-retrieved bibliographic payloads. Discovery has no embedded live HTTP client.",
+  "candidate_schema": "CANDIDATE_SOURCE_PROPOSAL.schema.json",
+  "human_review_path": "Candidate proposals remain PENDING_HUMAN_ACCEPTANCE until adjudicate_candidate_source.",
+  "evaluation": {
+    "precision_method": "Sampled human review of NEW candidates (not executed by this software).",
+    "maturity": "OFFLINE_EXECUTABLE",
+    "promotes_from_adapter": "pubmed_crossref",
+    "offline_fixture_replay_supported": true,
+    "network_execution_in_programme": false
+  },
+  "boundary": "SU-PUBS offline programme execution emits candidates and coverage. Presence of this contract does not establish literature completeness, retraction recall, or assessment effect."
+}

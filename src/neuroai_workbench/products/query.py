@@ -81,7 +81,7 @@ APPENDIX_EXCLUDED_SHEETS = frozenset(
 
 
 def _cell(value: Any) -> Any:
-    if isinstance(value, (dict, list)):
+    if isinstance(value, dict | list):
         return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return value
 
@@ -147,7 +147,7 @@ def _project_aliases(organizations: list[Any]) -> list[dict[str, Any]]:
                 {
                     "organization_id": organization_id,
                     "canonical_name": item.get("canonical_name"),
-                    "alias": alias if not isinstance(alias, (dict, list)) else _cell(alias),
+                    "alias": alias if not isinstance(alias, dict | list) else _cell(alias),
                 }
             )
     return rows
@@ -270,7 +270,7 @@ def query_release(
             provenance_rows = _project_optional_dict_as_rows(provenance)
             if provenance_rows:
                 # Flatten scalar provenance map into metric-style rows when it is a dict of scalars.
-                if isinstance(provenance, dict) and all(not isinstance(v, (dict, list)) for v in provenance.values()):
+                if isinstance(provenance, dict) and all(not isinstance(v, dict | list) for v in provenance.values()):
                     rows["provenance_links"] = [
                         {"field": key, "value": value} for key, value in sorted(provenance.items())
                     ]

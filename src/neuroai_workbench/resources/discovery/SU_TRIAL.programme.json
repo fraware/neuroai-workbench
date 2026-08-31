@@ -1,0 +1,45 @@
+{
+  "universe_id": "SU-TRIAL",
+  "universe_version": "1.0.0",
+  "documentation_aliases": ["SU-TRIALS"],
+  "purpose": "Discover official ClinicalTrials.gov study-page candidates for NeuroAI-relevant interventional trials. Emit candidate source proposals only.",
+  "inclusion": [
+    "ClinicalTrials.gov API v2 search pages supplied by the caller",
+    "Exact NCT identifiers matching ^NCT\\d{8}$",
+    "Optional post-retrieval interventional study-type filter with pre-filter denominator retained"
+  ],
+  "exclusion": [
+    "Fuzzy title or sponsor-name merge",
+    "Hard-coded PRIMA or product-specific query logic",
+    "Live HTTP inside the discovery package",
+    "Automatic S2 or monitor-registry mutation"
+  ],
+  "authoritative_sources": ["https://clinicaltrials.gov/", "https://clinicaltrials.gov/api/v2/studies"],
+  "identity_key": {
+    "name": "nct_id",
+    "pattern": "^NCT\\d{8}$",
+    "match_rule": "Exact NCT identifier. URL variants must not create a false NEW. Conflicting same-NCT normalized representations fail closed."
+  },
+  "query_streams": ["DISCOVERY-CLINICAL-TRIALS-BCI"],
+  "denominator_policy": "Use API totalCount when countTotal was requested and pages report a consistent total. Cursor termination is not denominator reconciliation.",
+  "pagination_policy": "Reject a non-final page without nextPageToken. fully_paginated means the supplied cursor walk terminated. It is not registry completeness.",
+  "known_identity_reconciliation": "Optional NCT to source_id map. Exact NCT matches emit DUPLICATE regardless of URL query-string variants.",
+  "language": "en",
+  "jurisdiction": "US_CLINICALTRIALS_GOV_REGISTRY",
+  "cadence": "Human-gated. No automatic live poll in this package.",
+  "raw_input_boundary": "Caller supplies already-retrieved search page payloads (fixture, OFFLINE_REPLAY, or separately authorized network capture). Discovery has no embedded live HTTP client.",
+  "candidate_schema": "CANDIDATE_SOURCE_PROPOSAL.schema.json",
+  "human_review_path": "execute_discovery_query proposals remain PENDING_HUMAN_ACCEPTANCE until adjudicate_candidate_source.",
+  "evaluation": {
+    "precision_method": "Sampled human review of NEW candidates (not executed by this software).",
+    "discovery_recall_anchors": [
+      {
+        "anchor_id": "PRIMA-NCT03333954",
+        "nct_id": "NCT03333954",
+        "role": "EXTERNAL_RECALL_ANCHOR_ONLY",
+        "notes": "PRIMA NCT03333954 is an external recall anchor. It must not be hard-coded into query construction or inclusion logic."
+      }
+    ]
+  },
+  "boundary": "SU-TRIAL is a discovery programme identity. SU-TRIALS is a documentation alias only. Programme execution emits candidates. It does not establish ClinicalTrials.gov completeness, NeuroAI trial recall, canonical source admission, or assessment effect."
+}

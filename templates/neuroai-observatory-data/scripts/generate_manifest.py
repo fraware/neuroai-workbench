@@ -53,7 +53,8 @@ def main() -> int:
 
     manifest = render_manifest(root, exclude={output})
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(manifest, encoding="utf-8")
+    # Force LF so manifest digests stay platform-stable (Windows text mode would emit CRLF).
+    output.write_bytes(manifest.encode("utf-8"))
     file_count = 0 if not manifest.strip() else len(manifest.strip().splitlines())
     print(f"{file_count} files -> {output}")
     return 0

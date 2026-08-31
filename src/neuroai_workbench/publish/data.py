@@ -275,7 +275,7 @@ def publish_release(plan: PublishPlan, *, target: Path | None = None) -> dict[st
                 shutil.copy2(source, temp_fixtures / source.name)
             temp_manifest = temp_root / "SHA256SUMS.txt"
             manifest_text = _manifest_for_tree(repo_root, temp_fixtures, temp_manifest)
-            temp_manifest.write_text(manifest_text, encoding="utf-8")
+            temp_manifest.write_bytes(manifest_text.encode("utf-8"))
             ok, errors = _verify_manifest(repo_root, temp_fixtures, temp_manifest)
             manifest_sha256 = sha256_file(temp_manifest)
             file_count = 0 if not manifest_text.strip() else len(manifest_text.strip().splitlines())
@@ -284,7 +284,7 @@ def publish_release(plan: PublishPlan, *, target: Path | None = None) -> dict[st
     else:
         plan.manifest_path.parent.mkdir(parents=True, exist_ok=True)
         manifest_text = _manifest_for_tree(repo_root, fixtures_dir, plan.manifest_path)
-        plan.manifest_path.write_text(manifest_text, encoding="utf-8")
+        plan.manifest_path.write_bytes(manifest_text.encode("utf-8"))
         ok, errors = _verify_manifest(repo_root, fixtures_dir, plan.manifest_path)
         manifest_sha256 = sha256_file(plan.manifest_path)
         file_count = 0 if not manifest_text.strip() else len(manifest_text.strip().splitlines())

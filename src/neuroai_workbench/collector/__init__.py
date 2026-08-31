@@ -14,6 +14,8 @@ from .adapters import (
     build_adapters,
     resolve_adapter,
 )
+from .authorization import CollectionAuthorizationError
+from .collection_service import EvidenceCollectionService, QuarantineService
 from .config import CollectorConfig
 from .credentials import CredentialProvider, StaticCredentialProvider
 from .handoff import (
@@ -25,6 +27,7 @@ from .handoff import (
     reject_quarantine_record,
 )
 from .local_adapter import LocalContentAddressedAdapter
+from .pinned_transport import PinnedSocketHttpTransport
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
@@ -33,11 +36,13 @@ __all__ = [
     "ClinicalRegulatoryHttpCaptureAdapter",
     "ClinicalRegulatoryRegistryStub",
     "ClinicalTrialsGovAdapter",
+    "CollectionAuthorizationError",
     "CollectionOutcome",
     "CollectionScheduler",
     "CollectorAdapter",
     "CollectorConfig",
     "CredentialProvider",
+    "EvidenceCollectionService",
     "FdaDeviceAdapter",
     "HandoffBlockedError",
     "HtmlPageAdapter",
@@ -45,7 +50,9 @@ __all__ = [
     "JsonApiAdapter",
     "LocalContentAddressedAdapter",
     "MonitoringHandoffPayload",
+    "PinnedSocketHttpTransport",
     "PriorCapture",
+    "QuarantineService",
     "SchedulerConfig",
     "StaticCredentialProvider",
     "XmlFeedAdapter",

@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://neuroai-workbench.example/schemas/collection-request-1.0.json",
+  "description": "Controlled collection request. Existing monitor requests bind to a monitor-registry digest; pre-registry first-capture requests bind instead to an onboarding manifest. Exactly one context binding is required.",
   "type": "object",
   "required": [
     "request_id",
@@ -8,7 +9,6 @@
     "monitor_id",
     "requested_url",
     "requested_at",
-    "registry_sha256",
     "collector_version",
     "configuration_hash",
     "boundary"
@@ -46,8 +46,19 @@
     "requested_url": {"$ref": "#/$defs/public_url"},
     "requested_at": {"$ref": "#/$defs/timestamp_with_timezone"},
     "registry_sha256": {"$ref": "#/$defs/sha256"},
+    "onboarding_manifest_sha256": {"$ref": "#/$defs/sha256"},
     "collector_version": {"type": "string", "minLength": 1},
     "configuration_hash": {"$ref": "#/$defs/sha256"},
     "boundary": {"type": "string", "minLength": 1}
-  }
+  },
+  "oneOf": [
+    {
+      "required": ["registry_sha256"],
+      "not": {"required": ["onboarding_manifest_sha256"]}
+    },
+    {
+      "required": ["onboarding_manifest_sha256"],
+      "not": {"required": ["registry_sha256"]}
+    }
+  ]
 }

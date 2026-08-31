@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://neuroai-workbench.example/schemas/delta-operation-1.0.json",
+  "$id": "https://neuroai-workbench.example/schemas/delta-operation-1.1.json",
   "type": "object",
   "required": ["operation_id", "operation_type", "target_section"],
   "additionalProperties": false,
@@ -15,8 +15,18 @@
         "SUPERSEDE_RECORD",
         "ADD_ALIAS",
         "RECORD_SOURCE_INACCESSIBILITY",
-        "QUEUE_ASSESSMENT_REVIEW"
-      ]
+        "QUEUE_ASSESSMENT_REVIEW",
+        "ADD_ENTITY",
+        "ADD_SOURCE",
+        "ADD_OBSERVATION",
+        "ADD_ASSERTION",
+        "SUPERSEDE_ASSERTION",
+        "SUPERSEDE_ENTITY",
+        "RECORD_SOURCE_SUCCESSOR_ROUTE",
+        "RECORD_REOPENING_DECISION",
+        "RECORD_NO_CHANGE_COMPARISON"
+      ],
+      "description": "Typed delta vocabulary. ADD_RECORD/SUPERSEDE_RECORD remain valid; graph-native ops are additive. Unrestricted RFC-6902 patch is forbidden."
     },
     "target_section": {"type": "string", "minLength": 1},
     "candidate_id": {"type": "string", "pattern": "^CAND-[0-9a-f]{32}$"},
@@ -36,7 +46,13 @@
     "tombstone": {"type": "object"},
     "assessment_id": {"type": "string", "minLength": 1},
     "reopening_effect": {"type": "string", "minLength": 1},
-    "rationale": {"type": "string", "minLength": 1}
+    "rationale": {"type": "string", "minLength": 1},
+    "predecessor_source_id": {"type": "string", "minLength": 1},
+    "successor_source_id": {"type": "string", "minLength": 1},
+    "route_id": {"type": "string", "minLength": 1},
+    "comparison_scope": {"type": "string", "minLength": 1},
+    "comparison_result": {"type": "string", "minLength": 1},
+    "reopening_decision": {"type": "object"}
   },
   "allOf": [
     {
@@ -70,6 +86,42 @@
     {
       "if": {"properties": {"operation_type": {"const": "QUEUE_ASSESSMENT_REVIEW"}}, "required": ["operation_type"]},
       "then": {"required": ["assessment_id", "reopening_effect", "rationale"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_ENTITY"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_SOURCE"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_OBSERVATION"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "ADD_ASSERTION"}}, "required": ["operation_type"]},
+      "then": {"required": ["record"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "SUPERSEDE_ASSERTION"}}, "required": ["operation_type"]},
+      "then": {"required": ["record_id_field", "record_id", "superseded_by", "tombstone"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "SUPERSEDE_ENTITY"}}, "required": ["operation_type"]},
+      "then": {"required": ["record_id_field", "record_id", "superseded_by", "tombstone"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "RECORD_SOURCE_SUCCESSOR_ROUTE"}}, "required": ["operation_type"]},
+      "then": {"required": ["predecessor_source_id", "successor_source_id", "route_id", "rationale"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "RECORD_REOPENING_DECISION"}}, "required": ["operation_type"]},
+      "then": {"required": ["reopening_decision"]}
+    },
+    {
+      "if": {"properties": {"operation_type": {"const": "RECORD_NO_CHANGE_COMPARISON"}}, "required": ["operation_type"]},
+      "then": {"required": ["source_id", "comparison_scope", "comparison_result", "rationale"]}
     }
   ]
 }

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-source-1.0.json",
+  "type": "object",
+  "required": ["object_class", "source_id", "source_class", "title", "publisher", "canonical_url_or_reference", "access_class", "redistribution_state", "boundary"],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "Source"},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_class": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "publisher": {"type": "string", "minLength": 1},
+    "canonical_url_or_reference": {"type": "string", "minLength": 1},
+    "jurisdiction": {"type": ["string", "null"]},
+    "language": {"type": ["string", "null"]},
+    "publication_or_record_date": {"$ref": "#/$defs/time_value"},
+    "access_class": {"enum": ["PUBLIC", "CONTROLLED", "PROTECTED", "UNKNOWN"]},
+    "redistribution_state": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

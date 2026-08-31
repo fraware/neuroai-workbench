@@ -12,3 +12,4 @@
 *.docx binary
 *.xlsx binary
 *.zip binary
+**/SHA256SUMS.txt -text

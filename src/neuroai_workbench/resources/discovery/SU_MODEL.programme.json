@@ -1,0 +1,40 @@
+{
+  "universe_id": "SU-MODEL",
+  "universe_version": "0.2.0-offline",
+  "documentation_aliases": ["SU-MODELS-DATASETS"],
+  "purpose": "Discover model and dataset candidates with checkpoint, license, and lineage states via offline fixture or replay pages.",
+  "inclusion": [
+    "Public model or dataset registry records with durable identifiers",
+    "Checkpoint hash, license statement, and lineage fields when present"
+  ],
+  "exclusion": [
+    "Inferring clinical benefit, regulatory authorization, or deployment readiness from a model card",
+    "Automatic S2 or monitor-registry mutation",
+    "Treating a model family name as an exact-system identity",
+    "Live HTTP inside the discovery package"
+  ],
+  "authoritative_sources": ["https://huggingface.co/", "https://doi.org/"],
+  "identity_key": {
+    "name": "model_or_dataset_id",
+    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$",
+    "match_rule": "Exact model or dataset identifier including namespace. Version tags are distinct identities unless an explicit successor disposition is recorded."
+  },
+  "query_streams": ["DISCOVERY-DATASETS-EEG-FOUNDATION-MODEL"],
+  "denominator_policy": "Caller-supplied result-set size is a raw denominator. It is not model-universe completeness.",
+  "pagination_policy": "Terminal pagination must be explicit. Cursor completion is not recall.",
+  "known_identity_reconciliation": "Optional model/dataset id to source_id map. Exact matches emit DUPLICATE.",
+  "language": "en",
+  "jurisdiction": "PUBLIC_MODEL_DATASET_REGISTRIES",
+  "cadence": "Human-gated. Offline fixture/replay only in this programme maturity.",
+  "raw_input_boundary": "Caller supplies already-retrieved model/dataset payloads. Discovery has no embedded live HTTP client.",
+  "candidate_schema": "CANDIDATE_SOURCE_PROPOSAL.schema.json",
+  "human_review_path": "Candidate proposals remain PENDING_HUMAN_ACCEPTANCE until adjudicate_candidate_source.",
+  "evaluation": {
+    "precision_method": "Sampled human review of NEW candidates (not executed by this software).",
+    "maturity": "OFFLINE_EXECUTABLE",
+    "required_states": ["checkpoint", "license", "lineage"],
+    "offline_fixture_replay_supported": true,
+    "network_execution_in_programme": false
+  },
+  "boundary": "SU-MODEL offline programme execution emits candidates and coverage. A model or dataset listing is not an exact-system assessment and does not grant release authority."
+}

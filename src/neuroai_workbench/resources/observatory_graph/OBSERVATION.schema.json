@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-observation-1.0.json",
+  "type": "object",
+  "required": ["object_class", "observation_id", "source_id", "observed_at", "retrieval_method", "retrieval_outcome", "requested_locator", "capture_state", "boundary"],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "Observation"},
+    "observation_id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "observed_at": {"$ref": "#/$defs/time_value"},
+    "retrieval_method": {"type": "string", "minLength": 1},
+    "retrieval_outcome": {"type": "string", "minLength": 1},
+    "requested_locator": {"type": "string", "minLength": 1},
+    "resolved_locator": {"type": ["string", "null"]},
+    "content_type": {"type": ["string", "null"]},
+    "content_sha256": {"type": ["string", "null"], "pattern": "^([0-9a-f]{64})?$"},
+    "normalized_content_sha256": {"type": ["string", "null"]},
+    "capture_state": {"type": "string", "minLength": 1},
+    "capture_reference": {"type": ["string", "null"]},
+    "collector_or_operator_version": {"type": ["string", "null"]},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/observatory-graph-relationship-1.0.json",
+  "type": "object",
+  "required": ["object_class", "relationship_id", "relationship_type", "subject", "object_ref", "source_ids", "observation_ids", "evidence_state", "claim_boundary", "boundary"],
+  "additionalProperties": false,
+  "$defs": {
+    "time_value": {
+      "type": "object",
+      "required": ["value", "precision", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "precision": {"enum": ["YEAR", "DATE", "TIMESTAMP", "UNKNOWN"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "identity_ref": {
+      "type": "object",
+      "required": ["kind", "boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["IDENTIFIER", "UNRESOLVED_LITERAL", "RESOLVED_ENTITY_REFERENCE"]},
+        "value": {"type": ["string", "null"]},
+        "entity_id": {"type": ["string", "null"]},
+        "scheme": {"type": ["string", "null"]},
+        "boundary": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "properties": {
+    "object_class": {"const": "Relationship"},
+    "relationship_id": {"type": "string", "minLength": 1},
+    "relationship_type": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/$defs/identity_ref"},
+    "object_ref": {"$ref": "#/$defs/identity_ref"},
+    "valid_from": {"$ref": "#/$defs/time_value"},
+    "valid_until": {"$ref": "#/$defs/time_value"},
+    "source_ids": {"type": "array", "items": {"type": "string"}},
+    "observation_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_state": {"type": "string", "minLength": 1},
+    "claim_boundary": {"type": "string", "minLength": 1},
+    "boundary": {"type": "string", "minLength": 1},
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

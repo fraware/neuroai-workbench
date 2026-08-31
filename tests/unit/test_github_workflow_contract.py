@@ -79,6 +79,15 @@ def test_job_and_required_check_name_drift_is_rejected(tmp_path):
     assert any("job 'analyze' name" in error for error in errors)
 
 
+def test_empty_steps_declaration_is_contract_failure(tmp_path):
+    root = _copy_contract(tmp_path)
+    workflow = root / ".github/workflows/ci.yml"
+    text = workflow.read_text(encoding="utf-8")
+    workflow.write_text(text.replace("    steps:\n", "    steps: []\n", 1), encoding="utf-8")
+    errors = validate(root)
+    assert any("empty steps" in error for error in errors)
+
+
 def test_unsafe_pr_trigger_is_rejected(tmp_path):
     root = _copy_contract(tmp_path)
     workflow = root / ".github/workflows/ci.yml"
