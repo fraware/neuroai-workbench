@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
+from .observatory_change_candidate_migration import (
+    CHANGE_CANDIDATE_MIGRATION_BOUNDARY,
+    materialize_v16_change_candidates,
+    verify_change_candidate_trace,
+)
 from .observatory_event_migration import (
     EVENT_MIGRATION_BOUNDARY,
     materialize_v14_capital_events,
@@ -46,7 +51,12 @@ def _require_hex(value: Any, *, length: int, field: str) -> str:
 
 def _object_identity(record: dict[str, Any]) -> tuple[str, str]:
     object_class = str(record.get("object_class"))
-    id_field = {"Entity": "entity_id", "Source": "source_id", "Event": "event_id"}.get(object_class)
+    id_field = {
+        "Entity": "entity_id",
+        "Source": "source_id",
+        "Event": "event_id",
+        "Candidate": "candidate_id",
+    }.get(object_class)
     if id_field is None:
         raise ObservatoryMigrationCandidateError(f"Unexpected candidate object class {object_class!r}")
     value = record.get(id_field)
@@ -60,7 +70,7 @@ def build_predecessor_migration_candidate(
     v14_release: dict[str, Any],
     v16_refresh: dict[str, Any],
 ) -> dict[str, Any]:
-    """Build the current composed candidate: migration core plus complete v1.4 capital events."""
+    """Build the current candidate: migration core, v1.4 capital events, and v1.6 change candidates."""
     core = build_predecessor_migration_core(v14_release=v14_release, v16_refresh=v16_refresh)
     if core.get("mechanical_verification") != "PASS":
         raise ObservatoryMigrationCandidateError("migration core must mechanically pass before extension")
@@ -73,24 +83,38 @@ def build_predecessor_migration_candidate(
         entities=entities,
         known_source_ids=source_ids,
     )
+    change_candidate_result = materialize_v16_change_candidates(
+        v16_refresh,
+        known_source_ids=source_ids,
+    )
 
-    native_objects = [*core["native_objects"], *event_result["events"]]
+    native_objects = [
+        *core["native_objects"],
+        *event_result["events"],
+        *change_candidate_result["candidates"],
+    ]
+    retired_families = {
+        "V14.capital_and_ownership_events",
+        "V16.change_candidates",
+    }
     remaining = [
         item
         for item in core["remaining_unmaterialized_families"]
-        if item != "V14.capital_and_ownership_events"
+        if item not in retired_families
     ]
     result = {
         "state": "NONCANONICAL_CANDIDATE",
         "release_authorized": False,
         "native_v2_materialization_complete": False,
-        "mechanical_scope": "MIGRATION_CORE_PLUS_V14_CAPITAL_EVENTS",
+        "mechanical_scope": "MIGRATION_CORE_PLUS_V14_CAPITAL_EVENTS_PLUS_V16_CHANGE_CANDIDATES",
         "core": core,
         "capital_event_migration": event_result,
+        "change_candidate_migration": change_candidate_result,
         "native_objects": native_objects,
         "counts": {
             **core["counts"],
             "native_capital_events": event_result["object_count"],
+            "native_change_candidates": change_candidate_result["object_count"],
             "native_candidate_objects": len(native_objects),
         },
         "remaining_unmaterialized_families": remaining,
@@ -98,6 +122,7 @@ def build_predecessor_migration_candidate(
             "candidate": MIGRATION_CANDIDATE_BOUNDARY,
             "core": CORE_MIGRATION_BOUNDARY,
             "event": EVENT_MIGRATION_BOUNDARY,
+            "change_candidate": CHANGE_CANDIDATE_MIGRATION_BOUNDARY,
         },
     }
     verification = verify_predecessor_migration_candidate(result)
@@ -107,7 +132,7 @@ def build_predecessor_migration_candidate(
 
 
 def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, Any]:
-    """Verify candidate-wide class/id uniqueness and exact cross-object event bindings."""
+    """Verify candidate-wide identity uniqueness and exact cross-family bindings."""
     errors: list[str] = []
     if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
         errors.append("migration candidate must remain noncanonical and unauthorized")
@@ -116,7 +141,8 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
 
     core = result.get("core")
     event_result = result.get("capital_event_migration")
-    if not isinstance(core, dict) or not isinstance(event_result, dict):
+    change_candidate_result = result.get("change_candidate_migration")
+    if not isinstance(core, dict) or not isinstance(event_result, dict) or not isinstance(change_candidate_result, dict):
         return {"valid": False, "errors": ["migration candidate child results are missing"]}
     core_report = verify_predecessor_migration_core(core)
     errors.extend(f"core: {error}" for error in core_report["errors"])
@@ -143,17 +169,16 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
     }
 
     events = event_result.get("events")
-    traces = event_result.get("predecessor_traces")
-    if not isinstance(events, list) or not isinstance(traces, list) or len(events) != len(traces):
+    event_traces = event_result.get("predecessor_traces")
+    if not isinstance(events, list) or not isinstance(event_traces, list) or len(events) != len(event_traces):
         errors.append("capital-event migration requires one trace per Event")
         events = []
-        traces = []
+        event_traces = []
     if event_result.get("input_record_count") != len(events):
         errors.append("capital-event migration must cover the complete predecessor family")
     if event_result.get("release_authorized") is not False:
         errors.append("capital-event migration child must remain unauthorized")
-
-    for event, trace in zip(events, traces, strict=False):
+    for event, trace in zip(events, event_traces, strict=False):
         if not isinstance(event, dict) or not isinstance(trace, dict):
             errors.append("capital Event/trace entries must be objects")
             continue
@@ -165,6 +190,32 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
             known_source_ids=source_ids,
         )
         errors.extend(f"event:{event_id}: {error}" for error in mapped_errors)
+
+    candidates = change_candidate_result.get("candidates")
+    candidate_traces = change_candidate_result.get("predecessor_traces")
+    if (
+        not isinstance(candidates, list)
+        or not isinstance(candidate_traces, list)
+        or len(candidates) != len(candidate_traces)
+    ):
+        errors.append("change-candidate migration requires one trace per Candidate")
+        candidates = []
+        candidate_traces = []
+    if change_candidate_result.get("input_record_count") != len(candidates):
+        errors.append("change-candidate migration must cover the complete predecessor family")
+    if change_candidate_result.get("release_authorized") is not False:
+        errors.append("change-candidate migration child must remain unauthorized")
+    for candidate, trace in zip(candidates, candidate_traces, strict=False):
+        if not isinstance(candidate, dict) or not isinstance(trace, dict):
+            errors.append("change Candidate/trace entries must be objects")
+            continue
+        candidate_id = str(candidate.get("candidate_id") or "")
+        mapped_errors = verify_change_candidate_trace(
+            candidate,
+            trace,
+            known_source_ids=source_ids,
+        )
+        errors.extend(f"candidate:{candidate_id}: {error}" for error in mapped_errors)
 
     native_objects = result.get("native_objects")
     if not isinstance(native_objects, list):
@@ -184,9 +235,9 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
             errors.append(f"duplicate candidate object identity {identity[0]}:{identity[1]}")
         seen.add(identity)
 
-    expected_native_count = len(core.get("native_objects", [])) + len(events)
+    expected_native_count = len(core.get("native_objects", [])) + len(events) + len(candidates)
     if len(native_objects) != expected_native_count:
-        errors.append("candidate native object count does not equal core plus event counts")
+        errors.append("candidate native object count does not equal composed family counts")
 
     counts = result.get("counts")
     if not isinstance(counts, dict):
@@ -195,14 +246,20 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
         expected_counts = {
             **core.get("counts", {}),
             "native_capital_events": len(events),
+            "native_change_candidates": len(candidates),
             "native_candidate_objects": len(native_objects),
         }
         if counts != expected_counts:
             errors.append("candidate count reconciliation mismatch")
 
     remaining = result.get("remaining_unmaterialized_families")
-    if not isinstance(remaining, list) or "V14.capital_and_ownership_events" in remaining:
-        errors.append("remaining-family ledger did not retire the materialized capital-event family")
+    if not isinstance(remaining, list):
+        errors.append("remaining-family ledger is missing")
+    else:
+        if "V14.capital_and_ownership_events" in remaining:
+            errors.append("remaining-family ledger did not retire the materialized capital-event family")
+        if "V16.change_candidates" in remaining:
+            errors.append("remaining-family ledger did not retire the materialized change-candidate family")
 
     return {"valid": not errors, "errors": sorted(set(errors))}
 
@@ -243,6 +300,7 @@ def write_predecessor_migration_candidate_package(
     source_result = core["source_migration"]
     observation_result = core["predecessor_observation_evidence"]
     event_result = result["capital_event_migration"]
+    change_candidate_result = result["change_candidate_migration"]
     files = {
         "entities.jsonl": _jsonl_bytes(entity_result["entities"]),
         "entity-predecessor-traces.jsonl": _jsonl_bytes(entity_result["predecessor_traces"]),
@@ -252,6 +310,8 @@ def write_predecessor_migration_candidate_package(
         "predecessor-observation-evidence.jsonl": _jsonl_bytes(observation_result["records"]),
         "events.jsonl": _jsonl_bytes(event_result["events"]),
         "event-predecessor-traces.jsonl": _jsonl_bytes(event_result["predecessor_traces"]),
+        "candidates.jsonl": _jsonl_bytes(change_candidate_result["candidates"]),
+        "candidate-predecessor-traces.jsonl": _jsonl_bytes(change_candidate_result["predecessor_traces"]),
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     file_digests: dict[str, str] = {}
