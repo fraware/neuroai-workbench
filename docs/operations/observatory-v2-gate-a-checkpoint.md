@@ -1,15 +1,15 @@
 # Observatory v2 Gate-A migration checkpoint
 
-Status: **representationally complete migration implementation; mechanical Gate-A decision pending exact Workbench runtime execution**.
+Status: **mechanical Gate-A PASS over the exact frozen predecessor corpus; publication remains unauthorized**.
 
 Gate A is an engineering and representational-integrity gate. Human domain review and GitHub Actions status are not mandatory closure conditions at this stage. Canonical publication remains a separate authority boundary.
 
 ## Claims kept separate
 
-1. **Representational completeness** — every in-scope predecessor family has an exact native or governed-preserved destination. This is implemented.
+1. **Representational completeness** — every in-scope predecessor family has an exact native or governed-preserved destination. This is established.
 2. **Native graph completeness** — every predecessor semantic has become a first-class v2 graph object. This is not claimed and is not required for Gate A.
-3. **Mechanical Gate-A completion** — exact input binding, corrected field proof, typed/temporal validation, deterministic package verification, and an explicit Gate-A decision artifact have all executed. The frozen-data proof has executed; the Workbench-runtime-dependent package/validation stages still require execution from the exact consolidated Workbench head.
-4. **Canonical publication** — a separately authorized S2 release. Gate A never implies this.
+3. **Mechanical Gate-A completion** — exact input binding, corrected field proof, typed/temporal validation, deterministic package verification, and an explicit Gate-A decision artifact have all executed from the bound Workbench runtime. This is established.
+4. **Canonical publication** — a separately authorized S2 release. Gate A never implies this and publication remains unauthorized.
 
 ## Frozen inputs
 
@@ -45,9 +45,22 @@ MONITOR15
 SOURCE_MONITOR_REGISTRY_v1.5.json
 ```
 
-All seven archive bytes have been independently re-hashed against these identities.
+All seven archive bytes were independently extracted from the preserved programme archive and re-hashed before operator execution. Every observed SHA-256 matched the frozen identity exactly.
 
 The Source Register is exactly the 224-record V14 `sources` array and is not double-materialized. The monitor registry contains exactly 224 unique monitor records mapped one-to-one to V14 Source identities with matching governed baseline fields.
+
+## Bound execution identity
+
+The exact mechanical run was bound to:
+
+```text
+producer_workbench_commit = 719170f2fd3556f4b9710f2b14ba96e8e34a8855
+runtime_execution_pin      = 719170f2fd3556f4b9710f2b14ba96e8e34a8855
+s2_predecessor_commit      = 3a94d7c1277988f342cad184d3a6f866653f42d2
+observatory_graph_schema   = 1
+```
+
+The runtime was reconstructed from the successfully built `30df6fbee5bd78a84c7150c888efe147952b0379` source-distribution artifact plus every production-code delta between that commit and the bound producer commit. The three changed production-module Git blob identities and both operator-script Git blob identities were checked against GitHub before execution.
 
 ## Native v2 checkpoint
 
@@ -106,7 +119,7 @@ The migration implementation verifies:
 
 ## Executed corrected field proof
 
-The corrected canonical proof over V14, V16, DELTA16, V17, and MONITOR15 has now executed against the exact frozen bytes:
+The corrected canonical proof over V14, V16, DELTA16, V17, and MONITOR15 executed against the exact frozen bytes:
 
 ```text
 physical predecessor record occurrences       842
@@ -130,9 +143,23 @@ Proof SHA-256:
 
 The earlier 2,340-native-field proof and its digest are superseded.
 
+## Candidate-wide native validation
+
+The exact run validated the complete 403-object native candidate:
+
+```text
+object_count               = 403
+typed_reference_checks     = 36
+temporal_values_checked    = 14
+cross_class_id_collisions  = {}
+validation                 = PASS
+```
+
+Class counts were 153 Entity, 236 Source, 5 Event, and 9 Candidate objects. No Observation, Relationship, Assertion, or ReopeningDecision object was invented merely to satisfy native schema expectations.
+
 ## Consolidated integrity implementation
 
-Former PR #236 and PR #237 have been absorbed into PR #240. The authoritative implementation therefore includes:
+Former PR #236 and PR #237 were absorbed into the consolidated implementation. The authoritative code therefore includes:
 
 - class-qualified release referential integrity;
 - Event object and Entity lineage validation;
@@ -142,7 +169,7 @@ Former PR #236 and PR #237 have been absorbed into PR #240. The authoritative im
 - class-qualified graph diff identities;
 - non-authoritative candidate projections.
 
-The standalone fix PRs are closed as superseded rather than merged separately.
+The standalone fix PRs were closed as superseded rather than merged separately.
 
 ## Mechanical Gate-A operator
 
@@ -156,7 +183,7 @@ The standalone fix PRs are closed as superseded rather than merged separately.
 6. independently verifies the package;
 7. writes a separate content-addressed mechanical Gate-A decision.
 
-A successful exact run records:
+The exact run recorded:
 
 ```text
 decision = PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE
@@ -167,18 +194,20 @@ release_authorized = false
 remaining_gate_requirements = []
 ```
 
-No human-review packet is generated or required by the controlling operator path.
+No human-review packet was generated or required by the controlling operator path.
 
-## Remaining mechanical execution
+## Identity-bound package and decision
 
-The frozen-data proof is already executed and pinned. The remaining runtime-dependent outputs are:
+The exact runtime-dependent identities are:
 
-- real-candidate typed referential/temporal validation counts;
-- the root Gate-A package descriptor digest;
-- the root Gate-A package manifest digest;
-- the Gate-A decision digest.
+```text
+field_proof_sha256                 = 0e69937b898eb09697ee57ce9e1f4e055162f1e158807a0932b606b17d391df9
+gate_a_package_manifest_sha256     = 4006f1d95b40b8d7f093d236dca54f90a898a835845bdc16dd492322e1a8c539
+gate_a_package_descriptor_sha256   = fb7089e3127f200342fcfc0b4bb8c1835f0ae0a86850a9f06005abbb593e9827
+gate_a_decision_sha256             = 5d3b1aa02d44dfe4391cad32a51846586ee30868ebdb4a1864e5e44f91356bc2
+```
 
-These must come from the exact consolidated Workbench runtime. They are not inferred or fabricated when that runtime cannot be materialized.
+The package verifier returned no errors before the decision artifact was written.
 
 ## Authority boundary
 
