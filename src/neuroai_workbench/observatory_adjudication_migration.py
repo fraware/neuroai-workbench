@@ -18,6 +18,16 @@ WITHHELD_STATE = "PRESERVED_WITHHELD_CLAIM_BOUNDARY"
 _NO_CHANGE_FIELDS = frozenset({"object", "result", "source_ids"})
 _REOPENING_FIELDS = frozenset({"decision_id", "object", "decision", "basis", "required_actions"})
 
+# Reopening `basis` contains identifiers of adjudicated DELTA16 records. It must
+# not accept any arbitrary field whose spelling merely happens to end in `_id`.
+DELTA16_ID_FIELD_BY_FAMILY = {
+    "regulatory_and_market_events": "event_id",
+    "capital_and_ownership_events": "event_id",
+    "model_records": "model_id",
+    "supplier_dependency_relationships": "dependency_id",
+    "governance_and_leadership_events": "governance_id",
+}
+
 
 class ObservatoryAdjudicationMigrationError(ValueError):
     """Raised when predecessor adjudication state cannot be preserved exactly."""
@@ -49,16 +59,35 @@ def _exact_fields(record: dict[str, Any], expected: frozenset[str], *, family: s
         )
 
 
-def _delta_ids(delta16: dict[str, Any]) -> set[str]:
+def delta16_record_ids(delta16: dict[str, Any]) -> set[str]:
+    """Return only controlled record identities that may appear in v1.6 reopening basis lists."""
+    actual_families = set(delta16)
+    expected_families = set(DELTA16_ID_FIELD_BY_FAMILY)
+    missing_families = sorted(expected_families - actual_families)
+    extra_families = sorted(actual_families - expected_families)
+    if missing_families or extra_families:
+        raise ObservatoryAdjudicationMigrationError(
+            f"DELTA16 family mismatch: missing={missing_families}, extra={extra_families}"
+        )
+
     result: set[str] = set()
-    for family, records in delta16.items():
+    for family, id_field in DELTA16_ID_FIELD_BY_FAMILY.items():
+        records = delta16[family]
         if not isinstance(records, list):
             raise ObservatoryAdjudicationMigrationError(f"delta16.{family} must be an array")
-        for record in records:
+        for index, record in enumerate(records):
             if not isinstance(record, dict):
                 raise ObservatoryAdjudicationMigrationError(f"delta16.{family} entries must be objects")
-            ids = [value for key, value in record.items() if key.endswith("_id") and isinstance(value, str)]
-            result.update(ids)
+            record_id = record.get(id_field)
+            if not isinstance(record_id, str) or not record_id.strip():
+                raise ObservatoryAdjudicationMigrationError(
+                    f"delta16.{family}[{index}].{id_field} must be a non-empty string"
+                )
+            if record_id in result:
+                raise ObservatoryAdjudicationMigrationError(
+                    f"duplicate controlled DELTA16 record id {record_id}"
+                )
+            result.add(record_id)
     return result
 
 
@@ -84,7 +113,7 @@ def preserve_v16_adjudication_state(
             raise ObservatoryAdjudicationMigrationError(f"no_change_confirmations record {index} must be an object")
         _exact_fields(raw, _NO_CHANGE_FIELDS, family="no_change_confirmations")
         obj = _string(raw.get("object"), field="no_change_confirmations.object")
-        result = _string(raw.get("result"), field="no_change_confirmations.result")
+        comparison_result = _string(raw.get("result"), field="no_change_confirmations.result")
         if obj in seen_objects:
             raise ObservatoryAdjudicationMigrationError(f"duplicate no-change comparison object {obj!r}")
         seen_objects.add(obj)
@@ -99,7 +128,7 @@ def preserve_v16_adjudication_state(
                 "migration_state": NO_CHANGE_STATE,
                 "record_index": index,
                 "object": obj,
-                "comparison_result": result,
+                "comparison_result": comparison_result,
                 "source_ids": source_ids,
                 "global_absence_claimed": False,
                 "predecessor_record_sha256": _digest(raw),
@@ -110,7 +139,7 @@ def preserve_v16_adjudication_state(
             }
         )
 
-    delta_ids = _delta_ids(delta16)
+    delta_ids = delta16_record_ids(delta16)
     reopening_records: list[dict[str, Any]] = []
     seen_decisions: set[str] = set()
     for index, raw in enumerate(reopenings):
@@ -127,7 +156,7 @@ def preserve_v16_adjudication_state(
         missing_basis = sorted(set(basis) - delta_ids)
         if missing_basis:
             raise ObservatoryAdjudicationMigrationError(
-                f"reopening decision {decision_id} references unknown delta basis ids {missing_basis}"
+                f"reopening decision {decision_id} references unknown controlled DELTA16 basis ids {missing_basis}"
             )
         actions = _strings(raw.get("required_actions"), field="reopening_decisions.required_actions")
         reopening_records.append(
@@ -242,7 +271,7 @@ def verify_v16_adjudication_state(
             errors.append("reopening state must remain nonnative and unauthorized")
         missing_basis = sorted(set(record.get("basis") or []) - delta_ids)
         if missing_basis:
-            errors.append(f"reopening state references unknown delta basis ids {missing_basis}")
+            errors.append(f"reopening state references unknown controlled DELTA16 basis ids {missing_basis}")
 
     for record in withheld:
         if not isinstance(record, dict):
