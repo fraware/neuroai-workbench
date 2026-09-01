@@ -4,7 +4,7 @@ import importlib.util
 import json
 import sys
 from pathlib import Path
-from types import ModuleType, SimpleNamespace
+from types import ModuleType
 
 import pytest
 
@@ -22,6 +22,7 @@ def _module() -> ModuleType:
 
 
 def _inputs(tmp_path: Path) -> tuple[dict[str, Path], dict[str, str]]:
+    tmp_path.mkdir(parents=True, exist_ok=True)
     values = {
         "V14": {"v": 14},
         "V16": {"v": 16},
@@ -34,7 +35,7 @@ def _inputs(tmp_path: Path) -> tuple[dict[str, Path], dict[str, str]]:
     paths: dict[str, Path] = {}
     hashes: dict[str, str] = {}
     for role, value in values.items():
-        path = tmp_path / f"{role}.json"
+        path = tmp_path / f"operator-local-{role}.json"
         path.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
         paths[role] = path
         hashes[role] = sha256_bytes(path.read_bytes())
@@ -46,6 +47,11 @@ def _patch_success(mod: ModuleType, monkeypatch) -> None:
         @staticmethod
         def build_proof(inputs):
             assert inputs
+            expected_names = [
+                mod.FIELD_PROOF_CANONICAL_FILENAMES[role]
+                for role in ("V14", "V16", "DELTA16", "V17", "MONITOR15")
+            ]
+            assert [path.name for _, path in inputs] == expected_names
             return {
                 "field_preservation": "PASS",
                 "proof_sha256": "a" * 64,
@@ -122,8 +128,10 @@ def test_gate_a_run_binds_inputs_and_reduces_remaining_gate_to_human_review(tmp_
     assert report["gate_a_package_manifest_sha256"] == "b" * 64
     assert report["human_review_packet_sha256"] == "d" * 64
     assert report["remaining_gate_requirements"] == ["REPRESENTATIVE_HUMAN_DOMAIN_REVIEW"]
+    assert report["field_proof_logical_filenames"] == mod.FIELD_PROOF_CANONICAL_FILENAMES
     assert (output / "frozen-input-manifest.json").is_file()
     assert (output / "field-proof" / "migration-proof.json").is_file()
+    assert (output / "field-proof-inputs" / mod.FIELD_PROOF_CANONICAL_FILENAMES["V14"]).is_file()
     assert (output / "gate-a-checkpoint.json").is_file()
     assert (output / "native-graph-validation.json").is_file()
     assert (output / "human-review-packet.json").is_file()
