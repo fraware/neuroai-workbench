@@ -1,5 +1,5 @@
 from __future__ import annotations
-import copy,unittest
+import unittest
 from neuroai_workbench.discovery import project_openfda_udi_pages
 
 QUERY="DISCOVERY-OPENFDA-UDI-BCI-001"
