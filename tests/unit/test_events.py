@@ -536,8 +536,8 @@ def test_windows_and_posix_process_exists_helpers(monkeypatch: pytest.MonkeyPatc
             return 5
 
     kernel = _Kernel()
-    monkeypatch.setattr(events.ctypes, "windll", type("W", (), {"kernel32": kernel})())
-    monkeypatch.setattr(events.ctypes, "GetLastError", kernel.GetLastError)
+    monkeypatch.setattr(events.ctypes, "windll", type("W", (), {"kernel32": kernel})(), raising=False)
+    monkeypatch.setattr(events.ctypes, "GetLastError", kernel.GetLastError, raising=False)
     assert events._windows_process_exists(1234) is True
 
     monkeypatch.setattr(events.os, "name", "posix")
