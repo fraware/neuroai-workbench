@@ -21,6 +21,7 @@ from .openfda_device_event import project_search_pages as project_openfda_device
 from .openfda_hde import project_search_pages as project_openfda_hde_pages
 from .openfda_pma import project_search_pages as project_openfda_pma_pages
 from .openfda_recall import project_search_pages as project_openfda_device_recall_pages
+from .openfda_udi import project_search_pages as project_openfda_udi_pages
 from .programme import (
     OFFLINE_EXECUTABLE_UNIVERSE_IDS,
     SU_TRIAL_DOC_ALIAS,
@@ -95,6 +96,7 @@ __all__ = [
     "project_openfda_device_recall_pages",
     "project_openfda_hde_pages",
     "project_openfda_pma_pages",
+    "project_openfda_udi_pages",
     "project_universe_pages",
     "refuse_registry_overwrite",
     "require_accepted_proposals_for_successor",
