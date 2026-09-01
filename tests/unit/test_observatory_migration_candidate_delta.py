@@ -129,9 +129,7 @@ def test_delta_extension_adds_complete_family_without_authority_upgrade() -> Non
     assert result["release_authorized"] is False
     assert result["native_v2_materialization_complete"] is False
     assert result["counts"]["native_delta16_capital_events"] == 2
-    assert result["counts"]["native_candidate_objects_with_delta"] == len(
-        result["native_objects"]
-    )
+    assert result["counts"]["native_candidate_objects_with_delta"] == len(result["native_objects"])
     remaining = result["remaining_unmaterialized_families"]
     assert "DELTA16.*" not in remaining
     assert "DELTA16.capital_and_ownership_events" not in remaining
@@ -146,14 +144,10 @@ def test_delta_extension_verifier_detects_mapped_event_tampering() -> None:
         v16_refresh=v16,
         delta16=delta16,
     )
-    result["delta16_capital_event_migration"]["events"][0]["claim_boundary"] = (
-        "Broader claim"
-    )
+    result["delta16_capital_event_migration"]["events"][0]["claim_boundary"] = "Broader claim"
     report = verify_predecessor_migration_candidate_with_delta(result)
     assert report["valid"] is False
-    assert any(
-        "claim_boundary binding mismatch" in error for error in report["errors"]
-    )
+    assert any("claim_boundary binding mismatch" in error for error in report["errors"])
 
 
 def test_delta_extension_verifier_rejects_wildcard_regression() -> None:
@@ -166,7 +160,4 @@ def test_delta_extension_verifier_rejects_wildcard_regression() -> None:
     result["remaining_unmaterialized_families"].append("DELTA16.*")
     report = verify_predecessor_migration_candidate_with_delta(result)
     assert report["valid"] is False
-    assert (
-        "DELTA16 wildcard remains after partial family materialization"
-        in report["errors"]
-    )
+    assert "DELTA16 wildcard remains after partial family materialization" in report["errors"]
