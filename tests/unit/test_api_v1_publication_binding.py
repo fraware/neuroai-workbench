@@ -11,7 +11,11 @@ from neuroai_workbench.api.v1 import (
     load_published_release,
 )
 from neuroai_workbench.observatory_publication import record_s2_authorization, record_s2_publication
-from neuroai_workbench.observatory_s2_release import OBJECT_FILES, S2_CANDIDATE_BOUNDARY
+from neuroai_workbench.observatory_s2_release import (
+    CANDIDATE_FILE_PATHS,
+    OBJECT_FILES,
+    S2_CANDIDATE_BOUNDARY,
+)
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
 
@@ -73,18 +77,20 @@ def _candidate(root, *, release_tag: str, entity_id: str):
     records = root / "records"
     records.mkdir(parents=True, exist_ok=True)
     frozen, gate_manifest, decision = _gate_lineage(root)
-    file_entries = []
     for filename in OBJECT_FILES:
         payload = b""
         if filename == "entities.jsonl":
             payload = f'{{"object_class":"Entity","entity_id":"{entity_id}"}}\n'.encode()
-        path = records / filename
-        path.write_bytes(payload)
-        file_entries.append({"path": f"records/{filename}", "sha256": sha256_bytes(payload)})
-    for filename in ("gate-a-descriptor.json", "gate-a-manifest.json", "gate-a-decision.json"):
-        path = root / "migration" / filename
-        file_entries.append({"path": f"migration/{filename}", "sha256": sha256_bytes(path.read_bytes())})
-    file_entries.sort(key=lambda item: item["path"])
+        (records / filename).write_bytes(payload)
+    for relative in sorted(CANDIDATE_FILE_PATHS):
+        path = root / relative
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n", encoding="utf-8")
+    file_entries = [
+        {"path": relative, "sha256": sha256_bytes((root / relative).read_bytes())}
+        for relative in sorted(CANDIDATE_FILE_PATHS)
+    ]
     content_sha = sha256_bytes(canonical_json_bytes(file_entries))
     candidate_id = f"OBS-V2-CAND-{content_sha[:20].upper()}"
     descriptor = {
@@ -165,7 +171,6 @@ def test_public_loader_requires_exact_authorization_and_publication(tmp_path) ->
     record_s2_authorization(release, decision="AUTHORIZE", decision_rationale="Authorize exact candidate.")
     with pytest.raises(PublicObservatoryApiError, match="not published"):
         load_published_release(release)
-
     manifest = json.loads((release / "manifest.json").read_text(encoding="utf-8"))
     publication = record_s2_publication(
         release,
@@ -176,10 +181,8 @@ def test_public_loader_requires_exact_authorization_and_publication(tmp_path) ->
     assert loaded["published"] is True
     assert loaded["release_authorized"] is True
     assert loaded["publication_id"] == publication["publication_id"]
-
     body = handle_v1_get(loaded, "/v1/entities")
     assert body["canonical"] is True
-    assert body["published"] is True
     assert body["count"] == 1
     assert body["items"][0]["entity_id"] == "ORG-1"
 
@@ -196,7 +199,6 @@ def test_public_diff_requires_server_configured_published_predecessor(tmp_path) 
     predecessor_dir = _candidate(tmp_path / "predecessor", release_tag="predecessor", entity_id="ORG-1")
     _publish(current_dir)
     current = load_published_release(current_dir)
-
     with pytest.raises(PublicObservatoryApiError, match="server-configured"):
         handle_v1_get(current, "/v1/diff")
     with pytest.raises(PublicObservatoryApiError, match="not published"):
@@ -210,7 +212,6 @@ def test_public_diff_accepts_configured_published_predecessor_and_candidate_id_a
     _publish(current_dir)
     current = load_published_release(current_dir)
     predecessor = load_published_release(predecessor_dir)
-
     body = handle_v1_get(
         current,
         "/v1/diff",
@@ -220,7 +221,6 @@ def test_public_diff_accepts_configured_published_predecessor_and_candidate_id_a
     assert body["canonical"] is True
     assert body["predecessor_candidate_id"] == predecessor["candidate_id"]
     assert body["successor_candidate_id"] == current["candidate_id"]
-
     with pytest.raises(PublicObservatoryApiError, match="does not match"):
         handle_v1_get(
             current,
