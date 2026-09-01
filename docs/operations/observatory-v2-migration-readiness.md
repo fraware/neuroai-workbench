@@ -1,6 +1,6 @@
 # Observatory v2 predecessor family readiness ledger
 
-Status: **representationally complete noncanonical migration evidence; exact mechanical Gate-A execution pending**. This ledger distinguishes native graph readiness from governed predecessor preservation.
+Status: **representationally complete and mechanically Gate-A complete over the exact frozen predecessor corpus; canonical publication remains unauthorized**. This ledger distinguishes native graph readiness from governed predecessor preservation.
 
 The controlling checkpoint is `docs/operations/observatory-v2-gate-a-checkpoint.md`.
 
@@ -81,31 +81,34 @@ release-level predecessor bundles                2
 
 The Source Register duplicates the V14 Source array and is therefore a lineage input, not 224 additional logical Source records.
 
-## Representation gate
+## Representation and mechanical gate
 
-The frozen predecessor scope currently satisfies:
+The exact operator run now establishes:
 
 ```text
 representational_scope_complete = true
 remaining_unresolved_families = []
 native_v2_materialization_complete = false
-gate_a_complete = false
+gate_a_complete = true
 release_authorized = false
+remaining_gate_requirements = []
 ```
 
-`gate_a_complete` remains false in this intermediate checkpoint because the exact operator-bound field proof, candidate-wide typed/temporal validation, and identity-bound deterministic package have not yet all been executed from the selected Workbench runtime. A successful exact operator run may set the mechanical Gate-A decision to complete while keeping `release_authorized=false`.
+This means every in-scope predecessor family has a governed destination and the three engineering closure controls have executed successfully. It does **not** mean every semantic has a native graph object, that substantive truth has been established, or that a public successor is authorized.
 
-This means every in-scope predecessor family has a governed destination. It does **not** mean every semantic has a native graph object, that substantive truth has been established, or that a public successor is authorized.
+## Completed Gate-A controls
 
-## Remaining Gate-A controls
+The engineering controls executed from the bound Workbench runtime:
 
-The remaining engineering controls are orthogonal to family accounting:
+1. corrected field-level proof over the exact frozen bytes — PASS; proof SHA-256 `0e69937b898eb09697ee57ce9e1f4e055162f1e158807a0932b606b17d391df9`;
+2. candidate-wide class-qualified referential and precision-safe temporal validation — PASS over 403 native objects, 36 typed-reference checks, and 14 temporal values, with zero cross-class ID collisions;
+3. exact identity-bound full Gate-A package — generated and independently verified; manifest SHA-256 `4006f1d95b40b8d7f093d236dca54f90a898a835845bdc16dd492322e1a8c539`, descriptor SHA-256 `fb7089e3127f200342fcfc0b4bb8c1835f0ae0a86850a9f06005abbb593e9827`.
 
-1. execute the corrected field-level proof over the exact frozen bytes and bind its deterministic digest;
-2. execute candidate-wide class-qualified referential and precision-safe temporal validation;
-3. generate and independently verify the exact identity-bound full Gate-A package using the selected producer commit, runtime pin, graph schema generation, and S2 predecessor commit.
+The resulting mechanical decision SHA-256 is `5d3b1aa02d44dfe4391cad32a51846586ee30868ebdb4a1864e5e44f91356bc2`.
 
-Representative human domain review is not a mandatory Gate-A closure condition at this stage. The deterministic review-packet machinery may remain available for later assurance work, but the controlling Gate-A operator does not execute it and does not depend on it.
+The run was bound to Workbench producer/runtime commit `719170f2fd3556f4b9710f2b14ba96e8e34a8855`, S2 predecessor commit `3a94d7c1277988f342cad184d3a6f866653f42d2`, and graph schema generation `1`.
+
+Representative human domain review is not a mandatory Gate-A closure condition at this stage. The deterministic review-packet machinery remains available for later assurance work but was not executed by the controlling Gate-A operator.
 
 Native graph expansion for models, systems, sites, participant bodies, dependencies, regulatory events, and similar domains, together with production source-universe evaluation, proceeds after the mechanical migration gate without rewriting predecessor history.
 
