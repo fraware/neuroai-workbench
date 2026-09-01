@@ -1,16 +1,19 @@
 # Observatory v2 Gate-A migration checkpoint
 
-Status: **representationally complete noncanonical migration checkpoint; Gate A remains open**.
+Status: **representationally complete migration implementation; mechanical Gate-A decision pending exact Workbench runtime execution**.
 
-This document records the current first-v2 migration boundary for the frozen public predecessor corpus. It deliberately separates three claims:
+Gate A is an engineering and representational-integrity gate. Human domain review and GitHub Actions status are not mandatory closure conditions at this stage. Canonical publication remains a separate authority boundary.
 
-1. **Representational completeness** — every in-scope predecessor family has an exact native or governed-preserved destination.
-2. **Native graph completeness** — every predecessor semantic has been converted into a first-class v2 graph object. This is **not** claimed.
-3. **Gate-A / publication readiness** — all validation, identity-bound packaging, human review, and release-governance requirements have closed. This is **not** claimed.
+## Claims kept separate
+
+1. **Representational completeness** — every in-scope predecessor family has an exact native or governed-preserved destination. This is implemented.
+2. **Native graph completeness** — every predecessor semantic has become a first-class v2 graph object. This is not claimed and is not required for Gate A.
+3. **Mechanical Gate-A completion** — exact input binding, corrected field proof, typed/temporal validation, deterministic package verification, and an explicit Gate-A decision artifact have all executed. The frozen-data proof has executed; the Workbench-runtime-dependent package/validation stages still require execution from the exact consolidated Workbench head.
+4. **Canonical publication** — a separately authorized S2 release. Gate A never implies this.
 
 ## Frozen inputs
 
-The checkpoint binds the following seven governing inputs by exact SHA-256:
+The seven bound governing inputs are:
 
 ```text
 V14
@@ -42,149 +45,68 @@ MONITOR15
 SOURCE_MONITOR_REGISTRY_v1.5.json
 ```
 
-The standalone v1.4 Source Register is exactly the 224-record `sources` array embedded in V14. It is retained as a separately bound governing input, not double-materialized as another set of Source objects.
+All seven archive bytes have been independently re-hashed against these identities.
 
-The v1.5 monitor registry contains exactly 224 unique monitor records and maps one-to-one onto the 224 v1.4 Source IDs. For every monitor record, the baseline URL, publisher, source class, evidence state, verification state, claim boundary, and last successful retrieval match its predecessor Source record.
+The Source Register is exactly the 224-record V14 `sources` array and is not double-materialized. The monitor registry contains exactly 224 unique monitor records mapped one-to-one to V14 Source identities with matching governed baseline fields.
 
-## Native v2 materialization checkpoint
-
-Current native objects:
+## Native v2 checkpoint
 
 ```text
-Entity       153
-Source       236
-Event          5
-Candidate      9
-Observation    0
-Relationship   0
-Assertion      0
-ReopeningDecision 0
-------------------
-TOTAL        403
+Entity              153
+Source              236
+Event                 5
+Candidate              9
+Observation            0
+Relationship           0
+Assertion              0
+ReopeningDecision      0
+------------------------
+TOTAL                403
 ```
 
-### 153 organization Entities
+The 223 predecessor organization-array entries partition into 153 identity-safe current organizations, 63 unresolved legacy endpoints, six provenance-only nodes, and one historical/current-identity-unresolved record. Native organization entities use `entity_type=ORGANIZATION`; predecessor subtype such as `COMPANY` remains predecessor descriptive state.
 
-The heterogeneous v1.4 organization array partitions exactly into:
+All 224 V14 Sources and 12 V16 new Sources materialize. Retrieval knowledge time is not promoted to publication time. Explicit publication dates preserve their original precision and null publication values remain absent.
 
-```text
-MATERIALIZE_ACTIVE_ENTITY                         153
-LEGACY_IDENTITY_UNRESOLVED                         63
-PROVENANCE_ONLY_NODE                                6
-HISTORICAL_CURRENT_IDENTITY_UNRESOLVED               1
-TOTAL                                               223
-```
+All five V14 capital/ownership events materialize with exact subject identity and Source binding. Counterparties without controlled IDs remain unresolved literals. Temporal precision is exactly three DATE values, one YEAR value, and one absent date.
 
-Native organization identity uses:
-
-```text
-entity_type = ORGANIZATION
-```
-
-Predecessor organization subtype such as `COMPANY`, `ACADEMIC_INSTITUTION`, or initiative category remains predecessor descriptive state; it is not incorrectly promoted into the v2 ontology identity class.
-
-### 236 Sources
-
-All 224 v1.4 Sources plus all 12 v1.6 new Sources materialize. `retrieved` remains knowledge-time evidence and is never promoted to publication time. Explicit v1.6 publication dates preserve original DATE precision; null values remain absent. Access and redistribution are explicit migration-unknown metadata, never inferred legal rights.
-
-### Five v1.4 capital/ownership Events
-
-All five records materialize because each subject resolves by exact unique canonical organization label and every Source reference resolves. Counterparties without controlled IDs remain `UNRESOLVED_LITERAL`. Time is preserved exactly:
-
-```text
-DATE   3
-YEAR   1
-NULL   1
-```
-
-The null predecessor date produces no `occurred_at` value.
-
-### Nine v1.6 change Candidates
-
-All nine stable predecessor candidate IDs materialize. Candidate class and status preserve predecessor change class/adjudication, while the complete predecessor record remains the Candidate payload. Free-text subjects are not promoted into Entity identity.
+All nine V16 change Candidates materialize with exact predecessor payloads. Free-text subjects are not promoted into controlled identity.
 
 ## Governed predecessor state
 
-The first-v2 migration requirement permits a predecessor family to remain an explicitly retained legacy/governance payload when native conversion would invent identity, collapse semantics, or weaken claim boundaries.
+Representational completeness does not require invented native objects. Exact content-addressed preservation covers:
 
-### Organization and coverage history — 39 records
+- 70 non-native organization records;
+- 12 transport-unresolved V16 source-check records;
+- 26 organization-resolution history records;
+- 13 regional-expansion history records;
+- 2 scoped no-change confirmations;
+- 6 reopening decisions with no assessment mutation;
+- 9 withheld non-claims;
+- 55 residual V14/DELTA16 model, registry, relationship, quality, regulatory, dependency, and governance records;
+- V14/V16 release-level metadata/methodology/coverage/baseline state;
+- the full V17 and PRIMA17 successor lineage;
+- the duplicate Source Register and operational monitor projection.
 
-```text
-organization_resolution   26
-regional_expansion        13
-```
+Every residual family carries an explicit reason why native projection would currently invent identity, evidence semantics, temporal semantics, or claim scope.
 
-Organization-resolution history checks exact predecessor organization identity, exact source references, effective date, and `verification_after` reconciliation with the resulting v1.4 organization record.
+## Successor and duplicate-container integrity
 
-Regional-expansion history preserves its contemporaneous verification state. It is not overwritten from the final organization row; this matters where a later correction changed the organization record after the acquisition action.
+The migration implementation verifies:
 
-### Transport-unresolved predecessor observation evidence — 12 records
+- V16 embedded `adjudicated_delta` equals standalone DELTA16;
+- V17 embedded `delta` equals standalone DELTA16;
+- V17 embedded PRIMA successor payload equals standalone PRIMA17;
+- baseline and predecessor archive identities reconcile;
+- `ROP-16-001` transitions to `ROP-17-001`;
+- the other five reopening decisions carry forward unchanged;
+- successor basis preserves predecessor trigger identity and adds the executed PRIMA assessment identity;
+- prohibited inferences remain explicit;
+- duplicate containers are not double-materialized.
 
-The 12 v1.6 source checks preserve exact source ID, retrieval timestamp, predecessor outcome, baseline match, page-content-hash state, and metadata digest. They do not become ordinary v2 `Observation` objects because predecessor evidence did not govern exact `retrieval_method` and `requested_locator` semantics.
+## Executed corrected field proof
 
-### v1.6 adjudication state — 17 records
-
-```text
-no_change_confirmations    2
-reopening_decisions        6
-withheld_claims             9
-```
-
-No-change confirmations remain scoped comparison evidence and explicitly do not claim global absence.
-
-Reopening decisions preserve exact decision IDs, object labels, trigger/basis IDs, and required actions. Migration records that it performs no assessment mutation.
-
-Withheld claims remain explicit non-claims. They are not transformed into negative Assertions.
-
-### Residual v1.4 and DELTA16 families — 55 records
-
-```text
-V14 representative_model_records                 13
-V14 model_and_dataset_registry                    5
-V14 trial_site_relationships                      7
-V14 participant_authority_relationships           6
-V14 supplier_dependency_relationships             9
-V14 data_quality                                  6
-DELTA16 regulatory_and_market_events              2
-DELTA16 capital_and_ownership_events              2
-DELTA16 model_records                             2
-DELTA16 supplier_dependency_relationships         1
-DELTA16 governance_and_leadership_events          2
----------------------------------------------------
-TOTAL                                             55
-```
-
-Each family retains its complete payload, payload digest, record count, explicit migration blocker reason, and recursively validated Source references.
-
-The blocker reasons preserve the actual semantic boundary, including unresolved model family/checkpoint identity, unresolved relationship endpoints, unresolved system identity, release-level quality state, and native evidence/event semantics that cannot be inferred from predecessor fields.
-
-### Release-level state
-
-V14 `metadata`, `methodology`, and `coverage`, plus V16 `metadata`, `methodology`, and `baseline`, are preserved as release-level migration bundles. They are not graph claims.
-
-### v1.7 and PRIMA successor lineage
-
-The entire v1.7 successor snapshot and standalone PRIMA successor delta remain exact successor-state payloads.
-
-Mechanical lineage checks establish:
-
-- V16 `adjudicated_delta` exactly equals standalone DELTA16;
-- V17 embedded `delta` exactly equals standalone DELTA16;
-- V17 embedded `assessment_successor_delta` exactly equals standalone PRIMA17;
-- baseline hash identity reconciles across V17 baseline/provenance state;
-- predecessor archive hash reconciles across V17 and PRIMA predecessor references;
-- `ROP-16-001` is the predecessor reopening decision and `ROP-17-001` its successor;
-- predecessor and successor decision states match the explicit transition;
-- the five unrelated V16 reopening decisions carry into V17 unchanged;
-- successor basis retains predecessor trigger IDs and adds the executed PRIMA assessment ID;
-- successor open actions equal the successor decision required actions;
-- PRIMA prohibited inferences remain explicit and preserved.
-
-Embedded duplicate containers are lineage evidence and are never double-materialized as new graph state.
-
-## Corrected field-preservation accounting
-
-Current frozen-corpus field accounting after ontology correction:
+The corrected canonical proof over V14, V16, DELTA16, V17, and MONITOR15 has now executed against the exact frozen bytes:
 
 ```text
 physical predecessor record occurrences       842
@@ -200,78 +122,76 @@ history-lineage losses                           0
 temporal-precision losses                        0
 ```
 
-The earlier 2,340-native-field proof is superseded because predecessor `organization_type` is not a v2 `Entity.entity_type` mapping. The old proof digest is therefore also superseded until the updated field-proof implementation is executed against the exact frozen inputs.
-
-## Representational completeness
-
-At this checkpoint:
+Proof SHA-256:
 
 ```text
+0e69937b898eb09697ee57ce9e1f4e055162f1e158807a0932b606b17d391df9
+```
+
+The earlier 2,340-native-field proof and its digest are superseded.
+
+## Consolidated integrity implementation
+
+Former PR #236 and PR #237 have been absorbed into PR #240. The authoritative implementation therefore includes:
+
+- class-qualified release referential integrity;
+- Event object and Entity lineage validation;
+- typed Source/Observation/Assertion/Event/Entity references;
+- conservative mixed YEAR/DATE/TIMESTAMP temporal comparison;
+- interval failure only when the end definitely precedes the start;
+- class-qualified graph diff identities;
+- non-authoritative candidate projections.
+
+The standalone fix PRs are closed as superseded rather than merged separately.
+
+## Mechanical Gate-A operator
+
+`scripts/observatory_v2_gate_a_run.py` is the controlling operator path. It:
+
+1. verifies all seven frozen input hashes;
+2. canonicalizes proof filenames and executes the corrected field proof;
+3. builds the representationally complete checkpoint;
+4. validates the native candidate with typed references and precision-safe temporal semantics;
+5. writes the deterministic identity-bound hierarchical package;
+6. independently verifies the package;
+7. writes a separate content-addressed mechanical Gate-A decision.
+
+A successful exact run records:
+
+```text
+decision = PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE
+gate_a_complete = true
 representational_scope_complete = true
 native_v2_materialization_complete = false
-gate_a_complete = false
 release_authorized = false
+remaining_gate_requirements = []
 ```
 
-There are **no unaccounted predecessor record families** in the current frozen scope. A family is either:
+No human-review packet is generated or required by the controlling operator path.
 
-- native v2 state;
-- explicitly unresolved predecessor state;
-- governed history/adjudication/successor state;
-- explicitly retained residual legacy state with a documented native blocker;
-- or a verified duplicate governing container.
+## Remaining mechanical execution
 
-This satisfies the architecture's first-v2 representation objective without weakening the identity or evidence model.
+The frozen-data proof is already executed and pinned. The remaining runtime-dependent outputs are:
 
-## Identity-bound package
+- real-candidate typed referential/temporal validation counts;
+- the root Gate-A package descriptor digest;
+- the root Gate-A package manifest digest;
+- the Gate-A decision digest.
 
-`observatory_gate_a_package` writes a deterministic hierarchical checkpoint package.
-
-The native 403-object candidate remains a manifest-bound subpackage. Root-level state binds:
-
-- v1.6 adjudication state;
-- v1.7/PRIMA successor lineage;
-- residual predecessor state;
-- duplicate-container proofs;
-- all seven frozen input SHA-256 identities;
-- Workbench compatibility version;
-- exact producer Workbench commit;
-- exact runtime execution pin;
-- graph schema generation;
-- exact S2 predecessor commit.
-
-No one identity substitutes for another.
-
-## Remaining Gate-A requirements
-
-Representational completeness is not Gate-A completion. The remaining controlled requirements are:
-
-```text
-UPDATED_FIELD_PROOF_EXECUTION_AND_DIGEST
-CANDIDATE_WIDE_TYPED_REFERENTIAL_AND_TEMPORAL_VALIDATION
-IDENTITY_BOUND_DETERMINISTIC_FULL_PACKAGE
-REPRESENTATIVE_HUMAN_DOMAIN_REVIEW
-```
-
-The deterministic full-package implementation now exists; its exact real-corpus package identity must still be generated and independently verified with the selected producer/runtime/S2 pins.
-
-Candidate-wide typed referential and temporal validation must use the corrected validators from PRs #236 and #237 or equivalent merged logic. Cross-class ID collisions cannot satisfy references, and YEAR/DATE/TIMESTAMP precision cannot be normalized or ordered by precision labels.
-
-Human domain review must sample every predecessor family, including native, unresolved, governance, residual, and successor surfaces. Mechanical equality establishes preservation, not substantive truth.
+These must come from the exact consolidated Workbench runtime. They are not inferred or fabricated when that runtime cannot be materialized.
 
 ## Authority boundary
 
-Nothing in this checkpoint sets or implies:
+Mechanical Gate-A PASS does not imply:
 
 ```text
 release_authorized = true
-gate_a_complete = true
 canonical publication
-assessment endorsement
+substantive truth
 clinical validity
 regulatory authorization
 system conformance
 global completeness
 ```
 
-Canonical publication remains a separate attestation and publication process after Gate A closes.
+Canonical Observatory-v2 publication remains a separate S2 candidate, authorization, and publication operation. Public `/v1` must be bound only to a genuinely published S2 release.
