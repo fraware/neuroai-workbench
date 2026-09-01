@@ -138,25 +138,32 @@ Before any v2 canonical successor is proposed, the programme must demonstrate th
 
 ## Programme gates
 
-### Gate A — Observatory foundation
+### Gate A — Engineering and representational integrity
+
+Gate A closes the predecessor-migration foundation. It is intentionally mechanical: it establishes that the frozen governing corpus is bound, loss-aware, representationally complete, internally typed, temporally valid, and packaged deterministically. Human domain review, independent assurance, and production source-universe evaluation are not mandatory Gate-A closure conditions at this stage.
 
 Required evidence:
 
 - v2 ontology and assertion contract;
 - observation/evidence contract;
-- explicit temporal model;
+- explicit valid-time and knowledge-time model;
 - entity identity and resolution model;
-- lossless current-corpus migration proof;
-- stable S1/S2 compatibility contract;
-- at least several evaluated production source universes.
+- lossless current-corpus field-preservation proof with zero undeclared loss/invention counters;
+- class-qualified referential and precision-safe temporal validation over the complete candidate;
+- stable S1/S2 compatibility identity contract and an exact bound S2 predecessor commit;
+- deterministic identity-bound migration package with independent package verification;
+- explicit mechanical Gate-A decision that leaves `release_authorized=false`.
+
+A Gate-A PASS does not establish substantive truth, native graph completeness, institutional readiness, or canonical publication authority.
 
 ### Gate B — Living observatory
 
 Required evidence:
 
 - multi-domain evidence graph at materially larger scale;
+- several evaluated production source universes and systematic collectors;
 - systematic discovery and monitoring;
-- controlled adjudication and successor publication;
+- controlled candidate accept/reject/defer and successor publication workflow;
 - explicit assessment dependency and reopening propagation;
 - empirical validation across materially different exact systems;
 - public evidence explorer and documented API;

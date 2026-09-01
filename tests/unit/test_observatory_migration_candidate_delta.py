@@ -60,6 +60,8 @@ def _inputs() -> tuple[dict, dict, dict]:
                 "boundary": "Bounded event.",
             }
         ],
+        "organization_resolution": [],
+        "regional_expansion": [],
     }
     v16 = {
         "new_sources": [_source("SRC-16-1", published="2026-07-22")],

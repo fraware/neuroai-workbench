@@ -275,8 +275,8 @@ class GraphIntegrityAdversarialTests(unittest.TestCase):
         )
         errors = validate_temporal_integrity([entity, source, observation, assertion, entity])
         self.assertTrue(any("dangling" in item for item in errors))
-        self.assertTrue(any("Duplicate id" in item for item in errors))
-        self.assertTrue(any("valid_until precedes valid_from" in item for item in errors))
+        self.assertTrue(any("Duplicate Entity id" in item for item in errors))
+        self.assertTrue(any("valid_until definitely precedes valid_from" in item for item in errors))
 
     def test_idempotent_apply_and_predecessor_mismatch(self) -> None:
         predecessor = {"entities": [{"entity_id": "ENT-1", "label": "A"}], "metadata": {}}

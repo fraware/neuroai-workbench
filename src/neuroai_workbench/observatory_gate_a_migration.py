@@ -3,7 +3,7 @@
 This module composes native objects with governed predecessor-state surfaces across the
 frozen v1.4/v1.6/DELTA16/v1.7/PRIMA corpus and source/monitor registries. The current
 checkpoint can establish representational completeness while still withholding Gate-A
-completion pending end-to-end validation, identity-bound packaging, and human review.
+completion pending end-to-end field proof, typed validation, and identity-bound packaging.
 """
 
 from __future__ import annotations
@@ -38,15 +38,23 @@ GATE_A_MIGRATION_BOUNDARY = (
     "Noncanonical Gate-A predecessor migration checkpoint. Exact native and governed-preserved surfaces are "
     "reconciled across the frozen predecessor corpus. Representational completeness means every in-scope family "
     "has an exact native or governed-preserved destination; it does not establish substantive truth, complete "
-    "native graph materialization, human review, institutional authority, or publication authorization."
+    "native graph materialization, institutional authority, or publication authorization."
 )
 
 REMAINING_GATE_REQUIREMENTS = (
     "UPDATED_FIELD_PROOF_EXECUTION_AND_DIGEST",
     "CANDIDATE_WIDE_TYPED_REFERENTIAL_AND_TEMPORAL_VALIDATION",
     "IDENTITY_BOUND_DETERMINISTIC_FULL_PACKAGE",
-    "REPRESENTATIVE_HUMAN_DOMAIN_REVIEW",
 )
+
+_GOVERNED_ELSEWHERE_FAMILIES = {
+    "V16.adjudicated_delta",
+    "V16.reopening_decisions",
+    "V16.no_change_confirmations",
+    "V16.withheld_claims",
+    "V17.*",
+    "PRIMA17.*",
+}
 
 
 class ObservatoryGateAMigrationError(ValueError):
@@ -55,6 +63,49 @@ class ObservatoryGateAMigrationError(ValueError):
 
 def _digest(value: Any) -> str:
     return sha256_bytes(canonical_json_bytes(value))
+
+
+def _residual_family_keys(residual: dict[str, Any]) -> set[str]:
+    families = residual.get("residual_families")
+    if not isinstance(families, list):
+        return set()
+    keys: set[str] = set()
+    for item in families:
+        if not isinstance(item, dict):
+            continue
+        role = item.get("role")
+        family = item.get("family")
+        if isinstance(role, str) and isinstance(family, str):
+            keys.add(f"{role}.{family}")
+    return keys
+
+
+def _expected_delta16_residual_keys() -> set[str]:
+    return {
+        f"{role}.{family}"
+        for role, family in RESIDUAL_POLICIES
+        if role == "DELTA16"
+    }
+
+
+def _expected_remaining_families(
+    candidate: dict[str, Any], residual: dict[str, Any]
+) -> list[str]:
+    represented = set(_GOVERNED_ELSEWHERE_FAMILIES)
+    residual_keys = _residual_family_keys(residual)
+    represented.update(residual_keys)
+
+    expected_delta_keys = _expected_delta16_residual_keys()
+    actual_delta_keys = {
+        key for key in residual_keys if key.startswith("DELTA16.")
+    }
+    if expected_delta_keys and actual_delta_keys == expected_delta_keys:
+        represented.add("DELTA16.*")
+
+    unresolved = candidate.get("remaining_unmaterialized_families")
+    if not isinstance(unresolved, list):
+        return ["CANDIDATE_REMAINING_FAMILY_LEDGER_MISSING"]
+    return [family for family in unresolved if family not in represented]
 
 
 def build_gate_a_migration_checkpoint(
@@ -104,23 +155,7 @@ def build_gate_a_migration_checkpoint(
         known_source_ids=source_ids,
     )
 
-    represented_elsewhere = {
-        "V16.adjudicated_delta",
-        "V16.reopening_decisions",
-        "V16.no_change_confirmations",
-        "V16.withheld_claims",
-        "V17.*",
-        "PRIMA17.*",
-    }
-    represented_by_residual = {
-        f"{role}.{family}"
-        for role, family in RESIDUAL_POLICIES
-    }
-    remaining = [
-        family
-        for family in candidate["remaining_unmaterialized_families"]
-        if family not in represented_elsewhere and family not in represented_by_residual
-    ]
+    remaining = _expected_remaining_families(candidate, residual)
     representation_complete = not remaining
     result = {
         "state": "NONCANONICAL_CANDIDATE",
@@ -255,14 +290,20 @@ def verify_gate_a_migration_checkpoint(
             errors.append("Gate-A count reconciliation mismatch")
 
     remaining = result.get("remaining_unresolved_families")
+    expected_remaining = _expected_remaining_families(candidate, residual)
     if not isinstance(remaining, list):
         errors.append("remaining unresolved family ledger is missing")
     else:
-        expected_complete = not remaining
-        if result.get("representational_scope_complete") is not expected_complete:
+        claimed_complete = not remaining
+        if result.get("representational_scope_complete") is not claimed_complete:
             errors.append("representational_scope_complete does not match unresolved-family ledger")
-        if remaining:
-            errors.append(f"representational scope still has unresolved families: {remaining}")
+        if remaining != expected_remaining:
+            errors.append("remaining unresolved family ledger does not reconcile with governed surfaces")
+        expected_complete = not expected_remaining
+        if result.get("representational_scope_complete") is not expected_complete:
+            errors.append("representational_scope_complete does not match governed family reconciliation")
+        if expected_remaining:
+            errors.append(f"representational scope still has unresolved families: {expected_remaining}")
 
     requirements = result.get("remaining_gate_requirements")
     if requirements != list(REMAINING_GATE_REQUIREMENTS):
