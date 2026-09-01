@@ -355,6 +355,11 @@ def verify_gate_a_migration_checkpoint(
     if not isinstance(remaining, list):
         errors.append("remaining unresolved family ledger is missing")
     else:
+        claimed_complete = not remaining
+        if result.get("representational_scope_complete") is not claimed_complete:
+            errors.append(
+                "representational_scope_complete does not match unresolved-family ledger"
+            )
         if remaining != expected_remaining:
             errors.append(
                 "remaining unresolved family ledger does not reconcile with governed surfaces"
