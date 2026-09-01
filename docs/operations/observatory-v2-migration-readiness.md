@@ -1,6 +1,6 @@
 # Observatory v2 predecessor family readiness ledger
 
-Status: **representationally complete noncanonical migration evidence**. This ledger distinguishes native graph readiness from governed predecessor preservation.
+Status: **representationally complete noncanonical migration evidence; exact mechanical Gate-A execution pending**. This ledger distinguishes native graph readiness from governed predecessor preservation.
 
 The controlling checkpoint is `docs/operations/observatory-v2-gate-a-checkpoint.md`.
 
@@ -83,7 +83,7 @@ The Source Register duplicates the V14 Source array and is therefore a lineage i
 
 ## Representation gate
 
-The frozen predecessor scope now satisfies:
+The frozen predecessor scope currently satisfies:
 
 ```text
 representational_scope_complete = true
@@ -93,19 +93,22 @@ gate_a_complete = false
 release_authorized = false
 ```
 
-This means every in-scope predecessor family has a reviewed destination. It does **not** mean every semantic has a native graph object.
+`gate_a_complete` remains false in this intermediate checkpoint because the exact operator-bound field proof, candidate-wide typed/temporal validation, and identity-bound deterministic package have not yet all been executed from the selected Workbench runtime. A successful exact operator run may set the mechanical Gate-A decision to complete while keeping `release_authorized=false`.
+
+This means every in-scope predecessor family has a governed destination. It does **not** mean every semantic has a native graph object, that substantive truth has been established, or that a public successor is authorized.
 
 ## Remaining Gate-A controls
 
-The remaining work is orthogonal to family accounting:
+The remaining engineering controls are orthogonal to family accounting:
 
-1. execute the corrected field-level proof over the exact frozen bytes and record the new deterministic digest;
+1. execute the corrected field-level proof over the exact frozen bytes and bind its deterministic digest;
 2. execute candidate-wide class-qualified referential and precision-safe temporal validation;
-3. generate and independently verify the exact identity-bound full Gate-A package using the selected producer commit, runtime pin, graph schema generation, and S2 predecessor commit;
-4. complete representative human domain review across every native and governed-preserved family.
+3. generate and independently verify the exact identity-bound full Gate-A package using the selected producer commit, runtime pin, graph schema generation, and S2 predecessor commit.
 
-Native graph expansion for models, systems, sites, participant bodies, dependencies, regulatory events, and similar domains can then proceed as a later graph-expansion milestone without rewriting predecessor history.
+Representative human domain review is not a mandatory Gate-A closure condition at this stage. The deterministic review-packet machinery may remain available for later assurance work, but the controlling Gate-A operator does not execute it and does not depend on it.
+
+Native graph expansion for models, systems, sites, participant bodies, dependencies, regulatory events, and similar domains, together with production source-universe evaluation, proceeds after the mechanical migration gate without rewriting predecessor history.
 
 ## Authority rule
 
-No readiness state, field count, digest, schema pass, or migration package authorizes publication. Canonical release remains a separate attestation/publication process.
+No readiness state, field count, digest, schema pass, migration package, or mechanical Gate-A decision authorizes publication. Canonical release remains a separate S2 authorization/publication process.
