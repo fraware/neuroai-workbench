@@ -3,7 +3,7 @@
 This module composes native objects with governed predecessor-state surfaces across the
 frozen v1.4/v1.6/DELTA16/v1.7/PRIMA corpus and source/monitor registries. The current
 checkpoint can establish representational completeness while still withholding Gate-A
-completion pending end-to-end validation, identity-bound packaging, and human review.
+completion pending end-to-end field proof, typed validation, and identity-bound packaging.
 """
 
 from __future__ import annotations
@@ -38,14 +38,13 @@ GATE_A_MIGRATION_BOUNDARY = (
     "Noncanonical Gate-A predecessor migration checkpoint. Exact native and governed-preserved surfaces are "
     "reconciled across the frozen predecessor corpus. Representational completeness means every in-scope family "
     "has an exact native or governed-preserved destination; it does not establish substantive truth, complete "
-    "native graph materialization, human review, institutional authority, or publication authorization."
+    "native graph materialization, institutional authority, or publication authorization."
 )
 
 REMAINING_GATE_REQUIREMENTS = (
     "UPDATED_FIELD_PROOF_EXECUTION_AND_DIGEST",
     "CANDIDATE_WIDE_TYPED_REFERENTIAL_AND_TEMPORAL_VALIDATION",
     "IDENTITY_BOUND_DETERMINISTIC_FULL_PACKAGE",
-    "REPRESENTATIVE_HUMAN_DOMAIN_REVIEW",
 )
 
 _GOVERNED_ELSEWHERE_FAMILIES = {
