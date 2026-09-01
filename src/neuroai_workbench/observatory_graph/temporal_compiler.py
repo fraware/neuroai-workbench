@@ -31,7 +31,9 @@ ID_FIELDS = {
     "ReopeningDecision": "reopening_decision_id",
 }
 
-TemporalRelation = Literal["BEFORE", "AFTER", "EQUAL", "OVERLAPS", "INDETERMINATE"]
+TemporalRelation = Literal[
+    "BEFORE", "AFTER", "EQUAL", "OVERLAPS", "INDETERMINATE"
+]
 
 
 def _ids_by_class(objects: list[dict[str, Any]]) -> dict[str, set[str]]:
@@ -47,7 +49,9 @@ def _ids_by_class(objects: list[dict[str, Any]]) -> dict[str, set[str]]:
     return index
 
 
-def _object_index(objects: list[dict[str, Any]]) -> dict[tuple[str, str], dict[str, Any]]:
+def _object_index(
+    objects: list[dict[str, Any]],
+) -> dict[tuple[str, str], dict[str, Any]]:
     """Index records without allowing an id from one class to shadow another class."""
     index: dict[tuple[str, str], dict[str, Any]] = {}
     for record in objects:
@@ -148,7 +152,10 @@ def _resolved_entity_ref_error(
 
 
 def validate_temporal_integrity(objects: list[dict[str, Any]]) -> list[str]:
-    """Return mechanical graph/temporal integrity errors. Does not establish substantive truth."""
+    """Return mechanical graph/temporal integrity errors.
+
+    This validation does not establish substantive truth.
+    """
     errors: list[str] = []
     ids = _ids_by_class(objects)
     seen: set[tuple[str, str]] = set()
@@ -172,7 +179,7 @@ def validate_temporal_integrity(objects: list[dict[str, Any]]) -> list[str]:
             continue
         identity = (object_class, object_id)
         if identity in seen:
-            errors.append(f"Duplicate {object_class} id {object_id}")
+            errors.append(f"Duplicate id {object_id} ({object_class})")
         seen.add(identity)
         schema_errors = validate_graph_object(
             {key: value for key, value in record.items() if key != "canonical_sha256"},
@@ -213,12 +220,23 @@ def validate_temporal_integrity(objects: list[dict[str, Any]]) -> list[str]:
         if object_class == "Entity":
             lineage = record.get("lineage") or {}
             if isinstance(lineage, dict):
-                for lineage_field in ("predecessor_entity_ids", "successor_entity_ids"):
+                for lineage_field in (
+                    "predecessor_entity_ids",
+                    "successor_entity_ids",
+                ):
                     for ref in lineage.get(lineage_field) or []:
                         if str(ref) not in ids["Entity"]:
-                            errors.append(f"{object_id}.lineage.{lineage_field}->{ref} dangling")
+                            errors.append(
+                                f"{object_id}.lineage.{lineage_field}->{ref} dangling"
+                            )
 
-        for time_field in ("valid_from", "valid_until", "observed_at", "occurred_at", "decided_at"):
+        for time_field in (
+            "valid_from",
+            "valid_until",
+            "observed_at",
+            "occurred_at",
+            "decided_at",
+        ):
             if record.get(time_field) is None:
                 continue
             try:
@@ -227,8 +245,13 @@ def validate_temporal_integrity(objects: list[dict[str, Any]]) -> list[str]:
                 errors.append(f"{object_id}.{time_field}: {exc}")
         if record.get("valid_from") and record.get("valid_until"):
             try:
-                if _temporal_relation(record["valid_until"], record["valid_from"]) == "BEFORE":
-                    errors.append(f"{object_id}: valid_until definitely precedes valid_from")
+                relation = _temporal_relation(
+                    record["valid_until"], record["valid_from"]
+                )
+                if relation == "BEFORE":
+                    errors.append(
+                        f"{object_id}: valid_until definitely precedes valid_from"
+                    )
             except (TypeError, TemporalValueError) as exc:
                 errors.append(f"{object_id}.valid_interval: {exc}")
     return sorted(set(errors))
@@ -239,7 +262,9 @@ def compile_temporal_graph(objects: list[dict[str, Any]]) -> dict[str, Any]:
     persisted = [persistable(record) for record in objects]
     errors = validate_temporal_integrity(persisted)
     digests = {
-        f"{record['object_class']}:{record[ID_FIELDS[str(record['object_class'])]]}": object_digest(record)
+        f"{record['object_class']}:{record[ID_FIELDS[str(record['object_class'])]]}": object_digest(
+            record
+        )
         for record in persisted
     }
     return {
@@ -256,7 +281,9 @@ def compile_temporal_graph(objects: list[dict[str, Any]]) -> dict[str, Any]:
 def state_as_of_release(objects: list[dict[str, Any]]) -> dict[str, Any]:
     """Projection: full object set belonging to one candidate/release snapshot."""
     compiled = compile_temporal_graph(objects)
-    by_class: dict[str, list[dict[str, Any]]] = {name: [] for name in OBJECT_CLASSES}
+    by_class: dict[str, list[dict[str, Any]]] = {
+        name: [] for name in OBJECT_CLASSES
+    }
     for record in compiled["objects"]:
         by_class[str(record["object_class"])].append(record)
     return {
@@ -265,7 +292,10 @@ def state_as_of_release(objects: list[dict[str, Any]]) -> dict[str, Any]:
         "object_count": compiled["object_count"],
         "integrity_errors": compiled["integrity_errors"],
         "authoritative": False,
-        "authority_note": "Authority requires a separate authorized S2 publication; compiler projections are noncanonical.",
+        "authority_note": (
+            "Authority requires a separate authorized S2 publication; compiler "
+            "projections are noncanonical."
+        ),
         "release_authorized": False,
         "boundary": COMPILER_BOUNDARY,
     }
@@ -281,8 +311,10 @@ def _assertion_valid_at(record: dict[str, Any], as_of: dict[str, Any]) -> bool:
     return True
 
 
-def state_valid_at(objects: list[dict[str, Any]], *, as_of: dict[str, Any]) -> dict[str, Any]:
-    """Projection: assertions not definitely outside their valid-time window at ``as_of``.
+def state_valid_at(
+    objects: list[dict[str, Any]], *, as_of: dict[str, Any]
+) -> dict[str, Any]:
+    """Project assertions not definitely outside their valid-time window at ``as_of``.
 
     Mixed-precision overlap is retained instead of manufacturing a finer instant.
     """
@@ -291,7 +323,8 @@ def state_valid_at(objects: list[dict[str, Any]], *, as_of: dict[str, Any]) -> d
     selected = [
         record
         for record in compiled["objects"]
-        if str(record.get("object_class")) != "Assertion" or _assertion_valid_at(record, parsed_as_of)
+        if str(record.get("object_class")) != "Assertion"
+        or _assertion_valid_at(record, parsed_as_of)
     ]
     return {
         "projection": "STATE_VALID_AT",
@@ -300,7 +333,10 @@ def state_valid_at(objects: list[dict[str, Any]], *, as_of: dict[str, Any]) -> d
         "object_count": len(selected),
         "integrity_errors": compiled["integrity_errors"],
         "authoritative": False,
-        "authority_note": "Temporal projections are derived views over release objects; they are not a second authority.",
+        "authority_note": (
+            "Temporal projections are derived views over release objects; they are not "
+            "a second authority."
+        ),
         "release_authorized": False,
         "boundary": COMPILER_BOUNDARY,
     }
@@ -324,7 +360,12 @@ def predecessor_successor_diff(
         ids = [object_id for _, object_id in keys]
         # Preserve the legacy id-only surface when unambiguous; qualify collisions.
         counts = {object_id: ids.count(object_id) for object_id in set(ids)}
-        return [object_id if counts[object_id] == 1 else f"{object_class}:{object_id}" for object_class, object_id in keys]
+        return [
+            object_id
+            if counts[object_id] == 1
+            else f"{object_class}:{object_id}"
+            for object_class, object_id in keys
+        ]
 
     return {
         "added_ids": display(added_keys),
