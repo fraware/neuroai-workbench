@@ -144,6 +144,15 @@ MODE_CHECKS: dict[str, tuple[str, ...]] = {
     ),
 }
 
+REQUIRED_ORGANIZATION_REVIEW_CLASSES = frozenset(
+    {
+        "MATERIALIZE_ACTIVE_ENTITY",
+        "LEGACY_IDENTITY_UNRESOLVED",
+        "PROVENANCE_ONLY_NODE",
+        "HISTORICAL_CURRENT_IDENTITY_UNRESOLVED",
+    }
+)
+
 
 class ObservatoryGateAReviewError(ValueError):
     """Raised when a deterministic review packet cannot cover the frozen migration scope."""
@@ -161,14 +170,25 @@ def _stable_sample_indices(records: list[Any], *, count: int = 2) -> list[int]:
     return sorted(index for _, index in selected)
 
 
+def _one_per_field(records: list[Any], field: str) -> list[int]:
+    grouped: dict[str, list[tuple[str, int]]] = defaultdict(list)
+    for index, record in enumerate(records):
+        if not isinstance(record, dict):
+            continue
+        value = record.get(field)
+        key = "<NULL>" if value is None else str(value)
+        grouped[key].append((_digest(record), index))
+    return sorted(min(candidates)[1] for candidates in grouped.values())
+
+
 def _organization_classification_samples(checkpoint: dict[str, Any]) -> dict[int, str]:
     result: dict[int, str] = {}
     entity_migration = checkpoint.get("candidate", {}).get("core", {}).get("entity_migration", {})
+    by_class: dict[str, list[tuple[str, int]]] = defaultdict(list)
     for collection in ("predecessor_traces", "preserved_predecessor_records"):
         rows = entity_migration.get(collection, [])
         if not isinstance(rows, list):
             continue
-        by_class: dict[str, list[tuple[str, int]]] = defaultdict(list)
         for row in rows:
             if not isinstance(row, dict):
                 continue
@@ -177,9 +197,14 @@ def _organization_classification_samples(checkpoint: dict[str, Any]) -> dict[int
             predecessor = row.get("predecessor_record")
             if isinstance(classification, str) and isinstance(index, int):
                 by_class[classification].append((_digest(predecessor), index))
-        for classification, candidates in by_class.items():
-            _, index = min(candidates)
-            result[index] = classification
+    missing = sorted(REQUIRED_ORGANIZATION_REVIEW_CLASSES - set(by_class))
+    if missing:
+        raise ObservatoryGateAReviewError(
+            f"organization review packet lacks required migration classifications {missing}"
+        )
+    for classification in sorted(REQUIRED_ORGANIZATION_REVIEW_CLASSES):
+        _, index = min(by_class[classification])
+        result[index] = classification
     return result
 
 
@@ -227,7 +252,7 @@ def build_gate_a_review_packet(
     source_register14: list[dict[str, Any]],
     monitor15: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Build a deterministic review packet that covers every frozen predecessor family."""
+    """Build a deterministic review packet that covers every frozen predecessor family and known edge case."""
     if checkpoint.get("representational_scope_complete") is not True:
         raise ObservatoryGateAReviewError("human review packet requires representationally complete checkpoint")
     if checkpoint.get("release_authorized") is not False or checkpoint.get("gate_a_complete") is not False:
@@ -277,10 +302,7 @@ def build_gate_a_review_packet(
                     continue
 
                 if key == ("V14", "organizations"):
-                    selected = sorted(organization_special)
-                    if not selected:
-                        raise ObservatoryGateAReviewError("organization review requires one sample per migration classification")
-                    for index in selected:
+                    for index in sorted(organization_special):
                         units.append(
                             _review_unit(
                                 role=role,
@@ -295,11 +317,27 @@ def build_gate_a_review_packet(
 
                 if key == ("V14", "capital_and_ownership_events"):
                     selected = list(range(len(family_payload)))
-                elif key in {("V16", "reopening_decisions"), ("V16", "no_change_confirmations")}:
+                elif key in {
+                    ("V16", "reopening_decisions"),
+                    ("V16", "no_change_confirmations"),
+                    ("V17", "reopening_decisions"),
+                }:
                     selected = list(range(len(family_payload)))
+                elif key == ("V14", "organization_resolution"):
+                    selected = _one_per_field(family_payload, "disposition")
+                elif key == ("V14", "regional_expansion"):
+                    selected = _one_per_field(family_payload, "action")
+                elif key == ("V16", "change_candidates"):
+                    selected = sorted(
+                        set(_one_per_field(family_payload, "change_class"))
+                        | set(_one_per_field(family_payload, "adjudication"))
+                    )
+                elif key == ("V16", "new_sources"):
+                    selected = _one_per_field(family_payload, "published")
+                    selected = sorted(set(selected) | set(_stable_sample_indices(family_payload, count=2)))
                 elif key == ("V16", "source_checks"):
                     selected = _stable_sample_indices(family_payload, count=min(3, len(family_payload)))
-                elif key == ("MONITOR15", "$root"):
+                elif key in {("MONITOR15", "$root"), ("SOURCE_REGISTER14", "$root")}:
                     selected = _stable_sample_indices(family_payload, count=min(3, len(family_payload)))
                 else:
                     selected = _stable_sample_indices(family_payload, count=min(2, len(family_payload)))
@@ -308,7 +346,21 @@ def build_gate_a_review_packet(
                     edge_case = None
                     if key == ("V14", "capital_and_ownership_events"):
                         date = family_payload[index].get("date") if isinstance(family_payload[index], dict) else None
-                        edge_case = "NULL_TIME" if date is None else ("YEAR_TIME" if isinstance(date, str) and len(date) == 4 else "DATE_TIME")
+                        edge_case = (
+                            "NULL_TIME"
+                            if date is None
+                            else ("YEAR_TIME" if isinstance(date, str) and len(date) == 4 else "DATE_TIME")
+                        )
+                    elif key == ("V16", "new_sources") and isinstance(family_payload[index], dict):
+                        edge_case = (
+                            "NULL_PUBLICATION_TIME"
+                            if family_payload[index].get("published") is None
+                            else "EXPLICIT_PUBLICATION_TIME"
+                        )
+                    elif key == ("V17", "reopening_decisions") and isinstance(family_payload[index], dict):
+                        decision_id = family_payload[index].get("decision_id")
+                        if decision_id == "ROP-17-001":
+                            edge_case = "SUCCESSOR_REOPENING_DECISION"
                     units.append(
                         _review_unit(
                             role=role,
@@ -377,6 +429,10 @@ def verify_gate_a_review_packet(packet: dict[str, Any]) -> list[str]:
         errors.append("review_unit_count mismatch")
     ids: set[str] = set()
     covered: set[str] = set()
+    organization_edges: set[str] = set()
+    capital_edges: set[str] = set()
+    v16_source_edges: set[str] = set()
+    v17_reopening_edges: set[str] = set()
     for unit in units:
         if not isinstance(unit, dict):
             errors.append("review unit must be an object")
@@ -403,6 +459,26 @@ def verify_gate_a_review_packet(packet: dict[str, Any]) -> list[str]:
             errors.append(f"software prefilled human review metadata for {review_id}")
         if unit.get("boundary") != REVIEW_PACKET_BOUNDARY:
             errors.append(f"review unit boundary mismatch for {review_id}")
+
+        edge = unit.get("edge_case")
+        if role == "V14" and family == "organizations" and isinstance(edge, str):
+            organization_edges.add(edge)
+        if role == "V14" and family == "capital_and_ownership_events" and isinstance(edge, str):
+            capital_edges.add(edge)
+        if role == "V16" and family == "new_sources" and isinstance(edge, str):
+            v16_source_edges.add(edge)
+        if role == "V17" and family == "reopening_decisions" and isinstance(edge, str):
+            v17_reopening_edges.add(edge)
+
+    missing_org_edges = sorted(REQUIRED_ORGANIZATION_REVIEW_CLASSES - organization_edges)
+    if missing_org_edges:
+        errors.append(f"review packet missing organization migration edge cases {missing_org_edges}")
+    if "YEAR_TIME" not in capital_edges or "NULL_TIME" not in capital_edges:
+        errors.append("review packet must include YEAR_TIME and NULL_TIME capital-event cases")
+    if "NULL_PUBLICATION_TIME" not in v16_source_edges or "EXPLICIT_PUBLICATION_TIME" not in v16_source_edges:
+        errors.append("review packet must include null and explicit v1.6 publication-time cases")
+    if "SUCCESSOR_REOPENING_DECISION" not in v17_reopening_edges:
+        errors.append("review packet must include ROP-17-001 successor reopening decision")
 
     declared_covered = packet.get("covered_families")
     if not isinstance(declared_covered, list) or set(declared_covered) != covered:
