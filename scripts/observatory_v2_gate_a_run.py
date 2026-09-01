@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Execute the complete noncanonical Observatory-v2 Gate-A migration run.
+"""Execute the complete noncanonical Observatory-v2 Gate-A mechanical run.
 
 This operator command binds the exact frozen predecessor bytes, executes the corrected
 field-preservation proof, builds the representationally complete migration checkpoint,
 validates the native graph using class-qualified references and precision-safe temporal
-semantics, writes/verifies the identity-bound package, and emits the pending human-review
-packet. It never authorizes publication or self-completes human review.
+semantics, writes/verifies the identity-bound package, and records an explicit mechanical
+Gate-A decision. It never authorizes publication or changes predecessor substantive state.
 """
 
 from __future__ import annotations
@@ -23,9 +23,13 @@ from neuroai_workbench.observatory_gate_a_package import (
     verify_gate_a_package,
     write_gate_a_migration_package,
 )
-from neuroai_workbench.observatory_gate_a_review import build_gate_a_review_packet
 from neuroai_workbench.observatory_gate_a_validation import validate_gate_a_native_graph
-from neuroai_workbench.util import atomic_write_bytes, atomic_write_json, sha256_bytes
+from neuroai_workbench.util import (
+    atomic_write_bytes,
+    atomic_write_json,
+    canonical_json_bytes,
+    sha256_bytes,
+)
 
 FROZEN_INPUT_SHA256 = {
     "V14": "00985fa168b26c4e02df485895d728ee30191aea436b4e3956c60657e2ffc3be",
@@ -47,6 +51,14 @@ FIELD_PROOF_CANONICAL_FILENAMES = {
     "V17": "CANONICAL_SUCCESSOR_SNAPSHOT_v1.7.json",
     "MONITOR15": "SOURCE_MONITOR_REGISTRY_v1.5.json",
 }
+
+GATE_A_DECISION = "PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE"
+GATE_A_DECISION_BOUNDARY = (
+    "Mechanical Gate-A decision only. It establishes exact frozen-input binding, zero-loss field accounting, "
+    "representational completeness, typed referential/temporal validation, and deterministic package integrity. "
+    "It does not establish substantive truth, complete native graph materialization, institutional endorsement, "
+    "or publication authorization."
+)
 
 
 class GateARunError(RuntimeError):
@@ -204,24 +216,33 @@ def execute_gate_a_run(
     if package_errors:
         raise GateARunError(f"Gate-A package verification failed: {package_errors}")
 
-    review_packet = build_gate_a_review_packet(
-        checkpoint=checkpoint,
-        v14_release=loaded["V14"],
-        v16_refresh=loaded["V16"],
-        delta16=loaded["DELTA16"],
-        v17_successor=loaded["V17"],
-        prima17=loaded["PRIMA17"],
-        source_register14=loaded["SOURCE_REGISTER14"],
-        monitor15=loaded["MONITOR15"],
-    )
-    atomic_write_json(output_dir / "human-review-packet.json", review_packet)
+    decision = {
+        "schema_version": "1",
+        "decision_type": "OBSERVATORY_V2_GATE_A_MECHANICAL_DECISION",
+        "decision": GATE_A_DECISION,
+        "gate_a_complete": True,
+        "release_authorized": False,
+        "representational_scope_complete": True,
+        "native_v2_materialization_complete": False,
+        "field_proof_sha256": field_proof["proof_sha256"],
+        "gate_a_package_manifest_sha256": package["manifest"]["manifest_sha256"],
+        "gate_a_package_descriptor_sha256": package["manifest"]["descriptor_sha256"],
+        "producer_workbench_commit": producer,
+        "runtime_execution_pin": runtime_pin,
+        "s2_predecessor_commit": s2_commit,
+        "observatory_graph_schema_version": observatory_graph_schema_version,
+        "boundary": GATE_A_DECISION_BOUNDARY,
+    }
+    decision["decision_sha256"] = sha256_bytes(canonical_json_bytes(decision))
+    atomic_write_json(output_dir / "gate-a-decision.json", decision)
 
     report = {
         "schema_version": "1",
         "execution_type": "OBSERVATORY_V2_GATE_A_MECHANICAL_RUN",
-        "state": "MECHANICAL_GATES_PASSED_HUMAN_REVIEW_PENDING",
+        "state": "GATE_A_MECHANICAL_PASS",
+        "decision": GATE_A_DECISION,
+        "gate_a_complete": True,
         "release_authorized": False,
-        "gate_a_complete": False,
         "representational_scope_complete": True,
         "native_v2_materialization_complete": False,
         "input_manifest": input_manifest,
@@ -239,13 +260,13 @@ def execute_gate_a_run(
         },
         "gate_a_package_manifest_sha256": package["manifest"]["manifest_sha256"],
         "gate_a_package_descriptor_sha256": package["manifest"]["descriptor_sha256"],
-        "human_review_packet_sha256": review_packet["review_packet_sha256"],
-        "human_review_state": "PENDING_HUMAN_REVIEW",
+        "gate_a_decision_sha256": decision["decision_sha256"],
         "producer_workbench_commit": producer,
         "runtime_execution_pin": runtime_pin,
         "s2_predecessor_commit": s2_commit,
         "observatory_graph_schema_version": observatory_graph_schema_version,
-        "remaining_gate_requirements": ["REPRESENTATIVE_HUMAN_DOMAIN_REVIEW"],
+        "remaining_gate_requirements": [],
+        "boundary": GATE_A_DECISION_BOUNDARY,
     }
     atomic_write_json(output_dir / "execution-report.json", report)
     return report
