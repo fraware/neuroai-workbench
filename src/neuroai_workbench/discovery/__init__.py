@@ -6,6 +6,7 @@ never mutates a live monitor registry without human acceptance and an append-onl
 
 from .boundary import DISCOVERY_BOUNDARY, DISCOVERY_NETWORK_ENV, DISCOVERY_SSRF_POLICY
 from .clinicaltrials import project_search_pages as project_clinicaltrials_search_pages
+from .europepmc import project_search_pages as project_europepmc_search_pages
 from .errors import (
     DiscoveryAdjudicationRequiredError,
     DiscoveryError,
@@ -56,6 +57,7 @@ __all__ = [
     "load_successor",
     "network_discovery_allowed",
     "project_clinicaltrials_search_pages",
+    "project_europepmc_search_pages",
     "refuse_registry_overwrite",
     "require_accepted_proposals_for_successor",
     "require_network_discovery_allowed",
