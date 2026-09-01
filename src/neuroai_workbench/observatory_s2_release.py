@@ -9,7 +9,7 @@ PASS decision and never authorizes or publishes the resulting release.
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .observatory_gate_a_package import verify_gate_a_package
@@ -36,6 +36,17 @@ OBJECT_FILES = (
     "reopening-decisions.jsonl",
 )
 
+OBJECT_CLASS_BY_FILE = {
+    "entities.jsonl": "Entity",
+    "sources.jsonl": "Source",
+    "observations.jsonl": "Observation",
+    "assertions.jsonl": "Assertion",
+    "events.jsonl": "Event",
+    "relationships.jsonl": "Relationship",
+    "candidates.jsonl": "Candidate",
+    "reopening-decisions.jsonl": "ReopeningDecision",
+}
+
 _NATIVE_SOURCE_FILES = {
     "entities.jsonl": "entities.jsonl",
     "sources.jsonl": "sources.jsonl",
@@ -55,6 +66,18 @@ _MIGRATION_FILES = {
     "residual-predecessor-state.json": "residual-predecessor-state.json",
     "duplicate-container-proofs.json": "duplicate-container-proofs.json",
 }
+
+_GATE_A_MIGRATION_FILES = (
+    "gate-a-descriptor.json",
+    "gate-a-manifest.json",
+    "gate-a-decision.json",
+)
+
+CANDIDATE_FILE_PATHS = frozenset(
+    {f"records/{filename}" for filename in OBJECT_FILES}
+    | {f"migration/{filename}" for filename in _MIGRATION_FILES}
+    | {f"migration/{filename}" for filename in _GATE_A_MIGRATION_FILES}
+)
 
 
 class ObservatoryS2ReleaseError(ValueError):
@@ -85,12 +108,6 @@ def _copy_bound(source: Path, target: Path) -> str:
     return sha256_bytes(payload)
 
 
-def _jsonl_count(path: Path) -> int:
-    if not path.is_file():
-        return 0
-    return sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
-
-
 def _content_identity(files: list[dict[str, str]]) -> str:
     return sha256_bytes(canonical_json_bytes(files))
 
@@ -107,6 +124,45 @@ def _frozen_inputs(value: Any) -> dict[str, str]:
         role: _require_hex(value[role], length=64, field=f"frozen input {role}")
         for role in sorted(FROZEN_INPUT_ROLES)
     }
+
+
+def _safe_candidate_path(release_dir: Path, raw_path: str) -> Path:
+    path = PurePosixPath(raw_path)
+    if path.is_absolute() or not path.parts or ".." in path.parts or path.as_posix() != raw_path:
+        raise ObservatoryS2ReleaseError(f"unsafe S2 candidate file path: {raw_path}")
+    root = release_dir.resolve()
+    target = release_dir.joinpath(*path.parts)
+    resolved = target.resolve(strict=False)
+    if not resolved.is_relative_to(root):
+        raise ObservatoryS2ReleaseError(f"S2 candidate file escapes release root: {raw_path}")
+    return target
+
+
+def _jsonl_count_and_errors(path: Path, *, expected_class: str) -> tuple[int, list[str]]:
+    if not path.is_file():
+        return 0, [f"S2 record file missing: {path.name}"]
+    count = 0
+    errors: list[str] = []
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as exc:
+        return 0, [f"cannot read S2 record file {path.name}: {exc}"]
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        count += 1
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            errors.append(f"{path.name}:{line_number}: invalid JSON: {exc.msg}")
+            continue
+        if not isinstance(value, dict):
+            errors.append(f"{path.name}:{line_number}: graph record must be a JSON object")
+        elif value.get("object_class") != expected_class:
+            errors.append(
+                f"{path.name}:{line_number}: expected object_class {expected_class}, got {value.get('object_class')!r}"
+            )
+    return count, errors
 
 
 def _verify_gate_a_decision(
@@ -183,7 +239,6 @@ def write_observatory_v2_s2_candidate(
     native_dir = gate_a_package_dir / "native-candidate"
     native_descriptor = _load_object(native_dir / "descriptor.json", label="native candidate descriptor")
     native_manifest = _load_object(native_dir / "manifest.json", label="native candidate manifest")
-
     if gate_descriptor.get("release_authorized") is not False:
         raise ObservatoryS2ReleaseError("Gate-A package must remain unauthorized")
     if gate_descriptor.get("representational_scope_complete") is not True:
@@ -202,9 +257,8 @@ def write_observatory_v2_s2_candidate(
         target = records_dir / filename
         native_filename = _NATIVE_SOURCE_FILES.get(filename)
         if native_filename is None:
-            payload = b""
-            atomic_write_bytes(target, payload)
-            file_digests[f"records/{filename}"] = sha256_bytes(payload)
+            atomic_write_bytes(target, b"")
+            file_digests[f"records/{filename}"] = sha256_bytes(b"")
         else:
             file_digests[f"records/{filename}"] = _copy_bound(native_dir / native_filename, target)
 
@@ -213,34 +267,28 @@ def write_observatory_v2_s2_candidate(
             gate_a_package_dir / source_relative,
             migration_dir / target_name,
         )
-
     file_digests["migration/gate-a-descriptor.json"] = _copy_bound(
-        gate_a_package_dir / "descriptor.json",
-        migration_dir / "gate-a-descriptor.json",
+        gate_a_package_dir / "descriptor.json", migration_dir / "gate-a-descriptor.json"
     )
     file_digests["migration/gate-a-manifest.json"] = _copy_bound(
-        gate_a_package_dir / "manifest.json",
-        migration_dir / "gate-a-manifest.json",
+        gate_a_package_dir / "manifest.json", migration_dir / "gate-a-manifest.json"
     )
     file_digests["migration/gate-a-decision.json"] = _copy_bound(
-        gate_a_decision_path,
-        migration_dir / "gate-a-decision.json",
+        gate_a_decision_path, migration_dir / "gate-a-decision.json"
     )
 
     file_entries = [{"path": path, "sha256": digest} for path, digest in sorted(file_digests.items())]
+    if {item["path"] for item in file_entries} != CANDIDATE_FILE_PATHS:
+        raise ObservatoryS2ReleaseError("internal S2 candidate file surface does not match governed allowlist")
     content_sha256 = _content_identity(file_entries)
     candidate_id = f"OBS-V2-CAND-{content_sha256[:20].upper()}"
 
-    class_counts = {
-        "Entity": _jsonl_count(records_dir / "entities.jsonl"),
-        "Source": _jsonl_count(records_dir / "sources.jsonl"),
-        "Observation": _jsonl_count(records_dir / "observations.jsonl"),
-        "Assertion": _jsonl_count(records_dir / "assertions.jsonl"),
-        "Event": _jsonl_count(records_dir / "events.jsonl"),
-        "Relationship": _jsonl_count(records_dir / "relationships.jsonl"),
-        "Candidate": _jsonl_count(records_dir / "candidates.jsonl"),
-        "ReopeningDecision": _jsonl_count(records_dir / "reopening-decisions.jsonl"),
-    }
+    class_counts: dict[str, int] = {}
+    for filename, object_class in OBJECT_CLASS_BY_FILE.items():
+        count, record_errors = _jsonl_count_and_errors(records_dir / filename, expected_class=object_class)
+        if record_errors:
+            raise ObservatoryS2ReleaseError("invalid native graph record surface: " + "; ".join(record_errors))
+        class_counts[object_class] = count
 
     descriptor = {
         "schema_version": "1",
@@ -292,13 +340,12 @@ def write_observatory_v2_s2_candidate(
     if not descriptor["observatory_graph_schema_version"].strip():
         raise ObservatoryS2ReleaseError("observatory_graph_schema_version must be present in Gate-A package")
 
-    descriptor_sha256 = sha256_bytes(canonical_json_bytes(descriptor))
     manifest = {
         "schema_version": "1",
         "candidate_id": candidate_id,
         "candidate_content_sha256": content_sha256,
         "files": file_entries,
-        "descriptor_sha256": descriptor_sha256,
+        "descriptor_sha256": sha256_bytes(canonical_json_bytes(descriptor)),
         "release_authorized": False,
         "published": False,
         "boundary": S2_CANDIDATE_BOUNDARY,
@@ -370,25 +417,38 @@ def verify_observatory_v2_s2_candidate(release_dir: Path) -> list[str]:
     file_entries = manifest.get("files")
     if not isinstance(file_entries, list):
         return sorted(set(errors + ["S2 candidate files manifest is missing"]))
+
     observed_entries: list[dict[str, str]] = []
     seen: set[str] = set()
     for item in file_entries:
         if not isinstance(item, dict) or not isinstance(item.get("path"), str):
             errors.append("S2 candidate file entry is invalid")
             continue
-        path = str(item["path"])
-        if path in seen:
-            errors.append(f"duplicate S2 candidate file path {path}")
+        raw_path = str(item["path"])
+        if raw_path in seen:
+            errors.append(f"duplicate S2 candidate file path {raw_path}")
             continue
-        seen.add(path)
-        file_path = release_dir / path
+        seen.add(raw_path)
+        if raw_path not in CANDIDATE_FILE_PATHS:
+            errors.append(f"S2 candidate file path is outside governed allowlist: {raw_path}")
+            continue
+        try:
+            file_path = _safe_candidate_path(release_dir, raw_path)
+        except ObservatoryS2ReleaseError as exc:
+            errors.append(str(exc))
+            continue
         if not file_path.is_file():
-            errors.append(f"S2 candidate file missing: {path}")
+            errors.append(f"S2 candidate file missing: {raw_path}")
             continue
         observed = sha256_bytes(file_path.read_bytes())
         if item.get("sha256") != observed:
-            errors.append(f"S2 candidate file digest mismatch: {path}")
-        observed_entries.append({"path": path, "sha256": observed})
+            errors.append(f"S2 candidate file digest mismatch: {raw_path}")
+        observed_entries.append({"path": raw_path, "sha256": observed})
+
+    if seen != CANDIDATE_FILE_PATHS:
+        missing = sorted(CANDIDATE_FILE_PATHS - seen)
+        extra = sorted(seen - CANDIDATE_FILE_PATHS)
+        errors.append(f"S2 candidate file surface mismatch: missing={missing}, extra={extra}")
 
     observed_entries.sort(key=lambda item: item["path"])
     content_sha256 = _content_identity(observed_entries)
@@ -400,26 +460,14 @@ def verify_observatory_v2_s2_candidate(release_dir: Path) -> list[str]:
     if descriptor.get("candidate_id") != expected_candidate_id or manifest.get("candidate_id") != expected_candidate_id:
         errors.append("S2 candidate_id does not match content identity")
 
-    required_record_paths = {f"records/{filename}" for filename in OBJECT_FILES}
-    if not required_record_paths.issubset(seen):
-        errors.append("S2 candidate does not expose the complete stable object-file surface")
-
-    counts = descriptor.get("record_counts")
-    expected_counts = {
-        "Entity": _jsonl_count(release_dir / "records/entities.jsonl"),
-        "Source": _jsonl_count(release_dir / "records/sources.jsonl"),
-        "Observation": _jsonl_count(release_dir / "records/observations.jsonl"),
-        "Assertion": _jsonl_count(release_dir / "records/assertions.jsonl"),
-        "Event": _jsonl_count(release_dir / "records/events.jsonl"),
-        "Relationship": _jsonl_count(release_dir / "records/relationships.jsonl"),
-        "Candidate": _jsonl_count(release_dir / "records/candidates.jsonl"),
-        "ReopeningDecision": _jsonl_count(release_dir / "records/reopening-decisions.jsonl"),
-    }
-    if counts != expected_counts:
+    expected_counts: dict[str, int] = {}
+    for filename, object_class in OBJECT_CLASS_BY_FILE.items():
+        count, record_errors = _jsonl_count_and_errors(release_dir / "records" / filename, expected_class=object_class)
+        expected_counts[object_class] = count
+        errors.extend(record_errors)
+    if descriptor.get("record_counts") != expected_counts:
         errors.append("S2 candidate record-count reconciliation mismatch")
 
-    # The copied Gate-A decision is part of candidate content and must independently
-    # bind the copied Gate-A descriptor/manifest to the same proof identities.
     try:
         copied_gate_descriptor = _load_object(
             release_dir / "migration/gate-a-descriptor.json", label="copied Gate-A descriptor"
