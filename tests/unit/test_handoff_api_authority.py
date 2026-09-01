@@ -21,7 +21,11 @@ from neuroai_workbench.api import (
 )
 from neuroai_workbench.observatory_graph import build_entity
 from neuroai_workbench.observatory_publication import record_s2_authorization, record_s2_publication
-from neuroai_workbench.observatory_s2_release import OBJECT_FILES, S2_CANDIDATE_BOUNDARY
+from neuroai_workbench.observatory_s2_release import (
+    CANDIDATE_FILE_PATHS,
+    OBJECT_FILES,
+    S2_CANDIDATE_BOUNDARY,
+)
 from neuroai_workbench.release import ReleaseCompiler
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
@@ -101,16 +105,19 @@ def _published_release(tmp_path: Path) -> Path:
             "valid_from": {"value": "2026-01-01", "precision": "DATE"},
         },
     }
-    file_entries: list[dict[str, str]] = []
     for filename in OBJECT_FILES:
         row = rows.get(filename)
         payload = b"" if row is None else (json.dumps(row, sort_keys=True) + "\n").encode("utf-8")
         (records / filename).write_bytes(payload)
-        file_entries.append({"path": f"records/{filename}", "sha256": sha256_bytes(payload)})
-    for filename in ("gate-a-descriptor.json", "gate-a-manifest.json", "gate-a-decision.json"):
-        path = migration / filename
-        file_entries.append({"path": f"migration/{filename}", "sha256": sha256_bytes(path.read_bytes())})
-    file_entries.sort(key=lambda item: item["path"])
+    for relative in sorted(CANDIDATE_FILE_PATHS):
+        path = root / relative
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n", encoding="utf-8")
+    file_entries = [
+        {"path": relative, "sha256": sha256_bytes((root / relative).read_bytes())}
+        for relative in sorted(CANDIDATE_FILE_PATHS)
+    ]
     content_sha = sha256_bytes(canonical_json_bytes(file_entries))
     candidate_id = f"OBS-V2-CAND-{content_sha[:20].upper()}"
     descriptor = {
@@ -188,7 +195,6 @@ def test_why_timeline_release_and_filters(tmp_path: Path) -> None:
     release_body = handle_v1_get(release, "/v1/release")
     assert release_body["candidate_id"] == release["candidate_id"]
     assert release_body["release_authorized"] is True
-
     filtered = handle_v1_get(release, "/v1/entities", query={"id": ["ENT-API-H1"]})
     assert filtered["count"] == 1
     assert handle_v1_get(release, "/v1/entities", query={"id": ["NOPE"]})["count"] == 0
@@ -203,7 +209,6 @@ def test_why_timeline_release_and_filters(tmp_path: Path) -> None:
         handle_v1_get(release, "/v1/why")
     with pytest.raises(PublicObservatoryApiError, match="server-configured"):
         handle_v1_get(release, "/v1/diff")
-
     refuse_write("GET")
     with pytest.raises(PublicObservatoryApiError, match="refused"):
         refuse_write("PATCH")
