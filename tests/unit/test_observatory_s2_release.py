@@ -96,7 +96,7 @@ def _gate_package(tmp_path):
     return root, decision_path
 
 
-def test_s2_candidate_compiles_stable_object_surface(tmp_path, monkeypatch) -> None:
+def _candidate(tmp_path, monkeypatch):
     gate, decision = _gate_package(tmp_path)
     monkeypatch.setattr("neuroai_workbench.observatory_s2_release.verify_gate_a_package", lambda path: [])
     output = tmp_path / "s2"
@@ -107,6 +107,11 @@ def test_s2_candidate_compiles_stable_object_surface(tmp_path, monkeypatch) -> N
         release_tag="data-v0.3.0-observatory-v2-candidate",
         s2_predecessor_release_tag="data-v0.1.0-public-governing",
     )
+    return output, result
+
+
+def test_s2_candidate_compiles_stable_object_surface(tmp_path, monkeypatch) -> None:
+    output, result = _candidate(tmp_path, monkeypatch)
 
     assert result["descriptor"]["release_authorized"] is False
     assert result["descriptor"]["published"] is False
@@ -130,16 +135,7 @@ def test_s2_candidate_compiles_stable_object_surface(tmp_path, monkeypatch) -> N
 
 
 def test_s2_candidate_identity_is_content_derived_and_tamper_evident(tmp_path, monkeypatch) -> None:
-    gate, decision = _gate_package(tmp_path)
-    monkeypatch.setattr("neuroai_workbench.observatory_s2_release.verify_gate_a_package", lambda path: [])
-    output = tmp_path / "s2"
-    result = write_observatory_v2_s2_candidate(
-        gate,
-        decision,
-        output,
-        release_tag="data-v0.3.0-observatory-v2-candidate",
-        s2_predecessor_release_tag="data-v0.1.0-public-governing",
-    )
+    output, result = _candidate(tmp_path, monkeypatch)
     content = result["descriptor"]["candidate_content_sha256"]
     assert result["descriptor"]["candidate_id"] == f"OBS-V2-CAND-{content[:20].upper()}"
 
@@ -170,18 +166,38 @@ def test_s2_candidate_requires_mechanical_gate_a_pass_decision(tmp_path, monkeyp
 
 
 def test_manifest_identity_binds_descriptor(tmp_path, monkeypatch) -> None:
-    gate, decision = _gate_package(tmp_path)
-    monkeypatch.setattr("neuroai_workbench.observatory_s2_release.verify_gate_a_package", lambda path: [])
-    output = tmp_path / "s2"
-    write_observatory_v2_s2_candidate(
-        gate,
-        decision,
-        output,
-        release_tag="candidate",
-        s2_predecessor_release_tag="predecessor",
-    )
+    output, _ = _candidate(tmp_path, monkeypatch)
     descriptor = json.loads((output / "descriptor.json").read_text(encoding="utf-8"))
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["descriptor_sha256"] == sha256_bytes(canonical_json_bytes(descriptor))
     controlled = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
     assert manifest["manifest_sha256"] == sha256_bytes(canonical_json_bytes(controlled))
+
+
+def test_s2_candidate_rejects_extra_manifested_file(tmp_path, monkeypatch) -> None:
+    output, _ = _candidate(tmp_path, monkeypatch)
+    extra = output / "migration" / "unexpected.json"
+    _json(extra, {"unexpected": True})
+    manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+    manifest["files"].append(
+        {
+            "path": "migration/unexpected.json",
+            "sha256": sha256_bytes(extra.read_bytes()),
+        }
+    )
+    _json(output / "manifest.json", manifest)
+
+    errors = verify_observatory_v2_s2_candidate(output)
+    assert any("outside governed allowlist" in error for error in errors)
+    assert any("file surface mismatch" in error for error in errors)
+
+
+def test_s2_candidate_rejects_wrong_graph_object_class(tmp_path, monkeypatch) -> None:
+    output, _ = _candidate(tmp_path, monkeypatch)
+    (output / "records" / "entities.jsonl").write_text(
+        '{"object_class":"Source","source_id":"SRC-WRONG-CLASS"}\n',
+        encoding="utf-8",
+    )
+
+    errors = verify_observatory_v2_s2_candidate(output)
+    assert any("expected object_class Entity" in error for error in errors)
