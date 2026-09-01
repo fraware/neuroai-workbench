@@ -191,23 +191,40 @@ def test_public_handler_refuses_preview_context_even_if_called_directly(tmp_path
         handle_v1_get(preview, "/v1/entities")
 
 
-def test_public_diff_rejects_unpublished_predecessor(tmp_path) -> None:
+def test_public_diff_requires_server_configured_published_predecessor(tmp_path) -> None:
     current_dir = _candidate(tmp_path / "current", release_tag="current", entity_id="ORG-2")
     predecessor_dir = _candidate(tmp_path / "predecessor", release_tag="predecessor", entity_id="ORG-1")
     _publish(current_dir)
     current = load_published_release(current_dir)
 
+    with pytest.raises(PublicObservatoryApiError, match="server-configured"):
+        handle_v1_get(current, "/v1/diff")
     with pytest.raises(PublicObservatoryApiError, match="not published"):
-        handle_v1_get(current, "/v1/diff", query={"predecessor": [str(predecessor_dir)]})
+        handle_v1_get(current, "/v1/diff", predecessor_dir=predecessor_dir)
 
 
-def test_public_diff_accepts_two_published_releases(tmp_path) -> None:
+def test_public_diff_accepts_configured_published_predecessor_and_candidate_id_assertion(tmp_path) -> None:
     predecessor_dir = _candidate(tmp_path / "predecessor", release_tag="predecessor", entity_id="ORG-1")
     current_dir = _candidate(tmp_path / "current", release_tag="current", entity_id="ORG-2")
     _publish(predecessor_dir)
     _publish(current_dir)
     current = load_published_release(current_dir)
-    body = handle_v1_get(current, "/v1/diff", query={"predecessor": [str(predecessor_dir)]})
+    predecessor = load_published_release(predecessor_dir)
+
+    body = handle_v1_get(
+        current,
+        "/v1/diff",
+        query={"predecessor": [predecessor["candidate_id"]]},
+        predecessor_dir=predecessor_dir,
+    )
     assert body["canonical"] is True
-    assert body["predecessor_candidate_id"]
-    assert body["successor_candidate_id"]
+    assert body["predecessor_candidate_id"] == predecessor["candidate_id"]
+    assert body["successor_candidate_id"] == current["candidate_id"]
+
+    with pytest.raises(PublicObservatoryApiError, match="does not match"):
+        handle_v1_get(
+            current,
+            "/v1/diff",
+            query={"predecessor": ["OBS-V2-CAND-WRONG"]},
+            predecessor_dir=predecessor_dir,
+        )
