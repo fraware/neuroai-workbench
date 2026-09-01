@@ -12,6 +12,7 @@ from typing import Any
 
 from .observatory_event_migration import (
     EVENT_MIGRATION_BOUNDARY,
+    ObservatoryEventMigrationError,
     exact_entity_name_index,
     resolve_exact_entity_name,
 )
@@ -153,7 +154,10 @@ def materialize_delta16_capital_events(
         missing_sources = sorted(set(refs) - known_source_ids)
         if missing_sources:
             raise DeltaCapitalMigrationError(f"delta16 capital event references missing Sources {missing_sources}")
-        subject_id = resolve_exact_entity_name(raw["subject"], name_index)
+        try:
+            subject_id = resolve_exact_entity_name(raw["subject"], name_index)
+        except ObservatoryEventMigrationError as exc:
+            raise DeltaCapitalMigrationError(str(exc)) from exc
         event_id = str(raw["event_id"])
         if event_id in seen:
             raise DeltaCapitalMigrationError(f"duplicate delta16 capital event id {event_id}")
