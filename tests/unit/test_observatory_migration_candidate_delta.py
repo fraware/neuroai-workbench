@@ -47,6 +47,8 @@ def _inputs() -> tuple[dict, dict, dict]:
             _organization("ORG-SCI", "Science Corporation"),
             _organization("ORG-SYN", "Synchron"),
         ],
+        "organization_resolution": [],
+        "regional_expansion": [],
         "sources": [_source("SRC-1")],
         "capital_and_ownership_events": [
             {
