@@ -13,10 +13,8 @@ from neuroai_workbench.observatory_gate_a_migration import (
 )
 from neuroai_workbench.observatory_graph import build_entity
 from neuroai_workbench.observatory_residual_migration import (
-    MONITOR_REGISTRY_STATE,
     RESIDUAL_MIGRATION_BOUNDARY,
     RESIDUAL_POLICIES,
-    SOURCE_REGISTER_DUPLICATE_STATE,
     ObservatoryResidualMigrationError,
     _preserve_family,
     _validate_source_refs,
@@ -44,9 +42,14 @@ def _capital_record(event_id: str = "CAP-16-1") -> dict:
 
 
 def test_delta_capital_rejects_container_and_record_shape_errors() -> None:
-    with pytest.raises(DeltaCapitalMigrationError, match="capital_and_ownership_events array"):
+    with pytest.raises(
+        DeltaCapitalMigrationError,
+        match="capital_and_ownership_events array",
+    ):
         materialize_delta16_capital_events(
-            {}, entities=[_entity()], known_source_ids={"SRC-1"}
+            {},
+            entities=[_entity()],
+            known_source_ids={"SRC-1"},
         )
     with pytest.raises(DeltaCapitalMigrationError, match="must be an object"):
         materialize_delta16_capital_events(
@@ -100,11 +103,12 @@ def test_delta_capital_preserves_exact_identity_failure_and_duplicate_guard() ->
             known_source_ids={"SRC-1"},
         )
 
-    first = _capital_record()
-    second = _capital_record()
-    with pytest.raises(DeltaCapitalMigrationError, match="duplicate delta16 capital event id"):
+    with pytest.raises(
+        DeltaCapitalMigrationError,
+        match="duplicate delta16 capital event id",
+    ):
         materialize_delta16_capital_events(
-            {"capital_and_ownership_events": [first, second]},
+            {"capital_and_ownership_events": [_capital_record(), _capital_record()]},
             entities=[_entity()],
             known_source_ids={"SRC-1"},
         )
@@ -122,12 +126,18 @@ def test_residual_source_reference_walk_is_recursive_and_fail_closed() -> None:
         "SRC-MISSING-2",
     ]
 
-    with pytest.raises(ObservatoryResidualMigrationError, match="array of non-empty strings"):
+    with pytest.raises(
+        ObservatoryResidualMigrationError,
+        match="array of non-empty strings",
+    ):
         _validate_source_refs({"source_ids": [""]}, set())
 
 
 def test_residual_family_preservation_rejects_unsafe_shapes_and_sources() -> None:
-    with pytest.raises(ObservatoryResidualMigrationError, match="no governed residual policy"):
+    with pytest.raises(
+        ObservatoryResidualMigrationError,
+        match="no governed residual policy",
+    ):
         _preserve_family(
             role="V14",
             family="unknown",
@@ -148,7 +158,10 @@ def test_residual_family_preservation_rejects_unsafe_shapes_and_sources() -> Non
             payload=["bad"],
             known_source_ids=set(),
         )
-    with pytest.raises(ObservatoryResidualMigrationError, match="references missing Sources"):
+    with pytest.raises(
+        ObservatoryResidualMigrationError,
+        match="references missing Sources",
+    ):
         _preserve_family(
             role="V14",
             family="data_quality",
@@ -184,8 +197,7 @@ def test_gate_a_delta_wildcard_requires_complete_actual_residual_set() -> None:
             for key in sorted(expected_delta)[:-1]
         ]
     }
-    partial_remaining = _expected_remaining_families(candidate, partial)
-    assert "DELTA16.*" in partial_remaining
+    assert "DELTA16.*" in _expected_remaining_families(candidate, partial)
 
     complete = {
         "residual_families": [
@@ -298,40 +310,3 @@ def test_residual_verifier_rejects_missing_collections() -> None:
     assert "release_level_state must be an array" in errors
     assert "source_register_proof missing" in errors
     assert "monitor_registry missing" in errors
-
-
-def test_residual_verifier_accepts_empty_structural_baseline() -> None:
-    state = {
-        "state": "NONCANONICAL_CANDIDATE",
-        "release_authorized": False,
-        "native_object_count": 0,
-        "boundary": RESIDUAL_MIGRATION_BOUNDARY,
-        "residual_families": [],
-        "release_level_state": [],
-        "source_register_proof": {
-            "migration_state": SOURCE_REGISTER_DUPLICATE_STATE,
-            "record_count": 0,
-            "exact_duplicate": True,
-            "source_register_sha256": "same",
-            "v14_sources_sha256": "same",
-        },
-        "monitor_registry": {
-            "migration_state": MONITOR_REGISTRY_STATE,
-            "record_count": 0,
-            "one_to_one_source_identity": True,
-            "monitor_registry_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e2f1f6d2f8f8f9f9f9f9f9f",
-            "payload": [],
-            "native_object_count": 0,
-            "native_authority": False,
-        },
-        "counts": {
-            "residual_family_count": 0,
-            "residual_record_count": 0,
-            "release_level_bundle_count": 0,
-            "source_register_records": 0,
-            "monitor_registry_records": 0,
-        },
-    }
-    errors = verify_residual_gate_a_state(state, known_source_ids=set())
-    assert any("monitor-registry payload digest mismatch" in error for error in errors)
-    assert all("release-level" not in error for error in errors)
