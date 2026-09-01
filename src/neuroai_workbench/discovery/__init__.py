@@ -6,6 +6,8 @@ never mutates a live monitor registry without human acceptance and an append-onl
 
 from .boundary import DISCOVERY_BOUNDARY, DISCOVERY_NETWORK_ENV, DISCOVERY_SSRF_POLICY
 from .clinicaltrials import project_search_pages as project_clinicaltrials_search_pages
+from .epo_ops import project_search_pages as project_epo_ops_search_pages
+from .europepmc import project_search_pages as project_europepmc_search_pages
 from .errors import (
     DiscoveryAdjudicationRequiredError,
     DiscoveryError,
@@ -13,6 +15,11 @@ from .errors import (
     DiscoveryOverwriteRefusedError,
 )
 from .network import network_discovery_allowed, require_network_discovery_allowed, validate_discovery_url
+from .nih_reporter import project_search_pages as project_nih_reporter_search_pages
+from .openfda_510k import project_search_pages as project_openfda_510k_pages
+from .openfda_device_event import project_search_pages as project_openfda_device_event_pages
+from .openfda_pma import project_search_pages as project_openfda_pma_pages
+from .openfda_recall import project_search_pages as project_openfda_device_recall_pages
 from .programme import (
     OFFLINE_EXECUTABLE_UNIVERSE_IDS,
     SU_TRIAL_DOC_ALIAS,
@@ -79,6 +86,13 @@ __all__ = [
     "network_discovery_allowed",
     "programme_maturity",
     "project_clinicaltrials_search_pages",
+    "project_epo_ops_search_pages",
+    "project_europepmc_search_pages",
+    "project_nih_reporter_search_pages",
+    "project_openfda_510k_pages",
+    "project_openfda_device_event_pages",
+    "project_openfda_device_recall_pages",
+    "project_openfda_pma_pages",
     "project_universe_pages",
     "refuse_registry_overwrite",
     "require_accepted_proposals_for_successor",
