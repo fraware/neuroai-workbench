@@ -17,6 +17,9 @@ from .errors import (
 from .network import network_discovery_allowed, require_network_discovery_allowed, validate_discovery_url
 from .nih_reporter import project_search_pages as project_nih_reporter_search_pages
 from .openfda_510k import project_search_pages as project_openfda_510k_pages
+from .openfda_device_classification import (
+    project_search_pages as project_openfda_device_classification_pages,
+)
 from .openfda_device_event import project_search_pages as project_openfda_device_event_pages
 from .openfda_hde import project_search_pages as project_openfda_hde_pages
 from .openfda_pma import project_search_pages as project_openfda_pma_pages
@@ -95,6 +98,7 @@ __all__ = [
     "project_europepmc_search_pages",
     "project_nih_reporter_search_pages",
     "project_openfda_510k_pages",
+    "project_openfda_device_classification_pages",
     "project_openfda_device_event_pages",
     "project_openfda_device_recall_pages",
     "project_openfda_hde_pages",
