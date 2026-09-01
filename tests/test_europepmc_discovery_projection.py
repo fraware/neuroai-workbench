@@ -34,7 +34,12 @@ def _record(
     return row
 
 
-def _page(rows: list[dict], *, hit_count: int | None = None, next_cursor: str | None = None) -> dict:
+def _page(
+    rows: list[dict],
+    *,
+    hit_count: int | None = None,
+    next_cursor: str | None = None,
+) -> dict:
     payload: dict = {"resultList": {"result": rows}}
     if hit_count is not None:
         payload["hitCount"] = hit_count
@@ -70,11 +75,17 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             query_id="DISCOVERY-EPMC-SPEECH-COMMUNICATION-001",
             query_text='TITLE_ABS:(speech AND neuroprosthesis)',
             pages=pages,
+            known_anchor_identities=[
+                "DOI:10.1056/nejmoa2501396",
+                "DOI:10.1056/nejmoa2314132",
+            ],
         )
         self.assertEqual(
             [row["record_key"] for row in result["result_records"]],
             ["DOI:10.1056/nejmoa2314132", "DOI:10.1056/nejmoa2501396"],
         )
+        self.assertEqual(result["coverage"]["known_anchor_count"], 2)
+        self.assertEqual(result["coverage"]["known_anchor_identities_missing"], [])
         self.assertEqual(result["coverage"]["reported_hit_count_state"], "CONSISTENT")
         self.assertEqual(result["coverage"]["reported_total_reconciliation_state"], "MATCH")
         self.assertEqual(result["coverage"]["terminal_cursor_state"], "TERMINAL")
@@ -84,6 +95,12 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
         self.assertFalse(result["coverage"]["automatic_source_admission_performed"])
         self.assertFalse(result["coverage"]["automatic_relationship_creation_performed"])
         self.assertFalse(result["coverage"]["automatic_assessment_mutation_performed"])
+        for normalized in result["normalized_records"]:
+            self.assertEqual(
+                normalized["query_memberships"],
+                ["DISCOVERY-EPMC-SPEECH-COMMUNICATION-001"],
+            )
+            self.assertTrue(normalized["source_plus_ext_id"].startswith("MED:"))
 
     def test_exact_known_identity_marks_duplicate_without_url_matching(self) -> None:
         result = project_search_pages(
@@ -102,7 +119,9 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
                     hit_count=1,
                 )
             ],
-            known_publication_sources={"DOI:10.1056/nejmoa2501396": "SRC-PRIMA-PAPER"},
+            known_publication_sources={
+                "DOI:10.1056/nejmoa2501396": "SRC-PRIMA-PAPER"
+            },
         )
         record = result["result_records"][0]
         self.assertEqual(record["classification_hint"], "DUPLICATE")
@@ -117,9 +136,27 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             pages=[
                 _page(
                     [
-                        _record(ext_id="12345678", title="PMID", pmid="12345678", doi=None),
-                        _record(source="PMC", ext_id="PMC999", title="PMCID", pmcid="PMC999", doi=None),
-                        _record(source="AGR", ext_id="AGR-1", title="Fallback", doi=None, pmid=None, pmcid=None),
+                        _record(
+                            ext_id="12345678",
+                            title="PMID",
+                            pmid="12345678",
+                            doi=None,
+                        ),
+                        _record(
+                            source="PMC",
+                            ext_id="PMC999",
+                            title="PMCID",
+                            pmcid="PMC999",
+                            doi=None,
+                        ),
+                        _record(
+                            source="AGR",
+                            ext_id="AGR-1",
+                            title="Fallback",
+                            doi=None,
+                            pmid=None,
+                            pmcid=None,
+                        ),
                     ],
                     hit_count=3,
                 )
@@ -153,7 +190,32 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
         self.assertTrue(normalized["is_preprint"])
         self.assertEqual(normalized["source"], "PPR")
         self.assertEqual(result["coverage"]["preprint_count"], 1)
-        self.assertEqual(result["coverage"]["peer_reviewed_or_journal_count"], 0)
+        self.assertEqual(result["coverage"]["non_preprint_record_count"], 0)
+        self.assertEqual(result["coverage"]["source_distribution"], {"PPR": 1})
+
+    def test_non_preprint_is_not_relabelled_peer_reviewed(self) -> None:
+        result = project_search_pages(
+            query_id="DISCOVERY-EPMC-NONPREPRINT",
+            query_text="test",
+            pages=[
+                _page(
+                    [
+                        _record(
+                            source="PAT",
+                            ext_id="PAT-1",
+                            title="Patent-like metadata record",
+                            doi=None,
+                            pub_type=None,
+                        )
+                    ],
+                    hit_count=1,
+                )
+            ],
+        )
+        self.assertEqual(result["coverage"]["preprint_count"], 0)
+        self.assertEqual(result["coverage"]["non_preprint_record_count"], 1)
+        self.assertEqual(result["coverage"]["publication_type_missing_count"], 1)
+        self.assertEqual(result["coverage"]["source_distribution"], {"PAT": 1})
 
     def test_identical_duplicate_across_pages_collapses(self) -> None:
         record = _record(
@@ -171,11 +233,15 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             ],
         )
         self.assertEqual(len(result["result_records"]), 1)
-        self.assertEqual(result["coverage"]["cross_query_duplicate_representation_count"], 1)
+        self.assertEqual(
+            result["coverage"]["cross_query_duplicate_representation_count"], 1
+        )
         self.assertEqual(result["coverage"]["reported_total_reconciliation_state"], "MATCH")
 
     def test_conflicting_same_identity_fails_closed(self) -> None:
-        with self.assertRaisesRegex(ValueError, "Conflicting normalized Europe PMC representations"):
+        with self.assertRaisesRegex(
+            ValueError, "Conflicting normalized Europe PMC representations"
+        ):
             project_search_pages(
                 query_id="DISCOVERY-EPMC-CONFLICT",
                 query_text="speech",
@@ -193,7 +259,9 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             )
 
     def test_nonfinal_page_without_cursor_fails_closed(self) -> None:
-        with self.assertRaisesRegex(ValueError, "non-final page 1 has no nextCursorMark"):
+        with self.assertRaisesRegex(
+            ValueError, "non-final page 1 has no nextCursorMark"
+        ):
             project_search_pages(
                 query_id="DISCOVERY-EPMC-PAGINATION",
                 query_text="BCI",
@@ -251,10 +319,25 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
                 ),
             ],
         )
-        self.assertEqual(result["coverage"]["reported_hit_count_state"], "INCONSISTENT_ACROSS_PAGES")
+        self.assertEqual(
+            result["coverage"]["reported_hit_count_state"],
+            "INCONSISTENT_ACROSS_PAGES",
+        )
         self.assertIsNone(result["coverage"]["reported_hit_count"])
         self.assertEqual(result["coverage"]["reported_hit_count_values"], [2, 3])
-        self.assertEqual(result["coverage"]["reported_total_reconciliation_state"], "DENOMINATOR_UNAVAILABLE")
+        self.assertEqual(
+            result["coverage"]["reported_total_reconciliation_state"],
+            "DENOMINATOR_UNAVAILABLE",
+        )
+
+    def test_duplicate_anchor_input_fails_closed(self) -> None:
+        with self.assertRaisesRegex(ValueError, "Duplicate known anchor identity"):
+            project_search_pages(
+                query_id="DISCOVERY-EPMC-ANCHOR-DUP",
+                query_text="test",
+                pages=[_page([], hit_count=0)],
+                known_anchor_identities=["DOI:10.1/a", "DOI:10.1/a"],
+            )
 
 
 if __name__ == "__main__":
