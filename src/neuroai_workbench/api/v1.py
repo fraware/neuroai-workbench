@@ -95,10 +95,12 @@ def load_published_release(release_dir: Path) -> dict[str, Any]:
         detail = "; ".join(str(item) for item in binding.get("errors") or [])
         raise PublicObservatoryApiError("Observatory-v2 S2 release is not published: " + detail)
     descriptor, manifest = _load_candidate_files(release_dir)
-    authorization = binding.get("authorization")
-    publication = binding.get("publication")
-    if not isinstance(authorization, dict) or not isinstance(publication, dict):
-        raise PublicObservatoryApiError("Published release binding did not return authorization/publication records")
+    authorization_id = str(binding.get("authorization_id") or "")
+    authorization_sha256 = str(binding.get("authorization_sha256") or "")
+    publication_id = str(binding.get("publication_id") or "")
+    publication_sha256 = str(binding.get("publication_sha256") or "")
+    if not all((authorization_id, authorization_sha256, publication_id, publication_sha256)):
+        raise PublicObservatoryApiError("Published release binding did not return exact governance identities")
     return {
         "release_dir": Path(release_dir),
         "descriptor": descriptor,
@@ -109,10 +111,10 @@ def load_published_release(release_dir: Path) -> dict[str, Any]:
         "published": True,
         "canonical": True,
         "preview": False,
-        "authorization_id": authorization.get("authorization_id"),
-        "authorization_sha256": authorization.get("authorization_sha256"),
-        "publication_id": publication.get("publication_id"),
-        "publication_sha256": publication.get("publication_sha256"),
+        "authorization_id": authorization_id,
+        "authorization_sha256": authorization_sha256,
+        "publication_id": publication_id,
+        "publication_sha256": publication_sha256,
         "boundary": API_BOUNDARY,
     }
 
