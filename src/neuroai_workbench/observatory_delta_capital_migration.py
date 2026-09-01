@@ -12,18 +12,26 @@ from typing import Any
 
 from .observatory_event_migration import (
     EVENT_MIGRATION_BOUNDARY,
+    ObservatoryEventMigrationError,
     exact_entity_name_index,
     resolve_exact_entity_name,
 )
-from .observatory_graph import GRAPH_BOUNDARY, KIND_RESOLVED_ENTITY_REFERENCE, build_event, validate_graph_object
+from .observatory_graph import (
+    GRAPH_BOUNDARY,
+    KIND_RESOLVED_ENTITY_REFERENCE,
+    build_event,
+    validate_graph_object,
+)
 from .temporal import TIME_VALUE_BOUNDARY, parse_time_value
 from .util import canonical_json_bytes, sha256_bytes
 
 DELTA_CAPITAL_BOUNDARY = (
-    "Adjudicated v1.6 capital-event migration. Exact ids, dates, event types, controlled organization subjects, "
-    "source references and predecessor claim boundaries are preserved. Evidence/verification sentinel states "
-    "mean the predecessor did not govern those native fields; they are not substantive evidence judgments. "
-    "No valuation, control, authorization, performance, conformance or publication authority is inferred."
+    "Adjudicated v1.6 capital-event migration. Exact ids, dates, event types, "
+    "controlled organization subjects, source references and predecessor claim "
+    "boundaries are preserved. Evidence/verification sentinel states mean the "
+    "predecessor did not govern those native fields; they are not substantive "
+    "evidence judgments. No valuation, control, authorization, performance, "
+    "conformance or publication authority is inferred."
 )
 PREDECESSOR_EVIDENCE_STATE_UNSPECIFIED = "PREDECESSOR_EVIDENCE_STATE_UNSPECIFIED"
 PREDECESSOR_VERIFICATION_STATE_UNSPECIFIED = "PREDECESSOR_VERIFICATION_STATE_UNSPECIFIED"
@@ -49,7 +57,9 @@ def _date(value: Any) -> dict[str, Any]:
     if not isinstance(value, str) or not value.strip():
         raise DeltaCapitalMigrationError("v1.6 capital event requires an explicit date")
     text = value.strip()
-    return parse_time_value({"value": text, "precision": "DATE", "boundary": TIME_VALUE_BOUNDARY})
+    return parse_time_value(
+        {"value": text, "precision": "DATE", "boundary": TIME_VALUE_BOUNDARY}
+    )
 
 
 def verify_delta_capital_event(
@@ -66,9 +76,15 @@ def verify_delta_capital_event(
         return ["predecessor_record must be an object"]
     if trace.get("predecessor_record_sha256") != _record_digest(predecessor):
         errors.append("predecessor_record_sha256 mismatch")
-    if trace.get("role") != "DELTA16" or trace.get("family") != "capital_and_ownership_events":
+    if (
+        trace.get("role") != "DELTA16"
+        or trace.get("family") != "capital_and_ownership_events"
+    ):
         errors.append("delta-capital migration role/family mismatch")
-    if trace.get("native_object_class") != "Event" or trace.get("native_authority") is not False:
+    if (
+        trace.get("native_object_class") != "Event"
+        or trace.get("native_authority") is not False
+    ):
         errors.append("delta-capital trace authority/class mismatch")
     if trace.get("boundary") != DELTA_CAPITAL_BOUNDARY:
         errors.append("delta-capital trace boundary mismatch")
@@ -81,7 +97,9 @@ def verify_delta_capital_event(
     if event.get("source_ids") != predecessor.get("source_ids"):
         errors.append("source_ids binding mismatch")
     source_ids = predecessor.get("source_ids")
-    if not isinstance(source_ids, list) or any(not isinstance(item, str) or not item for item in source_ids):
+    if not isinstance(source_ids, list) or any(
+        not isinstance(item, str) or not item for item in source_ids
+    ):
         errors.append("predecessor source_ids must be non-empty strings")
     else:
         missing = sorted(set(source_ids) - known_source_ids)
@@ -94,7 +112,9 @@ def verify_delta_capital_event(
     if event.get("verification_state") != PREDECESSOR_VERIFICATION_STATE_UNSPECIFIED:
         errors.append("verification_state sentinel mismatch")
     if event.get("observation_ids") != [] or event.get("objects") != []:
-        errors.append("delta-capital migration must not invent observations or counterparties")
+        errors.append(
+            "delta-capital migration must not invent observations or counterparties"
+        )
     if event.get("boundary") != DELTA_CAPITAL_BOUNDARY:
         errors.append("Event migration boundary mismatch")
 
@@ -113,7 +133,11 @@ def verify_delta_capital_event(
     occurred = event.get("occurred_at")
     if not isinstance(raw_date, str) or not raw_date.strip():
         errors.append("predecessor date is missing")
-    elif not isinstance(occurred, dict) or occurred.get("precision") != "DATE" or occurred.get("value") != raw_date.strip():
+    elif (
+        not isinstance(occurred, dict)
+        or occurred.get("precision") != "DATE"
+        or occurred.get("value") != raw_date.strip()
+    ):
         errors.append("occurred_at date binding mismatch")
 
     schema_errors = validate_graph_object(
@@ -133,8 +157,13 @@ def materialize_delta16_capital_events(
     """Materialize the complete adjudicated v1.6 capital-event delta or fail closed."""
     records = delta16.get("capital_and_ownership_events")
     if not isinstance(records, list):
-        raise DeltaCapitalMigrationError("Expected delta16 capital_and_ownership_events array")
-    name_index = exact_entity_name_index(entities)
+        raise DeltaCapitalMigrationError(
+            "Expected delta16 capital_and_ownership_events array"
+        )
+    try:
+        name_index = exact_entity_name_index(entities)
+    except ObservatoryEventMigrationError as exc:
+        raise DeltaCapitalMigrationError(str(exc)) from exc
     entity_index = {str(entity["entity_id"]): entity for entity in entities}
     events: list[dict[str, Any]] = []
     traces: list[dict[str, Any]] = []
@@ -142,21 +171,40 @@ def materialize_delta16_capital_events(
 
     for index, raw in enumerate(records):
         if not isinstance(raw, dict):
-            raise DeltaCapitalMigrationError(f"delta16 capital event {index} must be an object")
+            raise DeltaCapitalMigrationError(
+                f"delta16 capital event {index} must be an object"
+            )
         required = ("event_id", "event_type", "subject", "boundary")
-        missing = [field for field in required if not isinstance(raw.get(field), str) or not str(raw[field]).strip()]
+        missing = [
+            field
+            for field in required
+            if not isinstance(raw.get(field), str) or not str(raw[field]).strip()
+        ]
         if missing:
-            raise DeltaCapitalMigrationError(f"delta16 capital event missing required fields: {missing}")
+            raise DeltaCapitalMigrationError(
+                f"delta16 capital event missing required fields: {missing}"
+            )
         refs = raw.get("source_ids")
-        if not isinstance(refs, list) or any(not isinstance(item, str) or not item for item in refs):
-            raise DeltaCapitalMigrationError("delta16 capital event source_ids are invalid")
+        if not isinstance(refs, list) or any(
+            not isinstance(item, str) or not item for item in refs
+        ):
+            raise DeltaCapitalMigrationError(
+                "delta16 capital event source_ids are invalid"
+            )
         missing_sources = sorted(set(refs) - known_source_ids)
         if missing_sources:
-            raise DeltaCapitalMigrationError(f"delta16 capital event references missing Sources {missing_sources}")
-        subject_id = resolve_exact_entity_name(raw["subject"], name_index)
+            raise DeltaCapitalMigrationError(
+                f"delta16 capital event references missing Sources {missing_sources}"
+            )
+        try:
+            subject_id = resolve_exact_entity_name(raw["subject"], name_index)
+        except ObservatoryEventMigrationError as exc:
+            raise DeltaCapitalMigrationError(str(exc)) from exc
         event_id = str(raw["event_id"])
         if event_id in seen:
-            raise DeltaCapitalMigrationError(f"duplicate delta16 capital event id {event_id}")
+            raise DeltaCapitalMigrationError(
+                f"duplicate delta16 capital event id {event_id}"
+            )
         seen.add(event_id)
         event = build_event(
             event_id=event_id,
@@ -196,7 +244,9 @@ def materialize_delta16_capital_events(
             known_source_ids=known_source_ids,
         )
         if errors:
-            raise DeltaCapitalMigrationError(f"generated delta-capital Event is invalid: {errors}")
+            raise DeltaCapitalMigrationError(
+                f"generated delta-capital Event is invalid: {errors}"
+            )
         events.append(event)
         traces.append(trace)
 
