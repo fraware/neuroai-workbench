@@ -13,6 +13,7 @@ from .errors import (
     DiscoveryOverwriteRefusedError,
 )
 from .network import network_discovery_allowed, require_network_discovery_allowed, validate_discovery_url
+from .nih_reporter import project_search_pages as project_nih_reporter_search_pages
 from .store import (
     EXPECTED_FIXTURE_QUERY_IDS,
     get_fixture_query,
@@ -56,6 +57,7 @@ __all__ = [
     "load_successor",
     "network_discovery_allowed",
     "project_clinicaltrials_search_pages",
+    "project_nih_reporter_search_pages",
     "refuse_registry_overwrite",
     "require_accepted_proposals_for_successor",
     "require_network_discovery_allowed",
