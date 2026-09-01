@@ -116,6 +116,13 @@ def build_gate_a_migration_checkpoint(
         f"{role}.{family}"
         for role, family in RESIDUAL_POLICIES
     }
+    delta16_policy_families = {
+        family
+        for role, family in RESIDUAL_POLICIES
+        if role == "DELTA16"
+    }
+    if set(delta16) == delta16_policy_families:
+        represented_by_residual.add("DELTA16.*")
     remaining = [
         family
         for family in candidate["remaining_unmaterialized_families"]
