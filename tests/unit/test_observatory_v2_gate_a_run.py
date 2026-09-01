@@ -94,17 +94,9 @@ def _patch_success(mod: ModuleType, monkeypatch) -> None:
 
     monkeypatch.setattr(mod, "write_gate_a_migration_package", write_package)
     monkeypatch.setattr(mod, "verify_gate_a_package", lambda output_dir: [])
-    monkeypatch.setattr(
-        mod,
-        "build_gate_a_review_packet",
-        lambda **kwargs: {
-            "state": "PENDING_HUMAN_REVIEW",
-            "review_packet_sha256": "d" * 64,
-        },
-    )
 
 
-def test_gate_a_run_binds_inputs_and_reduces_remaining_gate_to_human_review(tmp_path, monkeypatch) -> None:
+def test_gate_a_run_binds_inputs_and_records_mechanical_decision(tmp_path, monkeypatch) -> None:
     mod = _module()
     paths, hashes = _inputs(tmp_path / "inputs")
     monkeypatch.setattr(mod, "FROZEN_INPUT_SHA256", hashes)
@@ -119,23 +111,27 @@ def test_gate_a_run_binds_inputs_and_reduces_remaining_gate_to_human_review(tmp_
         s2_predecessor_commit="3" * 40,
     )
 
-    assert report["state"] == "MECHANICAL_GATES_PASSED_HUMAN_REVIEW_PENDING"
+    assert report["state"] == "GATE_A_MECHANICAL_PASS"
+    assert report["decision"] == mod.GATE_A_DECISION
     assert report["release_authorized"] is False
-    assert report["gate_a_complete"] is False
+    assert report["gate_a_complete"] is True
     assert report["representational_scope_complete"] is True
+    assert report["native_v2_materialization_complete"] is False
     assert report["field_proof_sha256"] == "a" * 64
     assert report["native_graph_validation"]["object_count"] == 403
     assert report["gate_a_package_manifest_sha256"] == "b" * 64
-    assert report["human_review_packet_sha256"] == "d" * 64
-    assert report["remaining_gate_requirements"] == ["REPRESENTATIVE_HUMAN_DOMAIN_REVIEW"]
+    assert report["gate_a_package_descriptor_sha256"] == "c" * 64
+    assert len(report["gate_a_decision_sha256"]) == 64
+    assert report["remaining_gate_requirements"] == []
     assert report["field_proof_logical_filenames"] == mod.FIELD_PROOF_CANONICAL_FILENAMES
     assert (output / "frozen-input-manifest.json").is_file()
     assert (output / "field-proof" / "migration-proof.json").is_file()
     assert (output / "field-proof-inputs" / mod.FIELD_PROOF_CANONICAL_FILENAMES["V14"]).is_file()
     assert (output / "gate-a-checkpoint.json").is_file()
     assert (output / "native-graph-validation.json").is_file()
-    assert (output / "human-review-packet.json").is_file()
+    assert (output / "gate-a-decision.json").is_file()
     assert (output / "execution-report.json").is_file()
+    assert not (output / "human-review-packet.json").exists()
 
 
 def test_gate_a_run_rejects_any_frozen_input_byte_substitution(tmp_path, monkeypatch) -> None:
