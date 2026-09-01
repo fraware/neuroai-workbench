@@ -43,8 +43,9 @@ def _jsonl_bytes(records: list[dict[str, Any]]) -> bytes:
     return (text + ("\n" if records else "")).encode("utf-8")
 
 
-def _index(objects: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    index: dict[str, dict[str, Any]] = {}
+def _ids_by_class(objects: list[dict[str, Any]]) -> dict[str, set[str]]:
+    """Index graph object ids by object class for type-safe referential-integrity checks."""
+    index: dict[str, set[str]] = {object_class: set() for object_class in ID_FIELDS}
     for record in objects:
         object_class = str(record.get("object_class"))
         field = ID_FIELDS.get(object_class)
@@ -52,39 +53,82 @@ def _index(objects: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             continue
         object_id = str(record.get(field, ""))
         if object_id:
-            index[object_id] = record
+            index[object_class].add(object_id)
     return index
 
 
+def _resolved_entity_ref_dangling(
+    *,
+    object_id: str,
+    field: str,
+    ref: Any,
+    entity_ids: set[str],
+) -> str | None:
+    if not isinstance(ref, dict) or ref.get("kind") != "RESOLVED_ENTITY_REFERENCE":
+        return None
+    entity_id = str(ref.get("entity_id") or "")
+    if entity_id and entity_id not in entity_ids:
+        return f"{object_id}.{field}->{entity_id}"
+    return None
+
+
 def _dangling_refs(objects: list[dict[str, Any]]) -> list[str]:
-    index = _index(objects)
+    ids = _ids_by_class(objects)
     dangling: list[str] = []
+    typed_list_refs = {
+        "source_ids": "Source",
+        "observation_ids": "Observation",
+        "supersedes_assertion_ids": "Assertion",
+        "trigger_assertion_ids": "Assertion",
+        "trigger_event_ids": "Event",
+    }
+
     for record in objects:
         object_class = str(record.get("object_class"))
         object_id = str(record.get(ID_FIELDS.get(object_class, ""), ""))
-        for field in (
-            "source_ids",
-            "observation_ids",
-            "supersedes_assertion_ids",
-            "trigger_assertion_ids",
-            "trigger_event_ids",
-        ):
+
+        for field, expected_class in typed_list_refs.items():
             for ref in record.get(field) or []:
-                if str(ref) not in index:
-                    dangling.append(f"{object_id}.{field}->{ref}")
-        if object_class == "Observation" and record.get("source_id") and str(record["source_id"]) not in index:
-            dangling.append(f"{object_id}.source_id->{record['source_id']}")
-        subject = record.get("subject")
-        if isinstance(subject, dict) and subject.get("kind") == "RESOLVED_ENTITY_REFERENCE":
-            entity_id = str(subject.get("entity_id") or "")
-            if entity_id and entity_id not in index:
-                dangling.append(f"{object_id}.subject->{entity_id}")
-        object_ref = record.get("object_ref")
-        if isinstance(object_ref, dict) and object_ref.get("kind") == "RESOLVED_ENTITY_REFERENCE":
-            entity_id = str(object_ref.get("entity_id") or "")
-            if entity_id and entity_id not in index:
-                dangling.append(f"{object_id}.object_ref->{entity_id}")
-    return dangling
+                ref_id = str(ref)
+                if ref_id not in ids[expected_class]:
+                    dangling.append(f"{object_id}.{field}->{ref_id}")
+
+        if object_class == "Observation" and record.get("source_id"):
+            source_id = str(record["source_id"])
+            if source_id not in ids["Source"]:
+                dangling.append(f"{object_id}.source_id->{source_id}")
+
+        for field in ("subject", "object_ref"):
+            missing = _resolved_entity_ref_dangling(
+                object_id=object_id,
+                field=field,
+                ref=record.get(field),
+                entity_ids=ids["Entity"],
+            )
+            if missing:
+                dangling.append(missing)
+
+        if object_class == "Event":
+            for position, ref in enumerate(record.get("objects") or []):
+                missing = _resolved_entity_ref_dangling(
+                    object_id=object_id,
+                    field=f"objects[{position}]",
+                    ref=ref,
+                    entity_ids=ids["Entity"],
+                )
+                if missing:
+                    dangling.append(missing)
+
+        if object_class == "Entity":
+            lineage = record.get("lineage") or {}
+            if isinstance(lineage, dict):
+                for field in ("predecessor_entity_ids", "successor_entity_ids"):
+                    for ref in lineage.get(field) or []:
+                        entity_id = str(ref)
+                        if entity_id not in ids["Entity"]:
+                            dangling.append(f"{object_id}.lineage.{field}->{entity_id}")
+
+    return sorted(set(dangling))
 
 
 def _duplicate_ids(objects: list[dict[str, Any]]) -> list[str]:
