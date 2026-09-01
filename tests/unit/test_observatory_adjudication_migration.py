@@ -7,6 +7,7 @@ from neuroai_workbench.observatory_adjudication_migration import (
     REOPENING_STATE,
     WITHHELD_STATE,
     ObservatoryAdjudicationMigrationError,
+    delta16_record_ids,
     preserve_v16_adjudication_state,
     verify_v16_adjudication_state,
 )
@@ -18,7 +19,7 @@ def _delta() -> dict:
         "capital_and_ownership_events": [{"event_id": "CAP-16-002"}],
         "model_records": [{"model_id": "MDL-16-001"}],
         "supplier_dependency_relationships": [],
-        "governance_and_leadership_events": [{"event_id": "GOV-16-002"}],
+        "governance_and_leadership_events": [{"governance_id": "GOV-16-002"}],
     }
 
 
@@ -72,8 +73,40 @@ def test_v16_adjudication_preserves_nonclaim_and_nonmutation_semantics() -> None
     assert verify_v16_adjudication_state(
         state,
         known_source_ids={"SRC-16-011"},
-        delta_ids={"REG-16-001", "CAP-16-002", "MDL-16-001", "GOV-16-002"},
+        delta_ids=delta16_record_ids(delta),
     ) == []
+
+
+def test_delta_record_id_vocabulary_is_family_typed_not_suffix_based() -> None:
+    delta = _delta()
+    delta["regulatory_and_market_events"][0]["organization_id"] = "ORG-NOT-A-TRIGGER"
+    assert delta16_record_ids(delta) == {
+        "REG-16-001",
+        "CAP-16-002",
+        "MDL-16-001",
+        "GOV-16-002",
+    }
+
+    v16 = _v16()
+    v16["reopening_decisions"][0]["basis"] = ["ORG-NOT-A-TRIGGER"]
+    with pytest.raises(ObservatoryAdjudicationMigrationError, match="unknown controlled DELTA16 basis ids"):
+        preserve_v16_adjudication_state(
+            v16_refresh=v16,
+            delta16=delta,
+            known_source_ids={"SRC-16-011"},
+        )
+
+
+def test_delta_record_identity_requires_exact_family_set_and_unique_controlled_ids() -> None:
+    delta = _delta()
+    delta["unexpected_family"] = []
+    with pytest.raises(ObservatoryAdjudicationMigrationError, match="DELTA16 family mismatch"):
+        delta16_record_ids(delta)
+
+    delta = _delta()
+    delta["capital_and_ownership_events"][0]["event_id"] = "REG-16-001"
+    with pytest.raises(ObservatoryAdjudicationMigrationError, match="duplicate controlled DELTA16 record id"):
+        delta16_record_ids(delta)
 
 
 def test_no_change_rejects_unknown_source_and_unreviewed_shape() -> None:
@@ -92,7 +125,7 @@ def test_no_change_rejects_unknown_source_and_unreviewed_shape() -> None:
 def test_reopening_rejects_unknown_basis_and_duplicate_decision() -> None:
     v16 = _v16()
     v16["reopening_decisions"][0]["basis"] = ["MISSING"]
-    with pytest.raises(ObservatoryAdjudicationMigrationError, match="unknown delta basis ids"):
+    with pytest.raises(ObservatoryAdjudicationMigrationError, match="unknown controlled DELTA16 basis ids"):
         preserve_v16_adjudication_state(
             v16_refresh=v16,
             delta16=_delta(),
@@ -121,9 +154,10 @@ def test_withheld_claims_must_be_unique_nonempty_values() -> None:
 
 
 def test_adjudication_verifier_detects_global_absence_or_assessment_mutation_upgrade() -> None:
+    delta = _delta()
     state = preserve_v16_adjudication_state(
         v16_refresh=_v16(),
-        delta16=_delta(),
+        delta16=delta,
         known_source_ids={"SRC-16-011"},
     )
     state["no_change_confirmations"][0]["global_absence_claimed"] = True
@@ -131,7 +165,7 @@ def test_adjudication_verifier_detects_global_absence_or_assessment_mutation_upg
     errors = verify_v16_adjudication_state(
         state,
         known_source_ids={"SRC-16-011"},
-        delta_ids={"REG-16-001", "CAP-16-002", "MDL-16-001", "GOV-16-002"},
+        delta_ids=delta16_record_ids(delta),
     )
     assert "no-change state must not claim global absence" in errors
     assert "reopening migration must not mutate assessment" in errors
