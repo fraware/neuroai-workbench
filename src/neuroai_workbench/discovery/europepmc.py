@@ -152,6 +152,32 @@ def _known_identity_index(values: Mapping[str, str] | None) -> dict[str, str]:
     return index
 
 
+def _known_source_match(
+    normalized: Mapping[str, Any], known: Mapping[str, str]
+) -> str | None:
+    candidates: set[str] = {str(normalized["resolved_identity"])}
+    doi = normalized.get("doi")
+    if isinstance(doi, str):
+        candidates.add(f"DOI:{doi}")
+    pmid = normalized.get("pmid")
+    if isinstance(pmid, str):
+        candidates.add(f"PMID:{pmid}")
+    pmcid = normalized.get("pmcid")
+    if isinstance(pmcid, str):
+        candidates.add(f"PMCID:{pmcid}")
+    source_plus_ext_id = normalized.get("source_plus_ext_id")
+    if isinstance(source_plus_ext_id, str):
+        candidates.add(f"EPMC:{source_plus_ext_id}")
+
+    matched = {known[key] for key in candidates if key in known}
+    if len(matched) > 1:
+        raise ValueError(
+            "Exact publication identifiers resolve to conflicting controlled Sources: "
+            f"identities={sorted(candidates)} source_ids={sorted(matched)}"
+        )
+    return next(iter(matched)) if matched else None
+
+
 def _anchor_identity_set(values: Sequence[str] | None) -> set[str]:
     anchors: set[str] = set()
     for raw_identity in values or []:
@@ -325,7 +351,7 @@ def project_search_pages(
         source = normalized["source"]
         ext_id = normalized["ext_id"]
         title = normalized.get("title") or identity
-        duplicate_of = known.get(identity)
+        duplicate_of = _known_source_match(normalized, known)
         source_distribution[source] += 1
         if normalized["is_preprint"]:
             preprint_count += 1
