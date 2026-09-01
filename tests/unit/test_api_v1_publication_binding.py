@@ -20,9 +20,59 @@ def _json(path, value) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _gate_lineage(root):
+    migration = root / "migration"
+    migration.mkdir(parents=True, exist_ok=True)
+    frozen = {
+        "V14": "a" * 64,
+        "V16": "b" * 64,
+        "DELTA16": "c" * 64,
+        "V17": "d" * 64,
+        "PRIMA17": "e" * 64,
+        "SOURCE_REGISTER14": "f" * 64,
+        "MONITOR15": "0" * 64,
+    }
+    gate_descriptor = {
+        "release_authorized": False,
+        "representational_scope_complete": True,
+        "workbench_compatibility_version": "0.3.0.dev0",
+        "producer_workbench_commit": "1" * 40,
+        "runtime_execution_pin": "2" * 40,
+        "observatory_graph_schema_version": "1",
+        "s2_predecessor_commit": "3" * 40,
+        "inputs": frozen,
+    }
+    descriptor_sha = sha256_bytes(canonical_json_bytes(gate_descriptor))
+    gate_manifest = {"descriptor_sha256": descriptor_sha, "release_authorized": False}
+    gate_manifest["manifest_sha256"] = sha256_bytes(canonical_json_bytes(gate_manifest))
+    decision = {
+        "schema_version": "1",
+        "decision_type": "OBSERVATORY_V2_GATE_A_MECHANICAL_DECISION",
+        "decision": "PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE",
+        "gate_a_complete": True,
+        "release_authorized": False,
+        "representational_scope_complete": True,
+        "native_v2_materialization_complete": False,
+        "field_proof_sha256": "4" * 64,
+        "gate_a_package_manifest_sha256": gate_manifest["manifest_sha256"],
+        "gate_a_package_descriptor_sha256": descriptor_sha,
+        "producer_workbench_commit": "1" * 40,
+        "runtime_execution_pin": "2" * 40,
+        "s2_predecessor_commit": "3" * 40,
+        "observatory_graph_schema_version": "1",
+        "boundary": "mechanical test decision",
+    }
+    decision["decision_sha256"] = sha256_bytes(canonical_json_bytes(decision))
+    _json(migration / "gate-a-descriptor.json", gate_descriptor)
+    _json(migration / "gate-a-manifest.json", gate_manifest)
+    _json(migration / "gate-a-decision.json", decision)
+    return frozen, gate_manifest, decision
+
+
 def _candidate(root, *, release_tag: str, entity_id: str):
     records = root / "records"
     records.mkdir(parents=True, exist_ok=True)
+    frozen, gate_manifest, decision = _gate_lineage(root)
     file_entries = []
     for filename in OBJECT_FILES:
         payload = b""
@@ -31,6 +81,9 @@ def _candidate(root, *, release_tag: str, entity_id: str):
         path = records / filename
         path.write_bytes(payload)
         file_entries.append({"path": f"records/{filename}", "sha256": sha256_bytes(payload)})
+    for filename in ("gate-a-descriptor.json", "gate-a-manifest.json", "gate-a-decision.json"):
+        path = root / "migration" / filename
+        file_entries.append({"path": f"migration/{filename}", "sha256": sha256_bytes(path.read_bytes())})
     file_entries.sort(key=lambda item: item["path"])
     content_sha = sha256_bytes(canonical_json_bytes(file_entries))
     candidate_id = f"OBS-V2-CAND-{content_sha[:20].upper()}"
@@ -59,10 +112,12 @@ def _candidate(root, *, release_tag: str, entity_id: str):
         "runtime_execution_pin": "2" * 40,
         "observatory_graph_schema_version": "1",
         "s2_predecessor": {"release_tag": "prior", "commit": "3" * 40},
+        "frozen_inputs": frozen,
         "migration_proof": {
-            "field_proof_sha256": "4" * 64,
-            "gate_a_manifest_sha256": "5" * 64,
-            "gate_a_descriptor_sha256": "6" * 64,
+            "field_proof_sha256": decision["field_proof_sha256"],
+            "gate_a_decision_sha256": decision["decision_sha256"],
+            "gate_a_manifest_sha256": gate_manifest["manifest_sha256"],
+            "gate_a_descriptor_sha256": gate_manifest["descriptor_sha256"],
             "native_candidate_manifest_sha256": "7" * 64,
         },
         "boundary": S2_CANDIDATE_BOUNDARY,
@@ -143,11 +198,7 @@ def test_public_diff_rejects_unpublished_predecessor(tmp_path) -> None:
     current = load_published_release(current_dir)
 
     with pytest.raises(PublicObservatoryApiError, match="not published"):
-        handle_v1_get(
-            current,
-            "/v1/diff",
-            query={"predecessor": [str(predecessor_dir)]},
-        )
+        handle_v1_get(current, "/v1/diff", query={"predecessor": [str(predecessor_dir)]})
 
 
 def test_public_diff_accepts_two_published_releases(tmp_path) -> None:
