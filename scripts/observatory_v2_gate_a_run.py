@@ -25,7 +25,7 @@ from neuroai_workbench.observatory_gate_a_package import (
 )
 from neuroai_workbench.observatory_gate_a_review import build_gate_a_review_packet
 from neuroai_workbench.observatory_gate_a_validation import validate_gate_a_native_graph
-from neuroai_workbench.util import atomic_write_json, sha256_bytes
+from neuroai_workbench.util import atomic_write_bytes, atomic_write_json, sha256_bytes
 
 FROZEN_INPUT_SHA256 = {
     "V14": "00985fa168b26c4e02df485895d728ee30191aea436b4e3956c60657e2ffc3be",
@@ -35,6 +35,17 @@ FROZEN_INPUT_SHA256 = {
     "PRIMA17": "f2966b60c3c58bb11bfdd80324e152f6ff3faaf1f632d287e51cdfdccbcde09c",
     "SOURCE_REGISTER14": "36dce4ca9f13f8046fca31bfbeabb5c01903eb077594a37aee63749612d2a1a5",
     "MONITOR15": "1d1f9774a3ad559792fa2bc7e459a4a65c6574ec14fa0b1501240bbb18dcc315",
+}
+
+# The field-proof manifest includes the logical filename. Copying already hash-verified
+# bytes into these canonical names prevents local extraction/renaming choices from
+# changing proof identity.
+FIELD_PROOF_CANONICAL_FILENAMES = {
+    "V14": "CANONICAL_EVIDENCE_DEPTH_AND_OBSERVATORY_RELEASE_v1.4.json",
+    "V16": "CANONICAL_LIVE_REFRESH_RELEASE_v1.6.json",
+    "DELTA16": "ADJUDICATED_DELTA_v1.6.json",
+    "V17": "CANONICAL_SUCCESSOR_SNAPSHOT_v1.7.json",
+    "MONITOR15": "SOURCE_MONITOR_REGISTRY_v1.5.json",
 }
 
 
@@ -87,6 +98,21 @@ def _load_field_proof_module() -> ModuleType:
     return module
 
 
+def _canonical_field_proof_inputs(paths: dict[str, Path], output_dir: Path) -> list[tuple[str, Path]]:
+    """Write exact verified bytes under canonical logical names for proof determinism."""
+    proof_input_dir = output_dir / "field-proof-inputs"
+    proof_input_dir.mkdir(parents=True, exist_ok=True)
+    result: list[tuple[str, Path]] = []
+    for role in ("V14", "V16", "DELTA16", "V17", "MONITOR15"):
+        target = proof_input_dir / FIELD_PROOF_CANONICAL_FILENAMES[role]
+        raw = paths[role].read_bytes()
+        if sha256_bytes(raw) != FROZEN_INPUT_SHA256[role]:
+            raise GateARunError(f"Frozen input {role} changed after initial binding")
+        atomic_write_bytes(target, raw)
+        result.append((role, target))
+    return result
+
+
 def execute_gate_a_run(
     *,
     paths: dict[str, Path],
@@ -123,13 +149,7 @@ def execute_gate_a_run(
     atomic_write_json(output_dir / "frozen-input-manifest.json", input_manifest)
 
     field_proof_module = _load_field_proof_module()
-    field_proof_inputs = [
-        ("V14", paths["V14"]),
-        ("V16", paths["V16"]),
-        ("DELTA16", paths["DELTA16"]),
-        ("V17", paths["V17"]),
-        ("MONITOR15", paths["MONITOR15"]),
-    ]
+    field_proof_inputs = _canonical_field_proof_inputs(paths, output_dir)
     field_proof = field_proof_module.build_proof(field_proof_inputs)
     field_proof_dir = output_dir / "field-proof"
     field_proof_module.write_proof(field_proof, field_proof_dir)
@@ -177,7 +197,10 @@ def execute_gate_a_run(
         observatory_graph_schema_version=observatory_graph_schema_version,
     )
     package_errors = verify_gate_a_package(package_dir)
-    atomic_write_json(output_dir / "gate-a-package-verification.json", {"valid": not package_errors, "errors": package_errors})
+    atomic_write_json(
+        output_dir / "gate-a-package-verification.json",
+        {"valid": not package_errors, "errors": package_errors},
+    )
     if package_errors:
         raise GateARunError(f"Gate-A package verification failed: {package_errors}")
 
@@ -202,6 +225,7 @@ def execute_gate_a_run(
         "representational_scope_complete": True,
         "native_v2_materialization_complete": False,
         "input_manifest": input_manifest,
+        "field_proof_logical_filenames": dict(FIELD_PROOF_CANONICAL_FILENAMES),
         "field_preservation": field_proof["field_preservation"],
         "field_proof_sha256": field_proof["proof_sha256"],
         "field_reconciliation": field_proof["reconciliation"],
