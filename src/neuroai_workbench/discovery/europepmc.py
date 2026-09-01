@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from typing import Any
 from urllib.parse import quote
@@ -28,8 +29,9 @@ _PMCID_RE = re.compile(r"^PMC[0-9]+$", re.I)
 DISCOVERY_BOUNDARY = (
     "Europe PMC search projection produces publication-discovery candidates for one exact "
     "query traversal only. It does not establish Europe PMC completeness, NeuroAI publication "
-    "recall, publication relevance, scientific truth, source admission, system/model/dataset "
-    "relationships, assessment effect, or canonical publication."
+    "recall, publication relevance, peer-review state beyond retrieved metadata, scientific "
+    "truth, source admission, system/model/dataset relationships, assessment effect, or "
+    "canonical publication."
 )
 
 
@@ -122,7 +124,12 @@ def _is_preprint(source: str, publication_type: str | None) -> bool:
 
 
 def _canonical_json_sha256(value: Mapping[str, Any]) -> str:
-    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
 
@@ -138,9 +145,21 @@ def _known_identity_index(values: Mapping[str, str] | None) -> dict[str, str]:
         source_id = _text(raw_source_id, f"known_publication_sources[{identity}]")
         prior = index.get(identity)
         if prior is not None and prior != source_id:
-            raise ValueError(f"Conflicting controlled source identities for known publication {identity}")
+            raise ValueError(
+                f"Conflicting controlled source identities for known publication {identity}"
+            )
         index[identity] = source_id
     return index
+
+
+def _anchor_identity_set(values: Sequence[str] | None) -> set[str]:
+    anchors: set[str] = set()
+    for raw_identity in values or []:
+        identity = _text(raw_identity, "known_anchor_identities item")
+        if identity in anchors:
+            raise ValueError(f"Duplicate known anchor identity {identity}")
+        anchors.add(identity)
+    return anchors
 
 
 def _result_rows(payload: Mapping[str, Any], page_index: int) -> list[dict[str, Any]]:
@@ -157,7 +176,7 @@ def _result_rows(payload: Mapping[str, Any], page_index: int) -> list[dict[str, 
     return [dict(row) for row in rows]
 
 
-def _normalized_record(raw: Mapping[str, Any]) -> dict[str, Any]:
+def _normalized_record(raw: Mapping[str, Any], *, query_id: str) -> dict[str, Any]:
     source = _normalize_source(raw.get("source"))
     ext_id = _normalize_ext_id(raw.get("id"))
     identity_type, resolved_identity = _resolved_identity(raw)
@@ -168,6 +187,7 @@ def _normalized_record(raw: Mapping[str, Any]) -> dict[str, Any]:
         "identity_type": identity_type,
         "source": source,
         "ext_id": ext_id,
+        "source_plus_ext_id": f"{source}:{ext_id}",
         "pmid": _normalize_pmid(raw.get("pmid")),
         "pmcid": _normalize_pmcid(raw.get("pmcid")),
         "doi": _normalize_doi(raw.get("doi")),
@@ -177,6 +197,7 @@ def _normalized_record(raw: Mapping[str, Any]) -> dict[str, Any]:
         "publication_year": _optional_text(raw.get("pubYear")),
         "publication_type": publication_type,
         "is_preprint": _is_preprint(source, publication_type),
+        "query_memberships": [query_id],
         "boundary": (
             "Normalized Europe PMC lite metadata for discovery identity and mechanical "
             "reconciliation only; not a relevance, quality, peer-review, or truth determination."
@@ -192,6 +213,7 @@ def project_search_pages(
     query_text: str,
     pages: Sequence[Mapping[str, Any]],
     known_publication_sources: Mapping[str, str] | None = None,
+    known_anchor_identities: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Project supplied Europe PMC search pages into generic discovery result records.
 
@@ -206,6 +228,7 @@ def project_search_pages(
     if not pages:
         raise ValueError("At least one Europe PMC search page is required")
     known = _known_identity_index(known_publication_sources)
+    anchors = _anchor_identity_set(known_anchor_identities)
 
     by_identity: dict[str, dict[str, Any]] = {}
     page_reports: list[dict[str, Any]] = []
@@ -227,12 +250,14 @@ def project_search_pages(
             reported_hit_counts.append(hit_count)
 
         next_cursor = payload.get("nextCursorMark")
-        if next_cursor is not None and (not isinstance(next_cursor, str) or not next_cursor.strip()):
+        if next_cursor is not None and (
+            not isinstance(next_cursor, str) or not next_cursor.strip()
+        ):
             raise ValueError(f"page {index}: nextCursorMark must be non-empty string/null")
 
         page_identities: list[str] = []
         for raw_record in rows:
-            normalized = _normalized_record(raw_record)
+            normalized = _normalized_record(raw_record, query_id=qid)
             identity = normalized["resolved_identity"]
             page_identities.append(identity)
             prior = by_identity.get(identity)
@@ -241,7 +266,9 @@ def project_search_pages(
             elif prior == normalized:
                 duplicate_representation_count += 1
             else:
-                raise ValueError(f"Conflicting normalized Europe PMC representations for {identity}")
+                raise ValueError(
+                    f"Conflicting normalized Europe PMC representations for {identity}"
+                )
 
         page_reports.append(
             {
@@ -256,8 +283,8 @@ def project_search_pages(
     for report in page_reports[:-1]:
         if not report["next_cursor_mark_present"]:
             raise ValueError(
-                f"Invalid Europe PMC pagination sequence: non-final page {report['page_index']} "
-                "has no nextCursorMark"
+                f"Invalid Europe PMC pagination sequence: non-final page "
+                f"{report['page_index']} has no nextCursorMark"
             )
 
     distinct_hits = sorted(set(reported_hit_counts))
@@ -286,7 +313,10 @@ def project_search_pages(
     normalized_records: list[dict[str, Any]] = []
     known_duplicates: list[dict[str, str]] = []
     preprint_count = 0
-    journal_or_other_count = 0
+    non_preprint_count = 0
+    missing_publication_type_count = 0
+    source_distribution: Counter[str] = Counter()
+    anchor_hits: list[str] = []
 
     for identity in sorted(by_identity):
         normalized = by_identity[identity]
@@ -294,14 +324,22 @@ def project_search_pages(
         ext_id = normalized["ext_id"]
         title = normalized.get("title") or identity
         duplicate_of = known.get(identity)
+        source_distribution[source] += 1
         if normalized["is_preprint"]:
             preprint_count += 1
         else:
-            journal_or_other_count += 1
+            non_preprint_count += 1
+        if normalized["publication_type"] is None:
+            missing_publication_type_count += 1
+        if identity in anchors:
+            anchor_hits.append(identity)
         record: dict[str, Any] = {
             "record_key": identity,
             "title": title,
-            "url": f"{EUROPE_PMC_ARTICLE_PREFIX}{quote(source, safe='')}/{quote(ext_id, safe='')}",
+            "url": (
+                f"{EUROPE_PMC_ARTICLE_PREFIX}{quote(source, safe='')}/"
+                f"{quote(ext_id, safe='')}"
+            ),
             "publisher": "Europe PMC",
             "source_class": "OFFICIAL_BIBLIOGRAPHIC_METADATA",
             "suggested_source_id": _suggested_source_id(identity),
@@ -309,10 +347,13 @@ def project_search_pages(
         }
         if duplicate_of is not None:
             record["duplicate_of_source_id"] = duplicate_of
-            known_duplicates.append({"resolved_identity": identity, "source_id": duplicate_of})
+            known_duplicates.append(
+                {"resolved_identity": identity, "source_id": duplicate_of}
+            )
         result_records.append(record)
         normalized_records.append(normalized)
 
+    missing_anchor_identities = sorted(anchors.difference(by_identity))
     coverage = {
         "source_system": "EUROPE_PMC",
         "query_id": qid,
@@ -320,13 +361,18 @@ def project_search_pages(
         "supplied_page_count": len(pages),
         "raw_returned_record_count": raw_record_count,
         "unique_resolved_identity_count": len(by_identity),
+        "known_anchor_count": len(anchor_hits),
+        "known_anchor_identities_found": sorted(anchor_hits),
+        "known_anchor_identities_missing": missing_anchor_identities,
         "known_controlled_source_duplicate_count": len(known_duplicates),
         "known_controlled_source_duplicates": known_duplicates,
         "new_candidate_count": len(result_records) - len(known_duplicates),
         "cross_query_duplicate_representation_count": duplicate_representation_count,
         "unresolved_identity_count": 0,
         "preprint_count": preprint_count,
-        "peer_reviewed_or_journal_count": journal_or_other_count,
+        "non_preprint_record_count": non_preprint_count,
+        "publication_type_missing_count": missing_publication_type_count,
+        "source_distribution": dict(sorted(source_distribution.items())),
         "reported_hit_count_state": hit_count_state,
         "reported_hit_count": reported_hit_count,
         "reported_hit_count_values": distinct_hits,
