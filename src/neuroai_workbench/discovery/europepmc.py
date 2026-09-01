@@ -181,7 +181,7 @@ def _normalized_record(raw: Mapping[str, Any], *, query_id: str) -> dict[str, An
     ext_id = _normalize_ext_id(raw.get("id"))
     identity_type, resolved_identity = _resolved_identity(raw)
     publication_type = _publication_type(raw.get("pubType"))
-    normalized = {
+    content = {
         "record_kind": "NORMALIZED_EUROPEPMC_PUBLICATION",
         "resolved_identity": resolved_identity,
         "identity_type": identity_type,
@@ -197,14 +197,16 @@ def _normalized_record(raw: Mapping[str, Any], *, query_id: str) -> dict[str, An
         "publication_year": _optional_text(raw.get("pubYear")),
         "publication_type": publication_type,
         "is_preprint": _is_preprint(source, publication_type),
-        "query_memberships": [query_id],
         "boundary": (
             "Normalized Europe PMC lite metadata for discovery identity and mechanical "
             "reconciliation only; not a relevance, quality, peer-review, or truth determination."
         ),
     }
-    normalized["normalized_record_sha256"] = _canonical_json_sha256(normalized)
-    return normalized
+    return {
+        **content,
+        "query_memberships": [query_id],
+        "normalized_record_sha256": _canonical_json_sha256(content),
+    }
 
 
 def project_search_pages(
