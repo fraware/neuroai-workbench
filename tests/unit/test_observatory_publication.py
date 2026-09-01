@@ -14,7 +14,11 @@ from neuroai_workbench.observatory_publication import (
     verify_s2_authorizations,
     verify_s2_publication_binding,
 )
-from neuroai_workbench.observatory_s2_release import OBJECT_FILES, S2_CANDIDATE_BOUNDARY
+from neuroai_workbench.observatory_s2_release import (
+    CANDIDATE_FILE_PATHS,
+    OBJECT_FILES,
+    S2_CANDIDATE_BOUNDARY,
+)
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
 
 
@@ -76,18 +80,21 @@ def _candidate(root, *, release_tag="candidate", entity_id="ORG-1"):
     records = root / "records"
     records.mkdir(parents=True, exist_ok=True)
     frozen, gate_manifest, decision = _gate_lineage(root)
-    file_entries = []
     for filename in OBJECT_FILES:
         payload = b""
         if filename == "entities.jsonl":
             payload = f'{{"object_class":"Entity","entity_id":"{entity_id}"}}\n'.encode()
-        path = records / filename
-        path.write_bytes(payload)
-        file_entries.append({"path": f"records/{filename}", "sha256": sha256_bytes(payload)})
-    for filename in ("gate-a-descriptor.json", "gate-a-manifest.json", "gate-a-decision.json"):
-        path = root / "migration" / filename
-        file_entries.append({"path": f"migration/{filename}", "sha256": sha256_bytes(path.read_bytes())})
-    file_entries.sort(key=lambda item: item["path"])
+        (records / filename).write_bytes(payload)
+
+    for relative in sorted(CANDIDATE_FILE_PATHS):
+        path = root / relative
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n", encoding="utf-8")
+    file_entries = [
+        {"path": relative, "sha256": sha256_bytes((root / relative).read_bytes())}
+        for relative in sorted(CANDIDATE_FILE_PATHS)
+    ]
     content_sha = sha256_bytes(canonical_json_bytes(file_entries))
     candidate_id = f"OBS-V2-CAND-{content_sha[:20].upper()}"
     descriptor = {
@@ -125,13 +132,12 @@ def _candidate(root, *, release_tag="candidate", entity_id="ORG-1"):
         },
         "boundary": S2_CANDIDATE_BOUNDARY,
     }
-    descriptor_sha = sha256_bytes(canonical_json_bytes(descriptor))
     manifest = {
         "schema_version": "1",
         "candidate_id": candidate_id,
         "candidate_content_sha256": content_sha,
         "files": file_entries,
-        "descriptor_sha256": descriptor_sha,
+        "descriptor_sha256": sha256_bytes(canonical_json_bytes(descriptor)),
         "release_authorized": False,
         "published": False,
         "boundary": S2_CANDIDATE_BOUNDARY,
@@ -168,12 +174,7 @@ def test_authorize_then_publish_exact_candidate(tmp_path) -> None:
 
 def test_withhold_cannot_publish(tmp_path) -> None:
     release = _candidate(tmp_path / "release")
-    record_s2_authorization(
-        release,
-        decision="WITHHOLD",
-        decision_rationale="Not ready.",
-        recorded_at="2026-09-01T08:00:00Z",
-    )
+    record_s2_authorization(release, decision="WITHHOLD", decision_rationale="Not ready.")
     with pytest.raises(ObservatoryPublicationError, match="active AUTHORIZE"):
         record_s2_publication(
             release,
@@ -184,11 +185,7 @@ def test_withhold_cannot_publish(tmp_path) -> None:
 
 def test_authorization_without_publication_is_not_published(tmp_path) -> None:
     release = _candidate(tmp_path / "release")
-    record_s2_authorization(
-        release,
-        decision="AUTHORIZE",
-        decision_rationale="Authorized but not yet published.",
-    )
+    record_s2_authorization(release, decision="AUTHORIZE", decision_rationale="Authorized but not yet published.")
     report = verify_s2_publication_binding(release)
     assert report["valid"] is False
     assert any("publication.json" in error for error in report["errors"])
@@ -196,11 +193,9 @@ def test_authorization_without_publication_is_not_published(tmp_path) -> None:
 
 def test_authorization_supersession_changes_decision_without_changing_candidate(tmp_path) -> None:
     release = _candidate(tmp_path / "release")
-    first = record_s2_authorization(
-        release,
-        decision="AUTHORIZE",
-        decision_rationale="Initial decision.",
-    )["authorization"]
+    first = record_s2_authorization(release, decision="AUTHORIZE", decision_rationale="Initial decision.")[
+        "authorization"
+    ]
     second = record_s2_authorization(
         release,
         decision="WITHHOLD",
@@ -220,11 +215,9 @@ def test_authorization_supersession_changes_decision_without_changing_candidate(
 
 def test_published_authorization_cannot_be_superseded(tmp_path) -> None:
     release = _candidate(tmp_path / "release")
-    authorization = record_s2_authorization(
-        release,
-        decision="AUTHORIZE",
-        decision_rationale="Authorize.",
-    )["authorization"]
+    authorization = record_s2_authorization(release, decision="AUTHORIZE", decision_rationale="Authorize.")[
+        "authorization"
+    ]
     record_s2_publication(
         release,
         publication_evidence={"reference": "public-ref:test", "sha256": "8" * 64},
@@ -259,7 +252,6 @@ def test_publication_copied_to_wrong_candidate_fails_binding(tmp_path) -> None:
         first,
         publication_evidence={"reference": "public-ref:first", "sha256": "8" * 64},
     )
-
     second = _candidate(tmp_path / "second", release_tag="second", entity_id="ORG-2")
     shutil.copytree(first / "governance", second / "governance")
     report = verify_s2_publication_binding(second)
