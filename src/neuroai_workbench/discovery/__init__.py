@@ -18,6 +18,7 @@ from .network import network_discovery_allowed, require_network_discovery_allowe
 from .nih_reporter import project_search_pages as project_nih_reporter_search_pages
 from .openfda_510k import project_search_pages as project_openfda_510k_pages
 from .openfda_device_event import project_search_pages as project_openfda_device_event_pages
+from .openfda_hde import project_search_pages as project_openfda_hde_pages
 from .openfda_pma import project_search_pages as project_openfda_pma_pages
 from .openfda_recall import project_search_pages as project_openfda_device_recall_pages
 from .programme import (
@@ -92,6 +93,7 @@ __all__ = [
     "project_openfda_510k_pages",
     "project_openfda_device_event_pages",
     "project_openfda_device_recall_pages",
+    "project_openfda_hde_pages",
     "project_openfda_pma_pages",
     "project_universe_pages",
     "refuse_registry_overwrite",
