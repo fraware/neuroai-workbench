@@ -525,9 +525,10 @@ def test_windows_and_posix_process_exists_helpers(monkeypatch: pytest.MonkeyPatc
     class _Kernel:
         def __init__(self) -> None:
             self.closed = 0
+            self.handle = 0
 
         def OpenProcess(self, access: int, inherit: bool, pid: int) -> int:
-            return 0
+            return self.handle
 
         def CloseHandle(self, handle: int) -> None:
             self.closed += 1
@@ -536,9 +537,22 @@ def test_windows_and_posix_process_exists_helpers(monkeypatch: pytest.MonkeyPatc
             return 5
 
     kernel = _Kernel()
-    monkeypatch.setattr(events.ctypes, "windll", type("W", (), {"kernel32": kernel})())
-    monkeypatch.setattr(events.ctypes, "GetLastError", kernel.GetLastError)
+    monkeypatch.setattr(
+        events.ctypes,
+        "windll",
+        type("W", (), {"kernel32": kernel})(),
+        raising=False,
+    )
+    monkeypatch.setattr(events.ctypes, "GetLastError", kernel.GetLastError, raising=False)
     assert events._windows_process_exists(1234) is True
+    kernel.handle = 7
+    assert events._windows_process_exists(1234) is True
+    assert kernel.closed == 1
+
+    monkeypatch.setattr(events.os, "name", "nt")
+    monkeypatch.setattr(events, "_windows_process_exists", lambda pid: pid == 1)
+    assert events._process_exists(1) is True
+    assert events._process_exists(2) is False
 
     monkeypatch.setattr(events.os, "name", "posix")
     monkeypatch.setattr(events.os, "kill", lambda pid, sig: (_ for _ in ()).throw(ProcessLookupError()))
