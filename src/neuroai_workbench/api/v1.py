@@ -1,7 +1,8 @@
 """Public observatory read API (/v1) substrate.
 
-Serves immutable release artifacts only. This package is not an extension of the
-local unauthenticated case ThreadingHTTPServer.
+Public /v1 serves only an immutable S2 Observatory-v2 candidate with a verified explicit
+operator AUTHORIZE record and a matching publication record. Candidate preview is a
+separate noncanonical loader and is never used by the public server.
 """
 
 from __future__ import annotations
@@ -14,12 +15,18 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from ..observatory_graph.temporal_compiler import predecessor_successor_diff
+from ..observatory_publication import verify_s2_publication_binding
+from ..observatory_s2_release import verify_observatory_v2_s2_candidate
 from ..util import load_json, sha256_bytes
 
 API_BOUNDARY = (
-    "Public /v1 responses are read-only projections of release directories. "
-    "No write endpoint mutates canonical state. Caching/ETag keys bind to immutable "
-    "release digests. This API is not the local case server and is not institutional SSO."
+    "Public /v1 responses are read-only projections of explicitly published immutable S2 releases. "
+    "Candidate validity, descriptor booleans, or compiler output never confer public authority. "
+    "No write endpoint mutates canonical state."
+)
+PREVIEW_BOUNDARY = (
+    "Noncanonical Observatory-v2 candidate preview only. Preview output is not public canonical state and carries "
+    "no release or publication authority."
 )
 
 API_VERSION = "v1"
@@ -51,8 +58,7 @@ class PublicObservatoryApiError(ValueError):
     pass
 
 
-def load_authorized_release(release_dir: Path) -> dict[str, Any]:
-    """Load a release directory. Authorization is recorded, never inferred by this API."""
+def _load_candidate_files(release_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     descriptor_path = release_dir / "descriptor.json"
     manifest_path = release_dir / "manifest.json"
     if not descriptor_path.is_file() or not manifest_path.is_file():
@@ -61,15 +67,60 @@ def load_authorized_release(release_dir: Path) -> dict[str, Any]:
     manifest = load_json(manifest_path)
     if not isinstance(descriptor, dict) or not isinstance(manifest, dict):
         raise PublicObservatoryApiError("Release descriptor and manifest must be objects")
+    return descriptor, manifest
+
+
+def load_candidate_preview(release_dir: Path) -> dict[str, Any]:
+    """Load a mechanically valid S2 candidate as an explicitly noncanonical preview."""
+    errors = verify_observatory_v2_s2_candidate(release_dir)
+    if errors:
+        raise PublicObservatoryApiError("S2 candidate failed verification: " + "; ".join(errors))
+    descriptor, manifest = _load_candidate_files(release_dir)
     return {
         "release_dir": release_dir,
         "descriptor": descriptor,
         "manifest": manifest,
         "manifest_sha256": str(manifest.get("manifest_sha256") or ""),
-        "release_authorized": bool(descriptor.get("release_authorized") is True),
         "candidate_id": descriptor.get("candidate_id"),
+        "release_authorized": False,
+        "published": False,
+        "canonical": False,
+        "preview": True,
+        "boundary": PREVIEW_BOUNDARY,
+    }
+
+
+def load_published_release(release_dir: Path) -> dict[str, Any]:
+    """Load only an exact S2 candidate with verified active authorization and publication."""
+    candidate_errors = verify_observatory_v2_s2_candidate(release_dir)
+    if candidate_errors:
+        raise PublicObservatoryApiError("S2 candidate failed verification: " + "; ".join(candidate_errors))
+    binding = verify_s2_publication_binding(release_dir)
+    if binding.get("valid") is not True:
+        errors = binding.get("errors") or ["unknown publication-binding failure"]
+        raise PublicObservatoryApiError("S2 release is not published: " + "; ".join(str(item) for item in errors))
+    descriptor, manifest = _load_candidate_files(release_dir)
+    return {
+        "release_dir": release_dir,
+        "descriptor": descriptor,
+        "manifest": manifest,
+        "manifest_sha256": str(manifest.get("manifest_sha256") or ""),
+        "candidate_id": descriptor.get("candidate_id"),
+        "release_authorized": True,
+        "published": True,
+        "canonical": True,
+        "preview": False,
+        "authorization_id": binding.get("authorization_id"),
+        "authorization_sha256": binding.get("authorization_sha256"),
+        "publication_id": binding.get("publication_id"),
+        "publication_sha256": binding.get("publication_sha256"),
         "boundary": API_BOUNDARY,
     }
+
+
+def load_authorized_release(release_dir: Path) -> dict[str, Any]:
+    """Backward-compatible name for the strict published-release loader."""
+    return load_published_release(release_dir)
 
 
 def release_context(release: dict[str, Any]) -> dict[str, Any]:
@@ -77,13 +128,20 @@ def release_context(release: dict[str, Any]) -> dict[str, Any]:
     return {
         "api_version": API_VERSION,
         "candidate_id": descriptor.get("candidate_id"),
-        "package_version": descriptor.get("package_version"),
-        "producer_commit": descriptor.get("producer_commit"),
+        "release_tag": descriptor.get("release_tag"),
+        "package_version": descriptor.get("workbench_compatibility_version"),
+        "producer_commit": descriptor.get("producer_workbench_commit"),
         "runtime_execution_pin": descriptor.get("runtime_execution_pin"),
+        "observatory_graph_schema_version": descriptor.get("observatory_graph_schema_version"),
         "manifest_sha256": release.get("manifest_sha256"),
         "etag": etag_for_release(release),
-        "release_authorized": bool(descriptor.get("release_authorized") is True),
-        "mechanical_verification": descriptor.get("mechanical_verification"),
+        "release_authorized": release.get("release_authorized") is True,
+        "published": release.get("published") is True,
+        "canonical": release.get("canonical") is True,
+        "authorization_id": release.get("authorization_id"),
+        "authorization_sha256": release.get("authorization_sha256"),
+        "publication_id": release.get("publication_id"),
+        "publication_sha256": release.get("publication_sha256"),
         "rebuildable_from_release_artifacts": True,
         "boundary": API_BOUNDARY,
     }
@@ -182,12 +240,16 @@ def _timeline(release: dict[str, Any], object_id: str | None) -> dict[str, Any]:
                     "time_value": value,
                 }
             )
+    # Display ordering only. Temporal validity itself is governed by the temporal compiler;
+    # this list preserves exact TimeValue payloads and does not persist normalized instants.
     events.sort(key=lambda item: json.dumps(item.get("time_value"), sort_keys=True, default=str))
     return {"object_id": object_id, "events": events, "count": len(events)}
 
 
 def _diff_against_predecessor(release: dict[str, Any], predecessor_dir: Path) -> dict[str, Any]:
-    predecessor = load_authorized_release(predecessor_dir)
+    # Public diff is canonical-to-canonical only. Candidate previews have a separate loader
+    # and cannot enter this path.
+    predecessor = load_published_release(predecessor_dir)
     current_rows = _all_records(release)
     predecessor_rows = _all_records(predecessor)
     diff = predecessor_successor_diff(predecessor_rows, current_rows)
@@ -203,20 +265,13 @@ def _diff_against_predecessor(release: dict[str, Any], predecessor_dir: Path) ->
 def handle_v1_get(release: dict[str, Any], path: str, *, query: dict[str, list[str]] | None = None) -> dict[str, Any]:
     """Return a JSON-serializable body for a /v1 GET. Raises on unknown routes."""
     query = query or {}
+    if release.get("canonical") is not True or release.get("published") is not True:
+        raise PublicObservatoryApiError("Public /v1 refuses noncanonical or unpublished release context")
     context = release_context(release)
     if path in {"/v1", "/v1/", "/v1/health"}:
-        return {
-            "status": "ok",
-            "read_only": True,
-            "writes_supported": False,
-            **context,
-        }
+        return {"status": "ok", "read_only": True, "writes_supported": False, **context}
     if path == "/v1/release":
-        return {
-            "descriptor": release["descriptor"],
-            "manifest": dict(release["manifest"]),
-            **context,
-        }
+        return {"candidate_descriptor": release["descriptor"], "manifest": dict(release["manifest"]), **context}
     records_root = Path(release["release_dir"]) / "records"
     if path in OBJECT_ROUTES:
         rows = read_jsonl(records_root / OBJECT_ROUTES[path])
@@ -258,10 +313,7 @@ def refuse_write(method: str) -> None:
 
 
 class PublicObservatoryV1Handler(BaseHTTPRequestHandler):
-    """Minimal read-only handler bound to one release directory.
-
-    Not institutional auth. Not the local case API.
-    """
+    """Minimal read-only handler bound to one published S2 release directory."""
 
     release_dir: Path
 
@@ -269,7 +321,7 @@ class PublicObservatoryV1Handler(BaseHTTPRequestHandler):
         return
 
     def _release(self) -> dict[str, Any]:
-        return load_authorized_release(self.release_dir)
+        return load_published_release(self.release_dir)
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
