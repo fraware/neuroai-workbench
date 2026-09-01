@@ -2,7 +2,8 @@
 
 The Gate-A package is a migration/proof artifact. This module projects its public,
 representationally complete state into the stable S2 release layout consumed by the
-public Observatory API. Candidate compilation never authorizes or publishes the release.
+public Observatory API. Candidate compilation requires the separate mechanical Gate-A
+PASS decision and never authorizes or publishes the resulting release.
 """
 
 from __future__ import annotations
@@ -18,6 +19,10 @@ S2_CANDIDATE_BOUNDARY = (
     "Graph-native S2 Observatory-v2 candidate only. Candidate integrity establishes artifact identity and "
     "migration lineage; it does not authorize publication, establish substantive truth, or confer institutional, "
     "clinical, regulatory, scientific, or conformance authority."
+)
+MECHANICAL_GATE_A_DECISION = "PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE"
+FROZEN_INPUT_ROLES = frozenset(
+    {"V14", "V16", "DELTA16", "V17", "PRIMA17", "SOURCE_REGISTER14", "MONITOR15"}
 )
 
 OBJECT_FILES = (
@@ -90,15 +95,76 @@ def _content_identity(files: list[dict[str, str]]) -> str:
     return sha256_bytes(canonical_json_bytes(files))
 
 
+def _record_digest(record: dict[str, Any], field: str) -> str:
+    controlled = {key: value for key, value in record.items() if key != field}
+    return sha256_bytes(canonical_json_bytes(controlled))
+
+
+def _frozen_inputs(value: Any) -> dict[str, str]:
+    if not isinstance(value, dict) or set(value) != FROZEN_INPUT_ROLES:
+        raise ObservatoryS2ReleaseError("Gate-A descriptor must bind exactly the seven frozen input roles")
+    return {
+        role: _require_hex(value[role], length=64, field=f"frozen input {role}")
+        for role in sorted(FROZEN_INPUT_ROLES)
+    }
+
+
+def _verify_gate_a_decision(
+    decision: dict[str, Any],
+    *,
+    gate_descriptor: dict[str, Any],
+    gate_manifest: dict[str, Any],
+) -> dict[str, Any]:
+    decision_id = str(decision.get("decision_sha256") or "")
+    if decision_id != _record_digest(decision, "decision_sha256"):
+        raise ObservatoryS2ReleaseError("Gate-A decision digest mismatch")
+    if decision.get("decision_type") != "OBSERVATORY_V2_GATE_A_MECHANICAL_DECISION":
+        raise ObservatoryS2ReleaseError("Gate-A decision type mismatch")
+    if decision.get("decision") != MECHANICAL_GATE_A_DECISION:
+        raise ObservatoryS2ReleaseError("Gate-A decision is not mechanical PASS")
+    if decision.get("gate_a_complete") is not True:
+        raise ObservatoryS2ReleaseError("Gate-A decision does not mark the mechanical gate complete")
+    if decision.get("release_authorized") is not False:
+        raise ObservatoryS2ReleaseError("Gate-A decision must not authorize publication")
+    if decision.get("representational_scope_complete") is not True:
+        raise ObservatoryS2ReleaseError("Gate-A decision lost representational completeness")
+    if decision.get("native_v2_materialization_complete") is not False:
+        raise ObservatoryS2ReleaseError("Gate-A decision must not claim complete native materialization")
+
+    manifest_identity = _require_hex(gate_manifest.get("manifest_sha256"), length=64, field="Gate-A manifest identity")
+    descriptor_identity = _require_hex(
+        gate_manifest.get("descriptor_sha256"), length=64, field="Gate-A descriptor identity"
+    )
+    if decision.get("gate_a_package_manifest_sha256") != manifest_identity:
+        raise ObservatoryS2ReleaseError("Gate-A decision/package manifest binding mismatch")
+    if decision.get("gate_a_package_descriptor_sha256") != descriptor_identity:
+        raise ObservatoryS2ReleaseError("Gate-A decision/package descriptor binding mismatch")
+    if descriptor_identity != sha256_bytes(canonical_json_bytes(gate_descriptor)):
+        raise ObservatoryS2ReleaseError("Gate-A package descriptor digest mismatch")
+    controlled_manifest = {key: value for key, value in gate_manifest.items() if key != "manifest_sha256"}
+    if manifest_identity != sha256_bytes(canonical_json_bytes(controlled_manifest)):
+        raise ObservatoryS2ReleaseError("Gate-A package manifest identity mismatch")
+
+    for field in ("producer_workbench_commit", "runtime_execution_pin", "s2_predecessor_commit"):
+        if decision.get(field) != gate_descriptor.get(field):
+            raise ObservatoryS2ReleaseError(f"Gate-A decision {field} binding mismatch")
+    if str(decision.get("observatory_graph_schema_version") or "") != str(
+        gate_descriptor.get("observatory_graph_schema_version") or ""
+    ):
+        raise ObservatoryS2ReleaseError("Gate-A decision graph schema binding mismatch")
+    _require_hex(decision.get("field_proof_sha256"), length=64, field="field_proof_sha256")
+    return decision
+
+
 def write_observatory_v2_s2_candidate(
     gate_a_package_dir: Path,
+    gate_a_decision_path: Path,
     output_dir: Path,
     *,
     release_tag: str,
     s2_predecessor_release_tag: str,
-    field_proof_sha256: str,
 ) -> dict[str, Any]:
-    """Compile a verified Gate-A package into a clean, noncanonical S2 release candidate."""
+    """Compile a mechanically closed Gate-A package into a noncanonical S2 release candidate."""
     package_errors = verify_gate_a_package(gate_a_package_dir)
     if package_errors:
         raise ObservatoryS2ReleaseError(f"Gate-A package failed verification: {package_errors}")
@@ -107,10 +173,13 @@ def write_observatory_v2_s2_candidate(
     predecessor_tag = s2_predecessor_release_tag.strip()
     if not release_tag or not predecessor_tag:
         raise ObservatoryS2ReleaseError("release_tag and s2_predecessor_release_tag must be non-empty")
-    field_proof = _require_hex(field_proof_sha256, length=64, field="field_proof_sha256")
 
     gate_descriptor = _load_object(gate_a_package_dir / "descriptor.json", label="Gate-A descriptor")
     gate_manifest = _load_object(gate_a_package_dir / "manifest.json", label="Gate-A manifest")
+    gate_decision = _load_object(gate_a_decision_path, label="Gate-A decision")
+    _verify_gate_a_decision(gate_decision, gate_descriptor=gate_descriptor, gate_manifest=gate_manifest)
+    frozen_inputs = _frozen_inputs(gate_descriptor.get("inputs"))
+
     native_dir = gate_a_package_dir / "native-candidate"
     native_descriptor = _load_object(native_dir / "descriptor.json", label="native candidate descriptor")
     native_manifest = _load_object(native_dir / "manifest.json", label="native candidate manifest")
@@ -145,8 +214,6 @@ def write_observatory_v2_s2_candidate(
             migration_dir / target_name,
         )
 
-    # Retain exact Gate-A package identities as release provenance without making the
-    # Gate-A package itself the public release format.
     file_digests["migration/gate-a-descriptor.json"] = _copy_bound(
         gate_a_package_dir / "descriptor.json",
         migration_dir / "gate-a-descriptor.json",
@@ -154,6 +221,10 @@ def write_observatory_v2_s2_candidate(
     file_digests["migration/gate-a-manifest.json"] = _copy_bound(
         gate_a_package_dir / "manifest.json",
         migration_dir / "gate-a-manifest.json",
+    )
+    file_digests["migration/gate-a-decision.json"] = _copy_bound(
+        gate_a_decision_path,
+        migration_dir / "gate-a-decision.json",
     )
 
     file_entries = [{"path": path, "sha256": digest} for path, digest in sorted(file_digests.items())]
@@ -182,7 +253,7 @@ def write_observatory_v2_s2_candidate(
         "published": False,
         "record_counts": class_counts,
         "candidate_content_sha256": content_sha256,
-        "workbench_compatibility_version": gate_descriptor.get("workbench_compatibility_version"),
+        "workbench_compatibility_version": str(gate_descriptor.get("workbench_compatibility_version") or ""),
         "producer_workbench_commit": _require_hex(
             gate_descriptor.get("producer_workbench_commit"), length=40, field="producer_workbench_commit"
         ),
@@ -196,18 +267,28 @@ def write_observatory_v2_s2_candidate(
                 gate_descriptor.get("s2_predecessor_commit"), length=40, field="s2_predecessor_commit"
             ),
         },
+        "frozen_inputs": frozen_inputs,
         "migration_proof": {
-            "field_proof_sha256": field_proof,
+            "field_proof_sha256": _require_hex(
+                gate_decision.get("field_proof_sha256"), length=64, field="field_proof_sha256"
+            ),
+            "gate_a_decision_sha256": _require_hex(
+                gate_decision.get("decision_sha256"), length=64, field="gate_a_decision_sha256"
+            ),
             "gate_a_manifest_sha256": _require_hex(
                 gate_manifest.get("manifest_sha256"), length=64, field="gate_a_manifest_sha256"
             ),
-            "gate_a_descriptor_sha256": sha256_bytes(canonical_json_bytes(gate_descriptor)),
+            "gate_a_descriptor_sha256": _require_hex(
+                gate_manifest.get("descriptor_sha256"), length=64, field="gate_a_descriptor_sha256"
+            ),
             "native_candidate_manifest_sha256": _require_hex(
                 native_manifest.get("manifest_sha256"), length=64, field="native_candidate_manifest_sha256"
             ),
         },
         "boundary": S2_CANDIDATE_BOUNDARY,
     }
+    if not descriptor["workbench_compatibility_version"].strip():
+        raise ObservatoryS2ReleaseError("workbench_compatibility_version must be present in Gate-A package")
     if not descriptor["observatory_graph_schema_version"].strip():
         raise ObservatoryS2ReleaseError("observatory_graph_schema_version must be present in Gate-A package")
 
@@ -251,6 +332,34 @@ def verify_observatory_v2_s2_candidate(release_dir: Path) -> list[str]:
         errors.append("S2 candidate canonical publication state mismatch")
     if descriptor.get("boundary") != S2_CANDIDATE_BOUNDARY or manifest.get("boundary") != S2_CANDIDATE_BOUNDARY:
         errors.append("S2 candidate boundary mismatch")
+
+    try:
+        _require_hex(descriptor.get("producer_workbench_commit"), length=40, field="producer_workbench_commit")
+        _require_hex(descriptor.get("runtime_execution_pin"), length=40, field="runtime_execution_pin")
+        predecessor = descriptor.get("s2_predecessor")
+        if not isinstance(predecessor, dict) or not str(predecessor.get("release_tag") or "").strip():
+            errors.append("S2 candidate predecessor release identity is missing")
+        else:
+            _require_hex(predecessor.get("commit"), length=40, field="s2_predecessor_commit")
+        if not str(descriptor.get("workbench_compatibility_version") or "").strip():
+            errors.append("S2 candidate Workbench compatibility line is missing")
+        if not str(descriptor.get("observatory_graph_schema_version") or "").strip():
+            errors.append("S2 candidate graph schema version is missing")
+        _frozen_inputs(descriptor.get("frozen_inputs"))
+        proof = descriptor.get("migration_proof")
+        if not isinstance(proof, dict):
+            errors.append("S2 candidate migration proof binding is missing")
+        else:
+            for field in (
+                "field_proof_sha256",
+                "gate_a_decision_sha256",
+                "gate_a_manifest_sha256",
+                "gate_a_descriptor_sha256",
+                "native_candidate_manifest_sha256",
+            ):
+                _require_hex(proof.get(field), length=64, field=field)
+    except ObservatoryS2ReleaseError as exc:
+        errors.append(str(exc))
 
     if manifest.get("descriptor_sha256") != sha256_bytes(canonical_json_bytes(descriptor)):
         errors.append("S2 candidate descriptor digest mismatch")
@@ -308,5 +417,32 @@ def verify_observatory_v2_s2_candidate(release_dir: Path) -> list[str]:
     }
     if counts != expected_counts:
         errors.append("S2 candidate record-count reconciliation mismatch")
+
+    # The copied Gate-A decision is part of candidate content and must independently
+    # bind the copied Gate-A descriptor/manifest to the same proof identities.
+    try:
+        copied_gate_descriptor = _load_object(
+            release_dir / "migration/gate-a-descriptor.json", label="copied Gate-A descriptor"
+        )
+        copied_gate_manifest = _load_object(
+            release_dir / "migration/gate-a-manifest.json", label="copied Gate-A manifest"
+        )
+        copied_gate_decision = _load_object(
+            release_dir / "migration/gate-a-decision.json", label="copied Gate-A decision"
+        )
+        _verify_gate_a_decision(
+            copied_gate_decision,
+            gate_descriptor=copied_gate_descriptor,
+            gate_manifest=copied_gate_manifest,
+        )
+        proof = descriptor.get("migration_proof") or {}
+        if proof.get("gate_a_decision_sha256") != copied_gate_decision.get("decision_sha256"):
+            errors.append("S2 descriptor Gate-A decision binding mismatch")
+        if proof.get("field_proof_sha256") != copied_gate_decision.get("field_proof_sha256"):
+            errors.append("S2 descriptor field-proof binding mismatch")
+        if descriptor.get("frozen_inputs") != copied_gate_descriptor.get("inputs"):
+            errors.append("S2 descriptor frozen-input binding mismatch")
+    except ObservatoryS2ReleaseError as exc:
+        errors.append(str(exc))
 
     return sorted(set(errors))
