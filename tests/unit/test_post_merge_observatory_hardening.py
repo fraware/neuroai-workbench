@@ -14,7 +14,6 @@ from neuroai_workbench.observatory_gate_a_migration import (
 from neuroai_workbench.observatory_graph import build_entity
 from neuroai_workbench.observatory_residual_migration import (
     MONITOR_REGISTRY_STATE,
-    RELEASE_LEVEL_STATE,
     RESIDUAL_MIGRATION_BOUNDARY,
     RESIDUAL_POLICIES,
     SOURCE_REGISTER_DUPLICATE_STATE,
