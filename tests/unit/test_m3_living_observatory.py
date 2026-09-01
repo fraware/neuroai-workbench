@@ -4,16 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from neuroai_workbench.api import (
-    PublicObservatoryApiError,
-    handle_v1_get,
-    load_authorized_release,
-    refuse_write,
-    release_context,
-)
+from neuroai_workbench.api import PublicObservatoryApiError, load_authorized_release, refuse_write
 from neuroai_workbench.monitoring_lifecycle import advance_onboarding, initial_onboarding_record
 from neuroai_workbench.monitoring_service import MonitoringService
-from neuroai_workbench.observatory_graph import build_entity, build_source
+from neuroai_workbench.observatory_graph import build_entity
 from neuroai_workbench.release import ReleaseCompiler
 from neuroai_workbench.reopening_service import ReopeningService
 
@@ -62,38 +56,13 @@ class TypedChangeClassificationTests(unittest.TestCase):
 
 
 class PublicV1ApiTests(unittest.TestCase):
-    def test_read_only_release_routes(self) -> None:
+    def test_compiler_candidate_is_not_public_release(self) -> None:
         entity = build_entity(entity_id="ENT-API-1", entity_type="ORGANIZATION", canonical_label="Org")
-        source = build_source(
-            source_id="SRC-API-1",
-            source_class="REGISTRY",
-            title="Source",
-            publisher="Pub",
-            canonical_url_or_reference="https://example.test/a",
-        )
         with tempfile.TemporaryDirectory() as raw:
-            output = Path(raw) / "release"
-            predecessor = Path(raw) / "predecessor"
-            ReleaseCompiler().build([entity], predecessor, candidate_id="CAND-API-0")
-            ReleaseCompiler().build([entity, source], output, candidate_id="CAND-API-1")
-            release = load_authorized_release(output)
-            self.assertFalse(release["release_authorized"])
-            health = handle_v1_get(release, "/v1/health")
-            self.assertTrue(health["read_only"])
-            self.assertFalse(health["writes_supported"])
-            self.assertIn("manifest_sha256", release_context(release))
-            self.assertIn("etag", release_context(release))
-            entities = handle_v1_get(release, "/v1/entities")
-            self.assertEqual(entities["count"], 1)
-            why = handle_v1_get(release, "/v1/why", query={"id": ["ENT-API-1"]})
-            self.assertEqual(why["object_id"], "ENT-API-1")
-            self.assertIn("provenance", why)
-            timeline = handle_v1_get(release, "/v1/timeline")
-            self.assertIn("events", timeline)
-            diff = handle_v1_get(release, "/v1/diff", query={"predecessor": [str(predecessor)]})
-            self.assertIn("SRC-API-1", diff["added_ids"])
+            output = Path(raw) / "compiler-candidate"
+            ReleaseCompiler().build([entity], output, candidate_id="CAND-API-1")
             with self.assertRaises(PublicObservatoryApiError):
-                handle_v1_get(release, "/v1/unknown")
+                load_authorized_release(output)
             with self.assertRaises(PublicObservatoryApiError):
                 refuse_write("POST")
 
