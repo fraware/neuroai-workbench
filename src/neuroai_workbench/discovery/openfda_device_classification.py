@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Mapping, Sequence
 from typing import Any
 from urllib.parse import quote
@@ -10,6 +11,7 @@ from urllib.parse import quote
 MAX_LIMIT = 1000
 MAX_SKIP = 25000
 MAX_DIRECT = 26000
+PRODUCT_CODE_RE = re.compile(r"^[A-Za-z]{3}$")
 BOUNDARY = (
     "A projected FDA Product Classification record preserves generic device-category metadata "
     "keyed by exact FDA product code. Product code and device name identify a generic category, "
@@ -51,7 +53,7 @@ def _normalize_record(
     query_id: str,
 ) -> tuple[dict[str, Any] | None, str]:
     product_code = _text(raw.get("product_code"))
-    if product_code is None:
+    if product_code is None or PRODUCT_CODE_RE.fullmatch(product_code) is None:
         return None, "UNRESOLVED_PRODUCT_CODE"
 
     product_code = product_code.upper()

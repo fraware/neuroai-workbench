@@ -149,6 +149,32 @@ class DeviceClassificationProjectionTests(unittest.TestCase):
         self.assertEqual(result["coverage"]["unique_product_code_count"], 0)
         self.assertEqual(result["result_records"], [])
 
+    def test_malformed_product_codes_fail_closed_as_unresolved(self) -> None:
+        for malformed in ("A12", "ABCD", "AB", "A-C"):
+            with self.subTest(product_code=malformed):
+                record = _record()
+                record["product_code"] = malformed
+                result = project_openfda_device_classification_pages(
+                    query_id=QUERY,
+                    search=SEARCH,
+                    pages=[_page([record])],
+                )
+                self.assertEqual(
+                    result["coverage"]["unresolved_product_code_count"], 1
+                )
+                self.assertEqual(result["coverage"]["unique_product_code_count"], 0)
+                self.assertEqual(result["result_records"], [])
+
+    def test_lowercase_three_letter_product_code_is_normalized(self) -> None:
+        record = _record()
+        record["product_code"] = "abc"
+        result = project_openfda_device_classification_pages(
+            query_id=QUERY,
+            search=SEARCH,
+            pages=[_page([record])],
+        )
+        self.assertEqual(result["normalized_records"][0]["product_code"], "ABC")
+
     def test_over_direct_result_bound_refuses_candidate_emission(self) -> None:
         result = project_openfda_device_classification_pages(
             query_id=QUERY,
