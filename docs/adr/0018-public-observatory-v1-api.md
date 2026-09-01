@@ -25,7 +25,7 @@ The Observatory launch path currently uses a lightweight designated-operator rel
    Authority is never created by mutating the candidate.
 3. Candidate preview is separate and explicitly noncanonical through `load_candidate_preview`. The public HTTP server never uses the preview loader.
 4. Every public response exposes candidate manifest identity plus authorization/publication record identities.
-5. `/v1/diff` is canonical-to-canonical only. An unpublished predecessor is refused in public mode.
+5. `/v1/diff` is canonical-to-canonical only. The server operator binds an optional predecessor release directory at startup; clients never supply filesystem paths. A client may provide only the configured predecessor's candidate ID as an identity assertion. Missing, unpublished, or mismatched predecessors fail closed.
 6. Write methods are refused. No endpoint mutates canonical state.
 7. ETag/cache keys bind to the immutable candidate manifest digest.
 8. The public API consumes only S2 public release artifacts. Protected S3 evidence is excluded.
@@ -54,6 +54,7 @@ Classes with no native records in a release use empty files. Governed migration/
 - Manually setting an authorization-looking boolean does not confer authority and invalidates the candidate descriptor binding.
 - `WITHHOLD`, superseded authorization, missing publication, digest substitution, and wrong-candidate publication all fail closed.
 - Published authorization is immutable in place; corrections require a successor release.
+- Public clients cannot traverse or address the server filesystem through the diff endpoint.
 - Local case API docs remain distinct.
 - Institutional OIDC/RBAC, if later required, lives in separate adapters rather than changing release identity semantics.
 
