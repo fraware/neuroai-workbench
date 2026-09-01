@@ -253,7 +253,7 @@ def test_projection_routes_filters_provenance_and_timeline(tmp_path) -> None:
 
     source = handle_v1_get(release, "/v1/provenance", query={"id": ["SRC-1"]})
     assert source["provenance"]["source_ids"] == ["SRC-1"]
-    with pytest.raises(PublicObservatoryApiError, match="require \?id="):
+    with pytest.raises(PublicObservatoryApiError, match=r"require \?id="):
         handle_v1_get(release, "/v1/why")
     with pytest.raises(PublicObservatoryApiError, match="Unknown object id"):
         handle_v1_get(release, "/v1/why", query={"id": ["UNKNOWN"]})
@@ -304,8 +304,11 @@ def test_http_handler_success_etag_error_and_all_write_refusals(tmp_path, monkey
             assert response.headers["X-NeuroAI-API-Boundary"] == API_BOUNDARY[:200]
 
         request = urllib.request.Request(f"{base}/v1/health", headers={"If-None-Match": etag})
-        with urllib.request.urlopen(request) as response:
-            assert response.status == 304
+        with pytest.raises(urllib.error.HTTPError) as not_modified:
+            urllib.request.urlopen(request)
+        assert not_modified.value.code == 304
+        assert not_modified.value.headers["ETag"] == etag
+        not_modified.value.close()
 
         with pytest.raises(urllib.error.HTTPError) as error:
             urllib.request.urlopen(f"{base}/v1/unknown")
