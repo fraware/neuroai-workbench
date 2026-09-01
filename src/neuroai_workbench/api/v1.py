@@ -1,8 +1,7 @@
-"""Public observatory read API (/v1) substrate.
+"""Public observatory read API (/v1) over explicitly published S2 releases.
 
-Public /v1 serves only an immutable S2 Observatory-v2 candidate with a verified explicit
-operator AUTHORIZE record and a matching publication record. Candidate preview is a
-separate noncanonical loader and is never used by the public server.
+Candidate preview is deliberately separate. Public serving requires one exact S2
+candidate, one active AUTHORIZE record, and one matching publication record.
 """
 
 from __future__ import annotations
@@ -20,13 +19,9 @@ from ..observatory_s2_release import verify_observatory_v2_s2_candidate
 from ..util import load_json, sha256_bytes
 
 API_BOUNDARY = (
-    "Public /v1 responses are read-only projections of explicitly published immutable S2 releases. "
-    "Candidate validity, descriptor booleans, or compiler output never confer public authority. "
-    "No write endpoint mutates canonical state."
-)
-PREVIEW_BOUNDARY = (
-    "Noncanonical Observatory-v2 candidate preview only. Preview output is not public canonical state and carries "
-    "no release or publication authority."
+    "Public /v1 responses are read-only projections of explicitly authorized and published S2 release artifacts. "
+    "Candidate preview is noncanonical and cannot enter the public server path. No write endpoint mutates canonical "
+    "state. Caching/ETag keys bind to immutable release digests. This API is not institutional SSO."
 )
 
 API_VERSION = "v1"
@@ -71,13 +66,13 @@ def _load_candidate_files(release_dir: Path) -> tuple[dict[str, Any], dict[str, 
 
 
 def load_candidate_preview(release_dir: Path) -> dict[str, Any]:
-    """Load a mechanically valid S2 candidate as an explicitly noncanonical preview."""
+    """Load an exact S2 candidate for explicitly noncanonical local inspection."""
     errors = verify_observatory_v2_s2_candidate(release_dir)
     if errors:
-        raise PublicObservatoryApiError("S2 candidate failed verification: " + "; ".join(errors))
+        raise PublicObservatoryApiError("Invalid Observatory-v2 S2 candidate: " + "; ".join(errors))
     descriptor, manifest = _load_candidate_files(release_dir)
     return {
-        "release_dir": release_dir,
+        "release_dir": Path(release_dir),
         "descriptor": descriptor,
         "manifest": manifest,
         "manifest_sha256": str(manifest.get("manifest_sha256") or ""),
@@ -86,22 +81,26 @@ def load_candidate_preview(release_dir: Path) -> dict[str, Any]:
         "published": False,
         "canonical": False,
         "preview": True,
-        "boundary": PREVIEW_BOUNDARY,
+        "boundary": API_BOUNDARY,
     }
 
 
 def load_published_release(release_dir: Path) -> dict[str, Any]:
-    """Load only an exact S2 candidate with verified active authorization and publication."""
-    candidate_errors = verify_observatory_v2_s2_candidate(release_dir)
-    if candidate_errors:
-        raise PublicObservatoryApiError("S2 candidate failed verification: " + "; ".join(candidate_errors))
+    """Load one exact S2 release only when authorization/publication binding verifies."""
+    errors = verify_observatory_v2_s2_candidate(release_dir)
+    if errors:
+        raise PublicObservatoryApiError("Invalid Observatory-v2 S2 candidate: " + "; ".join(errors))
     binding = verify_s2_publication_binding(release_dir)
     if binding.get("valid") is not True:
-        errors = binding.get("errors") or ["unknown publication-binding failure"]
-        raise PublicObservatoryApiError("S2 release is not published: " + "; ".join(str(item) for item in errors))
+        detail = "; ".join(str(item) for item in binding.get("errors") or [])
+        raise PublicObservatoryApiError("Observatory-v2 S2 release is not published: " + detail)
     descriptor, manifest = _load_candidate_files(release_dir)
+    authorization = binding.get("authorization")
+    publication = binding.get("publication")
+    if not isinstance(authorization, dict) or not isinstance(publication, dict):
+        raise PublicObservatoryApiError("Published release binding did not return authorization/publication records")
     return {
-        "release_dir": release_dir,
+        "release_dir": Path(release_dir),
         "descriptor": descriptor,
         "manifest": manifest,
         "manifest_sha256": str(manifest.get("manifest_sha256") or ""),
@@ -110,16 +109,16 @@ def load_published_release(release_dir: Path) -> dict[str, Any]:
         "published": True,
         "canonical": True,
         "preview": False,
-        "authorization_id": binding.get("authorization_id"),
-        "authorization_sha256": binding.get("authorization_sha256"),
-        "publication_id": binding.get("publication_id"),
-        "publication_sha256": binding.get("publication_sha256"),
+        "authorization_id": authorization.get("authorization_id"),
+        "authorization_sha256": authorization.get("authorization_sha256"),
+        "publication_id": publication.get("publication_id"),
+        "publication_sha256": publication.get("publication_sha256"),
         "boundary": API_BOUNDARY,
     }
 
 
 def load_authorized_release(release_dir: Path) -> dict[str, Any]:
-    """Backward-compatible name for the strict published-release loader."""
+    """Compatibility alias. Public authorization now means exact published S2 state."""
     return load_published_release(release_dir)
 
 
@@ -129,19 +128,17 @@ def release_context(release: dict[str, Any]) -> dict[str, Any]:
         "api_version": API_VERSION,
         "candidate_id": descriptor.get("candidate_id"),
         "release_tag": descriptor.get("release_tag"),
-        "package_version": descriptor.get("workbench_compatibility_version"),
-        "producer_commit": descriptor.get("producer_workbench_commit"),
+        "package_version": descriptor.get("workbench_compatibility_version") or descriptor.get("package_version"),
+        "producer_commit": descriptor.get("producer_workbench_commit") or descriptor.get("producer_commit"),
         "runtime_execution_pin": descriptor.get("runtime_execution_pin"),
         "observatory_graph_schema_version": descriptor.get("observatory_graph_schema_version"),
         "manifest_sha256": release.get("manifest_sha256"),
         "etag": etag_for_release(release),
-        "release_authorized": release.get("release_authorized") is True,
-        "published": release.get("published") is True,
-        "canonical": release.get("canonical") is True,
+        "release_authorized": bool(release.get("release_authorized") is True),
+        "published": bool(release.get("published") is True),
+        "canonical": bool(release.get("canonical") is True),
         "authorization_id": release.get("authorization_id"),
-        "authorization_sha256": release.get("authorization_sha256"),
         "publication_id": release.get("publication_id"),
-        "publication_sha256": release.get("publication_sha256"),
         "rebuildable_from_release_artifacts": True,
         "boundary": API_BOUNDARY,
     }
@@ -182,7 +179,7 @@ def _object_id(row: dict[str, Any]) -> str | None:
 
 
 def _filter_by_id(rows: list[dict[str, Any]], object_id: str) -> list[dict[str, Any]]:
-    return [row for row in rows if object_id == _object_id(row) or object_id in {row.get(field) for field in ID_FIELDS}]
+    return [row for row in rows if object_id == _object_id(row)]
 
 
 def _why_provenance(release: dict[str, Any], object_id: str) -> dict[str, Any]:
@@ -228,7 +225,7 @@ def _timeline(release: dict[str, Any], object_id: str | None) -> dict[str, Any]:
         ]
     events: list[dict[str, Any]] = []
     for row in rows:
-        for field in ("observed_at", "valid_from", "valid_until", "occurred_at"):
+        for field in ("observed_at", "valid_from", "valid_until", "occurred_at", "decided_at"):
             value = row.get(field)
             if value is None:
                 continue
@@ -240,19 +237,13 @@ def _timeline(release: dict[str, Any], object_id: str | None) -> dict[str, Any]:
                     "time_value": value,
                 }
             )
-    # Display ordering only. Temporal validity itself is governed by the temporal compiler;
-    # this list preserves exact TimeValue payloads and does not persist normalized instants.
     events.sort(key=lambda item: json.dumps(item.get("time_value"), sort_keys=True, default=str))
     return {"object_id": object_id, "events": events, "count": len(events)}
 
 
 def _diff_against_predecessor(release: dict[str, Any], predecessor_dir: Path) -> dict[str, Any]:
-    # Public diff is canonical-to-canonical only. Candidate previews have a separate loader
-    # and cannot enter this path.
     predecessor = load_published_release(predecessor_dir)
-    current_rows = _all_records(release)
-    predecessor_rows = _all_records(predecessor)
-    diff = predecessor_successor_diff(predecessor_rows, current_rows)
+    diff = predecessor_successor_diff(_all_records(predecessor), _all_records(release))
     return {
         "predecessor_candidate_id": predecessor.get("candidate_id"),
         "predecessor_manifest_sha256": predecessor.get("manifest_sha256"),
@@ -262,16 +253,31 @@ def _diff_against_predecessor(release: dict[str, Any], predecessor_dir: Path) ->
     }
 
 
-def handle_v1_get(release: dict[str, Any], path: str, *, query: dict[str, list[str]] | None = None) -> dict[str, Any]:
-    """Return a JSON-serializable body for a /v1 GET. Raises on unknown routes."""
-    query = query or {}
-    if release.get("canonical") is not True or release.get("published") is not True:
+def _require_public_context(release: dict[str, Any]) -> None:
+    if not (
+        release.get("canonical") is True
+        and release.get("published") is True
+        and release.get("release_authorized") is True
+    ):
         raise PublicObservatoryApiError("Public /v1 refuses noncanonical or unpublished release context")
+
+
+def handle_v1_get(
+    release: dict[str, Any],
+    path: str,
+    *,
+    query: dict[str, list[str]] | None = None,
+    predecessor_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Return a JSON-serializable /v1 body from a verified published release."""
+    _require_public_context(release)
+    query = query or {}
     context = release_context(release)
     if path in {"/v1", "/v1/", "/v1/health"}:
         return {"status": "ok", "read_only": True, "writes_supported": False, **context}
     if path == "/v1/release":
-        return {"candidate_descriptor": release["descriptor"], "manifest": dict(release["manifest"]), **context}
+        return {"descriptor": release["descriptor"], "manifest": dict(release["manifest"]), **context}
+
     records_root = Path(release["release_dir"]) / "records"
     if path in OBJECT_ROUTES:
         rows = read_jsonl(records_root / OBJECT_ROUTES[path])
@@ -280,26 +286,27 @@ def handle_v1_get(release: dict[str, Any], path: str, *, query: dict[str, list[s
         if object_id:
             rows = _filter_by_id(rows, object_id)
         return {"items": rows, "count": len(rows), **context}
+
     if path in {"/v1/why", "/v1/provenance"}:
         id_values = query.get("id") or []
         if not id_values or not id_values[0].strip():
             raise PublicObservatoryApiError("/v1/why and /v1/provenance require ?id=")
-        body = _why_provenance(release, id_values[0].strip())
-        return {**body, **context}
+        return {**_why_provenance(release, id_values[0].strip()), **context}
+
     if path == "/v1/timeline":
         id_values = query.get("id") or []
-        timeline_object_id: str | None = id_values[0].strip() if id_values and id_values[0].strip() else None
-        body = _timeline(release, timeline_object_id)
-        return {**body, **context}
+        timeline_object_id = id_values[0].strip() if id_values and id_values[0].strip() else None
+        return {**_timeline(release, timeline_object_id), **context}
+
     if path == "/v1/diff":
-        predecessor_values = query.get("predecessor") or []
-        if not predecessor_values or not predecessor_values[0].strip():
-            raise PublicObservatoryApiError("/v1/diff requires ?predecessor=<release_dir>")
-        predecessor_dir = Path(predecessor_values[0].strip())
-        if not predecessor_dir.is_dir():
-            raise PublicObservatoryApiError("predecessor release directory not found")
-        body = _diff_against_predecessor(release, predecessor_dir)
-        return {**body, **context}
+        if predecessor_dir is None:
+            raise PublicObservatoryApiError("/v1/diff requires a server-configured published predecessor release")
+        predecessor = load_published_release(predecessor_dir)
+        requested = (query.get("predecessor") or [""])[0].strip()
+        if requested and requested != str(predecessor.get("candidate_id") or ""):
+            raise PublicObservatoryApiError("Requested predecessor candidate id does not match configured predecessor")
+        return {**_diff_against_predecessor(release, predecessor_dir), **context}
+
     if path.startswith("/v1/"):
         raise PublicObservatoryApiError(f"Unknown /v1 route {path}")
     raise PublicObservatoryApiError("Public observatory API only serves /v1/*")
@@ -313,9 +320,10 @@ def refuse_write(method: str) -> None:
 
 
 class PublicObservatoryV1Handler(BaseHTTPRequestHandler):
-    """Minimal read-only handler bound to one published S2 release directory."""
+    """Minimal read-only handler bound to one published release and optional predecessor."""
 
     release_dir: Path
+    predecessor_dir: Path | None = None
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A003
         return
@@ -327,14 +335,18 @@ class PublicObservatoryV1Handler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         try:
             release = self._release()
-            if_none_match = self.headers.get("If-None-Match")
             etag = etag_for_release(release)
-            if if_none_match and if_none_match == etag:
+            if self.headers.get("If-None-Match") == etag:
                 self.send_response(HTTPStatus.NOT_MODIFIED)
                 self.send_header("ETag", etag)
                 self.end_headers()
                 return
-            body = handle_v1_get(release, parsed.path, query=parse_qs(parsed.query))
+            body = handle_v1_get(
+                release,
+                parsed.path,
+                query=parse_qs(parsed.query),
+                predecessor_dir=self.predecessor_dir,
+            )
             payload = json.dumps(body, ensure_ascii=False, sort_keys=True).encode("utf-8")
             self.send_response(HTTPStatus.OK)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -377,10 +389,19 @@ class PublicObservatoryV1Handler(BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
 
-def make_v1_server(release_dir: Path, host: str = "127.0.0.1", port: int = 0) -> ThreadingHTTPServer:
+def make_v1_server(
+    release_dir: Path,
+    host: str = "127.0.0.1",
+    port: int = 0,
+    *,
+    predecessor_dir: Path | None = None,
+) -> ThreadingHTTPServer:
     handler = type(
         "BoundPublicObservatoryV1Handler",
         (PublicObservatoryV1Handler,),
-        {"release_dir": Path(release_dir)},
+        {
+            "release_dir": Path(release_dir),
+            "predecessor_dir": None if predecessor_dir is None else Path(predecessor_dir),
+        },
     )
     return ThreadingHTTPServer((host, port), handler)
