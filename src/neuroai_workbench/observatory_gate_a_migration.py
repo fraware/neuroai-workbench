@@ -12,6 +12,7 @@ from typing import Any
 
 from .observatory_adjudication_migration import (
     ADJUDICATION_MIGRATION_BOUNDARY,
+    delta16_record_ids,
     preserve_v16_adjudication_state,
     verify_v16_adjudication_state,
 )
@@ -54,20 +55,6 @@ class ObservatoryGateAMigrationError(ValueError):
 
 def _digest(value: Any) -> str:
     return sha256_bytes(canonical_json_bytes(value))
-
-
-def _delta_ids(delta16: dict[str, Any]) -> set[str]:
-    result: set[str] = set()
-    for records in delta16.values():
-        if isinstance(records, list):
-            for record in records:
-                if isinstance(record, dict):
-                    result.update(
-                        value
-                        for key, value in record.items()
-                        if key.endswith("_id") and isinstance(value, str)
-                    )
-    return result
 
 
 def build_gate_a_migration_checkpoint(
@@ -212,12 +199,17 @@ def verify_gate_a_migration_checkpoint(
         for source in candidate.get("core", {}).get("source_migration", {}).get("sources", [])
         if isinstance(source, dict) and isinstance(source.get("source_id"), str)
     }
+    try:
+        controlled_delta_ids = delta16_record_ids(delta16)
+    except Exception as exc:
+        errors.append(f"DELTA16 controlled identity validation failed: {exc}")
+        controlled_delta_ids = set()
     errors.extend(
         f"adjudication: {error}"
         for error in verify_v16_adjudication_state(
             adjudication,
             known_source_ids=source_ids,
-            delta_ids=_delta_ids(delta16),
+            delta_ids=controlled_delta_ids,
         )
     )
     errors.extend(f"successor: {error}" for error in verify_v17_successor_lineage(successor))
