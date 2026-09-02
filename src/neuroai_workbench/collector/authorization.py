@@ -9,7 +9,7 @@ from ..util import canonical_json_bytes, sha256_bytes, utc_now
 LIVE_COLLECTION_ENV = "NEUROAI_LIVE_COLLECTION"
 LIVE_AUTHORIZATION_ENV = "NEUROAI_LIVE_COLLECTION_AUTHORIZATION_JSON"
 AUTHORIZATION_BOUNDARY = (
-    "A collection authorization packet records claimed local permission for one controlled retrieval run. "
+    "A collection authorization packet records claimed local permission for one retrieval. "
     "It is not institutional authority, legal authorization, source authenticity, or canonical publication."
 )
 NETWORK_MODES = frozenset({"OFFLINE", "AUTHORIZED_NETWORK"})
