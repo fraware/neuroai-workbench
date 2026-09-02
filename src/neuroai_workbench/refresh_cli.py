@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from .collector.authorization import LIVE_AUTHORIZATION_ENV, build_authorization_packet
 from .shadow_refresh import LIVE_COLLECTION_ENV
 from .shadow_refresh.cycle import CycleDevelopmentDispositionSpec, run_live_evaluation_cycle
 from .util import atomic_write_json, utc_now
@@ -183,11 +184,23 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--sample-size", type=int, default=25)
     parser.add_argument("--actor", default="neuroai-refresh")
     parser.add_argument(
+        "--authorization-purpose",
+        default="Explicit researcher invocation of the controlled live observatory refresh into quarantine-only evaluation state.",
+        help="Purpose recorded in the digest-bound local collection authorization packet.",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Print the compact update summary as JSON instead of the human-readable view.",
     )
     return parser
+
+
+def _restore_env(name: str, prior: str | None) -> None:
+    if prior is None:
+        os.environ.pop(name, None)
+    else:
+        os.environ[name] = prior
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -221,25 +234,44 @@ def main(argv: list[str] | None = None) -> int:
     evidence_cutoff = args.evidence_cutoff or utc_now()[:10]
     apply_id = args.apply_id or f"apply-v23dev-{stamp.lower()}"
 
-    # Invoking neuroai-refresh is itself the explicit opt-in to a live collection run.
-    # The lower-level engine retains its environment gate for callers that use it directly.
-    os.environ[LIVE_COLLECTION_ENV] = "1"
-
-    package = run_live_evaluation_cycle(
-        evaluation_workspace=evaluation_workspace,
-        registry_path=registry,
-        predecessor_path=predecessor,
-        quarantine_root=quarantine_root,
-        output_dir=output_dir,
-        refresh_version=args.refresh_version,
-        evidence_cutoff=evidence_cutoff,
-        apply_id=apply_id,
-        sample_size=args.sample_size,
-        development_disposition=CycleDevelopmentDispositionSpec(),
-        actor=args.actor,
-        as_of=evidence_cutoff,
-        approve_handoff=True,
+    authorization = build_authorization_packet(
+        authorization_id=f"AUTH-REFRESH-{stamp}",
+        authorized_by=args.actor,
+        purpose=args.authorization_purpose,
+        network_mode="AUTHORIZED_NETWORK",
+        network_permitted=True,
     )
+    prior_live = os.environ.get(LIVE_COLLECTION_ENV)
+    prior_authorization = os.environ.get(LIVE_AUTHORIZATION_ENV)
+    try:
+        # Invoking neuroai-refresh is the explicit local opt-in. The live path still requires
+        # both the environment gate and this separately digest-bound authorization record.
+        os.environ[LIVE_COLLECTION_ENV] = "1"
+        os.environ[LIVE_AUTHORIZATION_ENV] = json.dumps(
+            authorization,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        package = run_live_evaluation_cycle(
+            evaluation_workspace=evaluation_workspace,
+            registry_path=registry,
+            predecessor_path=predecessor,
+            quarantine_root=quarantine_root,
+            output_dir=output_dir,
+            refresh_version=args.refresh_version,
+            evidence_cutoff=evidence_cutoff,
+            apply_id=apply_id,
+            sample_size=args.sample_size,
+            development_disposition=CycleDevelopmentDispositionSpec(),
+            actor=args.actor,
+            as_of=evidence_cutoff,
+            approve_handoff=True,
+        )
+    finally:
+        _restore_env(LIVE_COLLECTION_ENV, prior_live)
+        _restore_env(LIVE_AUTHORIZATION_ENV, prior_authorization)
+
     summary = build_update_summary(package)
     atomic_write_json(summary_path, summary)
 
