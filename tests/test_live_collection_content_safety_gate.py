@@ -203,9 +203,23 @@ def test_tampered_persisted_scan_metadata_fails_closed(
     assert scanner.calls == []
 
 
-def test_missing_root_quarantine_record_fails_closed(tmp_path: Path) -> None:
+def test_missing_quarantine_records_directory_fails_closed(tmp_path: Path) -> None:
     atomic_write_json(tmp_path / "results" / f"{RESULT_ID}.json", valid_collection_result())
-    with pytest.raises(ValueError, match="exactly one root quarantine record"):
+    with pytest.raises(ValueError, match="No quarantine records directory"):
+        ensure_quarantine_result_scans(tmp_path, scanner=_RecordingScanner())
+
+
+def test_records_directory_without_matching_root_fails_closed(tmp_path: Path) -> None:
+    atomic_write_json(tmp_path / "results" / f"{RESULT_ID}.json", valid_collection_result())
+    (tmp_path / "records").mkdir(parents=True)
+    with pytest.raises(ValueError, match="found 0"):
+        ensure_quarantine_result_scans(tmp_path, scanner=_RecordingScanner())
+
+
+def test_non_object_quarantine_record_fails_closed(tmp_path: Path) -> None:
+    atomic_write_json(tmp_path / "results" / f"{RESULT_ID}.json", valid_collection_result())
+    atomic_write_json(tmp_path / "records" / "malformed.json", [])
+    with pytest.raises(ValueError, match="Quarantine record .* is not an object"):
         ensure_quarantine_result_scans(tmp_path, scanner=_RecordingScanner())
 
 
