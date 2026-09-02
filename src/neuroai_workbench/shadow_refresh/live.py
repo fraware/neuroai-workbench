@@ -1,6 +1,6 @@
 """Ops-gated live shadow cohort collection helpers.
 
-Live network retrieval requires explicit environment gates. Artifacts remain
+Live network retrieval requires explicit environment and authorization gates. Artifacts remain
 SHADOW_EVALUATION_NOT_CANONICAL. Capture digests prove retrieval bytes only and
 do not establish substantive truth, authorization, or a canonical successor.
 """
@@ -12,7 +12,11 @@ from typing import Any
 from urllib.parse import urlparse
 
 from ..collector import CollectionScheduler, CollectorConfig, SchedulerConfig
-from ..collector.authorization import LIVE_COLLECTION_ENV, live_collection_enabled
+from ..collector.authorization import (
+    LIVE_COLLECTION_ENV,
+    live_collection_enabled,
+    load_live_authorization_from_environment,
+)
 from ..collector.dns import DnsGuard
 from ..collector.http_client import HttpTransport
 from ..collector.pinned_transport import PinnedSocketHttpTransport
@@ -26,8 +30,8 @@ def require_live_collection_enabled() -> None:
     if not live_collection_enabled():
         raise PermissionError(
             f"{LIVE_COLLECTION_ENV}=1 is required for live shadow cohort network collection. "
-            "CI and default local runs remain network-free. Network capture also requires an "
-            "EvidenceCollectionService authorization packet; this environment variable is not a sufficient gate alone."
+            "CI and default local runs remain network-free. Network capture also requires a "
+            "digest-bound collection authorization packet; this environment variable is not a sufficient gate alone."
         )
 
 
@@ -105,9 +109,12 @@ def run_live_cohort_collection(
     monitoring and does not authorize canonical publication.
 
     ``transport`` / ``dns_guard`` are injectable for offline unit tests; live ops
-    defaults remain ``StdlibHttpTransport`` and the real ``DnsGuard``.
+    defaults are ``PinnedSocketHttpTransport`` and the real ``DnsGuard``. Live
+    execution additionally requires a digest-bound authorization packet in the
+    controlled authorization environment variable.
     """
     require_live_collection_enabled()
+    authorization = load_live_authorization_from_environment()
     evaluation_plan = evaluation_collection_plan(plan)
     config = collector_config or default_live_collector_config()
     quarantine_root.mkdir(parents=True, exist_ok=True)
@@ -155,9 +162,18 @@ def run_live_cohort_collection(
             "title": "Observed live shadow cohort collection run",
             "status": SHADOW_EVALUATION_STATUS,
             "executed_at": utc_now(),
+            "authorization": {
+                "authorization_id": authorization["authorization_id"],
+                "authorization_sha256": authorization["authorization_sha256"],
+                "authorized_by": authorization["authorized_by"],
+                "authorized_at": authorization["authorized_at"],
+                "purpose": authorization["purpose"],
+                "identity_boundary": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
+            },
             "boundary": (
                 "Live capture proves retrieval into quarantine only. "
-                "Does not establish substantive truth, authorization, deployment readiness, "
+                "The local authorization packet records claimed permission for this controlled live operation; "
+                "neither capture nor authorization establishes substantive truth, legal authorization, deployment readiness, "
                 "or a canonical observatory successor."
             ),
         },
@@ -174,6 +190,8 @@ def run_live_cohort_collection(
             "collector_version": config.collector_version,
             "configuration_hash": config.configuration_hash,
             "handoff_enabled": False,
+            "default_transport": "PinnedSocketHttpTransport" if transport is None else "INJECTED_TRANSPORT",
+            "dns_guard": "DnsGuard" if dns_guard is None else "INJECTED_DNS_GUARD",
         },
         "status": SHADOW_EVALUATION_STATUS,
         "boundary": SHADOW_REFRESH_BOUNDARY,
