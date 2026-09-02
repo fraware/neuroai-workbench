@@ -7,7 +7,7 @@ from .authorization import (
     require_network_authorization,
     validate_authorization_packet,
 )
-from .scan import ContentSafetyScanner, default_scanner
+from .scan import ContentSafetyScanner, default_scanner, ensure_content_safety_scan
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
 
@@ -44,17 +44,13 @@ class EvidenceCollectionService:
             prior_capture=prior_capture,
             attempt_count=attempt_count,
         )
-        if outcome.kind == "result" and outcome.quarantine_record is not None:
-            scan = self.scanner.scan(
-                sha256=str(outcome.quarantine_record["sha256"]),
-                media_type=str(outcome.record.get("media_type") or "application/octet-stream"),
-                size_bytes=int(outcome.quarantine_record["size_bytes"]),
+        if outcome.kind == "result":
+            ensure_content_safety_scan(
+                self.collector.quarantine_root,
+                outcome.record,
+                scanner=self.scanner,
+                quarantine_record=outcome.quarantine_record,
             )
-            scan_path = self.collector.quarantine_root / "scans" / f"{outcome.quarantine_record['quarantine_id']}.json"
-            scan_path.parent.mkdir(parents=True, exist_ok=True)
-            from ..util import atomic_write_json
-
-            atomic_write_json(scan_path, scan.as_dict())
         return outcome
 
 

@@ -20,6 +20,7 @@ from ..collector.authorization import (
 from ..collector.dns import DnsGuard
 from ..collector.http_client import HttpTransport
 from ..collector.pinned_transport import PinnedSocketHttpTransport
+from ..collector.scan import SCAN_BOUNDARY, ContentSafetyScanner, ensure_quarantine_result_scans
 from ..util import load_json, sha256_bytes, utc_now
 from .schemas import SHADOW_EVALUATION_STATUS, SHADOW_REFRESH_BOUNDARY
 
@@ -102,16 +103,18 @@ def run_live_cohort_collection(
     collector_config: CollectorConfig | None = None,
     transport: HttpTransport | None = None,
     dns_guard: DnsGuard | None = None,
+    content_safety_scanner: ContentSafetyScanner | None = None,
 ) -> dict[str, Any]:
     """Execute allowlisted live HTTP collection for an evaluation plan.
 
     Writes quarantine-only under ``quarantine_root``. Does not hand off into
     monitoring and does not authorize canonical publication.
 
-    ``transport`` / ``dns_guard`` are injectable for offline unit tests; live ops
-    defaults are ``PinnedSocketHttpTransport`` and the real ``DnsGuard``. Live
-    execution additionally requires a digest-bound authorization packet in the
-    controlled authorization environment variable.
+    ``transport`` / ``dns_guard`` / ``content_safety_scanner`` are injectable for
+    offline unit tests. Live ops defaults are ``PinnedSocketHttpTransport``, the real
+    ``DnsGuard``, and the fail-closed content-safety scanner. Live execution additionally
+    requires a digest-bound authorization packet in the controlled authorization
+    environment variable.
     """
     require_live_collection_enabled()
     authorization = load_live_authorization_from_environment()
@@ -139,6 +142,11 @@ def run_live_cohort_collection(
         registry_sha256=registry_sha256,
         source_index=source_index,
     )
+    scan_records = ensure_quarantine_result_scans(
+        quarantine_root,
+        scanner=content_safety_scanner,
+    )
+    content_safety = _public_scan_summary(scan_records)
     digests = _collect_public_digests(quarantine_root)
     failures = _collect_public_failures(quarantine_root)
     failure_by_id = {item.get("failure_id"): item for item in failures if item.get("failure_id")}
@@ -173,8 +181,9 @@ def run_live_cohort_collection(
             "boundary": (
                 "Live capture proves retrieval into quarantine only. "
                 "The local authorization packet records claimed permission for this controlled live operation; "
-                "neither capture nor authorization establishes substantive truth, legal authorization, deployment readiness, "
-                "or a canonical observatory successor."
+                "content-safety scan state is quarantine custody metadata and does not establish a substantive CLEAN claim. "
+                "Neither capture, authorization, nor scan state establishes substantive truth, legal authorization, "
+                "deployment readiness, or a canonical observatory successor."
             ),
         },
         "evaluation_plan_counts": evaluation_plan["counts"],
@@ -186,6 +195,7 @@ def run_live_cohort_collection(
         },
         "capture_digests": digests,
         "failure_summaries": failures,
+        "content_safety": content_safety,
         "collector": {
             "collector_version": config.collector_version,
             "configuration_hash": config.configuration_hash,
@@ -247,6 +257,31 @@ def observed_run_results_from_live(
         "publication": {"reconciliation_errors": 0},
         "model_assistance": {"minutes_saved": 0.0, "errors_introduced": 0},
         "cost_by_source_class": {},
+    }
+
+
+def _public_scan_summary(records: list[dict[str, Any]]) -> dict[str, Any]:
+    state_counts: dict[str, int] = {}
+    scanner_ids: set[str] = set()
+    existing = 0
+    created = 0
+    for record in records:
+        state = str(record["state"])
+        state_counts[state] = state_counts.get(state, 0) + 1
+        scanner_ids.add(str(record["scanner_id"]))
+        if record.get("existing_scan_verified") is True:
+            existing += 1
+        else:
+            created += 1
+    return {
+        "scope": "ALL_DURABLE_RESULTS_IN_QUARANTINE_ROOT",
+        "durable_result_records_checked": len(records),
+        "scans_created": created,
+        "existing_scans_verified": existing,
+        "state_counts": dict(sorted(state_counts.items())),
+        "scanner_ids": sorted(scanner_ids),
+        "detail_exposed": False,
+        "boundary": SCAN_BOUNDARY,
     }
 
 
