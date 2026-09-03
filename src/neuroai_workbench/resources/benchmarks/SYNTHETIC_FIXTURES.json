@@ -1,0 +1,48 @@
+[
+  {
+    "fixture_id": "SYN-PATENT-DECEPTIVE-NEGATIVE-001",
+    "benchmark_kind": "patent",
+    "benchmark_status": "SYNTHETIC_TEST_ONLY",
+    "synthetic": true,
+    "language": "en",
+    "jurisdiction": "SYNTHETIC-JURISDICTION",
+    "text_state": "present",
+    "edge_case_tags": ["deceptive_negative"],
+    "text": "Synthetic patent-like record mentioning neural terminology without a NeuroAI capability claim.",
+    "human_annotations": [
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "label": "OUT_OF_SCOPE"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "label": "BORDERLINE"}
+    ],
+    "adjudication": {
+      "status": "DISAGREEMENT_PRESERVED",
+      "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
+      "final_label": null
+    },
+    "model_outputs": [
+      {"model_id": "SYNTHETIC-MODEL-A", "prediction": "IN_SCOPE", "score": 0.71, "authority": "UNTRUSTED_DRAFT_ONLY"}
+    ]
+  },
+  {
+    "fixture_id": "SYN-PRODUCT-AMBIGUOUS-BIOSIGNAL-001",
+    "benchmark_kind": "product",
+    "benchmark_status": "SYNTHETIC_TEST_ONLY",
+    "synthetic": true,
+    "language": "fr",
+    "jurisdiction": "SYNTHETIC-JURISDICTION",
+    "text_state": "translated",
+    "edge_case_tags": ["ambiguous_biosignal"],
+    "text": "Description synthétique d'un produit de biosignal dont la relation au NeuroAI reste indéterminée.",
+    "human_annotations": [
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "label": "ABSTAIN"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "label": "ABSTAIN"}
+    ],
+    "adjudication": {
+      "status": "ABSTAINED",
+      "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
+      "final_label": null
+    },
+    "model_outputs": [
+      {"model_id": "SYNTHETIC-MODEL-A", "prediction": "IN_SCOPE", "score": 0.54, "authority": "UNTRUSTED_DRAFT_ONLY"}
+    ]
+  }
+]
