@@ -120,15 +120,19 @@ def canonical_json_bytes(value: Any) -> bytes:
             allow_nan=False,
         )
     except (TypeError, ValueError) as exc:
-        raise BenchmarkContractError("Commitment payload must be finite JSON-compatible data") from exc
+        raise BenchmarkContractError(
+            "Commitment payload must be finite JSON-compatible data"
+        ) from exc
     return encoded.encode("utf-8")
 
 
 def keyed_commitment(payload: Any, secret_key: bytes) -> str:
-    """Return an opaque HMAC-SHA256 commitment; the secret key must stay in controlled S3."""
+    """Return an opaque HMAC-SHA256 commitment; the key must stay in controlled S3."""
 
     if not isinstance(secret_key, bytes) or len(secret_key) < 32:
-        raise BenchmarkContractError("Commitment key must contain at least 32 bytes and remain in controlled S3")
+        raise BenchmarkContractError(
+            "Commitment key must contain at least 32 bytes and remain in controlled S3"
+        )
     return hmac.new(secret_key, canonical_json_bytes(payload), hashlib.sha256).hexdigest()
 
 
@@ -148,7 +152,8 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
     unexpected_fields = set(contract) - PUBLIC_CONTRACT_FIELDS
     if unexpected_fields:
         raise BenchmarkContractError(
-            f"Public benchmark contract contains unsupported fields: {', '.join(sorted(unexpected_fields))}"
+            "Public benchmark contract contains unsupported fields: "
+            f"{', '.join(sorted(unexpected_fields))}"
         )
 
     if contract.get("schema_version") != SCHEMA_VERSION:
@@ -160,7 +165,9 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
 
     kind = contract.get("benchmark_kind")
     if kind not in BENCHMARK_KINDS:
-        raise BenchmarkContractError(f"benchmark_kind must be one of {sorted(BENCHMARK_KINDS)}")
+        raise BenchmarkContractError(
+            f"benchmark_kind must be one of {sorted(BENCHMARK_KINDS)}"
+        )
 
     state = contract.get("state")
     if state not in BENCHMARK_STATES:
@@ -168,20 +175,30 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
 
     g1_gate_state = contract.get("g1_gate_state")
     if g1_gate_state not in G1_GATE_STATES:
-        raise BenchmarkContractError(f"g1_gate_state must be one of {sorted(G1_GATE_STATES)}")
+        raise BenchmarkContractError(
+            f"g1_gate_state must be one of {sorted(G1_GATE_STATES)}"
+        )
     g1_disposition_id = contract.get("g1_disposition_id")
     g1_disposition_sha256 = contract.get("g1_disposition_sha256")
     if g1_gate_state == "NOT_APPROVED":
         if g1_disposition_id is not None or g1_disposition_sha256 is not None:
-            raise BenchmarkContractError("NOT_APPROVED G1 state cannot carry a governance disposition binding")
+            raise BenchmarkContractError(
+                "NOT_APPROVED G1 state cannot carry a governance disposition binding"
+            )
     else:
         if not isinstance(g1_disposition_id, str) or not g1_disposition_id.strip():
-            raise BenchmarkContractError("Approved G1 reference requires a non-empty g1_disposition_id")
+            raise BenchmarkContractError(
+                "Approved G1 reference requires a non-empty g1_disposition_id"
+            )
         if not _is_sha256_hex(g1_disposition_sha256):
-            raise BenchmarkContractError("Approved G1 reference requires a SHA-256-format g1_disposition_sha256")
+            raise BenchmarkContractError(
+                "Approved G1 reference requires a SHA-256-format g1_disposition_sha256"
+            )
 
     if contract.get("g2_passed") is not False:
-        raise BenchmarkContractError("g2_passed must remain false in PRE-G2 public benchmark contracts")
+        raise BenchmarkContractError(
+            "g2_passed must remain false in PRE-G2 public benchmark contracts"
+        )
     if contract.get("canonical_s2_authority") is not False:
         raise BenchmarkContractError("canonical_s2_authority must remain false")
     if contract.get("publication_authority") is not False:
@@ -203,25 +220,42 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
         raise BenchmarkContractError("required_strata must not contain duplicates")
     missing = REQUIRED_STRATA[kind] - set(strata)
     if missing:
-        raise BenchmarkContractError(f"required_strata is missing: {', '.join(sorted(missing))}")
+        raise BenchmarkContractError(
+            f"required_strata is missing: {', '.join(sorted(missing))}"
+        )
 
     if contract.get("double_label_subset_required") is not True:
         raise BenchmarkContractError("double_label_subset_required must be true")
 
     states = contract.get("adjudication_states")
-    if not isinstance(states, list) or len(states) != len(set(states)) or set(states) != ADJUDICATION_STATES:
-        raise BenchmarkContractError("adjudication_states must preserve the complete controlled state set")
+    states_valid = (
+        isinstance(states, list)
+        and len(states) == len(set(states))
+        and set(states) == ADJUDICATION_STATES
+    )
+    if not states_valid:
+        raise BenchmarkContractError(
+            "adjudication_states must preserve the complete controlled state set"
+        )
 
     membership_commitment = contract.get("membership_commitment")
     label_commitment = contract.get("label_commitment")
     if state == "DRAFT_UNFROZEN":
         if membership_commitment is not None or label_commitment is not None:
-            raise BenchmarkContractError("DRAFT_UNFROZEN contracts must not claim frozen commitments")
+            raise BenchmarkContractError(
+                "DRAFT_UNFROZEN contracts must not claim frozen commitments"
+            )
     else:
         if g1_gate_state != "APPROVED_REFERENCE_PROVIDED":
-            raise BenchmarkContractError("FROZEN_COMMITMENTS_ONLY requires an approved G1 disposition reference")
-        if not _is_sha256_hex(membership_commitment) or not _is_sha256_hex(label_commitment):
-            raise BenchmarkContractError("FROZEN_COMMITMENTS_ONLY contracts require SHA-256-format commitments")
+            raise BenchmarkContractError(
+                "FROZEN_COMMITMENTS_ONLY requires an approved G1 disposition reference"
+            )
+        if not _is_sha256_hex(membership_commitment) or not _is_sha256_hex(
+            label_commitment
+        ):
+            raise BenchmarkContractError(
+                "FROZEN_COMMITMENTS_ONLY contracts require SHA-256-format commitments"
+            )
 
 
 def _guard_prediction_value(value: Any, path: str) -> None:
@@ -229,7 +263,9 @@ def _guard_prediction_value(value: Any, path: str) -> None:
         for key, child in value.items():
             normalized = str(key).strip().lower()
             if normalized in PROHIBITED_PREDICTION_KEYS:
-                raise BenchmarkContractError(f"Prediction payload contains prohibited oracle field at {path}.{key}")
+                raise BenchmarkContractError(
+                    f"Prediction payload contains prohibited oracle field at {path}.{key}"
+                )
             _guard_prediction_value(child, f"{path}.{key}")
     elif isinstance(value, list):
         for index, child in enumerate(value):
@@ -250,22 +286,32 @@ def validate_prediction_rows(rows: Sequence[Mapping[str, Any]]) -> None:
         seen.add(item_id)
         label = row.get("prediction")
         if label not in PREDICTION_LABELS:
-            raise BenchmarkContractError(f"prediction must be one of {sorted(PREDICTION_LABELS)}")
+            raise BenchmarkContractError(
+                f"prediction must be one of {sorted(PREDICTION_LABELS)}"
+            )
         probability = row.get("probability_positive")
         if probability is not None:
             if not isinstance(probability, (int, float)) or isinstance(probability, bool):
-                raise BenchmarkContractError("probability_positive must be numeric when supplied")
+                raise BenchmarkContractError(
+                    "probability_positive must be numeric when supplied"
+                )
             probability_value = float(probability)
             if not math.isfinite(probability_value) or not 0.0 <= probability_value <= 1.0:
-                raise BenchmarkContractError("probability_positive must be finite and between 0 and 1")
+                raise BenchmarkContractError(
+                    "probability_positive must be finite and between 0 and 1"
+                )
 
 
-def _validate_gold_rows(rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+def _validate_gold_rows(
+    rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Mapping[str, Any]]:
     indexed: dict[str, Mapping[str, Any]] = {}
     for row in rows:
         item_id = row.get("item_id")
         if not isinstance(item_id, str) or not item_id:
-            raise BenchmarkContractError("Each controlled gold row requires a non-empty item_id")
+            raise BenchmarkContractError(
+                "Each controlled gold row requires a non-empty item_id"
+            )
         if item_id in indexed:
             raise BenchmarkContractError(f"Duplicate controlled gold item_id: {item_id}")
 
@@ -275,10 +321,17 @@ def _validate_gold_rows(rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[
             raise BenchmarkContractError(f"Unknown adjudication_state for {item_id}")
         if label not in GOLD_LABELS:
             raise BenchmarkContractError(f"Unknown gold_label for {item_id}")
-        if state in {"DISAGREE_UNADJUDICATED", "ABSTAIN_UNRESOLVED"} and label != "UNRESOLVED":
-            raise BenchmarkContractError(f"Unresolved adjudication for {item_id} cannot carry a binary gold label")
+        if (
+            state in {"DISAGREE_UNADJUDICATED", "ABSTAIN_UNRESOLVED"}
+            and label != "UNRESOLVED"
+        ):
+            raise BenchmarkContractError(
+                f"Unresolved adjudication for {item_id} cannot carry a binary gold label"
+            )
         if state in {"AGREE", "ADJUDICATED"} and label == "UNRESOLVED":
-            raise BenchmarkContractError(f"Resolved adjudication for {item_id} requires a binary gold label")
+            raise BenchmarkContractError(
+                f"Resolved adjudication for {item_id} requires a binary gold label"
+            )
         indexed[item_id] = row
     return indexed
 
@@ -372,25 +425,37 @@ def _normalize_subgroup_values(value: Any) -> list[str]:
         return [value or "UNKNOWN"]
     if isinstance(value, list) and all(isinstance(item, str) for item in value):
         return value or ["UNKNOWN"]
-    raise BenchmarkContractError("Subgroup values must be strings, lists of strings, or null")
+    raise BenchmarkContractError(
+        "Subgroup values must be strings, lists of strings, or null"
+    )
 
 
 def score_predictions(
     prediction_rows: Sequence[Mapping[str, Any]],
     controlled_gold_rows: Sequence[Mapping[str, Any]],
     *,
-    subgroup_fields: Sequence[str] = ("strata", "language", "jurisdiction", "text_availability"),
+    subgroup_fields: Sequence[str] = (
+        "strata",
+        "language",
+        "jurisdiction",
+        "text_availability",
+    ),
 ) -> dict[str, Any]:
-    """Compute aggregate evaluation metrics; caller remains responsible for S3 custody of gold rows."""
+    """Compute metrics; the caller remains responsible for S3 custody of gold rows."""
 
     validate_prediction_rows(prediction_rows)
     gold_by_id = _validate_gold_rows(controlled_gold_rows)
     prediction_by_id = {row["item_id"]: row for row in prediction_rows}
     unexpected = set(prediction_by_id) - set(gold_by_id)
     if unexpected:
-        raise BenchmarkContractError(f"Predictions contain item_ids outside the controlled benchmark: {sorted(unexpected)}")
+        raise BenchmarkContractError(
+            "Predictions contain item_ids outside the controlled benchmark: "
+            f"{sorted(unexpected)}"
+        )
 
-    scoreable_ids = [item_id for item_id, row in gold_by_id.items() if row["gold_label"] != "UNRESOLVED"]
+    scoreable_ids = [
+        item_id for item_id, row in gold_by_id.items() if row["gold_label"] != "UNRESOLVED"
+    ]
     unresolved_count = len(gold_by_id) - len(scoreable_ids)
     overall = _score_subset(scoreable_ids, gold_by_id, prediction_by_id)
 
@@ -407,8 +472,9 @@ def score_predictions(
 
     return {
         "boundary": (
-            "Aggregate software metrics over caller-supplied controlled labels; no scientific truth, G2 approval, "
-            "canonical S2 authority, publication authority, or v4.2 assessment effect is created."
+            "Aggregate software metrics over caller-supplied controlled labels; no scientific "
+            "truth, G2 approval, canonical S2 authority, publication authority, or v4.2 "
+            "assessment effect is created."
         ),
         "total_gold_rows": len(gold_by_id),
         "unresolved_gold_count": unresolved_count,
