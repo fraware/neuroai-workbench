@@ -149,9 +149,7 @@ def _require_no_authority_escalation(manifest: Mapping[str, Any]) -> None:
 
 def _require_clean_contamination_review(manifest: Mapping[str, Any]) -> None:
     if manifest.get("contamination_status") != CLEAN_CONTAMINATION_STATE:
-        raise BenchmarkManifestError(
-            "Manifest cannot proceed with known or unresolved held-out contamination"
-        )
+        raise BenchmarkManifestError("Manifest cannot proceed with known or unresolved held-out contamination")
     _require_nonempty_string(manifest, "exposure_register_ref")
 
 
@@ -181,17 +179,13 @@ def validate_freeze_manifest(manifest: Mapping[str, Any]) -> None:
 
     lineage_state = manifest.get("lineage_state")
     if lineage_state not in FREEZE_LINEAGE_STATES:
-        raise BenchmarkManifestError(
-            f"lineage_state must be one of {sorted(FREEZE_LINEAGE_STATES)}"
-        )
+        raise BenchmarkManifestError(f"lineage_state must be one of {sorted(FREEZE_LINEAGE_STATES)}")
     predecessor = manifest.get("predecessor_manifest_sha256")
     if lineage_state == "ROOT":
         if predecessor is not None:
             raise BenchmarkManifestError("ROOT freeze manifests cannot name a predecessor")
     elif not _is_hex_digest(predecessor, 64):
-        raise BenchmarkManifestError(
-            "SUCCESSOR freeze manifests require predecessor_manifest_sha256"
-        )
+        raise BenchmarkManifestError("SUCCESSOR freeze manifests require predecessor_manifest_sha256")
 
     _require_clean_contamination_review(manifest)
     _require_no_authority_escalation(manifest)
