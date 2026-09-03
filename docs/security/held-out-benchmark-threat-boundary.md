@@ -1,0 +1,11 @@
+# Held-out benchmark threat boundary
+
+This PRE-G2 threat note supplements `THREAT_MODEL.md` for D3/D4 evaluation. It introduces no publication, conformance, or assessment authority.
+
+Protected assets are held-out membership, gold labels, individual reviewer labels, adjudication packets, benchmark-freeze secrets, licensed source material, and any information from which those values can be reconstructed.
+
+Relevant failure modes include benchmark contamination before evaluation; publication of low-entropy membership or label hashes that can be enumerated; prediction payloads carrying oracle fields; silent conversion of reviewer disagreement into binary truth; selective omission or abstention hiding false negatives; subgroup aggregation concealing language, jurisdiction, text-availability, or edge-case failures; and software metrics being represented as scientific validity or G2 approval.
+
+Implemented PRE-G2 controls are intentionally bounded. Membership and labels remain in S3-controlled storage. Public commitments use keyed HMAC-SHA256 over deterministic JSON with an explicit ASCII domain separator and a secret of at least 32 bytes retained in S3. Public contracts reject undeclared fields and authority escalation. Prediction payloads are recursively screened for known oracle, source-text, licensed-byte, and nonce fields. Unresolved adjudication is excluded from binary scoring while remaining counted. Positive abstentions and missing predictions remain in effective false-negative accounting, and subgroup metrics are emitted separately.
+
+Residual risk remains substantial. Structural leakage guards cannot prove that a model, operator, upstream dataset, retrieval system, or external service has never seen the held-out set. HMAC commitments establish payload identity under possession of the secret; they do not establish label correctness, sampling validity, reviewer independence, or representativeness. Aggregate metrics can still be unstable for small subgroups. Controlled benchmark operations therefore require access logging, contamination review, freeze records, development/held-out separation, and human governance outside this module.
