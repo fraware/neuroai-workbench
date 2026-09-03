@@ -32,7 +32,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 
 ## Architecture decision records
 
-Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale. ADR 0014 is the accepted temporal implementation ADR. ADR 0015 and ADR 0016 are implementation ADRs for provenance and identity references. ADR 0017 expands the typed delta vocabulary without RFC-6902 patch.
+Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale. ADR 0014 is the accepted temporal implementation ADR. ADR 0015 and ADR 0016 are implementation ADRs for provenance and identity references. ADR 0017 expands the typed delta vocabulary without RFC-6902 patch. ADR 0019 records the PRE-G2 held-out benchmark implementation lineage (`#272` then `#275`) without G1/G2 approval claims.
 
 ## Operations
 
