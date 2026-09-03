@@ -1,0 +1,37 @@
+{
+  "schema_version": "0.1",
+  "benchmark_id": "PRE_G2_PRODUCT_V0_1",
+  "benchmark_kind": "PRODUCT",
+  "state": "DRAFT_UNFROZEN",
+  "g1_gate_state": "NOT_APPROVED",
+  "g1_disposition_id": null,
+  "g1_disposition_sha256": null,
+  "g2_passed": false,
+  "canonical_s2_authority": false,
+  "publication_authority": false,
+  "assessment_effect": "NONE",
+  "private_membership_location": "S3_CONTROLLED",
+  "private_labels_location": "S3_CONTROLLED",
+  "commitment_scheme": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1",
+  "membership_commitment": null,
+  "label_commitment": null,
+  "required_strata": [
+    "AMBIGUOUS_BIOSIGNAL",
+    "CLINICAL",
+    "CONSUMER",
+    "ENTERTAINMENT_XR",
+    "MULTI_JURISDICTION",
+    "MULTILINGUAL",
+    "NONTRADITIONAL_FORM_FACTOR",
+    "RESEARCH",
+    "WELLNESS",
+    "WORKPLACE"
+  ],
+  "double_label_subset_required": true,
+  "adjudication_states": [
+    "ABSTAIN_UNRESOLVED",
+    "ADJUDICATED",
+    "AGREE",
+    "DISAGREE_UNADJUDICATED"
+  ]
+}

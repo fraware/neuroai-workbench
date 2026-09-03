@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:neuroai:benchmark:patent:public-contract:v0.1",
+  "title": "NeuroAI PRE-G2 Patent Public Benchmark Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "benchmark_id",
+    "benchmark_kind",
+    "state",
+    "g1_gate_state",
+    "g1_disposition_id",
+    "g1_disposition_sha256",
+    "g2_passed",
+    "canonical_s2_authority",
+    "publication_authority",
+    "assessment_effect",
+    "private_membership_location",
+    "private_labels_location",
+    "commitment_scheme",
+    "membership_commitment",
+    "label_commitment",
+    "required_strata",
+    "double_label_subset_required",
+    "adjudication_states"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "benchmark_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "benchmark_kind": {"const": "PATENT"},
+    "state": {"enum": ["DRAFT_UNFROZEN", "FROZEN_COMMITMENTS_ONLY"]},
+    "g1_gate_state": {"enum": ["NOT_APPROVED", "APPROVED_REFERENCE_PROVIDED"]},
+    "g1_disposition_id": {"type": ["string", "null"], "minLength": 1},
+    "g1_disposition_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "g2_passed": {"const": false},
+    "canonical_s2_authority": {"const": false},
+    "publication_authority": {"const": false},
+    "assessment_effect": {"enum": ["NONE", null]},
+    "private_membership_location": {"const": "S3_CONTROLLED"},
+    "private_labels_location": {"const": "S3_CONTROLLED"},
+    "commitment_scheme": {"const": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1"},
+    "membership_commitment": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "label_commitment": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "required_strata": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "enum": [
+          "POSITIVE",
+          "NEGATIVE",
+          "SEMANTICALLY_DECEPTIVE_NEGATIVE",
+          "BORDERLINE",
+          "MISSING_OR_SHORT_ABSTRACT",
+          "MULTI_YEAR",
+          "MULTI_JURISDICTION",
+          "MULTILINGUAL",
+          "GRAY_CAPABILITY"
+        ]
+      }
+    },
+    "double_label_subset_required": {"const": true},
+    "adjudication_states": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "enum": [
+          "AGREE",
+          "DISAGREE_UNADJUDICATED",
+          "ADJUDICATED",
+          "ABSTAIN_UNRESOLVED"
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "DRAFT_UNFROZEN"}}},
+      "then": {
+        "properties": {
+          "membership_commitment": {"type": "null"},
+          "label_commitment": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "FROZEN_COMMITMENTS_ONLY"}}},
+      "then": {
+        "properties": {
+          "g1_gate_state": {"const": "APPROVED_REFERENCE_PROVIDED"},
+          "g1_disposition_id": {"type": "string", "minLength": 1},
+          "g1_disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "membership_commitment": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "label_commitment": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"g1_gate_state": {"const": "NOT_APPROVED"}}},
+      "then": {
+        "properties": {
+          "g1_disposition_id": {"type": "null"},
+          "g1_disposition_sha256": {"type": "null"}
+        }
+      }
+    }
+  ]
+}
