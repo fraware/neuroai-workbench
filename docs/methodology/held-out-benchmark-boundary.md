@@ -8,7 +8,7 @@ Held-out membership, gold labels, individual reviewer labels, adjudication packe
 
 When a benchmark is frozen after the applicable governance gate, membership and label payloads are committed with `HMAC_SHA256_CANONICAL_JSON_V1`. The HMAC secret remains in S3 and must contain at least 32 bytes. The public commitment is evidence that a later controlled payload can be checked against the frozen identity; it does not reveal the payload and does not establish that the labels are correct, representative, complete, or independently adjudicated.
 
-A public benchmark contract has two PRE-G2 states: `DRAFT_UNFROZEN` and `FROZEN_COMMITMENTS_ONLY`. Both require `g1_approved=false`, `g2_passed=false`, `canonical_s2_authority=false`, `publication_authority=false`, and `assessment_effect=NONE`. A later governance process must create any successor state that carries actual gate approval. This module intentionally cannot do so.
+A public benchmark contract has two PRE-G2 states: `DRAFT_UNFROZEN` and `FROZEN_COMMITMENTS_ONLY`. Both require `g2_passed=false`, `canonical_s2_authority=false`, `publication_authority=false`, and `assessment_effect=NONE`. `DRAFT_UNFROZEN` may remain at `g1_gate_state=NOT_APPROVED` or carry a structurally bound reference to an already approved G1 disposition. `FROZEN_COMMITMENTS_ONLY` is valid only when `g1_gate_state=APPROVED_REFERENCE_PROVIDED` and the contract contains a non-empty G1 disposition identifier plus its exact SHA-256 digest. The validator checks the reference structure and binding fields; it does not authenticate, issue, or substantively validate the G1 governance decision.
 
 ## D3 and D4 coverage scaffold
 
@@ -32,6 +32,6 @@ The evaluator also reports the same metrics across declared subgroup fields, def
 
 ## Execution sequence
 
-Before any model selection or threshold tuning against the held-out sets, the applicable research contract and taxonomy must receive the required G1 governance disposition. D3/D4 membership and labels are then frozen in S3, opaque commitments are recorded, and the held-out sets remain unavailable for tuning. Model comparison uses a separate development set and then a controlled held-out evaluation. G2 can be considered only from the resulting evidence package plus the required human governance review.
+Before any model selection or threshold tuning against the held-out sets, the applicable research contract and taxonomy must receive the required G1 governance disposition. The exact G1 disposition identifier and digest are then bound into the benchmark contract before D3/D4 membership and labels can enter `FROZEN_COMMITMENTS_ONLY`. The controlled S3 payloads receive opaque commitments and remain unavailable for tuning. Model comparison uses a separate development set and then a controlled held-out evaluation. G2 can be considered only from the resulting evidence package plus the required human governance review.
 
 All functions in `neuroai_workbench.evaluation_benchmarks` are offline and side-effect free. They do not perform network I/O, write repositories or workspaces, mutate S2, create release attestations, or invoke the v4.2 assessment engine.
