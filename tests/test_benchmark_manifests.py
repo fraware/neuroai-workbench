@@ -23,7 +23,7 @@ def _freeze() -> dict[str, object]:
         "g1_disposition_sha256": "1" * 64,
         "membership_commitment": "2" * 64,
         "label_commitment": "3" * 64,
-        "commitment_scheme": "HMAC_SHA256_CANONICAL_JSON_V1",
+        "commitment_scheme": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1",
         "s3_custody": True,
         "strata_contract_version": "D3-v0.1",
         "adjudication_protocol_version": "ADJ-v0.1",
