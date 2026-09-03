@@ -90,9 +90,7 @@ def test_unresolved_predecessor_provenance_is_explicit(tmp_path: Path) -> None:
 
     proof = mod.build_proof([("V14", predecessor)])
     unresolved = [
-        field
-        for field in proof["fields"]
-        if field["disposition"] == "PRESERVED_UNRESOLVED_PREDECESSOR_STATE"
+        field for field in proof["fields"] if field["disposition"] == "PRESERVED_UNRESOLVED_PREDECESSOR_STATE"
     ]
 
     assert {field["source_field"] for field in unresolved} == {"source_ids", "last_verified"}

@@ -133,6 +133,9 @@ def test_scanner_incomplete_identity_fail_closed() -> None:
 def test_authorization_packet_validation_failures() -> None:
     from neuroai_workbench.collector.authorization import (
         AUTHORIZATION_BOUNDARY,
+        LIVE_AUTHORIZATION_ENV,
+        LIVE_COLLECTION_ENV,
+        load_live_authorization_from_environment,
         require_network_authorization,
         validate_authorization_packet,
     )
@@ -165,12 +168,36 @@ def test_authorization_packet_validation_failures() -> None:
                 "boundary": "wrong",
             }
         )
+    with pytest.raises(CollectionAuthorizationError, match="authorization_id"):
+        validate_authorization_packet(
+            {
+                "authorization_id": " ",
+                "authorized_by": "local-operator",
+                "authorized_at": "2026-08-31T00:00:00Z",
+                "purpose": "unit-test",
+                "network_mode": "OFFLINE",
+                "network_permitted": False,
+                "boundary": AUTHORIZATION_BOUNDARY,
+            }
+        )
     with pytest.raises(CollectionAuthorizationError, match="authorized_by"):
         validate_authorization_packet(
             {
                 "authorization_id": "AUTH-X",
                 "authorized_by": "  ",
                 "authorized_at": "2026-08-31T00:00:00Z",
+                "purpose": "unit-test",
+                "network_mode": "OFFLINE",
+                "network_permitted": False,
+                "boundary": AUTHORIZATION_BOUNDARY,
+            }
+        )
+    with pytest.raises(CollectionAuthorizationError, match="authorized_at"):
+        validate_authorization_packet(
+            {
+                "authorization_id": "AUTH-X",
+                "authorized_by": "local-operator",
+                "authorized_at": "",
                 "purpose": "unit-test",
                 "network_mode": "OFFLINE",
                 "network_permitted": False,
@@ -225,6 +252,32 @@ def test_authorization_packet_validation_failures() -> None:
                 "boundary": AUTHORIZATION_BOUNDARY,
             }
         )
+    with pytest.raises(CollectionAuthorizationError, match="64-character hex digest"):
+        validate_authorization_packet(
+            {
+                "authorization_id": "AUTH-X",
+                "authorized_by": "local-operator",
+                "authorized_at": "2026-08-31T00:00:00Z",
+                "purpose": "unit-test",
+                "network_mode": "OFFLINE",
+                "network_permitted": False,
+                "boundary": AUTHORIZATION_BOUNDARY,
+                "authorization_sha256": "short",
+            }
+        )
+    with pytest.raises(CollectionAuthorizationError, match="hexadecimal"):
+        validate_authorization_packet(
+            {
+                "authorization_id": "AUTH-X",
+                "authorized_by": "local-operator",
+                "authorized_at": "2026-08-31T00:00:00Z",
+                "purpose": "unit-test",
+                "network_mode": "OFFLINE",
+                "network_permitted": False,
+                "boundary": AUTHORIZATION_BOUNDARY,
+                "authorization_sha256": "g" * 64,
+            }
+        )
     packet = build_authorization_packet(
         authorization_id="AUTH-BAD",
         authorized_by="local-operator",
@@ -234,3 +287,36 @@ def test_authorization_packet_validation_failures() -> None:
     )
     with pytest.raises(CollectionAuthorizationError):
         require_network_authorization(packet)
+    digestless = dict(packet)
+    digestless.pop("authorization_sha256")
+    with pytest.raises(CollectionAuthorizationError, match="digest-bound authorization packet"):
+        require_network_authorization({**digestless, "network_mode": "AUTHORIZED_NETWORK", "network_permitted": True})
+
+    monkeypatch = pytest.MonkeyPatch()
+    try:
+        monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+        monkeypatch.setenv(LIVE_AUTHORIZATION_ENV, "{not-json")
+        with pytest.raises(CollectionAuthorizationError, match="not valid JSON"):
+            load_live_authorization_from_environment()
+        monkeypatch.setenv(LIVE_AUTHORIZATION_ENV, "[]")
+        with pytest.raises(CollectionAuthorizationError, match="must decode to an object"):
+            load_live_authorization_from_environment()
+    finally:
+        monkeypatch.undo()
+
+
+def test_require_network_authorization_rechecks_digest_under_live_gate(monkeypatch: pytest.MonkeyPatch) -> None:
+    from neuroai_workbench.collector import authorization as authorization_module
+
+    packet = build_authorization_packet(
+        authorization_id="AUTH-RECHECK",
+        authorized_by="local-operator",
+        purpose="unit-test",
+        network_mode="AUTHORIZED_NETWORK",
+        network_permitted=True,
+        authorized_at="2026-09-03T00:00:00Z",
+    )
+    monkeypatch.setenv("NEUROAI_LIVE_COLLECTION", "1")
+    monkeypatch.setattr(authorization_module, "authorization_digest", lambda _: "0" * 64)
+    with pytest.raises(CollectionAuthorizationError, match="digest mismatch"):
+        authorization_module.require_network_authorization(packet)

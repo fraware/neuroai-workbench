@@ -164,9 +164,7 @@ def test_complete_partition_contains_every_input_exactly_once() -> None:
 
 
 def test_partition_verifier_detects_missing_and_tampered_records() -> None:
-    result = materialize_predecessor_organizations(
-        {"organizations": [_active("ORG-A"), _legacy(), _provenance()]}
-    )
+    result = materialize_predecessor_organizations({"organizations": [_active("ORG-A"), _legacy(), _provenance()]})
     result["preserved_predecessor_records"].pop()
     report = verify_organization_partition(result)
     assert report["valid"] is False
@@ -181,9 +179,7 @@ def test_partition_verifier_detects_missing_and_tampered_records() -> None:
 
 def test_duplicate_materialized_entity_ids_fail_closed() -> None:
     with pytest.raises(ObservatoryEntityMigrationError, match="Duplicate materialized entity id ORG-DUP"):
-        materialize_predecessor_organizations(
-            {"organizations": [_active("ORG-DUP"), _active("ORG-DUP")]}
-        )
+        materialize_predecessor_organizations({"organizations": [_active("ORG-DUP"), _active("ORG-DUP")]})
 
 
 def test_entity_package_is_deterministic_and_manifest_bound(tmp_path) -> None:

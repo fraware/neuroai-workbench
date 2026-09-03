@@ -54,19 +54,22 @@ def test_delta_capital_event_materializes_without_inventing_evidence() -> None:
     assert event["occurred_at"]["value"] == "2026-03-05"
     assert event["boundary"] == DELTA_CAPITAL_BOUNDARY
     assert trace["predecessor_record"] == _event()
-    assert verify_delta_capital_event(
-        event,
-        trace,
-        entity_index={"ORG-1": entities[0]},
-        known_source_ids={"SRC-16-004"},
-    ) == []
+    assert (
+        verify_delta_capital_event(
+            event,
+            trace,
+            entity_index={"ORG-1": entities[0]},
+            known_source_ids={"SRC-16-004"},
+        )
+        == []
+    )
 
 
 def test_delta_capital_family_requires_exact_entity_and_source_bindings() -> None:
     entities = [_entity("ORG-1", "Science Corporation")]
     with pytest.raises(DeltaCapitalMigrationError, match="no exact materialized Entity match"):
         materialize_delta16_capital_events(
-            {"capital_and_ownership_events": [_event(subject="Unknown") ]},
+            {"capital_and_ownership_events": [_event(subject="Unknown")]},
             entities=entities,
             known_source_ids={"SRC-16-004"},
         )

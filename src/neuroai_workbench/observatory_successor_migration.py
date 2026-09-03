@@ -105,13 +105,17 @@ def preserve_v17_successor_lineage(
     predecessor_decision = old.get(predecessor_id)
     successor_decision = new.get(successor_id)
     if predecessor_decision is None or successor_decision is None:
-        raise ObservatorySuccessorMigrationError("reopening transition references missing predecessor/successor decision")
+        raise ObservatorySuccessorMigrationError(
+            "reopening transition references missing predecessor/successor decision"
+        )
     if transition.get("predecessor_state") != predecessor_decision.get("decision"):
         raise ObservatorySuccessorMigrationError("reopening predecessor state does not match v1.6 decision")
     if transition.get("successor_state") != successor_decision.get("decision"):
         raise ObservatorySuccessorMigrationError("reopening successor state does not match v1.7 decision")
     if predecessor_id in new:
-        raise ObservatorySuccessorMigrationError("superseded reopening predecessor decision must not remain in v1.7 set")
+        raise ObservatorySuccessorMigrationError(
+            "superseded reopening predecessor decision must not remain in v1.7 set"
+        )
     if successor_id in old:
         raise ObservatorySuccessorMigrationError("successor reopening decision must not pre-exist in v1.6 set")
     unchanged_old = {key: value for key, value in old.items() if key != predecessor_id}

@@ -21,9 +21,7 @@ S2_CANDIDATE_BOUNDARY = (
     "clinical, regulatory, scientific, or conformance authority."
 )
 MECHANICAL_GATE_A_DECISION = "PASS_REPRESENTATIONAL_MIGRATION_MECHANICALLY_COMPLETE"
-FROZEN_INPUT_ROLES = frozenset(
-    {"V14", "V16", "DELTA16", "V17", "PRIMA17", "SOURCE_REGISTER14", "MONITOR15"}
-)
+FROZEN_INPUT_ROLES = frozenset({"V14", "V16", "DELTA16", "V17", "PRIMA17", "SOURCE_REGISTER14", "MONITOR15"})
 
 OBJECT_FILES = (
     "entities.jsonl",
@@ -121,8 +119,7 @@ def _frozen_inputs(value: Any) -> dict[str, str]:
     if not isinstance(value, dict) or set(value) != FROZEN_INPUT_ROLES:
         raise ObservatoryS2ReleaseError("Gate-A descriptor must bind exactly the seven frozen input roles")
     return {
-        role: _require_hex(value[role], length=64, field=f"frozen input {role}")
-        for role in sorted(FROZEN_INPUT_ROLES)
+        role: _require_hex(value[role], length=64, field=f"frozen input {role}") for role in sorted(FROZEN_INPUT_ROLES)
     }
 
 

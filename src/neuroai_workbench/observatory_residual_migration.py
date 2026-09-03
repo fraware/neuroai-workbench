@@ -54,7 +54,9 @@ def _validate_source_refs(value: Any, known_source_ids: set[str], *, path: str =
             if key == "source_id" and isinstance(item, str) and item not in known_source_ids:
                 missing.add(item)
             elif key == "source_ids":
-                if not isinstance(item, list) or any(not isinstance(source_id, str) or not source_id for source_id in item):
+                if not isinstance(item, list) or any(
+                    not isinstance(source_id, str) or not source_id for source_id in item
+                ):
                     raise ObservatoryResidualMigrationError(f"{path}.source_ids must be an array of non-empty strings")
                 missing.update(source_id for source_id in item if source_id not in known_source_ids)
             else:
@@ -81,9 +83,7 @@ def _preserve_family(
         raise ObservatoryResidualMigrationError(f"{role}.{family} entries must be objects")
     missing_sources = _validate_source_refs(payload, known_source_ids, path=f"{role}.{family}")
     if missing_sources:
-        raise ObservatoryResidualMigrationError(
-            f"{role}.{family} references missing Sources {missing_sources}"
-        )
+        raise ObservatoryResidualMigrationError(f"{role}.{family} references missing Sources {missing_sources}")
     return {
         "migration_state": RESIDUAL_STATE,
         "role": role,
@@ -117,9 +117,7 @@ def preserve_residual_gate_a_state(
         )
 
     source_by_id = {
-        str(record.get("source_id")): record
-        for record in v14_sources
-        if isinstance(record.get("source_id"), str)
+        str(record.get("source_id")): record for record in v14_sources if isinstance(record.get("source_id"), str)
     }
     if len(source_by_id) != len(v14_sources):
         raise ObservatoryResidualMigrationError("v1.4 source ids must be complete and unique")
@@ -351,11 +349,11 @@ def verify_residual_gate_a_state(
 
     expected_counts = {
         "residual_family_count": len(families),
-        "residual_record_count": sum(
-            int(item.get("record_count", 0)) for item in families if isinstance(item, dict)
-        ),
+        "residual_record_count": sum(int(item.get("record_count", 0)) for item in families if isinstance(item, dict)),
         "release_level_bundle_count": len(release_level),
-        "source_register_records": int(source_register.get("record_count", 0)) if isinstance(source_register, dict) else 0,
+        "source_register_records": int(source_register.get("record_count", 0))
+        if isinstance(source_register, dict)
+        else 0,
         "monitor_registry_records": int(monitor.get("record_count", 0)) if isinstance(monitor, dict) else 0,
     }
     if state.get("counts") != expected_counts:

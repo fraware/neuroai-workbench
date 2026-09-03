@@ -151,9 +151,7 @@ def test_review_packet_covers_every_declared_family_and_forces_known_edge_cases(
     assert packet["gate_a_complete"] is False
     assert packet["software_approval_performed"] is False
     assert packet["family_coverage_count"] == len(MIGRATION_MODES)
-    assert set(packet["covered_families"]) == {
-        f"{role}.{family}" for role, family in MIGRATION_MODES
-    }
+    assert set(packet["covered_families"]) == {f"{role}.{family}" for role, family in MIGRATION_MODES}
     assert verify_gate_a_review_packet(packet) == []
 
     organization_edges = {

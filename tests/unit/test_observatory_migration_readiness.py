@@ -171,5 +171,8 @@ def test_summary_counts_records_and_blockers_deterministically() -> None:
     )
     assert result["ready_record_count"] == 0
     assert result["blocked_record_count"] == 0
-    assert all(summary == {"record_count": 0, "ready_count": 0, "blocked_count": 0} for summary in result["family_summary"].values())
+    assert all(
+        summary == {"record_count": 0, "ready_count": 0, "blocked_count": 0}
+        for summary in result["family_summary"].values()
+    )
     assert result["blocker_counts"] == {}

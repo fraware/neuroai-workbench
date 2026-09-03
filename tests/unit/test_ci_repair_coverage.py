@@ -36,6 +36,8 @@ from neuroai_workbench.shadow_refresh.closure import (
     list_quarantine_successes,
     publisher_mentions_for_sources,
     record_formal_disposition,
+    retry_failed_sources,
+    run_offline_entity_sample,
     run_offline_extraction_sample,
 )
 from neuroai_workbench.util import atomic_write_json, load_json
@@ -191,6 +193,85 @@ def test_shadow_closure_pure_helpers_and_fail_closed_paths(tmp_path: Path) -> No
     mentions = publisher_mentions_for_sources(registry, ["SRC-1", "SRC-2", "SRC-MISSING"])
     assert mentions == [{"source_id": "SRC-1", "mention": "Publisher One"}]
     assert content_addressed_run_id(b"stable") == content_addressed_run_id(b"stable")
+
+
+def test_retry_failed_sources_and_offline_samples_cover_noncanonical_paths(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    registry = {
+        "sources": [
+            {
+                "source_id": "SRC-FAIL",
+                "monitor_id": "MON-FAIL",
+                "url": "https://example.org/fail",
+                "publisher": "Failure Source",
+                "source_class": "OFFICIAL_PAGE",
+                "network_access_required": True,
+            },
+            {
+                "source_id": "SRC-OK",
+                "monitor_id": "MON-OK",
+                "url": "https://example.org/ok",
+                "publisher": "Success Source",
+                "source_class": "OFFICIAL_PAGE",
+                "network_access_required": True,
+            },
+        ]
+    }
+    quarantine = tmp_path / "retry-quarantine"
+    atomic_write_json(
+        quarantine / "failures" / "fail.json",
+        {
+            "source_id": "SRC-FAIL",
+            "failure_class": "HTTP_ERROR",
+            "failure_message": "Unexpected HTTP status 403",
+        },
+    )
+
+    monkeypatch.setattr(
+        "neuroai_workbench.shadow_refresh.closure.run_live_cohort_collection",
+        lambda **_: {
+            "collection_run": {
+                "outcomes": [
+                    {"source_id": "SRC-OK", "status": "RESULT", "record_id": "CRES-OK"},
+                    {"source_id": "SRC-FAIL", "status": "FAILURE", "failure_class": "HTTP_ERROR"},
+                ]
+            }
+        },
+    )
+
+    package = retry_failed_sources(
+        registry=registry,
+        registry_sha256="a" * 64,
+        quarantine_root=quarantine,
+        source_ids=["SRC-OK", "SRC-FAIL"],
+        as_of="2026-09-03",
+    )
+    assert [item["source_id"] for item in package["typed_outcomes"]] == ["SRC-OK", "SRC-FAIL"]
+    assert package["typed_outcomes"][0]["outcome_type"] == "RETRIEVAL_SUCCEEDED"
+    assert package["typed_outcomes"][1]["outcome_type"] == "ACCESS_DENIAL"
+
+    entity = run_offline_entity_sample(
+        evaluation_workspace=tmp_path / "entity-ws",
+        sample_mentions=[
+            {"source_id": "SRC-OK", "mention": "Success Source"},
+            {"source_id": "SRC-FAIL", "mention": " "},
+        ],
+        actor="coverage-test",
+    )
+    assert entity["proposal_count"] == 1
+    assert entity["disposition_count"] in {0, 1}
+    assert entity["proposals"][0]["source_id"] == "SRC-OK"
+
+    extraction = run_offline_extraction_sample(
+        evaluation_workspace=tmp_path / "extract-ws",
+        quarantine_root=tmp_path / "unused-quarantine",
+        handoffs=[
+            {"source_id": "SRC-OK", "sha256": "b" * 64},
+            {"source_id": "SRC-FAIL", "sha256": "c" * 64},
+        ],
+        actor="coverage-test",
+    )
+    assert extraction["record_count"] == 2
+    assert {row["accuracy_lane"] for row in extraction["records"]} == {"CONTRACT_FIXTURE_NON_ACCURACY"}
 
 
 def test_shadow_closure_dispositions_and_public_projection() -> None:

@@ -41,7 +41,7 @@ def _appl_id(value: Any) -> int:
 
 
 def _safe_json_value(value: Any) -> Any:
-    if value is None or isinstance(value, (str, int, float, bool)):
+    if value is None or isinstance(value, str | int | float | bool):
         return value
     if isinstance(value, list):
         return [_safe_json_value(item) for item in value]
@@ -178,14 +178,16 @@ def project_search_pages(
                     raise ValueError(f"Conflicting normalized RePORTER representations for appl_id {appl_id}")
                 duplicate_count += 1
 
-        page_reports.append({
-            "page_index": index,
-            "reported_total_count": total,
-            "offset": offset,
-            "limit": limit,
-            "returned_record_count": len(rows),
-            "unique_appl_ids_on_page": len(set(ids_on_page)),
-        })
+        page_reports.append(
+            {
+                "page_index": index,
+                "reported_total_count": total,
+                "offset": offset,
+                "limit": limit,
+                "returned_record_count": len(rows),
+                "unique_appl_ids_on_page": len(set(ids_on_page)),
+            }
+        )
 
     distinct_totals = sorted(set(totals))
     if len(distinct_totals) == 1:
@@ -217,7 +219,9 @@ def project_search_pages(
             duplicate_of = known.get(appl_id)
             record: dict[str, Any] = {
                 "record_key": f"REPORTER:APPL:{appl_id}",
-                "title": normalized.get("project_title") or normalized.get("project_num") or f"RePORTER application {appl_id}",
+                "title": normalized.get("project_title")
+                or normalized.get("project_num")
+                or f"RePORTER application {appl_id}",
                 "url": f"{REPORTER_PROJECT_PREFIX}{appl_id}",
                 "publisher": "NIH RePORTER",
                 "source_class": "OFFICIAL_GRANT_DATABASE",

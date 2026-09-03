@@ -75,8 +75,7 @@ def test_event_objects_and_entity_lineage_are_referentially_checked() -> None:
     assert compiled["mechanical_pass"] is False
     assert "EVT-DANGLE.objects[0]->ENT-MISSING-OBJECT dangling" in compiled["integrity_errors"]
     assert (
-        "ENT-LINEAGE.lineage.predecessor_entity_ids->ENT-MISSING-PREDECESSOR dangling"
-        in compiled["integrity_errors"]
+        "ENT-LINEAGE.lineage.predecessor_entity_ids->ENT-MISSING-PREDECESSOR dangling" in compiled["integrity_errors"]
     )
 
 

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 
+from neuroai_workbench.collector.authorization import LIVE_AUTHORIZATION_ENV, build_authorization_packet
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.collector.handoff import approve_quarantine_record
 from neuroai_workbench.monitoring import initialize_monitoring, load_source_registry, record_snapshot
@@ -21,11 +23,24 @@ from neuroai_workbench.shadow_refresh.cycle import (
     run_offline_snapshot_cycle,
 )
 from neuroai_workbench.shadow_refresh.live import run_live_cohort_collection
-from neuroai_workbench.util import atomic_write_json, load_json, sha256_file
+from neuroai_workbench.util import atomic_write_json, load_json, sha256_bytes, sha256_file
 from tests.unit.test_collector_adapters_scheduler import FakeTransport, global_getaddrinfo
 
 FIXTURES = Path(__file__).parents[1] / "fixtures" / "delta"
 PREDECESSOR = FIXTURES / "synthetic_predecessor_release.json"
+
+
+def _authorize_live(monkeypatch: pytest.MonkeyPatch) -> None:
+    packet = build_authorization_packet(
+        authorization_id="AUTH-EVAL-TEST",
+        authorized_by="test-operator",
+        purpose="Controlled unit test of live evaluation-cycle quarantine flow.",
+        network_mode="AUTHORIZED_NETWORK",
+        network_permitted=True,
+        authorized_at="2026-09-02T12:00:00Z",
+    )
+    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    monkeypatch.setenv(LIVE_AUTHORIZATION_ENV, json.dumps(packet))
 
 
 def _mini_registry() -> list[dict[str, object]]:
@@ -106,6 +121,22 @@ def test_classify_cycle_source_outcome_taxonomy() -> None:
     assert "TIMEOUT" in SOURCE_OUTCOME_TAXONOMY
     assert "REDIRECT_FAILURE" in SOURCE_OUTCOME_TAXONOMY
     assert "ACCESS_DENIAL" in SOURCE_OUTCOME_TAXONOMY
+
+
+def test_classify_cycle_source_outcome_additional_fail_closed_paths() -> None:
+    unresolved = classify_cycle_source_outcome(
+        failure={"source_id": "S1", "failure_class": "OTHER", "failure_message": "opaque failure"}
+    )
+    assert unresolved["outcome_type"] == "UNRESOLVED_RETRIEVAL"
+
+    fallback = classify_cycle_source_outcome(
+        success={"source_id": "S1", "http_status": 200},
+        comparison={"classification": "UNRECOGNIZED_CLASSIFICATION"},
+    )
+    assert fallback["outcome_type"] == "SUCCESS"
+
+    with pytest.raises(ValueError, match="requires success or failure"):
+        classify_cycle_source_outcome()
 
 
 def test_offline_full_cycle_produces_candidate_successor_and_publications(tmp_path: Path) -> None:
@@ -214,7 +245,7 @@ def test_live_cycle_requires_gate_and_handoff_flag(tmp_path: Path, monkeypatch: 
             approve_handoff=True,
         )
 
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    _authorize_live(monkeypatch)
     with pytest.raises(PermissionError, match="approve_handoff"):
         run_live_evaluation_cycle(
             evaluation_workspace=tmp_path / "ws",
@@ -241,7 +272,7 @@ def test_live_cycle_requires_gate_and_handoff_flag(tmp_path: Path, monkeypatch: 
 
 
 def test_live_cycle_with_injected_transport_and_baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    _authorize_live(monkeypatch)
     url = "https://page.example.org/company"
     registry_path = tmp_path / "registry.json"
     atomic_write_json(
@@ -337,3 +368,130 @@ def test_live_cycle_with_injected_transport_and_baseline(tmp_path: Path, monkeyp
     assert any(item["outcome_type"] == "CONTENT_CHANGED" for item in package["source_outcomes"])
     assert package["stats"]["candidates"]["generated"] >= 1
     assert Path(package["stage_results"]["apply_delta"]["successor_path"]).is_file()
+
+
+def test_live_cycle_without_prior_snapshot_creates_first_capture_candidate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _authorize_live(monkeypatch)
+    url = "https://example.org/first-capture"
+    registry_path = tmp_path / "registry.json"
+    atomic_write_json(
+        registry_path,
+        [
+            {
+                "monitor_id": "MON-SRC-0003",
+                "source_id": "SRC-0003",
+                "url": url,
+                "publisher": "Example org",
+                "source_class": "OFFICIAL_COMPANY_PAGE",
+                "cadence": "MONTHLY",
+                "last_successful_retrieval": "2026-07-01",
+                "baseline_evidence_state": "CURRENT_SOURCE_RETRIEVED",
+                "baseline_verification_state": "CURRENT_VERIFIED",
+                "baseline_claim_boundary": "Synthetic boundary.",
+                "network_access_required": True,
+                "current_status": "BASELINE_REGISTERED",
+                "next_action": "RETRIEVE_AND_COMPARE",
+            }
+        ],
+    )
+    body = b"<html>first capture</html>"
+    digest = sha256_bytes(body)
+    quarantine_root = tmp_path / "quarantine"
+    relative = f"incoming/SRC-0003/{digest[:12]}/index.html"
+    capture_path = quarantine_root / relative
+    capture_path.parent.mkdir(parents=True, exist_ok=True)
+    capture_path.write_bytes(body)
+    atomic_write_json(
+        quarantine_root / "records" / "QRN-11111111111111111111111111111111.json",
+        {
+            "quarantine_id": "QRN-11111111111111111111111111111111",
+            "source_id": "SRC-0003",
+            "monitor_id": "MON-SRC-0003",
+            "result_id": "CRES-11111111111111111111111111111111",
+            "captured_at": "2026-08-02T23:00:00Z",
+            "sha256": digest,
+            "size_bytes": len(body),
+            "quarantine_path": relative,
+            "original_filename": "index.html",
+            "approval_state": "APPROVED_FOR_HANDOFF",
+            "approved_at": "2026-08-03T00:00:00Z",
+            "approved_by": "tester",
+            "rejection_reason": None,
+            "collector_version": "test",
+            "configuration_hash": "a" * 64,
+            "boundary": "test",
+        },
+    )
+    atomic_write_json(
+        quarantine_root / "results" / "CRES-11111111111111111111111111111111.json",
+        {
+            "result_id": "CRES-11111111111111111111111111111111",
+            "request_id": "CREQ-11111111111111111111111111111111",
+            "source_id": "SRC-0003",
+            "monitor_id": "MON-SRC-0003",
+            "requested_url": url,
+            "final_url": url,
+            "retrieved_at": "2026-08-02T23:00:00Z",
+            "http_status": 200,
+            "media_type": "text/html",
+            "sha256": digest,
+            "size_bytes": len(body),
+            "quarantine_path": relative,
+            "original_filename": "index.html",
+            "evidence_state": "RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED",
+            "collector_version": "test",
+            "configuration_hash": "a" * 64,
+            "dns_resolution": [],
+            "redirect_chain": [],
+            "boundary": "test",
+        },
+    )
+    monkeypatch.setattr(
+        "neuroai_workbench.shadow_refresh.cycle.run_live_cohort_collection",
+        lambda **_: {
+            "collection_run": {
+                "run_id": "CRUN-FIRST",
+                "status": "COMPLETE",
+                "counts": {"total": 1, "succeeded": 1, "failed": 0, "skipped": 0},
+                "outcomes": [
+                    {
+                        "source_id": "SRC-0003",
+                        "adapter_id": "json_api",
+                        "status": "RESULT",
+                        "record_id": "CRES-11111111111111111111111111111111",
+                    }
+                ],
+            },
+            "capture_digests": [
+                {
+                    "source_id": "SRC-0003",
+                    "result_id": "CRES-11111111111111111111111111111111",
+                    "sha256": digest,
+                    "http_status": 200,
+                    "size_bytes": len(body),
+                    "media_type": "text/html",
+                    "final_url": url,
+                }
+            ],
+            "failure_summaries": [],
+        },
+    )
+
+    package = run_live_evaluation_cycle(
+        evaluation_workspace=tmp_path / "ws",
+        registry_path=registry_path,
+        predecessor_path=PREDECESSOR,
+        quarantine_root=quarantine_root,
+        output_dir=tmp_path / "out",
+        refresh_version="eval-live-first-capture",
+        evidence_cutoff="2026-08-02",
+        apply_id="apply-live-first-capture-001",
+        approve_handoff=True,
+    )
+
+    assert package["stage_results"]["compare_snapshots"]["count"] == 0
+    assert package["stage_results"]["compare_snapshots"]["first_capture_without_baseline"] == 1
+    assert package["stage_results"]["create_change_candidate"]["count"] == 1
+    assert package["source_outcomes"][0]["outcome_type"] == "MANUAL_FIRST_CAPTURE"

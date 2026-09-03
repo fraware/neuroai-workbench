@@ -65,9 +65,7 @@ def _candidate_reference(release_dir: Path) -> dict[str, Any]:
         "candidate_id": str(descriptor.get("candidate_id") or ""),
         "release_tag": str(descriptor.get("release_tag") or ""),
         "manifest_sha256": _require_hex(manifest.get("manifest_sha256"), length=64, field="manifest_sha256"),
-        "descriptor_sha256": _require_hex(
-            manifest.get("descriptor_sha256"), length=64, field="descriptor_sha256"
-        ),
+        "descriptor_sha256": _require_hex(manifest.get("descriptor_sha256"), length=64, field="descriptor_sha256"),
         "candidate_content_sha256": _require_hex(
             descriptor.get("candidate_content_sha256"), length=64, field="candidate_content_sha256"
         ),

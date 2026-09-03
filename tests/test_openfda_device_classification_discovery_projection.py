@@ -159,9 +159,7 @@ class DeviceClassificationProjectionTests(unittest.TestCase):
                     search=SEARCH,
                     pages=[_page([record])],
                 )
-                self.assertEqual(
-                    result["coverage"]["unresolved_product_code_count"], 1
-                )
+                self.assertEqual(result["coverage"]["unresolved_product_code_count"], 1)
                 self.assertEqual(result["coverage"]["unique_product_code_count"], 0)
                 self.assertEqual(result["result_records"], [])
 

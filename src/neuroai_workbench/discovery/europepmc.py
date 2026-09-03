@@ -145,16 +145,12 @@ def _known_identity_index(values: Mapping[str, str] | None) -> dict[str, str]:
         source_id = _text(raw_source_id, f"known_publication_sources[{identity}]")
         prior = index.get(identity)
         if prior is not None and prior != source_id:
-            raise ValueError(
-                f"Conflicting controlled source identities for known publication {identity}"
-            )
+            raise ValueError(f"Conflicting controlled source identities for known publication {identity}")
         index[identity] = source_id
     return index
 
 
-def _known_source_match(
-    normalized: Mapping[str, Any], known: Mapping[str, str]
-) -> str | None:
+def _known_source_match(normalized: Mapping[str, Any], known: Mapping[str, str]) -> str | None:
     candidates: set[str] = {str(normalized["resolved_identity"])}
     doi = normalized.get("doi")
     if isinstance(doi, str):
@@ -278,9 +274,7 @@ def project_search_pages(
             reported_hit_counts.append(hit_count)
 
         next_cursor = payload.get("nextCursorMark")
-        if next_cursor is not None and (
-            not isinstance(next_cursor, str) or not next_cursor.strip()
-        ):
+        if next_cursor is not None and (not isinstance(next_cursor, str) or not next_cursor.strip()):
             raise ValueError(f"page {index}: nextCursorMark must be non-empty string/null")
 
         page_identities: list[str] = []
@@ -294,9 +288,7 @@ def project_search_pages(
             elif prior == normalized:
                 duplicate_representation_count += 1
             else:
-                raise ValueError(
-                    f"Conflicting normalized Europe PMC representations for {identity}"
-                )
+                raise ValueError(f"Conflicting normalized Europe PMC representations for {identity}")
 
         page_reports.append(
             {
@@ -311,8 +303,7 @@ def project_search_pages(
     for report in page_reports[:-1]:
         if not report["next_cursor_mark_present"]:
             raise ValueError(
-                f"Invalid Europe PMC pagination sequence: non-final page "
-                f"{report['page_index']} has no nextCursorMark"
+                f"Invalid Europe PMC pagination sequence: non-final page {report['page_index']} has no nextCursorMark"
             )
 
     distinct_hits = sorted(set(reported_hit_counts))
@@ -364,10 +355,7 @@ def project_search_pages(
         record: dict[str, Any] = {
             "record_key": identity,
             "title": title,
-            "url": (
-                f"{EUROPE_PMC_ARTICLE_PREFIX}{quote(source, safe='')}/"
-                f"{quote(ext_id, safe='')}"
-            ),
+            "url": (f"{EUROPE_PMC_ARTICLE_PREFIX}{quote(source, safe='')}/{quote(ext_id, safe='')}"),
             "publisher": "Europe PMC",
             "source_class": "OFFICIAL_BIBLIOGRAPHIC_METADATA",
             "suggested_source_id": _suggested_source_id(identity),
@@ -375,9 +363,7 @@ def project_search_pages(
         }
         if duplicate_of is not None:
             record["duplicate_of_source_id"] = duplicate_of
-            known_duplicates.append(
-                {"resolved_identity": identity, "source_id": duplicate_of}
-            )
+            known_duplicates.append({"resolved_identity": identity, "source_id": duplicate_of})
         result_records.append(record)
         normalized_records.append(normalized)
 

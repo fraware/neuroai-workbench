@@ -5,7 +5,9 @@ import unittest
 from neuroai_workbench.discovery.nih_reporter import project_search_pages
 
 
-def _record(appl_id: int, *, project_num: str, core: str = "R01NS000001", title: str = "Neural interface grant") -> dict:
+def _record(
+    appl_id: int, *, project_num: str, core: str = "R01NS000001", title: str = "Neural interface grant"
+) -> dict:
     return {
         "appl_id": appl_id,
         "subproject_id": None,
@@ -33,7 +35,15 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
     def test_projects_exact_application_identity_and_metadata(self) -> None:
         result = project_search_pages(
             query_id="DISCOVERY-REPORTER-BCI-001",
-            query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "projecttitle,abstracttext,terms", "search_text": "BCI"}}},
+            query_payload={
+                "criteria": {
+                    "advanced_text_search": {
+                        "operator": "or",
+                        "search_field": "projecttitle,abstracttext,terms",
+                        "search_text": "BCI",
+                    }
+                }
+            },
             pages=[_page([_record(12345678, project_num="1R01NS000001-01")], total=1)],
         )
         self.assertEqual(result["result_records"][0]["record_key"], "REPORTER:APPL:12345678")
@@ -49,7 +59,9 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
     def test_exact_known_appl_id_marks_duplicate(self) -> None:
         result = project_search_pages(
             query_id="DISCOVERY-REPORTER-BCI-001",
-            query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}},
+            query_payload={
+                "criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}
+            },
             pages=[_page([_record(123, project_num="1R01NS000001-01")], total=1)],
             known_appl_sources={123: "SRC-GRANT-001"},
         )
@@ -60,18 +72,29 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
     def test_support_year_applications_do_not_auto_merge(self) -> None:
         result = project_search_pages(
             query_id="DISCOVERY-REPORTER-BCI-001",
-            query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}},
-            pages=[_page([
-                _record(1001, project_num="1R01NS000001-01"),
-                _record(1002, project_num="5R01NS000001-02"),
-            ], total=2)],
+            query_payload={
+                "criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}
+            },
+            pages=[
+                _page(
+                    [
+                        _record(1001, project_num="1R01NS000001-01"),
+                        _record(1002, project_num="5R01NS000001-02"),
+                    ],
+                    total=2,
+                )
+            ],
         )
-        self.assertEqual({row["record_key"] for row in result["result_records"]}, {"REPORTER:APPL:1001", "REPORTER:APPL:1002"})
+        self.assertEqual(
+            {row["record_key"] for row in result["result_records"]}, {"REPORTER:APPL:1001", "REPORTER:APPL:1002"}
+        )
 
     def test_over_15000_refuses_candidate_emission(self) -> None:
         result = project_search_pages(
             query_id="DISCOVERY-REPORTER-GREY-MENTAL-STATE-001",
-            query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "EEG"}}},
+            query_payload={
+                "criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "EEG"}}
+            },
             pages=[_page([_record(1001, project_num="1R01NS000001-01")], total=15001)],
         )
         self.assertTrue(result["coverage"]["over_15000_limit"])
@@ -83,7 +106,9 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
     def test_noncontiguous_offsets_are_visible(self) -> None:
         result = project_search_pages(
             query_id="DISCOVERY-REPORTER-BCI-001",
-            query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}},
+            query_payload={
+                "criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}
+            },
             pages=[
                 _page([_record(1, project_num="P1")], total=2, offset=0, limit=1),
                 _page([_record(2, project_num="P2")], total=2, offset=2, limit=1),
@@ -96,7 +121,11 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Conflicting normalized RePORTER representations"):
             project_search_pages(
                 query_id="DISCOVERY-REPORTER-BCI-001",
-                query_payload={"criteria": {"advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}}},
+                query_payload={
+                    "criteria": {
+                        "advanced_text_search": {"operator": "or", "search_field": "all", "search_text": "BCI"}
+                    }
+                },
                 pages=[
                     _page([_record(1, project_num="P1", title="Title A")], total=1, offset=0, limit=1),
                     _page([_record(1, project_num="P1", title="Title B")], total=1, offset=1, limit=1),
@@ -106,9 +135,16 @@ class NihReporterDiscoveryProjectionTests(unittest.TestCase):
     def test_normalized_digest_is_query_independent(self) -> None:
         page = _page([_record(42, project_num="1R01NS000001-01")], total=1)
         a = project_search_pages(query_id="DISCOVERY-REPORTER-BCI-001", query_payload={"q": "a"}, pages=[page])
-        b = project_search_pages(query_id="DISCOVERY-REPORTER-NEURAL-DECODING-AI-001", query_payload={"q": "b"}, pages=[page])
-        self.assertNotEqual(a["normalized_records"][0]["query_memberships"], b["normalized_records"][0]["query_memberships"])
-        self.assertEqual(a["normalized_records"][0]["normalized_record_sha256"], b["normalized_records"][0]["normalized_record_sha256"])
+        b = project_search_pages(
+            query_id="DISCOVERY-REPORTER-NEURAL-DECODING-AI-001", query_payload={"q": "b"}, pages=[page]
+        )
+        self.assertNotEqual(
+            a["normalized_records"][0]["query_memberships"], b["normalized_records"][0]["query_memberships"]
+        )
+        self.assertEqual(
+            a["normalized_records"][0]["normalized_record_sha256"],
+            b["normalized_records"][0]["normalized_record_sha256"],
+        )
 
 
 if __name__ == "__main__":

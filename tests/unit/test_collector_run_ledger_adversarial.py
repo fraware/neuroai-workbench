@@ -9,6 +9,7 @@ from neuroai_workbench.collector import SchedulerConfig
 from neuroai_workbench.collector.rate_limit import RateLimiter
 from neuroai_workbench.collector.run_ledger import (
     RUN_LEDGER_BOUNDARY,
+    _hash_record,
     build_run_binding,
     deterministic_request_id,
     deterministic_run_id,
@@ -146,6 +147,82 @@ def test_manifest_validation_rejects_bad_schema_boundary_and_missing_binding(tmp
         verify_run_manifest(missing)
 
 
+def test_existing_manifest_and_checkpoint_files_must_be_objects(tmp_path: Path) -> None:
+    binding = _binding()
+    run_id, _ = deterministic_run_id(binding)
+    manifest_path = tmp_path / "run-ledgers" / run_id / "manifest.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(manifest_path, [])
+    with pytest.raises(ValueError, match="must be a JSON object"):
+        ensure_run_manifest(tmp_path, binding=binding)
+
+    checkpoint_path = tmp_path / "run-ledgers" / run_id / "targets" / f"{_target()['retrieval_target_id']}.json"
+    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(checkpoint_path, [])
+    with pytest.raises(ValueError, match="must be a JSON object"):
+        load_target_checkpoint(tmp_path, run_id=run_id, target=_target())
+
+
+def test_run_manifest_and_summary_detect_identity_and_hash_tampering(tmp_path: Path) -> None:
+    manifest = ensure_run_manifest(tmp_path, binding=_binding())
+    wrong_run = dict(manifest)
+    wrong_run["run_id"] = "CRUN-wrong"
+    with pytest.raises(ValueError, match="run_id does not match"):
+        verify_run_manifest(wrong_run)
+
+    bad_hash = dict(manifest)
+    bad_hash["manifest_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="hash mismatch"):
+        verify_run_manifest(bad_hash)
+
+    run_id = "CRUN-" + "7" * 32
+    summary = write_run_summary(
+        tmp_path,
+        {"run_id": run_id, "status": "COMPLETED", "run_ledger_boundary": RUN_LEDGER_BOUNDARY},
+    )
+    wrong_summary_run = dict(summary)
+    wrong_summary_run["run_id"] = "CRUN-other"
+    atomic_write_json(tmp_path / "run-ledgers" / run_id / "summary.json", wrong_summary_run)
+    with pytest.raises(ValueError, match="hash mismatch"):
+        load_run_summary(tmp_path, run_id)
+
+    atomic_write_json(
+        tmp_path / "run-ledgers" / run_id / "summary.json",
+        {"run_id": run_id, "status": "COMPLETED", "run_ledger_boundary": "wrong"},
+    )
+    with pytest.raises(ValueError, match="hash mismatch|ledger boundary mismatch"):
+        load_run_summary(tmp_path, run_id)
+
+
+def test_load_run_summary_rejects_nonobject_run_id_and_boundary_mismatches(tmp_path: Path) -> None:
+    run_id = "CRUN-" + "8" * 32
+    path = tmp_path / "run-ledgers" / run_id / "summary.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(path, [])
+    with pytest.raises(ValueError, match="must be a JSON object"):
+        load_run_summary(tmp_path, run_id)
+
+    summary = {
+        "run_id": "CRUN-other",
+        "status": "COMPLETED",
+        "run_ledger_boundary": RUN_LEDGER_BOUNDARY,
+    }
+    summary["summary_sha256"] = _hash_record(summary, "summary_sha256")
+    atomic_write_json(path, summary)
+    with pytest.raises(ValueError, match="run_id mismatch"):
+        load_run_summary(tmp_path, run_id)
+
+    summary = {
+        "run_id": run_id,
+        "status": "COMPLETED",
+        "run_ledger_boundary": "wrong",
+    }
+    summary["summary_sha256"] = _hash_record(summary, "summary_sha256")
+    atomic_write_json(path, summary)
+    with pytest.raises(ValueError, match="ledger boundary mismatch"):
+        load_run_summary(tmp_path, run_id)
+
+
 def test_target_checkpoint_roundtrip_and_tampering_detection(tmp_path: Path) -> None:
     binding = _binding()
     run_id, _ = deterministic_run_id(binding)
@@ -176,6 +253,11 @@ def test_target_checkpoint_rejects_identity_target_boundary_and_attempt_shape(tm
     target = _target()
     checkpoint = new_target_checkpoint(run_id=run_id, target=target)
     checkpoint = write_target_checkpoint(tmp_path, checkpoint)
+
+    wrong_schema = dict(checkpoint)
+    wrong_schema["schema_version"] = "999"
+    with pytest.raises(ValueError, match="unsupported schema version"):
+        verify_target_checkpoint(wrong_schema, run_id=run_id, expected_target=target)
 
     wrong_run = dict(checkpoint)
     wrong_run["run_id"] = "CRUN-wrong"
@@ -217,6 +299,16 @@ def test_scan_persisted_attempt_records_ignores_nonobjects_and_missing_ids(tmp_p
     atomic_write_json(tmp_path / "results" / "list.json", [])
     atomic_write_json(tmp_path / "results" / "missing.json", {"result_id": "R"})
     assert scan_persisted_attempt_records(tmp_path) == {}
+
+
+def test_scan_persisted_attempt_records_ignores_corrupt_historical_json(tmp_path: Path) -> None:
+    (tmp_path / "results").mkdir(parents=True)
+    (tmp_path / "results" / "corrupt.json").write_text("{not-json", encoding="utf-8")
+    atomic_write_json(tmp_path / "failures" / "ok.json", {"request_id": "CREQ-" + "9" * 32, "failure_id": "F-1"})
+
+    assert scan_persisted_attempt_records(tmp_path) == {
+        "CREQ-" + "9" * 32: {"request_id": "CREQ-" + "9" * 32, "failure_id": "F-1"}
+    }
 
 
 def test_run_summary_roundtrip_and_corruption_detection(tmp_path: Path) -> None:

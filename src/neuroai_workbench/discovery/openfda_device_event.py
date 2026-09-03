@@ -52,7 +52,7 @@ def _text(value: Any) -> str | None:
 
 
 def _safe(value: Any) -> Any:
-    if value is None or isinstance(value, (str, int, float, bool)):
+    if value is None or isinstance(value, str | int | float | bool):
         return value
     if isinstance(value, list):
         return [_safe(item) for item in value]
@@ -218,14 +218,16 @@ def project_search_pages(
                     raise ValueError(f"Conflicting normalized openFDA representations for mdr_report_key {key}")
                 duplicate_count += 1
 
-        page_reports.append({
-            "page_index": index,
-            "reported_total_count": total,
-            "skip": skip,
-            "limit": limit,
-            "returned_record_count": len(rows),
-            "unique_mdr_report_keys_on_page": len(set(keys_on_page)),
-        })
+        page_reports.append(
+            {
+                "page_index": index,
+                "reported_total_count": total,
+                "skip": skip,
+                "limit": limit,
+                "returned_record_count": len(rows),
+                "unique_mdr_report_keys_on_page": len(set(keys_on_page)),
+            }
+        )
 
     distinct_totals = sorted(set(totals))
     if len(distinct_totals) == 1:

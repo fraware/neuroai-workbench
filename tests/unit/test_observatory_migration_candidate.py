@@ -196,9 +196,7 @@ def test_candidate_adds_complete_safe_families_to_core() -> None:
 def test_candidate_verifier_detects_history_substitution() -> None:
     v14, v16 = _inputs()
     result = build_predecessor_migration_candidate(v14_release=v14, v16_refresh=v16)
-    result["identity_resolution_history"]["records"][0]["predecessor_record"]["verification_after"] = (
-        "CURRENT_PARTIAL"
-    )
+    result["identity_resolution_history"]["records"][0]["predecessor_record"]["verification_after"] = "CURRENT_PARTIAL"
     report = verify_predecessor_migration_candidate(result)
     assert report["valid"] is False
     assert any("predecessor_record_sha256 mismatch" in error for error in report["errors"])
@@ -241,7 +239,9 @@ def test_candidate_verifier_detects_missing_event_source() -> None:
 
     report = verify_predecessor_migration_candidate(result)
     assert report["valid"] is False
-    assert any("source_ids binding mismatch" in error or "references missing Sources" in error for error in report["errors"])
+    assert any(
+        "source_ids binding mismatch" in error or "references missing Sources" in error for error in report["errors"]
+    )
 
 
 def test_candidate_verifier_detects_change_candidate_payload_tampering() -> None:

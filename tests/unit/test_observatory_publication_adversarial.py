@@ -7,8 +7,6 @@ import pytest
 
 import neuroai_workbench.observatory_publication as publication_module
 from neuroai_workbench.observatory_publication import (
-    AUTHORIZATION_BOUNDARY,
-    PUBLICATION_BOUNDARY,
     ObservatoryPublicationError,
     load_s2_authorizations,
     load_s2_publication,

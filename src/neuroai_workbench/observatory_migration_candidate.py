@@ -49,9 +49,7 @@ class ObservatoryMigrationCandidateError(ValueError):
 
 def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
-        raise ObservatoryMigrationCandidateError(
-            f"{field} must be a lowercase {length}-character hexadecimal identity"
-        )
+        raise ObservatoryMigrationCandidateError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
 
 
@@ -89,9 +87,7 @@ def build_predecessor_migration_candidate(
     if not isinstance(organization_rows, list) or any(not isinstance(item, dict) for item in organization_rows):
         raise ObservatoryMigrationCandidateError("v1.4 organizations must be an array of objects")
     organization_records = {
-        str(item["organization_id"]): item
-        for item in organization_rows
-        if isinstance(item.get("organization_id"), str)
+        str(item["organization_id"]): item for item in organization_rows if isinstance(item.get("organization_id"), str)
     }
     if len(organization_records) != len(organization_rows):
         raise ObservatoryMigrationCandidateError("v1.4 organization ids must be complete and unique")
@@ -128,18 +124,12 @@ def build_predecessor_migration_candidate(
         "V14.capital_and_ownership_events",
         "V16.change_candidates",
     }
-    remaining = [
-        item
-        for item in core["remaining_unmaterialized_families"]
-        if item not in retired_families
-    ]
+    remaining = [item for item in core["remaining_unmaterialized_families"] if item not in retired_families]
     result = {
         "state": "NONCANONICAL_CANDIDATE",
         "release_authorized": False,
         "native_v2_materialization_complete": False,
-        "mechanical_scope": (
-            "MIGRATION_CORE_PLUS_V14_HISTORY_PLUS_V14_CAPITAL_EVENTS_PLUS_V16_CHANGE_CANDIDATES"
-        ),
+        "mechanical_scope": ("MIGRATION_CORE_PLUS_V14_HISTORY_PLUS_V14_CAPITAL_EVENTS_PLUS_V16_CHANGE_CANDIDATES"),
         "core": core,
         "identity_resolution_history": identity_history_result,
         "regional_expansion_history": regional_history_result,
@@ -151,8 +141,7 @@ def build_predecessor_migration_candidate(
             "preserved_identity_resolution_history": identity_history_result["preserved_record_count"],
             "preserved_regional_expansion_history": regional_history_result["preserved_record_count"],
             "governed_predecessor_history_records": (
-                identity_history_result["preserved_record_count"]
-                + regional_history_result["preserved_record_count"]
+                identity_history_result["preserved_record_count"] + regional_history_result["preserved_record_count"]
             ),
             "native_capital_events": event_result["object_count"],
             "native_change_candidates": change_candidate_result["object_count"],
@@ -260,14 +249,10 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
                 continue
             missing_sources = sorted(set(record.get("source_ids") or []) - source_ids)
             if missing_sources:
-                errors.append(
-                    f"{history_name}:{record.get('record_id')}: references missing Sources {missing_sources}"
-                )
+                errors.append(f"{history_name}:{record.get('record_id')}: references missing Sources {missing_sources}")
             if history_name == "organization_resolution":
                 if predecessor.get("name_before") != organization.get("canonical_name"):
-                    errors.append(
-                        f"organization_resolution:{record.get('record_id')}: name_before binding mismatch"
-                    )
+                    errors.append(f"organization_resolution:{record.get('record_id')}: name_before binding mismatch")
                 if predecessor.get("verification_after") != organization.get("verification_state"):
                     errors.append(
                         f"organization_resolution:{record.get('record_id')}: verification_after binding mismatch"
@@ -279,9 +264,7 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
                         f"regional_expansion:{record.get('record_id')}: organization is not a materialized Entity"
                     )
                 elif predecessor.get("canonical_name") != entity.get("canonical_label"):
-                    errors.append(
-                        f"regional_expansion:{record.get('record_id')}: canonical-name binding mismatch"
-                    )
+                    errors.append(f"regional_expansion:{record.get('record_id')}: canonical-name binding mismatch")
 
     events = event_result.get("events")
     event_traces = event_result.get("predecessor_traces")
@@ -407,7 +390,9 @@ def write_predecessor_migration_candidate_package(
     """Write the deterministic composed candidate and all exact predecessor trace surfaces."""
     verification = verify_predecessor_migration_candidate(result)
     if not verification["valid"]:
-        raise ObservatoryMigrationCandidateError(f"Cannot package invalid migration candidate: {verification['errors']}")
+        raise ObservatoryMigrationCandidateError(
+            f"Cannot package invalid migration candidate: {verification['errors']}"
+        )
     if result.get("mechanical_verification") != "PASS":
         raise ObservatoryMigrationCandidateError("migration candidate must have mechanical PASS before packaging")
 

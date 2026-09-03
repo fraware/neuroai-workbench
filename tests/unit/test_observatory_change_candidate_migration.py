@@ -43,11 +43,14 @@ def test_change_candidate_preserves_exact_payload_and_adjudication() -> None:
     assert candidate["canonical_write_performed"] is False
     assert candidate["boundary"] == CHANGE_CANDIDATE_MIGRATION_BOUNDARY
     assert trace["predecessor_record"] == predecessor
-    assert verify_change_candidate_trace(
-        candidate,
-        trace,
-        known_source_ids={"SRC-16-001"},
-    ) == []
+    assert (
+        verify_change_candidate_trace(
+            candidate,
+            trace,
+            known_source_ids={"SRC-16-001"},
+        )
+        == []
+    )
 
 
 def test_change_candidate_does_not_resolve_free_text_subject() -> None:

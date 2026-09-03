@@ -64,9 +64,7 @@ def _require_exact_fields(record: dict[str, Any], expected: frozenset[str], *, f
     missing = sorted(expected - actual)
     extra = sorted(actual - expected)
     if missing or extra:
-        raise ObservatoryHistoryMigrationError(
-            f"{family} predecessor shape mismatch: missing={missing}, extra={extra}"
-        )
+        raise ObservatoryHistoryMigrationError(f"{family} predecessor shape mismatch: missing={missing}, extra={extra}")
 
 
 def _require_string(record: dict[str, Any], field: str, *, family: str) -> str:

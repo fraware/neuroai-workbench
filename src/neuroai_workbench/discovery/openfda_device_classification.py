@@ -1,4 +1,5 @@
 """Bounded openFDA device-classification projection for human-gated discovery."""
+
 from __future__ import annotations
 
 import hashlib
@@ -43,7 +44,7 @@ def _candidate_locator(product_code: str) -> str:
     search = f'product_code:"{product_code}"'
     return "https://api.fda.gov/device/classification.json?search=" + quote(
         search,
-        safe=".:+\"",
+        safe='.:+"',
     )
 
 
@@ -59,9 +60,7 @@ def _normalize_record(
     product_code = product_code.upper()
     regulation_number = _text(raw.get("regulation_number"))
     classification_finality = (
-        "REGULATION_REFERENCED_CLASSIFICATION"
-        if regulation_number is not None
-        else "PROPOSED_CLASS_NOT_FINAL"
+        "REGULATION_REFERENCED_CLASSIFICATION" if regulation_number is not None else "PROPOSED_CLASS_NOT_FINAL"
     )
 
     normalized: dict[str, Any] = {
@@ -123,7 +122,11 @@ def project_search_pages(
         meta = payload.get("meta")
         meta_results = meta.get("results") if isinstance(meta, Mapping) else None
         rows = payload.get("results")
-        if not isinstance(meta_results, Mapping) or not isinstance(rows, list) or not all(isinstance(row, Mapping) for row in rows):
+        if (
+            not isinstance(meta_results, Mapping)
+            or not isinstance(rows, list)
+            or not all(isinstance(row, Mapping) for row in rows)
+        ):
             raise ValueError(f"page {page_index}: invalid openFDA device-classification shape")
 
         total = meta_results.get("total")
@@ -160,8 +163,7 @@ def project_search_pages(
                 current_core.pop("query_memberships", None)
                 if prior_core != current_core:
                     raise ValueError(
-                        "Conflicting normalized device-classification records "
-                        f"for product code {identity}"
+                        f"Conflicting normalized device-classification records for product code {identity}"
                     )
                 duplicate_representation_count += 1
 
@@ -206,8 +208,7 @@ def project_search_pages(
                 "publisher": "U.S. FDA",
                 "source_class": "OFFICIAL_DEVICE_CLASSIFICATION_RECORD",
                 "suggested_source_id": (
-                    "SRC-OPENFDA-CLASS-"
-                    + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16].upper()
+                    "SRC-OPENFDA-CLASS-" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16].upper()
                 ),
                 "classification_hint": "DUPLICATE" if duplicate_of else "NEW",
             }
@@ -218,12 +219,10 @@ def project_search_pages(
             normalized_records.append(normalized)
 
     regulation_referenced_classification_count = sum(
-        row["classification_finality"] == "REGULATION_REFERENCED_CLASSIFICATION"
-        for row in by_product_code.values()
+        row["classification_finality"] == "REGULATION_REFERENCED_CLASSIFICATION" for row in by_product_code.values()
     )
     proposed_not_final_classification_count = sum(
-        row["classification_finality"] == "PROPOSED_CLASS_NOT_FINAL"
-        for row in by_product_code.values()
+        row["classification_finality"] == "PROPOSED_CLASS_NOT_FINAL" for row in by_product_code.values()
     )
 
     coverage = {

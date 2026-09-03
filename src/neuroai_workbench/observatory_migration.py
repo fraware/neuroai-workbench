@@ -133,11 +133,7 @@ def materialize_predecessor_source(
         raise ObservatoryMigrationError(f"Unsupported predecessor source role {role!r}")
 
     required = ("source_id", "source_class", "title", "publisher", "url")
-    missing = [
-        field
-        for field in required
-        if not isinstance(record.get(field), str) or not str(record[field]).strip()
-    ]
+    missing = [field for field in required if not isinstance(record.get(field), str) or not str(record[field]).strip()]
     if missing:
         raise ObservatoryMigrationError(f"Source record is missing required predecessor fields: {missing}")
 

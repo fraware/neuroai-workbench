@@ -70,11 +70,14 @@ def test_v16_adjudication_preserves_nonclaim_and_nonmutation_semantics() -> None
     assert withheld["substantive_claim_created"] is False
     assert state["native_object_count"] == 0
     assert state["release_authorized"] is False
-    assert verify_v16_adjudication_state(
-        state,
-        known_source_ids={"SRC-16-011"},
-        delta_ids=delta16_record_ids(delta),
-    ) == []
+    assert (
+        verify_v16_adjudication_state(
+            state,
+            known_source_ids={"SRC-16-011"},
+            delta_ids=delta16_record_ids(delta),
+        )
+        == []
+    )
 
 
 def test_delta_record_id_vocabulary_is_family_typed_not_suffix_based() -> None:

@@ -174,7 +174,10 @@ def test_public_loader_requires_exact_authorization_and_publication(tmp_path) ->
     manifest = json.loads((release / "manifest.json").read_text(encoding="utf-8"))
     publication = record_s2_publication(
         release,
-        publication_evidence={"reference": "public-ref:github-release:published", "sha256": manifest["manifest_sha256"]},
+        publication_evidence={
+            "reference": "public-ref:github-release:published",
+            "sha256": manifest["manifest_sha256"],
+        },
     )["publication"]
     loaded = load_published_release(release)
     assert loaded["canonical"] is True

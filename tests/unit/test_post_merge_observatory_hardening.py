@@ -193,17 +193,13 @@ def test_gate_a_delta_wildcard_requires_complete_actual_residual_set() -> None:
     }
     partial = {
         "residual_families": [
-            {"role": "DELTA16", "family": key.split(".", 1)[1]}
-            for key in sorted(expected_delta)[:-1]
+            {"role": "DELTA16", "family": key.split(".", 1)[1]} for key in sorted(expected_delta)[:-1]
         ]
     }
     assert "DELTA16.*" in _expected_remaining_families(candidate, partial)
 
     complete = {
-        "residual_families": [
-            {"role": "DELTA16", "family": key.split(".", 1)[1]}
-            for key in sorted(expected_delta)
-        ]
+        "residual_families": [{"role": "DELTA16", "family": key.split(".", 1)[1]} for key in sorted(expected_delta)]
     }
     complete_remaining = _expected_remaining_families(candidate, complete)
     assert "DELTA16.*" not in complete_remaining
@@ -221,9 +217,7 @@ def test_gate_a_residual_key_extraction_and_missing_candidate_ledger_fail_closed
     }
     assert _residual_family_keys(residual) == {"DELTA16.model_records"}
     assert _residual_family_keys({"residual_families": "bad"}) == set()
-    assert _expected_remaining_families({}, residual) == [
-        "CANDIDATE_REMAINING_FAMILY_LEDGER_MISSING"
-    ]
+    assert _expected_remaining_families({}, residual) == ["CANDIDATE_REMAINING_FAMILY_LEDGER_MISSING"]
 
 
 def test_residual_verifier_reports_coordinated_tampering_without_authority_upgrade() -> None:

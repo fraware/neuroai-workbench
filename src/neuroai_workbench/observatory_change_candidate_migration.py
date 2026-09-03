@@ -111,9 +111,7 @@ def materialize_v16_change_candidate(
         raise ObservatoryChangeCandidateMigrationError("change candidate must be an object")
     required_strings = ("candidate_id", "change_class", "adjudication")
     missing = [
-        field
-        for field in required_strings
-        if not isinstance(record.get(field), str) or not str(record[field]).strip()
+        field for field in required_strings if not isinstance(record.get(field), str) or not str(record[field]).strip()
     ]
     if missing:
         raise ObservatoryChangeCandidateMigrationError(
@@ -155,9 +153,7 @@ def materialize_v16_change_candidate(
     }
     errors = verify_change_candidate_trace(candidate, trace, known_source_ids=known_source_ids)
     if errors:
-        raise ObservatoryChangeCandidateMigrationError(
-            f"generated change Candidate/trace is invalid: {errors}"
-        )
+        raise ObservatoryChangeCandidateMigrationError(f"generated change Candidate/trace is invalid: {errors}")
     return candidate, trace
 
 
@@ -183,9 +179,7 @@ def materialize_v16_change_candidates(
         )
         candidate_id = str(candidate["candidate_id"])
         if candidate_id in seen_ids:
-            raise ObservatoryChangeCandidateMigrationError(
-                f"duplicate predecessor change candidate id {candidate_id}"
-            )
+            raise ObservatoryChangeCandidateMigrationError(f"duplicate predecessor change candidate id {candidate_id}")
         seen_ids.add(candidate_id)
         candidates.append(candidate)
         traces.append(trace)
@@ -225,38 +219,28 @@ def write_change_candidate_migration_package(
 ) -> dict[str, Any]:
     """Write a deterministic package for the complete v1.6 change-candidate family."""
     if result.get("state") != "NONCANONICAL_CANDIDATE" or result.get("release_authorized") is not False:
-        raise ObservatoryChangeCandidateMigrationError(
-            "change-candidate migration package must remain noncanonical"
-        )
+        raise ObservatoryChangeCandidateMigrationError("change-candidate migration package must remain noncanonical")
     candidates = result.get("candidates")
     traces = result.get("predecessor_traces")
     if not isinstance(candidates, list) or not isinstance(traces, list) or len(candidates) != len(traces):
-        raise ObservatoryChangeCandidateMigrationError(
-            "change-candidate package requires one trace per Candidate"
-        )
+        raise ObservatoryChangeCandidateMigrationError("change-candidate package requires one trace per Candidate")
     if result.get("input_record_count") != len(candidates):
         raise ObservatoryChangeCandidateMigrationError(
             "change-candidate package requires complete family materialization"
         )
     for candidate, trace in zip(candidates, traces, strict=True):
         if not isinstance(candidate, dict) or not isinstance(trace, dict):
-            raise ObservatoryChangeCandidateMigrationError(
-                "change-candidate package entries must be objects"
-            )
+            raise ObservatoryChangeCandidateMigrationError("change-candidate package entries must be objects")
         errors = verify_change_candidate_trace(candidate, trace, known_source_ids=known_source_ids)
         if errors:
-            raise ObservatoryChangeCandidateMigrationError(
-                f"change-candidate verification failed: {errors}"
-            )
+            raise ObservatoryChangeCandidateMigrationError(f"change-candidate verification failed: {errors}")
 
     input_v16 = _require_hex(v16_input_sha256, length=64, field="v16_input_sha256")
     producer = _require_hex(producer_commit, length=40, field="producer_commit")
     runtime_pin = _require_hex(runtime_execution_pin, length=40, field="runtime_execution_pin")
     s2_commit = _require_hex(s2_predecessor_commit, length=40, field="s2_predecessor_commit")
     if not isinstance(observatory_graph_schema_version, str) or not observatory_graph_schema_version.strip():
-        raise ObservatoryChangeCandidateMigrationError(
-            "observatory_graph_schema_version must be non-empty"
-        )
+        raise ObservatoryChangeCandidateMigrationError("observatory_graph_schema_version must be non-empty")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     candidate_bytes = _jsonl_bytes(candidates)

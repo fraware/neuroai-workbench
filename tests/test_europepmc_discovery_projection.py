@@ -73,7 +73,7 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
         ]
         result = project_search_pages(
             query_id="DISCOVERY-EPMC-SPEECH-COMMUNICATION-001",
-            query_text='TITLE_ABS:(speech AND neuroprosthesis)',
+            query_text="TITLE_ABS:(speech AND neuroprosthesis)",
             pages=pages,
             known_anchor_identities=[
                 "DOI:10.1056/nejmoa2501396",
@@ -119,9 +119,7 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
                     hit_count=1,
                 )
             ],
-            known_publication_sources={
-                "DOI:10.1056/nejmoa2501396": "SRC-PRIMA-PAPER"
-            },
+            known_publication_sources={"DOI:10.1056/nejmoa2501396": "SRC-PRIMA-PAPER"},
         )
         record = result["result_records"][0]
         self.assertEqual(record["classification_hint"], "DUPLICATE")
@@ -233,15 +231,11 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             ],
         )
         self.assertEqual(len(result["result_records"]), 1)
-        self.assertEqual(
-            result["coverage"]["cross_query_duplicate_representation_count"], 1
-        )
+        self.assertEqual(result["coverage"]["cross_query_duplicate_representation_count"], 1)
         self.assertEqual(result["coverage"]["reported_total_reconciliation_state"], "MATCH")
 
     def test_conflicting_same_identity_fails_closed(self) -> None:
-        with self.assertRaisesRegex(
-            ValueError, "Conflicting normalized Europe PMC representations"
-        ):
+        with self.assertRaisesRegex(ValueError, "Conflicting normalized Europe PMC representations"):
             project_search_pages(
                 query_id="DISCOVERY-EPMC-CONFLICT",
                 query_text="speech",
@@ -259,9 +253,7 @@ class EuropePmcDiscoveryProjectionTests(unittest.TestCase):
             )
 
     def test_nonfinal_page_without_cursor_fails_closed(self) -> None:
-        with self.assertRaisesRegex(
-            ValueError, "non-final page 1 has no nextCursorMark"
-        ):
+        with self.assertRaisesRegex(ValueError, "non-final page 1 has no nextCursorMark"):
             project_search_pages(
                 query_id="DISCOVERY-EPMC-PAGINATION",
                 query_text="BCI",
