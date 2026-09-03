@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import socket
+import ssl
 import threading
 
 import pytest
@@ -15,6 +16,13 @@ GLOBAL_IP = "93.184.216.34"
 class RecordingSslContext:
     def __init__(self) -> None:
         self.server_names: list[str] = []
+        self.verify_mode = ssl.CERT_REQUIRED
+        self.check_hostname = True
+        self.hostname_checks_common_name = False
+        self.alpn_protocols: list[str] = []
+
+    def set_alpn_protocols(self, protocols: list[str]) -> None:
+        self.alpn_protocols = list(protocols)
 
     def wrap_socket(self, sock: socket.socket, *, server_hostname: str) -> socket.socket:
         self.server_names.append(server_hostname)
@@ -81,6 +89,7 @@ def test_unicode_hostname_is_idna_normalized_for_host_and_tls_sni() -> None:
     request_text = state["request"].decode("iso-8859-1")
     assert targets == [(GLOBAL_IP, 443)]
     assert ssl_context.server_names == ["xn--bcher-kva.example"]
+    assert ssl_context.alpn_protocols
     assert "Host: xn--bcher-kva.example\r\n" in request_text
     assert status == 200
     assert body == b"{}"

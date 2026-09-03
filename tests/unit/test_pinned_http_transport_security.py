@@ -11,6 +11,7 @@ from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpRequest
 
 GLOBAL_IP = "93.184.216.34"
+SECOND_GLOBAL_IP = "8.8.8.8"
 
 
 class FakeDirectSocket:
@@ -96,3 +97,59 @@ def test_transport_rejects_invalid_textual_port_before_socket_creation() -> None
             read_timeout=1.0,
         )
     assert exc.value.failure_class == "SSRF_BLOCKED"
+
+
+def test_transport_rejects_mismatched_actual_inet_peer() -> None:
+    class MismatchedPeerSocket:
+        family = socket.AF_INET
+
+        def __init__(self) -> None:
+            self.closed = False
+
+        def getpeername(self) -> tuple[str, int]:
+            return (SECOND_GLOBAL_IP, 443)
+
+        def close(self) -> None:
+            self.closed = True
+
+    peer_socket = MismatchedPeerSocket()
+    transport = PinnedSocketHttpTransport(socket_factory=lambda target, timeout: peer_socket)
+
+    with pytest.raises(CollectionFailureError) as exc:
+        transport.send(
+            HttpRequest("GET", "https://example.org/x", {}, (GLOBAL_IP,)),
+            connect_timeout=1.0,
+            read_timeout=1.0,
+        )
+
+    assert exc.value.failure_class == "SSRF_BLOCKED"
+    assert "does not match validated address" in str(exc.value)
+    assert peer_socket.closed is True
+
+
+def test_transport_rejects_unverifiable_actual_inet_peer() -> None:
+    class UnverifiablePeerSocket:
+        family = socket.AF_INET
+
+        def __init__(self) -> None:
+            self.closed = False
+
+        def getpeername(self) -> tuple[str, int]:
+            raise OSError("peer unavailable")
+
+        def close(self) -> None:
+            self.closed = True
+
+    peer_socket = UnverifiablePeerSocket()
+    transport = PinnedSocketHttpTransport(socket_factory=lambda target, timeout: peer_socket)
+
+    with pytest.raises(CollectionFailureError) as exc:
+        transport.send(
+            HttpRequest("GET", "https://example.org/x", {}, (GLOBAL_IP,)),
+            connect_timeout=1.0,
+            read_timeout=1.0,
+        )
+
+    assert exc.value.failure_class == "SSRF_BLOCKED"
+    assert "Unable to verify connected transport peer" in str(exc.value)
+    assert peer_socket.closed is True
