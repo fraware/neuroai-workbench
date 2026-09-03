@@ -157,7 +157,7 @@ def project_search_pages(
         raise ValueError("At least one UDI page is required")
     known = {str(k).upper(): str(v) for k, v in (known_udi_sources or {}).items()}
     totals = []
-    by_identity = {}
+    by_identity: dict[str, dict[str, Any]] = {}
     raw_count = 0
     duplicate_count = 0
     unresolved = 0

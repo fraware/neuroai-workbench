@@ -213,6 +213,10 @@ def verify_gate_a_migration_checkpoint(
     residual = result.get("residual_predecessor_state")
     if not all(isinstance(item, dict) for item in (candidate, adjudication, successor, residual)):
         return {"valid": False, "errors": ["Gate-A child migration surfaces are missing"]}
+    assert isinstance(candidate, dict)
+    assert isinstance(adjudication, dict)
+    assert isinstance(successor, dict)
+    assert isinstance(residual, dict)
 
     candidate_report = verify_predecessor_migration_candidate(candidate)
     errors.extend(f"candidate: {error}" for error in candidate_report["errors"])

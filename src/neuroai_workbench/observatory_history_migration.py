@@ -255,10 +255,11 @@ def verify_preserved_history_record(record: dict[str, Any]) -> list[str]:
     if record.get("boundary") != HISTORY_MIGRATION_BOUNDARY:
         errors.append("history migration boundary mismatch")
     family = record.get("family")
+    family_key = family if isinstance(family, str) else ""
     expected_state = {
         "organization_resolution": IDENTITY_RESOLUTION_STATE,
         "regional_expansion": REGIONAL_EXPANSION_STATE,
-    }.get(family)
+    }.get(family_key)
     if expected_state is None:
         errors.append(f"unsupported history family {family!r}")
     elif record.get("migration_state") != expected_state:

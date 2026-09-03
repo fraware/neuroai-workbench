@@ -293,8 +293,11 @@ def verify_residual_gate_a_state(
         if not isinstance(item, dict):
             errors.append("residual family entry must be an object")
             continue
-        key = (item.get("role"), item.get("family"))
-        expected_reason = RESIDUAL_POLICIES.get(key)
+        role = item.get("role")
+        family = item.get("family")
+        key = (role, family)
+        policy_key = (role, family) if isinstance(role, str) and isinstance(family, str) else ("", "")
+        expected_reason = RESIDUAL_POLICIES.get(policy_key)
         if expected_reason is None or item.get("blocked_reason") != expected_reason:
             errors.append(f"residual family policy mismatch for {key}")
         payload = item.get("payload")

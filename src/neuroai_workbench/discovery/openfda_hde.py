@@ -126,7 +126,7 @@ def project_search_pages(
         raise ValueError("At least one HDE page is required")
     known = {str(k).upper(): str(v) for k, v in (known_record_sources or {}).items()}
     totals = []
-    by = {}
+    by: dict[str, dict[str, Any]] = {}
     raw_count = dup_count = non_h = unresolved = 0
     reports = []
     seq = True
@@ -149,8 +149,9 @@ def project_search_pages(
             raise ValueError(f"page {idx}: limit invalid")
         if idx == 1 and skip != 0:
             seq = False
-        if prev_skip is not None and skip != prev_skip + prev_limit:
-            seq = False
+        if prev_skip is not None:
+            if prev_limit is None or skip != prev_skip + prev_limit:
+                seq = False
         prev_skip, prev_limit = skip, limit
         totals.append(total)
         raw_count += len(rows)

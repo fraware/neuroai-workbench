@@ -284,10 +284,13 @@ def _windows_process_exists(pid: int) -> bool:
     """
     if pid <= 0:
         return False
+    windll = getattr(ctypes, "windll", None)
+    if windll is None:
+        return False
     # PROCESS_QUERY_LIMITED_INFORMATION — enough to prove the handle opened.
-    handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, int(pid))
+    handle = windll.kernel32.OpenProcess(0x1000, False, int(pid))
     if handle:
-        ctypes.windll.kernel32.CloseHandle(handle)
+        windll.kernel32.CloseHandle(handle)
         return True
     # ERROR_ACCESS_DENIED (5): process exists but this caller cannot query it.
     return ctypes.GetLastError() == 5

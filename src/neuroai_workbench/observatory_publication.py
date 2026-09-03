@@ -175,10 +175,10 @@ def verify_s2_authorizations(release_dir: Path) -> dict[str, Any]:
                 errors.append("authorization supersession cycle detected")
                 break
             seen.add(current)
-            record = index.get(current)
-            if record is None:
+            next_record = index.get(current)
+            if next_record is None:
                 break
-            current = str(record.get("supersedes_authorization_id") or "")
+            current = str(next_record.get("supersedes_authorization_id") or "")
 
     active = _active_authorizations(records)
     if len(active) > 1:

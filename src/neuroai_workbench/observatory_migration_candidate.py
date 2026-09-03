@@ -180,6 +180,11 @@ def verify_predecessor_migration_candidate(result: dict[str, Any]) -> dict[str, 
         for item in (core, identity_history, regional_history, event_result, change_candidate_result)
     ):
         return {"valid": False, "errors": ["migration candidate child results are missing"]}
+    assert isinstance(core, dict)
+    assert isinstance(identity_history, dict)
+    assert isinstance(regional_history, dict)
+    assert isinstance(event_result, dict)
+    assert isinstance(change_candidate_result, dict)
 
     core_report = verify_predecessor_migration_core(core)
     errors.extend(f"core: {error}" for error in core_report["errors"])

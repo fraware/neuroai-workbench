@@ -112,7 +112,7 @@ def project_search_pages(
         raise ValueError("query_id, search and pages are required")
     known = {str(k).upper(): str(v) for k, v in (known_k_sources or {}).items()}
     totals = []
-    by_id = {}
+    by_id: dict[str, dict[str, Any]] = {}
     page_reports = []
     raw_count = 0
     dup = 0
@@ -138,8 +138,9 @@ def project_search_pages(
             raise ValueError(f"page {i}: limit invalid")
         if i == 1 and skip != 0:
             seq = False
-        if prev_skip is not None and skip != prev_skip + prev_limit:
-            seq = False
+        if prev_skip is not None:
+            if prev_limit is None or skip != prev_skip + prev_limit:
+                seq = False
         prev_skip, prev_limit = skip, limit
         totals.append(total)
         raw_count += len(rows)

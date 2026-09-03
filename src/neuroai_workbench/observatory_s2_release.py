@@ -287,7 +287,7 @@ def write_observatory_v2_s2_candidate(
             raise ObservatoryS2ReleaseError("invalid native graph record surface: " + "; ".join(record_errors))
         class_counts[object_class] = count
 
-    descriptor = {
+    descriptor: dict[str, Any] = {
         "schema_version": "1",
         "release_type": "OBSERVATORY_V2_S2_CANDIDATE",
         "release_tag": release_tag,
