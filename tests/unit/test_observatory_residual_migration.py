@@ -60,7 +60,9 @@ def _v14() -> dict:
         "supplier_dependency_relationships",
         "data_quality",
     ):
-        base[family] = [{"record_id": family, "source_ids": ["SRC-1"]}] if family != "data_quality" else [{"finding_id": "DQ-1"}]
+        base[family] = (
+            [{"record_id": family, "source_ids": ["SRC-1"]}] if family != "data_quality" else [{"finding_id": "DQ-1"}]
+        )
     return base
 
 

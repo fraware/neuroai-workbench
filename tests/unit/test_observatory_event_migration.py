@@ -58,7 +58,11 @@ def test_predecessor_event_time_preserves_year_date_and_absence() -> None:
 
 def test_exact_name_resolution_requires_unique_controlled_entity() -> None:
     index = exact_entity_name_index(
-        [_entity("ORG-1", "Science Corporation"), _entity("ORG-2", "Duplicate Name"), _entity("ORG-3", "Duplicate Name")]
+        [
+            _entity("ORG-1", "Science Corporation"),
+            _entity("ORG-2", "Duplicate Name"),
+            _entity("ORG-3", "Duplicate Name"),
+        ]
     )
     assert resolve_exact_entity_name("Science Corporation", index) == "ORG-1"
     with pytest.raises(ObservatoryEventMigrationError, match="no exact materialized Entity match"):
@@ -90,12 +94,15 @@ def test_capital_event_preserves_subject_sources_and_unresolved_counterparties()
     assert trace["predecessor_record"] == _event()
     assert trace["subject_entity_id"] == "ORG-1"
     assert verify_capital_event_trace(trace, expected_event_id="CAP-1", expected_subject_entity_id="ORG-1") == []
-    assert verify_materialized_capital_event(
-        event,
-        trace,
-        entity_index={"ORG-1": entities[0]},
-        known_source_ids={"SRC-1"},
-    ) == []
+    assert (
+        verify_materialized_capital_event(
+            event,
+            trace,
+            entity_index={"ORG-1": entities[0]},
+            known_source_ids={"SRC-1"},
+        )
+        == []
+    )
 
 
 def test_capital_event_year_and_null_time_are_not_promoted() -> None:
@@ -110,12 +117,15 @@ def test_capital_event_year_and_null_time_are_not_promoted() -> None:
     )
     assert year_event["occurred_at"]["precision"] == "YEAR"
     assert year_event["occurred_at"]["value"] == "2026"
-    assert verify_materialized_capital_event(
-        year_event,
-        year_trace,
-        entity_index={"ORG-1": entities[0]},
-        known_source_ids={"SRC-1"},
-    ) == []
+    assert (
+        verify_materialized_capital_event(
+            year_event,
+            year_trace,
+            entity_index={"ORG-1": entities[0]},
+            known_source_ids={"SRC-1"},
+        )
+        == []
+    )
 
     null_event, null_trace = materialize_v14_capital_event(
         _event("CAP-NULL", date=None),
@@ -124,12 +134,15 @@ def test_capital_event_year_and_null_time_are_not_promoted() -> None:
         known_source_ids={"SRC-1"},
     )
     assert "occurred_at" not in null_event
-    assert verify_materialized_capital_event(
-        null_event,
-        null_trace,
-        entity_index={"ORG-1": entities[0]},
-        known_source_ids={"SRC-1"},
-    ) == []
+    assert (
+        verify_materialized_capital_event(
+            null_event,
+            null_trace,
+            entity_index={"ORG-1": entities[0]},
+            known_source_ids={"SRC-1"},
+        )
+        == []
+    )
 
 
 def test_capital_event_refuses_missing_subject_or_source_identity() -> None:

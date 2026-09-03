@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from neuroai_workbench.collector.handoff import approve_quarantine_record, load_quarantine_record
 from neuroai_workbench.shadow_refresh.closure import (
     GOVERNANCE_ISSUE,
@@ -16,6 +18,7 @@ from neuroai_workbench.shadow_refresh.closure import (
     handoff_quarantine_sample_to_evaluation,
     record_formal_disposition,
     record_human_review_opinion,
+    retry_failed_sources,
     scaffold_dual_human_review,
 )
 from neuroai_workbench.shadow_refresh.schemas import validate_shadow_refresh_run_results
@@ -424,3 +427,92 @@ def test_evaluation_handoff_refuses_pending_without_auto_approve(tmp_path: Path)
     )
     assert handoff["handoffs"] == []
     assert load_quarantine_record(quarantine, qid)["approval_state"] == "PENDING_HUMAN_APPROVAL"
+
+
+def test_retry_failed_sources_and_review_opinion_validation_edges(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    registry = {"sources": _mini_registry()}
+    quarantine = tmp_path / "retry"
+    (quarantine / "failures").mkdir(parents=True, exist_ok=True)
+    (quarantine / "failures" / "corrupt.json").write_text("{not-json", encoding="utf-8")
+    atomic_write_json(
+        quarantine / "failures" / "failure.json",
+        {
+            "source_id": "SRC-0001",
+            "failure_class": "HTTP_ERROR",
+            "failure_message": "Unexpected HTTP status 404",
+        },
+    )
+    monkeypatch.setattr(
+        "neuroai_workbench.shadow_refresh.closure.run_live_cohort_collection",
+        lambda **_: {
+            "collection_run": {
+                "outcomes": [
+                    {"source_id": "", "status": "FAILURE"},
+                    {"source_id": "SRC-0002", "status": "FAILURE", "failure_class": "DNS_FAILURE"},
+                ]
+            }
+        },
+    )
+    retried = retry_failed_sources(
+        registry=registry,
+        registry_sha256="a" * 64,
+        quarantine_root=quarantine,
+        source_ids=["SRC-0001", "SRC-0002"],
+    )
+    assert [item["outcome_type"] for item in retried["typed_outcomes"]] == [
+        "CONTENT_NOT_FOUND_OR_URL_REPLACEMENT_NEEDED",
+        "DNS_FAILURE",
+    ]
+
+    registry_path = tmp_path / "registry.json"
+    atomic_write_json(registry_path, _mini_registry())
+    qid = _seed_quarantine(tmp_path / "quarantine-review")
+    approve_quarantine_record(tmp_path / "quarantine-review", qid, approved_by="tester")
+    handoff = handoff_quarantine_sample_to_evaluation(
+        quarantine_root=tmp_path / "quarantine-review",
+        evaluation_workspace=tmp_path / "eval",
+        registry_path=registry_path,
+        sample_size=1,
+        approved_by="tester",
+    )
+    create_first_capture_candidates(
+        evaluation_workspace=tmp_path / "eval",
+        handoffs=handoff["handoffs"],
+        actor="tester",
+    )
+    item_id = assess_dual_human_review(tmp_path / "eval")["items"][0]["item_id"]
+
+    with pytest.raises(ValueError, match="accepts only"):
+        record_human_review_opinion(
+            tmp_path / "eval",
+            item_id=item_id,
+            reviewer_profile_id="REV-OTHER",
+            position="SUPPORT",
+            rationale="x",
+        )
+    with pytest.raises(ValueError, match="Unsupported opinion position"):
+        record_human_review_opinion(
+            tmp_path / "eval",
+            item_id=item_id,
+            reviewer_profile_id="REV-SHADOW-A",
+            position="MAYBE",
+            rationale="x",
+        )
+    with pytest.raises(ValueError, match="must not be empty"):
+        record_human_review_opinion(
+            tmp_path / "eval",
+            item_id=item_id,
+            reviewer_profile_id="REV-SHADOW-A",
+            position="SUPPORT",
+            rationale="   ",
+        )
+    with pytest.raises(ValueError, match="Unknown queue item"):
+        record_human_review_opinion(
+            tmp_path / "eval",
+            item_id="QUEUE-UNKNOWN",
+            reviewer_profile_id="REV-SHADOW-A",
+            position="SUPPORT",
+            rationale="Known reviewer.",
+        )

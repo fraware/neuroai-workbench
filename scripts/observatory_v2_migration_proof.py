@@ -13,9 +13,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 BOUNDARY = (
     "FIELD_PRESERVATION_PROOF only. Every predecessor field is accounted and content-addressed. "
@@ -63,9 +64,7 @@ FAMILY_RULES: dict[str, dict[str, Rule]] = {
         "regional_expansion": _legacy("Coverage acquisition record; preserve without inventing a graph relation."),
         "capital_and_ownership_events": _native("Event"),
         "representative_model_records": _native("Entity"),
-        "model_and_dataset_registry": _legacy(
-            "Aggregate registry object lacks one governed native v2 object mapping."
-        ),
+        "model_and_dataset_registry": _legacy("Aggregate registry object lacks one governed native v2 object mapping."),
         "trial_site_relationships": _native("Relationship"),
         "participant_authority_relationships": _native("Relationship"),
         "supplier_dependency_relationships": _native("Relationship"),
@@ -116,9 +115,7 @@ FAMILY_RULES: dict[str, dict[str, Rule]] = {
         "assessment_delta": _legacy("Assessment state remains outside observatory graph authority."),
         "source_delta": _legacy("Source-accounting metadata; source records remain independently identified."),
         "reopening_transition": _native("ReopeningDecision"),
-        "bounded_system_record": _legacy(
-            "Requires exact-system Entity resolution before native Assertion projection."
-        ),
+        "bounded_system_record": _legacy("Requires exact-system Entity resolution before native Assertion projection."),
         "prohibited_inferences": _legacy(),
     },
     "SOURCE14": {"$root": _native("Source")},
@@ -333,20 +330,14 @@ def inventory_input(role: str, path: Path) -> tuple[dict[str, Any], list[dict[st
             )
             for pointer, value in leaf_items:
                 relative = pointer[len(base_pointer) :].lstrip("/")
-                source_field = (
-                    relative.split("/", 1)[0].replace("~1", "/").replace("~0", "~")
-                    if relative
-                    else "$value"
-                )
+                source_field = relative.split("/", 1)[0].replace("~1", "/").replace("~0", "~") if relative else "$value"
                 field_name = pointer.rsplit("/", 1)[-1].replace("~1", "/").replace("~0", "~")
                 field_rule = _field_rule(role, family, source_field, family_rule)
                 disposition = field_rule.disposition
                 note = field_rule.note
                 if _is_explicitly_unresolved(record, source_field, record.get(source_field)):
                     disposition = "PRESERVED_UNRESOLVED_PREDECESSOR_STATE"
-                    note = (
-                        "Predecessor did not establish source linkage or knowledge time; no value may be invented."
-                    )
+                    note = "Predecessor did not establish source linkage or knowledge time; no value may be invented."
                 fields.append(
                     {
                         "role": role,

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import copy
+import json
 import uuid
+from pathlib import Path
+
+import pytest
 
 from neuroai_workbench.extraction import (
     check_context_disclosure,
@@ -227,3 +231,67 @@ def test_invalid_request_schema_fails_closed() -> None:
     result = validate_extraction_request({"schema_version": "1"})
     assert result["valid"] is False
     assert result["errors"]
+
+
+def test_extraction_response_citation_and_abstention_failures() -> None:
+    request = _request()
+    response = _response(request)
+    citation = response["proposed_fields"][0]["citation"]  # type: ignore[index]
+    citation["supporting_text"] = "missing text"
+    citation["start_offset"] = -1
+    citation["end_offset"] = 2
+    result = validate_extraction_response(response, request)
+    assert result["valid"] is False
+    messages = [error["message"] for error in result["errors"]]
+    assert any("not contained" in message for message in messages)
+    assert any("fall outside" in message for message in messages)
+
+    abstention_only = {
+        "schema_version": "1",
+        "request_id": request["request_id"],
+        "request_sha256": request["request_sha256"],
+        "task_type": request["task_type"],
+        "summary": "Abstention without rationale.",
+        "proposed_fields": [],
+        "abstentions": [{"field_path": "path", "field_type": "NOPE", "abstention_reason": ""}],
+        "warnings": [],
+        "boundary": "Abstention only.",
+    }
+    abstention_result = validate_extraction_response(abstention_only, request)
+    assert abstention_result["valid"] is False
+    codes = {error["code"] for error in abstention_result["errors"]}
+    assert {"ABSTENTION_REASON_REQUIRED", "INVALID_FIELD_TYPE"} <= codes
+
+
+def test_benchmark_manifest_helpers_fail_closed(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "MANIFEST.json"
+    manifest_path.write_text(
+        json.dumps({"status": "EXECUTED", "fixtures": "bad", "metrics": {}, "stop_conditions": {}}), encoding="utf-8"
+    )
+
+    manifest = load_benchmark_manifest(manifest_path)
+    validation = validate_benchmark_manifest(manifest)
+    assert validation["valid"] is False
+    assert any(error["code"] == "BENCHMARK_STATUS" for error in validation["errors"])
+    assert list_benchmark_fixtures(manifest) == []
+    assert get_preregistered_metrics(manifest) == []
+    assert get_stop_conditions(manifest) == []
+
+    with pytest.raises(FileNotFoundError, match="Benchmark manifest not found"):
+        load_benchmark_manifest(tmp_path / "missing.json")
+    with pytest.raises(FileNotFoundError, match="Benchmark fixture stub not found"):
+        load_fixture_stub("missing.json", root=tmp_path)
+
+
+def test_corpus_virtual_stub_fail_closed_paths(tmp_path: Path) -> None:
+    corpus = tmp_path / "CORPUS.json"
+    corpus.write_text(json.dumps({"cases": [{"fixture_id": "FIX-1", "capture": {"value": 1}}]}), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Invalid corpus stub spec"):
+        load_fixture_stub("corpus:CORPUS.json", root=tmp_path)
+    with pytest.raises(ValueError, match="capture\\|annotation"):
+        load_fixture_stub("corpus:CORPUS.json#FIX-1:other", root=tmp_path)
+    with pytest.raises(ValueError, match="missing annotation"):
+        load_fixture_stub("corpus:CORPUS.json#FIX-1:annotation", root=tmp_path)
+    with pytest.raises(FileNotFoundError, match="Fixture FIX-2 not found"):
+        load_fixture_stub("corpus:CORPUS.json#FIX-2:capture", root=tmp_path)

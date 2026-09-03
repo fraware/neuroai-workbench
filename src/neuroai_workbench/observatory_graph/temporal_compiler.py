@@ -324,7 +324,9 @@ def predecessor_successor_diff(
         ids = [object_id for _, object_id in keys]
         # Preserve the legacy id-only surface when unambiguous; qualify collisions.
         counts = {object_id: ids.count(object_id) for object_id in set(ids)}
-        return [object_id if counts[object_id] == 1 else f"{object_class}:{object_id}" for object_class, object_id in keys]
+        return [
+            object_id if counts[object_id] == 1 else f"{object_class}:{object_id}" for object_class, object_id in keys
+        ]
 
     return {
         "added_ids": display(added_keys),

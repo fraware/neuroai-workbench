@@ -45,7 +45,9 @@ def _fake_candidate_writer(candidate, output_dir, **kwargs):
 
 
 def _write(monkeypatch, tmp_path):
-    monkeypatch.setattr(package_module, "verify_gate_a_migration_checkpoint", lambda checkpoint, delta16: {"valid": True, "errors": []})
+    monkeypatch.setattr(
+        package_module, "verify_gate_a_migration_checkpoint", lambda checkpoint, delta16: {"valid": True, "errors": []}
+    )
     monkeypatch.setattr(package_module, "write_predecessor_migration_candidate_package", _fake_candidate_writer)
     return write_gate_a_migration_package(
         _checkpoint(),
@@ -105,7 +107,9 @@ def test_gate_a_package_verifier_detects_child_manifest_substitution(monkeypatch
 
 
 def test_gate_a_package_refuses_malformed_identity_or_false_representation(monkeypatch, tmp_path) -> None:
-    monkeypatch.setattr(package_module, "verify_gate_a_migration_checkpoint", lambda checkpoint, delta16: {"valid": True, "errors": []})
+    monkeypatch.setattr(
+        package_module, "verify_gate_a_migration_checkpoint", lambda checkpoint, delta16: {"valid": True, "errors": []}
+    )
     monkeypatch.setattr(package_module, "write_predecessor_migration_candidate_package", _fake_candidate_writer)
     checkpoint = _checkpoint()
     checkpoint["representational_scope_complete"] = False

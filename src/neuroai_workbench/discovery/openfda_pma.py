@@ -1,4 +1,5 @@
 """Bounded openFDA PMA projection for human-gated discovery."""
+
 from __future__ import annotations
 
 import hashlib
@@ -40,7 +41,7 @@ def _text(value: Any) -> str | None:
 
 
 def _safe(value: Any) -> Any:
-    if value is None or isinstance(value, (str, int, float, bool)):
+    if value is None or isinstance(value, str | int | float | bool):
         return value
     if isinstance(value, list):
         return [_safe(item) for item in value]
@@ -160,7 +161,11 @@ def project_search_pages(
         meta = payload.get("meta")
         meta_results = meta.get("results") if isinstance(meta, Mapping) else None
         rows = payload.get("results")
-        if not isinstance(meta_results, Mapping) or not isinstance(rows, list) or not all(isinstance(row, dict) for row in rows):
+        if (
+            not isinstance(meta_results, Mapping)
+            or not isinstance(rows, list)
+            or not all(isinstance(row, dict) for row in rows)
+        ):
             raise ValueError(f"page {index}: invalid openFDA PMA shape")
         total, skip, limit = meta_results.get("total"), meta_results.get("skip"), meta_results.get("limit")
         if not isinstance(total, int) or isinstance(total, bool) or total < 0:
@@ -200,13 +205,15 @@ def project_search_pages(
                     raise ValueError(f"Conflicting normalized PMA representations for {identity}")
                 duplicate_count += 1
 
-        page_reports.append({
-            "page_index": index,
-            "reported_total_count": total,
-            "skip": skip,
-            "limit": limit,
-            "returned_record_count": len(rows),
-        })
+        page_reports.append(
+            {
+                "page_index": index,
+                "reported_total_count": total,
+                "skip": skip,
+                "limit": limit,
+                "returned_record_count": len(rows),
+            }
+        )
 
     distinct_totals = sorted(set(totals))
     reported_total = distinct_totals[0] if len(distinct_totals) == 1 else None
@@ -234,10 +241,7 @@ def project_search_pages(
             record: dict[str, Any] = {
                 "record_key": identity,
                 "title": title,
-                "url": (
-                    "https://api.fda.gov/device/pma.json?search="
-                    f"pma_number:%22{normalized['pma_number']}%22"
-                ),
+                "url": (f"https://api.fda.gov/device/pma.json?search=pma_number:%22{normalized['pma_number']}%22"),
                 "publisher": "U.S. FDA",
                 "source_class": "OFFICIAL_REGULATORY_RECORD",
                 "suggested_source_id": (

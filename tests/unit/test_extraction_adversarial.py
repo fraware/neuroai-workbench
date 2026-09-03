@@ -110,3 +110,101 @@ def test_bounded_evaluation_never_recommends_aggregate_winner() -> None:
     assert report["recommended_config_id"] is None
     assert report["selection_refused"] is True
     assert len(report["aggregate_scores"]) >= 2
+
+
+def test_extraction_recorders_fail_closed_on_request_response_and_disposition_edges(tmp_path: Path) -> None:
+    manifest = load_benchmark_manifest()
+    fixture = manifest["fixtures"][0]
+    capture = load_fixture_stub(str(fixture["capture_stub"]))
+    annotation = load_fixture_stub(str(fixture["annotation_stub"]))
+    request = build_extraction_request_from_capture(capture)
+    provider = resolve_provider(
+        next(item for item in default_offline_evaluation_configs() if item.provider_id == "fake-offline")
+    )
+    response = provider.extract(request, annotation=annotation)
+
+    with pytest.raises(ValueError, match="request_id must be a string"):
+        record_extraction_request(tmp_path, {**request, "request_id": None})
+    with pytest.raises(ValueError, match="request hash is invalid"):
+        record_extraction_request(tmp_path, {**request, "request_sha256": "0" * 64})
+
+    record_extraction_request(tmp_path, request)
+    with pytest.raises(ValueError, match="already recorded"):
+        record_extraction_request(tmp_path, request)
+    with pytest.raises(ValueError, match="request_id must be a string"):
+        record_extraction_response(
+            tmp_path,
+            {**request, "request_id": None},
+            response,
+            provider=provider.config.provider_id,
+            model=provider.config.model_id,
+        )
+
+    bad_response = dict(response)
+    bad_response["warnings"] = ["C:\\secret.txt should not appear here"]
+    with pytest.raises(ValueError, match="disclosure checks"):
+        record_extraction_response(
+            tmp_path,
+            request,
+            bad_response,
+            provider=provider.config.provider_id,
+            model=provider.config.model_id,
+        )
+
+    record_extraction_response(
+        tmp_path,
+        request,
+        response,
+        provider=provider.config.provider_id,
+        model=provider.config.model_id,
+    )
+    with pytest.raises(ValueError, match="already recorded"):
+        record_extraction_response(
+            tmp_path,
+            request,
+            response,
+            provider=provider.config.provider_id,
+            model=provider.config.model_id,
+        )
+    with pytest.raises(ValueError, match="Unsupported extraction disposition"):
+        dispose_extraction_response(tmp_path, str(request["request_id"]), "MAYBE", "invalid")
+
+
+def test_verify_extraction_records_reports_missing_and_tampered_links(tmp_path: Path) -> None:
+    manifest = load_benchmark_manifest()
+    fixture = manifest["fixtures"][0]
+    capture = load_fixture_stub(str(fixture["capture_stub"]))
+    annotation = load_fixture_stub(str(fixture["annotation_stub"]))
+    request = build_extraction_request_from_capture(capture)
+    provider = resolve_provider(
+        next(item for item in default_offline_evaluation_configs() if item.provider_id == "fake-offline")
+    )
+    response = provider.extract(request, annotation=annotation)
+
+    with pytest.raises(FileNotFoundError, match="No extraction request recorded"):
+        dispose_extraction_response(tmp_path, str(request["request_id"]), "REJECTED", "no request")
+
+    record_extraction_request(tmp_path, request)
+    with pytest.raises(FileNotFoundError, match="No extraction response recorded"):
+        dispose_extraction_response(tmp_path, str(request["request_id"]), "REJECTED", "no response")
+
+    record_extraction_response(
+        tmp_path,
+        request,
+        response,
+        provider=provider.config.provider_id,
+        model=provider.config.model_id,
+    )
+    dispose_extraction_response(tmp_path, str(request["request_id"]), "REJECTED", "synthetic review")
+
+    response_path = tmp_path / "extraction_eval" / "responses" / f"{request['request_id']}.json"
+    payload = json.loads(response_path.read_text(encoding="utf-8"))
+    payload["request_sha256"] = "0" * 64
+    response_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    report = verify_extraction_records(tmp_path, str(request["request_id"]))
+    assert report["valid"] is False
+    assert (
+        "response record hash mismatch" in report["errors"]
+        or "response does not reference the current request hash" in report["errors"]
+    )

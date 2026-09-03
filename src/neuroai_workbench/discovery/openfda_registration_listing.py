@@ -1,4 +1,5 @@
 """Bounded openFDA device registration/listing projection for human-gated discovery."""
+
 from __future__ import annotations
 
 import hashlib
@@ -72,7 +73,7 @@ def _candidate_locator(
     )
     return "https://api.fda.gov/device/registrationlisting.json?search=" + quote(
         search,
-        safe=".:+\"",
+        safe='.:+"',
     )
 
 
@@ -152,8 +153,7 @@ def project_search_pages(
         raise ValueError("At least one registration/listing page is required")
 
     known = {
-        str(identity).upper(): str(source_id)
-        for identity, source_id in (known_representation_sources or {}).items()
+        str(identity).upper(): str(source_id) for identity, source_id in (known_representation_sources or {}).items()
     }
     totals: list[int] = []
     by_identity: dict[str, dict[str, Any]] = {}
@@ -169,11 +169,7 @@ def project_search_pages(
     page_reports: list[dict[str, Any]] = []
 
     for page_index, raw_page in enumerate(pages, start=1):
-        payload = (
-            raw_page.get("payload")
-            if isinstance(raw_page, Mapping) and "payload" in raw_page
-            else raw_page
-        )
+        payload = raw_page.get("payload") if isinstance(raw_page, Mapping) and "payload" in raw_page else raw_page
         if not isinstance(payload, Mapping):
             raise ValueError(f"page {page_index}: payload must be object")
         meta = payload.get("meta")
@@ -191,25 +187,13 @@ def project_search_pages(
         limit = meta_results.get("limit")
         if not isinstance(total, int) or isinstance(total, bool) or total < 0:
             raise ValueError(f"page {page_index}: total invalid")
-        if (
-            not isinstance(skip, int)
-            or isinstance(skip, bool)
-            or not 0 <= skip <= MAX_SKIP
-        ):
+        if not isinstance(skip, int) or isinstance(skip, bool) or not 0 <= skip <= MAX_SKIP:
             raise ValueError(f"page {page_index}: skip invalid")
-        if (
-            not isinstance(limit, int)
-            or isinstance(limit, bool)
-            or not 1 <= limit <= MAX_LIMIT
-        ):
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= MAX_LIMIT:
             raise ValueError(f"page {page_index}: limit invalid")
         if page_index == 1 and skip != 0:
             sequence_valid = False
-        if (
-            previous_skip is not None
-            and previous_limit is not None
-            and skip != previous_skip + previous_limit
-        ):
+        if previous_skip is not None and previous_limit is not None and skip != previous_skip + previous_limit:
             sequence_valid = False
         previous_skip, previous_limit = skip, limit
         totals.append(total)
@@ -217,9 +201,7 @@ def project_search_pages(
 
         for raw in rows:
             registration = raw.get("registration")
-            if not isinstance(registration, Mapping) or _text(
-                registration.get("registration_number")
-            ) is None:
+            if not isinstance(registration, Mapping) or _text(registration.get("registration_number")) is None:
                 unresolved_registration_number_count += 1
 
             products = raw.get("products")
@@ -249,10 +231,7 @@ def project_search_pages(
                     prior_core.pop("query_memberships", None)
                     current_core.pop("query_memberships", None)
                     if prior_core != current_core:
-                        raise ValueError(
-                            "Conflicting normalized registration/listing representations "
-                            f"for {identity}"
-                        )
+                        raise ValueError(f"Conflicting normalized registration/listing representations for {identity}")
                     duplicate_representation_count += 1
 
         page_reports.append(
@@ -267,9 +246,7 @@ def project_search_pages(
 
     distinct_totals = sorted(set(totals))
     reported_total = distinct_totals[0] if len(distinct_totals) == 1 else None
-    reported_total_state = (
-        "CONSISTENT" if reported_total is not None else "INCONSISTENT_ACROSS_PAGES"
-    )
+    reported_total_state = "CONSISTENT" if reported_total is not None else "INCONSISTENT_ACROSS_PAGES"
     over_limit = reported_total is not None and reported_total > MAX_DIRECT
 
     if reported_total is None:
@@ -307,16 +284,13 @@ def project_search_pages(
                 "publisher": "U.S. FDA",
                 "source_class": "OFFICIAL_DEVICE_REGISTRATION_LISTING_RECORD",
                 "suggested_source_id": (
-                    "SRC-OPENFDA-REGLIST-"
-                    + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16].upper()
+                    "SRC-OPENFDA-REGLIST-" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16].upper()
                 ),
                 "classification_hint": "DUPLICATE" if duplicate_of else "NEW",
             }
             if duplicate_of:
                 record["duplicate_of_source_id"] = duplicate_of
-                known_duplicates.append(
-                    {"representation_identity": identity, "source_id": duplicate_of}
-                )
+                known_duplicates.append({"representation_identity": identity, "source_id": duplicate_of})
             result_records.append(record)
             normalized_records.append(normalized)
 

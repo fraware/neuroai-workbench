@@ -44,9 +44,7 @@ class ObservatoryEventMigrationError(ValueError):
 
 def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
-        raise ObservatoryEventMigrationError(
-            f"{field} must be a lowercase {length}-character hexadecimal identity"
-        )
+        raise ObservatoryEventMigrationError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
 
 
@@ -241,9 +239,7 @@ def materialize_v14_capital_event(
     """Materialize one v1.4 capital/ownership event using only exact controlled identity resolution."""
     required_strings = ("event_id", "event_type", "subject", "evidence_state", "boundary")
     missing = [
-        field
-        for field in required_strings
-        if not isinstance(record.get(field), str) or not str(record[field]).strip()
+        field for field in required_strings if not isinstance(record.get(field), str) or not str(record[field]).strip()
     ]
     if missing:
         raise ObservatoryEventMigrationError(f"capital event missing required predecessor fields: {missing}")
@@ -256,7 +252,9 @@ def materialize_v14_capital_event(
 
     subject_entity_id = resolve_exact_entity_name(record["subject"], entity_name_index)
     counterparties = record.get("counterparties") or []
-    if not isinstance(counterparties, list) or any(not isinstance(item, str) or not item.strip() for item in counterparties):
+    if not isinstance(counterparties, list) or any(
+        not isinstance(item, str) or not item.strip() for item in counterparties
+    ):
         raise ObservatoryEventMigrationError("capital event counterparties must be an array of non-empty strings")
     occurred_at = predecessor_event_time_value(record.get("date"))
 
@@ -302,9 +300,7 @@ def materialize_v14_capital_event(
         known_source_ids=known_source_ids,
     )
     if verification_errors:
-        raise ObservatoryEventMigrationError(
-            f"generated capital Event/trace is invalid: {verification_errors}"
-        )
+        raise ObservatoryEventMigrationError(f"generated capital Event/trace is invalid: {verification_errors}")
     return event, trace
 
 

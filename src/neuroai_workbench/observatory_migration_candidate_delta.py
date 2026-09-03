@@ -127,9 +127,7 @@ def verify_predecessor_migration_candidate_with_delta(result: dict[str, Any]) ->
         if isinstance(item, dict) and isinstance(item.get("entity_id"), str)
     }
     source_ids = {
-        str(item["source_id"])
-        for item in sources
-        if isinstance(item, dict) and isinstance(item.get("source_id"), str)
+        str(item["source_id"]) for item in sources if isinstance(item, dict) and isinstance(item.get("source_id"), str)
     }
     events = delta_result.get("events")
     traces = delta_result.get("predecessor_traces")

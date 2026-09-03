@@ -87,9 +87,7 @@ def _bind_frozen_input(role: str, path: Path) -> dict[str, Any]:
     observed = sha256_bytes(raw)
     expected = FROZEN_INPUT_SHA256[role]
     if observed != expected:
-        raise GateARunError(
-            f"Frozen input hash mismatch for {role}: expected {expected}, observed {observed}"
-        )
+        raise GateARunError(f"Frozen input hash mismatch for {role}: expected {expected}, observed {observed}")
     return {
         "role": role,
         "path": str(path),
@@ -145,10 +143,7 @@ def execute_gate_a_run(
     if not observatory_graph_schema_version.strip():
         raise GateARunError("observatory_graph_schema_version must be non-empty")
 
-    input_manifest = [
-        _bind_frozen_input(role, paths[role])
-        for role in sorted(FROZEN_INPUT_SHA256)
-    ]
+    input_manifest = [_bind_frozen_input(role, paths[role]) for role in sorted(FROZEN_INPUT_SHA256)]
     loaded = {role: _load_json(paths[role]) for role in FROZEN_INPUT_SHA256}
     for role in ("V14", "V16", "DELTA16", "V17", "PRIMA17"):
         if not isinstance(loaded[role], dict):

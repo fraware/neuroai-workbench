@@ -102,9 +102,7 @@ def validate_gate_a_native_graph(
         class_counts[object_class] = class_counts.get(object_class, 0) + 1
 
     cross_class_collisions = {
-        object_id: sorted(classes)
-        for object_id, classes in sorted(id_classes.items())
-        if len(classes) > 1
+        object_id: sorted(classes) for object_id, classes in sorted(id_classes.items()) if len(classes) > 1
     }
     typed_reference_checks = 0
     temporal_values_checked = 0

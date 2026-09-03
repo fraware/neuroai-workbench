@@ -47,7 +47,7 @@ def _xml(
       <biblio-search total-result-count="{total}">
         <query syntax="CQL">ta=neural</query>
         <range begin="{begin}" end="{end}" />
-        <search-result>{''.join(docs)}</search-result>
+        <search-result>{"".join(docs)}</search-result>
       </biblio-search>
     </world-patent-data>
     """
@@ -89,12 +89,14 @@ class EpoOpsDiscoveryProjectionTests(unittest.TestCase):
         result = project_search_pages(
             query_id="DISCOVERY-OPS-BCI-001",
             query_text="ta=neural",
-            pages=[{
-                "xml": _xml(
-                    [("EP", "1234567", "A1", "Application"), ("EP", "1234567", "B1", "Grant")],
-                    total=2,
-                )
-            }],
+            pages=[
+                {
+                    "xml": _xml(
+                        [("EP", "1234567", "A1", "Application"), ("EP", "1234567", "B1", "Grant")],
+                        total=2,
+                    )
+                }
+            ],
         )
         self.assertEqual(
             {row["record_key"] for row in result["result_records"]},
@@ -141,8 +143,12 @@ class EpoOpsDiscoveryProjectionTests(unittest.TestCase):
     def test_normalized_digest_is_query_membership_independent(self) -> None:
         page = {"xml": _xml([("EP", "7654321", "A1", "Neural decoder")], total=1)}
         first = project_search_pages(query_id="DISCOVERY-OPS-BCI-001", query_text="ta=neural", pages=[page])
-        second = project_search_pages(query_id="DISCOVERY-OPS-NEURAL-DECODING-AI-001", query_text="ta=decoder", pages=[page])
-        self.assertNotEqual(first["normalized_records"][0]["query_memberships"], second["normalized_records"][0]["query_memberships"])
+        second = project_search_pages(
+            query_id="DISCOVERY-OPS-NEURAL-DECODING-AI-001", query_text="ta=decoder", pages=[page]
+        )
+        self.assertNotEqual(
+            first["normalized_records"][0]["query_memberships"], second["normalized_records"][0]["query_memberships"]
+        )
         self.assertEqual(
             first["normalized_records"][0]["normalized_record_sha256"],
             second["normalized_records"][0]["normalized_record_sha256"],

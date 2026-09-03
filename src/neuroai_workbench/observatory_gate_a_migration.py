@@ -81,24 +81,16 @@ def _residual_family_keys(residual: dict[str, Any]) -> set[str]:
 
 
 def _expected_delta16_residual_keys() -> set[str]:
-    return {
-        f"{role}.{family}"
-        for role, family in RESIDUAL_POLICIES
-        if role == "DELTA16"
-    }
+    return {f"{role}.{family}" for role, family in RESIDUAL_POLICIES if role == "DELTA16"}
 
 
-def _expected_remaining_families(
-    candidate: dict[str, Any], residual: dict[str, Any]
-) -> list[str]:
+def _expected_remaining_families(candidate: dict[str, Any], residual: dict[str, Any]) -> list[str]:
     represented = set(_GOVERNED_ELSEWHERE_FAMILIES)
     residual_keys = _residual_family_keys(residual)
     represented.update(residual_keys)
 
     expected_delta_keys = _expected_delta16_residual_keys()
-    actual_delta_keys = {
-        key for key in residual_keys if key.startswith("DELTA16.")
-    }
+    actual_delta_keys = {key for key in residual_keys if key.startswith("DELTA16.")}
     if expected_delta_keys and actual_delta_keys == expected_delta_keys:
         represented.add("DELTA16.*")
 
@@ -131,10 +123,7 @@ def build_gate_a_migration_checkpoint(
     )
     if candidate.get("mechanical_verification") != "PASS":
         raise ObservatoryGateAMigrationError("base migration candidate must mechanically pass")
-    source_ids = {
-        str(source["source_id"])
-        for source in candidate["core"]["source_migration"]["sources"]
-    }
+    source_ids = {str(source["source_id"]) for source in candidate["core"]["source_migration"]["sources"]}
     adjudication = preserve_v16_adjudication_state(
         v16_refresh=v16_refresh,
         delta16=delta16,
@@ -179,9 +168,7 @@ def build_gate_a_migration_checkpoint(
         "counts": {
             "native_objects": candidate["counts"]["native_candidate_objects"],
             "preserved_organization_records": candidate["counts"]["preserved_organization_records"],
-            "predecessor_observation_evidence_records": candidate["counts"][
-                "predecessor_observation_evidence_records"
-            ],
+            "predecessor_observation_evidence_records": candidate["counts"]["predecessor_observation_evidence_records"],
             "governed_v14_history_records": candidate["counts"]["governed_predecessor_history_records"],
             "governed_v16_adjudication_records": adjudication["counts"]["total_governed_records"],
             "governed_successor_packages": 2,
@@ -226,6 +213,10 @@ def verify_gate_a_migration_checkpoint(
     residual = result.get("residual_predecessor_state")
     if not all(isinstance(item, dict) for item in (candidate, adjudication, successor, residual)):
         return {"valid": False, "errors": ["Gate-A child migration surfaces are missing"]}
+    assert isinstance(candidate, dict)
+    assert isinstance(adjudication, dict)
+    assert isinstance(successor, dict)
+    assert isinstance(residual, dict)
 
     candidate_report = verify_predecessor_migration_candidate(candidate)
     errors.extend(f"candidate: {error}" for error in candidate_report["errors"])
@@ -248,10 +239,7 @@ def verify_gate_a_migration_checkpoint(
         )
     )
     errors.extend(f"successor: {error}" for error in verify_v17_successor_lineage(successor))
-    errors.extend(
-        f"residual: {error}"
-        for error in verify_residual_gate_a_state(residual, known_source_ids=source_ids)
-    )
+    errors.extend(f"residual: {error}" for error in verify_residual_gate_a_state(residual, known_source_ids=source_ids))
 
     duplicate = result.get("duplicate_container_proofs")
     if not isinstance(duplicate, dict):

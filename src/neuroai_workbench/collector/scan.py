@@ -107,9 +107,7 @@ def _root_quarantine_record_for_result(quarantine_root: Path, result_id: str) ->
             continue
         matches.append(record)
     if len(matches) != 1:
-        raise ValueError(
-            f"Expected exactly one root quarantine record for result {result_id!r}; found {len(matches)}"
-        )
+        raise ValueError(f"Expected exactly one root quarantine record for result {result_id!r}; found {len(matches)}")
     return matches[0]
 
 
@@ -124,9 +122,7 @@ def _verify_result_quarantine_binding(result: dict[str, Any], quarantine: dict[s
     )
     mismatches = [name for name, left, right in pairs if left != right]
     if mismatches:
-        raise ValueError(
-            "Collection result and root quarantine record disagree on: " + ", ".join(sorted(mismatches))
-        )
+        raise ValueError("Collection result and root quarantine record disagree on: " + ", ".join(sorted(mismatches)))
 
 
 def ensure_content_safety_scan(

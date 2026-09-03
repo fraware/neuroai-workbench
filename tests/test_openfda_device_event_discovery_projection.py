@@ -17,16 +17,18 @@ def _record(key: str = "12345", **overrides: object) -> dict:
         "source_type": ["Manufacturer report"],
         "remedial_action": ["Other"],
         "removal_correction_number": None,
-        "device": [{
-            "brand_name": "Fixture Device",
-            "generic_name": "neural interface",
-            "udi_di": "UDI-FIXTURE",
-            "device_report_product_code": "FIX",
-            "model_number": "M1",
-            "manufacturer_d_name": "Fixture Manufacturer",
-            "implant_flag": "Y",
-            "serial_number": "MUST-NOT-PROJECT",
-        }],
+        "device": [
+            {
+                "brand_name": "Fixture Device",
+                "generic_name": "neural interface",
+                "udi_di": "UDI-FIXTURE",
+                "device_report_product_code": "FIX",
+                "model_number": "M1",
+                "manufacturer_d_name": "Fixture Manufacturer",
+                "implant_flag": "Y",
+                "serial_number": "MUST-NOT-PROJECT",
+            }
+        ],
         "patient": [{"patient_age": "PRIVATE-MUST-NOT-PROJECT"}],
         "mdr_text": [{"text": "Narrative MUST NOT be projected"}],
     }

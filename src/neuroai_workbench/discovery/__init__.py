@@ -7,13 +7,13 @@ never mutates a live monitor registry without human acceptance and an append-onl
 from .boundary import DISCOVERY_BOUNDARY, DISCOVERY_NETWORK_ENV, DISCOVERY_SSRF_POLICY
 from .clinicaltrials import project_search_pages as project_clinicaltrials_search_pages
 from .epo_ops import project_search_pages as project_epo_ops_search_pages
-from .europepmc import project_search_pages as project_europepmc_search_pages
 from .errors import (
     DiscoveryAdjudicationRequiredError,
     DiscoveryError,
     DiscoveryNetworkBlockedError,
     DiscoveryOverwriteRefusedError,
 )
+from .europepmc import project_search_pages as project_europepmc_search_pages
 from .network import network_discovery_allowed, require_network_discovery_allowed, validate_discovery_url
 from .nih_reporter import project_search_pages as project_nih_reporter_search_pages
 from .openfda_510k import project_search_pages as project_openfda_510k_pages

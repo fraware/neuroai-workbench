@@ -48,8 +48,7 @@ def _patch_success(mod: ModuleType, monkeypatch) -> None:
         def build_proof(inputs):
             assert inputs
             expected_names = [
-                mod.FIELD_PROOF_CANONICAL_FILENAMES[role]
-                for role in ("V14", "V16", "DELTA16", "V17", "MONITOR15")
+                mod.FIELD_PROOF_CANONICAL_FILENAMES[role] for role in ("V14", "V16", "DELTA16", "V17", "MONITOR15")
             ]
             assert [path.name for _, path in inputs] == expected_names
             return {

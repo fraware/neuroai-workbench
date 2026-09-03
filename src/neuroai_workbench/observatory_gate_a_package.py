@@ -12,7 +12,7 @@ from .observatory_gate_a_migration import (
     verify_gate_a_migration_checkpoint,
 )
 from .observatory_migration_candidate import write_predecessor_migration_candidate_package
-from .util import atomic_write_bytes, atomic_write_json, canonical_json_bytes, sha256_bytes
+from .util import atomic_write_json, canonical_json_bytes, sha256_bytes
 
 GATE_A_PACKAGE_BOUNDARY = (
     "Deterministic noncanonical Gate-A migration package. The package binds exact frozen predecessor inputs, "
@@ -27,9 +27,7 @@ class ObservatoryGateAPackageError(ValueError):
 
 def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
-        raise ObservatoryGateAPackageError(
-            f"{field} must be a lowercase {length}-character hexadecimal identity"
-        )
+        raise ObservatoryGateAPackageError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
 
 
@@ -135,10 +133,7 @@ def write_gate_a_migration_package(
     }
     descriptor_digest = sha256_bytes(canonical_json_bytes(descriptor))
     manifest = {
-        "files": [
-            {"path": path, "sha256": digest}
-            for path, digest in sorted(state_digests.items())
-        ],
+        "files": [{"path": path, "sha256": digest} for path, digest in sorted(state_digests.items())],
         "subpackages": [
             {
                 "path": "native-candidate",

@@ -58,9 +58,7 @@ class ObservatoryEntityMigrationError(ValueError):
 
 def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
-        raise ObservatoryEntityMigrationError(
-            f"{field} must be a lowercase {length}-character hexadecimal identity"
-        )
+        raise ObservatoryEntityMigrationError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
 
 
@@ -390,12 +388,8 @@ def verify_organization_partition(result: dict[str, Any]) -> dict[str, Any]:
         if len(entities) + len(preserved) != input_count:
             errors.append("native plus preserved organization counts do not equal input count")
 
-    observed_counts = Counter(
-        str(trace.get("classification")) for trace in traces if isinstance(trace, dict)
-    )
-    observed_counts.update(
-        str(item.get("classification")) for item in preserved if isinstance(item, dict)
-    )
+    observed_counts = Counter(str(trace.get("classification")) for trace in traces if isinstance(trace, dict))
+    observed_counts.update(str(item.get("classification")) for item in preserved if isinstance(item, dict))
     declared_counts = result.get("classification_counts")
     if declared_counts != dict(sorted(observed_counts.items())):
         errors.append("classification_counts mismatch")
@@ -438,7 +432,9 @@ def write_predecessor_entity_package(
     """Write a deterministic noncanonical Entity migration package with complete partition evidence."""
     verification = verify_organization_partition(result)
     if not verification["valid"]:
-        raise ObservatoryEntityMigrationError(f"Cannot package invalid organization partition: {verification['errors']}")
+        raise ObservatoryEntityMigrationError(
+            f"Cannot package invalid organization partition: {verification['errors']}"
+        )
 
     input_v14 = _require_hex(v14_input_sha256, length=64, field="v14_input_sha256")
     producer = _require_hex(producer_commit, length=40, field="producer_commit")

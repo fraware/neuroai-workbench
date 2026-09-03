@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 
+from neuroai_workbench.collector.authorization import (
+    LIVE_AUTHORIZATION_ENV,
+    build_authorization_packet,
+)
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.shadow_refresh import (
     LIVE_COLLECTION_ENV,
@@ -19,6 +24,20 @@ from neuroai_workbench.shadow_refresh import (
 )
 from neuroai_workbench.util import atomic_write_json
 from tests.unit.test_collector_adapters_scheduler import FakeTransport, global_getaddrinfo
+
+
+def _authorize_live(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
+    packet = build_authorization_packet(
+        authorization_id="AUTH-SHADOW-LIVE-TEST",
+        authorized_by="test-operator",
+        purpose="Controlled unit test of live shadow collection quarantine outputs.",
+        network_mode="AUTHORIZED_NETWORK",
+        network_permitted=True,
+        authorized_at="2026-09-02T12:00:00Z",
+    )
+    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    monkeypatch.setenv(LIVE_AUTHORIZATION_ENV, json.dumps(packet))
+    return packet
 
 
 def test_live_collection_disabled_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -123,7 +142,7 @@ def test_default_live_collector_config_is_deterministic() -> None:
 
 
 def test_run_live_cohort_collection_uses_injected_transport(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    _authorize_live(monkeypatch)
     url = "https://page.example.org/shadow-live"
     transport = FakeTransport(responses={url: (200, {"content-type": "text/html"}, b"<html>live</html>")})
     plan = {
@@ -176,7 +195,7 @@ def test_run_live_cohort_collection_uses_injected_transport(tmp_path: Path, monk
 
 
 def test_run_live_cohort_collection_surfaces_failure_summaries(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    _authorize_live(monkeypatch)
     url = "https://page.example.org/shadow-fail"
     transport = FakeTransport(responses={url: (500, {"content-type": "text/plain"}, b"error")})
     plan = {
@@ -226,8 +245,10 @@ def test_run_live_cohort_collection_surfaces_failure_summaries(tmp_path: Path, m
     assert failure_outcome["failure_class"]
 
 
-def test_collect_helpers_ignore_corrupt_quarantine_json(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+def test_live_collection_fails_closed_on_corrupt_durable_quarantine_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _authorize_live(monkeypatch)
     quarantine = tmp_path / "quarantine"
     (quarantine / "results").mkdir(parents=True)
     (quarantine / "failures").mkdir(parents=True)
@@ -246,21 +267,19 @@ def test_collect_helpers_ignore_corrupt_quarantine_json(tmp_path: Path, monkeypa
             "evidence_state": "RETRIEVED_BYTES_NOT_SUBSTANTIVELY_ADJUDICATED",
         },
     )
-    # Exercise helpers via a no-op collection plan (empty due) after planting digests.
-    package = run_live_cohort_collection(
-        plan={
-            "plan_id": "PLAN-EMPTY",
-            "as_of": "2026-08-02",
-            "due": [],
-            "manual": [],
-            "not_due": [],
-            "counts": {"due": 0, "manual": 0, "not_due": 0},
-        },
-        registry={"sources": []},
-        registry_sha256="d" * 64,
-        quarantine_root=quarantine,
-        transport=FakeTransport(),
-        dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
-    )
-    assert any(item.get("source_id") == "SRC-OK" for item in package["capture_digests"])
-    assert package["failure_summaries"] == []
+    with pytest.raises((OSError, ValueError), match="JSON|Expecting|decode|object"):
+        run_live_cohort_collection(
+            plan={
+                "plan_id": "PLAN-EMPTY",
+                "as_of": "2026-08-02",
+                "due": [],
+                "manual": [],
+                "not_due": [],
+                "counts": {"due": 0, "manual": 0, "not_due": 0},
+            },
+            registry={"sources": []},
+            registry_sha256="d" * 64,
+            quarantine_root=quarantine,
+            transport=FakeTransport(),
+            dns_guard=DnsGuard(getaddrinfo=global_getaddrinfo),
+        )

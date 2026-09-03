@@ -11,7 +11,6 @@ from __future__ import annotations
 from typing import Any
 
 from .observatory_event_migration import (
-    EVENT_MIGRATION_BOUNDARY,
     ObservatoryEventMigrationError,
     exact_entity_name_index,
     resolve_exact_entity_name,
@@ -114,7 +113,11 @@ def verify_delta_capital_event(
     occurred = event.get("occurred_at")
     if not isinstance(raw_date, str) or not raw_date.strip():
         errors.append("predecessor date is missing")
-    elif not isinstance(occurred, dict) or occurred.get("precision") != "DATE" or occurred.get("value") != raw_date.strip():
+    elif (
+        not isinstance(occurred, dict)
+        or occurred.get("precision") != "DATE"
+        or occurred.get("value") != raw_date.strip()
+    ):
         errors.append("occurred_at date binding mismatch")
 
     schema_errors = validate_graph_object(

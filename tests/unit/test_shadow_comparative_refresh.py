@@ -10,6 +10,7 @@ from unittest.mock import patch
 import pytest
 
 from neuroai_workbench.collector.adapters.registry import adapter_for_source, build_adapters
+from neuroai_workbench.collector.authorization import LIVE_AUTHORIZATION_ENV, build_authorization_packet
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.monitoring import initialize_monitoring, record_snapshot
 from neuroai_workbench.shadow_refresh import LIVE_COLLECTION_ENV
@@ -27,6 +28,21 @@ from tests.unit.test_collector_adapters_scheduler import FakeTransport, global_g
 
 FIXTURES = Path(__file__).parents[1] / "fixtures" / "delta"
 PREDECESSOR = FIXTURES / "synthetic_predecessor_release.json"
+
+
+def _live_env() -> dict[str, str]:
+    packet = build_authorization_packet(
+        authorization_id="AUTH-COMPARATIVE-TEST",
+        authorized_by="test-operator",
+        purpose="Controlled unit test of protected comparative live refresh.",
+        network_mode="AUTHORIZED_NETWORK",
+        network_permitted=True,
+        authorized_at="2026-09-02T12:00:00Z",
+    )
+    return {
+        LIVE_COLLECTION_ENV: "1",
+        LIVE_AUTHORIZATION_ENV: json.dumps(packet),
+    }
 
 
 def _registry(source_ids: tuple[str, ...] = ("SRC-0001",)) -> list[dict[str, object]]:
@@ -93,7 +109,7 @@ def _collect(
         if str(row["source_id"]) in bodies
     }
     transport = FakeTransport(responses=responses)
-    with patch.dict(os.environ, {LIVE_COLLECTION_ENV: "1"}):
+    with patch.dict(os.environ, _live_env()):
         return run_live_cohort_collection(
             plan=plan,
             registry={"sources": registry},
@@ -373,7 +389,8 @@ def test_comparison_classifier_distinguishes_byte_representation_json_and_transi
 def test_full_comparative_runner_executes_true_live_to_live_comparison(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    for key, value in _live_env().items():
+        monkeypatch.setenv(key, value)
     registry = _registry()
     registry_path = tmp_path / "registry.json"
     _write_registry(registry_path, registry)
@@ -446,7 +463,8 @@ def test_full_comparative_runner_executes_true_live_to_live_comparison(
 def test_runner_records_second_success_without_prior_baseline_as_first_capture(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    for key, value in _live_env().items():
+        monkeypatch.setenv(key, value)
     registry = _registry(("SRC-0001", "SRC-0002"))
     registry_path = tmp_path / "registry.json"
     _write_registry(registry_path, registry)
@@ -498,7 +516,8 @@ def test_runner_records_second_success_without_prior_baseline_as_first_capture(
 
 
 def test_runner_keeps_identical_capture_out_of_candidate_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(LIVE_COLLECTION_ENV, "1")
+    for key, value in _live_env().items():
+        monkeypatch.setenv(key, value)
     registry = _registry()
     registry_path = tmp_path / "registry.json"
     _write_registry(registry_path, registry)

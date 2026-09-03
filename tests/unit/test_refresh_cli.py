@@ -101,11 +101,14 @@ def test_main_runs_live_cycle_with_small_team_defaults(
 
     def fake_cycle(**kwargs: Any) -> dict[str, Any]:
         captured.update(kwargs)
+        captured["live_env_at_call"] = os.environ.get(LIVE_COLLECTION_ENV)
+        captured["authorization_at_call"] = json.loads(os.environ[refresh_cli.LIVE_AUTHORIZATION_ENV])
         return _package(tmp_path)
 
     monkeypatch.setattr(refresh_cli, "run_live_evaluation_cycle", fake_cycle)
     monkeypatch.setattr(refresh_cli, "utc_now", lambda: "2026-08-07T20:01:02Z")
     monkeypatch.delenv(LIVE_COLLECTION_ENV, raising=False)
+    monkeypatch.delenv(refresh_cli.LIVE_AUTHORIZATION_ENV, raising=False)
 
     result = refresh_cli.main(
         [
@@ -119,7 +122,13 @@ def test_main_runs_live_cycle_with_small_team_defaults(
     )
 
     assert result == 0
-    assert os.environ[LIVE_COLLECTION_ENV] == "1"
+    assert captured["live_env_at_call"] == "1"
+    authorization = captured["authorization_at_call"]
+    assert authorization["network_mode"] == "AUTHORIZED_NETWORK"
+    assert authorization["network_permitted"] is True
+    assert len(authorization["authorization_sha256"]) == 64
+    assert LIVE_COLLECTION_ENV not in os.environ
+    assert refresh_cli.LIVE_AUTHORIZATION_ENV not in os.environ
     assert captured["registry_path"] == registry.resolve()
     assert captured["predecessor_path"] == predecessor.resolve()
     assert captured["sample_size"] == 25

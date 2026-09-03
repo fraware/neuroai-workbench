@@ -74,9 +74,7 @@ class OpenFdaRegistrationListingProjectionTests(unittest.TestCase):
         self.assertEqual(len(result["result_records"]), 2)
 
     def test_exact_representation_identity_uses_required_fields_and_name_set(self):
-        result = project_openfda_registration_listing_pages(
-            query_id=QUERY, search=SEARCH, pages=[_page([_row()])]
-        )
+        result = project_openfda_registration_listing_pages(query_id=QUERY, search=SEARCH, pages=[_page([_row()])])
         row = result["normalized_records"][0]
         self.assertTrue(row["representation_identity"].startswith("REGLIST:9610240:9051149:HQY:"))
         self.assertEqual(row["registration_number"], "9610240")
@@ -136,9 +134,7 @@ class OpenFdaRegistrationListingProjectionTests(unittest.TestCase):
         self.assertEqual(result["result_records"], [])
 
     def test_exact_known_representation_identity_is_only_duplicate_key(self):
-        first = project_openfda_registration_listing_pages(
-            query_id=QUERY, search=SEARCH, pages=[_page([_row()])]
-        )
+        first = project_openfda_registration_listing_pages(query_id=QUERY, search=SEARCH, pages=[_page([_row()])])
         identity = first["normalized_records"][0]["representation_identity"]
         exact = project_openfda_registration_listing_pages(
             query_id=QUERY,
@@ -180,16 +176,12 @@ class OpenFdaRegistrationListingProjectionTests(unittest.TestCase):
     def test_skip_gap_is_detected(self):
         first = _page([_row(products=[_product(code="AAA")])], total=2, skip=0, limit=1)
         second = _page([_row(products=[_product(code="BBB")])], total=2, skip=2, limit=1)
-        result = project_openfda_registration_listing_pages(
-            query_id=QUERY, search=SEARCH, pages=[first, second]
-        )
+        result = project_openfda_registration_listing_pages(query_id=QUERY, search=SEARCH, pages=[first, second])
         self.assertFalse(result["coverage"]["skip_sequence_valid"])
         self.assertEqual(result["coverage"]["skip_coverage_state"], "INVALID_SEQUENCE")
 
     def test_sensitive_registration_contact_fields_are_not_projected(self):
-        result = project_openfda_registration_listing_pages(
-            query_id=QUERY, search=SEARCH, pages=[_page([_row()])]
-        )
+        result = project_openfda_registration_listing_pages(query_id=QUERY, search=SEARCH, pages=[_page([_row()])])
         serialized = str(result["normalized_records"])
         self.assertNotIn("EXCLUDED ADDRESS", serialized)
         self.assertNotIn("EXCLUDED CONTACT", serialized)
@@ -197,9 +189,9 @@ class OpenFdaRegistrationListingProjectionTests(unittest.TestCase):
         self.assertNotIn("EXCLUDED AGENT PHONE", serialized)
 
     def test_no_authority_escalation(self):
-        coverage = project_openfda_registration_listing_pages(
-            query_id=QUERY, search=SEARCH, pages=[_page([_row()])]
-        )["coverage"]
+        coverage = project_openfda_registration_listing_pages(query_id=QUERY, search=SEARCH, pages=[_page([_row()])])[
+            "coverage"
+        ]
         self.assertFalse(coverage["representation_identity_is_exact_device_identity"])
         for key in (
             "registration_or_listing_is_marketing_authorization_claim",

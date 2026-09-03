@@ -65,9 +65,7 @@ def _candidate_reference(release_dir: Path) -> dict[str, Any]:
         "candidate_id": str(descriptor.get("candidate_id") or ""),
         "release_tag": str(descriptor.get("release_tag") or ""),
         "manifest_sha256": _require_hex(manifest.get("manifest_sha256"), length=64, field="manifest_sha256"),
-        "descriptor_sha256": _require_hex(
-            manifest.get("descriptor_sha256"), length=64, field="descriptor_sha256"
-        ),
+        "descriptor_sha256": _require_hex(manifest.get("descriptor_sha256"), length=64, field="descriptor_sha256"),
         "candidate_content_sha256": _require_hex(
             descriptor.get("candidate_content_sha256"), length=64, field="candidate_content_sha256"
         ),
@@ -177,10 +175,10 @@ def verify_s2_authorizations(release_dir: Path) -> dict[str, Any]:
                 errors.append("authorization supersession cycle detected")
                 break
             seen.add(current)
-            record = index.get(current)
-            if record is None:
+            next_record = index.get(current)
+            if next_record is None:
                 break
-            current = str(record.get("supersedes_authorization_id") or "")
+            current = str(next_record.get("supersedes_authorization_id") or "")
 
     active = _active_authorizations(records)
     if len(active) > 1:

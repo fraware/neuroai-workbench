@@ -84,9 +84,7 @@ def delta16_record_ids(delta16: dict[str, Any]) -> set[str]:
                     f"delta16.{family}[{index}].{id_field} must be a non-empty string"
                 )
             if record_id in result:
-                raise ObservatoryAdjudicationMigrationError(
-                    f"duplicate controlled DELTA16 record id {record_id}"
-                )
+                raise ObservatoryAdjudicationMigrationError(f"duplicate controlled DELTA16 record id {record_id}")
             result.add(record_id)
     return result
 

@@ -18,7 +18,6 @@ from .observatory_entity_migration import (
     ENTITY_MIGRATION_BOUNDARY,
     materialize_predecessor_organizations,
     verify_organization_partition,
-    verify_organization_migration_record,
 )
 from .observatory_graph import validate_graph_object
 from .observatory_migration import (
@@ -47,9 +46,7 @@ class ObservatoryMigrationCoreError(ValueError):
 
 def _require_hex(value: Any, *, length: int, field: str) -> str:
     if not isinstance(value, str) or len(value) != length or any(char not in "0123456789abcdef" for char in value):
-        raise ObservatoryMigrationCoreError(
-            f"{field} must be a lowercase {length}-character hexadecimal identity"
-        )
+        raise ObservatoryMigrationCoreError(f"{field} must be a lowercase {length}-character hexadecimal identity")
     return value
 
 
@@ -106,9 +103,7 @@ def build_predecessor_migration_core(
             "native_entities": entity_result["object_count"],
             "preserved_organization_records": entity_result["preserved_record_count"],
             "native_sources": source_result["object_count"],
-            "predecessor_observation_evidence_records": observation_result[
-                "predecessor_observation_evidence_count"
-            ],
+            "predecessor_observation_evidence_records": observation_result["predecessor_observation_evidence_count"],
             "native_observations": 0,
             "native_core_objects": len(native_objects),
         },
@@ -155,7 +150,11 @@ def verify_predecessor_migration_core(result: dict[str, Any]) -> dict[str, Any]:
     entity_result = result.get("entity_migration")
     source_result = result.get("source_migration")
     observation_result = result.get("predecessor_observation_evidence")
-    if not isinstance(entity_result, dict) or not isinstance(source_result, dict) or not isinstance(observation_result, dict):
+    if (
+        not isinstance(entity_result, dict)
+        or not isinstance(source_result, dict)
+        or not isinstance(observation_result, dict)
+    ):
         return {"valid": False, "errors": ["migration core child results are missing"]}
 
     entity_verification = verify_organization_partition(entity_result)
@@ -176,7 +175,10 @@ def verify_predecessor_migration_core(result: dict[str, Any]) -> dict[str, Any]:
         if not source_id or source_id in source_ids:
             errors.append(f"duplicate or empty Source id {source_id!r}")
         source_ids.add(source_id)
-        errors.extend(f"source:{source_id}: {error}" for error in verify_predecessor_trace(trace, expected_native_object_id=source_id))
+        errors.extend(
+            f"source:{source_id}: {error}"
+            for error in verify_predecessor_trace(trace, expected_native_object_id=source_id)
+        )
         schema = validate_graph_object(
             {key: value for key, value in source.items() if key != "canonical_sha256"},
             "Source",
