@@ -12,7 +12,6 @@ from neuroai_workbench.evaluation_benchmarks import (
     canonical_json_bytes,
 )
 
-
 MANIFEST_SCHEMA_VERSION = "0.1"
 FREEZE_MANIFEST_TYPE = "BENCHMARK_FREEZE"
 RUN_MANIFEST_TYPE = "HELD_OUT_EVALUATION_RUN"
