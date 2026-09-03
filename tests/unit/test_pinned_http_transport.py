@@ -11,6 +11,7 @@ from neuroai_workbench.collector import CollectorConfig, PinnedSocketHttpTranspo
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpClient, HttpRequest
+from tests.unit.pinned_transport_fixtures import as_transport_fixture_socket
 
 GLOBAL_IP = "93.184.216.34"
 SECOND_GLOBAL_IP = "8.8.8.8"
@@ -87,7 +88,8 @@ def test_http_client_refreshes_validated_addresses_for_redirect_hop() -> None:
 
 class SocketPairServer:
     def __init__(self, response: bytes) -> None:
-        self.client, self.server = socket.socketpair()
+        client, self.server = socket.socketpair()
+        self.client = as_transport_fixture_socket(client)
         self.response = response
         self.received = b""
         self._thread = threading.Thread(target=self._serve, daemon=True)

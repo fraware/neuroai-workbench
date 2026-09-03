@@ -153,3 +153,31 @@ def test_transport_rejects_unverifiable_actual_inet_peer() -> None:
     assert exc.value.failure_class == "SSRF_BLOCKED"
     assert "Unable to verify connected transport peer" in str(exc.value)
     assert peer_socket.closed is True
+
+
+def test_transport_rejects_loopback_inet_peer_against_global_pin() -> None:
+    class LoopbackPeerSocket:
+        family = socket.AF_INET
+
+        def __init__(self) -> None:
+            self.closed = False
+
+        def getpeername(self) -> tuple[str, int]:
+            return ("127.0.0.1", 443)
+
+        def close(self) -> None:
+            self.closed = True
+
+    peer_socket = LoopbackPeerSocket()
+    transport = PinnedSocketHttpTransport(socket_factory=lambda target, timeout: peer_socket)
+
+    with pytest.raises(CollectionFailureError) as exc:
+        transport.send(
+            HttpRequest("GET", "https://example.org/x", {}, (GLOBAL_IP,)),
+            connect_timeout=1.0,
+            read_timeout=1.0,
+        )
+
+    assert exc.value.failure_class == "SSRF_BLOCKED"
+    assert "does not match validated address" in str(exc.value)
+    assert peer_socket.closed is True

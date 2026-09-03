@@ -9,6 +9,7 @@ import pytest
 from neuroai_workbench.collector import PinnedSocketHttpTransport
 from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpRequest
+from tests.unit.pinned_transport_fixtures import as_transport_fixture_socket
 
 GLOBAL_IP = "93.184.216.34"
 
@@ -30,7 +31,8 @@ class RecordingSslContext:
 
 
 def _socket_server(response: bytes) -> tuple[socket.socket, threading.Thread, dict[str, bytes]]:
-    client, server = socket.socketpair()
+    raw_client, server = socket.socketpair()
+    client = as_transport_fixture_socket(raw_client)
     state: dict[str, bytes] = {"request": b""}
 
     def serve() -> None:
