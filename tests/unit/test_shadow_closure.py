@@ -16,9 +16,9 @@ from neuroai_workbench.shadow_refresh.closure import (
     compute_closure_metrics,
     create_first_capture_candidates,
     handoff_quarantine_sample_to_evaluation,
-    retry_failed_sources,
     record_formal_disposition,
     record_human_review_opinion,
+    retry_failed_sources,
     scaffold_dual_human_review,
 )
 from neuroai_workbench.shadow_refresh.schemas import validate_shadow_refresh_run_results
