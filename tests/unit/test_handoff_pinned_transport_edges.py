@@ -6,6 +6,7 @@ import http.client
 from typing import Any
 
 import pytest
+import urllib3
 
 import neuroai_workbench.collector.pinned_transport as pinned_transport
 from neuroai_workbench.collector import PinnedSocketHttpTransport
@@ -69,10 +70,6 @@ def test_transport_rejects_non_string_headers_and_latin1_failure() -> None:
             read_timeout=1.0,
         )
 
-    class _ExplodingHeaders(dict):
-        def items(self):  # type: ignore[override]
-            yield ("X-Weird", "ok\u2603")
-
     # Force encode failure after Host is set by using a unicode header value that survives CRLF checks.
     with pytest.raises(CollectionFailureError, match="Latin-1"):
         transport.send(
@@ -101,6 +98,9 @@ def test_transport_retries_oserror_then_raises_last_error() -> None:
 
 def test_transport_malformed_http_response(monkeypatch: pytest.MonkeyPatch) -> None:
     class BoomResponse:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            return None
+
         def begin(self) -> None:
             raise http.client.HTTPException("bad response")
 
@@ -117,41 +117,16 @@ def test_transport_malformed_http_response(monkeypatch: pytest.MonkeyPatch) -> N
         def close(self) -> None:
             return None
 
-    transport = PinnedSocketHttpTransport(
-        socket_factory=lambda address, timeout: FakeSock(),
-        ssl_context=type("Ctx", (), {"wrap_socket": staticmethod(lambda sock, server_hostname=None: sock)})(),
-    )
-    monkeypatch.setattr(http.client, "HTTPResponse", lambda stream: BoomResponse())
+    transport = PinnedSocketHttpTransport(socket_factory=lambda address, timeout: FakeSock())
+    monkeypatch.setattr(pinned_transport._PinnedUrllib3HTTPConnection, "response_class", BoomResponse)
     with pytest.raises(CollectionFailureError, match="Malformed HTTP"):
         transport.send(
-            HttpRequest("GET", "https://example.org/x", {}, (GLOBAL_IP,)),
+            HttpRequest("GET", "http://example.org/x", {}, (GLOBAL_IP,)),
             connect_timeout=1.0,
             read_timeout=1.0,
         )
 
 
-def test_transport_closes_raw_socket_when_stream_never_assigned(monkeypatch: pytest.MonkeyPatch) -> None:
-    closed: list[str] = []
-
-    class RawOnly:
-        def settimeout(self, value: float) -> None:
-            return None
-
-        def close(self) -> None:
-            closed.append("raw")
-
-    class ExplodingSsl:
-        def wrap_socket(self, sock: Any, *, server_hostname: str) -> Any:
-            raise OSError("tls failed")
-
-    transport = PinnedSocketHttpTransport(
-        socket_factory=lambda address, timeout: RawOnly(),
-        ssl_context=ExplodingSsl(),
-    )
-    with pytest.raises(OSError, match="tls failed"):
-        transport.send(
-            HttpRequest("GET", "https://example.org/x", {}, (GLOBAL_IP,)),
-            connect_timeout=1.0,
-            read_timeout=1.0,
-        )
-    assert closed == ["raw"]
+def test_https_connection_delegates_tls_to_native_urllib3_connect() -> None:
+    assert issubclass(pinned_transport._PinnedUrllib3Connection, urllib3.connection.HTTPSConnection)
+    assert pinned_transport._PinnedUrllib3Connection.connect is urllib3.connection.HTTPSConnection.connect

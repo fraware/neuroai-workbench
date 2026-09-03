@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import socket
+import ssl
 import threading
 from dataclasses import dataclass, field
 
@@ -10,6 +11,7 @@ from neuroai_workbench.collector import CollectorConfig, PinnedSocketHttpTranspo
 from neuroai_workbench.collector.dns import DnsGuard
 from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpClient, HttpRequest
+from tests.unit.pinned_transport_fixtures import as_transport_fixture_socket
 
 GLOBAL_IP = "93.184.216.34"
 SECOND_GLOBAL_IP = "8.8.8.8"
@@ -86,7 +88,8 @@ def test_http_client_refreshes_validated_addresses_for_redirect_hop() -> None:
 
 class SocketPairServer:
     def __init__(self, response: bytes) -> None:
-        self.client, self.server = socket.socketpair()
+        client, self.server = socket.socketpair()
+        self.client = as_transport_fixture_socket(client)
         self.response = response
         self.received = b""
         self._thread = threading.Thread(target=self._serve, daemon=True)
@@ -195,6 +198,13 @@ def test_transport_retries_only_within_supplied_validated_address_set() -> None:
 class RecordingSslContext:
     def __init__(self) -> None:
         self.server_names: list[str] = []
+        self.verify_mode = ssl.CERT_REQUIRED
+        self.check_hostname = True
+        self.hostname_checks_common_name = False
+        self.alpn_protocols: list[str] = []
+
+    def set_alpn_protocols(self, protocols: list[str]) -> None:
+        self.alpn_protocols = list(protocols)
 
     def wrap_socket(self, sock: socket.socket, *, server_hostname: str) -> socket.socket:
         self.server_names.append(server_hostname)
@@ -219,6 +229,7 @@ def test_https_transport_uses_original_hostname_for_sni() -> None:
     received = server.finish().decode("iso-8859-1")
     assert targets == [(GLOBAL_IP, 443)]
     assert ssl_context.server_names == ["example.org"]
+    assert ssl_context.alpn_protocols
     assert "Host: example.org\r\n" in received
     assert status == 200
     assert body == b"{}"

@@ -58,7 +58,7 @@ An attacker serves an initial public address record, then changes DNS so a subse
 - Compare resolved addresses against the blocked-address policy on every request and redirect.
 - Fail closed when resolution changes within a single retrieval attempt.
 - Production transport (`PinnedSocketHttpTransport`) connects a numeric socket to a DnsGuard-approved IP literal. It does not call `getaddrinfo`, `socket.create_connection`, or hostname fallback after validation, which closes the DNS-validation-to-connect TOCTOU/rebinding gap in `StdlibHttpTransport`.
-- Record DNS decisions and the actual connected IP on the collection result. Connected-IP provenance is per-response and concurrency-safe.
+- Verify the connected INET peer against the selected DnsGuard-approved pin and fail closed on mismatch or an unverifiable peer. Record DNS decisions and the verified connected IP on the collection result. Connected-IP provenance is per-response and concurrency-safe.
 
 **Contract mapping**
 

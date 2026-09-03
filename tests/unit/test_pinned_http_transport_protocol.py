@@ -8,12 +8,14 @@ import pytest
 from neuroai_workbench.collector import PinnedSocketHttpTransport
 from neuroai_workbench.collector.errors import CollectionFailureError
 from neuroai_workbench.collector.http_client import HttpRequest
+from tests.unit.pinned_transport_fixtures import as_transport_fixture_socket
 
 GLOBAL_IP = "93.184.216.34"
 
 
 def test_malformed_http_response_becomes_network_error() -> None:
     client, server = socket.socketpair()
+    client = as_transport_fixture_socket(client)
 
     def serve() -> None:
         server.settimeout(2.0)
