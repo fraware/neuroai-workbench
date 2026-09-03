@@ -120,7 +120,7 @@ def _is_hex_digest(value: Any, length: int) -> bool:
 
 def _require_sha256(manifest: Mapping[str, Any], field: str) -> str:
     value = manifest.get(field)
-    if not _is_hex_digest(value, 64):
+    if not isinstance(value, str) or not _is_hex_digest(value, 64):
         raise BenchmarkManifestError(f"{field} must be a 64-character SHA-256 hex digest")
     return value
 
@@ -131,7 +131,8 @@ def _require_utc_timestamp(manifest: Mapping[str, Any], field: str) -> None:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError as exc:
         raise BenchmarkManifestError(f"{field} must be an RFC 3339 timestamp") from exc
-    if parsed.utcoffset() is None or parsed.utcoffset().total_seconds() != 0:
+    offset = parsed.utcoffset()
+    if offset is None or offset.total_seconds() != 0:
         raise BenchmarkManifestError(f"{field} must be expressed in UTC")
 
 
