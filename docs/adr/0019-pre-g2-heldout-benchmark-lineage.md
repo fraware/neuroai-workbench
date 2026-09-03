@@ -62,6 +62,10 @@ Authority fields on the selected lineage remain fail-closed (`g2_passed=false` a
 
 Rationale for deferral: these are packaging and fixture-distribution patterns, not a second cryptographic foundation. Porting them wholesale would reintroduce a parallel manifest vocabulary beside #272/#275. They may be scheduled later as additive schema packaging on the selected lineage only.
 
+### Successor packaging port
+
+After this ADR was accepted and `#272`/`#275` merged, the deferred packaging was ported additively onto the selected keyed-HMAC vocabulary via `neuroai_workbench.benchmark_packaging` and `resources/benchmarks/` (JSON Schema, empty `DRAFT_UNFROZEN` public contracts, synthetic fixtures with `UNTRUSTED_DRAFT_ONLY`). The #269 nonce-commitment foundation remains superseded and was not reintroduced.
+
 ## Merge posture
 
 - Do **not** blind-merge #269 or the unrebased historical PR heads.

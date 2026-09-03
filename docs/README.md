@@ -47,6 +47,7 @@ Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions an
 | [extending-observatory.md](operations/extending-observatory.md) | Contributor guide for programmes, adapters, predicates, entity kinds, delta ops |
 | [pr-229-231-233-integration.md](operations/pr-229-231-233-integration.md) | Local integration of Observatory v2 docs, CT.gov discovery, and pinned transport |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
+| [observatory-s1-pin-handoff.md](operations/observatory-s1-pin-handoff.md) | Exact S1 Observatory pin SHA, package version, and hosted proof IDs (G0 not passed) |
 | [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
 | [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh evaluation |
 | [shadow-cycle-43-execution.md](operations/shadow-cycle-43-execution.md) | #43 core-cycle acceptance summary |
