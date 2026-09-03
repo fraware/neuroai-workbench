@@ -110,6 +110,8 @@ class _PinnedConnectionMixin:
     _connect_timeout: float
     _socket_factory: SocketFactory
     connected_address: str | None
+    port: int
+    sock: socket.socket | Any | None
 
     def _configure_pin(
         self,
