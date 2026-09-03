@@ -1,0 +1,9 @@
+# Benchmark run manifest threat boundary
+
+This PRE-G2 note covers integrity threats at the benchmark-freeze and held-out-evaluation boundary. It does not authorize a freeze, evaluation result, gate pass, publication, or assessment change.
+
+Primary threats are substituting a different benchmark after a declared freeze; changing labels without successor lineage; evaluating different code, configuration, threshold, or abstention policy than the one reported; tuning on held-out data; failing to record known benchmark exposure; exporting item-level controlled material; and treating a structurally valid manifest as proof of scientific validity or governance approval.
+
+The manifest controls bind exact digests for governance reference, benchmark freeze, code/configuration artifacts, decision policies, predictions, and aggregate results. Successor freeze manifests require a predecessor digest. Held-out run manifests require the exact supplied freeze-manifest digest and the declaration `HELD_OUT_NOT_USED_FOR_TUNING`. Known or unresolved contamination fails closed. PRE-G2 export is restricted to `AGGREGATE_ONLY`, and all authority-escalation fields remain false or `NONE`.
+
+Residual risks remain outside software validation. A dishonest or compromised operator can make false declarations; upstream artifacts may already contain leaked held-out information; an external governance reference may be malformed in substance despite having a syntactically valid identifier and digest; and hash bindings cannot establish scientific adequacy. Operational evaluation therefore requires controlled S3 access logs, independent contamination review, artifact provenance, and human governance.
