@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:neuroai:benchmark:product:pre-g2:v1",
+  "title": "NeuroAI PRE-G2 Product Benchmark Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "benchmark_id", "benchmark_kind", "deliverable", "status", "g1_approved", "g2_frozen", "contains_real_heldout_labels", "split_commitment_state", "split_commitments", "subgroup_contract", "adjudication_contract", "metrics_contract", "scientific_claim_boundary"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "benchmark_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,63}$"},
+    "benchmark_kind": {"const": "product"},
+    "deliverable": {"const": "D4"},
+    "status": {"const": "PRE_G2"},
+    "g1_approved": {"const": false},
+    "g2_frozen": {"const": false},
+    "contains_real_heldout_labels": {"const": false},
+    "split_commitment_state": {"enum": ["NOT_CREATED_PRE_G2", "CREATED"]},
+    "split_commitments": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/commitmentDescriptor"}},
+    "subgroup_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required_dimensions", "required_edge_case_types", "language_policy", "jurisdiction_policy", "text_state_values"],
+      "properties": {
+        "required_dimensions": {"type": "array", "items": {"enum": ["language", "jurisdiction", "text_state", "edge_case_type"]}, "minItems": 4, "uniqueItems": true},
+        "required_edge_case_types": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+        "language_policy": {"const": "MEASURE_AND_REPORT"},
+        "jurisdiction_policy": {"const": "MEASURE_AND_REPORT"},
+        "text_state_values": {"type": "array", "items": {"enum": ["present", "short", "missing", "translated"]}, "minItems": 4, "maxItems": 4, "uniqueItems": true}
+      }
+    },
+    "adjudication_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["label_authority", "model_output_role", "double_label_subset_required", "disagreement_preserved", "abstention_allowed", "final_adjudication_required_for_gold"],
+      "properties": {
+        "label_authority": {"const": "HUMAN_ADJUDICATION_ONLY"},
+        "model_output_role": {"const": "UNTRUSTED_DRAFT_ONLY"},
+        "double_label_subset_required": {"const": true},
+        "disagreement_preserved": {"const": true},
+        "abstention_allowed": {"const": true},
+        "final_adjudication_required_for_gold": {"const": true}
+      }
+    },
+    "metrics_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required_metrics", "required_subgroup_dimensions", "threshold_reporting", "abstention_aware", "false_negative_analysis"],
+      "properties": {
+        "required_metrics": {"type": "array", "items": {"enum": ["precision", "recall", "false_negative_rate", "abstention_rate", "calibration_error", "specificity", "f1"]}, "minItems": 5, "uniqueItems": true},
+        "required_subgroup_dimensions": {"type": "array", "items": {"enum": ["language", "jurisdiction", "text_state", "edge_case_type"]}, "minItems": 4, "uniqueItems": true},
+        "threshold_reporting": {"const": true},
+        "abstention_aware": {"const": true},
+        "false_negative_analysis": {"const": true}
+      }
+    },
+    "scientific_claim_boundary": {"const": "STRUCTURAL_SCAFFOLD_ONLY_NO_SCIENTIFIC_VALIDATION_OR_G2_FREEZE"}
+  },
+  "$defs": {
+    "commitmentDescriptor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split", "scheme", "digest", "domain_separator", "canonicalization", "nonce_disposition"],
+      "properties": {
+        "split": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9._-]+$"},
+        "scheme": {"const": "SHA256_DOMAIN_CANONICAL_PAYLOAD_NONCE_V1"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "domain_separator": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x20-\\x7E]+$"},
+        "canonicalization": {"const": "JSON_UTF8_SORTED_KEYS_COMPACT_V1"},
+        "nonce_disposition": {"const": "S3_CONTROLLED_NOT_PUBLIC"}
+      }
+    }
+  }
+}
