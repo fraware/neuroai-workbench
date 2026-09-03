@@ -16,6 +16,7 @@ SCHEMA_VERSION = "0.1"
 COMMITMENT_SCHEME = "HMAC_SHA256_CANONICAL_JSON_V1"
 BENCHMARK_KINDS = frozenset({"PATENT", "PRODUCT"})
 BENCHMARK_STATES = frozenset({"DRAFT_UNFROZEN", "FROZEN_COMMITMENTS_ONLY"})
+G1_GATE_STATES = frozenset({"NOT_APPROVED", "APPROVED_REFERENCE_PROVIDED"})
 PREDICTION_LABELS = frozenset({"POSITIVE", "NEGATIVE", "ABSTAIN"})
 GOLD_LABELS = frozenset({"POSITIVE", "NEGATIVE", "UNRESOLVED"})
 ADJUDICATION_STATES = frozenset(
@@ -63,7 +64,9 @@ PUBLIC_CONTRACT_FIELDS = frozenset(
         "benchmark_id",
         "benchmark_kind",
         "state",
-        "g1_approved",
+        "g1_gate_state",
+        "g1_disposition_id",
+        "g1_disposition_sha256",
         "g2_passed",
         "canonical_s2_authority",
         "publication_authority",
@@ -129,11 +132,6 @@ def keyed_commitment(payload: Any, secret_key: bytes) -> str:
     return hmac.new(secret_key, canonical_json_bytes(payload), hashlib.sha256).hexdigest()
 
 
-def _require_bool_false(contract: Mapping[str, Any], field: str) -> None:
-    if contract.get(field) is not False:
-        raise BenchmarkContractError(f"{field} must remain false in PRE-G2 public benchmark contracts")
-
-
 def _is_sha256_hex(value: Any) -> bool:
     if not isinstance(value, str) or len(value) != 64:
         return False
@@ -168,8 +166,22 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
     if state not in BENCHMARK_STATES:
         raise BenchmarkContractError(f"state must be one of {sorted(BENCHMARK_STATES)}")
 
-    _require_bool_false(contract, "g1_approved")
-    _require_bool_false(contract, "g2_passed")
+    g1_gate_state = contract.get("g1_gate_state")
+    if g1_gate_state not in G1_GATE_STATES:
+        raise BenchmarkContractError(f"g1_gate_state must be one of {sorted(G1_GATE_STATES)}")
+    g1_disposition_id = contract.get("g1_disposition_id")
+    g1_disposition_sha256 = contract.get("g1_disposition_sha256")
+    if g1_gate_state == "NOT_APPROVED":
+        if g1_disposition_id is not None or g1_disposition_sha256 is not None:
+            raise BenchmarkContractError("NOT_APPROVED G1 state cannot carry a governance disposition binding")
+    else:
+        if not isinstance(g1_disposition_id, str) or not g1_disposition_id.strip():
+            raise BenchmarkContractError("Approved G1 reference requires a non-empty g1_disposition_id")
+        if not _is_sha256_hex(g1_disposition_sha256):
+            raise BenchmarkContractError("Approved G1 reference requires a SHA-256-format g1_disposition_sha256")
+
+    if contract.get("g2_passed") is not False:
+        raise BenchmarkContractError("g2_passed must remain false in PRE-G2 public benchmark contracts")
     if contract.get("canonical_s2_authority") is not False:
         raise BenchmarkContractError("canonical_s2_authority must remain false")
     if contract.get("publication_authority") is not False:
@@ -206,6 +218,8 @@ def validate_public_benchmark_contract(contract: Mapping[str, Any]) -> None:
         if membership_commitment is not None or label_commitment is not None:
             raise BenchmarkContractError("DRAFT_UNFROZEN contracts must not claim frozen commitments")
     else:
+        if g1_gate_state != "APPROVED_REFERENCE_PROVIDED":
+            raise BenchmarkContractError("FROZEN_COMMITMENTS_ONLY requires an approved G1 disposition reference")
         if not _is_sha256_hex(membership_commitment) or not _is_sha256_hex(label_commitment):
             raise BenchmarkContractError("FROZEN_COMMITMENTS_ONLY contracts require SHA-256-format commitments")
 
