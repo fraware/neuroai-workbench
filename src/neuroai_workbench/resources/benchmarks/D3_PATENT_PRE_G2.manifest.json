@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "benchmark_id": "D3-PATENT-PRE-G2",
+  "benchmark_kind": "patent",
+  "deliverable": "D3",
+  "status": "PRE_G2",
+  "g1_approved": false,
+  "g2_frozen": false,
+  "contains_real_heldout_labels": false,
+  "split_commitment_state": "NOT_CREATED_PRE_G2",
+  "split_commitments": [],
+  "subgroup_contract": {
+    "required_dimensions": ["language", "jurisdiction", "text_state", "edge_case_type"],
+    "required_edge_case_types": ["positive", "negative", "deceptive_negative", "borderline", "missing_or_short_abstract", "multi_year", "multi_jurisdiction", "multilingual", "gray_capability"],
+    "language_policy": "MEASURE_AND_REPORT",
+    "jurisdiction_policy": "MEASURE_AND_REPORT",
+    "text_state_values": ["present", "short", "missing", "translated"]
+  },
+  "adjudication_contract": {
+    "label_authority": "HUMAN_ADJUDICATION_ONLY",
+    "model_output_role": "UNTRUSTED_DRAFT_ONLY",
+    "double_label_subset_required": true,
+    "disagreement_preserved": true,
+    "abstention_allowed": true,
+    "final_adjudication_required_for_gold": true
+  },
+  "metrics_contract": {
+    "required_metrics": ["precision", "recall", "false_negative_rate", "abstention_rate", "calibration_error"],
+    "required_subgroup_dimensions": ["language", "jurisdiction", "text_state", "edge_case_type"],
+    "threshold_reporting": true,
+    "abstention_aware": true,
+    "false_negative_analysis": true
+  },
+  "scientific_claim_boundary": "STRUCTURAL_SCAFFOLD_ONLY_NO_SCIENTIFIC_VALIDATION_OR_G2_FREEZE"
+}
