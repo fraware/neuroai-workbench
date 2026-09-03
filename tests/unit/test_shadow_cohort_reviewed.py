@@ -119,7 +119,13 @@ def test_discover_candidates_limits_target_count_and_skips_used_or_invalid_rows(
                 "url": "https://science.xyz/a",
                 "source_class": "PRIMARY_RESEARCH_PAGE",
             },
-            {"source_id": "SRC-A", "monitor_id": "MON-A2", "publisher": "Duplicate", "url": "https://dup", "source_class": "PRIMARY_RESEARCH_PAGE"},
+            {
+                "source_id": "SRC-A",
+                "monitor_id": "MON-A2",
+                "publisher": "Duplicate",
+                "url": "https://dup",
+                "source_class": "PRIMARY_RESEARCH_PAGE",
+            },
             "not-a-dict",
             {
                 "source_id": "SRC-B",

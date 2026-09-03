@@ -195,7 +195,9 @@ def test_shadow_closure_pure_helpers_and_fail_closed_paths(tmp_path: Path) -> No
     assert content_addressed_run_id(b"stable") == content_addressed_run_id(b"stable")
 
 
-def test_retry_failed_sources_and_offline_samples_cover_noncanonical_paths(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_retry_failed_sources_and_offline_samples_cover_noncanonical_paths(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     registry = {
         "sources": [
             {

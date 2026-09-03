@@ -204,4 +204,7 @@ def test_verify_extraction_records_reports_missing_and_tampered_links(tmp_path: 
 
     report = verify_extraction_records(tmp_path, str(request["request_id"]))
     assert report["valid"] is False
-    assert "response record hash mismatch" in report["errors"] or "response does not reference the current request hash" in report["errors"]
+    assert (
+        "response record hash mismatch" in report["errors"]
+        or "response does not reference the current request hash" in report["errors"]
+    )

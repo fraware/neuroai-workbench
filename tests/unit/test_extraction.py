@@ -265,7 +265,9 @@ def test_extraction_response_citation_and_abstention_failures() -> None:
 
 def test_benchmark_manifest_helpers_fail_closed(tmp_path: Path) -> None:
     manifest_path = tmp_path / "MANIFEST.json"
-    manifest_path.write_text(json.dumps({"status": "EXECUTED", "fixtures": "bad", "metrics": {}, "stop_conditions": {}}), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps({"status": "EXECUTED", "fixtures": "bad", "metrics": {}, "stop_conditions": {}}), encoding="utf-8"
+    )
 
     manifest = load_benchmark_manifest(manifest_path)
     validation = validate_benchmark_manifest(manifest)
