@@ -15,8 +15,9 @@ The collector resolves and validates public DNS targets before transport. A prod
 - requires a non-empty validated address set;
 - independently confirms every supplied address is a globally routable IP literal;
 - opens a socket directly to the numeric IP, without a second hostname-resolution path;
+- independently verifies the connected INET peer with `getpeername` against the selected pin and fail-closes on mismatch or an unverifiable peer;
 - preserves the normalized original hostname in the HTTP `Host` header;
-- for HTTPS, uses the normalized original hostname as TLS `server_hostname`, so the default SSL context performs SNI and certificate hostname validation against the URL identity;
+- for HTTPS, uses the normalized original hostname as TLS SNI/`server_hostname`; urllib3 owns HTTP framing and the handshake with certificate validation and hostname verification enabled;
 - follows no redirects; redirect acceptance and fresh DNS validation remain `HttpClient` responsibilities;
 - permits GET only;
 - rejects caller overrides of `Host` and `Connection`;
@@ -28,7 +29,7 @@ The transport does not itself create evidence, Sources, monitors, assessments or
 
 ## Provenance boundary
 
-Collection results retain the request-scoped DNS-approved address set, rebinding check, and the actual connected IP from `TransportResponse.connected_address`. The transport does not keep mutable `last_connected_address` state.
+Collection results retain the request-scoped DNS-approved address set, rebinding check, and the verified connected IP from `TransportResponse.connected_address` after fail-closed peer verification. The transport does not keep mutable `last_connected_address` state.
 
 ## Quarantine boundary
 
