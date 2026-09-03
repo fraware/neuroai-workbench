@@ -21,7 +21,9 @@ def _contract(kind: str = "PATENT") -> dict[str, object]:
         "benchmark_id": f"PRE_G2_{kind}_V0_1",
         "benchmark_kind": kind,
         "state": "DRAFT_UNFROZEN",
-        "g1_approved": False,
+        "g1_gate_state": "NOT_APPROVED",
+        "g1_disposition_id": None,
+        "g1_disposition_sha256": None,
         "g2_passed": False,
         "canonical_s2_authority": False,
         "publication_authority": False,
@@ -63,15 +65,30 @@ def test_public_contract_rejects_authority_escalation_and_private_payload_fields
         validate_public_benchmark_contract(contract)
 
 
-def test_frozen_contract_requires_opaque_commitments() -> None:
+def test_frozen_contract_requires_approved_g1_reference_and_opaque_commitments() -> None:
     contract = _contract()
     contract["state"] = "FROZEN_COMMITMENTS_ONLY"
-    with pytest.raises(BenchmarkContractError, match="require SHA-256-format commitments"):
-        validate_public_benchmark_contract(contract)
-
     contract["membership_commitment"] = "a" * 64
     contract["label_commitment"] = "b" * 64
+    with pytest.raises(BenchmarkContractError, match="approved G1 disposition reference"):
+        validate_public_benchmark_contract(contract)
+
+    contract["g1_gate_state"] = "APPROVED_REFERENCE_PROVIDED"
+    contract["g1_disposition_id"] = "G1-DISPOSITION-SYNTHETIC"
+    contract["g1_disposition_sha256"] = "c" * 64
     validate_public_benchmark_contract(contract)
+
+
+def test_approved_g1_reference_requires_exact_disposition_binding() -> None:
+    contract = _contract()
+    contract["g1_gate_state"] = "APPROVED_REFERENCE_PROVIDED"
+    with pytest.raises(BenchmarkContractError, match="g1_disposition_id"):
+        validate_public_benchmark_contract(contract)
+
+    contract["g1_disposition_id"] = "G1-DISPOSITION-SYNTHETIC"
+    contract["g1_disposition_sha256"] = "not-a-digest"
+    with pytest.raises(BenchmarkContractError, match="g1_disposition_sha256"):
+        validate_public_benchmark_contract(contract)
 
 
 def test_keyed_commitment_is_deterministic_keyed_and_payload_bound() -> None:
