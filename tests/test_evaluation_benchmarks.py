@@ -30,7 +30,7 @@ def _contract(kind: str = "PATENT") -> dict[str, object]:
         "assessment_effect": "NONE",
         "private_membership_location": "S3_CONTROLLED",
         "private_labels_location": "S3_CONTROLLED",
-        "commitment_scheme": "HMAC_SHA256_CANONICAL_JSON_V1",
+        "commitment_scheme": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1",
         "membership_commitment": None,
         "label_commitment": None,
         "required_strata": sorted(REQUIRED_STRATA[kind]),
@@ -91,18 +91,34 @@ def test_approved_g1_reference_requires_exact_disposition_binding() -> None:
         validate_public_benchmark_contract(contract)
 
 
-def test_keyed_commitment_is_deterministic_keyed_and_payload_bound() -> None:
+def test_keyed_commitment_is_deterministic_keyed_domain_and_payload_bound() -> None:
     payload = {"items": ["S3-002", "S3-001"], "labels": {"S3-001": "POSITIVE"}}
     key = b"k" * 32
-    first = keyed_commitment(payload, key)
-    assert first == keyed_commitment(copy.deepcopy(payload), key)
-    assert first != keyed_commitment(payload, b"z" * 32)
+    domain = "NEUROAI:PRE_G2:MEMBERSHIP:V1"
+    first = keyed_commitment(payload, key, domain_separator=domain)
+    assert first == keyed_commitment(copy.deepcopy(payload), key, domain_separator=domain)
+    assert first != keyed_commitment(payload, b"z" * 32, domain_separator=domain)
+    assert first != keyed_commitment(payload, key, domain_separator="NEUROAI:PRE_G2:LABEL:V1")
 
     changed = copy.deepcopy(payload)
     changed["items"].append("S3-003")
-    assert first != keyed_commitment(changed, key)
+    assert first != keyed_commitment(changed, key, domain_separator=domain)
     with pytest.raises(BenchmarkContractError, match="at least 32 bytes"):
-        keyed_commitment(payload, b"short")
+        keyed_commitment(payload, b"short", domain_separator=domain)
+    with pytest.raises(BenchmarkContractError, match="domain_separator"):
+        keyed_commitment(payload, key, domain_separator="")
+
+
+def test_prediction_leakage_guard_rejects_source_and_nonce_fields() -> None:
+    rows = [
+        {
+            "item_id": "SYN-2",
+            "prediction": "NEGATIVE",
+            "metadata": {"nested": {"licensed_bytes": "x"}},
+        }
+    ]
+    with pytest.raises(BenchmarkContractError, match="prohibited oracle field"):
+        validate_prediction_rows(rows)
 
 
 def test_prediction_leakage_guard_is_recursive() -> None:
