@@ -44,6 +44,7 @@ Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions an
 | [github-governance-setup.md](operations/github-governance-setup.md) | Branch protection and required checks |
 | [github-required-checks.md](operations/github-required-checks.md) | Repository-owned required-check contract |
 | [hosted-ci-empty-steps.md](operations/hosted-ci-empty-steps.md) | Hosted jobs with empty `steps: []` are infrastructure failure, not test results |
+| [g0-baseline-validation-audit-2026-09-03.md](operations/g0-baseline-validation-audit-2026-09-03.md) | G0 exact-baseline CI audit, attribution protocol, and authority boundary |
 | [extending-observatory.md](operations/extending-observatory.md) | Contributor guide for programmes, adapters, predicates, entity kinds, delta ops |
 | [pr-229-231-233-integration.md](operations/pr-229-231-233-integration.md) | Local integration of Observatory v2 docs, CT.gov discovery, and pinned transport |
 | [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
