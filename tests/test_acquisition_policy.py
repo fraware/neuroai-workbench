@@ -5,12 +5,12 @@ import copy
 import pytest
 
 from neuroai_workbench.collector.acquisition_policy import (
-    AcquisitionPolicyError,
     FALLBACK_FORBID,
     FALLBACK_PRIOR_CAPTURE,
     ONLINE_PREFERRED,
     ONLINE_REQUIRED,
     REPLAY_ONLY,
+    AcquisitionPolicyError,
     build_acquisition_policy,
     canonicalize_policy_origin,
     require_acquisition_policy,
