@@ -431,10 +431,14 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             state = str(checkpoint.get("state"))
             if state in TERMINAL_TARGET_STATES:
                 terminal_targets += 1
-            checkpoint_outcome = checkpoint.get("outcome") if isinstance(checkpoint.get("outcome"), dict) else {}
+            checkpoint_outcome_raw = checkpoint.get("outcome")
+            checkpoint_outcome: dict[str, Any] = (
+                checkpoint_outcome_raw if isinstance(checkpoint_outcome_raw, dict) else {}
+            )
             if state == "FAILURE" and checkpoint_outcome.get("retryable") is True:
                 retryable_final_failures += 1
-            fallback = checkpoint.get("fallback") if isinstance(checkpoint.get("fallback"), dict) else None
+            fallback_raw = checkpoint.get("fallback")
+            fallback: dict[str, Any] | None = fallback_raw if isinstance(fallback_raw, dict) else None
             route = FALLBACK_ROUTE if fallback is not None else LIVE_ROUTE
             if fallback is not None:
                 fallback_count += 1
@@ -775,8 +779,10 @@ class ReplayOnlyCollectionScheduler:
             target_id = str(target["retrieval_target_id"])
             checkpoint = checkpoints[target_id]
             state = str(checkpoint["state"])
-            outcome = checkpoint.get("outcome") if isinstance(checkpoint.get("outcome"), dict) else {}
-            replay = checkpoint.get("replay") if isinstance(checkpoint.get("replay"), dict) else None
+            outcome_raw = checkpoint.get("outcome")
+            outcome: dict[str, Any] = outcome_raw if isinstance(outcome_raw, dict) else {}
+            replay_raw = checkpoint.get("replay")
+            replay: dict[str, Any] | None = replay_raw if isinstance(replay_raw, dict) else None
             for source_id in target["source_ids"]:
                 item = {
                     "source_id": source_id,
