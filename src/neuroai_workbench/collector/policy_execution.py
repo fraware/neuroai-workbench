@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -24,7 +25,7 @@ from .config import CollectorConfig
 from .credentials import CredentialProvider
 from .dns import DnsGuard, DnsResolutionRecord
 from .http_client import HttpRequest, HttpTransport, TransportResult
-from .run_ledger import write_run_summary, write_target_checkpoint
+from .run_ledger import TERMINAL_TARGET_STATES, write_run_summary, write_target_checkpoint
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome
 from .url_normalize import RetrievalTargetGroup
@@ -398,46 +399,163 @@ class PolicyBoundCollectionScheduler(CollectionScheduler):
             checkpoint = write_target_checkpoint(self.quarantine_root, checkpoint)
         return checkpoint, terminal
 
-    def _summarize_run(self, **kwargs: Any) -> dict[str, Any]:
-        summary = dict(super()._summarize_run(**kwargs))
-        checkpoints = kwargs.get("checkpoints")
-        if isinstance(checkpoints, dict):
-            for outcome in summary.get("outcomes", []):
-                if not isinstance(outcome, dict):
-                    continue
-                target_id = outcome.get("retrieval_target_id")
-                checkpoint = checkpoints.get(str(target_id)) if target_id is not None else None
-                checkpoint_outcome = checkpoint.get("outcome") if isinstance(checkpoint, dict) else None
-                if isinstance(checkpoint_outcome, dict) and checkpoint_outcome.get("failure_class") == "POLICY_BLOCK":
-                    outcome["failure_class"] = "POLICY_BLOCK"
-                    outcome["reason"] = "acquisition_policy_block"
-                    message = checkpoint_outcome.get("failure_message")
-                    if message:
-                        outcome["message"] = message
+    def _summarize_run(
+        self,
+        *,
+        run_id: str,
+        plan: dict[str, Any],
+        manifest: dict[str, Any],
+        targets: list[dict[str, Any]],
+        checkpoints: dict[str, dict[str, Any]],
+        pre_outcomes: list[dict[str, Any]],
+        resumed_target_ids: set[str],
+    ) -> dict[str, Any]:
+        """Build and atomically persist the policy-complete run summary once.
 
+        This intentionally mirrors the base scheduler's accounting semantics while
+        inserting acquisition-policy provenance before the authoritative summary
+        write. A policy-bound run therefore cannot leave a valid intermediate
+        summary that omits its acquisition binding if the process is interrupted.
+        """
+        outcomes = [dict(item) for item in pre_outcomes]
+        retrieval_targets: list[dict[str, Any]] = []
+        per_host: dict[str, dict[str, int]] = defaultdict(lambda: {"targets": 0, "attempts": 0})
+        total_attempts = 0
+        recovered_attempts = 0
+        terminal_targets = 0
+        retryable_final_failures = 0
+
+        for target in sorted(targets, key=lambda item: str(item["retrieval_target_id"])):
+            target_id = str(target["retrieval_target_id"])
+            checkpoint = checkpoints[target_id]
+            attempts = checkpoint.get("attempts", [])
+            total_attempts += len(attempts)
+            recovered_attempts += sum(
+                1
+                for attempt in attempts
+                if isinstance(attempt, dict) and attempt.get("recovered_from_durable_record") is True
+            )
+            hosts = {
+                str(attempt.get("host")) for attempt in attempts if isinstance(attempt, dict) and attempt.get("host")
+            }
+            for host in sorted(hosts):
+                per_host[host]["targets"] += 1
+            for attempt in attempts:
+                if isinstance(attempt, dict) and attempt.get("host"):
+                    per_host[str(attempt["host"])]["attempts"] += 1
+
+            state = str(checkpoint.get("state"))
+            if state in TERMINAL_TARGET_STATES:
+                terminal_targets += 1
+            outcome_raw = checkpoint.get("outcome")
+            checkpoint_outcome: dict[str, Any] = outcome_raw if isinstance(outcome_raw, dict) else {}
+            if state == "FAILURE" and checkpoint_outcome.get("retryable") is True:
+                retryable_final_failures += 1
+            record_id = checkpoint_outcome.get("record_id")
+            for source_id in target["source_ids"]:
+                if state == "INTERNAL_ERROR":
+                    source_outcome = {
+                        "source_id": source_id,
+                        "adapter_id": target["adapter_id"],
+                        "status": "INCOMPLETE",
+                        "reason": "internal_execution_error",
+                        "retrieval_target_id": target_id,
+                        "primary_source_id": target["primary_source_id"],
+                    }
+                else:
+                    source_outcome = {
+                        "source_id": source_id,
+                        "adapter_id": target["adapter_id"],
+                        "status": state,
+                        "record_id": record_id,
+                        "retrieval_target_id": target_id,
+                        "primary_source_id": target["primary_source_id"],
+                        "attempt_count": len(attempts),
+                    }
+                    if checkpoint_outcome.get("failure_class") == "POLICY_BLOCK":
+                        source_outcome["failure_class"] = "POLICY_BLOCK"
+                        source_outcome["reason"] = "acquisition_policy_block"
+                        message = checkpoint_outcome.get("failure_message")
+                        if message:
+                            source_outcome["message"] = message
+                outcomes.append(source_outcome)
+            retrieval_targets.append(
+                {
+                    "retrieval_target_id": target_id,
+                    "normalized_url": target["normalized_url"],
+                    "source_ids": list(target["source_ids"]),
+                    "http_calls": len(attempts),
+                    "attempt_count": len(attempts),
+                    "status": state,
+                    "resumed": target_id in resumed_target_ids,
+                    "acquisition_route": "LIVE",
+                }
+            )
+
+        outcomes = sorted(outcomes, key=lambda item: (str(item.get("source_id", "")), str(item.get("status", ""))))
+        succeeded = sum(1 for item in outcomes if item["status"] == "RESULT")
+        failed = sum(1 for item in outcomes if item["status"] == "FAILURE")
+        skipped = sum(1 for item in outcomes if item["status"] == "SKIPPED")
+        incomplete = sum(1 for item in outcomes if item["status"] == "INCOMPLETE")
+        accountable = len(outcomes) - incomplete
+        target_total = len(targets)
+        source_total = len(outcomes)
+        coalesced_source_count = sum(len(target["source_ids"]) for target in targets if len(target["source_ids"]) > 1)
+        execution_status = "COMPLETE" if incomplete == 0 else "INCOMPLETE_INTERNAL_ERROR"
+        if execution_status == "COMPLETE" and failed:
+            execution_status = "COMPLETE_WITH_SOURCE_FAILURES"
+
+        counts = {
+            "succeeded": succeeded,
+            "failed": failed,
+            "skipped": skipped,
+            "incomplete": incomplete,
+            "total": source_total,
+            "unique_retrievals": sum(1 for checkpoint in checkpoints.values() if checkpoint.get("attempts")),
+            "retrieval_target_groups": target_total,
+            "completed_retrieval_targets": terminal_targets,
+            "coalesced_source_count": coalesced_source_count,
+            "logical_sources": source_total - skipped,
+            "collection_attempts": total_attempts,
+            "retries": max(
+                0,
+                total_attempts - sum(1 for checkpoint in checkpoints.values() if checkpoint.get("attempts")),
+            ),
+            "recovered_attempts": recovered_attempts,
+            "resumed_targets": len(resumed_target_ids),
+            "retryable_failures_exhausted": retryable_final_failures,
+        }
+        slo = {
+            "source_accountability_coverage": 1.0 if source_total == 0 else accountable / source_total,
+            "target_execution_coverage": 1.0 if target_total == 0 else terminal_targets / target_total,
+            "source_accountability_complete": accountable == source_total,
+            "target_execution_complete": terminal_targets == target_total,
+        }
         acquisition = {
             **self.acquisition_binding,
             "route": "LIVE",
             "fallback_used": False,
             "boundary": POLICY_EXECUTION_BOUNDARY,
         }
-        summary["acquisition"] = acquisition
-        summary["retrieval_targets"] = [
-            {**dict(target), "acquisition_route": "LIVE"} for target in summary.get("retrieval_targets", [])
-        ]
         semantic = {
-            key: summary[key]
-            for key in (
-                "run_id",
-                "plan_id",
-                "execution_status",
-                "counts",
-                "slo",
-                "retrieval_targets",
-                "outcomes",
-                "per_host",
-            )
+            "run_id": run_id,
+            "plan_id": plan.get("plan_id"),
+            "execution_status": execution_status,
+            "counts": counts,
+            "slo": slo,
+            "retrieval_targets": retrieval_targets,
+            "outcomes": outcomes,
+            "per_host": {host: dict(values) for host, values in sorted(per_host.items())},
+            "acquisition": acquisition,
         }
-        semantic["acquisition"] = acquisition
-        summary["semantic_summary_sha256"] = sha256_bytes(canonical_json_bytes(semantic))
+        summary = {
+            **semantic,
+            "semantic_summary_sha256": sha256_bytes(canonical_json_bytes(semantic)),
+            "as_of": plan.get("as_of"),
+            "status": "COMPLETED" if incomplete == 0 else "INCOMPLETE",
+            "manifest_sha256": manifest["manifest_sha256"],
+            "binding_sha256": manifest["binding_sha256"],
+            "boundary": self.boundary,
+            "run_ledger_boundary": self.run_ledger_boundary,
+        }
         return write_run_summary(self.quarantine_root, summary)
