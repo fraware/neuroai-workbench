@@ -74,6 +74,7 @@ MODULE_FLOORS: dict[str, float] = {
     "neuroai_workbench/collector/host_limit.py": 95.0,
     "neuroai_workbench/collector/http_client.py": 95.0,
     "neuroai_workbench/collector/pinned_transport.py": 90.0,
+    "neuroai_workbench/collector/policy_execution.py": 95.0,
     "neuroai_workbench/collector/quarantine.py": 95.0,
     "neuroai_workbench/collector/rate_limit.py": 95.0,
     "neuroai_workbench/collector/run_ledger.py": 95.0,
