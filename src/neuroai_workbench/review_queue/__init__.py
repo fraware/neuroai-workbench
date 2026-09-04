@@ -183,26 +183,27 @@ def register_reviewer_profile(
     if not root.is_dir():
         raise ValueError("Review queue is not initialized for this workspace")
     output = safe_join(root / "profiles", f"{profile_id}.json")
-    record = {
+    requested_identity = {
         "profile_id": profile_id,
         "display_name": display_name,
         "roles": selected_roles,
-        "registered_at": utc_now(),
         "registered_by": actor,
         "authority_profile": "LOCAL_UNAUTHENTICATED_ATTRIBUTION",
         "identity_boundary": IDENTITY_BOUNDARY,
         "boundary": REVIEW_QUEUE_BOUNDARY,
     }
+    if output.exists():
+        existing = _load_profile(workspace, profile_id)
+        existing_identity = {key: existing.get(key) for key in requested_identity}
+        if canonical_json_bytes(existing_identity) != canonical_json_bytes(requested_identity):
+            raise ValueError(f"Review profile {profile_id!r} already exists with different content")
+        return {"profile": existing, "path": str(output), "created": False}
+
+    record = {**requested_identity, "registered_at": utc_now()}
     record["profile_sha256"] = _hash_record(record, "profile_sha256")
     errors = _schema_errors(record, PROFILE_SCHEMA)
     if errors:
         raise ValueError(f"Review profile failed validation: {json.dumps(errors, ensure_ascii=False)}")
-    if output.exists():
-        existing = cast(dict[str, Any], load_json(output))
-        if canonical_json_bytes(existing) != canonical_json_bytes(record):
-            raise ValueError(f"Review profile {profile_id!r} already exists with different content")
-        return {"profile": existing, "path": str(output), "created": False}
-
     atomic_write_json(output, record)
     append_event(
         _events_path(workspace),
