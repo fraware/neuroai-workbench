@@ -301,6 +301,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         if not isinstance(binding, dict):
             checkpoint["state"] = "FAILURE"
             checkpoint.pop("fallback_pending", None)
+            checkpoint.pop("internal_error", None)
             return write_target_checkpoint(self.quarantine_root, checkpoint)
         reference = PriorCaptureReference.from_binding(binding)
         try:
@@ -321,6 +322,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             checkpoint["state"] = "FAILURE"
             checkpoint["fallback_rejected"] = {"type": type(exc).__name__, "message": str(exc)}
             checkpoint.pop("fallback_pending", None)
+            checkpoint.pop("internal_error", None)
             return write_target_checkpoint(self.quarantine_root, checkpoint)
 
         live_outcome = checkpoint.get("outcome")
@@ -344,6 +346,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         }
         checkpoint["state"] = "RESULT"
         checkpoint.pop("fallback_pending", None)
+        checkpoint.pop("internal_error", None)
         return write_target_checkpoint(self.quarantine_root, checkpoint)
 
     def _execute_target(
@@ -357,7 +360,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         registry_sha256: str,
         persisted_records: dict[str, dict[str, Any]],
     ) -> dict[str, Any]:
-        if checkpoint.get("state") == FALLBACK_PENDING:
+        if isinstance(checkpoint.get("fallback_pending"), dict):
             return self._apply_bound_fallback(checkpoint, group)
         result = super()._execute_target(
             run_id=run_id,
@@ -380,7 +383,11 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             or not isinstance(target.get("prior_capture"), dict)
         ):
             return result
-        result["state"] = FALLBACK_PENDING
+        result["state"] = "INTERNAL_ERROR"
+        result["internal_error"] = {
+            "type": FALLBACK_PENDING,
+            "message": "Live execution reached a terminal retryable failure; bound fallback is pending",
+        }
         result["fallback_pending"] = dict(target["prior_capture"])
         result = write_target_checkpoint(self.quarantine_root, result)
         return self._apply_bound_fallback(result, group)
@@ -438,12 +445,12 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                 fallback_count += 1
             record_id = checkpoint_outcome.get("record_id")
             for source_id in target["source_ids"]:
-                if state == "INTERNAL_ERROR" or state == FALLBACK_PENDING:
+                if state == "INTERNAL_ERROR":
                     source_outcome = {
                         "source_id": source_id,
                         "adapter_id": target["adapter_id"],
                         "status": "INCOMPLETE",
-                        "reason": "internal_execution_error" if state == "INTERNAL_ERROR" else "fallback_interrupted",
+                        "reason": "internal_execution_error",
                         "retrieval_target_id": target_id,
                         "primary_source_id": target["primary_source_id"],
                         "acquisition_route": route,
@@ -671,7 +678,7 @@ class ReplayOnlyCollectionScheduler:
     ) -> dict[str, Any]:
         if not self.scheduler_config.collection_enabled:
             raise ValueError("Replay execution is disabled by scheduler configuration")
-        groups, targets, pre_outcomes = self._prepare(plan, source_index=source_index)
+        _, targets, pre_outcomes = self._prepare(plan, source_index=source_index)
         collector_configuration = {
             "collector_version": self.collector_config.collector_version,
             "configuration_hash": self.collector_config.configuration_hash,
@@ -703,7 +710,6 @@ class ReplayOnlyCollectionScheduler:
             return existing
 
         target_by_id = {str(target["retrieval_target_id"]): target for target in targets}
-        group_by_id = {group.retrieval_target_id: group for group in groups}
         checkpoints: dict[str, dict[str, Any]] = {}
         resumed: set[str] = set()
         as_of = str(plan.get("as_of") or "")
