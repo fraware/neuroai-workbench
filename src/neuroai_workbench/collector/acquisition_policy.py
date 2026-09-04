@@ -255,7 +255,7 @@ def _canonical_source_rules(
     *,
     require_canonical: bool,
 ) -> list[dict[str, Any]]:
-    if isinstance(rules, (str, bytes)):
+    if isinstance(rules, (str, bytes)) or not isinstance(rules, Iterable):
         raise AcquisitionPolicyError("source_rules must be an iterable of objects")
     canonical: list[dict[str, Any]] = []
     for rule in rules:
