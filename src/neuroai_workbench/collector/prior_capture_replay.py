@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from ..util import canonical_json_bytes, load_json, safe_join, sha256_bytes
+from ..util import canonical_json_bytes, ensure_identifier, load_json, safe_join, sha256_bytes, utc_now
 from .acquisition_policy import (
     ONLINE_PREFERRED,
     REPLAY_ONLY,
@@ -172,18 +172,28 @@ def _reference_from_result(quarantine_root: Path, result: dict[str, Any]) -> Pri
     size_bytes = result["size_bytes"]
     if not isinstance(size_bytes, int) or isinstance(size_bytes, bool) or size_bytes < 0:
         raise PriorCaptureError("prior capture size_bytes is invalid")
+    result_id = str(result["result_id"])
+    if not result_id:
+        raise PriorCaptureError("prior capture result_id is empty")
+    try:
+        ensure_identifier(result_id, "result_id")
+    except ValueError as exc:
+        raise PriorCaptureError("prior capture result_id is invalid") from exc
     quarantine_path = str(result["quarantine_path"])
-    path = safe_join(quarantine_root, quarantine_path)
+    try:
+        path = safe_join(quarantine_root, quarantine_path)
+    except ValueError as exc:
+        raise PriorCaptureError("prior capture quarantine_path is invalid") from exc
     if not path.is_file():
         raise PriorCaptureError("prior capture bytes are missing")
-    body = path.read_bytes()
+    try:
+        body = path.read_bytes()
+    except OSError as exc:
+        raise PriorCaptureError("prior capture bytes are unreadable") from exc
     if len(body) != size_bytes:
         raise PriorCaptureError("prior capture byte size does not match result record")
     if sha256_bytes(body) != content_sha256:
         raise PriorCaptureError("prior capture bytes do not match result SHA-256")
-    result_id = str(result["result_id"])
-    if not result_id:
-        raise PriorCaptureError("prior capture result_id is empty")
     return PriorCaptureReference(
         result_id=result_id,
         source_id=str(result["source_id"]),
@@ -223,10 +233,17 @@ def build_prior_capture_snapshot(quarantine_root: Path) -> PriorCaptureSnapshot:
 
 
 def verify_prior_capture_reference(quarantine_root: Path, reference: PriorCaptureReference) -> None:
-    result_path = safe_join(quarantine_root, "results", f"{reference.result_id}.json")
+    try:
+        ensure_identifier(reference.result_id, "result_id")
+        result_path = safe_join(quarantine_root, "results", f"{reference.result_id}.json")
+    except ValueError as exc:
+        raise PriorCaptureError("bound prior result_id is invalid") from exc
     if not result_path.is_file():
         raise PriorCaptureError("bound prior result record is missing")
-    value = load_json(result_path)
+    try:
+        value = load_json(result_path)
+    except (OSError, json.JSONDecodeError, UnicodeError) as exc:
+        raise PriorCaptureError("bound prior result record is unreadable") from exc
     if not isinstance(value, dict):
         raise PriorCaptureError("bound prior result record is not an object")
     current = _reference_from_result(quarantine_root, value)
@@ -252,9 +269,10 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         super().__init__(*args, **kwargs)
         self._fallback_as_of = ""
 
-    def _fallback_permitted_for_target(self, target: dict[str, Any], *, as_of: str) -> bool:
+    def _fallback_permitted_for_target(self, target: dict[str, Any]) -> bool:
         if self.policy_guard.execution_mode != ONLINE_PREFERRED:
             return False
+        checked_at = utc_now()
         for source_id in target["source_ids"]:
             try:
                 require_acquisition_policy(
@@ -264,7 +282,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                     execution_mode=ONLINE_PREFERRED,
                     requested_url=str(target["normalized_url"]),
                     fallback_to_prior_capture=True,
-                    at=_parse_timestamp(as_of, field="as_of").isoformat().replace("+00:00", "Z"),
+                    at=checked_at,
                 )
             except AcquisitionPolicyError:
                 return False
@@ -284,7 +302,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         snapshot = build_prior_capture_snapshot(self.quarantine_root)
         for target in targets:
             capture = snapshot.select(str(target["normalized_url"]), as_of=as_of)
-            if capture is not None and self._fallback_permitted_for_target(target, as_of=as_of):
+            if capture is not None and self._fallback_permitted_for_target(target):
                 target["prior_capture"] = capture.binding()
             else:
                 target["prior_capture"] = None
@@ -297,13 +315,17 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         binding = checkpoint.get("target", {}).get("prior_capture")
         if not isinstance(binding, dict):
             checkpoint["state"] = "FAILURE"
+            checkpoint["fallback_rejected"] = {
+                "type": "PriorCaptureError",
+                "message": "Bound target does not contain a prior capture",
+            }
             checkpoint.pop("fallback_pending", None)
             checkpoint.pop("internal_error", None)
             return write_target_checkpoint(self.quarantine_root, checkpoint)
-        reference = PriorCaptureReference.from_binding(binding)
         try:
+            reference = PriorCaptureReference.from_binding(binding)
             verify_prior_capture_reference(self.quarantine_root, reference)
-            at = _parse_timestamp(self._fallback_as_of, field="as_of").isoformat().replace("+00:00", "Z")
+            checked_at = utc_now()
             for source_id in group.source_ids:
                 require_acquisition_policy(
                     self.policy_guard.policy,
@@ -312,7 +334,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                     execution_mode=ONLINE_PREFERRED,
                     requested_url=group.normalized_url,
                     fallback_to_prior_capture=True,
-                    at=at,
+                    at=checked_at,
                 )
             age = _capture_age_seconds(as_of=self._fallback_as_of, retrieved_at=reference.retrieved_at)
         except (PriorCaptureError, AcquisitionPolicyError) as exc:
@@ -344,6 +366,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         checkpoint["state"] = "RESULT"
         checkpoint.pop("fallback_pending", None)
         checkpoint.pop("internal_error", None)
+        checkpoint.pop("fallback_rejected", None)
         return write_target_checkpoint(self.quarantine_root, checkpoint)
 
     def _execute_target(
@@ -408,6 +431,8 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
         terminal_targets = 0
         retryable_final_failures = 0
         fallback_count = 0
+        fallback_rejection_count = 0
+        live_retryable_exhausted_before_fallback = 0
 
         for target in sorted(targets, key=lambda item: str(item["retrieval_target_id"])):
             target_id = str(target["retrieval_target_id"])
@@ -439,9 +464,19 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                 retryable_final_failures += 1
             fallback_raw = checkpoint.get("fallback")
             fallback: dict[str, Any] | None = fallback_raw if isinstance(fallback_raw, dict) else None
+            fallback_rejected_raw = checkpoint.get("fallback_rejected")
+            fallback_rejected: dict[str, Any] | None = (
+                fallback_rejected_raw if isinstance(fallback_rejected_raw, dict) else None
+            )
+            live_terminal_raw = checkpoint.get("live_terminal_outcome")
+            live_terminal: dict[str, Any] | None = live_terminal_raw if isinstance(live_terminal_raw, dict) else None
             route = FALLBACK_ROUTE if fallback is not None else LIVE_ROUTE
             if fallback is not None:
                 fallback_count += 1
+                if live_terminal is not None and live_terminal.get("retryable") is True:
+                    live_retryable_exhausted_before_fallback += 1
+            if fallback_rejected is not None:
+                fallback_rejection_count += 1
             record_id = checkpoint_outcome.get("record_id")
             for source_id in target["source_ids"]:
                 if state == "INTERNAL_ERROR":
@@ -467,6 +502,8 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                     }
                     if fallback is not None:
                         source_outcome["prior_capture"] = dict(fallback)
+                    if fallback_rejected is not None:
+                        source_outcome["fallback_rejected"] = dict(fallback_rejected)
                     if checkpoint_outcome.get("failure_class") == "POLICY_BLOCK":
                         source_outcome["failure_class"] = "POLICY_BLOCK"
                         source_outcome["reason"] = "acquisition_policy_block"
@@ -483,6 +520,8 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             }
             if fallback is not None:
                 retrieval_target["prior_capture"] = dict(fallback)
+            if fallback_rejected is not None:
+                retrieval_target["fallback_rejected"] = dict(fallback_rejected)
             retrieval_targets.append(retrieval_target)
 
         outcomes = sorted(outcomes, key=lambda item: (str(item.get("source_id", "")), str(item.get("status", ""))))
@@ -516,6 +555,8 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             "resumed_targets": len(resumed_target_ids),
             "retryable_failures_exhausted": retryable_final_failures,
             "prior_capture_fallbacks": fallback_count,
+            "prior_capture_fallback_rejections": fallback_rejection_count,
+            "live_retryable_failures_exhausted_before_fallback": live_retryable_exhausted_before_fallback,
             "replays": 0,
         }
         slo = {
@@ -529,6 +570,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
             "route": "MIXED_LIVE_AND_PRIOR_CAPTURE" if fallback_count else LIVE_ROUTE,
             "fallback_used": fallback_count > 0,
             "fallback_count": fallback_count,
+            "fallback_rejection_count": fallback_rejection_count,
             "boundary": POLICY_EXECUTION_BOUNDARY,
             "prior_capture_boundary": PRIOR_CAPTURE_BOUNDARY,
         }
@@ -592,7 +634,8 @@ class ReplayOnlyCollectionScheduler:
         source_index: dict[str, dict[str, Any]],
     ) -> tuple[list[RetrievalTargetGroup], list[dict[str, Any]], list[dict[str, Any]]]:
         as_of = str(plan.get("as_of") or "")
-        at = _parse_timestamp(as_of, field="as_of").isoformat().replace("+00:00", "Z")
+        _parse_timestamp(as_of, field="as_of")
+        checked_at = utc_now()
         items = list(plan.get("due", []))
         if self.scheduler_config.include_manual_sources:
             items.extend(plan.get("manual", []))
@@ -632,7 +675,7 @@ class ReplayOnlyCollectionScheduler:
                     execution_mode=REPLAY_ONLY,
                     requested_url=None,
                     fallback_to_prior_capture=False,
-                    at=at,
+                    at=checked_at,
                 )
             except AcquisitionPolicyError as exc:
                 pre_outcomes.append(
@@ -730,27 +773,40 @@ class ReplayOnlyCollectionScheduler:
                     "acquisition_route": REPLAY_ROUTE,
                 }
             else:
-                reference = PriorCaptureReference.from_binding(capture_binding)
-                verify_prior_capture_reference(self.quarantine_root, reference)
-                age = _capture_age_seconds(as_of=as_of, retrieved_at=reference.retrieved_at)
-                checkpoint["state"] = "RESULT"
-                checkpoint["replay"] = {
-                    "route": REPLAY_ROUTE,
-                    "result_id": reference.result_id,
-                    "retrieved_at": reference.retrieved_at,
-                    "content_sha256": reference.content_sha256,
-                    "capture_age_seconds": age,
-                    "original_source_id": reference.source_id,
-                    "boundary": PRIOR_CAPTURE_BOUNDARY,
-                }
-                checkpoint["outcome"] = {
-                    "kind": "RESULT",
-                    "record_id": reference.result_id,
-                    "request_id": None,
-                    "failure_class": None,
-                    "retryable": False,
-                    "acquisition_route": REPLAY_ROUTE,
-                }
+                try:
+                    reference = PriorCaptureReference.from_binding(capture_binding)
+                    verify_prior_capture_reference(self.quarantine_root, reference)
+                    age = _capture_age_seconds(as_of=as_of, retrieved_at=reference.retrieved_at)
+                except PriorCaptureError as exc:
+                    checkpoint["state"] = "FAILURE"
+                    checkpoint["outcome"] = {
+                        "kind": "FAILURE",
+                        "record_id": None,
+                        "request_id": None,
+                        "failure_class": "REPLAY_CAPTURE_INVALID",
+                        "failure_message": str(exc),
+                        "retryable": False,
+                        "acquisition_route": REPLAY_ROUTE,
+                    }
+                else:
+                    checkpoint["state"] = "RESULT"
+                    checkpoint["replay"] = {
+                        "route": REPLAY_ROUTE,
+                        "result_id": reference.result_id,
+                        "retrieved_at": reference.retrieved_at,
+                        "content_sha256": reference.content_sha256,
+                        "capture_age_seconds": age,
+                        "original_source_id": reference.source_id,
+                        "boundary": PRIOR_CAPTURE_BOUNDARY,
+                    }
+                    checkpoint["outcome"] = {
+                        "kind": "RESULT",
+                        "record_id": reference.result_id,
+                        "request_id": None,
+                        "failure_class": None,
+                        "retryable": False,
+                        "acquisition_route": REPLAY_ROUTE,
+                    }
             checkpoints[target_id] = write_target_checkpoint(self.quarantine_root, checkpoint)
         return self._summarize_replay(
             run_id=run_id,
@@ -798,6 +854,8 @@ class ReplayOnlyCollectionScheduler:
                     item["prior_capture"] = dict(replay)
                 if outcome.get("failure_class"):
                     item["failure_class"] = outcome["failure_class"]
+                if outcome.get("failure_message"):
+                    item["message"] = outcome["failure_message"]
                 outcomes.append(item)
             entry = {
                 "retrieval_target_id": target_id,
