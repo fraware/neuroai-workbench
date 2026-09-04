@@ -431,7 +431,8 @@ def test_adapter_resolved_origin_is_blocked_before_dns_or_send(tmp_path: Path) -
     assert outcome["adapter_id"] == "fda_device"
     assert outcome["status"] == "FAILURE"
     assert outcome["failure_class"] == "POLICY_BLOCK"
-    assert "api.fda.gov" in outcome["message"]
+    assert outcome["message"].startswith("Acquisition policy blocked source")
+    assert "SRC-A" in outcome["message"]
 
 
 def test_same_origin_redirect_remains_policy_authorized(tmp_path: Path) -> None:
@@ -469,7 +470,7 @@ def test_cross_origin_redirect_is_policy_failure_without_collector_failure_recor
     assert outcome["status"] == "FAILURE"
     assert outcome["failure_class"] == "POLICY_BLOCK"
     assert outcome["record_id"] is None
-    assert "b.example.org" in outcome["message"]
+    assert outcome["message"].startswith("Acquisition policy blocked source")
 
     target_id = str(outcome["retrieval_target_id"])
     checkpoint = _checkpoint(tmp_path, run["run_id"], target_id)
@@ -477,7 +478,7 @@ def test_cross_origin_redirect_is_policy_failure_without_collector_failure_recor
     assert checkpoint["outcome"]["failure_class"] == "POLICY_BLOCK"
     assert checkpoint["outcome"]["record_id"] is None
     assert checkpoint["attempts"][0]["policy_blocked"] is True
-    assert "b.example.org" in checkpoint["attempts"][0]["policy_block_message"]
+    assert checkpoint["attempts"][0]["policy_block_message"] == outcome["message"]
 
     failure_root = tmp_path / "quarantine" / "failures"
     assert not failure_root.exists() or list(failure_root.glob("*.json")) == []
