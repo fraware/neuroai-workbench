@@ -13,7 +13,16 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..util import atomic_write_json, canonical_json_bytes, ensure_identifier, load_json, safe_join, sha256_bytes, utc_now
+from ..util import (
+    atomic_write_json,
+    canonical_json_bytes,
+    ensure_identifier,
+    load_json,
+    safe_join,
+    sha256_bytes,
+    utc_now,
+)
+from .acquisition_policy import ONLINE_PREFERRED, ONLINE_REQUIRED, REPLAY_ONLY
 from .adapters.clinicaltrials import CTGOV_ADAPTER_ID, ClinicalTrialsGovAdapter
 from .prior_capture_replay import (
     LIVE_ROUTE,
@@ -23,7 +32,7 @@ from .prior_capture_replay import (
     _reference_from_result,
     verify_prior_capture_reference,
 )
-from .run_ledger import load_run_summary
+from .run_ledger import load_run_summary, load_target_checkpoint, verify_run_manifest
 
 RUNTIME_PROOF_SCHEMA_VERSION = "1"
 RUNTIME_PROOF_BOUNDARY = (
@@ -56,6 +65,17 @@ _REQUIRED_PROOF_KEYS = frozenset(
         "boundary",
         "non_claims",
     }
+)
+_SUMMARY_SEMANTIC_KEYS = (
+    "run_id",
+    "plan_id",
+    "execution_status",
+    "counts",
+    "slo",
+    "retrieval_targets",
+    "outcomes",
+    "per_host",
+    "acquisition",
 )
 
 
@@ -167,7 +187,37 @@ def _source_outcome(summary: dict[str, Any], source_id: str) -> dict[str, Any]:
     return matches[0]
 
 
+def _verify_summary_semantic_digest(summary: dict[str, Any]) -> str:
+    semantic = {key: summary.get(key) for key in _SUMMARY_SEMANTIC_KEYS}
+    expected = sha256_bytes(canonical_json_bytes(semantic))
+    observed = _sha256(summary.get("semantic_summary_sha256"), "semantic_summary_sha256")
+    if observed != expected:
+        raise RuntimeProofError("run summary semantic digest does not match semantic content")
+    return observed
+
+
+def _load_manifest(quarantine_root: Path, run_id: str) -> dict[str, Any]:
+    try:
+        path = safe_join(quarantine_root, "run-ledgers", run_id, "manifest.json")
+        value = load_json(path)
+    except (OSError, ValueError, json.JSONDecodeError, UnicodeError) as exc:
+        raise RuntimeProofError(f"run manifest {run_id!r} is unavailable or unreadable") from exc
+    if not isinstance(value, dict):
+        raise RuntimeProofError("run manifest must be an object")
+    try:
+        verify_run_manifest(value)
+    except ValueError as exc:
+        raise RuntimeProofError(f"run manifest validation failed: {exc}") from exc
+    return value
+
+
+def _binding_value(configuration: dict[str, Any], prefixed_key: str, replay_key: str) -> Any:
+    value = configuration.get(prefixed_key)
+    return configuration.get(replay_key) if value is None else value
+
+
 def _assert_summary_binding(
+    quarantine_root: Path,
     summary: dict[str, Any],
     *,
     run_id: str,
@@ -175,13 +225,14 @@ def _assert_summary_binding(
     source_id: str,
     policy_sha256: str,
     expected_route: str,
-    result_id: str,
+    reference: PriorCaptureReference,
     zero_network: bool,
 ) -> dict[str, Any]:
     if summary.get("run_id") != run_id:
         raise RuntimeProofError("run summary identity mismatch")
     if summary.get("status") != "COMPLETED":
         raise RuntimeProofError(f"proof run {run_id} is not operationally completed")
+    semantic_digest = _verify_summary_semantic_digest(summary)
     acquisition = _object(summary.get("acquisition"), "run summary acquisition")
     if acquisition.get("programme_id") != programme_id:
         raise RuntimeProofError("run summary programme_id mismatch")
@@ -191,34 +242,126 @@ def _assert_summary_binding(
         raise RuntimeProofError(
             f"run summary acquisition route {acquisition.get('route')!r} does not match {expected_route!r}"
         )
+
+    manifest = _load_manifest(quarantine_root, run_id)
+    if summary.get("manifest_sha256") != manifest.get("manifest_sha256"):
+        raise RuntimeProofError("run summary manifest digest does not match durable manifest")
+    if summary.get("binding_sha256") != manifest.get("binding_sha256"):
+        raise RuntimeProofError("run summary binding digest does not match durable manifest")
+    binding = _object(manifest.get("binding"), "run manifest binding")
+    scheduler_configuration = _object(
+        binding.get("scheduler_configuration"),
+        "run manifest scheduler configuration",
+    )
+    bound_policy_sha256 = _binding_value(
+        scheduler_configuration,
+        "acquisition_policy_sha256",
+        "policy_sha256",
+    )
+    bound_programme_id = _binding_value(
+        scheduler_configuration,
+        "acquisition_programme_id",
+        "programme_id",
+    )
+    execution_mode = _binding_value(
+        scheduler_configuration,
+        "acquisition_execution_mode",
+        "execution_mode",
+    )
+    if bound_policy_sha256 != policy_sha256:
+        raise RuntimeProofError("run manifest acquisition-policy digest mismatch")
+    if bound_programme_id != programme_id:
+        raise RuntimeProofError("run manifest programme binding mismatch")
+    if expected_route == REPLAY_ROUTE:
+        if execution_mode != REPLAY_ONLY:
+            raise RuntimeProofError("REPLAY proof run is not bound to REPLAY_ONLY")
+    elif execution_mode not in {ONLINE_REQUIRED, ONLINE_PREFERRED}:
+        raise RuntimeProofError("LIVE proof run is not bound to an online acquisition mode")
+
+    targets = binding.get("retrieval_targets")
+    if not isinstance(targets, list) or len(targets) != 1 or not isinstance(targets[0], dict):
+        raise RuntimeProofError("Phase 3 reference run manifest must bind exactly one retrieval target")
+    target = targets[0]
+    if target.get("source_ids") != [source_id]:
+        raise RuntimeProofError("Phase 3 reference target does not bind exactly the proof source")
+    if target.get("normalized_url") != reference.normalized_url:
+        raise RuntimeProofError("run target URL does not match the bound collector capture")
+    try:
+        checkpoint = load_target_checkpoint(quarantine_root, run_id=run_id, target=target)
+    except (OSError, ValueError, json.JSONDecodeError, UnicodeError) as exc:
+        raise RuntimeProofError(f"run target checkpoint validation failed: {exc}") from exc
+    if checkpoint.get("state") != "RESULT":
+        raise RuntimeProofError("Phase 3 proof target checkpoint did not reach RESULT")
+    checkpoint_outcome = _object(checkpoint.get("outcome"), "run target checkpoint outcome")
+    if checkpoint_outcome.get("record_id") != reference.result_id:
+        raise RuntimeProofError("run checkpoint result_id does not match bound collector capture")
+
     outcome = _source_outcome(summary, source_id)
     if outcome.get("status") != "RESULT":
         raise RuntimeProofError(f"proof source {source_id!r} did not reach RESULT")
-    if outcome.get("record_id") != result_id:
+    if outcome.get("record_id") != reference.result_id:
         raise RuntimeProofError("run outcome result_id does not match bound proof capture")
-    if outcome.get("acquisition_route") != expected_route:
+    source_route = outcome.get("acquisition_route")
+    if source_route is not None and source_route != expected_route:
         raise RuntimeProofError("run outcome route does not match proof route")
+
+    retrieval_targets = summary.get("retrieval_targets")
+    if not isinstance(retrieval_targets, list) or len(retrieval_targets) != 1:
+        raise RuntimeProofError("run summary must contain exactly one retrieval target")
+    retrieval_target = _object(retrieval_targets[0], "run summary retrieval target")
+    if retrieval_target.get("retrieval_target_id") != target.get("retrieval_target_id"):
+        raise RuntimeProofError("run summary retrieval target identity mismatch")
+    if retrieval_target.get("acquisition_route") != expected_route:
+        raise RuntimeProofError("run summary retrieval target route mismatch")
+
     slo = _object(summary.get("slo"), "run summary slo")
     if slo.get("source_accountability_coverage") != 1.0 or slo.get("target_execution_coverage") != 1.0:
         raise RuntimeProofError("bounded proof run does not have full source/target operational accountability")
     counts = _object(summary.get("counts"), "run summary counts")
     if counts.get("total") != 1 or counts.get("retrieval_target_groups") != 1:
         raise RuntimeProofError("Phase 3 reference proof must contain exactly one logical source and target")
+
+    attempts = checkpoint.get("attempts")
+    if not isinstance(attempts, list):
+        raise RuntimeProofError("run checkpoint attempts must be an array")
     if zero_network:
         if counts.get("collection_attempts") != 0 or counts.get("unique_retrievals") != 0 or counts.get("retries") != 0:
             raise RuntimeProofError("REPLAY proof run contains non-zero network/attempt accounting")
-        if summary.get("per_host") != {}:
-            raise RuntimeProofError("REPLAY proof run contains per-host network accounting")
+        if summary.get("per_host") != {} or attempts:
+            raise RuntimeProofError("REPLAY proof run contains network or per-host accounting")
+        replay = _object(checkpoint.get("replay"), "REPLAY checkpoint provenance")
+        if replay.get("route") != REPLAY_ROUTE or replay.get("result_id") != reference.result_id:
+            raise RuntimeProofError("REPLAY checkpoint does not reuse the exact bound result identity")
+        if replay.get("content_sha256") != reference.content_sha256:
+            raise RuntimeProofError("REPLAY checkpoint content hash does not match bound capture")
+        if replay.get("retrieved_at") != reference.retrieved_at:
+            raise RuntimeProofError("REPLAY checkpoint changed the original capture timestamp")
+        prior_binding = _object(target.get("prior_capture"), "REPLAY target prior capture")
+        try:
+            prior_reference = PriorCaptureReference.from_binding(prior_binding)
+        except PriorCaptureError as exc:
+            raise RuntimeProofError(f"REPLAY target prior-capture binding is invalid: {exc}") from exc
+        if canonical_json_bytes(prior_reference.binding()) != canonical_json_bytes(reference.binding()):
+            raise RuntimeProofError("REPLAY target prior-capture binding differs from exact collector capture")
     else:
-        if not isinstance(counts.get("collection_attempts"), int) or counts["collection_attempts"] < 1:
+        attempt_count = counts.get("collection_attempts")
+        if not isinstance(attempt_count, int) or isinstance(attempt_count, bool) or attempt_count < 1:
             raise RuntimeProofError("LIVE proof run does not record a network collection attempt")
+        if not attempts:
+            raise RuntimeProofError("LIVE proof target checkpoint has no collection attempt")
+        if attempts[-1].get("record_id") != reference.result_id:
+            raise RuntimeProofError("LIVE terminal attempt does not bind the collector result")
         if acquisition.get("fallback_used") is True:
             raise RuntimeProofError("LIVE equivalence proof cannot be satisfied by prior-capture fallback")
-    semantic_digest = _sha256(summary.get("semantic_summary_sha256"), "semantic_summary_sha256")
+
     return {
         "run_id": run_id,
         "semantic_summary_sha256": semantic_digest,
+        "manifest_sha256": manifest["manifest_sha256"],
+        "binding_sha256": manifest["binding_sha256"],
+        "target_checkpoint_sha256": checkpoint["checkpoint_sha256"],
         "execution_status": summary.get("execution_status"),
+        "execution_mode": execution_mode,
         "route": expected_route,
         "collection_attempts": counts.get("collection_attempts"),
         "retries": counts.get("retries"),
@@ -241,11 +384,14 @@ def build_runtime_proof(
     created_at: str | None = None,
 ) -> dict[str, Any]:
     """Build one deterministic semantic proof over durable live and replay run records."""
-    ensure_identifier(programme_id, "programme_id")
-    ensure_identifier(source_id, "source_id")
-    ensure_identifier(live_run_id, "live_run_id")
-    ensure_identifier(replay_run_id, "replay_run_id")
-    ensure_identifier(result_id, "result_id")
+    try:
+        ensure_identifier(programme_id, "programme_id")
+        ensure_identifier(source_id, "source_id")
+        ensure_identifier(live_run_id, "live_run_id")
+        ensure_identifier(replay_run_id, "replay_run_id")
+        ensure_identifier(result_id, "result_id")
+    except ValueError as exc:
+        raise RuntimeProofError(f"invalid Phase 3 proof identifier: {exc}") from exc
     _sha256(policy_sha256, "policy_sha256")
     if live_run_id == replay_run_id:
         raise RuntimeProofError("LIVE and REPLAY proof runs must have distinct run identities")
@@ -263,23 +409,25 @@ def build_runtime_proof(
         raise RuntimeProofError("bound result source_id does not match Phase 3 proof source")
 
     live_accounting = _assert_summary_binding(
+        quarantine_root,
         live_summary,
         run_id=live_run_id,
         programme_id=programme_id,
         source_id=source_id,
         policy_sha256=policy_sha256,
         expected_route=LIVE_ROUTE,
-        result_id=result_id,
+        reference=reference,
         zero_network=False,
     )
     replay_accounting = _assert_summary_binding(
+        quarantine_root,
         replay_summary,
         run_id=replay_run_id,
         programme_id=programme_id,
         source_id=source_id,
         policy_sha256=policy_sha256,
         expected_route=REPLAY_ROUTE,
-        result_id=result_id,
+        reference=reference,
         zero_network=True,
     )
 
@@ -327,7 +475,7 @@ def build_runtime_proof(
         "boundary": RUNTIME_PROOF_BOUNDARY,
     }
     proof_semantic_sha256 = sha256_bytes(canonical_json_bytes(semantic))
-    proof = {
+    return {
         "schema_version": RUNTIME_PROOF_SCHEMA_VERSION,
         "proof_id": f"P3PROOF-{proof_semantic_sha256[:24]}",
         "created_at": created_at or utc_now(),
@@ -336,7 +484,6 @@ def build_runtime_proof(
         "boundary": RUNTIME_PROOF_BOUNDARY,
         "non_claims": list(RUNTIME_PROOF_NON_CLAIMS),
     }
-    return proof
 
 
 def verify_runtime_proof(quarantine_root: Path, proof: dict[str, Any]) -> dict[str, Any]:
@@ -382,7 +529,7 @@ def verify_runtime_proof(quarantine_root: Path, proof: dict[str, Any]) -> dict[s
 
 
 def write_runtime_proof(path: Path, proof: dict[str, Any]) -> None:
-    """Write a verified proof bundle to an explicit operator-controlled path."""
+    """Write a proof bundle to one explicit operator-controlled non-canonical path."""
     if not path.name or path.name in {".", ".."}:
         raise RuntimeProofError("runtime proof output path must name a file")
     atomic_write_json(path, proof)
