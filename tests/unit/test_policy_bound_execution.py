@@ -150,16 +150,12 @@ def _scheduler(
 
 
 def _manifest(tmp_path: Path, run_id: str) -> dict[str, Any]:
-    return json.loads(
-        (tmp_path / "quarantine" / "run-ledgers" / run_id / "manifest.json").read_text(encoding="utf-8")
-    )
+    return json.loads((tmp_path / "quarantine" / "run-ledgers" / run_id / "manifest.json").read_text(encoding="utf-8"))
 
 
 def _checkpoint(tmp_path: Path, run_id: str, target_id: str) -> dict[str, Any]:
     return json.loads(
-        (tmp_path / "quarantine" / "run-ledgers" / run_id / "targets" / f"{target_id}.json").read_text(
-            encoding="utf-8"
-        )
+        (tmp_path / "quarantine" / "run-ledgers" / run_id / "targets" / f"{target_id}.json").read_text(encoding="utf-8")
     )
 
 
@@ -328,7 +324,7 @@ def test_missing_source_is_policy_blocked_without_network(tmp_path: Path) -> Non
     assert run["outcomes"][0]["acquisition_route"] == "LIVE"
 
 
-def test_expired_policy_is_blocked_without_network(tmp_path: Path) -> None:
+def test_expired_policy_is_policy_blocked_without_network(tmp_path: Path) -> None:
     source = _source("SRC-A", "MON-A", "https://a.example.org/start")
     policy = _policy(
         _rule("SRC-A", "https://a.example.org"),
@@ -596,9 +592,7 @@ def test_legacy_scheduler_binding_has_no_policy_fields(tmp_path: Path) -> None:
     )
     run = legacy.run_plan(_plan(source), registry_sha256=REGISTRY_HASH, source_index={"SRC-A": source})
     manifest = json.loads(
-        (tmp_path / "legacy-quarantine" / "run-ledgers" / run["run_id"] / "manifest.json").read_text(
-            encoding="utf-8"
-        )
+        (tmp_path / "legacy-quarantine" / "run-ledgers" / run["run_id"] / "manifest.json").read_text(encoding="utf-8")
     )
     scheduler_binding = manifest["binding"]["scheduler_configuration"]
     assert all(not key.startswith("acquisition_") for key in scheduler_binding)
