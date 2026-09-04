@@ -7,7 +7,6 @@ FailureClass = Literal[
     "SSRF_BLOCKED",
     "DNS_REBINDING_BLOCKED",
     "REDIRECT_BLOCKED",
-    "POLICY_BLOCK",
     "TIMEOUT",
     "SIZE_LIMIT_EXCEEDED",
     "DECOMPRESSION_BOMB",
