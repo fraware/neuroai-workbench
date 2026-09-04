@@ -23,7 +23,6 @@ from .adapters.registry import adapter_for_source
 from .config import CollectorConfig
 from .credentials import CredentialProvider
 from .dns import DnsGuard, DnsResolutionRecord
-from .errors import CollectionFailureError
 from .http_client import HttpRequest, HttpTransport, TransportResult
 from .run_ledger import write_run_summary, write_target_checkpoint
 from .scheduler import CollectionScheduler, SchedulerConfig
@@ -36,6 +35,10 @@ POLICY_EXECUTION_BOUNDARY = (
     "adjudicate evidence, mutate assessments, authorize release or publication, or replace the independent live "
     "authorization, DNS, pinned-peer, quarantine, scanning, rights, and retention controls."
 )
+
+
+class PolicyExecutionBlocked(RuntimeError):
+    """A request-scoped acquisition-policy refusal, distinct from collector/network failure."""
 
 
 @dataclass(frozen=True)
@@ -107,10 +110,7 @@ class AcquisitionPolicyRuntimeGuard:
     def require_url(self, url: str, *, at: str | None = None) -> None:
         source_ids = self._source_ids.get()
         if not source_ids:
-            raise CollectionFailureError(
-                "POLICY_BLOCK",
-                "Policy-bound network operation has no request-scoped logical-source binding",
-            )
+            raise PolicyExecutionBlocked("Policy-bound network operation has no request-scoped logical-source binding")
         checked_at = at or utc_now()
         for source_id in source_ids:
             try:
@@ -124,9 +124,8 @@ class AcquisitionPolicyRuntimeGuard:
                     at=checked_at,
                 )
             except AcquisitionPolicyError as exc:
-                raise CollectionFailureError(
-                    "POLICY_BLOCK",
-                    f"Acquisition policy blocked source {source_id!r} for {url!r}: {exc}",
+                raise PolicyExecutionBlocked(
+                    f"Acquisition policy blocked source {source_id!r} for {url!r}: {exc}"
                 ) from exc
 
 
@@ -305,6 +304,34 @@ class PolicyBoundCollectionScheduler(CollectionScheduler):
         )
         return groups, targets, [*pre_outcomes, *policy_blocks]
 
+    def _invoke_adapter(
+        self,
+        adapter: CollectorAdapter,
+        request: dict[str, Any],
+        *,
+        source_record: dict[str, Any],
+        attempt_count: int,
+    ) -> CollectionOutcome:
+        try:
+            resolved = adapter.resolve_request(request, source_record=source_record)
+            resolved_url = str(resolved.get("requested_url", request["requested_url"]))
+            self.policy_guard.require_url(resolved_url)
+            return super()._invoke_adapter(
+                adapter,
+                request,
+                source_record=source_record,
+                attempt_count=attempt_count,
+            )
+        except PolicyExecutionBlocked as exc:
+            return CollectionOutcome(
+                kind="failure",
+                record={
+                    "request_id": request["request_id"],
+                    "failure_class": "POLICY_BLOCK",
+                    "failure_message": str(exc),
+                },
+            )
+
     def _execute_target(
         self,
         *,
@@ -351,20 +378,43 @@ class PolicyBoundCollectionScheduler(CollectionScheduler):
         recovered: bool,
         sleep_before_retry: bool,
     ) -> tuple[dict[str, Any], bool]:
+        policy_blocked = outcome.kind == "failure" and outcome.record.get("failure_class") == "POLICY_BLOCK"
         if checkpoint.get("attempts"):
             attempt = checkpoint["attempts"][-1]
             attempt["acquisition_route"] = "LIVE"
             attempt["acquisition_policy_sha256"] = self.acquisition_binding["policy_sha256"]
             attempt["acquisition_execution_mode"] = self.acquisition_binding["execution_mode"]
-        return super()._apply_attempt_outcome(
+            if policy_blocked:
+                attempt["policy_blocked"] = True
+                attempt["policy_block_message"] = outcome.record.get("failure_message")
+        checkpoint, terminal = super()._apply_attempt_outcome(
             checkpoint,
             outcome,
             recovered=recovered,
             sleep_before_retry=sleep_before_retry,
         )
+        if policy_blocked and isinstance(checkpoint.get("outcome"), dict):
+            checkpoint["outcome"]["failure_message"] = outcome.record.get("failure_message")
+            checkpoint = write_target_checkpoint(self.quarantine_root, checkpoint)
+        return checkpoint, terminal
 
     def _summarize_run(self, **kwargs: Any) -> dict[str, Any]:
         summary = dict(super()._summarize_run(**kwargs))
+        checkpoints = kwargs.get("checkpoints")
+        if isinstance(checkpoints, dict):
+            for outcome in summary.get("outcomes", []):
+                if not isinstance(outcome, dict):
+                    continue
+                target_id = outcome.get("retrieval_target_id")
+                checkpoint = checkpoints.get(str(target_id)) if target_id is not None else None
+                checkpoint_outcome = checkpoint.get("outcome") if isinstance(checkpoint, dict) else None
+                if isinstance(checkpoint_outcome, dict) and checkpoint_outcome.get("failure_class") == "POLICY_BLOCK":
+                    outcome["failure_class"] = "POLICY_BLOCK"
+                    outcome["reason"] = "acquisition_policy_block"
+                    message = checkpoint_outcome.get("failure_message")
+                    if message:
+                        outcome["message"] = message
+
         acquisition = {
             **self.acquisition_binding,
             "route": "LIVE",
@@ -373,8 +423,7 @@ class PolicyBoundCollectionScheduler(CollectionScheduler):
         }
         summary["acquisition"] = acquisition
         summary["retrieval_targets"] = [
-            {**dict(target), "acquisition_route": "LIVE"}
-            for target in summary.get("retrieval_targets", [])
+            {**dict(target), "acquisition_route": "LIVE"} for target in summary.get("retrieval_targets", [])
         ]
         semantic = {
             key: summary[key]
