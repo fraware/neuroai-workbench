@@ -108,9 +108,21 @@ def test_policy_summary_preserves_base_accounting_semantics(tmp_path: Path) -> N
     legacy_summary = legacy._summarize_run(**inputs)
     policy_summary = policy._summarize_run(**inputs)
 
-    for key in ("execution_status", "counts", "slo", "outcomes", "per_host", "status", "boundary", "run_ledger_boundary"):
+    for key in (
+        "execution_status",
+        "counts",
+        "slo",
+        "outcomes",
+        "per_host",
+        "status",
+        "boundary",
+        "run_ledger_boundary",
+    ):
         assert policy_summary[key] == legacy_summary[key]
-    assert [{key: value for key, value in target.items() if key != "acquisition_route"} for target in policy_summary["retrieval_targets"]] == legacy_summary["retrieval_targets"]
+    assert [
+        {key: value for key, value in target.items() if key != "acquisition_route"}
+        for target in policy_summary["retrieval_targets"]
+    ] == legacy_summary["retrieval_targets"]
     assert policy_summary["retrieval_targets"][0]["acquisition_route"] == "LIVE"
     assert policy_summary["acquisition"]["policy_sha256"] == _policy()["policy_sha256"]
 
