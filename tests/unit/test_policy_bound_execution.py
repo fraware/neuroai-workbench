@@ -324,7 +324,7 @@ def test_missing_source_is_policy_blocked_without_network(tmp_path: Path) -> Non
     assert run["outcomes"][0]["acquisition_route"] == "LIVE"
 
 
-def test_expired_policy_is_policy_blocked_without_network(tmp_path: Path) -> None:
+def test_expired_policy_is_blocked_without_network(tmp_path: Path) -> None:
     source = _source("SRC-A", "MON-A", "https://a.example.org/start")
     policy = _policy(
         _rule("SRC-A", "https://a.example.org"),
