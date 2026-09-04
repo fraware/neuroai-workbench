@@ -43,6 +43,7 @@ from .handoff import (
 )
 from .local_adapter import LocalContentAddressedAdapter
 from .pinned_transport import PinnedSocketHttpTransport
+from .policy_execution import POLICY_EXECUTION_BOUNDARY, PolicyBoundCollectionScheduler, PolicyExecutionBlocked
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
@@ -71,7 +72,10 @@ __all__ = [
     "ONLINE_PREFERRED",
     "ONLINE_REQUIRED",
     "POLICY_BOUNDARY",
+    "POLICY_EXECUTION_BOUNDARY",
     "PinnedSocketHttpTransport",
+    "PolicyBoundCollectionScheduler",
+    "PolicyExecutionBlocked",
     "PriorCapture",
     "QuarantineService",
     "REPLAY_ONLY",
