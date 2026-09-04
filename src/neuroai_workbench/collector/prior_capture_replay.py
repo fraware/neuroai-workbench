@@ -69,10 +69,7 @@ def _parse_timestamp(value: str, *, field: str) -> datetime:
 
 def _capture_age_seconds(*, as_of: str, retrieved_at: str) -> int:
     age = int(
-        (
-            _parse_timestamp(as_of, field="as_of")
-            - _parse_timestamp(retrieved_at, field="retrieved_at")
-        ).total_seconds()
+        (_parse_timestamp(as_of, field="as_of") - _parse_timestamp(retrieved_at, field="retrieved_at")).total_seconds()
     )
     if age < 0:
         raise PriorCaptureError("prior capture retrieved_at is later than the replay cutoff")
@@ -423,9 +420,7 @@ class PolicyBoundFallbackCollectionScheduler(PolicyBoundCollectionScheduler):
                 if isinstance(attempt, dict) and attempt.get("recovered_from_durable_record") is True
             )
             hosts = {
-                str(attempt.get("host"))
-                for attempt in attempts
-                if isinstance(attempt, dict) and attempt.get("host")
+                str(attempt.get("host")) for attempt in attempts if isinstance(attempt, dict) and attempt.get("host")
             }
             for host in sorted(hosts):
                 per_host[host]["targets"] += 1
