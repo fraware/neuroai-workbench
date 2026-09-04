@@ -104,3 +104,15 @@ Quarantine records may carry optional rights/redistribution, retention-policy, a
 ## Candidate graph releases
 
 The candidate release compiler writes descriptor, manifest, SHA256SUMS, JSONL object classes, verification report, and PENDING six-domain attestation stubs bound to the manifest digest. Mechanical PASS does not authorize publication. Attestation recording remains `release_attestation.py`.
+
+## Acquisition policy records — online-first phase 1
+
+Issue #279 introduces acquisition policies as operational metadata. A policy contains a policy/programme identifier, a claimed local approver identity, an approval window, per-source execution modes, per-source exact public-network origins, explicit fallback semantics, the fixed authority boundary, and a SHA-256 digest over its canonical representation. It contains no evidence bytes, credentials, access tokens, decryption keys, benchmark secrets, release authorization, or publication record.
+
+Per-source origin binding is a data-minimisation and least-privilege control: one source receives only the origins explicitly assigned to that source. A policy with multiple sources does not imply that each source may contact every origin listed elsewhere in the policy. Replay-only rules carry no network origins. Prior-capture fallback is explicit and is available only to `ONLINE_PREFERRED` rules that opt into `EXPLICIT_PRIOR_CAPTURE_ALLOWED`.
+
+Policy success does not confer live execution permission. During Phase 1 the existing digest-bound live authorization packet and `NEUROAI_LIVE_COLLECTION=1` remain independently required, and the default workflow remains offline. The policy module is not yet bound into scheduler or collector execution. Production policy records, when introduced later, should be treated as operational control records: operator identifiers and source-origin topology may be sensitive even when all source URLs are public, and retention/access rules should reflect that operational sensitivity.
+
+The policy digest establishes stored-object integrity under the local cooperative trust model only. It does not authenticate the approver, prove institutional delegation, establish lawful collection rights, establish source authenticity, adjudicate retrieved content, admit records to canonical S2, or authorize release/publication. Existing DnsGuard/public-address checks, pinned-peer verification, quarantine custody, content scanning, rights/redistribution metadata, and retention controls remain separate requirements.
+
+A later executor-binding phase must record the exact policy ID/digest in deterministic run provenance, distinguish fresh live captures from prior-capture fallback, retain capture age/original identity when fallback occurs, and keep protected/live capture bodies outside public Git. Those runtime and retention transitions are outside Phase 1 and require separate review before any online-first default is enabled.
