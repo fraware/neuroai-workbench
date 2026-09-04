@@ -162,10 +162,7 @@ def test_source_rules_must_not_be_empty() -> None:
 
 
 def test_source_rule_count_is_bounded() -> None:
-    rules = (
-        rule(f"SRC-{index:05d}")
-        for index in range(ap.MAX_SOURCE_RULES + 1)
-    )
+    rules = (rule(f"SRC-{index:05d}") for index in range(ap.MAX_SOURCE_RULES + 1))
     with pytest.raises(ap.AcquisitionPolicyError, match="maximum"):
         policy(source_rules=rules)
 
