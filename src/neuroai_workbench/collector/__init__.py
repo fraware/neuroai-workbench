@@ -1,5 +1,20 @@
 """Hardened HTTP collector core with quarantine-only writes."""
 
+from .acquisition_policy import (
+    FALLBACK_FORBID,
+    FALLBACK_PRIOR_CAPTURE,
+    ONLINE_PREFERRED,
+    ONLINE_REQUIRED,
+    POLICY_BOUNDARY,
+    REPLAY_ONLY,
+    AcquisitionPolicyError,
+    acquisition_policy_digest,
+    build_acquisition_policy,
+    canonicalize_policy_origin,
+    canonicalize_requested_origin,
+    require_acquisition_policy,
+    validate_acquisition_policy,
+)
 from .adapters import (
     AuthenticatedDownloadStub,
     ClinicalRegulatoryHttpCaptureAdapter,
@@ -32,6 +47,7 @@ from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
 __all__ = [
+    "AcquisitionPolicyError",
     "AuthenticatedDownloadStub",
     "ClinicalRegulatoryHttpCaptureAdapter",
     "ClinicalRegulatoryRegistryStub",
@@ -43,6 +59,8 @@ __all__ = [
     "CollectorConfig",
     "CredentialProvider",
     "EvidenceCollectionService",
+    "FALLBACK_FORBID",
+    "FALLBACK_PRIOR_CAPTURE",
     "FdaDeviceAdapter",
     "HandoffBlockedError",
     "HtmlPageAdapter",
@@ -50,17 +68,27 @@ __all__ = [
     "JsonApiAdapter",
     "LocalContentAddressedAdapter",
     "MonitoringHandoffPayload",
+    "ONLINE_PREFERRED",
+    "ONLINE_REQUIRED",
+    "POLICY_BOUNDARY",
     "PinnedSocketHttpTransport",
     "PriorCapture",
     "QuarantineService",
+    "REPLAY_ONLY",
     "SchedulerConfig",
     "StaticCredentialProvider",
     "XmlFeedAdapter",
+    "acquisition_policy_digest",
     "adapter_for_source",
     "approve_quarantine_record",
+    "build_acquisition_policy",
     "build_adapters",
+    "canonicalize_policy_origin",
+    "canonicalize_requested_origin",
     "load_quarantine_record",
     "prepare_monitoring_handoff",
     "reject_quarantine_record",
+    "require_acquisition_policy",
     "resolve_adapter",
+    "validate_acquisition_policy",
 ]
