@@ -24,6 +24,7 @@ from neuroai_workbench.collector.policy_execution import (
     PolicyBoundCollectionScheduler,
     PolicyBoundDnsGuard,
     PolicyBoundTransport,
+    PolicyExecutionBlocked,
 )
 from neuroai_workbench.collector.scheduler import CollectionScheduler, SchedulerConfig
 from neuroai_workbench.util import canonical_json_bytes, sha256_bytes
@@ -133,6 +134,7 @@ def _scheduler(
     *,
     execution_mode: str = ONLINE_REQUIRED,
     resolver: RecordingResolver | None = None,
+    scheduler_config: SchedulerConfig | None = None,
 ) -> PolicyBoundCollectionScheduler:
     return PolicyBoundCollectionScheduler(
         acquisition_policy=policy,
@@ -141,14 +143,10 @@ def _scheduler(
         collector_config=_config(),
         transport=transport,
         quarantine_root=tmp_path / "quarantine",
-        scheduler_config=SchedulerConfig(max_workers=2, max_workers_per_host=2),
+        scheduler_config=scheduler_config or SchedulerConfig(max_workers=2, max_workers_per_host=2),
         dns_guard=DnsGuard(getaddrinfo=resolver or RecordingResolver()),
         sleeper=lambda _: None,
     )
-
-
-def _failure_record(tmp_path: Path, record_id: str) -> dict[str, Any]:
-    return json.loads((tmp_path / "quarantine" / "failures" / f"{record_id}.json").read_text(encoding="utf-8"))
 
 
 def _manifest(tmp_path: Path, run_id: str) -> dict[str, Any]:
@@ -172,8 +170,30 @@ def test_runtime_guard_requires_request_scoped_sources() -> None:
         programme_id=PROGRAMME_ID,
         execution_mode=ONLINE_REQUIRED,
     )
-    with pytest.raises(Exception, match="no request-scoped logical-source binding"):
+    with pytest.raises(PolicyExecutionBlocked, match="no request-scoped logical-source binding"):
         guard.require_url("https://a.example.org/start")
+
+
+def test_runtime_guard_rejects_empty_source_scope() -> None:
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    guard = AcquisitionPolicyRuntimeGuard(
+        policy=policy,
+        programme_id=PROGRAMME_ID,
+        execution_mode=ONLINE_REQUIRED,
+    )
+    with pytest.raises(AcquisitionPolicyError, match="at least one logical source"):
+        with guard.bind_source_ids([]):
+            raise AssertionError("empty scope must never become active")
+
+
+def test_runtime_guard_rejects_unsupported_mode() -> None:
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    with pytest.raises(AcquisitionPolicyError, match="Unsupported execution_mode"):
+        AcquisitionPolicyRuntimeGuard(
+            policy=policy,
+            programme_id=PROGRAMME_ID,
+            execution_mode="INVALID",
+        )
 
 
 def test_runtime_guard_context_resets_after_use() -> None:
@@ -185,7 +205,7 @@ def test_runtime_guard_context_resets_after_use() -> None:
     )
     with guard.bind_source_ids(["SRC-A", "SRC-A"]):
         guard.require_url("https://a.example.org/start", at="2026-09-04T00:00:00Z")
-    with pytest.raises(Exception, match="no request-scoped logical-source binding"):
+    with pytest.raises(PolicyExecutionBlocked, match="no request-scoped logical-source binding"):
         guard.require_url("https://a.example.org/start", at="2026-09-04T00:00:00Z")
 
 
@@ -199,9 +219,27 @@ def test_policy_dns_guard_checks_before_delegate_dns() -> None:
     )
     dns_guard = PolicyBoundDnsGuard(DnsGuard(getaddrinfo=resolver), guard)
     with guard.bind_source_ids(["SRC-A"]):
-        with pytest.raises(Exception, match="outside the source rule"):
+        with pytest.raises(PolicyExecutionBlocked, match="outside the source rule"):
             dns_guard.resolve("https://b.example.org/blocked")
     assert resolver.hosts == []
+
+
+def test_policy_dns_guard_session_and_reset_preserve_policy_guard() -> None:
+    resolver = RecordingResolver()
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    guard = AcquisitionPolicyRuntimeGuard(
+        policy=policy,
+        programme_id=PROGRAMME_ID,
+        execution_mode=ONLINE_REQUIRED,
+    )
+    session = PolicyBoundDnsGuard(DnsGuard(getaddrinfo=resolver), guard).new_session()
+    with guard.bind_source_ids(["SRC-A"]):
+        first = session.resolve("https://a.example.org/start")
+        session.reset()
+        second = session.resolve("https://a.example.org/start")
+    assert first.addresses == [GLOBAL_IP]
+    assert second.addresses == [GLOBAL_IP]
+    assert resolver.hosts == ["a.example.org", "a.example.org"]
 
 
 def test_policy_transport_checks_before_inner_send() -> None:
@@ -215,9 +253,28 @@ def test_policy_transport_checks_before_inner_send() -> None:
     wrapped = PolicyBoundTransport(transport, guard)
     request = HttpRequest("GET", "https://b.example.org/blocked", {}, (GLOBAL_IP,))
     with guard.bind_source_ids(["SRC-A"]):
-        with pytest.raises(Exception, match="outside the source rule"):
+        with pytest.raises(PolicyExecutionBlocked, match="outside the source rule"):
             wrapped.send(request, connect_timeout=1.0, read_timeout=1.0)
     assert transport.calls == []
+
+
+def test_policy_transport_forwards_authorized_send() -> None:
+    url = "https://a.example.org/start"
+    transport = FakeTransport({url: (200, {"Content-Type": "text/html"}, b"<html></html>")})
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    guard = AcquisitionPolicyRuntimeGuard(
+        policy=policy,
+        programme_id=PROGRAMME_ID,
+        execution_mode=ONLINE_REQUIRED,
+    )
+    wrapped = PolicyBoundTransport(transport, guard)
+    request = HttpRequest("GET", url, {}, (GLOBAL_IP,))
+    with guard.bind_source_ids(["SRC-A"]):
+        status, headers, body = wrapped.send(request, connect_timeout=1.0, read_timeout=1.0)
+    assert status == 200
+    assert headers["Content-Type"] == "text/html"
+    assert body == b"<html></html>"
+    assert [call.url for call in transport.calls] == [url]
 
 
 def test_programme_mismatch_fails_at_construction(tmp_path: Path) -> None:
@@ -237,6 +294,25 @@ def test_tampered_policy_fails_at_construction(tmp_path: Path) -> None:
     policy["approved_by"] = "tampered-reviewer"
     with pytest.raises(AcquisitionPolicyError, match="digest mismatch"):
         _scheduler(tmp_path, FakeTransport({}), policy)
+
+
+def test_scheduler_constructor_defaults_remain_explicitly_policy_bound(tmp_path: Path) -> None:
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    scheduler = PolicyBoundCollectionScheduler(
+        acquisition_policy=policy,
+        programme_id=PROGRAMME_ID,
+        execution_mode=ONLINE_REQUIRED,
+        collector_config=_config(),
+        transport=FakeTransport({}),
+        quarantine_root=tmp_path / "quarantine",
+        monotonic_clock=lambda: 0.0,
+    )
+    assert scheduler.acquisition_binding == {
+        "policy_id": policy["policy_id"],
+        "policy_sha256": policy["policy_sha256"],
+        "programme_id": PROGRAMME_ID,
+        "execution_mode": ONLINE_REQUIRED,
+    }
 
 
 def test_missing_source_is_policy_blocked_without_network(tmp_path: Path) -> None:
@@ -283,6 +359,28 @@ def test_not_yet_active_policy_is_blocked_without_network(tmp_path: Path) -> Non
     assert "not active" in run["outcomes"][0]["message"]
 
 
+def test_manual_source_policy_precheck_runs_before_grouping(tmp_path: Path) -> None:
+    source = _source("SRC-A", "MON-A", "https://a.example.org/manual")
+    policy = _policy(_rule("SRC-B", "https://a.example.org"))
+    transport = FakeTransport({source["url"]: (200, {"Content-Type": "text/html"}, b"<html>ok</html>")})
+    plan = _plan()
+    plan["manual"] = [
+        {
+            "source_id": source["source_id"],
+            "monitor_id": source["monitor_id"],
+            "url": source["url"],
+        }
+    ]
+    scheduler_config = SchedulerConfig(include_manual_sources=True, max_workers=2, max_workers_per_host=2)
+    run = _scheduler(tmp_path, transport, policy, scheduler_config=scheduler_config).run_plan(
+        plan,
+        registry_sha256=REGISTRY_HASH,
+        source_index={"SRC-A": source},
+    )
+    assert transport.calls == []
+    assert run["outcomes"][0]["failure_class"] == "POLICY_BLOCK"
+
+
 def test_unauthorized_member_cannot_inherit_coalesced_result(tmp_path: Path) -> None:
     source_a = _source("SRC-A", "MON-A", "https://a.example.org/shared")
     source_b = _source("SRC-B", "MON-B", "https://a.example.org/shared")
@@ -321,6 +419,25 @@ def test_two_authorized_sources_coalesce_to_one_fetch(tmp_path: Path) -> None:
     assert by_source["SRC-A"]["record_id"] == by_source["SRC-B"]["record_id"]
 
 
+def test_adapter_resolved_origin_is_blocked_before_dns_or_send(tmp_path: Path) -> None:
+    source = _source("SRC-A", "MON-A", "https://a.example.org/device/K123456")
+    source["source_class"] = "REGULATORY_RECORD"
+    source["fda_device_id"] = "K123456"
+    policy = _policy(_rule("SRC-A", "https://a.example.org"))
+    resolver = RecordingResolver()
+    transport = FakeTransport({})
+    run = _scheduler(tmp_path, transport, policy, resolver=resolver).run_plan(
+        _plan(source), registry_sha256=REGISTRY_HASH, source_index={"SRC-A": source}
+    )
+    assert transport.calls == []
+    assert resolver.hosts == []
+    outcome = run["outcomes"][0]
+    assert outcome["adapter_id"] == "fda_device"
+    assert outcome["status"] == "FAILURE"
+    assert outcome["failure_class"] == "POLICY_BLOCK"
+    assert "api.fda.gov" in outcome["message"]
+
+
 def test_same_origin_redirect_remains_policy_authorized(tmp_path: Path) -> None:
     source = _source("SRC-A", "MON-A", "https://a.example.org/start")
     policy = _policy(_rule("SRC-A", "https://a.example.org"))
@@ -337,7 +454,7 @@ def test_same_origin_redirect_remains_policy_authorized(tmp_path: Path) -> None:
     assert run["outcomes"][0]["status"] == "RESULT"
 
 
-def test_cross_origin_redirect_is_blocked_before_redirect_dns_or_send(tmp_path: Path) -> None:
+def test_cross_origin_redirect_is_policy_failure_without_collector_failure_record(tmp_path: Path) -> None:
     source = _source("SRC-A", "MON-A", "https://a.example.org/start")
     policy = _policy(_rule("SRC-A", "https://a.example.org"))
     resolver = RecordingResolver()
@@ -354,9 +471,20 @@ def test_cross_origin_redirect_is_blocked_before_redirect_dns_or_send(tmp_path: 
     assert resolver.hosts == ["a.example.org"]
     outcome = run["outcomes"][0]
     assert outcome["status"] == "FAILURE"
-    failure = _failure_record(tmp_path, str(outcome["record_id"]))
-    assert failure["failure_class"] == "POLICY_BLOCK"
-    assert "b.example.org" in failure["failure_message"]
+    assert outcome["failure_class"] == "POLICY_BLOCK"
+    assert outcome["record_id"] is None
+    assert "b.example.org" in outcome["message"]
+
+    target_id = str(outcome["retrieval_target_id"])
+    checkpoint = _checkpoint(tmp_path, run["run_id"], target_id)
+    assert checkpoint["state"] == "FAILURE"
+    assert checkpoint["outcome"]["failure_class"] == "POLICY_BLOCK"
+    assert checkpoint["outcome"]["record_id"] is None
+    assert checkpoint["attempts"][0]["policy_blocked"] is True
+    assert "b.example.org" in checkpoint["attempts"][0]["policy_block_message"]
+
+    failure_root = tmp_path / "quarantine" / "failures"
+    assert not failure_root.exists() or list(failure_root.glob("*.json")) == []
 
 
 def test_coalesced_redirect_requires_every_logical_source_permission(tmp_path: Path) -> None:
@@ -379,11 +507,10 @@ def test_coalesced_redirect_requires_every_logical_source_permission(tmp_path: P
     )
     assert [call.url for call in transport.calls] == [source_a["url"]]
     assert {item["status"] for item in run["outcomes"]} == {"FAILURE"}
-    failure_ids = {str(item["record_id"]) for item in run["outcomes"]}
-    assert len(failure_ids) == 1
-    failure = _failure_record(tmp_path, failure_ids.pop())
-    assert failure["failure_class"] == "POLICY_BLOCK"
-    assert "SRC-B" in failure["failure_message"]
+    assert {item["failure_class"] for item in run["outcomes"]} == {"POLICY_BLOCK"}
+    assert {item["record_id"] for item in run["outcomes"]} == {None}
+    assert len({item["retrieval_target_id"] for item in run["outcomes"]}) == 1
+    assert all("SRC-B" in item["message"] for item in run["outcomes"])
 
 
 def test_policy_metadata_is_bound_into_manifest_summary_and_attempt(tmp_path: Path) -> None:
@@ -469,13 +596,9 @@ def test_legacy_scheduler_binding_has_no_policy_fields(tmp_path: Path) -> None:
     )
     run = legacy.run_plan(_plan(source), registry_sha256=REGISTRY_HASH, source_index={"SRC-A": source})
     manifest = json.loads(
-        (
-            tmp_path
-            / "legacy-quarantine"
-            / "run-ledgers"
-            / run["run_id"]
-            / "manifest.json"
-        ).read_text(encoding="utf-8")
+        (tmp_path / "legacy-quarantine" / "run-ledgers" / run["run_id"] / "manifest.json").read_text(
+            encoding="utf-8"
+        )
     )
     scheduler_binding = manifest["binding"]["scheduler_configuration"]
     assert all(not key.startswith("acquisition_") for key in scheduler_binding)
