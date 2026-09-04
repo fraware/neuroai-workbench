@@ -133,7 +133,9 @@ def _seed_capture(
     return record
 
 
-def _replay_scheduler(tmp_path: Path, policy: dict[str, Any], *, programme_id: str = PROGRAMME_ID) -> ReplayOnlyCollectionScheduler:
+def _replay_scheduler(
+    tmp_path: Path, policy: dict[str, Any], *, programme_id: str = PROGRAMME_ID
+) -> ReplayOnlyCollectionScheduler:
     return ReplayOnlyCollectionScheduler(
         acquisition_policy=policy,
         programme_id=programme_id,
