@@ -21,11 +21,12 @@ from .acquisition_policy import (
 )
 from .adapters.base import CollectorAdapter
 from .adapters.registry import adapter_for_source
+from .boundary import COLLECTOR_BOUNDARY
 from .config import CollectorConfig
 from .credentials import CredentialProvider
 from .dns import DnsGuard, DnsResolutionRecord
 from .http_client import HttpRequest, HttpTransport, TransportResult
-from .run_ledger import TERMINAL_TARGET_STATES, write_run_summary, write_target_checkpoint
+from .run_ledger import RUN_LEDGER_BOUNDARY, TERMINAL_TARGET_STATES, write_run_summary, write_target_checkpoint
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome
 from .url_normalize import RetrievalTargetGroup
@@ -555,7 +556,7 @@ class PolicyBoundCollectionScheduler(CollectionScheduler):
             "status": "COMPLETED" if incomplete == 0 else "INCOMPLETE",
             "manifest_sha256": manifest["manifest_sha256"],
             "binding_sha256": manifest["binding_sha256"],
-            "boundary": self.boundary,
-            "run_ledger_boundary": self.run_ledger_boundary,
+            "boundary": COLLECTOR_BOUNDARY,
+            "run_ledger_boundary": RUN_LEDGER_BOUNDARY,
         }
         return write_run_summary(self.quarantine_root, summary)
