@@ -58,6 +58,15 @@ from .prior_capture_replay import (
     build_prior_capture_snapshot,
     verify_prior_capture_reference,
 )
+from .runtime_proof import (
+    RUNTIME_PROOF_BOUNDARY,
+    RUNTIME_PROOF_NON_CLAIMS,
+    RuntimeProofError,
+    build_runtime_proof,
+    project_clinicaltrials_capture,
+    verify_runtime_proof,
+    write_runtime_proof,
+)
 from .scheduler import CollectionScheduler, SchedulerConfig
 from .service import CollectionOutcome, HttpCollector, PriorCapture
 
@@ -102,7 +111,10 @@ __all__ = [
     "QuarantineService",
     "REPLAY_ONLY",
     "REPLAY_ROUTE",
+    "RUNTIME_PROOF_BOUNDARY",
+    "RUNTIME_PROOF_NON_CLAIMS",
     "ReplayOnlyCollectionScheduler",
+    "RuntimeProofError",
     "SchedulerConfig",
     "StaticCredentialProvider",
     "XmlFeedAdapter",
@@ -112,13 +124,17 @@ __all__ = [
     "build_acquisition_policy",
     "build_adapters",
     "build_prior_capture_snapshot",
+    "build_runtime_proof",
     "canonicalize_policy_origin",
     "canonicalize_requested_origin",
     "load_quarantine_record",
     "prepare_monitoring_handoff",
+    "project_clinicaltrials_capture",
     "reject_quarantine_record",
     "require_acquisition_policy",
     "resolve_adapter",
     "validate_acquisition_policy",
     "verify_prior_capture_reference",
+    "verify_runtime_proof",
+    "write_runtime_proof",
 ]

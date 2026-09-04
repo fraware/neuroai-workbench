@@ -53,6 +53,8 @@
 40. An institutional OIDC/SAML adapter stub is treated as verified authentication, or auth is bound to the local `ThreadingHTTPServer` and called production.
 41. Empty-basis `NO_REOPENING` / `NO_EFFECT` recommendations are misread as “nothing changed,” or non-deterministic recommendation ids prevent reproducible review.
 42. Fuzzy name similarity auto-merges entities, or directed identity relations delete predecessor ids.
+43. A Phase 3 proof substitutes or tampers with a run manifest, summary, target checkpoint, result record, or capture while preserving superficially plausible identifiers, or deterministic replay equality is misrepresented as source truth, clinical validity, completeness, G0/G1/G2 passage, or release authority.
+44. A Phase 3 live-proof runner performs network I/O without the layered acquisition-policy plus digest-bound live-authorization gates, or proof output is directed into canonical S2 and mistaken for an authorized canonical mutation.
 
 ## Implemented controls
 
@@ -152,3 +154,15 @@ Phase 1 mitigates that class structurally. Policies are versioned and SHA-256 bo
 A valid acquisition policy is not a sufficient live-collection gate. `EvidenceCollectionService` still requires the existing digest-bound authorization packet and `NEUROAI_LIVE_COLLECTION=1`; Phase 1 introduces no scheduler/collector binding and no network operation. Origin matching also does not replace public-address validation, DnsGuard rebinding controls, pinned connected-peer verification, redirect safety, quarantine, scanning, rights handling, or retention controls.
 
 The policy digest is tamper evidence under the existing cooperative local trust model, not a signature or proof of institutional delegation. `approved_by` is a claimed local identity. Future executor binding must include the exact policy digest in deterministic run identity, re-evaluate policy scope before every redirect hop, and record live-versus-fallback execution explicitly; those controls remain outside Phase 1.
+
+## Online-first Phase 3 runtime proof
+
+Issue #287 adds a bounded verifier and opt-in runner for controlled live/replay equivalence. The verifier revalidates the collector result and exact stored bytes, recomputes the deterministic ClinicalTrials.gov projection digest, verifies the live and replay summary semantic digests, verifies each run manifest and exact target checkpoint, and requires the run-summary manifest/binding hashes to match the durable ledger. A proof therefore fails closed on capture corruption, result substitution, run-binding substitution, checkpoint substitution, route mismatch, stale semantic-summary hashes, or loss of full one-source/one-target accounting.
+
+Replay proof requires `REPLAY_ONLY`, zero collection attempts, zero unique retrievals, zero retries, no per-host accounting, an empty checkpoint attempt list, and an exact prior-capture binding that preserves original `result_id`, `retrieved_at`, SHA-256, size/path identity, source/monitor identity, and normalized URL. Live equivalence requires an online mode, at least one actual attempt, a terminal attempt bound to the exact result, and no prior-capture fallback.
+
+The Phase 3 runner does not perform network I/O by default. Its `live` command additionally requires `--execute-live`, an active exact-source acquisition policy, the existing digest-bound authorization packet, and `NEUROAI_LIVE_COLLECTION=1` before constructing `PinnedSocketHttpTransport`. Replay constructs no transport/DNS path. The runner also requires an explicit proof-output directory plus an operator confirmation that the output is non-canonical; that assertion is a workflow guard, not an institutional path-control mechanism.
+
+CI exercises the Phase 3 semantics with injected transport/DNS and synthetic public ClinicalTrials.gov-shaped JSON. Separate interruption tests cover durable-result-before-checkpoint recovery without duplicate HTTP work and fallback-pending resume to the exact pre-bound capture after a newer capture appears. CI success is not a substitute for the separately authorized external live proof.
+
+Proof hashes and run-ledger validation remain tamper evidence under the cooperative local trust model. They do not authenticate the source, prove the truth or completeness of an NCT record, establish lawful collection rights, or create release/publication authority. A privileged actor able to replace the entire quarantine tree and proof outputs together remains outside the integrity guarantee. Phase 4 remains blocked until an actual external Phase 3 live proof is executed and reviewed.
