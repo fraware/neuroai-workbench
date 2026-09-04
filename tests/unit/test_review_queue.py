@@ -108,6 +108,43 @@ def test_register_profile_and_status(tmp_path: Path) -> None:
     assert status["profile_count"] == 1
 
 
+def test_duplicate_profile_registration_is_time_independent(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    workspace = setup_workspace(tmp_path)
+    timestamps = iter(["2026-07-01T00:00:00Z", "2026-07-02T00:00:00Z"])
+    monkeypatch.setattr("neuroai_workbench.review_queue.utc_now", lambda: next(timestamps))
+
+    first = register_reviewer_profile(
+        workspace,
+        "reviewer-a",
+        "Reviewer A",
+        ["OBSERVER", "MONITORING_REVIEWER"],
+        actor="admin",
+    )
+    again = register_reviewer_profile(
+        workspace,
+        "reviewer-a",
+        "Reviewer A",
+        ["MONITORING_REVIEWER", "OBSERVER"],
+        actor="admin",
+    )
+
+    assert first["created"] is True
+    assert again["created"] is False
+    assert again["profile"] == first["profile"]
+    assert again["profile"]["registered_at"] == "2026-07-01T00:00:00Z"
+    assert next(timestamps) == "2026-07-02T00:00:00Z"
+
+
+def test_duplicate_profile_registration_rejects_changed_identity(tmp_path: Path) -> None:
+    workspace = setup_workspace(tmp_path)
+    register_reviewer_profile(workspace, "reviewer-a", "Reviewer A", ["OBSERVER"], actor="admin")
+    with pytest.raises(ValueError, match="already exists with different content"):
+        register_reviewer_profile(workspace, "reviewer-a", "Reviewer B", ["OBSERVER"], actor="admin")
+
+
 def test_projection_from_candidates_and_adjudications(tmp_path: Path) -> None:
     workspace = setup_workspace(tmp_path)
     candidate = create_candidate(workspace)
