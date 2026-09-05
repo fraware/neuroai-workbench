@@ -240,9 +240,7 @@ def _validate_current_public_contract(public_contract: Mapping[str, Any]) -> Non
 def _validate_boundary_counts(manifest: Mapping[str, Any]) -> int:
     counts = manifest.get("boundary_disposition_counts")
     if not isinstance(counts, Mapping) or set(counts) != BOUNDARY_COUNT_KEYS:
-        raise BenchmarkManifestError(
-            f"boundary_disposition_counts must contain exactly {sorted(BOUNDARY_COUNT_KEYS)}"
-        )
+        raise BenchmarkManifestError(f"boundary_disposition_counts must contain exactly {sorted(BOUNDARY_COUNT_KEYS)}")
 
     total = 0
     for key in sorted(BOUNDARY_COUNT_KEYS):
@@ -289,9 +287,7 @@ def validate_freeze_manifest(
         raise BenchmarkManifestError("Freeze benchmark_id must match the supplied public contract")
 
     if manifest.get("public_contract_schema_version") != EVALUATION_SCHEMA_VERSION:
-        raise BenchmarkManifestError(
-            f"public_contract_schema_version must be {EVALUATION_SCHEMA_VERSION}"
-        )
+        raise BenchmarkManifestError(f"public_contract_schema_version must be {EVALUATION_SCHEMA_VERSION}")
     expected_contract_sha256 = manifest_identity_sha256(public_contract)
     if manifest.get("public_contract_sha256") != expected_contract_sha256:
         raise BenchmarkManifestError("public_contract_sha256 does not bind the supplied public contract")
