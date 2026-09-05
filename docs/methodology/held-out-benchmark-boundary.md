@@ -1,39 +1,53 @@
 # Held-out benchmark boundary
 
-This document defines the PRE-G2 software boundary for D3 patent and D4 product evaluation. It is an execution scaffold only. It does not approve G1, freeze D3 or D4, pass G2, establish scientific representativeness, mutate canonical S2, authorize publication, or alter any v4.2 assessment finding.
+This document defines the PRE-G2 software boundary for D3 patent and D4 product evaluation after the approved D1 construct-validity remediation. It is an execution scaffold only. It does not freeze D3 or D4, pass G0 or G2, establish scientific representativeness, mutate canonical S2, authorize publication, or alter any v4.2 assessment finding.
 
-## Custody and identity
+## Governing research-contract binding
 
-Held-out membership, gold labels, individual reviewer labels, adjudication packets, and any licensed or otherwise controlled source material remain in S3-controlled research storage. The public repository may contain only synthetic fixtures, the benchmark contract, aggregate evaluation logic, and opaque commitments.
+The benchmark contract schema is version `0.2`. Its boundary semantics are bound to the approved D1 canonical JSON SHA-256 `7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb` and the attributable G1 disposition already referenced by the packaged D3/D4 drafts.
 
-When a benchmark is frozen after the applicable governance gate, membership and label payloads are committed with `HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1`. The HMAC secret remains in S3 and must contain at least 32 bytes. Each commitment binds an ASCII domain separator so membership, label, and benchmark-kind contexts cannot silently collide. The public commitment is evidence that a later controlled payload can be checked against the frozen identity; it does not reveal the payload and does not establish that the labels are correct, representative, complete, or independently adjudicated.
+D1 governs boundary membership with four human dispositions: `INCLUDE`, `EXCLUDE`, `BORDERLINE`, and `ABSTAIN`. The benchmark evaluator preserves those dispositions directly. A resolved human disposition is never stored as `POSITIVE`, `NEGATIVE`, or `UNRESOLVED`.
 
-A public benchmark contract has two PRE-G2 states: `DRAFT_UNFROZEN` and `FROZEN_COMMITMENTS_ONLY`. Both require `g2_passed=false`, `canonical_s2_authority=false`, `publication_authority=false`, and `assessment_effect=NONE`. `DRAFT_UNFROZEN` may remain at `g1_gate_state=NOT_APPROVED` or carry a structurally bound reference to an already approved G1 disposition. `FROZEN_COMMITMENTS_ONLY` is valid only when `g1_gate_state=APPROVED_REFERENCE_PROVIDED` and the contract contains a non-empty G1 disposition identifier plus its exact SHA-256 digest. The validator checks the reference structure and binding fields; it does not authenticate, issue, or substantively validate the G1 governance decision.
+Reviewer/adjudication state is a separate dimension. `AGREE` and `ADJUDICATED` are resolved states and require one governed boundary disposition plus recorded rationale. `DISAGREE_UNADJUDICATED` represents genuine unresolved reviewer disagreement and requires a null final boundary disposition. Human `ABSTAIN` is a resolved governed disposition for insufficient evidence; it is not an alias for unresolved disagreement.
 
-## D3 and D4 coverage scaffold
+## G2 coverage versus sampling strata
 
-The D3 patent scaffold requires positive, negative, semantically deceptive negative, borderline, missing-or-short-abstract, multi-year, multi-jurisdiction, multilingual, and gray-capability strata.
+G2 requires frozen human-adjudicated positive, negative, and borderline patent/product cases with provenance. The PRE-G2 contract operationalizes those minimum boundary-outcome requirements as `INCLUDE`, `EXCLUDE`, and `BORDERLINE` under the exact D1 domain. `ABSTAIN` remains allowed and must be preserved when evidence is insufficient, but it is not a minimum G2 disposition-count requirement in the approved D1 condition.
 
-The D4 product scaffold requires clinical, consumer, workplace, research, entertainment/XR, wellness, ambiguous-biosignal, nontraditional-form-factor, multilingual, and multi-jurisdiction strata.
+Boundary outcomes and sampling/coverage strata are orthogonal. The patent contract therefore no longer treats `POSITIVE`, `NEGATIVE`, or `BORDERLINE` as strata. Patent strata cover semantically deceptive negatives, missing/short abstracts, temporal and jurisdictional variation, multilingual cases, and gray-capability discovery. Product strata cover deployment/application contexts and edge conditions including ambiguous biosignal and nontraditional form factors, plus multilingual and multi-jurisdiction coverage. A case may carry any permitted boundary disposition independently of its strata.
 
-These strata are minimum evaluation coverage requirements. Presence of every stratum is not evidence that the benchmark is representative of the open world or that the chosen sample size is sufficient. Sampling design, label protocol, reviewer recruitment, subgroup sizes, statistical uncertainty, and final freeze authority remain separate controlled decisions.
+Presence of every required stratum or disposition does not establish representativeness, sample-size sufficiency, or open-world completeness. Sampling design, reviewer recruitment, subgroup sizes, statistical uncertainty, and final freeze authority remain controlled research decisions.
 
-## Label and disagreement semantics
+## Versioned binary projection
 
-The scoring interface permits binary controlled gold labels only when the adjudication state is `AGREE` or `ADJUDICATED`. `DISAGREE_UNADJUDICATED` and `ABSTAIN_UNRESOLVED` must carry `UNRESOLVED` and are excluded from binary performance denominators. The unresolved count remains visible. This prevents disagreement from being silently converted into a model-facing truth label.
+Precision, recall, false-negative rate, probability calibration, and Brier score are computed only under the explicit projection `D1_INCLUDE_EXCLUDE_BINARY_V1`:
 
-Prediction rows are treated as untrusted model or rule-system output. Recursive leakage guards reject fields that expose held-out membership, ground truth, adjudication state, reviewer labels, or equivalent oracle information. The guard is structural and cannot prove that an external model was never exposed to the benchmark through another channel; benchmark operations must separately control access and contamination.
+- human `INCLUDE` is the binary positive class;
+- human `EXCLUDE` is the binary negative class;
+- human `BORDERLINE` and human `ABSTAIN` are excluded from binary denominators and reported as separate routing targets;
+- unresolved reviewer disagreement is excluded from binary denominators and remains separately counted;
+- model outputs use the same four-way routing domain: `INCLUDE`, `EXCLUDE`, `BORDERLINE`, `ABSTAIN`;
+- model `BORDERLINE`, model `ABSTAIN`, and missing predictions on human `INCLUDE` cases count as effective false negatives for the projected recall/FNR calculation;
+- the optional probability field is `probability_include` and is interpreted only as probability of `INCLUDE` under this named projection.
 
-## Metrics and abstention
+This projection is an evaluation view over the D1 boundary; it does not replace or narrow the research contract itself. Any later change to these projection rules requires an explicit versioned successor rather than reinterpretation of previously frozen metrics.
 
-Evaluation reports precision, recall, effective false-negative rate, coverage, explicit abstention count, missing-prediction count, probability coverage, and Brier score when probabilities are supplied. Recall and false-negative rate use all scoreable positive gold cases in the denominator. Positive abstentions and missing predictions therefore count as effective misses instead of disappearing from recall. Precision is computed over answered positive predictions. Coverage remains separate so selective answering is visible.
+## Routing and disagreement reporting
 
-The evaluator also reports the same metrics across declared subgroup fields, defaulting to stratum, language, jurisdiction, and text availability. These aggregates expose performance heterogeneity; they do not by themselves establish statistical significance, fairness, safety, or external validity.
+The evaluator reports binary metrics and four-way routing separately. For human `BORDERLINE` and human `ABSTAIN` cases it reports model routing counts, missing predictions, and exact-route rates. It also retains a resolved human-disposition × model-routing matrix and descriptive prediction counts for unresolved adjudication rows. Those descriptive counts do not convert unresolved cases into model-facing truth.
 
-## Execution sequence
+Subgroup reports apply the same structure by stratum, language, jurisdiction, and text availability by default. This exposes where binary performance or borderline/abstention routing changes across declared groups without asserting statistical significance, fairness, safety, or external validity.
 
-Before any model selection or threshold tuning against the held-out sets, the applicable research contract and taxonomy must receive the required G1 governance disposition. The exact G1 disposition identifier and digest are then bound into the benchmark contract before D3/D4 membership and labels can enter `FROZEN_COMMITMENTS_ONLY`. The controlled S3 payloads receive opaque commitments and remain unavailable for tuning. Model comparison uses a separate development set and then a controlled held-out evaluation. G2 can be considered only from the resulting evidence package plus the required human governance review.
+## Custody and leakage boundary
+
+Held-out membership, final human dispositions, individual reviewer dispositions, adjudication packets, rationale records, and any licensed or otherwise controlled source material remain in S3-controlled research storage. The public repository may contain only synthetic fixtures, public benchmark contracts/schemas, aggregate evaluation logic, documentation, and opaque commitments.
+
+Prediction rows are treated as untrusted model or rule-system output. Recursive leakage guards reject human boundary disposition, adjudication state, reviewer disposition, source text, held-out membership, and equivalent oracle fields. Legacy `prediction=POSITIVE|NEGATIVE` and `gold_label=POSITIVE|NEGATIVE|UNRESOLVED` forms fail closed under schema/evaluator version `0.2`; callers must migrate explicitly to four-way boundary semantics.
+
+When a benchmark is eventually frozen after the applicable governance conditions, membership and label/disposition payloads are committed with `HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1`. The HMAC secret remains in S3 and must contain at least 32 bytes. Membership and disposition commitments use distinct domain separators. Public commitments establish payload identity only; they do not establish label correctness, representativeness, completeness, or independent adjudication.
+
+## Controlled sequence to G2
+
+Before G2 can be considered, the actual S3 D3/D4 sets must be constructed under this contract; include the declared strata and minimum `INCLUDE`/`EXCLUDE`/`BORDERLINE` coverage; preserve attributable reviewer/adjudication provenance and rationale; double-label the strategically selected subset; lock a held-out test split inaccessible to tuning; record contamination/exposure controls; and produce opaque public commitments without disclosing benchmark membership or labels. G2 remains false until the resulting evidence package receives the required governance disposition.
 
 All functions in `neuroai_workbench.evaluation_benchmarks` are offline and side-effect free. They do not perform network I/O, write repositories or workspaces, mutate S2, create release attestations, or invoke the v4.2 assessment engine.
-
-Packaged public resources under `neuroai_workbench.resources.benchmarks` and loaders in `neuroai_workbench.benchmark_packaging` distribute empty `DRAFT_UNFROZEN` contracts, JSON Schema, and synthetic fixtures only. Fixture model outputs remain `UNTRUSTED_DRAFT_ONLY`. Packaging does not create G1/G2 approval, freeze real held-out sets, or place S3 secrets in the public repository.

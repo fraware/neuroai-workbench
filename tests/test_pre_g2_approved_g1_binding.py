@@ -4,7 +4,13 @@ import json
 from importlib.resources import files
 
 from neuroai_workbench.benchmark_packaging import load_all_packaged_public_contracts
-from neuroai_workbench.evaluation_benchmarks import REQUIRED_STRATA, validate_public_benchmark_contract
+from neuroai_workbench.evaluation_benchmarks import (
+    APPROVED_D1_CANONICAL_SHA256,
+    BOUNDARY_DISPOSITIONS,
+    REQUIRED_BOUNDARY_DISPOSITIONS,
+    REQUIRED_STRATA,
+    validate_public_benchmark_contract,
+)
 
 RESOURCE_PACKAGE = "neuroai_workbench.resources.benchmarks"
 REFERENCE_NAME = "G1_D1_D2_DISPOSITION_REFERENCE.json"
@@ -12,7 +18,7 @@ EXPECTED_DISPOSITION_ID = "HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1"
 EXPECTED_DISPOSITION_CANONICAL_SHA256 = "ed6489fe1085b5aec1b594970dd1c574b57bd6bbd25a659643e9bd1b7b72d8ef"
 EXPECTED_OBSERVATORY_MAIN_SHA = "e12b0fdffcaa2c73c723574f8718241b9cd0cd89"
 EXPECTED_OBSERVATORY_BLOB_SHA = "ed42dc5b77cf011562db8c8c39bc9e71968fdb37"
-EXPECTED_D1_SHA256 = "7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb"
+EXPECTED_D1_SHA256 = APPROVED_D1_CANONICAL_SHA256
 EXPECTED_D2_SHA256 = "bd9451a5084485ef7a36251b0bc39d486fe0c2174636171a29ec03d7010cbf1d"
 
 
@@ -51,6 +57,7 @@ def test_d3_d4_packaged_drafts_bind_approved_g1_without_freezing_g2() -> None:
 
     for kind, contract in contracts.items():
         validate_public_benchmark_contract(contract)
+        assert contract["schema_version"] == "0.2"
         assert contract["state"] == "DRAFT_UNFROZEN"
         assert contract["g1_gate_state"] == "APPROVED_REFERENCE_PROVIDED"
         assert contract["g1_disposition_id"] == EXPECTED_DISPOSITION_ID
@@ -64,6 +71,11 @@ def test_d3_d4_packaged_drafts_bind_approved_g1_without_freezing_g2() -> None:
         assert contract["private_membership_location"] == "S3_CONTROLLED"
         assert contract["private_labels_location"] == "S3_CONTROLLED"
         assert set(contract["required_strata"]) == REQUIRED_STRATA[kind]
+        semantics = contract["boundary_semantics"]
+        assert semantics["source_d1_canonical_json_sha256"] == EXPECTED_D1_SHA256
+        assert set(semantics["allowed_dispositions"]) == BOUNDARY_DISPOSITIONS
+        assert set(semantics["required_g2_coverage_dispositions"]) == REQUIRED_BOUNDARY_DISPOSITIONS
+        assert semantics["binary_projection"]["projection_id"] == "D1_INCLUDE_EXCLUDE_BINARY_V1"
         assert contract["double_label_subset_required"] is True
 
 
@@ -74,6 +86,7 @@ def test_g1_reference_does_not_disclose_or_fabricate_s3_benchmark_payloads() -> 
         "labels",
         "gold_labels",
         "reviewer_labels",
+        "reviewer_dispositions",
         "adjudication_packets",
         "commitment_secret",
         "nonce",
