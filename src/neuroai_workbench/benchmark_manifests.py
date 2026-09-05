@@ -12,10 +12,12 @@ from neuroai_workbench.evaluation_benchmarks import (
     BOUNDARY_DISPOSITIONS,
     COMMITMENT_SCHEME,
     REQUIRED_BOUNDARY_DISPOSITIONS,
-    SCHEMA_VERSION as EVALUATION_SCHEMA_VERSION,
     BenchmarkContractError,
     canonical_json_bytes,
     validate_public_benchmark_contract,
+)
+from neuroai_workbench.evaluation_benchmarks import (
+    SCHEMA_VERSION as EVALUATION_SCHEMA_VERSION,
 )
 
 MANIFEST_SCHEMA_VERSION = "0.2"
