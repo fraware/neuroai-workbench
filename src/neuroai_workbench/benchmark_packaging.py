@@ -15,8 +15,13 @@ from typing import Any, cast
 from jsonschema import Draft202012Validator
 
 from neuroai_workbench.evaluation_benchmarks import (
+    ADJUDICATION_STATES,
     BENCHMARK_KINDS,
+    BOUNDARY_DISPOSITIONS,
+    RESOLVED_ADJUDICATION_STATES,
+    UNRESOLVED_ADJUDICATION_STATE,
     BenchmarkContractError,
+    validate_controlled_gold_rows,
     validate_prediction_rows,
     validate_public_benchmark_contract,
 )
@@ -56,7 +61,9 @@ _PACKAGED_LEAKAGE_KEYS = frozenset(
         "answer_key",
         "benchmark_membership",
         "claim_text",
+        "final_boundary_disposition",
         "gold",
+        "gold_boundary_disposition",
         "gold_label",
         "gold_labels",
         "ground_truth",
@@ -79,6 +86,7 @@ _PACKAGED_LEAKAGE_KEYS = frozenset(
         "raw_bytes",
         "raw_text",
         "reference_label",
+        "reviewer_dispositions",
         "reviewer_labels",
         "secret_nonce",
         "source_text",
@@ -152,6 +160,44 @@ def load_all_packaged_public_contracts() -> dict[str, dict[str, Any]]:
     return {kind: load_packaged_public_contract(kind) for kind in sorted(_CONTRACT_BY_KIND)}
 
 
+def _validate_synthetic_annotations(
+    annotations: list[Any],
+    *,
+    fixture_id: str,
+    adjudication_state: str,
+    final_disposition: Any,
+) -> None:
+    if not annotations:
+        raise BenchmarkContractError("Synthetic fixture requires human_annotations")
+    dispositions: list[str] = []
+    for index, annotation in enumerate(annotations):
+        if not isinstance(annotation, Mapping):
+            raise BenchmarkContractError(f"human_annotations[{index}] must be an object")
+        if "label" in annotation:
+            raise BenchmarkContractError(
+                f"human_annotations[{index}] uses legacy label; boundary_disposition is required"
+            )
+        annotator_id = annotation.get("annotator_id")
+        if not isinstance(annotator_id, str) or not annotator_id:
+            raise BenchmarkContractError(f"human_annotations[{index}] requires annotator_id")
+        disposition = annotation.get("boundary_disposition")
+        if disposition not in BOUNDARY_DISPOSITIONS:
+            raise BenchmarkContractError(
+                f"human_annotations[{index}] boundary_disposition must preserve the D1 four-way domain"
+            )
+        dispositions.append(str(disposition))
+
+    if adjudication_state == "AGREE":
+        if len(set(dispositions)) != 1 or dispositions[0] != final_disposition:
+            raise BenchmarkContractError(f"Synthetic AGREE adjudication for {fixture_id} must match all reviewers")
+    elif adjudication_state == UNRESOLVED_ADJUDICATION_STATE:
+        if len(set(dispositions)) < 2 or final_disposition is not None:
+            raise BenchmarkContractError(
+                f"Synthetic unresolved disagreement for {fixture_id} requires reviewer disagreement "
+                "and null final disposition"
+            )
+
+
 def validate_synthetic_fixture(fixture: Mapping[str, Any]) -> None:
     """Validate a synthetic fixture and keep model output as UNTRUSTED_DRAFT_ONLY."""
 
@@ -162,24 +208,44 @@ def validate_synthetic_fixture(fixture: Mapping[str, Any]) -> None:
     if fixture.get("benchmark_kind") not in BENCHMARK_KINDS:
         raise BenchmarkContractError(f"Synthetic fixture benchmark_kind must be one of {sorted(BENCHMARK_KINDS)}")
 
-    annotations = fixture.get("human_annotations")
-    if not isinstance(annotations, list) or not annotations:
-        raise BenchmarkContractError("Synthetic fixture requires human_annotations")
-    for index, annotation in enumerate(annotations):
-        if not isinstance(annotation, Mapping):
-            raise BenchmarkContractError(f"human_annotations[{index}] must be an object")
-        annotator_id = annotation.get("annotator_id")
-        if not isinstance(annotator_id, str) or not annotator_id:
-            raise BenchmarkContractError(f"human_annotations[{index}] requires annotator_id")
-        label = annotation.get("label")
-        if not isinstance(label, str) or not label:
-            raise BenchmarkContractError(f"human_annotations[{index}] requires a non-empty label")
+    fixture_id = fixture.get("fixture_id")
+    if not isinstance(fixture_id, str) or not fixture_id:
+        raise BenchmarkContractError("Synthetic fixture requires fixture_id")
 
     adjudication = fixture.get("adjudication")
     if not isinstance(adjudication, Mapping):
         raise BenchmarkContractError("Synthetic fixture requires an adjudication object")
     if adjudication.get("basis") != _HUMAN_ANNOTATION_BASIS:
         raise BenchmarkContractError("Synthetic adjudication must be human-annotation based")
+    state = adjudication.get("state")
+    if state not in ADJUDICATION_STATES:
+        raise BenchmarkContractError("Synthetic adjudication state must be controlled")
+    final_disposition = adjudication.get("final_boundary_disposition")
+    rationale = adjudication.get("rationale")
+
+    annotations = fixture.get("human_annotations")
+    if not isinstance(annotations, list):
+        raise BenchmarkContractError("Synthetic fixture requires human_annotations")
+    _validate_synthetic_annotations(
+        annotations,
+        fixture_id=fixture_id,
+        adjudication_state=str(state),
+        final_disposition=final_disposition,
+    )
+
+    validate_controlled_gold_rows(
+        [
+            {
+                "item_id": fixture_id,
+                "boundary_disposition": final_disposition,
+                "adjudication_state": state,
+                "rationale": rationale,
+            }
+        ]
+    )
+
+    if state in RESOLVED_ADJUDICATION_STATES and final_disposition not in BOUNDARY_DISPOSITIONS:
+        raise BenchmarkContractError("Resolved synthetic adjudication requires a final boundary disposition")
 
     model_outputs = fixture.get("model_outputs", [])
     if not isinstance(model_outputs, list):
@@ -193,16 +259,21 @@ def validate_synthetic_fixture(fixture: Mapping[str, Any]) -> None:
         model_id = output.get("model_id")
         if not isinstance(model_id, str) or not model_id:
             raise BenchmarkContractError(f"model_outputs[{index}] requires model_id")
-        prediction = output.get("prediction")
-        if not isinstance(prediction, str) or not prediction:
-            raise BenchmarkContractError(f"model_outputs[{index}] requires prediction")
+        if "prediction" in output:
+            raise BenchmarkContractError(
+                f"model_outputs[{index}] uses legacy prediction; boundary_prediction is required"
+            )
+        prediction = output.get("boundary_prediction")
+        if prediction not in BOUNDARY_DISPOSITIONS:
+            raise BenchmarkContractError(
+                f"model_outputs[{index}] boundary_prediction must preserve the D1 four-way domain"
+            )
         row: dict[str, Any] = {
-            "item_id": f"{fixture.get('fixture_id', 'SYN')}:{model_id}:{index}",
-            "prediction": prediction,
+            "item_id": f"{fixture_id}:{model_id}:{index}",
+            "boundary_prediction": prediction,
         }
-        if "probability_positive" in output:
-            row["probability_positive"] = output["probability_positive"]
-        # Reuse the selected-lineage prediction leakage guard without elevating drafts.
+        if "probability_include" in output:
+            row["probability_include"] = output["probability_include"]
         prediction_rows.append(row)
     if prediction_rows:
         validate_prediction_rows(prediction_rows)
