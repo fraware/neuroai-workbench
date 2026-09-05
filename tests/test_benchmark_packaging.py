@@ -122,8 +122,7 @@ def test_synthetic_fixtures_preserve_four_way_human_semantics_and_untrusted_mode
         assert fixture["benchmark_status"] == "SYNTHETIC_TEST_ONLY"
         assert fixture["adjudication"]["basis"] == "HUMAN_SYNTHETIC_ANNOTATIONS"
         assert all(
-            annotation["boundary_disposition"] in BOUNDARY_DISPOSITIONS
-            for annotation in fixture["human_annotations"]
+            annotation["boundary_disposition"] in BOUNDARY_DISPOSITIONS for annotation in fixture["human_annotations"]
         )
         assert all(output["authority"] == "UNTRUSTED_DRAFT_ONLY" for output in fixture["model_outputs"])
         assert all(output["boundary_prediction"] in BOUNDARY_DISPOSITIONS for output in fixture["model_outputs"])
