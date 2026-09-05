@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "benchmark_id": "PRE_G2_PATENT_V0_1",
   "benchmark_kind": "PATENT",
   "state": "DRAFT_UNFROZEN",
@@ -15,20 +15,56 @@
   "commitment_scheme": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1",
   "membership_commitment": null,
   "label_commitment": null,
+  "boundary_semantics": {
+    "source_d1_canonical_json_sha256": "7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb",
+    "allowed_dispositions": [
+      "ABSTAIN",
+      "BORDERLINE",
+      "EXCLUDE",
+      "INCLUDE"
+    ],
+    "required_g2_coverage_dispositions": [
+      "BORDERLINE",
+      "EXCLUDE",
+      "INCLUDE"
+    ],
+    "resolved_adjudication_states": [
+      "ADJUDICATED",
+      "AGREE"
+    ],
+    "unresolved_adjudication_state": "DISAGREE_UNADJUDICATED",
+    "rationale_required": true,
+    "binary_projection": {
+      "projection_id": "D1_INCLUDE_EXCLUDE_BINARY_V1",
+      "positive_disposition": "INCLUDE",
+      "negative_disposition": "EXCLUDE",
+      "excluded_human_dispositions": [
+        "ABSTAIN",
+        "BORDERLINE"
+      ],
+      "model_prediction_domain": [
+        "ABSTAIN",
+        "BORDERLINE",
+        "EXCLUDE",
+        "INCLUDE"
+      ],
+      "unresolved_adjudication_excluded_from_binary_metrics": true,
+      "model_borderline_on_human_include_counts_as_effective_false_negative": true,
+      "model_abstain_on_human_include_counts_as_effective_false_negative": true,
+      "missing_prediction_on_human_include_counts_as_effective_false_negative": true,
+      "probability_field": "probability_include"
+    }
+  },
   "required_strata": [
-    "BORDERLINE",
     "GRAY_CAPABILITY",
     "MISSING_OR_SHORT_ABSTRACT",
     "MULTI_JURISDICTION",
     "MULTI_YEAR",
     "MULTILINGUAL",
-    "NEGATIVE",
-    "POSITIVE",
     "SEMANTICALLY_DECEPTIVE_NEGATIVE"
   ],
   "double_label_subset_required": true,
   "adjudication_states": [
-    "ABSTAIN_UNRESOLVED",
     "ADJUDICATED",
     "AGREE",
     "DISAGREE_UNADJUDICATED"
