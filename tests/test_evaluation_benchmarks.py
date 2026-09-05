@@ -221,9 +221,7 @@ def test_prediction_contract_is_four_way_and_legacy_fields_fail_closed() -> None
     with pytest.raises(BenchmarkContractError, match="Legacy prediction"):
         validate_prediction_rows([{"item_id": "X", "prediction": "POSITIVE"}])
     with pytest.raises(BenchmarkContractError, match="Legacy probability_positive"):
-        validate_prediction_rows(
-            [{"item_id": "X", "boundary_prediction": "INCLUDE", "probability_positive": 0.9}]
-        )
+        validate_prediction_rows([{"item_id": "X", "boundary_prediction": "INCLUDE", "probability_positive": 0.9}])
     with pytest.raises(BenchmarkContractError, match="boundary_prediction"):
         validate_prediction_rows([{"item_id": "X", "boundary_prediction": "POSITIVE"}])
 
