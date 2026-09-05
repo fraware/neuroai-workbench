@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:neuroai:benchmark:patent:public-contract:v0.1",
+  "$id": "urn:neuroai:benchmark:patent:public-contract:v0.2",
   "title": "NeuroAI PRE-G2 Patent Public Benchmark Contract",
   "type": "object",
   "additionalProperties": false,
@@ -21,99 +21,319 @@
     "commitment_scheme",
     "membership_commitment",
     "label_commitment",
+    "boundary_semantics",
     "required_strata",
     "double_label_subset_required",
     "adjudication_states"
   ],
   "properties": {
-    "schema_version": {"const": "0.1"},
-    "benchmark_id": {"type": "string", "minLength": 1, "maxLength": 128},
-    "benchmark_kind": {"const": "PATENT"},
-    "state": {"enum": ["DRAFT_UNFROZEN", "FROZEN_COMMITMENTS_ONLY"]},
-    "g1_gate_state": {"enum": ["NOT_APPROVED", "APPROVED_REFERENCE_PROVIDED"]},
-    "g1_disposition_id": {"type": ["string", "null"], "minLength": 1},
+    "schema_version": {
+      "const": "0.2"
+    },
+    "benchmark_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "benchmark_kind": {
+      "const": "PATENT"
+    },
+    "state": {
+      "enum": [
+        "DRAFT_UNFROZEN",
+        "FROZEN_COMMITMENTS_ONLY"
+      ]
+    },
+    "g1_gate_state": {
+      "enum": [
+        "NOT_APPROVED",
+        "APPROVED_REFERENCE_PROVIDED"
+      ]
+    },
+    "g1_disposition_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
     "g1_disposition_sha256": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[0-9a-f]{64}$"
     },
-    "g2_passed": {"const": false},
-    "canonical_s2_authority": {"const": false},
-    "publication_authority": {"const": false},
-    "assessment_effect": {"enum": ["NONE", null]},
-    "private_membership_location": {"const": "S3_CONTROLLED"},
-    "private_labels_location": {"const": "S3_CONTROLLED"},
-    "commitment_scheme": {"const": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1"},
+    "g2_passed": {
+      "const": false
+    },
+    "canonical_s2_authority": {
+      "const": false
+    },
+    "publication_authority": {
+      "const": false
+    },
+    "assessment_effect": {
+      "enum": [
+        "NONE",
+        null
+      ]
+    },
+    "private_membership_location": {
+      "const": "S3_CONTROLLED"
+    },
+    "private_labels_location": {
+      "const": "S3_CONTROLLED"
+    },
+    "commitment_scheme": {
+      "const": "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1"
+    },
     "membership_commitment": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[0-9a-f]{64}$"
     },
     "label_commitment": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "boundary_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_d1_canonical_json_sha256",
+        "allowed_dispositions",
+        "required_g2_coverage_dispositions",
+        "resolved_adjudication_states",
+        "unresolved_adjudication_state",
+        "rationale_required",
+        "binary_projection"
+      ],
+      "properties": {
+        "source_d1_canonical_json_sha256": {
+          "const": "7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb"
+        },
+        "allowed_dispositions": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "enum": [
+              "INCLUDE",
+              "EXCLUDE",
+              "BORDERLINE",
+              "ABSTAIN"
+            ]
+          }
+        },
+        "required_g2_coverage_dispositions": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "enum": [
+              "INCLUDE",
+              "EXCLUDE",
+              "BORDERLINE"
+            ]
+          }
+        },
+        "resolved_adjudication_states": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "enum": [
+              "AGREE",
+              "ADJUDICATED"
+            ]
+          }
+        },
+        "unresolved_adjudication_state": {
+          "const": "DISAGREE_UNADJUDICATED"
+        },
+        "rationale_required": {
+          "const": true
+        },
+        "binary_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "projection_id",
+            "positive_disposition",
+            "negative_disposition",
+            "excluded_human_dispositions",
+            "model_prediction_domain",
+            "unresolved_adjudication_excluded_from_binary_metrics",
+            "model_borderline_on_human_include_counts_as_effective_false_negative",
+            "model_abstain_on_human_include_counts_as_effective_false_negative",
+            "missing_prediction_on_human_include_counts_as_effective_false_negative",
+            "probability_field"
+          ],
+          "properties": {
+            "projection_id": {
+              "const": "D1_INCLUDE_EXCLUDE_BINARY_V1"
+            },
+            "positive_disposition": {
+              "const": "INCLUDE"
+            },
+            "negative_disposition": {
+              "const": "EXCLUDE"
+            },
+            "excluded_human_dispositions": {
+              "type": "array",
+              "uniqueItems": true,
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "enum": [
+                  "BORDERLINE",
+                  "ABSTAIN"
+                ]
+              }
+            },
+            "model_prediction_domain": {
+              "type": "array",
+              "uniqueItems": true,
+              "minItems": 4,
+              "maxItems": 4,
+              "items": {
+                "enum": [
+                  "INCLUDE",
+                  "EXCLUDE",
+                  "BORDERLINE",
+                  "ABSTAIN"
+                ]
+              }
+            },
+            "unresolved_adjudication_excluded_from_binary_metrics": {
+              "const": true
+            },
+            "model_borderline_on_human_include_counts_as_effective_false_negative": {
+              "const": true
+            },
+            "model_abstain_on_human_include_counts_as_effective_false_negative": {
+              "const": true
+            },
+            "missing_prediction_on_human_include_counts_as_effective_false_negative": {
+              "const": true
+            },
+            "probability_field": {
+              "const": "probability_include"
+            }
+          }
+        }
+      }
     },
     "required_strata": {
       "type": "array",
       "uniqueItems": true,
-      "minItems": 9,
-      "maxItems": 9,
+      "minItems": 6,
+      "maxItems": 6,
       "items": {
         "enum": [
-          "POSITIVE",
-          "NEGATIVE",
-          "SEMANTICALLY_DECEPTIVE_NEGATIVE",
-          "BORDERLINE",
+          "GRAY_CAPABILITY",
           "MISSING_OR_SHORT_ABSTRACT",
-          "MULTI_YEAR",
           "MULTI_JURISDICTION",
+          "MULTI_YEAR",
           "MULTILINGUAL",
-          "GRAY_CAPABILITY"
+          "SEMANTICALLY_DECEPTIVE_NEGATIVE"
         ]
       }
     },
-    "double_label_subset_required": {"const": true},
+    "double_label_subset_required": {
+      "const": true
+    },
     "adjudication_states": {
       "type": "array",
       "uniqueItems": true,
-      "minItems": 4,
-      "maxItems": 4,
+      "minItems": 3,
+      "maxItems": 3,
       "items": {
         "enum": [
           "AGREE",
-          "DISAGREE_UNADJUDICATED",
           "ADJUDICATED",
-          "ABSTAIN_UNRESOLVED"
+          "DISAGREE_UNADJUDICATED"
         ]
       }
     }
   },
   "allOf": [
     {
-      "if": {"properties": {"state": {"const": "DRAFT_UNFROZEN"}}},
+      "if": {
+        "properties": {
+          "state": {
+            "const": "DRAFT_UNFROZEN"
+          }
+        }
+      },
       "then": {
         "properties": {
-          "membership_commitment": {"type": "null"},
-          "label_commitment": {"type": "null"}
+          "membership_commitment": {
+            "type": "null"
+          },
+          "label_commitment": {
+            "type": "null"
+          }
         }
       }
     },
     {
-      "if": {"properties": {"state": {"const": "FROZEN_COMMITMENTS_ONLY"}}},
+      "if": {
+        "properties": {
+          "state": {
+            "const": "FROZEN_COMMITMENTS_ONLY"
+          }
+        }
+      },
       "then": {
         "properties": {
-          "g1_gate_state": {"const": "APPROVED_REFERENCE_PROVIDED"},
-          "g1_disposition_id": {"type": "string", "minLength": 1},
-          "g1_disposition_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-          "membership_commitment": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-          "label_commitment": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          "g1_gate_state": {
+            "const": "APPROVED_REFERENCE_PROVIDED"
+          },
+          "g1_disposition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "g1_disposition_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "membership_commitment": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "label_commitment": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
         }
       }
     },
     {
-      "if": {"properties": {"g1_gate_state": {"const": "NOT_APPROVED"}}},
+      "if": {
+        "properties": {
+          "g1_gate_state": {
+            "const": "NOT_APPROVED"
+          }
+        }
+      },
       "then": {
         "properties": {
-          "g1_disposition_id": {"type": "null"},
-          "g1_disposition_sha256": {"type": "null"}
+          "g1_disposition_id": {
+            "type": "null"
+          },
+          "g1_disposition_sha256": {
+            "type": "null"
+          }
         }
       }
     }
