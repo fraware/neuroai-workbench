@@ -23,6 +23,9 @@ from neuroai_workbench.evaluation_benchmarks import (
     validate_prediction_rows,
 )
 
+EXPECTED_G1_DISPOSITION_ID = "HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1"
+EXPECTED_G1_DISPOSITION_SHA256 = "ed6489fe1085b5aec1b594970dd1c574b57bd6bbd25a659643e9bd1b7b72d8ef"
+
 
 def test_packaged_public_contracts_validate_and_remain_draft() -> None:
     contracts = load_all_packaged_public_contracts()
@@ -30,13 +33,17 @@ def test_packaged_public_contracts_validate_and_remain_draft() -> None:
     for kind, contract in contracts.items():
         assert contract["benchmark_kind"] == kind
         assert contract["state"] == "DRAFT_UNFROZEN"
-        assert contract["g1_gate_state"] == "NOT_APPROVED"
+        assert contract["g1_gate_state"] == "APPROVED_REFERENCE_PROVIDED"
+        assert contract["g1_disposition_id"] == EXPECTED_G1_DISPOSITION_ID
+        assert contract["g1_disposition_sha256"] == EXPECTED_G1_DISPOSITION_SHA256
         assert contract["g2_passed"] is False
         assert contract["canonical_s2_authority"] is False
         assert contract["publication_authority"] is False
         assert contract["assessment_effect"] == "NONE"
         assert contract["membership_commitment"] is None
         assert contract["label_commitment"] is None
+        assert contract["private_membership_location"] == "S3_CONTROLLED"
+        assert contract["private_labels_location"] == "S3_CONTROLLED"
         assert contract["commitment_scheme"] == "HMAC_SHA256_DOMAIN_CANONICAL_JSON_V1"
 
 

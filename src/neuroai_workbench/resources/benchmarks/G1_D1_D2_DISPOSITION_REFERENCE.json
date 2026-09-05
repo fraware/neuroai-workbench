@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "reference_type": "EXTERNAL_G1_DISPOSITION_REFERENCE",
+  "disposition_id": "HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1",
+  "decision": "APPROVE",
+  "source_repository": "fraware/neuroai-observatory-data",
+  "source_main_sha": "e12b0fdffcaa2c73c723574f8718241b9cd0cd89",
+  "source_path": "curation/HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1.json",
+  "source_git_blob_sha": "ed42dc5b77cf011562db8c8c39bc9e71968fdb37",
+  "source_canonical_json_sha256": "ed6489fe1085b5aec1b594970dd1c574b57bd6bbd25a659643e9bd1b7b72d8ef",
+  "canonicalization": "UTF8_JSON_SORT_KEYS_COMPACT_SEPARATORS_ALLOW_NAN_FALSE",
+  "d1_canonical_json_sha256": "7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb",
+  "d2_canonical_json_sha256": "bd9451a5084485ef7a36251b0bc39d486fe0c2174636171a29ec03d7010cbf1d",
+  "scope": "Reference only. This file mirrors the exact public identity of the attributable Observatory G1 disposition so PRE-G2 benchmark contracts can bind it offline. The authoritative human decision remains the Observatory disposition record and its underlying issue comment.",
+  "authority": {
+    "creates_g1_approval": false,
+    "g2_passed": false,
+    "canonical_s2_authority": false,
+    "publication_authority": false,
+    "assessment_effect": "NONE"
+  }
+}
