@@ -267,9 +267,7 @@ def _validate_boundary_semantics_contract(value: Any) -> None:
         raise BenchmarkContractError("binary_projection positive_disposition must be INCLUDE")
     if projection.get("negative_disposition") != BINARY_NEGATIVE_DISPOSITION:
         raise BenchmarkContractError("binary_projection negative_disposition must be EXCLUDE")
-    if not _exact_string_set(
-        projection.get("excluded_human_dispositions"), BINARY_EXCLUDED_HUMAN_DISPOSITIONS
-    ):
+    if not _exact_string_set(projection.get("excluded_human_dispositions"), BINARY_EXCLUDED_HUMAN_DISPOSITIONS):
         raise BenchmarkContractError("binary_projection must exclude human BORDERLINE and ABSTAIN from binary metrics")
     if not _exact_string_set(projection.get("model_prediction_domain"), BOUNDARY_DISPOSITIONS):
         raise BenchmarkContractError("binary_projection model_prediction_domain must preserve four-way routing")
@@ -411,9 +409,7 @@ def validate_prediction_rows(rows: Sequence[Mapping[str, Any]]) -> None:
         seen.add(item_id)
         prediction = row.get("boundary_prediction")
         if prediction not in BOUNDARY_DISPOSITIONS:
-            raise BenchmarkContractError(
-                f"boundary_prediction must be one of {sorted(BOUNDARY_DISPOSITIONS)}"
-            )
+            raise BenchmarkContractError(f"boundary_prediction must be one of {sorted(BOUNDARY_DISPOSITIONS)}")
         probability = row.get("probability_include")
         if probability is not None:
             if not isinstance(probability, (int, float)) or isinstance(probability, bool):
@@ -504,18 +500,14 @@ def _score_subset(
 ) -> dict[str, Any]:
     ids = list(item_ids)
     resolved_ids = [
-        item_id
-        for item_id in ids
-        if gold_by_id[item_id]["adjudication_state"] in RESOLVED_ADJUDICATION_STATES
+        item_id for item_id in ids if gold_by_id[item_id]["adjudication_state"] in RESOLVED_ADJUDICATION_STATES
     ]
     unresolved_ids = [
         item_id for item_id in ids if gold_by_id[item_id]["adjudication_state"] == UNRESOLVED_ADJUDICATION_STATE
     ]
 
     disposition_ids: dict[str, list[str]] = {
-        disposition: [
-            item_id for item_id in resolved_ids if gold_by_id[item_id]["boundary_disposition"] == disposition
-        ]
+        disposition: [item_id for item_id in resolved_ids if gold_by_id[item_id]["boundary_disposition"] == disposition]
         for disposition in sorted(BOUNDARY_DISPOSITIONS)
     }
     human_counts = {disposition: len(group) for disposition, group in disposition_ids.items()}
