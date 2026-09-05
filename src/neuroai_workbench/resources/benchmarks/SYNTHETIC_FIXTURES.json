@@ -1,6 +1,6 @@
 [
   {
-    "fixture_id": "SYN-PATENT-DECEPTIVE-NEGATIVE-001",
+    "fixture_id": "SYN-PATENT-DECEPTIVE-DISAGREEMENT-001",
     "benchmark_kind": "PATENT",
     "benchmark_status": "SYNTHETIC_TEST_ONLY",
     "synthetic": true,
@@ -8,27 +8,28 @@
     "jurisdiction": "SYNTHETIC-JURISDICTION",
     "text_availability": "FULL",
     "strata": ["SEMANTICALLY_DECEPTIVE_NEGATIVE"],
-    "text": "Synthetic patent-like record mentioning neural terminology without a NeuroAI capability claim.",
+    "text": "Synthetic patent-like record mentioning neural terminology with deliberately ambiguous boundary evidence.",
     "human_annotations": [
-      {"annotator_id": "SYNTHETIC-HUMAN-A", "label": "NEGATIVE"},
-      {"annotator_id": "SYNTHETIC-HUMAN-B", "label": "UNRESOLVED"}
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "boundary_disposition": "EXCLUDE"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "boundary_disposition": "INCLUDE"}
     ],
     "adjudication": {
-      "status": "DISAGREE_UNADJUDICATED",
+      "state": "DISAGREE_UNADJUDICATED",
       "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
-      "final_label": null
+      "final_boundary_disposition": null,
+      "rationale": "Synthetic unresolved reviewer disagreement retained without coercion."
     },
     "model_outputs": [
       {
         "model_id": "SYNTHETIC-MODEL-A",
-        "prediction": "POSITIVE",
-        "probability_positive": 0.71,
+        "boundary_prediction": "INCLUDE",
+        "probability_include": 0.71,
         "authority": "UNTRUSTED_DRAFT_ONLY"
       }
     ]
   },
   {
-    "fixture_id": "SYN-PRODUCT-AMBIGUOUS-BIOSIGNAL-001",
+    "fixture_id": "SYN-PRODUCT-HUMAN-ABSTAIN-001",
     "benchmark_kind": "PRODUCT",
     "benchmark_status": "SYNTHETIC_TEST_ONLY",
     "synthetic": true,
@@ -36,21 +37,79 @@
     "jurisdiction": "SYNTHETIC-JURISDICTION",
     "text_availability": "TRANSLATED",
     "strata": ["AMBIGUOUS_BIOSIGNAL"],
-    "text": "Description synthetique d'un produit de biosignal dont la relation au NeuroAI reste indeterminee.",
+    "text": "Description synthetique d'un produit de biosignal avec des preuves volontairement insuffisantes.",
     "human_annotations": [
-      {"annotator_id": "SYNTHETIC-HUMAN-A", "label": "UNRESOLVED"},
-      {"annotator_id": "SYNTHETIC-HUMAN-B", "label": "UNRESOLVED"}
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "boundary_disposition": "ABSTAIN"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "boundary_disposition": "ABSTAIN"}
     ],
     "adjudication": {
-      "status": "ABSTAIN_UNRESOLVED",
+      "state": "AGREE",
       "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
-      "final_label": null
+      "final_boundary_disposition": "ABSTAIN",
+      "rationale": "Synthetic human abstention because the fixture intentionally withholds sufficient attributable evidence."
     },
     "model_outputs": [
       {
         "model_id": "SYNTHETIC-MODEL-A",
-        "prediction": "POSITIVE",
-        "probability_positive": 0.54,
+        "boundary_prediction": "BORDERLINE",
+        "probability_include": 0.54,
+        "authority": "UNTRUSTED_DRAFT_ONLY"
+      }
+    ]
+  },
+  {
+    "fixture_id": "SYN-PATENT-HUMAN-BORDERLINE-001",
+    "benchmark_kind": "PATENT",
+    "benchmark_status": "SYNTHETIC_TEST_ONLY",
+    "synthetic": true,
+    "language": "de",
+    "jurisdiction": "SYNTHETIC-JURISDICTION",
+    "text_availability": "SHORT",
+    "strata": ["GRAY_CAPABILITY", "MULTILINGUAL"],
+    "text": "Synthetischer Grenzfall fuer eine NeuroAI-nahe Faehigkeit.",
+    "human_annotations": [
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "boundary_disposition": "BORDERLINE"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "boundary_disposition": "BORDERLINE"}
+    ],
+    "adjudication": {
+      "state": "AGREE",
+      "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
+      "final_boundary_disposition": "BORDERLINE",
+      "rationale": "Synthetic borderline disposition with recorded rationale, kept outside the binary projection."
+    },
+    "model_outputs": [
+      {
+        "model_id": "SYNTHETIC-MODEL-A",
+        "boundary_prediction": "BORDERLINE",
+        "authority": "UNTRUSTED_DRAFT_ONLY"
+      }
+    ]
+  },
+  {
+    "fixture_id": "SYN-PRODUCT-HUMAN-INCLUDE-MODEL-ABSTAIN-001",
+    "benchmark_kind": "PRODUCT",
+    "benchmark_status": "SYNTHETIC_TEST_ONLY",
+    "synthetic": true,
+    "language": "en",
+    "jurisdiction": "SYNTHETIC-JURISDICTION",
+    "text_availability": "FULL",
+    "strata": ["RESEARCH"],
+    "text": "Synthetic product case with sufficient evidence for inclusion under the controlled boundary.",
+    "human_annotations": [
+      {"annotator_id": "SYNTHETIC-HUMAN-A", "boundary_disposition": "INCLUDE"},
+      {"annotator_id": "SYNTHETIC-HUMAN-B", "boundary_disposition": "INCLUDE"}
+    ],
+    "adjudication": {
+      "state": "ADJUDICATED",
+      "basis": "HUMAN_SYNTHETIC_ANNOTATIONS",
+      "final_boundary_disposition": "INCLUDE",
+      "rationale": "Synthetic resolved inclusion used to test model abstention accounting."
+    },
+    "model_outputs": [
+      {
+        "model_id": "SYNTHETIC-MODEL-A",
+        "boundary_prediction": "ABSTAIN",
+        "probability_include": 0.49,
         "authority": "UNTRUSTED_DRAFT_ONLY"
       }
     ]
