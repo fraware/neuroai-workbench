@@ -12,6 +12,7 @@ SOURCE_ID = "SRC-PR-002"
 NCT_ID = "NCT04676854"
 ORIGIN = "https://clinicaltrials.gov"
 PROGRAMME_ID = "PHASE3-CTGOV-EXTERNAL-PROOF-V1"
+UPLOAD_ACTION = "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
 
 
 def _workflow_text() -> str:
@@ -103,14 +104,16 @@ def test_phase3_recovery_suite_and_authority_boundaries_are_enforced() -> None:
 
 def test_only_sanitized_bundle_is_uploaded_and_repository_must_remain_clean() -> None:
     text = _workflow_text()
-    marker = "- name: Upload sanitized Phase 3 proof bundle only\n"
+    marker = "      - name: Upload sanitized Phase 3 proof bundle only\n"
     assert text.count(marker) == 1
     before, separator, upload_body = text.partition(marker)
     assert separator == marker
     assert before
     assert upload_body
-    assert "\n        - name:" not in upload_body
-    assert "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a" in upload_body
+    assert "\n      - name:" not in upload_body
+    assert text.count("actions/upload-artifact@") == 1
+    assert text.count(UPLOAD_ACTION) == 1
+    assert UPLOAD_ACTION in upload_body
     assert "path: ${{ runner.temp }}/neuroai-phase3/proof-bundle" in upload_body
     assert "quarantine" not in upload_body
     assert 'test ! -e "$BUNDLE/quarantine"' in text
