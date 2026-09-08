@@ -1,0 +1,371 @@
+name: Phase 3 external proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_external_live:
+        description: "Type AUTHORIZE_ONE_CT_GOV_PHASE3_LIVE_REQUEST to authorize one bounded live reference-source proof"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase3-external-proof
+  cancel-in-progress: false
+
+jobs:
+  proof:
+    name: controlled-external-proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact dispatched Workbench commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+      - name: Set up controlled Python runtime
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Enforce manual main-branch authorization boundary
+        env:
+          CONFIRMATION: ${{ inputs.confirm_external_live }}
+        run: |
+          test "$GITHUB_EVENT_NAME" = "workflow_dispatch"
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$CONFIRMATION" = "AUTHORIZE_ONE_CT_GOV_PHASE3_LIVE_REQUEST"
+      - name: Install exact hash-locked Workbench runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements/constraints.txt
+          python -m pip install --no-deps -e .
+      - name: Build run-scoped acquisition policy and local authorization
+        run: |
+          ROOT="$RUNNER_TEMP/neuroai-phase3"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/proof" "$ROOT/quarantine"
+          export PHASE3_ROOT="$ROOT"
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          from neuroai_workbench.collector.acquisition_policy import (
+              FALLBACK_FORBID,
+              ONLINE_REQUIRED,
+              REPLAY_ONLY,
+              build_acquisition_policy,
+          )
+          from neuroai_workbench.collector.authorization import build_authorization_packet
+          from neuroai_workbench.util import atomic_write_json, canonical_json_bytes, sha256_bytes
+
+          root = Path(os.environ["PHASE3_ROOT"])
+          proof = root / "proof"
+          run_id = os.environ["GITHUB_RUN_ID"]
+          run_attempt = os.environ["GITHUB_RUN_ATTEMPT"]
+          actor = os.environ["GITHUB_ACTOR"]
+          now_dt = datetime.now(timezone.utc).replace(microsecond=0)
+          expires_dt = now_dt + timedelta(hours=1)
+          now = now_dt.isoformat().replace("+00:00", "Z")
+          expires = expires_dt.isoformat().replace("+00:00", "Z")
+
+          programme_id = "PHASE3-CTGOV-EXTERNAL-PROOF-V1"
+          source_id = "SRC-PR-002"
+          monitor_id = "MON-PHASE3-CTGOV-EXTERNAL-V1"
+          nct_id = "NCT04676854"
+          origin = "https://clinicaltrials.gov"
+
+          policy = build_acquisition_policy(
+              policy_id=f"P3-EXT-{run_id}-{run_attempt}",
+              programme_id=programme_id,
+              approved_by=f"github:{actor}",
+              approved_at=now,
+              expires_at=expires,
+              source_rules=[
+                  {
+                      "source_id": source_id,
+                      "execution_modes": [ONLINE_REQUIRED, REPLAY_ONLY],
+                      "allowed_origins": [origin],
+                      "fallback_policy": FALLBACK_FORBID,
+                  }
+              ],
+          )
+          authorization = build_authorization_packet(
+              authorization_id=f"P3-EXT-AUTH-{run_id}-{run_attempt}",
+              authorized_by=f"github:{actor}",
+              purpose="Manually dispatched bounded Phase 3 ClinicalTrials.gov external proof for Workbench issue 287",
+              network_mode="AUTHORIZED_NETWORK",
+              network_permitted=True,
+              authorized_at=now,
+              expires_at=expires,
+          )
+          registry = {
+              "schema_version": "1",
+              "scope": "PHASE3_BOUNDED_REFERENCE_SOURCE",
+              "programme_id": programme_id,
+              "source_id": source_id,
+              "monitor_id": monitor_id,
+              "nct_id": nct_id,
+              "origin": origin,
+              "boundary": "One controlled ClinicalTrials.gov continuity anchor for operational proof only; not source truth, clinical validity, S2 admission, or publication authority.",
+          }
+          configuration = {
+              "schema_version": "1",
+              "collector_version": "0.3.0.dev0-phase3-proof",
+              "max_attempts": 3,
+              "scheduler": {"max_workers": 1, "max_workers_per_host": 1},
+              "programme_id": programme_id,
+              "source_id": source_id,
+              "nct_id": nct_id,
+              "boundary": "Run-identity configuration binding for one noncanonical Phase 3 proof only.",
+          }
+          registry_sha = sha256_bytes(canonical_json_bytes(registry))
+          configuration_sha = sha256_bytes(canonical_json_bytes(configuration))
+
+          atomic_write_json(proof / "acquisition-policy.json", policy)
+          atomic_write_json(proof / "authorization.json", authorization)
+          atomic_write_json(proof / "bounded-registry.json", registry)
+          atomic_write_json(proof / "collector-configuration-binding.json", configuration)
+
+          env_path = Path(os.environ["GITHUB_ENV"])
+          with env_path.open("a", encoding="utf-8") as handle:
+              for key, value in {
+                  "PHASE3_ROOT": str(root),
+                  "PHASE3_PROGRAMME_ID": programme_id,
+                  "PHASE3_SOURCE_ID": source_id,
+                  "PHASE3_MONITOR_ID": monitor_id,
+                  "PHASE3_NCT_ID": nct_id,
+                  "PHASE3_ORIGIN": origin,
+                  "PHASE3_AS_OF": now_dt.date().isoformat(),
+                  "PHASE3_REGISTRY_SHA256": registry_sha,
+                  "PHASE3_CONFIGURATION_SHA256": configuration_sha,
+                  "PHASE3_POLICY_SHA256": str(policy["policy_sha256"]),
+                  "PHASE3_AUTHORIZATION_SHA256": str(authorization["authorization_sha256"]),
+              }.items():
+                  handle.write(f"{key}={value}\n")
+          print(
+              json.dumps(
+                  {
+                      "programme_id": programme_id,
+                      "source_id": source_id,
+                      "nct_id": nct_id,
+                      "origin": origin,
+                      "policy_sha256": policy["policy_sha256"],
+                      "authorization_sha256": authorization["authorization_sha256"],
+                      "registry_sha256": registry_sha,
+                      "configuration_sha256": configuration_sha,
+                      "authorization_boundary": authorization["boundary"],
+                      "policy_boundary": policy["boundary"],
+                  },
+                  sort_keys=True,
+              )
+          )
+          PY
+      - name: Execute one explicitly authorized ClinicalTrials.gov live capture
+        run: |
+          export NEUROAI_LIVE_COLLECTION=1
+          export NEUROAI_LIVE_COLLECTION_AUTHORIZATION_JSON="$(cat "$PHASE3_ROOT/proof/authorization.json")"
+          python scripts/run_online_first_phase3_proof.py live \
+            --policy "$PHASE3_ROOT/proof/acquisition-policy.json" \
+            --programme-id "$PHASE3_PROGRAMME_ID" \
+            --source-id "$PHASE3_SOURCE_ID" \
+            --monitor-id "$PHASE3_MONITOR_ID" \
+            --nct-id "$PHASE3_NCT_ID" \
+            --plan-id "P3-LIVE-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --as-of "$PHASE3_AS_OF" \
+            --registry-sha256 "$PHASE3_REGISTRY_SHA256" \
+            --configuration-hash "$PHASE3_CONFIGURATION_SHA256" \
+            --quarantine-root "$PHASE3_ROOT/quarantine" \
+            --proof-output-dir "$PHASE3_ROOT/proof/live" \
+            --confirm-noncanonical-output \
+            --execute-live
+      - name: Bind exact live result identity
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["PHASE3_ROOT"])
+          live = json.loads((root / "proof/live/phase3-live-run.json").read_text(encoding="utf-8"))
+          if live["source_id"] != os.environ["PHASE3_SOURCE_ID"]:
+              raise SystemExit("live source identity mismatch")
+          if live["source_accountability_coverage"] != 1.0 or live["target_execution_coverage"] != 1.0:
+              raise SystemExit("bounded live proof coverage is incomplete")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"PHASE3_RESULT_ID={live['result_id']}\n")
+              handle.write(f"PHASE3_LIVE_RUN_ID={live['run_id']}\n")
+          print(json.dumps({"result_id": live["result_id"], "live_run_id": live["run_id"]}, sort_keys=True))
+          PY
+      - name: Replay the exact captured result with zero network I/O
+        run: |
+          python scripts/run_online_first_phase3_proof.py replay \
+            --policy "$PHASE3_ROOT/proof/acquisition-policy.json" \
+            --programme-id "$PHASE3_PROGRAMME_ID" \
+            --source-id "$PHASE3_SOURCE_ID" \
+            --monitor-id "$PHASE3_MONITOR_ID" \
+            --nct-id "$PHASE3_NCT_ID" \
+            --plan-id "P3-REPLAY-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --as-of "$PHASE3_AS_OF" \
+            --registry-sha256 "$PHASE3_REGISTRY_SHA256" \
+            --configuration-hash "$PHASE3_CONFIGURATION_SHA256" \
+            --quarantine-root "$PHASE3_ROOT/quarantine" \
+            --proof-output-dir "$PHASE3_ROOT/proof/replay" \
+            --confirm-noncanonical-output \
+            --result-id "$PHASE3_RESULT_ID"
+      - name: Validate replay identity and zero-attempt accounting
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["PHASE3_ROOT"])
+          replay = json.loads((root / "proof/replay/phase3-replay-run.json").read_text(encoding="utf-8"))
+          if replay["result_id"] != os.environ["PHASE3_RESULT_ID"]:
+              raise SystemExit("replay result identity mismatch")
+          if replay["expected_result_id"] != os.environ["PHASE3_RESULT_ID"]:
+              raise SystemExit("replay expected-result binding mismatch")
+          if replay["collection_attempts"] != 0:
+              raise SystemExit("replay performed collection attempts")
+          if replay["source_accountability_coverage"] != 1.0 or replay["target_execution_coverage"] != 1.0:
+              raise SystemExit("bounded replay proof coverage is incomplete")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"PHASE3_REPLAY_RUN_ID={replay['run_id']}\n")
+          print(json.dumps({"result_id": replay["result_id"], "replay_run_id": replay["run_id"]}, sort_keys=True))
+          PY
+      - name: Build and verify exact live-replay runtime proof
+        run: |
+          python scripts/run_online_first_phase3_proof.py build \
+            --policy "$PHASE3_ROOT/proof/acquisition-policy.json" \
+            --programme-id "$PHASE3_PROGRAMME_ID" \
+            --source-id "$PHASE3_SOURCE_ID" \
+            --live-run-id "$PHASE3_LIVE_RUN_ID" \
+            --replay-run-id "$PHASE3_REPLAY_RUN_ID" \
+            --result-id "$PHASE3_RESULT_ID" \
+            --quarantine-root "$PHASE3_ROOT/quarantine" \
+            --output "$PHASE3_ROOT/proof/phase3-runtime-proof.json"
+          python scripts/run_online_first_phase3_proof.py verify \
+            --proof "$PHASE3_ROOT/proof/phase3-runtime-proof.json" \
+            --quarantine-root "$PHASE3_ROOT/quarantine"
+      - name: Enforce proof semantic claims
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["PHASE3_ROOT"])
+          proof = json.loads((root / "proof/phase3-runtime-proof.json").read_text(encoding="utf-8"))
+          semantic = proof["semantic"]
+          if semantic["projection"]["live_replay_equivalent"] is not True:
+              raise SystemExit("live/replay projection equivalence was not established")
+          if semantic["claims"]["replay_zero_network_verified"] is not True:
+              raise SystemExit("zero-network replay was not verified")
+          if semantic["claims"]["canonical_s2_mutation_performed"] is not False:
+              raise SystemExit("runtime proof reports canonical S2 mutation")
+          if semantic["replay"]["collection_attempts"] != 0:
+              raise SystemExit("runtime proof replay accounting is nonzero")
+          if semantic["capture"]["result_id"] != os.environ["PHASE3_RESULT_ID"]:
+              raise SystemExit("runtime proof capture identity mismatch")
+          print(
+              json.dumps(
+                  {
+                      "proof_id": proof["proof_id"],
+                      "proof_semantic_sha256": proof["proof_semantic_sha256"],
+                      "live_replay_equivalent": True,
+                      "replay_zero_network_verified": True,
+                  },
+                  sort_keys=True,
+              )
+          )
+          PY
+      - name: Re-run exact Phase 3 interruption and recovery adversarial suite
+        run: python -m pytest tests/unit/test_online_first_runtime_proof.py -q
+      - name: Assemble sanitized proof bundle and prove repository non-mutation
+        run: |
+          test -z "$(git status --porcelain)"
+          BUNDLE="$PHASE3_ROOT/proof-bundle"
+          mkdir -p "$BUNDLE"
+          cp "$PHASE3_ROOT/proof/acquisition-policy.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/authorization.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/bounded-registry.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/collector-configuration-binding.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/live/phase3-live-run.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/replay/phase3-replay-run.json" "$BUNDLE/"
+          cp "$PHASE3_ROOT/proof/phase3-runtime-proof.json" "$BUNDLE/"
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from pathlib import Path
+
+          from neuroai_workbench.util import atomic_write_json
+
+          root = Path(os.environ["PHASE3_ROOT"])
+          bundle = root / "proof-bundle"
+          proof = json.loads((bundle / "phase3-runtime-proof.json").read_text(encoding="utf-8"))
+          attestation = {
+              "schema_version": "1",
+              "kind": "PHASE3_EXTERNAL_PROOF_EXECUTION_ATTESTATION",
+              "github_event_name": os.environ["GITHUB_EVENT_NAME"],
+              "github_actor": os.environ["GITHUB_ACTOR"],
+              "github_run_id": os.environ["GITHUB_RUN_ID"],
+              "github_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "github_sha": os.environ["GITHUB_SHA"],
+              "github_ref": os.environ["GITHUB_REF"],
+              "programme_id": os.environ["PHASE3_PROGRAMME_ID"],
+              "source_id": os.environ["PHASE3_SOURCE_ID"],
+              "nct_id": os.environ["PHASE3_NCT_ID"],
+              "origin": os.environ["PHASE3_ORIGIN"],
+              "policy_sha256": os.environ["PHASE3_POLICY_SHA256"],
+              "authorization_sha256": os.environ["PHASE3_AUTHORIZATION_SHA256"],
+              "registry_sha256": os.environ["PHASE3_REGISTRY_SHA256"],
+              "configuration_sha256": os.environ["PHASE3_CONFIGURATION_SHA256"],
+              "result_id": os.environ["PHASE3_RESULT_ID"],
+              "live_run_id": os.environ["PHASE3_LIVE_RUN_ID"],
+              "replay_run_id": os.environ["PHASE3_REPLAY_RUN_ID"],
+              "proof_id": proof["proof_id"],
+              "proof_semantic_sha256": proof["proof_semantic_sha256"],
+              "repository_worktree_clean": True,
+              "capture_bytes_uploaded": False,
+              "quarantine_directory_uploaded": False,
+              "canonical_s2_path_invoked_by_workflow": False,
+              "authority": {
+                  "phase3_reviewed_complete": False,
+                  "phase4_authorized": False,
+                  "g0_passed": False,
+                  "g2_passed": False,
+                  "canonical_s2_authority": False,
+                  "publication_authority": False,
+                  "assessment_effect": "NONE",
+              },
+              "boundary": "This attestation records one manually dispatched bounded operational proof execution. It does not itself complete Phase 3 review, authorize Phase 4, establish source or clinical truth, pass G0/G2, mutate canonical S2, authorize publication, or alter assessment authority.",
+          }
+          atomic_write_json(bundle / "execution-attestation.json", attestation)
+          PY
+          (
+            cd "$BUNDLE"
+            find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          )
+          test ! -e "$BUNDLE/quarantine"
+          test -z "$(git status --porcelain)"
+      - name: Upload sanitized Phase 3 proof bundle only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: phase3-external-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/neuroai-phase3/proof-bundle
+          retention-days: 90
+          if-no-files-found: error
