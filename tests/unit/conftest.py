@@ -4,6 +4,7 @@ import json
 
 import pytest
 
+from neuroai_workbench.collector import service as collector_service
 from neuroai_workbench.collector.authorization import LIVE_AUTHORIZATION_ENV, build_authorization_packet
 
 _LEGACY_SHADOW_LIVE_MODULES = frozenset(
@@ -13,6 +14,8 @@ _LEGACY_SHADOW_LIVE_MODULES = frozenset(
         "test_shadow_live_collection.py",
     }
 )
+_PHASE3_RUNTIME_PROOF_MODULE = "test_online_first_runtime_proof.py"
+_PHASE3_SYNTHETIC_CAPTURE_TIME = "2026-09-05T12:00:00Z"
 
 
 @pytest.fixture(autouse=True)
@@ -42,3 +45,21 @@ def _bind_live_authorization_for_legacy_shadow_tests(
         LIVE_AUTHORIZATION_ENV,
         json.dumps(packet, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
     )
+
+
+@pytest.fixture(autouse=True)
+def _freeze_phase3_synthetic_capture_clock(
+    request: pytest.FixtureRequest,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Keep the Phase 3 synthetic live capture inside its declared replay cutoff.
+
+    The proof tests intentionally use a historical ``as_of`` so recurrence is
+    deterministic. Collector results otherwise receive wall-clock ``retrieved_at``
+    values, which would make the unchanged fixture expire as calendar time moves
+    forward. This patch is restricted to the Phase 3 test seam; production and
+    ordinary replay clocks remain untouched.
+    """
+    if request.path.name != _PHASE3_RUNTIME_PROOF_MODULE:
+        return
+    monkeypatch.setattr(collector_service, "utc_now", lambda: _PHASE3_SYNTHETIC_CAPTURE_TIME)
