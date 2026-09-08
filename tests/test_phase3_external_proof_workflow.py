@@ -56,8 +56,8 @@ def test_external_proof_identity_is_fixed_to_governed_clinicaltrials_anchor() ->
     assert 'source_id = "SRC-PR-002"' in text
     assert 'nct_id = "NCT04676854"' in text
     assert 'origin = "https://clinicaltrials.gov"' in text
-    assert "--nct-id \"$PHASE3_NCT_ID\"" in text
-    assert "--source-id \"$PHASE3_SOURCE_ID\"" in text
+    assert '--nct-id "$PHASE3_NCT_ID"' in text
+    assert '--source-id "$PHASE3_SOURCE_ID"' in text
     assert "query.term" not in text
 
 
@@ -72,8 +72,8 @@ def test_live_network_requires_both_policy_and_local_authorization_gates() -> No
     assert "NEUROAI_LIVE_COLLECTION_AUTHORIZATION_JSON" in text
     assert "--execute-live" in text
     assert "--confirm-noncanonical-output" in text
-    assert "approved_by=f\"github:{actor}\"" in text
-    assert "authorized_by=f\"github:{actor}\"" in text
+    assert 'approved_by=f"github:{actor}"' in text
+    assert 'authorized_by=f"github:{actor}"' in text
     assert "GITHUB_RUN_ID" in text
     assert "GITHUB_RUN_ATTEMPT" in text
 
