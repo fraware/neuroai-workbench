@@ -98,6 +98,17 @@
       ]
     },
     {
+      "path": ".github/workflows/phase3-external-proof.yml",
+      "name": "Phase 3 external proof",
+      "pull_request_required": false,
+      "required_trigger_markers": ["  workflow_dispatch:"],
+      "permissions": {"contents": "read"},
+      "forbid_secrets": true,
+      "jobs": [
+        {"id": "proof", "name": "controlled-external-proof", "required_contexts": []}
+      ]
+    },
+    {
       "path": ".github/workflows/release.yml",
       "name": "Release",
       "pull_request_required": false,
