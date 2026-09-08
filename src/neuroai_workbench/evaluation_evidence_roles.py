@@ -259,7 +259,9 @@ def _validate_metric_families(value: Any, *, role: str) -> None:
             f"metric_families contains metrics unsupported for {role}: {sorted(unsupported)}"
         )
     if role == CHALLENGE_CONSTRUCT_COVERAGE and items & POPULATION_ONLY_METRIC_FAMILIES:
-        raise EvaluationEvidenceRoleError("Challenge components cannot report prevalence or population retrieval recall")
+        raise EvaluationEvidenceRoleError(
+            "Challenge components cannot report prevalence or population retrieval recall"
+        )
 
 
 def _validate_population_component(component: Mapping[str, Any]) -> None:
@@ -268,7 +270,9 @@ def _validate_population_component(component: Mapping[str, Any]) -> None:
     if component.get("evidence_role") != POPULATION_PROBABILITY_AUDIT:
         raise EvaluationEvidenceRoleError(f"population component evidence_role must be {POPULATION_PROBABILITY_AUDIT}")
     if component.get("population_generalizable") is not True:
-        raise EvaluationEvidenceRoleError("Probability-audit components must explicitly set population_generalizable=true")
+        raise EvaluationEvidenceRoleError(
+            "Probability-audit components must explicitly set population_generalizable=true"
+        )
     _validate_metric_families(component.get("metric_families"), role=POPULATION_PROBABILITY_AUDIT)
     _require_string_list(component.get("population_estimands"), "population_estimands")
     _require_nonempty_string(component, "denominator_semantics")
@@ -295,9 +299,7 @@ def _validate_challenge_component(component: Mapping[str, Any], *, benchmark_kin
     _require_exact_fields(component, _CHALLENGE_COMPONENT_FIELDS, "challenge component")
     _require_nonempty_string(component, "component_id")
     if component.get("evidence_role") != CHALLENGE_CONSTRUCT_COVERAGE:
-        raise EvaluationEvidenceRoleError(
-            f"challenge component evidence_role must be {CHALLENGE_CONSTRUCT_COVERAGE}"
-        )
+        raise EvaluationEvidenceRoleError(f"challenge component evidence_role must be {CHALLENGE_CONSTRUCT_COVERAGE}")
     if component.get("population_generalizable") is not False:
         raise EvaluationEvidenceRoleError("Challenge components must explicitly set population_generalizable=false")
     _validate_metric_families(component.get("metric_families"), role=CHALLENGE_CONSTRUCT_COVERAGE)
@@ -373,9 +375,7 @@ def validate_evaluation_plan(plan: Mapping[str, Any]) -> None:
     if plan.get("component_pooling_policy") != NO_CROSS_ROLE_POOLING:
         raise EvaluationEvidenceRoleError(f"component_pooling_policy must be {NO_CROSS_ROLE_POOLING}")
     if plan.get("development_tuning_boundary") != DEV_TUNING_BOUNDARY:
-        raise EvaluationEvidenceRoleError(
-            "development_tuning_boundary must preserve held-out isolation from tuning"
-        )
+        raise EvaluationEvidenceRoleError("development_tuning_boundary must preserve held-out isolation from tuning")
     if plan.get("s3_design_custody") is not True:
         raise EvaluationEvidenceRoleError("Evaluation design evidence must remain in controlled S3")
     _require_no_authority_escalation(plan)
@@ -453,9 +453,7 @@ def validate_component_run_binding(
     _require_nonempty_string(binding, "binding_id")
     if binding.get("run_manifest_sha256") != manifest_identity_sha256(run_manifest):
         raise EvaluationEvidenceRoleError("run_manifest_sha256 does not bind the supplied run manifest")
-    if binding.get("freeze_evaluation_binding_sha256") != evidence_binding_identity_sha256(
-        freeze_evaluation_binding
-    ):
+    if binding.get("freeze_evaluation_binding_sha256") != evidence_binding_identity_sha256(freeze_evaluation_binding):
         raise EvaluationEvidenceRoleError(
             "freeze_evaluation_binding_sha256 does not bind the supplied freeze evaluation binding"
         )
