@@ -37,6 +37,7 @@ from neuroai_workbench.collector.runtime_proof import (
     verify_runtime_proof,
     write_runtime_proof,
 )
+from neuroai_workbench.collector.runtime_proof_temporal import require_phase3_result_eligible_at_cutoff
 from neuroai_workbench.collector.scheduler import SchedulerConfig
 from neuroai_workbench.util import atomic_write_json, load_json, utc_now
 
@@ -165,10 +166,18 @@ def _run_live(args: argparse.Namespace) -> int:
         source_index={args.source_id: source},
     )
     result_id = _one_result(summary, args.source_id)
+    capture = require_phase3_result_eligible_at_cutoff(
+        args.quarantine_root,
+        result_id=result_id,
+        as_of=args.as_of,
+        expected_source_id=args.source_id,
+    )
     record = {
         "kind": "PHASE3_LIVE_RUN_REFERENCE",
         "run_id": summary["run_id"],
         "result_id": result_id,
+        "retrieved_at": capture.retrieved_at,
+        "plan_as_of": args.as_of,
         "source_id": args.source_id,
         "programme_id": args.programme_id,
         "policy_id": policy["policy_id"],
@@ -190,6 +199,12 @@ def _run_replay(args: argparse.Namespace) -> int:
     output_dir = _controlled_output_dir(args)
     policy = _load_policy(args.policy)
     source, plan, _ = _source_and_plan(args)
+    expected = require_phase3_result_eligible_at_cutoff(
+        args.quarantine_root,
+        result_id=args.result_id,
+        as_of=args.as_of,
+        expected_source_id=args.source_id,
+    )
     require_acquisition_policy(
         policy,
         programme_id=args.programme_id,
@@ -212,10 +227,17 @@ def _run_replay(args: argparse.Namespace) -> int:
         source_index={args.source_id: source},
     )
     result_id = _one_result(summary, args.source_id)
+    if result_id != args.result_id:
+        raise RuntimeProofError(
+            "Phase 3 replay selected a different capture than --result-id; choose a cutoff that binds the exact live capture"
+        )
     record = {
         "kind": "PHASE3_REPLAY_RUN_REFERENCE",
         "run_id": summary["run_id"],
         "result_id": result_id,
+        "expected_result_id": args.result_id,
+        "retrieved_at": expected.retrieved_at,
+        "replay_cutoff": args.as_of,
         "source_id": args.source_id,
         "programme_id": args.programme_id,
         "policy_id": policy["policy_id"],
@@ -290,8 +312,13 @@ def build_parser() -> argparse.ArgumentParser:
     live.add_argument("--execute-live", action="store_true")
     live.set_defaults(handler=_run_live)
 
-    replay = subparsers.add_parser("replay", help="Execute zero-network replay over a previously captured source")
+    replay = subparsers.add_parser("replay", help="Execute zero-network replay of one exact captured result")
     _add_execution_args(replay)
+    replay.add_argument(
+        "--result-id",
+        required=True,
+        help="Exact live collector result_id that this replay must select",
+    )
     replay.set_defaults(handler=_run_replay)
 
     build = subparsers.add_parser("build", help="Build and verify a proof from durable live/replay run IDs")
