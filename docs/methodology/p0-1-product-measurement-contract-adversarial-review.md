@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R18 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R26 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -89,6 +89,14 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R16 | Operational boundary-disposition provenance was underspecified | A counted product could lack an attributable governed inclusion record or exact validation lineage | Require decision, rationale, role, timestamp, exact-object binding, contract/protocol ID, and exact reference-standard identity/version |
 | R17 | Observed and estimated population semantics were not explicitly separated | The unseen residual could be misreported as individually identified or human-adjudicated products | Define N_observed, N_estimated and N_unseen separately; prohibit item-level interpretation of the latent residual |
 | R18 | Enumeration-role uncertainty and true out-of-vocabulary roles were conflated | Role-specific analyses could hide uncertainty or misuse OTHER as an unknown state | Add `UNRESOLVED` separately from `OTHER_REVIEW_REQUIRED`; retain unresolved roles in A-P1 while excluding them from role-specific views |
+| R19 | FAMILY/OFFERING/CONFIGURATION were treated like entity types | P0.3 could invent a parallel ontology inconsistent with Observatory v2 | Map FAMILY and OFFERING to PRODUCT identity levels and CONFIGURATION to PRODUCT_CONFIGURATION SYSTEM identity |
+| R20 | Family creation could be synthetic one-per-offering | Family counts could be mechanically inflated without source-backed family identity | Create FAMILY PRODUCT entities only for evidenced/meaningful family groupings |
+| R21 | A-P8 could fabricate a configuration for every offering | Technical-implementation counts could become a relabelled offering count | Include only evidenced PRODUCT_CONFIGURATION SYSTEM identities; report missing-configuration coverage |
+| R22 | “Exact product/version row” risked becoming a third canonical entity | Registry flattening could duplicate PRODUCT/SYSTEM identity semantics | Define registry rows as deterministic analytical projections over PRODUCT offering + optional configuration SYSTEM |
+| R23 | Current projections lacked a versioned currentness policy | Stale evidence could be carried forward by implementation-specific judgment | Bind `currentness_policy_id` to every CURRENT view/count/estimate |
+| R24 | Registry projection omitted required capability/context dimensions | The registry could not reproduce the working-methodology product analyses | Include sensing, inference, output, form factor, context, target population and state fields as evidence-backed projection attributes |
+| R25 | “Market-facing product” terminology implied commercialization | Investigational/research offering identity could be mistaken for commercial state | Rename to product/service offering identity and keep commercial state separate |
+| R26 | Preferred present-tense product view was unspecified | Announcement-inclusive A-P1 could be quoted as “currently available products” | Require A-P6 for currently released/externally accessible wording; reserve A-P1 for offering-inventory language |
 
 Two additional consistency corrections were made during implementation:
 
@@ -118,7 +126,7 @@ A-P6 is the narrower view for offerings that have progressed beyond announcement
 
 A-P7 captures products no longer offered but still documented in current deployment.
 
-A-P8 is a technical-equivalence analytical view and cannot replace commercial-offering identity.
+A-P8 is a configuration-SYSTEM technical-equivalence analytical view and cannot replace commercial-offering identity. Offerings with unresolved configuration evidence reduce A-P8 coverage rather than receiving fabricated configuration identities.
 
 ## 6. Minimum governed count metadata
 
@@ -142,6 +150,26 @@ uncertainty_state
 ```
 
 This is a central precondition for denominator validity.
+
+## 6.1 v1.0 ontology projection clarified by the review
+
+The corrected candidate now preserves the existing v2 object model:
+
+```text
+PRODUCT + identity_level=FAMILY
+  -> only where a source-supported family identity exists
+
+PRODUCT + identity_level=OFFERING
+  -> market/research/investigational product or service offering
+
+SYSTEM + system_role=PRODUCT_CONFIGURATION
+  -> exact/bounded technical configuration linked to an offering
+
+SYSTEM without qualifying offering identity
+  -> technology/system landscape only, outside product offering counts
+```
+
+The exact-product registry is a projection joining these canonical objects and scoped assertions. It is not another entity family.
 
 ## 7. Residual methodological risks
 
@@ -171,7 +199,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R18 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R26 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
