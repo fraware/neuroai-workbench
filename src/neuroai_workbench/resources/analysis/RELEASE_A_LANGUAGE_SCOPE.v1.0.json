@@ -1,0 +1,85 @@
+{
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "version": "1.0",
+  "status": "FROZEN_v1.0",
+  "baseline": {
+    "language": "en",
+    "role": "GLOBAL_BASELINE"
+  },
+  "matched_native_strata": [
+    {
+      "stratum_id": "CN_ZH_HANS",
+      "languages": [
+        "zh-Hans"
+      ],
+      "jurisdictions": [
+        "CN"
+      ],
+      "selection_basis": "High-priority East Asian coverage probe with substantial current BCI translation/product activity and high local-language source dependence."
+    },
+    {
+      "stratum_id": "JP_JA",
+      "languages": [
+        "ja"
+      ],
+      "jurisdictions": [
+        "JP"
+      ],
+      "selection_basis": "Known Japanese first-party NeuroAI product evidence plus a mature research/medical-technology source environment."
+    },
+    {
+      "stratum_id": "KR_KO",
+      "languages": [
+        "ko"
+      ],
+      "jurisdictions": [
+        "KR"
+      ],
+      "selection_basis": "High-priority East Asian coverage probe with Korean EEG/research-product evidence and likely local-language discovery gain."
+    },
+    {
+      "stratum_id": "ES_ES",
+      "languages": [
+        "es"
+      ],
+      "jurisdictions": [
+        "ES"
+      ],
+      "selection_basis": "Current controlled developer evidence includes multiple Spanish NeuroAI developers and Spanish-language product documentation."
+    },
+    {
+      "stratum_id": "FR_FR",
+      "languages": [
+        "fr"
+      ],
+      "jurisdictions": [
+        "FR"
+      ],
+      "selection_basis": "Current controlled developer/product evidence includes French actors and French-language product/regulatory documentation."
+    },
+    {
+      "stratum_id": "DACH_DE",
+      "languages": [
+        "de"
+      ],
+      "jurisdictions": [
+        "DE",
+        "AT",
+        "CH"
+      ],
+      "selection_basis": "German-language research/medical-technology coverage across Germany, Austria, and Switzerland."
+    }
+  ],
+  "comparison": {
+    "primary_contrast": "ENGLISH_ONLY_VS_ENGLISH_PLUS_NATIVE_WITHIN_MATCHED_STRATUM",
+    "required_outputs": [
+      "unique_resolved_offering_gain",
+      "duplicate_rate",
+      "excluded_unresolved_rate",
+      "capability_gain",
+      "source_class_gain"
+    ]
+  },
+  "change_control": "Additional languages may be explored supplementally, but changing the primary v1.0 matched strata requires a preregistration successor before headline multilingual sensitivity is recomputed.",
+  "boundary": "This scope measures discovery sensitivity in selected language/jurisdiction strata; it is not a claim that other languages or jurisdictions are unimportant."
+}
