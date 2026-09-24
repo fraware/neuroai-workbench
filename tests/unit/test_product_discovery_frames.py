@@ -238,3 +238,48 @@ def test_predeclared_stop_rule_uses_consecutive_low_yield_rounds_only() -> None:
 
     bounded = _frame("F2", "REGULATORY", mode="BOUNDED_SOURCE_EXHAUSTION")
     assert evaluate_frame_stop(bounded, [], source_exhausted=True) == "BOUNDED_FRAME_EXHAUSTED"
+
+
+def test_validation_rejects_frame_mismatch_duplicate_frames_and_undeclared_capture_frame() -> None:
+    f1 = _frame("F1", "FIRST_PARTY")
+    f2 = _frame("F2", "REGULATORY")
+    capture = _capture("F1", "x", offering_id="PRD-X")
+
+    with pytest.raises(ProductDiscoveryError, match="frame_id does not match"):
+        validate_capture_against_frame(capture, f2)
+
+    with pytest.raises(ProductDiscoveryError, match="Duplicate discovery frame definition"):
+        build_capture_histories([capture], [f1, deepcopy(f1)])
+
+    f6_capture = _capture("F6", "y", offering_id="PRD-Y")
+    with pytest.raises(ProductDiscoveryError, match="undeclared frame"):
+        build_capture_histories([f6_capture], [f1])
+
+
+def test_incremental_comparison_rejects_unknown_or_non_nested_frame_sets() -> None:
+    capture = _capture("F1", "x", offering_id="PRD-X")
+    with pytest.raises(ProductDiscoveryError, match="Unknown discovery frame"):
+        incremental_unique_identities(
+            [capture],
+            baseline_frame_ids={"F1"},
+            expanded_frame_ids={"F1", "F9"},
+        )
+    with pytest.raises(ProductDiscoveryError, match="must be a subset"):
+        incremental_unique_identities(
+            [capture],
+            baseline_frame_ids={"F1", "F2"},
+            expanded_frame_ids={"F1"},
+        )
+
+
+def test_stop_rule_continues_with_too_few_or_too_small_rounds() -> None:
+    frame = _frame("F6", "CAPABILITY_FIRST")
+    too_few = [{"raw_candidates": 30, "marginal_new_identity_yield": 0.01}]
+    assert evaluate_frame_stop(frame, too_few) == "CONTINUE"
+
+    too_small = [
+        {"raw_candidates": 30, "marginal_new_identity_yield": 0.10},
+        {"raw_candidates": 5, "marginal_new_identity_yield": 0.01},
+        {"raw_candidates": 5, "marginal_new_identity_yield": 0.01},
+    ]
+    assert evaluate_frame_stop(frame, too_small) == "CONTINUE"
