@@ -126,6 +126,10 @@ def _manifest(rows: list[dict[str, object]]) -> dict[str, object]:
         "observatory_data_commit": S2_BASELINE,
         "observatory_release_refs": ["data-v0.1.0-public-governing"],
         "controlled_packet_digests": [PACKET_DIGEST],
+        "evidence_index_sha256": seed_evidence_index_sha256(
+            (str(ref) for row in rows for ref in row["source_observation_refs"]),
+            (str(ref) for row in rows for ref in row["projected_assertion_refs"]),
+        ),
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-09-24T14:00:00Z",
         "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
