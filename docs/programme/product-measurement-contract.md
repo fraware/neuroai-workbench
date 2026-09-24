@@ -1130,6 +1130,7 @@ input_release_or_snapshot_id
 input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
+boundary_disposition_protocol_digest
 reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
@@ -1153,6 +1154,8 @@ uncertainty_state
 ```
 
 A number without this metadata is not a governed Release-A population claim.
+
+`observed_or_estimated` uses `OBSERVED` or `ESTIMATED`. For `OBSERVED`, `estimation_status = NOT_APPLICABLE`. For estimated quantities, `estimation_status` uses one of `ESTIMATED`, `ESTIMATE_NOT_IDENTIFIED`, or `WITHHELD_METHOD_FAILURE` according to §12.10.
 
 `boundary_contract_digest`, `input_release_or_snapshot_digest`, `reference_standard_contract_digest`, and `discovery_frame_register_digest` bind the exact immutable methodological/evidence inputs. `analysis_execution_pin` identifies the exact code execution identity used to construct the governed analytical result, distinct from package version or S2 compatibility version. The execution-pin record must bind the producer commit, dependency/environment lock digest, run/configuration digest, and stochastic seed/chain configuration where applicable. The preregistration ID binds the estimand/model-comparison plan approved before fitting the population analysis.
 
