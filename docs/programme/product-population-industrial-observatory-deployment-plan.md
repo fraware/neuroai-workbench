@@ -222,9 +222,9 @@ knowledge_time_cutoff
 first_observed_at
 last_observed_at
 lifecycle_state
-access_commercial_state
-regulatory_state
-deployment_state
+access_commercial_state[]
+regulatory_state[]
+deployment_state[]
 form_factor[]
 signal_or_sensing_modality[]
 inference_capability[]
