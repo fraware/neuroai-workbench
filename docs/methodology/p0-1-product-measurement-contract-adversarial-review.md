@@ -192,7 +192,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified thirteen residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified fourteen residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -209,6 +209,7 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C11 | Release-A A2 described capture histories at raw candidate level | Preserve candidate discovery provenance but construct estimation capture histories only after governed inclusion and identity resolution at the preregistered estimation unit |
 | C12 | Release-A A7 still used `N_total`, which could contradict the contract's conditional open-world estimand semantics | Use `N_estimated = N_observed + N_unseen` and state explicitly that it is conditional on the declared discovery-frame/language/jurisdiction/model universe |
 | C13 | Legacy programme-plan display equations contained malformed Markdown and escaped control characters from earlier authoring | Normalize all affected equations to deterministic fenced-text notation without changing their substantive definitions |
+| C14 | Residual “global unique-product count” wording could be misread as a completeness claim even though the contract forbids global-census inference | Use cross-jurisdiction unique-offering terminology and bind it explicitly to the declared discovery/analysis universe |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -240,7 +241,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C13 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C14 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
