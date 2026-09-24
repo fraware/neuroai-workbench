@@ -11,11 +11,26 @@ from jsonschema import Draft202012Validator
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
+RUN_SCHEMA = "PRODUCT_DISCOVERY_RUN.schema.json"
 
 FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
+FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
-FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8")
+FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
+FRAME_CLASS_BY_ID = {
+    "F1": "FIRST_PARTY",
+    "F2": "REGULATORY",
+    "F3": "CLINICAL_TRIAL",
+    "F4": "SCIENTIFIC_RESEARCH",
+    "F5": "COMMERCIAL_ECOSYSTEM",
+    "F6": "CAPABILITY_FIRST",
+    "F7": "EXPERT_NOMINATION",
+    "F8": "LOCAL_LANGUAGE",
+    "F9": "CURATED_ACTOR_SEED",
+    "F10": "PATENT_COMMERCIALIZATION",
+    "F11": "SNOWBALL_EXPANSION",
+}
 
 CAPTURE_OUTCOMES = frozenset(
     {
@@ -72,6 +87,11 @@ def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"Unknown frame_id {frame_id!r}")
     if frame["frame_version"] != FRAME_VERSION:
         raise ProductDiscoveryError(f"frame_version must be {FRAME_VERSION}")
+    expected_class = FRAME_CLASS_BY_ID[frame_id]
+    if frame["frame_class"] != expected_class:
+        raise ProductDiscoveryError(
+            f"{frame_id} frame_class must be {expected_class!r}, got {frame['frame_class']!r}"
+        )
 
     dependencies = set(cast(list[str], frame["dependent_or_nested_with"]))
     if frame_id in dependencies:
@@ -112,7 +132,10 @@ def product_capture_id(capture: Mapping[str, Any]) -> str:
             "outcome",
             "observed_at",
             "registry_projection_version",
+            "frame_register_version",
             "population_view_id",
+            "analysis_jurisdiction_scope",
+            "language_scope_id",
             "world_time_cutoff",
             "knowledge_time_cutoff",
         )
@@ -137,6 +160,8 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"frame_version must be {FRAME_VERSION}")
     if capture["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
         raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
+    if capture["frame_register_version"] != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError(f"frame_register_version must be {FRAME_REGISTER_VERSION}")
 
     outcome = capture["outcome"]
     if outcome not in CAPTURE_OUTCOMES:
@@ -164,6 +189,123 @@ def validate_capture_against_frame(
         raise ProductDiscoveryError("Capture cannot be estimation-eligible when its discovery frame is excluded")
 
 
+def _capture_universe_key(capture: Mapping[str, Any]) -> tuple[Any, ...]:
+    return (
+        capture.get("registry_projection_version"),
+        capture.get("frame_register_version"),
+        capture.get("population_view_id"),
+        capture.get("analysis_jurisdiction_scope"),
+        capture.get("language_scope_id"),
+        capture.get("world_time_cutoff"),
+        capture.get("knowledge_time_cutoff"),
+    )
+
+
+def _require_one_capture_universe(captures: Sequence[Mapping[str, Any]]) -> None:
+    keys = {_capture_universe_key(capture) for capture in captures}
+    if len(keys) > 1:
+        raise ProductDiscoveryError(
+            "Capture histories cannot mix registry/view/jurisdiction/language/cutoff universes"
+        )
+
+
+def identity_set_digest(identity_ids: Iterable[str]) -> str:
+    """Return the canonical SHA-256 digest for a round-start known-identity set."""
+
+    encoded = json.dumps(
+        sorted(set(identity_ids)),
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def product_discovery_run_id(run: Mapping[str, Any]) -> str:
+    """Return the deterministic ID for one frame/round execution declaration."""
+
+    material = {
+        key: run.get(key)
+        for key in (
+            "frame_id",
+            "frame_version",
+            "frame_register_version",
+            "round_id",
+            "query_or_seed_ids",
+            "languages",
+            "jurisdictions",
+            "analysis_jurisdiction_scope",
+            "language_scope_id",
+            "registry_projection_version",
+            "population_view_id",
+            "world_time_cutoff",
+            "knowledge_time_cutoff",
+            "known_identity_set_sha256",
+        )
+    }
+    encoded = json.dumps(
+        material,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return "PDR-" + hashlib.sha256(encoded).hexdigest()
+
+
+def validate_discovery_run(run: Mapping[str, Any]) -> None:
+    errors = _schema_errors(run, RUN_SCHEMA)
+    if errors:
+        raise ProductDiscoveryError("Discovery run schema validation failed: " + "; ".join(errors))
+    if run["run_id"] != product_discovery_run_id(run):
+        raise ProductDiscoveryError("run_id does not match the deterministic run declaration")
+    if run["frame_version"] != FRAME_VERSION:
+        raise ProductDiscoveryError(f"frame_version must be {FRAME_VERSION}")
+    if run["frame_register_version"] != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError(f"frame_register_version must be {FRAME_REGISTER_VERSION}")
+    if run["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
+        raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
+
+
+def validate_run_against_captures(
+    run: Mapping[str, Any],
+    captures: Sequence[Mapping[str, Any]],
+    frame: Mapping[str, Any],
+) -> None:
+    """Bind one declared frame/round run to its exact capture records."""
+
+    validate_discovery_run(run)
+    validate_discovery_frame(frame)
+    if run["frame_id"] != frame["frame_id"] or run["frame_version"] != frame["frame_version"]:
+        raise ProductDiscoveryError("Discovery run does not match its frame definition")
+
+    expected_ids: list[str] = []
+    query_or_seed_ids = set(cast(list[str], run["query_or_seed_ids"]))
+    for capture in captures:
+        validate_capture_against_frame(capture, frame)
+        if capture["round_id"] != run["round_id"]:
+            raise ProductDiscoveryError("Capture round_id does not match discovery run")
+        if capture["query_or_seed_id"] not in query_or_seed_ids:
+            raise ProductDiscoveryError("Capture query_or_seed_id is outside the discovery run declaration")
+        for field in (
+            "frame_register_version",
+            "registry_projection_version",
+            "population_view_id",
+            "analysis_jurisdiction_scope",
+            "language_scope_id",
+            "world_time_cutoff",
+            "knowledge_time_cutoff",
+        ):
+            if capture[field] != run[field]:
+                raise ProductDiscoveryError(f"Capture {field} does not match discovery run")
+        expected_ids.append(str(capture["capture_id"]))
+
+    if int(run["capture_count"]) != len(captures):
+        raise ProductDiscoveryError("capture_count does not match exact discovery-run captures")
+    if sorted(cast(list[str], run["capture_ids"])) != sorted(expected_ids):
+        raise ProductDiscoveryError("capture_ids do not match exact discovery-run captures")
+
+
 def _frame_map(frames: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
     indexed: dict[str, Mapping[str, Any]] = {}
     for frame in frames:
@@ -184,6 +326,7 @@ def build_capture_histories(
     """Build binary frame histories after exact-offering deduplication."""
 
     indexed_frames = _frame_map(frames)
+    _require_one_capture_universe(captures)
     selected_frame_ids = [
         frame_id
         for frame_id in FRAME_IDS
@@ -254,7 +397,10 @@ def summarize_discovery_round(
     include_captures = [capture for capture in captures if capture["outcome"] == "INCLUDE_RESOLVED"]
     unique_include_ids = {str(capture["canonical_offering_id"]) for capture in include_captures}
     new_ids = unique_include_ids - known
-    duplicate_capture_count = len(include_captures) - len(new_ids)
+    known_identity_ids = unique_include_ids & known
+    within_round_duplicate_count = len(include_captures) - len(unique_include_ids)
+    known_identity_duplicate_count = len(known_identity_ids)
+    duplicate_capture_count = known_identity_duplicate_count + within_round_duplicate_count
 
     outcome_counts = {
         outcome: sum(capture["outcome"] == outcome for capture in captures) for outcome in sorted(CAPTURE_OUTCOMES)
@@ -264,12 +410,46 @@ def summarize_discovery_round(
         "raw_candidates": raw_count,
         "unique_resolved_include_identities": len(unique_include_ids),
         "new_resolved_include_identities": len(new_ids),
+        "known_identity_duplicate_count": known_identity_duplicate_count,
+        "within_round_duplicate_count": within_round_duplicate_count,
         "duplicate_capture_count": duplicate_capture_count,
         "outcome_counts": outcome_counts,
         "marginal_new_identity_yield": len(new_ids) / raw_count if raw_count else None,
         "duplicate_yield": duplicate_capture_count / raw_count if raw_count else None,
         "new_identity_ids": sorted(new_ids),
         "boundary": DISCOVERY_BOUNDARY,
+    }
+
+
+def summarize_discovery_contributions(
+    captures: Sequence[Mapping[str, Any]],
+    *,
+    known_identity_ids_before: Iterable[str] = (),
+) -> dict[str, dict[str, dict[str, int]]]:
+    """Report language and jurisdiction contribution after exact-offering deduplication."""
+
+    known = set(known_identity_ids_before)
+    for capture in captures:
+        validate_product_capture(capture)
+
+    def summarize(field: str) -> dict[str, dict[str, int]]:
+        grouped: dict[str, set[str]] = {}
+        for capture in captures:
+            if capture["outcome"] != "INCLUDE_RESOLVED":
+                continue
+            key = str(capture[field])
+            grouped.setdefault(key, set()).add(str(capture["canonical_offering_id"]))
+        return {
+            key: {
+                "unique_resolved_include_identities": len(ids),
+                "new_resolved_include_identities": len(ids - known),
+            }
+            for key, ids in sorted(grouped.items())
+        }
+
+    return {
+        "by_language": summarize("language"),
+        "by_jurisdiction": summarize("jurisdiction"),
     }
 
 
@@ -281,6 +461,7 @@ def incremental_unique_identities(
 ) -> set[str]:
     """Return exact offering identities added by expanded discovery frames."""
 
+    _require_one_capture_universe(captures)
     baseline = set(baseline_frame_ids)
     expanded = set(expanded_frame_ids)
     if not baseline <= FRAME_ID_SET or not expanded <= FRAME_ID_SET:
@@ -336,15 +517,15 @@ def evaluate_frame_stop(
     if len(round_summaries) < max(minimum_rounds, consecutive):
         return "CONTINUE"
 
-    eligible_tail = [
-        summary
-        for summary in round_summaries
-        if int(summary.get("raw_candidates", 0)) >= minimum_raw
-        and summary.get("marginal_new_identity_yield") is not None
-    ]
-    if len(eligible_tail) < consecutive:
+    tail = list(round_summaries[-consecutive:])
+    if len(tail) < consecutive:
         return "CONTINUE"
-    tail = eligible_tail[-consecutive:]
+    if any(
+        int(summary.get("raw_candidates", 0)) < minimum_raw
+        or summary.get("marginal_new_identity_yield") is None
+        for summary in tail
+    ):
+        return "CONTINUE"
     if all(float(summary["marginal_new_identity_yield"]) <= threshold for summary in tail):
         return "SATURATION_UNDER_DECLARED_PROTOCOL"
     return "CONTINUE"
