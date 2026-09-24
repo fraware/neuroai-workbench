@@ -186,6 +186,24 @@ Every primary universe compares the same six families:
 5. **Stratified dependence model.** Used only where a predeclared stratum has adequate capture support and the within-stratum model is identifiable.
 6. **Bayesian/hierarchical sensitivity model.** Used to assess capture heterogeneity, sparse cells and plausible dependence structures. Prior choices and prior sensitivity are reported.
 
+## Pre-fit model-specification lock
+
+The six model families above are frozen at P0.5, but family names alone do not remove analytical degrees of freedom. Before any Release-A capture table is supplied to a fitted unseen-population model, the implementation must freeze a versioned model-specification manifest for that exact estimation universe.
+
+The pre-fit manifest must bind, as applicable:
+
+- the exact log-linear interaction hierarchy or deterministic candidate-generation rule and the model-comparison criterion;
+- any structural-zero treatment and any frame combinations prohibited by design;
+- the exact stratification variables, pooling/collapse rules, and minimum support required to fit a stratum;
+- the Bayesian/hierarchical likelihood, prior distributions, hyperparameters, sampler settings, convergence criteria, posterior summaries, and prior-sensitivity variants;
+- the uncertainty-interval construction rule for each model family;
+- the late-round predictive discrepancy measure and pass/fail interpretation;
+- numerical-stability and identifiability thresholds used for headline admissibility.
+
+That manifest must be frozen without using observed population estimates, model totals, or interval widths to choose a preferred specification. If a model is later revised because diagnostics reveal a defect, the revised specification is a named successor or sensitivity analysis; it does not silently replace the preregistered fit.
+
+This pre-fit implementation lock is part of the Release-A analysis contract. P0.5 freezes the estimands, model families, sensitivities, and lock requirement; it does not authorize fitting a model whose exact specification remains mutable.
+
 ## Model diagnostics and inadmissibility
 
 Every fitted unseen-population model reports:
