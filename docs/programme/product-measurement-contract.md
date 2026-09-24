@@ -293,6 +293,7 @@ world_time_cutoff
 knowledge_time_cutoff
 first_observed_at
 last_observed_at
+population_view_policy_id
 currentness_policy_id
 lifecycle_state
 access_commercial_state
@@ -839,13 +840,29 @@ P0.3/P0.4 must implement the currentness policy explicitly and preserve stale or
 
 
 
+### 10.7 Population-view predicate policy
+
+Every governed Release-A population view must bind a versioned:
+
+```text
+population_view_policy_id
+```
+
+This policy implements the frozen P0.1 view semantics against the controlled P0.3 lifecycle, access, regulatory, deployment, enumeration-role, and identity states.
+
+The policy cannot broaden the P0.1 semantic definition. It exists to make the exact machine predicate reproducible when P0.3 introduces controlled state values.
+
+A change to the machine eligibility predicate that changes view membership requires a successor policy ID, impact analysis, and recomputation of affected counts/estimates. Material semantic changes remain P0.1 contract changes, not mere policy updates.
+
+For non-applicable fields in a common reporting schema, use an explicit `NOT_APPLICABLE` state rather than omitting provenance-critical policy identity.
+
 ## 11. Primary Release-A population views
 
 The programme must never publish an unlabeled “global product count”.
 
 Every count names:
 
-- population view;
+- population view and `population_view_policy_id`;
 - identity level;
 - enumeration role(s);
 - jurisdiction scope;
@@ -1031,6 +1048,7 @@ Every unseen-population model must bind exactly one declared estimation universe
 ```text
 boundary_contract_id
 registry_projection_version
+population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
@@ -1065,6 +1083,7 @@ Every published Release-A count must state, in machine-readable or table-adjacen
 
 ```text
 boundary_contract_id
+population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
@@ -1330,6 +1349,7 @@ At minimum, P0.3 must make it possible to represent:
 - typed organization↔offering/configuration relationship references without company-to-product claim propagation;
 - population-view eligibility;
 - declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
+- versioned machine population-view predicates implementing the frozen A-P1–A-P8 semantics;
 - evidence-supported technical-equivalence relationships without silent identity merges;
 - analytical registry projections containing the capability/context/state fields in §3.11 without promoting those fields into identity by default;
 - assertion-reference retention so flat projection never widens the subject/scope of a source claim;
@@ -1374,7 +1394,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 31. boundary/unresolved-case mass is reported and receives predeclared sensitivity treatment where material;
 32. N_estimated remains explicitly conditional on the declared discovery-frame/model universe and is never equated with proof of an absolute global census;
 33. registry projections retain typed organization relationships instead of a single ambiguous organization field;
-34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology.
+34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology;
+35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
@@ -1390,7 +1411,8 @@ After freeze, a material change to any of the following requires a dedicated iss
 - service-counting rule;
 - OEM/rebrand treatment;
 - global-versus-jurisdictional deduplication;
-- primary population-view definitions.
+- primary population-view definitions;
+- population-view machine predicate semantics.
 
 A change must state whether previously reported counts require recomputation or reinterpretation.
 
