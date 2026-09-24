@@ -201,7 +201,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified twenty-five residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified twenty-seven residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -230,6 +230,8 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C23 | D4's deliberately stratified edge-case composition could be mistaken for the operational candidate/product base-rate distribution | State that D4 metrics are benchmark-conditional, its class proportions are not prevalence estimates, and population-weighted/operational performance requires a separately justified target distribution/transport design |
 | C24 | Access/commercial, regulatory and deployment state were written like scalar fields even though the contract allows overlapping research/commercial access and multiple scoped regulatory/deployment assertions | Represent compatible concurrent access, regulatory and deployment states as scoped multi-value assertions and prohibit forced exclusivity |
 | C25 | D4 required human/expert review but did not explicitly bind reviewer qualification, conflicts, distinct-person double review, or independent adjudication | Require controlled reviewer qualification/conflict provenance, independent first-pass reviewers, and a distinct qualified adjudicator for disagreements; otherwise retain unresolved status |
+| C26 | The controlling plan still treated jurisdiction as part of “exact product/version/jurisdiction identity”, contradicting P0.1's rule that jurisdiction is normally scoped state rather than identity | Rewrite the plan around exact offering/configuration identity plus jurisdiction-scoped state, creating a distinct configuration only for a material jurisdictional change |
+| C27 | P0.5 still used `N_unobserved` while P0.1 uses `N_unseen`, and stated coverage without conditioning on a valid estimate | Standardize on `N_unseen` and define coverage only when an accepted `N_estimated > 0` exists |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -261,7 +263,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C25 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C27 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
