@@ -1,4 +1,4 @@
-# P0.1 Product Measurement Contract adversarial review R1
+# P0.1 Product Measurement Contract adversarial review — R1–R40 + final consistency audit
 
 **Plan binding:** `P0.1`  
 **Tracking issue:** #320  
