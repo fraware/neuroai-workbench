@@ -1,0 +1,549 @@
+{
+  "register_id": "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0",
+  "status": "FROZEN_INPUT_CANDIDATE",
+  "frame_id": "F9",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "source_binding": {
+    "repository": "fraware/neuroai-observatory-data",
+    "commit_sha": "35dcf13431eca40321bb64a88e1743d9313f9247",
+    "path": "releases/data-v0.1.0-public-governing/records/canonical_observatory_release_v1.4.json",
+    "blob_sha": "c13289b4093f2c59a01d6860365e7ad2c2d25ac7",
+    "release_version": "v1.4",
+    "evidence_cutoff": "2026-07-29"
+  },
+  "selection_rule": "Include every organization in the bound governing v1.4 release whose roles array contains SYSTEM_DEVELOPER; preserve organization identity only. Do not project organizations into product rows.",
+  "actor_count": 37,
+  "actors": [
+    {
+      "organization_id": "ORG-0001",
+      "canonical_name": "Neurable",
+      "official_url": "https://www.neurable.com/products/mw75neurolt",
+      "source_ids": [
+        "SRC-0001"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0002",
+      "canonical_name": "Neurosity",
+      "official_url": "https://neurosity.co/",
+      "source_ids": [
+        "SRC-0002"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0003",
+      "canonical_name": "Bitbrain",
+      "official_url": "https://www.bitbrain.com/",
+      "source_ids": [
+        "SRC-0003"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Spain"
+      ]
+    },
+    {
+      "organization_id": "ORG-0004",
+      "canonical_name": "Neurovalens",
+      "official_url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/denovo.cfm?knumber=DEN250013&start_search=1",
+      "source_ids": [
+        "SRC-0004"
+      ],
+      "evidence_state": "REGULATORY_RECORD_VERIFIED",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Ireland"
+      ]
+    },
+    {
+      "organization_id": "ORG-0005",
+      "canonical_name": "NextSense",
+      "official_url": "https://www.nextsense.io/",
+      "source_ids": [
+        "SRC-0006"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0006",
+      "canonical_name": "Muse",
+      "official_url": "https://choosemuse.com/",
+      "source_ids": [
+        "SRC-0007"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Canada"
+      ]
+    },
+    {
+      "organization_id": "ORG-0007",
+      "canonical_name": "Emotiv",
+      "official_url": "https://www.emotiv.com/",
+      "source_ids": [
+        "SRC-0008"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0008",
+      "canonical_name": "Kernel",
+      "official_url": "https://www.kernel.com/",
+      "source_ids": [
+        "SRC-0009"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0009",
+      "canonical_name": "Openwater",
+      "official_url": "https://www.openwater.health/",
+      "source_ids": [
+        "SRC-0010",
+        "SRC-14-001"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "CURRENT",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0010",
+      "canonical_name": "NeuroPace",
+      "official_url": "https://www.neuropace.com/",
+      "source_ids": [
+        "SRC-0011"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0011",
+      "canonical_name": "MindMaze",
+      "official_url": "https://www.mindmaze.com/",
+      "source_ids": [
+        "SRC-0012"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Switzerland"
+      ]
+    },
+    {
+      "organization_id": "ORG-0012",
+      "canonical_name": "Paradromics",
+      "official_url": "https://paradromics.com/news/paradromics-completes-first-human-brain-computer-interface-bci-implantation/",
+      "source_ids": [
+        "SRC-0013"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0013",
+      "canonical_name": "Flow Neuroscience",
+      "official_url": "https://www.flowneuroscience.com/temporary-en-us/clinician/",
+      "source_ids": [
+        "SRC-0014"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Sweden"
+      ]
+    },
+    {
+      "organization_id": "ORG-0014",
+      "canonical_name": "MindPortal",
+      "official_url": "https://mindportal.com/",
+      "source_ids": [
+        "SRC-0015",
+        "SRC-14-002"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "CURRENT",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0015",
+      "canonical_name": "Neuroelectrics",
+      "official_url": "https://www.neuroelectrics.com/",
+      "source_ids": [
+        "SRC-0016"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Spain"
+      ]
+    },
+    {
+      "organization_id": "ORG-0016",
+      "canonical_name": "BrainCo",
+      "official_url": "https://www.brainco.cn/",
+      "source_ids": [
+        "SRC-0017",
+        "SRC-14-003"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "CURRENT",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0017",
+      "canonical_name": "OpenBCI",
+      "official_url": "https://openbci.com/",
+      "source_ids": [
+        "SRC-0018"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0018",
+      "canonical_name": "NeuroGeneces",
+      "official_url": "https://neurogeneces.com/",
+      "source_ids": [
+        "SRC-0019",
+        "SRC-14-004"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "CURRENT",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0019",
+      "canonical_name": "BioSerenity",
+      "official_url": "https://bioserenity.com/",
+      "source_ids": [
+        "SRC-0020"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "France"
+      ]
+    },
+    {
+      "organization_id": "ORG-0020",
+      "canonical_name": "G.TEC Medical",
+      "official_url": "https://www.gtec.at/",
+      "source_ids": [
+        "SRC-0021"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Austria"
+      ]
+    },
+    {
+      "organization_id": "ORG-0021",
+      "canonical_name": "NeuroSky",
+      "official_url": "https://neurosky.com/",
+      "source_ids": [
+        "SRC-0022"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0022",
+      "canonical_name": "Idun Technologies",
+      "official_url": "https://iduntechnologies.com/",
+      "source_ids": [
+        "SRC-0023"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Switzerland"
+      ]
+    },
+    {
+      "organization_id": "ORG-0023",
+      "canonical_name": "Elemind",
+      "official_url": "https://elemindtech.com/",
+      "source_ids": [
+        "SRC-0024"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0024",
+      "canonical_name": "Neurons Inc",
+      "official_url": "https://neuronsinc.com/",
+      "source_ids": [
+        "SRC-0025"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Denmark"
+      ]
+    },
+    {
+      "organization_id": "ORG-0025",
+      "canonical_name": "Cognixion",
+      "official_url": "https://www.cognixion.com/",
+      "source_ids": [
+        "SRC-0026"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0026",
+      "canonical_name": "Neurosteer",
+      "official_url": "https://neurosteer.com/",
+      "source_ids": [
+        "SRC-0027"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Israel"
+      ]
+    },
+    {
+      "organization_id": "ORG-0027",
+      "canonical_name": "Yneuro",
+      "official_url": "https://yneuro.com/",
+      "source_ids": [
+        "SRC-0028",
+        "SRC-14-005"
+      ],
+      "evidence_state": "UNRESOLVED",
+      "current_status": "CURRENT",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "France"
+      ]
+    },
+    {
+      "organization_id": "ORG-0028",
+      "canonical_name": "Neuralink",
+      "official_url": "https://neuralink.com/trials/device-control/",
+      "source_ids": [
+        "SRC-0029",
+        "SRC-0030"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0029",
+      "canonical_name": "Synchron",
+      "official_url": "https://synchron.com/research",
+      "source_ids": [
+        "SRC-0031",
+        "SRC-0045"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Multiple"
+      ]
+    },
+    {
+      "organization_id": "ORG-0030",
+      "canonical_name": "Blackrock Neurotech",
+      "official_url": "https://blackrockneurotech.com/",
+      "source_ids": [
+        "SRC-0032"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0031",
+      "canonical_name": "Precision Neuroscience",
+      "official_url": "https://www.precisionneuro.io/",
+      "source_ids": [
+        "SRC-0033",
+        "SRC-0044"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0032",
+      "canonical_name": "Science Corporation",
+      "official_url": "https://science.xyz/patients/",
+      "source_ids": [
+        "SRC-0034",
+        "SRC-0046"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "United States"
+      ]
+    },
+    {
+      "organization_id": "ORG-0033",
+      "canonical_name": "INBRAIN Neuroelectronics",
+      "official_url": "https://inbrain-neuroelectronics.com/2026/07/06/neurotech-firm-inks-ai-partnership-with-microsoft/",
+      "source_ids": [
+        "SRC-0035",
+        "SRC-0036"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Spain"
+      ]
+    },
+    {
+      "organization_id": "ORG-0034",
+      "canonical_name": "Coherence Neuro",
+      "official_url": "https://www.coherenceneuro.com/articles",
+      "source_ids": [
+        "SRC-0037",
+        "SRC-0048"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Multiple"
+      ]
+    },
+    {
+      "organization_id": "ORG-0036",
+      "canonical_name": "Medtronic",
+      "official_url": "https://www.medtronic.com/",
+      "source_ids": [
+        "SRC-0041"
+      ],
+      "evidence_state": "REGULATORY_RECORD_VERIFIED",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Multiple"
+      ]
+    },
+    {
+      "organization_id": "ORG-0041",
+      "canonical_name": "CorTec",
+      "official_url": "https://cortec-neuro.com/",
+      "source_ids": [
+        "SRC-0069"
+      ],
+      "evidence_state": "COMPANY_CLAIM_ONLY",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Germany"
+      ]
+    },
+    {
+      "organization_id": "ORG-0042",
+      "canonical_name": "Neurosoft Bioelectronics",
+      "official_url": "https://neurosoft-bio.com/",
+      "source_ids": [
+        "SRC-0070"
+      ],
+      "evidence_state": "OFFICIAL_CURRENT_REPRESENTATION",
+      "current_status": "ACTIVE_OR_CURRENTLY_REPRESENTED",
+      "last_verified": "2026-07-29",
+      "jurisdictions": [
+        "Switzerland"
+      ]
+    }
+  ],
+  "estimator_role": "EXCLUDED_FROM_PRIMARY_UNSEEN_POPULATION_ESTIMATOR",
+  "boundary": "This register freezes the purposive F9 actor seed set only. It does not establish product identities, product counts, commercialization, effectiveness, or global completeness."
+}
