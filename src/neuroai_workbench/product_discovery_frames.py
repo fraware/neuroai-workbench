@@ -89,9 +89,7 @@ def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"frame_version must be {FRAME_VERSION}")
     expected_class = FRAME_CLASS_BY_ID[frame_id]
     if frame["frame_class"] != expected_class:
-        raise ProductDiscoveryError(
-            f"{frame_id} frame_class must be {expected_class!r}, got {frame['frame_class']!r}"
-        )
+        raise ProductDiscoveryError(f"{frame_id} frame_class must be {expected_class!r}, got {frame['frame_class']!r}")
 
     dependencies = set(cast(list[str], frame["dependent_or_nested_with"]))
     if frame_id in dependencies:
@@ -204,9 +202,7 @@ def _capture_universe_key(capture: Mapping[str, Any]) -> tuple[Any, ...]:
 def _require_one_capture_universe(captures: Sequence[Mapping[str, Any]]) -> None:
     keys = {_capture_universe_key(capture) for capture in captures}
     if len(keys) > 1:
-        raise ProductDiscoveryError(
-            "Capture histories cannot mix registry/view/jurisdiction/language/cutoff universes"
-        )
+        raise ProductDiscoveryError("Capture histories cannot mix registry/view/jurisdiction/language/cutoff universes")
 
 
 def identity_set_digest(identity_ids: Iterable[str]) -> str:
@@ -521,8 +517,7 @@ def evaluate_frame_stop(
     if len(tail) < consecutive:
         return "CONTINUE"
     if any(
-        int(summary.get("raw_candidates", 0)) < minimum_raw
-        or summary.get("marginal_new_identity_yield") is None
+        int(summary.get("raw_candidates", 0)) < minimum_raw or summary.get("marginal_new_identity_yield") is None
         for summary in tail
     ):
         return "CONTINUE"
