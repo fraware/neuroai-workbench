@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/product-discovery-run-1.0.json",
+  "title": "PRODUCT_DISCOVERY_RUN",
+  "description": "One exact Release-A frame/round execution declaration bound to a known-identity set, analysis universe, and exact capture records.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "frame_id",
+    "frame_version",
+    "frame_register_version",
+    "round_id",
+    "query_or_seed_ids",
+    "languages",
+    "jurisdictions",
+    "analysis_jurisdiction_scope",
+    "language_scope_id",
+    "registry_projection_version",
+    "population_view_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "known_identity_set_sha256",
+    "capture_count",
+    "capture_ids",
+    "stop_state",
+    "stop_reason",
+    "boundary"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^PDR-[0-9a-f]{64}$"
+    },
+    "frame_id": {
+      "enum": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10",
+        "F11"
+      ]
+    },
+    "frame_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_v1.0"
+    },
+    "frame_register_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+    },
+    "round_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "query_or_seed_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "analysis_jurisdiction_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language_scope_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registry_projection_version": {
+      "const": "PRODUCT_REGISTRY_v1.0"
+    },
+    "population_view_id": {
+      "enum": [
+        "A-P1",
+        "A-P2",
+        "A-P3",
+        "A-P4",
+        "A-P5",
+        "A-P6",
+        "A-P7",
+        "A-P8"
+      ]
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "format": "date"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "known_identity_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "capture_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "capture_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^PDC-[0-9a-f]{64}$"
+      }
+    },
+    "stop_state": {
+      "enum": [
+        "CONTINUE",
+        "SATURATION_UNDER_DECLARED_PROTOCOL",
+        "BOUNDED_FRAME_EXHAUSTED",
+        "BUDGET_COVERAGE_TERMINATION",
+        "UNRESOLVED_SOURCE_BARRIER"
+      ]
+    },
+    "stop_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

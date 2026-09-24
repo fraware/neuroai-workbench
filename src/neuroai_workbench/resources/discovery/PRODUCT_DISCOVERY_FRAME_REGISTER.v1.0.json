@@ -1,0 +1,456 @@
+{
+  "register_id": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "version": "1.0",
+  "status": "FROZEN_v1.0",
+  "estimation_policy": {
+    "primary_rule": "Only frames with capture_estimation_eligible=true may enter a preregistered unseen-population estimator.",
+    "purposive_frames_excluded": [
+      "F7",
+      "F9",
+      "F11"
+    ],
+    "note": "Expert nominations, curated known-actor seeds, and snowball expansion contribute to N_observed and coverage diagnostics but are excluded from the primary capture estimator because their selection mechanisms are deliberately purposive/dependent."
+  },
+  "frames": [
+    {
+      "frame_id": "F1",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "First-party product discovery",
+      "frame_class": "FIRST_PARTY",
+      "purpose": "Discover externally represented offerings from manufacturer/vendor catalogues, product pages, manuals, official documentation, and archived official pages.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Expected overlap with curated-actor, commercial/ecosystem, capability-first, local-language, patent-crossover, and snowball routes; dependence must be diagnosed rather than assumed away.",
+      "dependent_or_nested_with": [
+        "F5",
+        "F6",
+        "F8",
+        "F9",
+        "F10",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "OFFICIAL_CATALOG_ENUMERATION",
+        "OFFICIAL_PRODUCT_PAGE_SEARCH",
+        "OFFICIAL_DOCUMENTATION_SEARCH"
+      ],
+      "source_classes": [
+        "MANUFACTURER_VENDOR_OFFICIAL"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Protocol-bounded first-party discovery; no completeness claim."
+    },
+    {
+      "frame_id": "F2",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Regulatory discovery",
+      "frame_class": "REGULATORY",
+      "purpose": "Discover exact products and configurations from declared regulatory/device registries and authorization/listing records.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Regulatory capture is indication- and jurisdiction-selective and overlaps first-party, trial, and scientific evidence.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F3",
+        "F4",
+        "F10"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "DECLARED_REGULATORY_JURISDICTIONS"
+      ],
+      "query_families": [
+        "DEVICE_REGISTRY_ENUMERATION",
+        "AUTHORIZATION_CLEARANCE_SEARCH",
+        "REGULATORY_PRODUCT_IDENTITY_SEARCH"
+      ],
+      "source_classes": [
+        "REGULATOR_OFFICIAL"
+      ],
+      "stopping_rule": {
+        "mode": "BOUNDED_SOURCE_EXHAUSTION",
+        "minimum_completed_rounds": null,
+        "consecutive_low_yield_rounds": null,
+        "maximum_marginal_new_identity_yield": null,
+        "minimum_raw_candidates_per_round": null
+      },
+      "status": "ACTIVE",
+      "boundary": "Exhaustion applies only to every declared provider query/pagination universe."
+    },
+    {
+      "frame_id": "F3",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Clinical/trial discovery",
+      "frame_class": "CLINICAL_TRIAL",
+      "purpose": "Discover formal investigational offerings and product identities from declared trial registries and study records.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Trial records overlap regulatory, scientific, and first-party evidence and preferentially sample clinical/investigational products.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F2",
+        "F4"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "DECLARED_TRIAL_REGISTRY_JURISDICTIONS"
+      ],
+      "query_families": [
+        "TRIAL_INTERVENTION_PRODUCT_SEARCH",
+        "DEVICE_INTERVENTION_SEARCH",
+        "FORMAL_INVESTIGATIONAL_PRODUCT_SEARCH"
+      ],
+      "source_classes": [
+        "TRIAL_REGISTRY_OFFICIAL",
+        "STUDY_RECORD"
+      ],
+      "stopping_rule": {
+        "mode": "BOUNDED_SOURCE_EXHAUSTION",
+        "minimum_completed_rounds": null,
+        "consecutive_low_yield_rounds": null,
+        "maximum_marginal_new_identity_yield": null,
+        "minimum_raw_candidates_per_round": null
+      },
+      "status": "ACTIVE",
+      "boundary": "Exhaustion applies only to the declared registry/provider query universe."
+    },
+    {
+      "frame_id": "F4",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Scientific/research discovery",
+      "frame_class": "SCIENTIFIC_RESEARCH",
+      "purpose": "Discover research products, instrumentation, platforms, and named products from scientific publications and research documentation.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Scientific mentions overlap first-party and trial records and over-sample research/clinical products.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F2",
+        "F3",
+        "F6",
+        "F8"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "PRODUCT_NAME_LITERATURE_SEARCH",
+        "RESEARCH_INSTRUMENT_SEARCH",
+        "NEUROAI_PLATFORM_SEARCH"
+      ],
+      "source_classes": [
+        "SCIENTIFIC_PUBLICATION",
+        "RESEARCH_DOCUMENTATION"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Protocol-bounded scientific/research discovery; no literature-completeness claim."
+    },
+    {
+      "frame_id": "F5",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Commercial/ecosystem discovery",
+      "frame_class": "COMMERCIAL_ECOSYSTEM",
+      "purpose": "Discover products through distributors, procurement records, structured industry directories, and funding/investor/accelerator portfolios with attributable product evidence.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Source classes are heterogeneous and can inherit vendor records; underlying source class must remain explicit and P0.5 must test aggregation sensitivity.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F6",
+        "F8",
+        "F9",
+        "F10",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "DISTRIBUTOR_PROCUREMENT_SEARCH",
+        "STRUCTURED_DIRECTORY_SEARCH",
+        "FUNDING_PORTFOLIO_PRODUCT_SEARCH"
+      ],
+      "source_classes": [
+        "DISTRIBUTOR_PROCUREMENT",
+        "STRUCTURED_DIRECTORY",
+        "FUNDING_INVESTOR_ACCELERATOR"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Commercial/ecosystem capture requires attributable exact-product evidence; listing presence is not commercialization proof."
+    },
+    {
+      "frame_id": "F6",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Capability-first discovery",
+      "frame_class": "CAPABILITY_FIRST",
+      "purpose": "Recover weakly labelled/non-traditional products through capability and function queries rather than NeuroAI category branding.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Capability queries can resolve into the same first-party, scientific, commercial, and local-language sources; correlation is expected and must be modeled.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F4",
+        "F5",
+        "F8",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "ATTENTION_VIGILANCE",
+        "FATIGUE_DROWSINESS",
+        "COGNITIVE_AFFECTIVE_STATE",
+        "ADAPTIVE_INTERFACE",
+        "NEUROFEEDBACK_TRAINING",
+        "NEURAL_DECODING_CONTROL",
+        "NONTRADITIONAL_FORM_FACTOR"
+      ],
+      "source_classes": [
+        "PUBLIC_WEB_ATTRIBUTABLE",
+        "SCIENTIFIC_PUBLICATION",
+        "MANUFACTURER_VENDOR_OFFICIAL"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Capability-first retrieval does not establish scope; exact products still require P0.3/D4 disposition."
+    },
+    {
+      "frame_id": "F7",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Expert nominations",
+      "frame_class": "EXPERT_NOMINATION",
+      "purpose": "Capture structured expert-nominated products, edge cases, and suspected omissions for recall stress testing.",
+      "capture_estimation_eligible": false,
+      "dependence_notes": "Purposive nomination has unknown and highly selective capture probabilities; excluded from the primary unseen estimator.",
+      "dependent_or_nested_with": [
+        "F9",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "EXPERT_NOMINATION"
+      ],
+      "source_classes": [
+        "EXPERT_NOMINATION"
+      ],
+      "stopping_rule": {
+        "mode": "MANUAL_DECLARED_LIMIT",
+        "minimum_completed_rounds": null,
+        "consecutive_low_yield_rounds": null,
+        "maximum_marginal_new_identity_yield": null,
+        "minimum_raw_candidates_per_round": null
+      },
+      "status": "ACTIVE",
+      "boundary": "Recall/edge-case frame only; no primary capture-estimation role."
+    },
+    {
+      "frame_id": "F8",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Local-language discovery",
+      "frame_class": "LOCAL_LANGUAGE",
+      "purpose": "Measure incremental product discovery from native-language query families and local sources in predeclared language/jurisdiction strata.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Local-language discovery can recover the same source classes as first-party/scientific/commercial frames; overlap is intentional and measured.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F4",
+        "F5",
+        "F6",
+        "F11"
+      ],
+      "languages": [
+        "PREREGISTERED_NATIVE_LANGUAGES"
+      ],
+      "jurisdictions": [
+        "PREREGISTERED_MATCHED_JURISDICTIONS"
+      ],
+      "query_families": [
+        "NATIVE_LANGUAGE_CATEGORY",
+        "NATIVE_LANGUAGE_CAPABILITY",
+        "LOCAL_PRODUCT_SOURCE"
+      ],
+      "source_classes": [
+        "LOCAL_LANGUAGE_PUBLIC",
+        "LOCAL_REGULATORY_OR_INSTITUTIONAL",
+        "MANUFACTURER_VENDOR_OFFICIAL"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Matched multilingual sensitivity frame; no inference beyond declared languages/jurisdictions."
+    },
+    {
+      "frame_id": "F9",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Curated-actor seed discovery",
+      "frame_class": "CURATED_ACTOR_SEED",
+      "purpose": "Enumerate product evidence for a frozen set of known Observatory actors and other predeclared organization seeds.",
+      "capture_estimation_eligible": false,
+      "dependence_notes": "The seed actors are intentionally known and non-probabilistic; this frame improves the observed registry but is excluded from the primary unseen estimator.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F5",
+        "F7",
+        "F10",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "FROZEN_ACTOR_PRODUCT_ENUMERATION"
+      ],
+      "source_classes": [
+        "CURATED_OBSERVATORY_ACTOR",
+        "MANUFACTURER_VENDOR_OFFICIAL"
+      ],
+      "stopping_rule": {
+        "mode": "BOUNDED_SOURCE_EXHAUSTION",
+        "minimum_completed_rounds": null,
+        "consecutive_low_yield_rounds": null,
+        "maximum_marginal_new_identity_yield": null,
+        "minimum_raw_candidates_per_round": null
+      },
+      "status": "ACTIVE",
+      "boundary": "Bounded only by the frozen actor-seed set and declared per-actor enumeration procedure."
+    },
+    {
+      "frame_id": "F10",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Patent-commercialization crossover",
+      "frame_class": "PATENT_COMMERCIALIZATION",
+      "purpose": "Follow a frozen patent/assignee candidate universe to attributable product evidence without treating patent ownership as commercialization.",
+      "capture_estimation_eligible": true,
+      "dependence_notes": "Patent-derived actor seeds overlap curated actors, first-party evidence, and commercial sources; patent ownership is only a retrieval lead.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F2",
+        "F5",
+        "F9",
+        "F11"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "DECLARED_PATENT_JURISDICTIONS"
+      ],
+      "query_families": [
+        "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+        "PATENT_CAPABILITY_PRODUCT_CROSSOVER"
+      ],
+      "source_classes": [
+        "PATENT_BIBLIOGRAPHIC",
+        "ATTRIBUTABLE_PRODUCT_EVIDENCE"
+      ],
+      "stopping_rule": {
+        "mode": "BOUNDED_SOURCE_EXHAUSTION",
+        "minimum_completed_rounds": null,
+        "consecutive_low_yield_rounds": null,
+        "maximum_marginal_new_identity_yield": null,
+        "minimum_raw_candidates_per_round": null
+      },
+      "status": "ACTIVE",
+      "boundary": "Patent evidence supplies discovery leads only; inclusion/commercialization requires separate attributable product evidence."
+    },
+    {
+      "frame_id": "F11",
+      "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+      "label": "Snowball expansion",
+      "frame_class": "SNOWBALL_EXPANSION",
+      "purpose": "Expand from validated products, organizations, trials, distributors, and related products under explicit parent-seed provenance.",
+      "capture_estimation_eligible": false,
+      "dependence_notes": "Network expansion is path-dependent and deliberately conditioned on already discovered identities; excluded from the primary unseen estimator.",
+      "dependent_or_nested_with": [
+        "F1",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10"
+      ],
+      "languages": [
+        "MULTILINGUAL"
+      ],
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "query_families": [
+        "PRODUCT_TO_ORGANIZATION",
+        "ORGANIZATION_TO_PRODUCT",
+        "PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION",
+        "PRODUCT_TO_DISTRIBUTOR",
+        "PRODUCT_TO_RELATED_PRODUCT",
+        "PRODUCT_TO_CAPABILITY_QUERY"
+      ],
+      "source_classes": [
+        "SNOWBALL_EDGE_ATTRIBUTABLE"
+      ],
+      "stopping_rule": {
+        "mode": "MARGINAL_YIELD",
+        "minimum_completed_rounds": 3,
+        "consecutive_low_yield_rounds": 2,
+        "maximum_marginal_new_identity_yield": 0.05,
+        "minimum_raw_candidates_per_round": 20
+      },
+      "status": "ACTIVE",
+      "boundary": "Path-dependent recall-expansion frame; contributes to observed coverage but not primary capture estimation."
+    }
+  ],
+  "boundary": "The register fixes discovery mechanisms and protocol-bounded stop rules; it does not establish global completeness."
+}
