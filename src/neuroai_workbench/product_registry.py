@@ -324,11 +324,7 @@ def population_view_identity_ids(rows: Sequence[Mapping[str, Any]], view_id: str
         raise ProductRegistryError(f"Unknown population view {view_id!r}")
 
     if view_id != "A-P8":
-        return {
-            str(row["canonical_entity_id"])
-            for row in rows
-            if row_qualifies_for_population_view(row, view_id)
-        }
+        return {str(row["canonical_entity_id"]) for row in rows if row_qualifies_for_population_view(row, view_id)}
 
     offering_rows: dict[tuple[Any, ...], Mapping[str, Any]] = {}
     for row in rows:
