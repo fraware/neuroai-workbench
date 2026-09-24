@@ -545,7 +545,7 @@ def test_f9_actor_seed_register_rejects_missing_core_fields() -> None:
 
     wrong_version = deepcopy(register)
     wrong_version["frame_register_version"] = "OTHER"
-    with pytest.raises(ProductDiscoveryError, match="frame register"):
+    with pytest.raises(ProductDiscoveryError, match="must bind PRODUCT_DISCOVERY_FRAME_REGISTER"):
         validate_f9_actor_seed_register(wrong_version)
 
     wrong_role = deepcopy(register)
@@ -573,3 +573,12 @@ def test_f9_actor_seed_register_rejects_missing_core_fields() -> None:
     missing_binding["source_binding"] = None
     with pytest.raises(ProductDiscoveryError, match="exact source_binding"):
         validate_f9_actor_seed_register(missing_binding)
+
+
+def test_f9_actor_seed_register_rejects_each_missing_source_binding_field() -> None:
+    register = load_f9_actor_seed_register()
+    for field in ("repository", "commit_sha", "path", "blob_sha"):
+        changed = deepcopy(register)
+        changed["source_binding"][field] = ""
+        with pytest.raises(ProductDiscoveryError, match=f"source_binding requires {field}"):
+            validate_f9_actor_seed_register(changed)
