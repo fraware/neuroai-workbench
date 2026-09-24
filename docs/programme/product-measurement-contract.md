@@ -120,9 +120,9 @@ A family identity does not establish that every family member has the same:
 - commercial state;
 - deployment state.
 
-### 3.3 Market-facing product
+### 3.3 Product/service offering identity
 
-A **market-facing product** is an identifiable named offering represented to an external user, customer, researcher, clinician, institution, or trial programme as a coherent product object.
+A **product/service offering identity** is an identifiable named offering represented to an external user, customer, researcher, clinician, institution, or trial programme as a coherent product object.
 
 The offering may be:
 
@@ -135,7 +135,7 @@ The offering may be:
 - a formally named investigational product/offering;
 - a separately offered service.
 
-The existence of a market-facing product does not establish purchase availability, deployment, effectiveness, authorization, adoption, or revenue.
+An external offering identity may be commercial, research-use, or formal investigational. Its existence does not establish purchase availability, commercialization, deployment, effectiveness, authorization, adoption, or revenue.
 
 ### 3.4 Exact technical configuration
 
@@ -260,15 +260,25 @@ A registry row binds:
 ```text
 registry_row_id
 product_offering_id
-product_family_id            # nullable when no evidenced family entity exists
-configuration_system_id      # nullable when no evidenced exact configuration exists
+product_family_id                 # nullable when no evidenced family entity exists
+configuration_system_id           # nullable when no evidenced exact configuration exists
+configuration_coverage_state
+offering_kind
+primary_enumeration_role
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+currentness_policy_id
 lifecycle_state
 access_commercial_state
 regulatory_state
 deployment_state
+signal_or_sensing_modality[]
+inference_capability[]
+intervention_output_capability[]
+form_factor[]
+deployment_context[]
+target_population[]
 boundary_disposition_ref
 source_observation_refs
 ```
@@ -277,7 +287,9 @@ source_observation_refs
 
 Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
 
-Where `configuration_system_id` is unresolved, offering-level analyses may retain the otherwise eligible row with explicit configuration coverage state. Configuration-level analyses, including A-P8, exclude the unresolved configuration from the numerator and report the resulting coverage loss.
+Where `configuration_system_id` is unresolved, offering-level analyses may retain the otherwise eligible row with explicit `configuration_coverage_state`. Configuration-level analyses, including A-P8, exclude the unresolved configuration from the numerator and report the resulting coverage loss.
+
+Capability, form-factor, context, and target-population fields are analytical projections of evidence-backed assertions. They may be multi-label and do not create new canonical identity unless the material-change rule in §6 is independently satisfied.
 
 ## 4. Product-population inclusion boundary
 
@@ -766,6 +778,21 @@ The knowledge-time cutoff specifies the latest Observatory evidence/observation 
 
 A count described as “current as of date T” is incomplete unless its knowledge-time cutoff is also declared. Later-discovered historical evidence may change a retrospective world-time projection without changing the original knowledge-time-as-of result.
 
+### 10.6 Currentness policy
+
+Every population view whose ID begins with `CURRENT_` must bind a versioned:
+
+```text
+currentness_policy_id
+```
+
+The policy defines how lifecycle evidence, source class, observation age, successor/discontinuation evidence, and unresolved conflicts determine eligibility for a current projection.
+
+A missing `valid_until`, a still-resolvable URL, or the absence of a discontinuation notice is insufficient by itself to establish current state.
+
+P0.3/P0.4 must implement the currentness policy explicitly and preserve stale or insufficient evidence as an uncertainty/coverage state rather than silently carrying a product forward indefinitely.
+
+
 
 ## 11. Primary Release-A population views
 
@@ -794,7 +821,7 @@ This broad inventory **does include** current officially represented announced, 
 
 It excludes research `SYSTEM` objects that lack a qualifying product/service offering identity.
 
-A-P1 is an **offering inventory**, not a market denominator, installed-base denominator, end-user-system denominator, or distinct-technology denominator. It must be reported with enumeration-role composition.
+A-P1 is an **offering inventory**, not a market denominator, installed-base denominator, end-user-system denominator, distinct-technology denominator, or synonym for “currently available products”. It must be reported with enumeration-role composition and an explicit statement that announcement/development/pre-delivery objects are included.
 
 ### 11.2 `A-P2 CURRENT_COMMERCIALLY_ACCESSIBLE`
 
@@ -831,7 +858,7 @@ An offering qualifies when evidence supports at least one of:
 - trial/investigational access;
 - documented external deployment/access under the applicable state rules.
 
-A-P6 is the preferred view when the question is how many identifiable offerings have progressed beyond announcement/development representation.
+A-P6 is the preferred present-tense view when the question is how many identifiable products/services are currently released or externally accessible, subject to its declared access and currentness policies. Any public phrase such as “currently available/accessible NeuroAI products and services” must map to A-P6 or a narrower explicitly named successor view, not A-P1.
 
 ### 11.7 `A-P7 CURRENT_DEPLOYED_LEGACY`
 
@@ -951,6 +978,7 @@ enumeration_roles
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+currentness_policy_id
 discovery_frame_universe
 ```
 
@@ -984,6 +1012,7 @@ included_enumeration_roles
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+currentness_policy_id
 observed_or_estimated
 discovery_protocol_or_model_id
 uncertainty_state
@@ -1232,8 +1261,9 @@ At minimum, P0.3 must make it possible to represent:
 - identity resolution state;
 - source/observation provenance;
 - population-view eligibility;
-- declared world-time and knowledge-time cutoffs for count projections;
-- evidence-supported technical-equivalence relationships without silent identity merges.
+- declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
+- evidence-supported technical-equivalence relationships without silent identity merges;
+- analytical registry projections containing the capability/context/state fields in §3.10 without promoting those fields into identity by default.
 
 P0.3 must include validation tests for the edge cases in §15.
 
@@ -1262,7 +1292,11 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 19. FAMILY/OFFERING/CONFIGURATION semantics map losslessly to current PRODUCT/SYSTEM ontology;
 20. family entities are source-supported and never synthesized one-per-offering;
 21. A-P8 never fabricates configuration SYSTEM identities;
-22. exact-product registry rows remain analytical projections distinct from canonical entity identity.
+22. exact-product registry rows remain analytical projections distinct from canonical entity identity;
+23. every current population view binds a versioned currentness policy;
+24. registry projection preserves sensing/inference/output/form-factor/context/state dimensions required by the working methodology;
+25. offering identity terminology does not imply commercialization;
+26. A-P6, not A-P1, is the default view for present-tense externally accessible/released product counts.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
