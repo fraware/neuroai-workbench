@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R40 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R40 findings and the final pre-review consistency corrections below are incorporated in the current candidate; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -148,6 +148,8 @@ The corrected candidate requires every Release-A count or estimate to bind:
 
 ```text
 boundary_contract_id
+registry_projection_version
+population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
@@ -158,8 +160,10 @@ included_enumeration_roles
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+currentness_policy_id
 observed_or_estimated
 discovery_protocol_or_model_id
+discovery_frame_universe
 uncertainty_state
 ```
 
@@ -184,6 +188,20 @@ SYSTEM without qualifying offering identity
 ```
 
 The exact-product registry is a projection joining these canonical objects and scoped assertions. It is not another entity family.
+
+## 6.2 Final pre-review consistency audit
+
+A final repository- and methodology-level audit after the R1–R40 merge identified five residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+
+| ID | Residual inconsistency | Correction |
+| --- | --- | --- |
+| C1 | The review record still described the corrections as living on the pre-merge branch and its minimum reporting metadata lagged the contract | Make the review state branch-independent and synchronize the governed count metadata |
+| C2 | Published count metadata omitted the exact registry projection version and discovery-frame universe needed to reproduce the denominator | Require both fields in every governed Release-A count/estimate |
+| C3 | Release-A seed construction still described canonical “exact-product records/objects”, conflicting with the PRODUCT-offering / SYSTEM-configuration model | Define A1 as canonical identity-graph construction plus analytical registry projection; prohibit row-count denominators |
+| C4 | Final D4 sampling required private identity/enumeration diagnostic coverage without freezing each candidate's diagnostic assignment or deterministic derivation rule | Bind the diagnostic dimensions or their frozen derivation policy into the candidate-pool freeze |
+| C5 | The D4 protocol unnecessarily serialized P0.3 implementation behind full P0.2 completion | Permit P0.3 schema/projection implementation after P0.1 freeze while retaining D4 completion as a P0-G/Release-A operational dependency |
+
+The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
 ## 7. Residual methodological risks
 
@@ -213,7 +231,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R40 and C1–C5 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
