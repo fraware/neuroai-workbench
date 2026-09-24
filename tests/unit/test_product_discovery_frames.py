@@ -99,7 +99,7 @@ def _capture(
     return capture
 
 
-def test_frame_validation_preserves_dependence_and_excludes_expert_frame_from_primary_estimator() -> None:
+def test_frame_validation_preserves_dependence_and_excludes_purposive_frames_from_primary_estimator() -> None:
     f6 = _frame("F6", "CAPABILITY_FIRST", dependencies=["F1"])
     validate_discovery_frame(f6)
 
@@ -108,9 +108,14 @@ def test_frame_validation_preserves_dependence_and_excludes_expert_frame_from_pr
     with pytest.raises(ProductDiscoveryError, match="cannot be dependent"):
         validate_discovery_frame(self_dependent)
 
-    f7 = _frame("F7", "EXPERT_NOMINATION", capture_eligible=True)
-    with pytest.raises(ProductDiscoveryError, match="cannot enter the primary capture estimator"):
-        validate_discovery_frame(f7)
+    for frame_id, frame_class in (
+        ("F7", "EXPERT_NOMINATION"),
+        ("F9", "CURATED_ACTOR_SEED"),
+        ("F11", "SNOWBALL_EXPANSION"),
+    ):
+        frame = _frame(frame_id, frame_class, capture_eligible=True)
+        with pytest.raises(ProductDiscoveryError, match="cannot enter the primary capture estimator"):
+            validate_discovery_frame(frame)
 
 
 def test_capture_id_is_deterministic_and_resolved_include_requires_identity() -> None:
