@@ -136,19 +136,11 @@ def validate_frame_register(register: Mapping[str, Any]) -> None:
     if set(indexed) != FRAME_ID_SET:
         missing = sorted(FRAME_ID_SET - set(indexed))
         extra = sorted(set(indexed) - FRAME_ID_SET)
-        raise ProductDiscoveryError(
-            f"Frame register must contain exactly F1-F11; missing={missing!r}, extra={extra!r}"
-        )
-    excluded = {
-        frame_id
-        for frame_id, frame in indexed.items()
-        if not bool(frame["capture_estimation_eligible"])
-    }
+        raise ProductDiscoveryError(f"Frame register must contain exactly F1-F11; missing={missing!r}, extra={extra!r}")
+    excluded = {frame_id for frame_id, frame in indexed.items() if not bool(frame["capture_estimation_eligible"])}
     declared = set(cast(list[str], register.get("estimation_policy", {}).get("purposive_frames_excluded", [])))
     if excluded != declared:
-        raise ProductDiscoveryError(
-            "Frame register estimation-policy exclusions must exactly match frame eligibility"
-        )
+        raise ProductDiscoveryError("Frame register estimation-policy exclusions must exactly match frame eligibility")
 
 
 def product_capture_id(capture: Mapping[str, Any]) -> str:
