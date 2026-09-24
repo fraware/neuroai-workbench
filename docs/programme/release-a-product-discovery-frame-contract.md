@@ -42,12 +42,12 @@ For Release-A offering-level estimation, one capture history belongs to one reso
 For product (i):
 
 ```text
-C_i = (F1_i, F2_i, ..., F8_i)
+C_i = (F1_i, F2_i, ..., F11_i)
 ```
 
 where each component is binary after within-frame deduplication.
 
-A product observed 12 times in F1 is one F1 capture. The same product observed in F1, F2 and F4 contributes the history `(1,1,0,1,0,0,0,0)`.
+A product observed 12 times in F1 is one F1 capture. The same product observed in F1, F2 and F4 contributes the history `(1,1,0,1,0,0,0,0,0,0,0)` in the complete F1–F11 register.
 
 Capture histories must remain tied to one exact:
 - registry projection version;
@@ -86,6 +86,10 @@ For each round and frame report:
 - failed/inaccessible leads;
 - marginal new-identity yield;
 - duplicate yield.
+
+A machine-readable `PRODUCT_DISCOVERY_RUN` record binds every frame/round execution to its exact query/seed set, analysis universe, digest of identities known at round start, exact capture IDs, and stop state. This prevents later recomputation from silently changing the new-versus-duplicate baseline.
+
+Language and jurisdiction contributions are reported after exact-offering deduplication and distinguish unique resolved identities from identities that were genuinely new relative to the round-start known set.
 
 ## Frame overlap and dependence
 
