@@ -421,6 +421,12 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
     validate_discovery_run(run)
     validate_run_against_captures(run, captures, frame)
 
+    permuted = deepcopy(run)
+    permuted["query_or_seed_ids"] = list(reversed(permuted["query_or_seed_ids"]))
+    permuted["languages"] = list(reversed(permuted["languages"]))
+    permuted["jurisdictions"] = list(reversed(permuted["jurisdictions"]))
+    assert product_discovery_run_id(permuted) == run["run_id"]
+
     wrong_language = deepcopy(captures[0])
     wrong_language["language"] = "ja"
     wrong_language["capture_id"] = product_capture_id(wrong_language)
