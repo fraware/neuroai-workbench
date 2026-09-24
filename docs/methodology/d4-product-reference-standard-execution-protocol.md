@@ -397,6 +397,8 @@ Before final pool freeze, perform a controlled cross-split duplicate/identity-le
 
 Calibration cases may remain a development/calibration resource but cannot enter the final held-out membership through relabeling, alternate URLs, aliases, translated names, or duplicate source records.
 
+Also report calibration/final overlap at product-family and organization/developer levels. Such higher-level overlap is not automatically prohibited by this reference-standard protocol, but it constrains the generalization claim. An evaluation presented as generalization to unseen organizations or unseen product families requires a predeclared group-disjoint split or a separately reported group-held-out analysis; ordinary D4 held-out performance must not be relabelled as evidence of unseen-actor/family generalization.
+
 ### 10.2 Candidate-pool freeze
 
 Before final selection, freeze:
@@ -496,6 +498,7 @@ Accordingly:
 - unweighted accuracy, precision, recall, calibration and abstention metrics are conditional on the D4 benchmark composition;
 - the human-disposition distribution in D4 is not an operational base-rate estimate;
 - D4 performance does not establish open-world discovery recall or product-population coverage;
+- ordinary D4 held-out performance does not establish generalization to unseen organizations/product families when those groups overlap calibration and final sets;
 - operational positive predictive value, expected review burden, or population-weighted error requires a separately justified target distribution and, where appropriate, predeclared weighting/transport methodology.
 
 No evaluation report may silently translate D4 benchmark composition into real-world candidate prevalence.
