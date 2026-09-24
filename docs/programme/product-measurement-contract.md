@@ -17,7 +17,7 @@ The contract governs:
 - the identity boundary for global and jurisdiction-specific counting;
 - lifecycle, commercial, deployment, and regulatory state semantics;
 - treatment of versions, aliases, rebrands, OEM/private-label products, bundles, apps, subscriptions, and research/investigational systems;
-- the interface between D4 scope labels and downstream count eligibility;
+- the interface between the approved D1 boundary, D4 reference-standard validation, operational boundary dispositions, and downstream count eligibility;
 - temporal semantics;
 - aggregation and denominator rules;
 - evidence requirements for product existence and product-state claims;
@@ -56,7 +56,7 @@ No product-level count or comparison is valid until the programme can answer:
 
 1. **What object is this?**
 2. **At what identity level is it represented?**
-3. **Is it in scope under D4?**
+3. **Does it have a governed operational boundary disposition under the approved D1 research contract?**
 4. **What was its state at the specified world-time and knowledge-time cutoff?**
 5. **What source/observation supports that identity and state?**
 6. **Does the requested denominator count product identities, exact configurations, product families, services, components, deployments, users, units, revenue, procedures, or something else?**
@@ -1253,7 +1253,7 @@ Uses this contract for:
 
 - exact product/service identity;
 - population-view definitions;
-- D4 count eligibility;
+- governed operational D1 boundary eligibility and D4/reference-standard validation lineage;
 - deduplication;
 - multilingual and capability-first discovery;
 - saturation analysis;
@@ -1321,7 +1321,7 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 3. compatibility with the temporal model;
 4. compatibility with the evidence/decision boundary;
 5. compatibility with data-governance constraints;
-6. D4 can apply its scope labels without conflating identity/state;
+6. D4 can validate the boundary process without being conflated with operational population membership, identity, or state;
 7. P0.3 can implement the contract without inventing additional identity semantics;
 8. the Release-A counting views are unambiguous;
 9. the edge-case table has no unresolved contradiction with the counting rules;
@@ -1355,7 +1355,7 @@ After freeze, a material change to any of the following requires a dedicated iss
 
 - product identity level;
 - product/configuration split rule;
-- D4 count eligibility;
+- governed operational D1 boundary eligibility and D4/reference-standard validation lineage;
 - current-product projection;
 - component/bundle counting;
 - service-counting rule;
@@ -1365,7 +1365,7 @@ After freeze, a material change to any of the following requires a dedicated iss
 
 A change must state whether previously reported counts require recomputation or reinterpretation.
 
-If D4 has already been frozen, a material change affecting the D1-to-count interface, count eligibility, identity level, enumeration role, or primary population-view semantics triggers a D4 compatibility review. Where the prior D4 dispositions are no longer directly valid under the successor contract, a successor D4 review/re-freeze is required before the new contract is used for governed Release-A counting.
+If D4 has already been frozen, a material change affecting the D1-to-count interface, operational count eligibility, identity level, enumeration role, or primary population-view semantics triggers a D4 compatibility review. Where the prior D4 dispositions are no longer directly valid under the successor contract, a successor D4 review/re-freeze is required before the new contract is used for governed Release-A counting.
 
 Git history preserves predecessor contract states. Do not silently redefine “product” while reusing the same measurement version.
 
