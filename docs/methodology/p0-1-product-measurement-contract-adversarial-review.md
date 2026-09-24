@@ -169,6 +169,7 @@ currentness_policy_id
 analysis_preregistration_id
 analysis_execution_pin
 observed_or_estimated
+estimation_status
 discovery_frame_register_id
 discovery_frame_register_digest
 discovery_frame_universe
