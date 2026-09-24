@@ -3,7 +3,7 @@
 **Plan binding:** `P0.1` in [Product Population → Industrial Observatory deployment plan](product-population-industrial-observatory-deployment-plan.md)  
 **Tracking issue:** #316  
 **Parent gate:** #315 / `P0-G`  
-**Status:** CANDIDATE FOR FREEZE — substantive measurement contract; not a schema, benchmark result, population estimate, market estimate, effectiveness result, or publication authorization
+**Status:** CANDIDATE FOR FREEZE — adversarial-review corrections incorporated; human freeze disposition pending. This is a substantive measurement contract, not a schema, benchmark result, population estimate, market estimate, effectiveness result, or publication authorization
 
 ## 1. Purpose
 
@@ -24,6 +24,29 @@ The contract governs:
 - prohibited inferences.
 
 Machine-readable schemas, validators, migrations, and registry implementation belong to `P0.3`. This document freezes the measurement semantics those implementations must preserve.
+
+### 1.1 Exact governing research-contract binding
+
+This contract is a downstream enumeration contract under the already approved D1 research boundary. It does not redefine NeuroAI scope.
+
+The exact controlling identities are:
+
+```text
+D1 artifact:
+  LANDSCAPE_RESEARCH_CONTRACT_v0.1
+D1 canonical JSON SHA-256:
+  7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb
+
+G1 disposition:
+  HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1
+G1 canonical JSON SHA-256:
+  ed6489fe1085b5aec1b594970dd1c574b57bd6bbd25a659643e9bd1b7b72d8ef
+```
+
+P0.1 refines how in-scope product/service objects are represented, deduplicated, temporally projected, and counted. It cannot broaden or narrow the approved D1 research boundary by itself.
+
+A future substantive change to D1 requires its own governed successor and human disposition. P0.1 must then receive an explicit compatibility review before using the successor boundary.
+
 
 ## 2. Governing rule
 
@@ -144,6 +167,8 @@ A **service** is independently countable only if all of the following are true:
 
 A service that merely describes internal company operations is not independently countable.
 
+Under the v1.0 Observatory ontology, an independently countable service is represented as a canonical `PRODUCT` offering with an explicit service/offering-kind role. This contract does not silently invent a new `SERVICE` entity type. A later ontology successor may introduce a dedicated service entity only through reviewed schema evolution and an explicit compatibility/migration decision.
+
 ### 3.6 Component
 
 A **component** is a separately identifiable product or device that forms part of a larger system.
@@ -161,16 +186,44 @@ A component must not be silently treated as equivalent to the full system in whi
 
 ### 3.7 Research or investigational system
 
-A research or investigational system may enter the Product Population Observatory only if it is sufficiently product-like to support stable identity.
+A research or investigational `SYSTEM` is not automatically a `PRODUCT`.
 
-At minimum, the programme must establish:
+It enters the product/service population only when evidence supports a stable external product/service offering identity in addition to a stable technical-system identity. Relevant evidence may include a formally named investigational product, a trial/regulatory product identity, an externally offered research platform, or another source-backed programme/product identity that satisfies D4.
 
-- a stable named system or configuration;
+At minimum, a product-countable investigational offering requires:
+
+- a stable named external product/service or formal investigational-product identity;
 - attributable developer/operator identity;
 - a repeatable or formally specified configuration;
-- an external research, trial, regulatory, or programme record that supports existence.
+- an external research, trial, regulatory, commercial, or programme record supporting that offering identity.
 
-A one-off laboratory apparatus described only as an experimental setup does not automatically become a product. It may remain a `SYSTEM` or research object outside the product denominator.
+A stable research system that lacks an external product/service offering identity remains a `SYSTEM`. It may be represented in the wider technology/system landscape but stays outside product/service population counts.
+
+A one-off laboratory apparatus described only as an experimental setup remains outside the product denominator unless a later attributable record establishes a qualifying product/service identity.
+
+### 3.8 Enumeration role
+
+Every product/service identity eligible for Release-A counting must carry an explicit enumeration role so heterogeneous offerings are not silently combined.
+
+The v1.0 semantic roles are:
+
+```text
+INTEGRATED_SYSTEM
+COMPONENT_OR_SUBSYSTEM
+STANDALONE_SOFTWARE_OR_SERVICE
+OTHER_REVIEW_REQUIRED
+```
+
+Interpretation:
+
+- `INTEGRATED_SYSTEM` — a complete externally identifiable offering containing the required in-scope capability at the level presented to a user, researcher, clinician, institution, or trial programme.
+- `COMPONENT_OR_SUBSYSTEM` — a separately identifiable component, module, sensor, electrode array, SDK-bound subsystem, or other part of a broader system.
+- `STANDALONE_SOFTWARE_OR_SERVICE` — independently offered software, API, analytics, or service operating on externally supplied or linked signals without constituting the complete hardware/system offering.
+- `OTHER_REVIEW_REQUIRED` — an offering whose enumeration role cannot be assigned without review.
+
+Enumeration role is distinct from deployment context, form factor, lifecycle state, and commercial state.
+
+A broad count containing more than one enumeration role must be labelled as a count of **offering identities** and must report the role composition. It must not be presented as the number of complete end-user systems or the number of distinct technologies.
 
 ## 4. Product-population inclusion boundary
 
@@ -205,7 +258,7 @@ Interpretation:
 
 - **INCLUDE** — evidence supports inclusion under the frozen product research boundary.
 - **EXCLUDE** — evidence supports exclusion under that boundary.
-- **BORDERLINE** — the candidate sits on a governed boundary where the available evidence supports neither stable inclusion nor exclusion without adjudication.
+- **BORDERLINE** — attributable evidence places the candidate on a genuine governed boundary and an expert-reviewed final disposition records that boundary with rationale.
 - **ABSTAIN** — available evidence is insufficient for a responsible scope classification.
 
 D4 classification does not establish exact identity, availability, effectiveness, deployment, or authorization.
@@ -227,6 +280,23 @@ required source/observation provenance exists
 `BORDERLINE`, `ABSTAIN`, and unresolved-identity records remain visible in uncertainty/coverage reporting but stay outside the primary count.
 
 `EXCLUDE` records remain available for benchmark/evaluation provenance but stay outside the product population.
+
+### 4.4 D1 evidence rules at the D4/count interface
+
+A governed D4 disposition used for Release-A counting must preserve the approved D1 evidence rules:
+
+- attributable evidence is required;
+- proxy-only evidence cannot establish `INCLUDE`;
+- NeuroAI boundary membership requires the approved expert-review process;
+- insufficient evidence routes to `ABSTAIN`;
+- `BORDERLINE` requires recorded rationale;
+- open-world unknowns remain explicit;
+- gray-third/capability-first discovery is retrieval-only and is not a canonical population class.
+
+Identity resolution alone never authorizes `INCLUDE`.
+
+A single company representation may support the bounded claim that an offering was represented by that company. It does not, by itself, satisfy the governed D4 inclusion decision where D1 requires multi-signal attributable evidence plus expert review.
+
 
 ## 5. Identity levels and counting unit
 
@@ -262,7 +332,7 @@ This is the default Release-A global product/service identity level.
 CONFIGURATION
 ```
 
-Represents a materially distinct technical or intended-use configuration within a product.
+Represents a materially distinct technical or intended-use configuration associated with one or more product identities. A configuration is usually product-specific, but evidence-supported OEM/private-label equivalence may link more than one commercial offering to the same or substantially equivalent technical implementation without merging their commercial product identities.
 
 Used for:
 
@@ -372,6 +442,8 @@ Do not collapse commercial identity and technical equivalence.
 Where separately branded and externally offered, retain separate product identities linked by an evidence-supported OEM/technical-equivalence relationship.
 
 For technical-performance or comparative-effectiveness analysis, avoid treating technical duplicates as independent interventions merely because their commercial labels differ.
+
+Technical equivalence must itself be evidence-supported. Unresolved suspected equivalence does not authorize a merge or cluster assignment.
 
 ### 7.4 Acquisition or corporate transfer
 
@@ -585,48 +657,109 @@ An Observatory correction preserves the erroneous predecessor representation in 
 
 Do not rewrite historical releases to make prior errors disappear.
 
+### 10.5 Count cutoffs
+
+Every Release-A count or population estimate must bind two cutoffs:
+
+```text
+world_time_cutoff
+knowledge_time_cutoff
+```
+
+The world-time cutoff specifies the date/period for which the product state is being represented.
+
+The knowledge-time cutoff specifies the latest Observatory evidence/observation state allowed into that analysis.
+
+A count described as “current as of date T” is incomplete unless its knowledge-time cutoff is also declared. Later-discovered historical evidence may change a retrospective world-time projection without changing the original knowledge-time-as-of result.
+
+
 ## 11. Primary Release-A population views
 
 The programme must never publish an unlabeled “global product count”.
 
-Every count names its population view.
+Every count names:
 
-### 11.1 `A-P1 CURRENT_IDENTIFIABLE_PRODUCTS_SERVICES`
+- population view;
+- identity level;
+- enumeration role(s);
+- jurisdiction scope;
+- world-time cutoff;
+- knowledge-time cutoff.
 
-Count canonical `PRODUCT` identities that:
+### 11.1 `A-P1 CURRENT_IDENTIFIABLE_OFFERING_INVENTORY`
 
-- have D4 `INCLUDE`;
-- have resolved product identity;
-- are not evidenced as discontinued/withdrawn/superseded out of the applicable current view;
-- have sufficient provenance for their existence/state at the evidence cutoff.
+Count canonical `PRODUCT` offering identities that:
 
-Includes commercial, research-use, and investigational product/service objects.
+- have governed D4 `INCLUDE`;
+- have resolved product/service offering identity;
+- have a declared enumeration role;
+- are not evidenced as discontinued, cancelled, withdrawn, or superseded out of the applicable current offering view;
+- have sufficient provenance for their current representation/state at the declared cutoffs.
 
-This is the broad primary current product/service population.
+This broad inventory **does include** current officially represented announced, in-development, manufacturing/pre-delivery, commercially accessible, research-use, and investigational offerings when their product/service identity is supported.
+
+It excludes research `SYSTEM` objects that lack a qualifying product/service offering identity.
+
+A-P1 is an **offering inventory**, not a market denominator, installed-base denominator, end-user-system denominator, or distinct-technology denominator. It must be reported with enumeration-role composition.
 
 ### 11.2 `A-P2 CURRENT_COMMERCIALLY_ACCESSIBLE`
 
-Subset of `A-P1` with evidence supporting current commercial or paid external access under the defined jurisdiction/access rules.
+Subset of A-P1 with evidence supporting current commercial or paid external access under the declared jurisdiction/access rules.
 
-Investigational-only and internal research systems are excluded.
+Announcement-only, internal-only, and investigational-only offerings are excluded unless the applicable access evidence also establishes qualifying commercial access.
 
-### 11.3 `A-P3 CURRENT_RESEARCH_OR_INVESTIGATIONAL`
+### 11.3 `A-P3 CURRENT_RESEARCH_OR_INVESTIGATIONAL_ACCESS`
 
-Subset of `A-P1` whose external access is research-use or investigational and which do not satisfy the applicable commercially accessible definition.
+Subset of A-P1 whose evidenced external access is research-use, trial, or investigational and which does not satisfy the applicable commercially accessible definition.
 
 ### 11.4 `A-P4 CURRENT_INTEGRATED_END_USER_SYSTEMS`
 
-Subset of `A-P1` excluding component-only objects and internal enabling layers.
+Subset of A-P1 with enumeration role `INTEGRATED_SYSTEM`.
 
-Use this view where a policy or public-facing question concerns complete user-facing systems rather than components/platform layers.
+Use this view where the research or public-facing question concerns complete user/researcher/clinician-facing systems rather than components, subsystems, or standalone service layers.
 
-### 11.5 `A-P5 HISTORICAL_CUMULATIVE_PRODUCTS_SERVICES`
+### 11.5 `A-P5 HISTORICAL_CUMULATIVE_OFFERINGS`
 
-All resolved in-scope product identities observed in the defined historical window, including discontinued, withdrawn, and superseded products.
+All resolved in-scope `PRODUCT` offering identities observed in the declared historical window, including discontinued, cancelled, withdrawn, and superseded offerings.
 
 This view is not a current-market denominator.
 
-### 11.6 Family and configuration views
+### 11.6 `A-P6 CURRENT_RELEASED_OR_EXTERNALLY_ACCESSIBLE`
+
+Subset of A-P1 that excludes announcement-only and pre-delivery-only offerings.
+
+An offering qualifies when evidence supports at least one of:
+
+- commercial external access;
+- research-use external access;
+- trial/investigational access;
+- documented external deployment/access under the applicable state rules.
+
+A-P6 is the preferred view when the question is how many identifiable offerings have progressed beyond announcement/development representation.
+
+### 11.7 `A-P7 CURRENT_DEPLOYED_LEGACY`
+
+Count in-scope product identities that are no longer in the current offering inventory because they are discontinued or superseded, but for which current deployment/use is independently documented at the declared cutoffs.
+
+This view keeps product commercial lifecycle separate from installed/deployed presence.
+
+A historical statement that a product was once deployed is insufficient for A-P7.
+
+### 11.8 `A-P8 CURRENT_DISTINCT_TECHNICAL_IMPLEMENTATIONS`
+
+Analytical view for reducing commercial-label duplication where multiple current offering identities are supported as the same or substantially equivalent technical implementation.
+
+Rules:
+
+- commercial product identities are never merged merely to produce this view;
+- equivalence requires attributable technical evidence;
+- unresolved suspected equivalence remains separate;
+- the equivalence method and relation strength must be declared;
+- A-P8 is not interchangeable with A-P1 or A-P4.
+
+This view is especially relevant to OEM/private-label offerings and technically identical rebrands.
+
+### 11.9 Family and configuration views
 
 Family-level and exact-configuration counts may also be reported.
 
@@ -634,8 +767,9 @@ They must be labeled explicitly:
 
 ```text
 FAMILY COUNT
-PRODUCT COUNT
+OFFERING / PRODUCT COUNT
 CONFIGURATION COUNT
+TECHNICAL-EQUIVALENCE VIEW
 ```
 
 and must not be substituted for one another.
@@ -696,6 +830,53 @@ A report must choose the appropriate population view and must not sum component-
 
 They are reported as separate uncertainty/coverage quantities.
 
+### 12.8 Population-estimation compatibility contract
+
+Every unseen-population model must bind exactly one declared estimation universe:
+
+```text
+identity_level
+population_view
+enumeration_roles
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
+discovery_frame_universe
+```
+
+Capture histories must be constructed at that same unit.
+
+Do not mix:
+
+- family and product identities;
+- product and configuration identities;
+- current and historical views;
+- announcement-inclusive and externally-accessible views;
+- component-inclusive and integrated-system-only views;
+
+inside one population estimate unless the model explicitly represents those strata and the estimand is preregistered accordingly.
+
+Estimates from different population views are separate estimands. They cannot be pooled or compared as if they shared one denominator without a declared transformation or joint model.
+
+### 12.9 Minimum count-reporting metadata
+
+Every published Release-A count must state, in machine-readable or table-adjacent form:
+
+```text
+population_view_id
+identity_level
+included_enumeration_roles
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
+observed_or_estimated
+discovery_protocol_or_model_id
+uncertainty_state
+```
+
+A number without this metadata is not a governed Release-A population claim.
+
+
 ## 13. Category-composition versus market-share rule
 
 For category `c`, a Release-A product-composition statistic may be:
@@ -724,7 +905,9 @@ Those denominators belong to Release B.
 
 ### 14.1 Product existence
 
-A product identity may be represented when attributable evidence supports a named external product/service or formal investigational/research system.
+A candidate product identity may be represented when attributable evidence supports a named external product/service or formal investigational/research offering. This is an entity-existence statement only.
+
+Entry into a governed Release-A product population additionally requires the D4 boundary-membership evidence and expert-review conditions in §4.4.
 
 A first-party source may support:
 
@@ -770,11 +953,11 @@ Effectiveness evidence belongs to Release C.
 | Companion app used only to control/display device | Part of product bundle | No separate service count |
 | Separately subscribed analytics service with material in-scope function | Separate service linked to parent product | Countable service in applicable views |
 | One-off paper prototype with no stable external product/programme identity | Research system, not product | Excluded from product denominator |
-| Named investigational system used in a formal trial with stable configuration | Product-like investigational system | Eligible for research/investigational view after D4 + identity review |
-| Announced product with official page but no delivery | Product identity may exist; access state = announced/pre-delivery | Included only in views whose state definition admits it; excluded from commercially accessible view |
-| Product discontinued but still historically important | Preserve product identity and historical assertions | Excluded from current view; included in historical cumulative view |
+| Named investigational system used in a formal trial with stable configuration | PRODUCT only if a stable external product/formal investigational-product identity is evidenced; otherwise SYSTEM | Product counts only if PRODUCT identity + D4 + count eligibility are satisfied |
+| Announced product with official page but no delivery | Product identity may exist; lifecycle/access state = announced or pre-delivery | Included in A-P1 if current representation is supported; excluded from A-P2 and A-P6 unless later access evidence qualifies it |
+| Product discontinued but still historically important | Preserve product identity and historical assertions | Excluded from A-P1; included in A-P5; if current deployment is independently evidenced, also eligible for A-P7 |
 | Acquisition changes developer/owner | Same product unless material product change | No new count solely from acquisition |
-| Private-label/OEM copy sold under separate brand | Separate commercial product identity; technical-equivalence relation if supported | Separate product count in commercial-identity view; avoid false independence in effectiveness analysis |
+| Private-label/OEM copy sold under separate brand | Separate commercial offering identity; technical-equivalence relation only if supported | Separate in A-P1; may collapse only in the explicitly declared A-P8 technical-implementation view |
 | Distributor lists same product under multiple pages | One product | Deduplicate |
 | Same product sold with optional accessories | Same product unless accessory combination materially changes capability and is offered as distinct configuration | Usually no new product count; configuration rule applies |
 | Research headset sold with different software plans | One hardware product plus separate service only where plan meets service criteria | Avoid counting every pricing tier as a product |
@@ -826,6 +1009,18 @@ same commercial label
 commercial rebrand
   != independent technical intervention
 
+broad offering-inventory count
+  != complete end-user-system count
+
+distinct commercial labels
+  != distinct technical implementations
+
+announcement
+  != external access
+
+discontinued from offering
+  != absent from current deployment
+
 high discovery yield
   != global completeness
 ```
@@ -842,7 +1037,7 @@ Uses this contract for:
 - deduplication;
 - multilingual and capability-first discovery;
 - saturation analysis;
-- unseen-population estimation.
+- unseen-population estimation under one fixed identity/population/cutoff/frame universe per estimand.
 
 ### 17.2 Release B
 
@@ -875,7 +1070,8 @@ At minimum, P0.3 must make it possible to represent:
 - family identity;
 - product identity;
 - exact configuration identity;
-- object-class role such as component/service/integrated system;
+- v1.0 service representation as a PRODUCT offering with explicit offering kind;
+- enumeration role `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / OTHER_REVIEW_REQUIRED`;
 - aliases and lineage;
 - jurisdiction-scoped state;
 - lifecycle/access/regulatory/deployment state separation;
@@ -883,7 +1079,9 @@ At minimum, P0.3 must make it possible to represent:
 - D4 disposition;
 - identity resolution state;
 - source/observation provenance;
-- population-view eligibility.
+- population-view eligibility;
+- declared world-time and knowledge-time cutoffs for count projections;
+- evidence-supported technical-equivalence relationships without silent identity merges.
 
 P0.3 must include validation tests for the edge cases in §15.
 
@@ -899,7 +1097,12 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 6. D4 can apply its scope labels without conflating identity/state;
 7. P0.3 can implement the contract without inventing additional identity semantics;
 8. the Release-A counting views are unambiguous;
-9. the edge-case table has no unresolved contradiction with the counting rules.
+9. the edge-case table has no unresolved contradiction with the counting rules;
+10. the exact D1/G1 bindings are correct;
+11. service representation is compatible with the current ontology;
+12. investigational SYSTEM objects cannot silently enter PRODUCT counts;
+13. A-P1 announcement semantics and A-P7 legacy-deployment semantics are unambiguous;
+14. population-estimation units and cutoffs are locked by contract.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
@@ -919,11 +1122,13 @@ After freeze, a material change to any of the following requires a dedicated iss
 
 A change must state whether previously reported counts require recomputation or reinterpretation.
 
+If D4 has already been frozen, a material change affecting the D1-to-count interface, count eligibility, identity level, enumeration role, or primary population-view semantics triggers a D4 compatibility review. Where the prior D4 dispositions are no longer directly valid under the successor contract, a successor D4 review/re-freeze is required before the new contract is used for governed Release-A counting.
+
 Git history preserves predecessor contract states. Do not silently redefine “product” while reusing the same measurement version.
 
 ## 21. Current disposition
 
-This document is a **P0.1 candidate contract**.
+This document is a **P0.1 candidate contract with adversarial-review corrections incorporated**. Issue #320 records the pre-freeze review and its predecessor `REVISE_BEFORE_FREEZE` disposition.
 
 It establishes no product count and makes no claim that the existing Observatory contains a complete or statistically estimated product population.
 
