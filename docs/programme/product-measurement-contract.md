@@ -1084,6 +1084,7 @@ Every published Release-A count must state, in machine-readable or table-adjacen
 
 ```text
 boundary_contract_id
+registry_projection_version
 population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
@@ -1098,6 +1099,7 @@ knowledge_time_cutoff
 currentness_policy_id
 observed_or_estimated
 discovery_protocol_or_model_id
+discovery_frame_universe
 uncertainty_state
 ```
 
@@ -1396,7 +1398,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 32. N_estimated remains explicitly conditional on the declared discovery-frame/model universe and is never equated with proof of an absolute global census;
 33. registry projections retain typed organization relationships instead of a single ambiguous organization field;
 34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology;
-35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition.
+35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition;
+36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
