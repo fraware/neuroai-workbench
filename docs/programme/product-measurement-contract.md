@@ -296,9 +296,9 @@ knowledge_time_cutoff
 first_observed_at
 last_observed_at
 lifecycle_state
-access_commercial_state
-regulatory_state
-deployment_state
+access_commercial_state[]
+regulatory_state[]
+deployment_state[]
 signal_or_sensing_modality[]
 inference_capability[]
 intervention_output_capability[]
@@ -733,6 +733,8 @@ Must distinguish forms of external access such as:
 - discontinued/unavailable;
 - unresolved.
 
+These access modes are time- and jurisdiction-scoped assertions and are not globally mutually exclusive. A research platform may, for example, be commercially licensed to laboratories while also satisfying research-use access. The implementation must therefore preserve compatible concurrent access modes and must not force A-P2 and A-P3 into one exclusive state.
+
 These states may vary by jurisdiction.
 
 ### 9.4 Regulatory state
@@ -751,6 +753,8 @@ Keep distinct:
 - withdrawal/recall;
 - other jurisdiction-specific states.
 
+More than one regulatory assertion may coexist for the same configuration where they describe distinct record types or scopes. The analytical projection must retain the underlying assertion references and may not collapse those records into a single scalar status without a declared derivation rule.
+
 Registration/listing presence is not equivalent to authorization.
 
 A cleared/authorized component does not automatically confer that state on a broader investigational system.
@@ -768,6 +772,8 @@ Distinguish:
 - documented consumer/user access;
 - documented workplace/institutional deployment;
 - unresolved.
+
+Deployment states are context-scoped and may be multi-label across distinct documented contexts. A product may have research deployment and clinical deployment evidence at the same cutoff without either state erasing the other.
 
 Potential applicability to a context is not deployment.
 
@@ -1464,7 +1470,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
 39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility;
-40. unseen-population estimation preserves non-negative population support and permits a preregistered no-estimate outcome when identifiability or adequacy criteria fail.
+40. unseen-population estimation preserves non-negative population support and permits a preregistered no-estimate outcome when identifiability or adequacy criteria fail;
+41. access, regulatory, and deployment assertions preserve compatible concurrent states/scopes instead of forcing analytically invalid single-state exclusivity.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
