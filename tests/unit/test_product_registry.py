@@ -155,6 +155,27 @@ def test_current_offering_views_separate_commercial_and_investigational_access()
     assert row_qualifies_for_population_view(braingate, "A-P6")
 
 
+def test_unresolved_enumeration_role_is_retained_in_broad_current_views() -> None:
+    unresolved_role = _row(
+        "PRD-ROLE-UNRESOLVED",
+        enumeration_role="UNRESOLVED",
+        access="RESEARCH_USE_SOLD_OR_LICENSED",
+        deployment="RESEARCH_DEPLOYMENT",
+    )
+    validate_product_registry_row(unresolved_role)
+    assert row_qualifies_for_population_view(unresolved_role, "A-P1")
+    assert row_qualifies_for_population_view(unresolved_role, "A-P2")
+    assert row_qualifies_for_population_view(unresolved_role, "A-P3")
+    assert not row_qualifies_for_population_view(unresolved_role, "A-P4")
+    assert row_qualifies_for_population_view(unresolved_role, "A-P6")
+
+    review_required = deepcopy(unresolved_role)
+    review_required["primary_enumeration_role"] = "OTHER_REVIEW_REQUIRED"
+    review_required["registry_row_id"] = registry_row_id(review_required)
+    assert not row_qualifies_for_population_view(review_required, "A-P1")
+    assert not row_qualifies_for_population_view(review_required, "A-P6")
+
+
 def test_component_and_software_roles_do_not_silently_enter_integrated_system_view() -> None:
     layer7 = _row(
         "PRD-LAYER7T",
