@@ -200,7 +200,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified twenty residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified twenty-one residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -224,6 +224,7 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C18 | Required final D4 disposition coverage could be misread as a gold-label sampling quota or invite post-label top-up | Treat disposition coverage as a freeze adequacy criterion only; selection constraints are label-free and a coverage failure forces a successor sampling path rather than post-hoc replacement/top-up, with the previously reviewed sample excluded from a label-informed successor unless a contingency was predeclared |
 | C19 | The protocol named a final human D4 freeze decision point without defining its disposition domain or binding it to exact candidate artifacts | Validate candidate successor artifacts first, then record `APPROVE_D4_FREEZE / REQUEST_D4_CHANGES / DEFER_D4_FREEZE`; only exact-artifact approval authorizes the frozen public successor |
 | C20 | Release A still requested a generic D4 “evaluation report”, which could conflate human reference-standard freeze with separately gated model/pipeline evaluation | Require human calibration/freeze evidence and include a model/pipeline evaluation report only when such automation is actually used and separately gated |
+| C21 | Release A implicitly forced a numerical unseen-population estimate even if the preregistered model family is non-identifiable or diagnostically unstable, and did not explicitly constrain the unseen residual to be non-negative | Require `N_estimated >= N_observed`, prohibit negative unseen mass, preregister model adequacy/identifiability/stability criteria, and permit `ESTIMATE_NOT_IDENTIFIED` / `WITHHELD_METHOD_FAILURE` instead of forcing a total |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -255,7 +256,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C20 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C21 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
