@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from importlib.resources import files
 from typing import Any, cast
 
@@ -82,8 +82,8 @@ def _canonical_manifest_material(manifest: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def seed_evidence_index_sha256(
-    observation_ids: Sequence[str] | set[str] | tuple[str, ...] | Any,
-    assertion_ids: Sequence[str] | set[str] | tuple[str, ...] | Any,
+    observation_ids: Iterable[str],
+    assertion_ids: Iterable[str],
 ) -> str:
     """Return a deterministic digest over the exact evidence-record identity index."""
 
