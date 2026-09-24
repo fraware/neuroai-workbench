@@ -104,9 +104,7 @@ def _capture(frame_id: str = "F1") -> dict[str, object]:
 def test_primary_estimands_are_ap1_and_ap6_and_ap4_is_secondary() -> None:
     validate_estimation_universe(_universe(view="A-P1"))
     validate_estimation_universe(_universe(view="A-P6"))
-    validate_estimation_universe(
-        _universe(view="A-P4", role="SECONDARY", enumeration_roles=["INTEGRATED_SYSTEM"])
-    )
+    validate_estimation_universe(_universe(view="A-P4", role="SECONDARY", enumeration_roles=["INTEGRATED_SYSTEM"]))
 
     invalid = _universe(view="A-P4", role="SECONDARY", enumeration_roles=["INTEGRATED_SYSTEM"])
     invalid["role"] = "PRIMARY"
