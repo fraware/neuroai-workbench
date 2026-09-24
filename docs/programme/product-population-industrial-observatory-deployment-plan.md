@@ -267,7 +267,7 @@ P0.3 must preserve:
 - technical-equivalence relationships without silent identity merge;
 - versioned currentness policy for every current projection;
 - versioned machine predicates for every A-P1–A-P8 population view;
-- exact frozen contract/reference-standard digests, Release-A preregistration ID, and analysis execution pin in governed count/estimate metadata.
+- exact frozen contract, operational-disposition-protocol, reference-standard and discovery-frame-register digests, Release-A preregistration ID, and analysis execution pin in governed count/estimate metadata.
 
 **Deliverables:** ontology/schema changes where required, registry-projection schema, identity and linkage rules, validators, adversarial fixtures, and migration/compatibility notes.
 
