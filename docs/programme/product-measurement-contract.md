@@ -308,6 +308,27 @@ Identity resolution alone never authorizes `INCLUDE`.
 
 A single company representation may support the bounded claim that an offering was represented by that company. It does not, by itself, satisfy the governed D4 inclusion decision where D1 requires multi-signal attributable evidence plus expert review.
 
+### 4.5 Operational boundary-disposition record
+
+Every operational boundary disposition used for Release-A eligibility must preserve, at minimum:
+
+```text
+decision
+rationale
+adjudicator_role
+timestamp
+exact_object_binding
+boundary_contract_id
+disposition_protocol_id
+reference_standard_id
+reference_standard_version
+```
+
+The operational record is distinct from D4 held-out membership.
+
+A model prediction, classifier score, retrieval rank, or automated rule may support routing or review, but cannot substitute for the governed disposition record where D1 requires expert review.
+
+
 
 ## 5. Identity levels and counting unit
 
@@ -761,17 +782,22 @@ A historical statement that a product was once deployed is insufficient for A-P7
 
 ### 11.8 `A-P8 CURRENT_DISTINCT_TECHNICAL_IMPLEMENTATIONS`
 
-Analytical view for reducing commercial-label duplication where multiple current offering identities are supported as the same or substantially equivalent technical implementation.
+Analytical view over current exact `CONFIGURATION` identities associated with qualifying current offerings.
+
+A single commercial offering may contribute more than one technical implementation when materially distinct current configurations are supported.
+
+Evidence-supported equivalent configurations may be grouped into a technical-equivalence cluster.
 
 Rules:
 
 - commercial product identities are never merged merely to produce this view;
+- configuration identities remain recoverable;
 - equivalence requires attributable technical evidence;
 - unresolved suspected equivalence remains separate;
 - the equivalence method and relation strength must be declared;
 - A-P8 is not interchangeable with A-P1 or A-P4.
 
-This view is especially relevant to OEM/private-label offerings and technically identical rebrands.
+This view is especially relevant to OEM/private-label offerings, technically identical rebrands, and one product label spanning multiple material configurations.
 
 A-P8 is descriptive by default. It may be used as the unit of an unseen-population estimate only when the technical-equivalence procedure is preregistered and frozen before capture-history construction, applied deterministically to the declared estimation universe, and included in the population-model identity. Post hoc clustering based on observed source overlaps is prohibited for population estimation.
 
@@ -854,7 +880,10 @@ Every unseen-population model must bind exactly one declared estimation universe
 
 ```text
 boundary_contract_id
-reference_standard_or_validation_version
+boundary_disposition_protocol_id
+reference_standard_id
+reference_standard_version
+reference_standard_validation_state
 identity_level
 population_view
 enumeration_roles
@@ -884,7 +913,10 @@ Every published Release-A count must state, in machine-readable or table-adjacen
 
 ```text
 boundary_contract_id
-reference_standard_or_validation_version
+boundary_disposition_protocol_id
+reference_standard_id
+reference_standard_version
+reference_standard_validation_state
 population_view_id
 identity_level
 included_enumeration_roles
@@ -897,6 +929,39 @@ uncertainty_state
 ```
 
 A number without this metadata is not a governed Release-A population claim.
+
+### 12.10 Observed versus estimated population semantics
+
+For a declared estimation universe:
+
+```text
+N_observed
+```
+
+is the number of directly observed canonical identities that satisfy the governed observed-item eligibility rules.
+
+```text
+N_estimated
+```
+
+is a model-based estimate of the total population under the declared construct, source-frame universe, cutoff pair, identity level, population view, and model assumptions.
+
+The residual:
+
+```text
+N_unseen = N_estimated - N_observed
+```
+
+represents latent estimated population mass. It is not a list of individually identified products, does not imply item-level human adjudication for unseen members, and cannot be exposed as though those products had been directly discovered.
+
+Any reported `N_estimated` must therefore distinguish:
+
+- directly observed validated identities;
+- estimated unseen residual;
+- uncertainty interval;
+- model family and diagnostics;
+- sensitivity to source dependence and stratification.
+
 
 
 ## 13. Category-composition versus market-share rule
@@ -1099,7 +1164,7 @@ At minimum, P0.3 must make it possible to represent:
 - lifecycle/access/regulatory/deployment state separation;
 - valid time and knowledge time;
 - governed operational boundary disposition under the approved D1 semantics;
-- exact boundary-contract/reference-standard or validation version used;
+- operational boundary-disposition protocol identity and exact D4/reference-standard identity/version used;
 - identity resolution state;
 - source/observation provenance;
 - population-view eligibility;
@@ -1125,7 +1190,10 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 11. service representation is compatible with the current ontology;
 12. investigational SYSTEM objects cannot silently enter PRODUCT counts;
 13. A-P1 announcement semantics and A-P7 legacy-deployment semantics are unambiguous;
-14. population-estimation units and cutoffs are locked by contract.
+14. population-estimation units and cutoffs are locked by contract;
+15. operational boundary dispositions preserve attributable minimum fields;
+16. observed identities and the estimated unseen residual cannot be conflated;
+17. A-P8 operates at exact-configuration/equivalence-cluster level.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
