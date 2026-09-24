@@ -115,6 +115,14 @@ def test_primary_estimands_are_ap1_and_ap6_and_ap4_is_secondary() -> None:
         validate_estimation_universe(invalid)
 
 
+def test_estimation_universe_id_is_invariant_to_set_order() -> None:
+    universe = _universe()
+    permuted = deepcopy(universe)
+    permuted["included_enumeration_roles"] = list(reversed(permuted["included_enumeration_roles"]))
+    permuted["capture_frame_ids"] = list(reversed(permuted["capture_frame_ids"]))
+    assert estimation_universe_id(permuted) == universe["universe_id"]
+
+
 def test_primary_frame_set_is_exact_and_purposive_frames_are_excluded() -> None:
     validate_estimation_universe(_universe())
     for excluded in ("F7", "F9", "F11"):
