@@ -156,6 +156,8 @@ def product_capture_id(capture: Mapping[str, Any]) -> str:
             "frame_version",
             "round_id",
             "query_or_seed_id",
+            "query_family",
+            "source_class",
             "candidate_key",
             "canonical_offering_id",
             "source_observation_ref",
@@ -217,6 +219,10 @@ def validate_capture_against_frame(
         raise ProductDiscoveryError("Capture frame_id does not match frame definition")
     if capture["frame_version"] != frame["frame_version"]:
         raise ProductDiscoveryError("Capture frame_version does not match frame definition")
+    if capture["query_family"] not in frame["query_families"]:
+        raise ProductDiscoveryError("Capture query_family is outside the declared discovery frame")
+    if capture["source_class"] not in frame["source_classes"]:
+        raise ProductDiscoveryError("Capture source_class is outside the declared discovery frame")
     if capture["capture_estimation_eligible"] and not frame["capture_estimation_eligible"]:
         raise ProductDiscoveryError("Capture cannot be estimation-eligible when its discovery frame is excluded")
 
