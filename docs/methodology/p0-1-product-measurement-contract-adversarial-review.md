@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R26 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R30 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -97,6 +97,10 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R24 | Registry projection omitted required capability/context dimensions | The registry could not reproduce the working-methodology product analyses | Include sensing, inference, output, form factor, context, target population and state fields as evidence-backed projection attributes |
 | R25 | “Market-facing product” terminology implied commercialization | Investigational/research offering identity could be mistaken for commercial state | Rename to product/service offering identity and keep commercial state separate |
 | R26 | Preferred present-tense product view was unspecified | Announcement-inclusive A-P1 could be quoted as “currently available products” | Require A-P6 for currently released/externally accessible wording; reserve A-P1 for offering-inventory language |
+| R27 | Family/offering/configuration joins lacked governed relation semantics | Flattened registry joins could be inferred from names, developer, branding or proximity | Require evidence-backed directed family↔offering and offering↔configuration relations; unresolved joins stay unresolved |
+| R28 | Registry row grain was underspecified | Jurisdiction/cutoff variants could be mistaken for distinct products or irreproducible snapshots | Define a deterministic projection key over offering, optional configuration, jurisdiction, cutoffs and projection version |
+| R29 | Flat projection could widen assertion scope | Configuration-level regulatory/capability claims could leak to sibling configurations or whole families | Retain exact assertion refs/subjects/scopes for every projected state/capability and prohibit scope widening |
+| R30 | Registry row cardinality could be mistaken for product count | Multi-configuration/jurisdiction projections could inflate denominators | Count canonical IDs/equivalence clusters at the declared identity level; never raw registry rows |
 
 Two additional consistency corrections were made during implementation:
 
@@ -199,7 +203,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R26 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R30 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
