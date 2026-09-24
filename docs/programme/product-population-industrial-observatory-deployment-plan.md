@@ -217,6 +217,8 @@ primary_enumeration_role
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+first_observed_at
+last_observed_at
 currentness_policy_id
 lifecycle_state
 access_commercial_state
@@ -239,6 +241,8 @@ P0.3 must preserve:
 
 - nullable/unresolved family and configuration bindings instead of fabricating entities;
 - assertion subject/scope through analytical flattening;
+- typed organization relationship references rather than one ambiguous organization field;
+- observation chronology separate from world-time product state;
 - exact operational boundary-disposition provenance and D4/reference-standard lineage;
 - deterministic registry-row grain;
 - canonical-ID deduplication at the declared population-view identity level;
