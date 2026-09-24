@@ -211,6 +211,7 @@ The v1.0 semantic roles are:
 INTEGRATED_SYSTEM
 COMPONENT_OR_SUBSYSTEM
 STANDALONE_SOFTWARE_OR_SERVICE
+UNRESOLVED
 OTHER_REVIEW_REQUIRED
 ```
 
@@ -219,13 +220,16 @@ Interpretation:
 - `INTEGRATED_SYSTEM` — a complete externally identifiable offering containing the required in-scope capability at the level presented to a user, researcher, clinician, institution, or trial programme.
 - `COMPONENT_OR_SUBSYSTEM` — a separately identifiable component, module, sensor, electrode array, SDK-bound subsystem, or other part of a broader system.
 - `STANDALONE_SOFTWARE_OR_SERVICE` — independently offered software, API, analytics, or service operating on externally supplied or linked signals without constituting the complete hardware/system offering.
-- `OTHER_REVIEW_REQUIRED` — an offering whose primary enumeration role cannot be assigned without review.
+- `UNRESOLVED` — available evidence is insufficient to assign one of the substantive enumeration roles.
+- `OTHER_REVIEW_REQUIRED` — the offering role is understood well enough to know that it does not fit the controlled role set and requires taxonomy review.
 
 The primary role is assigned from the level at which the offering itself is externally presented, contracted, procured, or supplied. Downstream reuse of an integrated product as a component of another system does not automatically change its primary enumeration role. Secondary technical relationships and deployment contexts are represented separately.
 
 Enumeration role is distinct from deployment context, form factor, lifecycle state, and commercial state.
 
 A broad count containing more than one enumeration role must be labelled as a count of **offering identities** and must report the role composition. It must not be presented as the number of complete end-user systems or the number of distinct technologies.
+
+A-P1 may retain otherwise eligible offerings whose primary enumeration role is `UNRESOLVED`; the unresolved role count must remain explicit. Role-specific views such as A-P4 exclude `UNRESOLVED` until the role is resolved. This prevents missing-role evidence from silently removing otherwise validated product identities from the broad inventory.
 
 ## 4. Product-population inclusion boundary
 
@@ -1158,7 +1162,7 @@ At minimum, P0.3 must make it possible to represent:
 - product identity;
 - exact configuration identity;
 - v1.0 service representation as a PRODUCT offering with explicit offering kind;
-- exactly one `primary_enumeration_role` from `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / OTHER_REVIEW_REQUIRED`;
+- exactly one `primary_enumeration_role` from `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / UNRESOLVED / OTHER_REVIEW_REQUIRED`;
 - aliases and lineage;
 - jurisdiction-scoped state;
 - lifecycle/access/regulatory/deployment state separation;
@@ -1193,7 +1197,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 14. population-estimation units and cutoffs are locked by contract;
 15. operational boundary dispositions preserve attributable minimum fields;
 16. observed identities and the estimated unseen residual cannot be conflated;
-17. A-P8 operates at exact-configuration/equivalence-cluster level.
+17. A-P8 operates at exact-configuration/equivalence-cluster level;
+18. enumeration-role uncertainty is distinct from a true out-of-vocabulary role.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
