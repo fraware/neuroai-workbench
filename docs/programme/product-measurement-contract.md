@@ -294,8 +294,6 @@ world_time_cutoff
 knowledge_time_cutoff
 first_observed_at
 last_observed_at
-population_view_policy_id
-currentness_policy_id
 lifecycle_state
 access_commercial_state
 regulatory_state
@@ -322,12 +320,10 @@ jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
 input_release_or_snapshot_id
-population_view_policy_id
-currentness_policy_id
 registry_projection_version
 ```
 
-The deterministic row key must bind that exact tuple. A changed input release/snapshot, jurisdiction scope, cutoff pair, population-view policy, currentness policy, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
+The deterministic row key must bind that exact tuple. A changed input release/snapshot, jurisdiction scope, cutoff pair, configuration binding, or registry projection version creates a different analytical row without creating a new canonical entity. Population-view and currentness policies do not change this base row identity; they are applied in the separate eligibility projection below.
 
 Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
 
@@ -340,6 +336,31 @@ Capability, form-factor, context, and target-population fields are analytical pr
 `first_observed_at` and `last_observed_at` summarize Observatory knowledge-time observations admitted by the projection. They are traceable to `source_observation_refs` and do not establish launch date, first real-world existence, valid-from time, or continuous availability.
 
 Every projected state or capability value must remain traceable to the exact assertion(s) supporting that value, including the assertion subject and scope. Projection never promotes a configuration-scoped regulatory, capability, safety, or effectiveness assertion to the whole offering/family or to sibling configurations. Offering-scoped commercial/access assertions likewise do not become configuration-specific technical claims without evidence.
+
+### 3.12 Population-view eligibility projection
+
+Population-view membership is a derived analytical layer over the view-neutral registry projection. It is not part of canonical PRODUCT/SYSTEM identity and does not create a new registry row merely because a different count view is requested.
+
+A governed eligibility record binds:
+
+```text
+eligibility_record_id
+registry_row_id
+canonical_counting_identity_id
+population_view_id
+population_view_policy_id
+currentness_policy_id          # NOT_APPLICABLE for views that do not use currentness
+eligibility_state              # ELIGIBLE / INELIGIBLE / UNRESOLVED
+eligibility_reason_codes[]
+boundary_disposition_ref
+input_release_or_snapshot_id
+```
+
+The deterministic eligibility key binds the registry row, counting identity, population view, exact policy versions, and input release/snapshot.
+
+The base registry projection preserves observed/derived state. The eligibility projection answers whether that state satisfies one declared population view. This separation prevents one offering from becoming multiple pseudo-products merely because several analytical views are computed.
+
+Counts deduplicate the qualifying canonical counting identity after eligibility is evaluated. They never count eligibility records or registry rows directly.
 
 ## 4. Product-population inclusion boundary
 
@@ -831,7 +852,7 @@ A count described as “current as of date T” is incomplete unless its knowled
 
 ### 10.6 Currentness policy
 
-Every population view whose ID begins with `CURRENT_` must bind a versioned:
+Every eligibility projection or governed count for a population view whose ID begins with `CURRENT_` must bind a versioned:
 
 ```text
 currentness_policy_id
@@ -847,7 +868,7 @@ P0.3/P0.4 must implement the currentness policy explicitly and preserve stale or
 
 ### 10.7 Population-view predicate policy
 
-Every governed Release-A population view must bind a versioned:
+Every governed Release-A population-view eligibility projection/count must bind a versioned:
 
 ```text
 population_view_policy_id
@@ -1342,7 +1363,8 @@ At minimum, P0.3 must make it possible to represent:
 - PRODUCT offering identity level;
 - exact configuration as a SYSTEM with PRODUCT_CONFIGURATION role;
 - explicit evidence-backed family↔offering and offering↔configuration linkage semantics, including unresolved and many-to-many cases;
-- exact-product registry rows as analytical projections, not canonical entities;
+- exact-product registry rows as view-neutral analytical projections, not canonical entities;
+- separate population-view eligibility records that bind view/currentness policies without duplicating canonical or registry identity;
 - nullable/unresolved family and configuration bindings with explicit coverage state;
 - v1.0 service representation as a PRODUCT offering with explicit offering kind;
 - exactly one `primary_enumeration_role` from `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / UNRESOLVED / OTHER_REVIEW_REQUIRED`;
@@ -1406,7 +1428,7 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology;
 35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition;
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
-37. the deterministic registry-row key binds the input release/snapshot plus population-view and currentness policy identities that can change the projected row;
+37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
