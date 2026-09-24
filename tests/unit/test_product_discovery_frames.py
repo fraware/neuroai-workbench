@@ -533,3 +533,43 @@ def test_f9_actor_seed_register_fails_closed_on_identity_or_count_drift() -> Non
     unbound["source_binding"]["blob_sha"] = ""
     with pytest.raises(ProductDiscoveryError, match="source_binding requires blob_sha"):
         validate_f9_actor_seed_register(unbound)
+
+
+def test_f9_actor_seed_register_rejects_missing_core_fields() -> None:
+    register = load_f9_actor_seed_register()
+
+    wrong_id = deepcopy(register)
+    wrong_id["register_id"] = "OTHER"
+    with pytest.raises(ProductDiscoveryError, match="register_id"):
+        validate_f9_actor_seed_register(wrong_id)
+
+    wrong_version = deepcopy(register)
+    wrong_version["frame_register_version"] = "OTHER"
+    with pytest.raises(ProductDiscoveryError, match="frame register"):
+        validate_f9_actor_seed_register(wrong_version)
+
+    wrong_role = deepcopy(register)
+    wrong_role["estimator_role"] = "ELIGIBLE"
+    with pytest.raises(ProductDiscoveryError, match="excluded"):
+        validate_f9_actor_seed_register(wrong_role)
+
+    no_actors = deepcopy(register)
+    no_actors["actors"] = []
+    no_actors["actor_count"] = 0
+    with pytest.raises(ProductDiscoveryError, match="non-empty"):
+        validate_f9_actor_seed_register(no_actors)
+
+    malformed_actor = deepcopy(register)
+    malformed_actor["actors"][0] = "ORG-0001"
+    with pytest.raises(ProductDiscoveryError, match="entries must be objects"):
+        validate_f9_actor_seed_register(malformed_actor)
+
+    missing_name = deepcopy(register)
+    missing_name["actors"][0]["canonical_name"] = ""
+    with pytest.raises(ProductDiscoveryError, match="require organization_id and canonical_name"):
+        validate_f9_actor_seed_register(missing_name)
+
+    missing_binding = deepcopy(register)
+    missing_binding["source_binding"] = None
+    with pytest.raises(ProductDiscoveryError, match="exact source_binding"):
+        validate_f9_actor_seed_register(missing_binding)
