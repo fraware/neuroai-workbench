@@ -139,7 +139,7 @@ The contract must resolve difficult cases such as:
 - products that are discontinued but remain deployed;
 - bundled hardware–software–service systems.
 
-**Deliverable:** `Product Measurement Contract v1.0`.
+**Deliverable:** [Product Measurement Contract v1.0](product-measurement-contract.md).
 
 ### P0.2 — Execute and freeze D4
 
