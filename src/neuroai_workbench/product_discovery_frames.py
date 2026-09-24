@@ -12,6 +12,7 @@ RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
 RUN_SCHEMA = "PRODUCT_DISCOVERY_RUN.schema.json"
+FRAME_REGISTER_RESOURCE = "PRODUCT_DISCOVERY_FRAME_REGISTER.v1.0.json"
 
 FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
 FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
@@ -110,6 +111,44 @@ def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
     )
     if mode == "MARGINAL_YIELD" and any(rule[field] is None for field in threshold_fields):
         raise ProductDiscoveryError("MARGINAL_YIELD stopping rule requires all threshold fields")
+
+
+def load_default_frame_register() -> dict[str, Any]:
+    """Load and validate the frozen Release-A discovery frame register."""
+
+    register = cast(
+        dict[str, Any],
+        json.loads(files(RESOURCE_PACKAGE).joinpath(FRAME_REGISTER_RESOURCE).read_text(encoding="utf-8")),
+    )
+    validate_frame_register(register)
+    return register
+
+
+def validate_frame_register(register: Mapping[str, Any]) -> None:
+    if register.get("register_id") != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError(f"register_id must be {FRAME_REGISTER_VERSION}")
+    if register.get("status") != "FROZEN_v1.0":
+        raise ProductDiscoveryError("Default discovery frame register must be FROZEN_v1.0")
+    frames = register.get("frames")
+    if not isinstance(frames, list):
+        raise ProductDiscoveryError("Frame register frames must be a list")
+    indexed = _frame_map(cast(Sequence[Mapping[str, Any]], frames))
+    if set(indexed) != FRAME_ID_SET:
+        missing = sorted(FRAME_ID_SET - set(indexed))
+        extra = sorted(set(indexed) - FRAME_ID_SET)
+        raise ProductDiscoveryError(
+            f"Frame register must contain exactly F1-F11; missing={missing!r}, extra={extra!r}"
+        )
+    excluded = {
+        frame_id
+        for frame_id, frame in indexed.items()
+        if not bool(frame["capture_estimation_eligible"])
+    }
+    declared = set(cast(list[str], register.get("estimation_policy", {}).get("purposive_frames_excluded", [])))
+    if excluded != declared:
+        raise ProductDiscoveryError(
+            "Frame register estimation-policy exclusions must exactly match frame eligibility"
+        )
 
 
 def product_capture_id(capture: Mapping[str, Any]) -> str:
