@@ -127,7 +127,6 @@ def load_default_frame_register() -> dict[str, Any]:
     return register
 
 
-
 def load_f9_actor_seed_register() -> dict[str, Any]:
     """Load and validate the frozen Release-A F9 curated-actor seed input."""
 
