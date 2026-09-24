@@ -21,8 +21,8 @@ from neuroai_workbench.product_discovery_frames import (
     summarize_discovery_round,
     validate_capture_against_frame,
     validate_discovery_frame,
-    validate_frame_register,
     validate_discovery_run,
+    validate_frame_register,
     validate_product_capture,
     validate_run_against_captures,
 )
