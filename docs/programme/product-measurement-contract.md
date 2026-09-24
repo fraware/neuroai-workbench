@@ -1004,6 +1004,19 @@ A report must choose the appropriate population view and must not sum component-
 
 They are reported as separate uncertainty/coverage quantities.
 
+For any discovery universe used in population estimation, report at minimum the observed candidate counts/dispositions relevant to that universe:
+
+```text
+INCLUDE
+BORDERLINE
+ABSTAIN
+UNRESOLVED_IDENTITY
+UNRESOLVED_CURRENT_STATE
+PENDING_OR_UNREVIEWED   # if any remain at analysis cutoff
+```
+
+The primary observed population numerator remains governed `INCLUDE` only. Where the mass of boundary/unresolved cases is material to interpretation, the P0.5 preregistration must define a sensitivity or bounding analysis. Such analysis must not relabel ambiguous cases as verified products.
+
 ### 12.8 Population-estimation compatibility contract
 
 Every unseen-population model must bind exactly one declared estimation universe:
@@ -1077,7 +1090,7 @@ is the number of directly observed canonical identities that satisfy the governe
 N_estimated
 ```
 
-is a model-based estimate of the total population under the declared construct, source-frame universe, cutoff pair, identity level, population view, and model assumptions.
+is a model-based estimate of the identifiable/discoverable in-scope population under the declared construct, source-frame universe, language/jurisdiction coverage, cutoff pair, identity level, population view, and model assumptions.
 
 The residual:
 
@@ -1085,7 +1098,7 @@ The residual:
 N_unseen = N_estimated - N_observed
 ```
 
-represents latent estimated population mass. It is not a list of individually identified products, does not imply item-level human adjudication for unseen members, and cannot be exposed as though those products had been directly discovered.
+represents latent estimated population mass conditional on the declared discovery/model universe. It is not a list of individually identified products, does not imply item-level human adjudication for unseen members, cannot be exposed as though those products had been directly discovered, and does not establish that classes with effectively zero capture probability are represented.
 
 Any reported `N_estimated` must therefore distinguish:
 
@@ -1093,7 +1106,11 @@ Any reported `N_estimated` must therefore distinguish:
 - estimated unseen residual;
 - uncertainty interval;
 - model family and diagnostics;
-- sensitivity to source dependence and stratification.
+- sensitivity to source dependence and stratification;
+- boundary/unresolved-case sensitivity where material;
+- residual coverage risk, including plausible zero-capture classes.
+
+Absolute “global census” language remains prohibited. A geographically broad estimate may be described as a global-protocol or worldwide-frame estimate only when its exact language/jurisdiction/frame coverage and residual uncertainty are stated next to the estimate.
 
 
 
@@ -1345,7 +1362,9 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 27. family/offering/configuration joins are typed, evidence-backed, and never name-inferred;
 28. registry row grain and deterministic projection key are explicit;
 29. flat projections retain assertion subject/scope and cannot widen claims;
-30. raw registry-row cardinality is prohibited as a product-population denominator.
+30. raw registry-row cardinality is prohibited as a product-population denominator;
+31. boundary/unresolved-case mass is reported and receives predeclared sensitivity treatment where material;
+32. N_estimated remains explicitly conditional on the declared discovery-frame/model universe and is never equated with proof of an absolute global census.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
