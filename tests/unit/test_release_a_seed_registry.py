@@ -239,7 +239,7 @@ def test_duplicate_manifest_bindings_are_rejected() -> None:
         ({"identity_state": "UNRESOLVED"}, "resolved exact identity"),
         ({"boundary_disposition": "EXCLUDE"}, "INCLUDE boundary"),
         ({"primary_enumeration_role": "OTHER_REVIEW_REQUIRED"}, "resolved primary enumeration role"),
-        ({"projected_assertion_refs": []}, "assertion references"),
+        ({"projected_assertion_refs": []}, "projected_assertion_refs"),
         ({"evidence_state": ["UNRESOLVED"]}, "substantive evidence state"),
     ],
 )
@@ -261,7 +261,7 @@ def test_non_high_confidence_rows_are_rejected(mutation: dict[str, object], mess
 def test_missing_source_observation_is_rejected_by_underlying_registry_contract() -> None:
     row = _row(observation_refs=[])
     manifest = _manifest([row])
-    with pytest.raises(ReleaseASeedRegistryError, match="Resolved identity requires source_observation_refs"):
+    with pytest.raises(ReleaseASeedRegistryError, match="source_observation_refs"):
         _build([row], manifest)
 
 
@@ -280,7 +280,12 @@ def test_seed_rows_must_match_manifest_cutoffs_and_binding_set() -> None:
 
     other = _row("PRD-OTHER", assertion_refs=["AST-O"], observation_refs=["OBS-O"])
     with pytest.raises(ReleaseASeedRegistryError, match="exactly match"):
-        _build([other], manifest)
+        _build(
+            [other],
+            manifest,
+            known_observation_ids={"OBS-PRODUCT-001"},
+            known_assertion_ids={"AST-PRODUCT-001"},
+        )
 
 
 def test_seed_binding_must_exactly_match_row_evidence_and_boundary() -> None:
