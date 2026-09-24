@@ -1,0 +1,135 @@
+# Release-A Product Discovery Frame Contract v1.0
+
+**Plan binding:** `P0.4`  
+**Tracking issue:** #326  
+**Depends on:** P0.3 exact-product registry projection v1.0  
+**Status:** implementation candidate
+
+## Purpose
+
+Release A is an open-world discovery programme. No single source is a complete NeuroAI product universe. This contract makes the search process reproducible enough to measure marginal yield, source overlap, multilingual gain, capability-first gain, and the residual unseen population without pretending that search saturation proves global completeness.
+
+The deduplication target is the P0.3 canonical offering identity. Multiple source observations, aliases, distributor pages, trial records, regulatory records, or repeated queries that resolve to one offering remain one product identity.
+
+## Controlled discovery frames
+
+| ID | Frame | Main evidence channel |
+| --- | --- | --- |
+| F1 | First-party product discovery | manufacturer/vendor product catalogues, manuals, official documentation and archived official pages |
+| F2 | Regulatory discovery | device, authorization, listing and regulator records |
+| F3 | Clinical/trial discovery | trial registries and study records |
+| F4 | Scientific/research discovery | publications, research instrumentation and research-platform documentation |
+| F5 | Commercial/ecosystem discovery | specialist distributors, procurement, accelerator/investor portfolios and industry directories |
+| F6 | Capability-first discovery | function/capability searches designed to recover weakly labelled and non-traditional products |
+| F7 | Expert nominations | structured expert seeds and edge cases |
+| F8 | Local-language discovery | native-language sources/query families for selected jurisdictions |
+
+A source can be observed through only the frame whose declared retrieval mechanism produced that capture. Post-hoc relabelling solely to improve population estimation is prohibited.
+
+F7 is normally excluded from the primary capture-recapture estimator because expert nomination is purposive and highly selection-dependent. It remains valuable for recall discovery and zero-capture diagnostics. Other frames can also be marked non-estimation-eligible when their sampling mechanism or overlap dependence makes that necessary.
+
+## Capture unit
+
+For Release-A offering-level estimation, one capture history belongs to one resolved in-scope `PRODUCT` identity at `identity_level = OFFERING`.
+
+For product (i):
+
+```text
+C_i = (F1_i, F2_i, ..., F8_i)
+```
+
+where each component is binary after within-frame deduplication.
+
+A product observed 12 times in F1 is one F1 capture. The same product observed in F1, F2 and F4 contributes the history `(1,1,0,1,0,0,0,0)`.
+
+Capture histories must remain tied to one exact:
+- registry projection version;
+- population view;
+- jurisdiction scope;
+- world-time cutoff;
+- knowledge-time cutoff;
+- language scope;
+- discovery-frame register version.
+
+## Run and round accounting
+
+Every product-discovery observation records:
+- frame ID/version;
+- discovery round;
+- query/seed provenance;
+- source observation reference;
+- source language;
+- jurisdiction;
+- candidate key;
+- resolved canonical offering ID where available;
+- scope/identity outcome;
+- whether the observation is eligible for population-estimation capture.
+
+For each round and frame report:
+- raw candidates;
+- newly resolved in-scope offering identities;
+- duplicate known identities;
+- within-round duplicate captures;
+- EXCLUDE;
+- BORDERLINE;
+- ABSTAIN;
+- unresolved identity;
+- failed/inaccessible leads;
+- marginal new-identity yield;
+- duplicate yield.
+
+## Frame overlap and dependence
+
+Release A records the complete pairwise frame-overlap matrix over resolved in-scope identities. Independence is never assumed from frame labels.
+
+For every frame pair the analysis must preserve:
+- observed shared identities;
+- frame-specific totals;
+- known nesting or source inheritance;
+- common upstream feeds where known;
+- common query seeds where known.
+
+Population models in P0.5/A7 must treat frame dependence as an empirical/model-selection problem.
+
+## Multilingual and capability-first comparisons
+
+F6 is the controlled capability-first frame used for the A3 recall study.
+
+F8 is the controlled local-language frame used for A4. Matched language/jurisdiction analyses must compare the same product-identity and population-view semantics.
+
+Incremental yield is always computed after exact-product deduplication.
+
+## Stopping semantics
+
+A frame can stop only with one of:
+
+```text
+SATURATION_UNDER_DECLARED_PROTOCOL
+BOUNDED_FRAME_EXHAUSTED
+BUDGET_COVERAGE_TERMINATION
+UNRESOLVED_SOURCE_BARRIER
+```
+
+or remain `CONTINUE`.
+
+A marginal-yield stop rule is frame-specific and predeclares:
+- minimum completed rounds;
+- number of consecutive low-yield rounds;
+- maximum marginal new-identity yield considered low;
+- minimum raw-candidate count per evaluated round.
+
+A bounded registry/API frame can instead stop through demonstrated source exhaustion under its declared pagination/denominator logic.
+
+No stop state means that every relevant product worldwide has been found.
+
+## Population-estimation boundary
+
+Capture-recapture and multiple-systems models can use only frames marked `capture_estimation_eligible = true` in the same frozen frame register.
+
+Strongly nested/dependent frames must remain identifiable so P0.5 can compare alternative frame groupings and dependence models.
+
+The primary observed registry can include validated products from non-estimation frames. `N_observed` and the capture-history model universe therefore require explicit compatibility metadata; products found only through excluded frames remain observed products and are reported as a sensitivity/coverage class.
+
+## Boundary
+
+This contract measures discovery coverage. It does not establish global completeness, market share, product effectiveness, or product importance.
