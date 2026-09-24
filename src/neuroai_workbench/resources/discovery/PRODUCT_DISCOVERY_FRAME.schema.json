@@ -31,7 +31,10 @@
         "F5",
         "F6",
         "F7",
-        "F8"
+        "F8",
+        "F9",
+        "F10",
+        "F11"
       ]
     },
     "frame_version": {
@@ -50,7 +53,10 @@
         "COMMERCIAL_ECOSYSTEM",
         "CAPABILITY_FIRST",
         "EXPERT_NOMINATION",
-        "LOCAL_LANGUAGE"
+        "LOCAL_LANGUAGE",
+        "CURATED_ACTOR_SEED",
+        "PATENT_COMMERCIALIZATION",
+        "SNOWBALL_EXPANSION"
       ]
     },
     "purpose": {
@@ -76,7 +82,10 @@
           "F5",
           "F6",
           "F7",
-          "F8"
+          "F8",
+          "F9",
+          "F10",
+          "F11"
         ]
       }
     },
