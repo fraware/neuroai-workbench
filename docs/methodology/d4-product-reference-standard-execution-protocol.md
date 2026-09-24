@@ -468,6 +468,19 @@ The selection procedure must:
 
 If constraints are infeasible, issue a successor sampling protocol/candidate-pool disposition rather than silently relaxing them.
 
+### 11.4 Benchmark representativeness boundary
+
+D4 is deliberately a diagnostic, stratified edge-case reference standard. Its selected class/stratum frequencies are not estimates of the prevalence of NeuroAI products, out-of-scope candidates, or borderline cases in the operational discovery stream.
+
+Accordingly:
+
+- unweighted accuracy, precision, recall, calibration and abstention metrics are conditional on the D4 benchmark composition;
+- the human-disposition distribution in D4 is not an operational base-rate estimate;
+- D4 performance does not establish open-world discovery recall or product-population coverage;
+- operational positive predictive value, expected review burden, or population-weighted error requires a separately justified target distribution and, where appropriate, predeclared weighting/transport methodology.
+
+No evaluation report may silently translate D4 benchmark composition into real-world candidate prevalence.
+
 ## 12. Stage 6 — Final human review
 
 ### 12.1 First-pass review
@@ -483,6 +496,8 @@ The final benchmark must contain a non-empty strategically selected double-label
 The final sampling protocol must predeclare how that subset is selected.
 
 Full double review of the final benchmark is permitted and is preferred where reviewer capacity allows. If only a subset is double-reviewed, the protocol must state the rationale and how disagreement risk is audited outside the subset.
+
+If the double-label subset is strategically or purposively selected, agreement statistics from that subset are reported as **subset-specific** and are not extrapolated to the full final benchmark. An overall final-benchmark inter-rater agreement estimate requires full double review or a predeclared probability-sampling design with the corresponding estimator/uncertainty treatment.
 
 ### 12.3 Adjudication
 
