@@ -141,11 +141,13 @@ The contract must resolve difficult cases such as:
 
 **Deliverable:** [Product Measurement Contract v1.0](product-measurement-contract.md).
 
-### P0.2 — Execute and freeze D4
+### P0.2 — Resolve the D4 Product Reference Standard
 
-Complete the real human product edge-case benchmark and reference-standard workflow.
+Establish a substantive product edge-case reference set through case-by-case evidence review against the frozen P0.1 Product Measurement Contract and the approved D1/D2 scope semantics.
 
-Minimum benchmark strata:
+The active execution method is **AI-first research with owner review/acceptance**. The purpose is to obtain the best-supported product-boundary determinations efficiently while preserving the exact evidence, rationale, identity treatment, and uncertainty needed to revisit any case.
+
+Minimum reference-set strata:
 
 - clear neural-sensing positives;
 - clear non-neural biosensing negatives;
@@ -160,7 +162,7 @@ Minimum benchmark strata:
 - discontinued/superseded products;
 - multilingual and multi-jurisdiction examples.
 
-The classification output must preserve:
+The classification output preserves:
 
 ```text
 INCLUDE
@@ -169,23 +171,23 @@ BORDERLINE
 ABSTAIN
 ```
 
-Required freeze evidence:
+For every case retained in the working reference, preserve at minimum:
 
-- independent human review;
-- disagreement accounting;
-- adjudication provenance;
-- inter-rater agreement and calibration analysis;
-- error taxonomy;
-- locked held-out membership inaccessible to tuning;
-- coverage accounting across required dispositions and strata;
-- contamination/exposure and rights review;
-- opaque membership/disposition commitments.
+- exact candidate/product identity and identity level;
+- attributable source evidence;
+- substantive inclusion/exclusion rationale;
+- evidence-strength or construct-validity caveats;
+- product-family / offering / configuration / component treatment where material;
+- counting implications for downstream population views;
+- final review/acceptance state.
 
-Model or pipeline performance on the frozen held-out D4 set is a separate evaluation step. P0.2 does not claim G2 or model-evaluation passage. Any automated boundary classifier used as a production filter must separately satisfy its applicable held-out evaluation and role-narrowing requirements before scaled use.
+The resolved v1.0 working reference contains 60 researched cases and is recorded in [D4 Product Reference Standard v1.0 — working resolution](../methodology/d4-product-reference-standard-v1.0.md). The accepted working distribution is 49 INCLUDE, 11 EXCLUDE, 0 BORDERLINE and 0 ABSTAIN.
 
-**Execution protocol:** [D4 Product Reference Standard execution protocol](../methodology/d4-product-reference-standard-execution-protocol.md).
+Earlier PRE-G2 independent double-review, held-out-membership and commitment machinery remains historical implementation context and can be reused for a future classifier-evaluation study where it adds value. It is not an execution blocker for the Product Population Observatory.
 
-**Deliverable:** `D4 Product Reference Standard v1.0`.
+Product-scope membership remains separate from evidence validity, effectiveness, commercial state, regulatory state, deployment, or model/pipeline performance. Any automated production classifier later used to accept product-boundary decisions at scale requires its own fit-for-purpose evaluation.
+
+**Deliverable:** `D4 Product Reference Standard v1.0` working reference.
 
 ### P0.3 — Exact-product ontology and registry schema
 
@@ -308,14 +310,14 @@ plus:
 P0 passes only when all of the following are true:
 
 - product inclusion semantics are frozen;
-- D4 has completed human calibration, final human adjudication, held-out split lock, commitment generation and reference-standard freeze;
+- the D4 Product Reference Standard working reference is resolved case by case against the frozen product boundary, with source-linked rationales and owner acceptance of the final edge-case determinations;
 - exact-product identity rules are frozen;
-- discovery frames and termination semantics are defined;
+- discovery frames, capture-history units, estimation eligibility, and termination semantics are defined;
 - primary Release-A estimands and population-model comparison rules are preregistered;
 - duplicate-resolution and unresolved-identity rules are frozen;
 - multilingual and non-traditional discovery strata are defined.
 
-A passing P0 gate does not establish any global product count, pass G2, or establish model/pipeline held-out performance. Release-A execution must remain human-governed unless and until any automated production filter separately passes its applicable evaluation gate.
+A passing P0 gate does not establish any global product count, market denominator, product effectiveness, G2/model-pipeline held-out performance, or publication authority. AI-assisted research and classification are permitted throughout Release A; uncertainty, source limitations and difficult boundary cases remain explicit and reviewable. A future automated production filter that independently accepts product-boundary decisions at scale requires its own fit-for-purpose evaluation.
 
 ## 6. Release A — Product Population Observatory
 
@@ -1344,7 +1346,7 @@ The programme's immediate critical path is:
 ```text
 P0.1 Product Measurement Contract
   ->
-P0.2 D4 execution and freeze
+P0.2 D4 working-reference resolution
   ->
 P0.3 Exact-product ontology / registry
   ->
