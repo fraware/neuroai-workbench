@@ -19,6 +19,7 @@ FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
 FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
+PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS = frozenset({"F7", "F9", "F11"})
 FRAME_CLASS_BY_ID = {
     "F1": "FIRST_PARTY",
     "F2": "REGULATORY",
@@ -96,9 +97,9 @@ def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
     if frame_id in dependencies:
         raise ProductDiscoveryError("A discovery frame cannot be dependent or nested with itself")
 
-    if frame_id == "F7" and frame["capture_estimation_eligible"] is not False:
+    if frame_id in PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS and frame["capture_estimation_eligible"] is not False:
         raise ProductDiscoveryError(
-            "F7 expert nominations are purposive in v1.0 and cannot enter the primary capture estimator"
+            f"{frame_id} is purposive/path-dependent in v1.0 and cannot enter the primary capture estimator"
         )
 
     rule = cast(Mapping[str, Any], frame["stopping_rule"])
@@ -139,8 +140,10 @@ def validate_frame_register(register: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"Frame register must contain exactly F1-F11; missing={missing!r}, extra={extra!r}")
     excluded = {frame_id for frame_id, frame in indexed.items() if not bool(frame["capture_estimation_eligible"])}
     declared = set(cast(list[str], register.get("estimation_policy", {}).get("purposive_frames_excluded", [])))
-    if excluded != declared:
-        raise ProductDiscoveryError("Frame register estimation-policy exclusions must exactly match frame eligibility")
+    if excluded != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS or declared != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS:
+        raise ProductDiscoveryError(
+            "Frame register estimation-policy exclusions must exactly match the frozen F7/F9/F11 policy"
+        )
 
 
 def product_capture_id(capture: Mapping[str, Any]) -> str:
