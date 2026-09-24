@@ -85,6 +85,9 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R12 | Enumeration-role cardinality was unspecified | Role-composition counts could double count one offering and A-P4 membership could be ambiguous | Require exactly one `primary_enumeration_role`; represent secondary relationships/context separately |
 | R13 | A-P3 excluded commercially sold research platforms | Commercial access and research-use access were incorrectly treated as mutually exclusive | Allow A-P2 and A-P3 to overlap; require an explicit projection if disjoint categories are needed |
 | R14 | A-P8 clustering could be formed post hoc from source overlaps | Technical-equivalence clustering could alter capture histories and bias unseen-population estimates | Make A-P8 descriptive by default; require preregistered frozen deterministic equivalence before using it as an estimation unit |
+| R15 | A-P8 technical-implementation unit was product-level ambiguous | One product can contain multiple materially distinct current configurations | Define A-P8 over exact CONFIGURATION identities/equivalence clusters while preserving product identities |
+| R16 | Operational boundary-disposition provenance was underspecified | A counted product could lack an attributable governed inclusion record or exact validation lineage | Require decision, rationale, role, timestamp, exact-object binding, contract/protocol ID, and exact reference-standard identity/version |
+| R17 | Observed and estimated population semantics were not explicitly separated | The unseen residual could be misreported as individually identified or human-adjudicated products | Define N_observed, N_estimated and N_unseen separately; prohibit item-level interpretation of the latent residual |
 
 Two additional consistency corrections were made during implementation:
 
@@ -164,7 +167,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R14 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R17 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
