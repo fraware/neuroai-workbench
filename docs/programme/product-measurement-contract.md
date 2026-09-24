@@ -188,7 +188,7 @@ A component must not be silently treated as equivalent to the full system in whi
 
 A research or investigational `SYSTEM` is not automatically a `PRODUCT`.
 
-It enters the product/service population only when evidence supports a stable external product/service offering identity in addition to a stable technical-system identity. Relevant evidence may include a formally named investigational product, a trial/regulatory product identity, an externally offered research platform, or another source-backed programme/product identity that satisfies D4.
+It enters the product/service population only when evidence supports a stable external product/service offering identity in addition to a stable technical-system identity. Relevant evidence may include a formally named investigational product, a trial/regulatory product identity, an externally offered research platform, or another source-backed programme/product identity that is eligible for a governed operational boundary disposition under the approved D1 contract.
 
 At minimum, a product-countable investigational offering requires:
 
@@ -353,7 +353,7 @@ These must remain separate decisions.
 
 ### 4.2 Approved four-way boundary dispositions
 
-The controlled D4 disposition set is:
+The approved four-way boundary disposition set, also preserved by the D4 reference standard, is:
 
 ```text
 INCLUDE
@@ -369,7 +369,7 @@ Interpretation:
 - **BORDERLINE** — attributable evidence places the candidate on a genuine governed boundary and an expert-reviewed final disposition records that boundary with rationale.
 - **ABSTAIN** — available evidence is insufficient for a responsible scope classification.
 
-D4 classification does not establish exact identity, availability, effectiveness, deployment, or authorization.
+A D4 reference-standard disposition or operational boundary disposition does not establish exact identity, availability, effectiveness, deployment, or authorization.
 
 ### 4.3 Eligibility for primary Release-A counts
 
