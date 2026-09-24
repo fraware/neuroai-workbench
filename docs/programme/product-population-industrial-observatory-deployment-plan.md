@@ -211,7 +211,7 @@ product_offering_id
 product_family_id
 configuration_system_id
 configuration_coverage_state
-organization_relationship_refs
+organization_relationship_refs[]
 offering_kind
 primary_enumeration_role
 jurisdiction_scope
