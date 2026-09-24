@@ -208,6 +208,23 @@ These fields preserve the approved D1 human-review requirement.
 
 Additional controlled fields may record uncertainty notes or requested evidence, provided they do not alter the four-way disposition domain.
 
+### 6.1 Reviewer qualification, independence, and conflicts
+
+Every human first-pass reviewer and adjudicator must have a controlled qualification record showing the role/experience used to authorize application of the approved D1/P0.1 boundary. Qualification records are part of the human-review provenance package and remain S3-controlled where necessary.
+
+Before reviewing protected cases, each reviewer must:
+
+- complete the frozen review-instruction/calibration material applicable to that review round;
+- have conflicts of interest or direct involvement with the candidate/product recorded;
+- be separated from model/pipeline predictions and final held-out tuning outcomes;
+- use only the evidence packet and permitted background sources defined by the frozen review protocol.
+
+For every double-labeled case, the two first-pass judgments are produced independently by different reviewers.
+
+A disagreement requiring adjudication is resolved by a qualified adjudicator who did not author either first-pass judgment. The original judgments remain immutable. If a distinct adjudicator is unavailable, the case remains unresolved rather than allowing one first-pass reviewer to unilaterally overwrite the disagreement.
+
+Reviewer identity may remain non-public, but the controlled provenance must support audit of distinct-person independence, qualification, conflict handling, and review-round assignment.
+
 ## 7. Stage 1 — Real 60-case calibration round
 
 ### 7.1 Objective
@@ -623,7 +640,7 @@ The manifest must bind the current required fields, including:
 - exact required D4 strata;
 - strata-coverage report digest;
 - sampling protocol ID/digest;
-- human-review provenance digest;
+- human-review provenance digest, covering reviewer qualification, distinct-person independence, conflict handling, and review-round assignment;
 - adjudication protocol ID/digest;
 - adjudication-accounting digest;
 - double-label subset count;
