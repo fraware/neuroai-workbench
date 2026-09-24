@@ -307,7 +307,7 @@ deployment_context[]
 target_population[]
 boundary_disposition_ref
 projected_assertion_refs[]
-source_observation_refs
+source_observation_refs[]
 ```
 
 `registry_row_id` is a deterministic analytical key. It is not a canonical PRODUCT or SYSTEM identifier and must never be used to merge canonical entities.
@@ -432,6 +432,7 @@ boundary_contract_id
 disposition_protocol_id
 reference_standard_id
 reference_standard_version
+reference_standard_validation_state
 ```
 
 The operational record is distinct from D4 held-out membership.
@@ -1067,7 +1068,7 @@ Capture histories must be constructed at that same unit.
 
 Do not mix:
 
-- family and product identities;
+- PRODUCT family and PRODUCT offering identities;
 - PRODUCT offering and PRODUCT_CONFIGURATION SYSTEM identities;
 - current and historical views;
 - announcement-inclusive and externally-accessible views;
