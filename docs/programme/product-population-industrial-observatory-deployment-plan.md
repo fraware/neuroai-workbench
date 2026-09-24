@@ -179,7 +179,7 @@ Required evidence:
 - held-out evaluation;
 - class- and subgroup-specific performance where sample sizes permit.
 
-**Deliverable:** `D4 Product Reference Standard v1.0`.
+**Execution protocol:** [D4 Product Reference Standard execution protocol](../methodology/d4-product-reference-standard-execution-protocol.md).\n\n**Deliverable:** `D4 Product Reference Standard v1.0`.
 
 ### P0.3 — Exact-product ontology and registry schema
 
