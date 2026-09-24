@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from collections.abc import Mapping, Sequence
 from importlib.resources import files
 from typing import Any, cast
@@ -280,6 +281,8 @@ def decompose_observed_and_unseen(
 
     if n_observed_total < 0 or n_observed_capture_support < 0:
         raise ReleaseAPreregistrationError("Observed counts cannot be negative")
+    if not math.isfinite(model_total_estimate):
+        raise ReleaseAPreregistrationError("Model total estimate must be finite")
     if n_observed_capture_support > n_observed_total:
         raise ReleaseAPreregistrationError("Capture-support count cannot exceed total observed identities")
     if model_total_estimate < n_observed_capture_support:
@@ -318,6 +321,8 @@ def admissible_model_envelope(
         if family not in HEADLINE_ELIGIBLE_MODEL_FAMILIES:
             continue
         lower, upper = interval
+        if not math.isfinite(lower) or not math.isfinite(upper):
+            raise ReleaseAPreregistrationError(f"Interval for {family} must be finite")
         if lower > upper:
             raise ReleaseAPreregistrationError(f"Invalid interval for {family}: lower exceeds upper")
         if lower < n_observed_total:
