@@ -155,6 +155,9 @@ input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
 boundary_disposition_protocol_digest
+candidate_review_protocol_id
+candidate_review_protocol_digest
+review_completion_state
 reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
@@ -203,7 +206,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified thirty-three residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified thirty-four residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -240,6 +243,7 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C31 | Governed count metadata conflated discovery-protocol identity and population-model identity in one `discovery_protocol_or_model_id` field | Split them into independent discovery-protocol and population-model identities/digest, with model fields explicitly not applicable to observed-only counts |
 | C32 | D4 calibration/final disjointness was stated only at the case level, allowing the same underlying product/system to leak across splits through aliases, alternate URLs, translations or duplicate records | Require cross-split identity/duplicate review and exclude known or unresolved suspected calibration-equivalent objects from final held-out membership |
 | C33 | Higher-level product-family or organization overlap across calibration/final splits could support inflated claims about unseen-family or unseen-actor generalization | Report higher-level overlap and require a predeclared group-disjoint or separately reported group-held-out analysis for any unseen-family/actor generalization claim |
+| C34 | Release-A population estimation did not explicitly govern which discovered candidates receive human review, so confidence-/frame-/language-dependent review could bias capture histories while unreviewed candidates disappear | Freeze the candidate-review protocol, require review completion for unadjusted estimation or preregister/model the review-sampling mechanism, report review-completion state, and never treat unreviewed candidates as exclusions |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -271,7 +275,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C33 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C34 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
