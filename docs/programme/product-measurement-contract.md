@@ -132,7 +132,7 @@ The offering may be:
 - a device–software–service stack;
 - a research platform;
 - a regulated medical product;
-- a formally named investigational system;
+- a formally named investigational product/offering;
 - a separately offered service.
 
 The existence of a market-facing product does not establish purchase availability, deployment, effectiveness, authorization, adoption, or revenue.
@@ -247,7 +247,7 @@ Lifecycle evidence separately answers:
 
 These must remain separate decisions.
 
-### 4.2 D4 dispositions
+### 4.2 Approved four-way boundary dispositions
 
 The controlled D4 disposition set is:
 
@@ -260,7 +260,7 @@ ABSTAIN
 
 Interpretation:
 
-- **INCLUDE** — evidence supports inclusion under the frozen product research boundary.
+- **INCLUDE** — evidence supports inclusion under the exact approved D1 product research boundary.
 - **EXCLUDE** — evidence supports exclusion under that boundary.
 - **BORDERLINE** — attributable evidence places the candidate on a genuine governed boundary and an expert-reviewed final disposition records that boundary with rationale.
 - **ABSTAIN** — available evidence is insufficient for a responsible scope classification.
