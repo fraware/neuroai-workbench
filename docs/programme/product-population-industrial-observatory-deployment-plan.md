@@ -308,14 +308,14 @@ plus:
 P0 passes only when all of the following are true:
 
 - product inclusion semantics are frozen;
-- D4 has completed human calibration, final human adjudication, held-out split lock, commitment generation and reference-standard freeze;
+- the D4 Product Reference Standard working reference is resolved case by case against the frozen product boundary, with source-linked rationales and owner acceptance of the final edge-case determinations;
 - exact-product identity rules are frozen;
-- discovery frames and termination semantics are defined;
+- discovery frames, capture-history units, estimation eligibility, and termination semantics are defined;
 - primary Release-A estimands and population-model comparison rules are preregistered;
 - duplicate-resolution and unresolved-identity rules are frozen;
 - multilingual and non-traditional discovery strata are defined.
 
-A passing P0 gate does not establish any global product count, pass G2, or establish model/pipeline held-out performance. Release-A execution must remain human-governed unless and until any automated production filter separately passes its applicable evaluation gate.
+A passing P0 gate does not establish any global product count, market denominator, product effectiveness, G2/model-pipeline held-out performance, or publication authority. AI-assisted research and classification are permitted throughout Release A; uncertainty, source limitations and difficult boundary cases remain explicit and reviewable. A future automated production filter that independently accepts product-boundary decisions at scale requires its own fit-for-purpose evaluation.
 
 ## 6. Release A — Product Population Observatory
 
