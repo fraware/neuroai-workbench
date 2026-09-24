@@ -99,7 +99,7 @@ One organization may:
 
 ### 3.2 Product family
 
-A **product family** is a source-supported grouping of related market-facing or programme-facing products that share a stable lineage or family identity.
+A **product family** is a source-supported grouping of related externally represented or programme-defined product offerings that share a stable lineage or family identity.
 
 Examples of family-level grouping include:
 
@@ -1168,7 +1168,7 @@ Effectiveness evidence belongs to Release C.
 | Same product, two official names in two countries, no material configuration difference | One product with aliases/jurisdictional assertions | Once globally; once in each qualifying jurisdictional view |
 | Same family, materially different hardware generations | One family, multiple products/configurations | Count at declared level |
 | Routine firmware bug fix | Same configuration unless material capability/evidence effect is established | No new product count |
-| Software/model update materially changes in-scope capability | New configuration; new product only if market-facing identity also changes materially | Configuration count changes; product count depends on product identity |
+| Software/model update materially changes in-scope capability | New configuration; new product only if offering identity also changes materially | Configuration count changes; product count depends on product identity |
 | Cleared component inside broader investigational system | Separate component and system identities | Included only in views whose object class admits each; no authorization inheritance |
 | Companion app used only to control/display device | Part of product bundle | No separate service count |
 | Separately subscribed analytics service with material in-scope function | Separate service linked to parent product | Countable service in applicable views |
