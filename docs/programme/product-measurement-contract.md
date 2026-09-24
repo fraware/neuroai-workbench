@@ -292,21 +292,17 @@ They do not automatically create new global product identities.
 
 For a global unique-product view:
 
-[
-N_{global}
-=
-left|{canonical product identities}ight|
-]
+```text
+N_global = number of unique canonical product identities
+```
 
 A product present in five jurisdictions counts once globally.
 
 For a jurisdictional availability view:
 
-[
-N_j
-=
-left|{product identities with qualifying state in jurisdiction j}ight|
-]
+```text
+N_j = number of unique product identities with a qualifying state in jurisdiction j
+```
 
 The same product may count once in each applicable jurisdiction.
 
@@ -702,14 +698,14 @@ They are reported as separate uncertainty/coverage quantities.
 
 ## 13. Category-composition versus market-share rule
 
-For category (c), a Release-A product-composition statistic may be:
+For category `c`, a Release-A product-composition statistic may be:
 
-[
-Composition_c
-=
-rac{N_{products satisfying category c}}
-{N_{products in declared Release-A view}}
-]
+```text
+Composition_c =
+  products in declared Release-A view satisfying category c
+  -----------------------------------------------------------
+  products in the declared Release-A view
+```
 
 This is **product composition**, not economic market share.
 
