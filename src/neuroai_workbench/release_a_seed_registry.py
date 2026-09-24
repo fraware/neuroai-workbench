@@ -218,14 +218,10 @@ def build_seed_product_registry(
 
     bindings = _binding_map(manifest)
     referenced_observations = {
-        str(ref)
-        for binding in bindings.values()
-        for ref in cast(Sequence[str], binding["source_observation_refs"])
+        str(ref) for binding in bindings.values() for ref in cast(Sequence[str], binding["source_observation_refs"])
     }
     referenced_assertions = {
-        str(ref)
-        for binding in bindings.values()
-        for ref in cast(Sequence[str], binding["projected_assertion_refs"])
+        str(ref) for binding in bindings.values() for ref in cast(Sequence[str], binding["projected_assertion_refs"])
     }
     unknown_observations = referenced_observations - known_observation_ids
     if unknown_observations:
