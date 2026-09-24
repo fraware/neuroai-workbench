@@ -19,6 +19,9 @@
     "capture_estimation_eligible",
     "observed_at",
     "registry_projection_version",
+    "frame_register_version",
+    "analysis_jurisdiction_scope",
+    "language_scope_id",
     "population_view_id",
     "world_time_cutoff",
     "knowledge_time_cutoff",
@@ -38,7 +41,10 @@
         "F5",
         "F6",
         "F7",
-        "F8"
+        "F8",
+        "F9",
+        "F10",
+        "F11"
       ]
     },
     "frame_version": {
@@ -117,6 +123,17 @@
       "format": "date-time"
     },
     "boundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "frame_register_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+    },
+    "analysis_jurisdiction_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language_scope_id": {
       "type": "string",
       "minLength": 1
     }
