@@ -192,7 +192,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified fourteen residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified twenty residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -210,6 +210,12 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C12 | Release-A A7 still used `N_total`, which could contradict the contract's conditional open-world estimand semantics | Use `N_estimated = N_observed + N_unseen` and state explicitly that it is conditional on the declared discovery-frame/language/jurisdiction/model universe |
 | C13 | Legacy programme-plan display equations contained malformed Markdown and escaped control characters from earlier authoring | Normalize all affected equations to deterministic fenced-text notation without changing their substantive definitions |
 | C14 | Residual “global unique-product count” wording could be misread as a completeness claim even though the contract forbids global-census inference | Use cross-jurisdiction unique-offering terminology and bind it explicitly to the declared discovery/analysis universe |
+| C15 | Governed count metadata still lacked exact content/execution identities needed to reproduce the result from an immutable state | Add exact boundary-contract, input-snapshot, reference-standard and discovery-frame-register digests plus preregistration ID and exact analysis execution pin |
+| C16 | Capability-first and multilingual yield diagnostics did not explicitly distinguish raw candidate gain from deduplicated governed product-identity gain | Define the primary diagnostics on the same governed qualifying identity unit/view/cutoffs and report lead/error/duplicate yield separately |
+| C17 | Opaque D4 candidate selection IDs lacked an anti-gaming assignment rule | Assign each selection ID once in an append-only controlled ledger before pool freeze/score computation; prohibit regeneration or renumbering based on score order |
+| C18 | Required final D4 disposition coverage could be misread as a gold-label sampling quota or invite post-label top-up | Treat disposition coverage as a freeze adequacy criterion only; selection constraints are label-free and a coverage failure forces a successor sampling path rather than post-hoc replacement/top-up |
+| C19 | The protocol named a final human D4 freeze decision point without defining its disposition domain or binding it to exact candidate artifacts | Add `APPROVE_D4_FREEZE / REQUEST_D4_CHANGES / DEFER_D4_FREEZE`; only exact-artifact approval authorizes the frozen public successor |
+| C20 | Release A still requested a generic D4 “evaluation report”, which could conflate human reference-standard freeze with separately gated model/pipeline evaluation | Require human calibration/freeze evidence and include a model/pipeline evaluation report only when such automation is actually used and separately gated |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -241,7 +247,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C14 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C20 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
