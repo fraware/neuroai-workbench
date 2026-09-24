@@ -200,7 +200,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified twenty-one residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified twenty-three residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -225,6 +225,8 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C19 | The protocol named a final human D4 freeze decision point without defining its disposition domain or binding it to exact candidate artifacts | Validate candidate successor artifacts first, then record `APPROVE_D4_FREEZE / REQUEST_D4_CHANGES / DEFER_D4_FREEZE`; only exact-artifact approval authorizes the frozen public successor |
 | C20 | Release A still requested a generic D4 “evaluation report”, which could conflate human reference-standard freeze with separately gated model/pipeline evaluation | Require human calibration/freeze evidence and include a model/pipeline evaluation report only when such automation is actually used and separately gated |
 | C21 | Release A implicitly forced a numerical unseen-population estimate even if the preregistered model family is non-identifiable or diagnostically unstable, and did not explicitly constrain the unseen residual to be non-negative | Require `N_estimated >= N_observed`, prohibit negative unseen mass, preregister model adequacy/identifiability/stability criteria, and permit `ESTIMATE_NOT_IDENTIFIED` / `WITHHELD_METHOD_FAILURE` instead of forcing a total |
+| C22 | A purposively selected final D4 double-label subset could be used to imply an overall inter-rater agreement estimate | Treat agreement from a strategic subset as subset-specific; require full double review or a predeclared probability-sampling design for an overall final-benchmark agreement estimate |
+| C23 | D4's deliberately stratified edge-case composition could be mistaken for the operational candidate/product base-rate distribution | State that D4 metrics are benchmark-conditional, its class proportions are not prevalence estimates, and population-weighted/operational performance requires a separately justified target distribution/transport design |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -256,7 +258,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C21 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C23 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
