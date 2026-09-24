@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R18 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -126,7 +126,10 @@ The corrected candidate requires every Release-A count or estimate to bind:
 
 ```text
 boundary_contract_id
-reference_standard_or_validation_version
+boundary_disposition_protocol_id
+reference_standard_id
+reference_standard_version
+reference_standard_validation_state
 population_view_id
 identity_level
 included_enumeration_roles
