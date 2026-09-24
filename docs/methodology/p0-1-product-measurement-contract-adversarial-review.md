@@ -173,7 +173,9 @@ estimation_status
 discovery_frame_register_id
 discovery_frame_register_digest
 discovery_frame_universe
-discovery_protocol_or_model_id
+discovery_protocol_id
+population_model_id
+population_model_digest
 uncertainty_state
 ```
 
@@ -201,7 +203,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified thirty residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified thirty-one residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -235,6 +237,7 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C28 | Candidate-status text said the document itself “freezes” P0.1 semantics before an attributable human approval | State that the document freezes semantics only after exact-digest human approval and recorded `FROZEN_v1.0` status |
 | C29 | The contract relied on issue workflow for final freeze authority instead of defining the substantive disposition in the contract itself | Add `APPROVE_FREEZE_v1.0 / REQUEST_CHANGES / DEFER` and require exact-digest attributable approval; continuing execution or merging docs is explicitly not approval |
 | C30 | Population-estimation compatibility metadata used `population_view` / `enumeration_roles` while governed count metadata used `population_view_id` / `included_enumeration_roles` | Normalize the estimation-universe fields to the governed count field names so preregistration, computation and reporting bind the same identifiers |
+| C31 | Governed count metadata conflated discovery-protocol identity and population-model identity in one `discovery_protocol_or_model_id` field | Split them into independent discovery-protocol and population-model identities/digest, with model fields explicitly not applicable to observed-only counts |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -266,7 +269,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C30 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C31 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
