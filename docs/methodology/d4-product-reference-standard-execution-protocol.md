@@ -391,9 +391,11 @@ Use for contamination, rights, reviewer-independence, or construct-validity fail
 
 ### 10.1 Separation from calibration
 
-The final held-out candidate pool must be disjoint from the 60 calibration cases.
+The final held-out candidate pool must be disjoint from the 60 calibration cases at more than the case-ID level. Known aliases, duplicate candidate records, and records resolving to the same underlying PRODUCT/SYSTEM/family/offering/configuration object as a calibration case are excluded from final held-out membership.
 
-Calibration cases may remain a development/calibration resource but cannot enter the final held-out membership.
+Before final pool freeze, perform a controlled cross-split duplicate/identity-leakage review between calibration membership and the proposed final pool. A suspected unresolved cross-split duplicate is excluded or the pool freeze fails closed until the ambiguity is resolved; it is not treated as independent held-out evidence.
+
+Calibration cases may remain a development/calibration resource but cannot enter the final held-out membership through relabeling, alternate URLs, aliases, translated names, or duplicate source records.
 
 ### 10.2 Candidate-pool freeze
 
