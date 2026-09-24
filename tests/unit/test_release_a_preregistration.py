@@ -240,3 +240,79 @@ def test_model_envelope_rejects_interval_below_known_observed() -> None:
             {"LOG_LINEAR_DEPENDENCE_INTERACTIONS": (119.0, 150.0)},
             n_observed_total=120,
         )
+
+
+def test_secondary_role_rejects_primary_view_and_ap4_requires_integrated_system_only() -> None:
+    wrong_secondary = _universe(view="A-P1", role="SECONDARY")
+    with pytest.raises(ReleaseAPreregistrationError, match="A-P4 is the only frozen secondary"):
+        validate_estimation_universe(wrong_secondary)
+
+    wrong_ap4_roles = _universe(
+        view="A-P4",
+        role="SECONDARY",
+        enumeration_roles=["INTEGRATED_SYSTEM", "COMPONENT_OR_SUBSYSTEM"],
+    )
+    with pytest.raises(ReleaseAPreregistrationError, match="A-P4 estimation must use only INTEGRATED_SYSTEM"):
+        validate_estimation_universe(wrong_ap4_roles)
+
+
+def test_required_sensitivity_set_cannot_drift() -> None:
+    invalid = _universe()
+    invalid["required_sensitivities"] = sorted(REQUIRED_SENSITIVITIES - {"FRAME_SET"})
+    invalid["universe_id"] = estimation_universe_id(invalid)
+    with pytest.raises(ReleaseAPreregistrationError, match="required_sensitivities"):
+        validate_estimation_universe(invalid)
+
+
+@pytest.mark.parametrize(
+    ("n_total", "n_capture", "model_total", "message"),
+    [
+        (-1, 0, 0.0, "Observed counts cannot be negative"),
+        (1, -1, 1.0, "Observed counts cannot be negative"),
+        (5, 6, 7.0, "Capture-support count cannot exceed"),
+        (10, 8, 7.0, "Model total cannot be below identities used in its capture support"),
+    ],
+)
+def test_observed_unseen_decomposition_rejects_incoherent_inputs(
+    n_total: int,
+    n_capture: int,
+    model_total: float,
+    message: str,
+) -> None:
+    with pytest.raises(ReleaseAPreregistrationError, match=message):
+        decompose_observed_and_unseen(
+            n_observed_total=n_total,
+            n_observed_capture_support=n_capture,
+            model_total_estimate=model_total,
+        )
+
+
+def test_zero_population_has_undefined_fractional_coverage() -> None:
+    result = decompose_observed_and_unseen(
+        n_observed_total=0,
+        n_observed_capture_support=0,
+        model_total_estimate=0.0,
+    )
+    assert result["model_consistent_with_known_observed"] is True
+    assert result["n_unobserved_estimated"] == 0.0
+    assert str(result["coverage_estimated"]) == "nan"
+
+
+def test_model_envelope_rejects_invalid_or_missing_headline_intervals() -> None:
+    with pytest.raises(ReleaseAPreregistrationError, match="Observed count cannot be negative"):
+        admissible_model_envelope(
+            {"LOG_LINEAR_DEPENDENCE_INTERACTIONS": (1.0, 2.0)},
+            n_observed_total=-1,
+        )
+
+    with pytest.raises(ReleaseAPreregistrationError, match="lower exceeds upper"):
+        admissible_model_envelope(
+            {"LOG_LINEAR_DEPENDENCE_INTERACTIONS": (150.0, 140.0)},
+            n_observed_total=120,
+        )
+
+    with pytest.raises(ReleaseAPreregistrationError, match="No headline-admissible"):
+        admissible_model_envelope(
+            {"PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC": (120.0, 180.0)},
+            n_observed_total=120,
+        )
