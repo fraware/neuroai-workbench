@@ -267,7 +267,7 @@ P0.3 must preserve:
 - technical-equivalence relationships without silent identity merge;
 - versioned currentness policy for every current projection;
 - versioned machine predicates for every A-P1–A-P8 population view;
-- exact frozen contract, operational-disposition-protocol, reference-standard and discovery-frame-register digests, Release-A preregistration ID, and analysis execution pin in governed count/estimate metadata.
+- exact frozen contract, operational-disposition-protocol, candidate-review-protocol, reference-standard and discovery-frame-register digests, review-completion state, Release-A preregistration ID, and analysis execution pin in governed count/estimate metadata.
 
 **Deliverables:** ontology/schema changes where required, registry-projection schema, identity and linkage rules, validators, adversarial fixtures, and migration/compatibility notes.
 
@@ -318,7 +318,8 @@ plus:
 - observed BORDERLINE/ABSTAIN/unresolved candidate accounting;
 - predeclared boundary-uncertainty sensitivity/bounds where material;
 - explicit zero-capture/coverage-risk analysis for the declared discovery-frame universe;
-- predeclared model adequacy, identifiability, stability and estimate-withholding criteria.
+- predeclared model adequacy, identifiability, stability and estimate-withholding criteria;
+- frozen candidate-review protocol, review-completion target, and review-selection adjustment strategy where review is sampled or incomplete.
 
 **Deliverable:** `Release A Analysis Preregistration v1.0`.
 
@@ -391,6 +392,8 @@ C_i = (F_1, F_2, ..., F_k)
 ```
 
 where `i` is the unique qualifying canonical identity or other explicitly preregistered estimation unit, never an unreconciled raw candidate row. Duplicate observations collapse into the same unit-level capture history. BORDERLINE, ABSTAIN and unresolved-identity candidates remain in coverage/uncertainty accounting and are not silently converted into population members.
+
+Candidate review must follow a frozen review protocol. For an unadjusted population estimate, review must be complete over the declared candidate universe. If review is sampled/incomplete, the sampling mechanism and inclusion probabilities/verification model must be preregistered and incorporated into the estimator; unreviewed candidates are never treated as `EXCLUDE` by default.
 
 **Output:** multi-frame raw candidate ledger plus unit-resolved capture-history dataset.
 
@@ -557,7 +560,7 @@ Estimated observed fraction: interval [a, b]
 Major residual uncertainty: named classes/jurisdictions/source barriers
 ```
 
-Population estimates must include model diagnostics, dependence assumptions, sensitivity analysis, and limitations. If the preregistered model families fail the predeclared identifiability/adequacy/stability criteria, do not force a numeric total: report `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE`, retain `N_observed`, and state the failure evidence.
+Population estimates must include model diagnostics, dependence assumptions, review-selection/completion diagnostics, sensitivity analysis, and limitations. If the preregistered model families fail the predeclared identifiability/adequacy/stability criteria, do not force a numeric total: report `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE`, retain `N_observed`, and state the failure evidence.
 
 **Output:** `Product Population Estimation Report`.
 
