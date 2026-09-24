@@ -317,7 +317,8 @@ plus:
 - subgroup estimates by product family and jurisdiction where supported;
 - observed BORDERLINE/ABSTAIN/unresolved candidate accounting;
 - predeclared boundary-uncertainty sensitivity/bounds where material;
-- explicit zero-capture/coverage-risk analysis for the declared discovery-frame universe.
+- explicit zero-capture/coverage-risk analysis for the declared discovery-frame universe;
+- predeclared model adequacy, identifiability, stability and estimate-withholding criteria.
 
 **Deliverable:** `Release A Analysis Preregistration v1.0`.
 
@@ -528,7 +529,7 @@ Estimate, conditional on the exact preregistered discovery-frame/language/jurisd
 N_estimated = N_observed + N_unseen
 ```
 
-using preregistered model families and sensitivity checks. `N_estimated` is not an absolute world-total claim and must preserve residual zero-capture/coverage uncertainty.
+using preregistered model families and sensitivity checks. `N_estimated` is not an absolute world-total claim and must preserve residual zero-capture/coverage uncertainty. Valid population models must respect `N_estimated >= N_observed` and `N_unseen >= 0` by construction.
 
 At minimum compare:
 
@@ -556,7 +557,7 @@ Estimated observed fraction: interval [a, b]
 Major residual uncertainty: named classes/jurisdictions/source barriers
 ```
 
-Population estimates must include model diagnostics, dependence assumptions, sensitivity analysis, and limitations.
+Population estimates must include model diagnostics, dependence assumptions, sensitivity analysis, and limitations. If the preregistered model families fail the predeclared identifiability/adequacy/stability criteria, do not force a numeric total: report `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE`, retain `N_observed`, and state the failure evidence.
 
 **Output:** `Product Population Estimation Report`.
 
@@ -599,8 +600,8 @@ Release A passes only when a reviewer can reconstruct:
 4. which languages/jurisdictions were included;
 5. how discovery rounds terminated;
 6. what was directly observed;
-7. what was estimated;
-8. what assumptions drive the unseen-population estimate;
+7. what was estimated, or why a numeric estimate was withheld;
+8. what assumptions and acceptance diagnostics govern the unseen-population estimate;
 9. what uncertainty remains;
 10. which stronger global-completeness claims remain prohibited.
 
