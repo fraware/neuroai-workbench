@@ -12,7 +12,7 @@ This protocol defines how to execute, adjudicate, and freeze the real D4 Product
 
 D4 measures one construct:
 
-> Whether an exact product/service candidate belongs inside the approved NeuroAI product/service research boundary.
+> Whether a bound product/service-related candidate representation belongs inside the approved NeuroAI product/service research boundary.
 
 D4 does **not** establish:
 
@@ -171,6 +171,7 @@ language
 jurisdiction
 text_or_evidence_availability
 declared_strata[]
+declared_identity_enumeration_diagnostics[]
 candidate_pool_origin
 review_state
 ```
@@ -377,6 +378,8 @@ Before final selection, freeze:
 - candidate membership;
 - exact-object bindings;
 - declared strata;
+- candidate canonical entity type, identity level, system/offering role, and primary enumeration role where applicable;
+- declared private identity/enumeration diagnostic dimensions, or the frozen deterministic mapping used to derive them from those candidate fields;
 - language;
 - jurisdiction;
 - evidence-availability state;
@@ -384,7 +387,7 @@ Before final selection, freeze:
 - pool-construction protocol;
 - candidate-pool canonical digest.
 
-No model/pipeline result from the system under evaluation may be used to add, remove, or reorder candidates after pool freeze.
+No model/pipeline result from the system under evaluation may be used to add, remove, reorder, or relabel candidate sampling/diagnostic dimensions after pool freeze. If diagnostic dimensions are derived rather than stored directly, the exact derivation policy/version is frozen before final selection.
 
 ### 10.3 Final sample size
 
@@ -694,6 +697,8 @@ Software may validate structure and deterministic selection. It does not issue t
 
 ## 22. Next dependency
 
-Once P0.2 is complete, P0.3 can implement the exact-product registry against a frozen product boundary and use the frozen D4 reference standard for product-scope validation and evaluation.
+P0.3 schema/registry implementation may proceed once P0.1 is substantively frozen; it does not need to wait for completion of the real D4 reference standard merely to implement the identity and projection contract.
+
+However, P0-G and population-scale Release-A operational use require the completed frozen D4 reference standard wherever D4 validation/reference-standard lineage is required by P0.1/P0.3. Any automated production boundary filter remains separately gated by its applicable held-out evaluation.
 
 P0.2 itself creates no global product denominator. Release A remains downstream of P0-G.
