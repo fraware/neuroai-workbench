@@ -23,6 +23,7 @@ from neuroai_workbench.release_a_seed_registry import (
     SEED_REGISTRY_BOUNDARY,
     ReleaseASeedRegistryError,
     build_seed_product_registry,
+    seed_evidence_index_sha256,
     seed_input_manifest_id,
     seed_registry_sha256,
     validate_seed_input_manifest,
