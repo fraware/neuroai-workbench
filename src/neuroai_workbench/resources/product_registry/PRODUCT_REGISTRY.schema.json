@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/product-registry-1.0.json",
+  "title": "PRODUCT_REGISTRY",
+  "description": "Container for exact-product analytical projection rows. Row count is mechanical and is never itself a product-population denominator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metadata",
+    "rows",
+    "boundary"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "registry_projection_version",
+        "row_count",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+        "jurisdiction_scope",
+        "boundary_contract_id",
+        "reference_standard_id",
+        "population_view_policy_id",
+        "currentness_policy_id"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "registry_projection_version": {
+          "const": "PRODUCT_REGISTRY_v1.0"
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "world_time_cutoff": {
+          "type": "string",
+          "format": "date"
+        },
+        "knowledge_time_cutoff": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "jurisdiction_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "boundary_contract_id": {
+          "const": "PRODUCT_MEASUREMENT_CONTRACT_v1.0"
+        },
+        "reference_standard_id": {
+          "const": "D4_PRODUCT_REFERENCE_STANDARD_v1.0"
+        },
+        "population_view_policy_id": {
+          "const": "PRODUCT_POPULATION_VIEW_POLICY_v1.0"
+        },
+        "currentness_policy_id": {
+          "const": "PRODUCT_CURRENTNESS_POLICY_v1.0"
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
