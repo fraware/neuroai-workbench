@@ -231,6 +231,54 @@ A broad count containing more than one enumeration role must be labelled as a co
 
 A-P1 may retain otherwise eligible offerings whose primary enumeration role is `UNRESOLVED`; the unresolved role count must remain explicit. Role-specific views such as A-P4 exclude `UNRESOLVED` until the role is resolved. This prevents missing-role evidence from silently removing otherwise validated product identities from the broad inventory.
 
+### 3.9 v1.0 ontology projection
+
+`FAMILY`, `OFFERING`, and `CONFIGURATION` in this contract are semantic identity levels. They are not new canonical v2 entity types.
+
+The v1.0 projection is:
+
+| Measurement semantic | Canonical v2 representation |
+| --- | --- |
+| Product family | `PRODUCT` entity with `product_identity_level = FAMILY` |
+| Market-facing product offering | `PRODUCT` entity with `product_identity_level = OFFERING` |
+| Separately countable service | `PRODUCT` entity with `product_identity_level = OFFERING` and `offering_kind = SERVICE` |
+| Exact/bounded product configuration | `SYSTEM` entity with `system_role = PRODUCT_CONFIGURATION`, linked to the relevant offering and, where present, family |
+| Research/investigational technical system with no qualifying offering identity | `SYSTEM` only; excluded from product/service offering counts |
+
+The exact field names above are P0.3 implementation requirements; a graph implementation may encode identity level or role as controlled assertions if that better preserves the v2 object model. The semantics must remain lossless and queryable.
+
+A separate FAMILY-level `PRODUCT` entity is created only where attributable evidence supports a family identity or a meaningful family grouping across offerings/configurations. The programme must not manufacture one synthetic family for every one-off offering solely to satisfy a hierarchy.
+
+An offering may exist without a separately evidenced exact/bounded configuration `SYSTEM`. That absence remains explicit. The programme must not synthesize a default configuration entity merely to complete the graph.
+
+### 3.10 Exact-product registry row is an analytical projection
+
+The “one row per exact product/version” registry is a reproducible analytical projection, not a new canonical entity class.
+
+A registry row binds:
+
+```text
+registry_row_id
+product_offering_id
+product_family_id            # nullable when no evidenced family entity exists
+configuration_system_id      # nullable when no evidenced exact configuration exists
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
+lifecycle_state
+access_commercial_state
+regulatory_state
+deployment_state
+boundary_disposition_ref
+source_observation_refs
+```
+
+`registry_row_id` is a deterministic analytical key. It is not a canonical PRODUCT or SYSTEM identifier and must never be used to merge canonical entities.
+
+Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
+
+Where `configuration_system_id` is unresolved, offering-level analyses may retain the otherwise eligible row with explicit configuration coverage state. Configuration-level analyses, including A-P8, exclude the unresolved configuration from the numerator and report the resulting coverage loss.
+
 ## 4. Product-population inclusion boundary
 
 ### 4.1 Scope classification, reference-standard membership, identity, and state are separate
@@ -338,44 +386,53 @@ A model prediction, classifier score, retrieval rank, or automated rule may supp
 
 The programme uses at least three non-interchangeable identity levels.
 
-### 5.1 Family identity
+### 5.1 Family identity level
 
 ```text
 FAMILY
 ```
 
+This is a semantic identity level represented by a canonical `PRODUCT` entity only when an evidenced family identity exists.
+
 Used for:
 
 - lineage;
 - family portfolio summaries;
-- grouping related configurations.
+- grouping related offerings/configurations.
 
-Not the default exact-product denominator.
+A one-off offering does not automatically create a separate family entity.
 
-### 5.2 Commercial / programme product identity
+Not the default Release-A offering denominator.
+
+### 5.2 Offering identity level
 
 ```text
-PRODUCT
+OFFERING
 ```
 
-Represents one externally identifiable named product/service or formal investigational product object.
+Represents one externally identifiable named product/service or formal investigational product offering as a canonical `PRODUCT` entity with `product_identity_level = OFFERING`.
 
 This is the default Release-A global product/service identity level.
 
-### 5.3 Exact configuration identity
+### 5.3 Exact configuration identity level
 
 ```text
 CONFIGURATION
 ```
 
-Represents a materially distinct technical or intended-use configuration associated with one or more product identities. A configuration is usually product-specific, but evidence-supported OEM/private-label equivalence may link more than one commercial offering to the same or substantially equivalent technical implementation without merging their commercial product identities.
+Represents a materially distinct technical or intended-use configuration as a canonical `SYSTEM` entity with `system_role = PRODUCT_CONFIGURATION`.
+
+A configuration is usually associated with one offering, but evidence-supported OEM/private-label equivalence may link more than one commercial offering to the same or substantially equivalent technical implementation without merging their commercial product identities.
 
 Used for:
 
 - product-state assertions that differ by configuration;
 - regulatory mapping;
 - study/effectiveness evidence;
-- materially distinct capability analysis.
+- materially distinct capability analysis;
+- A-P8 technical-implementation analysis.
+
+No configuration entity is created solely because an offering exists.
 
 ### 5.4 Jurisdiction is normally state, not identity
 
@@ -786,9 +843,9 @@ A historical statement that a product was once deployed is insufficient for A-P7
 
 ### 11.8 `A-P8 CURRENT_DISTINCT_TECHNICAL_IMPLEMENTATIONS`
 
-Analytical view over current exact `CONFIGURATION` identities associated with qualifying current offerings.
+Analytical view over current canonical `SYSTEM` identities carrying `system_role = PRODUCT_CONFIGURATION` and associated with qualifying current offerings.
 
-A single commercial offering may contribute more than one technical implementation when materially distinct current configurations are supported.
+A single commercial offering may contribute more than one technical implementation when materially distinct current configuration SYSTEM identities are supported. An offering with no evidenced configuration SYSTEM contributes no A-P8 numerator solely by virtue of existing as an offering; configuration-coverage loss remains explicit.
 
 Evidence-supported equivalent configurations may be grouped into a technical-equivalence cluster.
 
@@ -832,7 +889,7 @@ N_V = sum over unique canonical identities i of I(i qualifies for V)
 
 where each `i` is a unique canonical identity at the declared counting level.
 
-For A-P8 only, the analytical counting unit is an evidence-defined technical-equivalence cluster under the declared equivalence method. Constituent commercial identities remain preserved and recoverable; A-P8 does not mutate canonical identity.
+For A-P8 only, the starting unit is an evidenced current PRODUCT_CONFIGURATION `SYSTEM`. Evidence-defined equivalent configuration SYSTEMs may be grouped into a technical-equivalence cluster under the declared equivalence method. Constituent SYSTEM and PRODUCT identities remain preserved and recoverable; A-P8 does not mutate canonical identity.
 
 ### 12.2 Duplicate candidates
 
@@ -902,7 +959,7 @@ Capture histories must be constructed at that same unit.
 Do not mix:
 
 - family and product identities;
-- product and configuration identities;
+- PRODUCT offering and PRODUCT_CONFIGURATION SYSTEM identities;
 - current and historical views;
 - announcement-inclusive and externally-accessible views;
 - component-inclusive and integrated-system-only views;
@@ -1158,9 +1215,12 @@ P0.3 must translate this contract into machine-readable semantics without weaken
 
 At minimum, P0.3 must make it possible to represent:
 
-- family identity;
-- product identity;
-- exact configuration identity;
+- PRODUCT family identity level without synthesizing a family for every offering;
+- PRODUCT offering identity level;
+- exact configuration as a SYSTEM with PRODUCT_CONFIGURATION role;
+- explicit offering-to-configuration linkage;
+- exact-product registry rows as analytical projections, not canonical entities;
+- nullable/unresolved family and configuration bindings with explicit coverage state;
 - v1.0 service representation as a PRODUCT offering with explicit offering kind;
 - exactly one `primary_enumeration_role` from `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / UNRESOLVED / OTHER_REVIEW_REQUIRED`;
 - aliases and lineage;
@@ -1198,7 +1258,11 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 15. operational boundary dispositions preserve attributable minimum fields;
 16. observed identities and the estimated unseen residual cannot be conflated;
 17. A-P8 operates at exact-configuration/equivalence-cluster level;
-18. enumeration-role uncertainty is distinct from a true out-of-vocabulary role.
+18. enumeration-role uncertainty is distinct from a true out-of-vocabulary role;
+19. FAMILY/OFFERING/CONFIGURATION semantics map losslessly to current PRODUCT/SYSTEM ontology;
+20. family entities are source-supported and never synthesized one-per-offering;
+21. A-P8 never fabricates configuration SYSTEM identities;
+22. exact-product registry rows remain analytical projections distinct from canonical entity identity.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
