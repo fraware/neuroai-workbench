@@ -88,6 +88,7 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R15 | A-P8 technical-implementation unit was product-level ambiguous | One product can contain multiple materially distinct current configurations | Define A-P8 over exact CONFIGURATION identities/equivalence clusters while preserving product identities |
 | R16 | Operational boundary-disposition provenance was underspecified | A counted product could lack an attributable governed inclusion record or exact validation lineage | Require decision, rationale, role, timestamp, exact-object binding, contract/protocol ID, and exact reference-standard identity/version |
 | R17 | Observed and estimated population semantics were not explicitly separated | The unseen residual could be misreported as individually identified or human-adjudicated products | Define N_observed, N_estimated and N_unseen separately; prohibit item-level interpretation of the latent residual |
+| R18 | Enumeration-role uncertainty and true out-of-vocabulary roles were conflated | Role-specific analyses could hide uncertainty or misuse OTHER as an unknown state | Add `UNRESOLVED` separately from `OTHER_REVIEW_REQUIRED`; retain unresolved roles in A-P1 while excluding them from role-specific views |
 
 Two additional consistency corrections were made during implementation:
 
@@ -167,7 +168,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R17 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R18 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
