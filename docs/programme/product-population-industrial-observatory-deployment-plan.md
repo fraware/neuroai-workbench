@@ -12,7 +12,7 @@ This document is the durable repository reference for extending the NeuroAI Land
 
 - **Release A — Product Population Observatory:** establish a validated exact-product analytical population view, discovery-coverage evidence, and bounded population estimates where the preregistered models are identifiable/adequate; otherwise report the explicit no-estimate outcome.
 - **Release B — Commercial Measurement Layer:** define economically coherent submarkets and estimate market size, adoption, and market share only where defensible denominators exist.
-- **Release C — Evidence and Effectiveness Observatory:** link exact products to clinical/scientific evidence, characterize evidence maturity, and compare effectiveness only inside commensurable evidence groups.
+- **Release C — Evidence and Effectiveness Observatory:** link PRODUCT offerings and, where evidence is configuration-specific, PRODUCT_CONFIGURATION SYSTEMs to clinical/scientific evidence; characterize evidence maturity; and compare interventions only inside commensurable evidence groups.
 - **Release D — Integrated NeuroAI Industrial Observatory:** connect patents, organizations, products, commercial penetration, evidence maturity, geography, capital, dependencies, and governance in a longitudinal evidence graph.
 
 The programme is intentionally cumulative. Release B and Release C may start once Release A has stabilized the relevant product identities and classifications. Release D integrates only evidence objects and relationships that have passed their applicable upstream gates.
@@ -95,7 +95,7 @@ The dependency is semantic, not merely chronological:
 
 - **P0 → A:** exact product identity and inclusion semantics must exist before population-scale counting.
 - **A → B:** market measurement needs stable product/submarket membership and a known coverage state.
-- **A → C:** evidence synthesis needs stable exact-product identity and claim decomposition.
+- **A → C:** evidence synthesis needs stable offering/configuration identity and claim decomposition.
 - **A/B/C → D:** the integrated layer must preserve the provenance, uncertainty, and claim boundaries of every upstream object.
 
 ## 5. Phase P0 — Measurement foundation
@@ -778,23 +778,29 @@ If the denominator is missing or unstable, the output remains descriptive and no
 
 ### C objective
 
-Link exact products to scientific, clinical, regulatory, and real-world evidence; characterize evidence maturity; and conduct comparative synthesis only where products and studies are genuinely commensurable.
+Link PRODUCT offerings and exact PRODUCT_CONFIGURATION SYSTEMs to scientific, clinical, regulatory, and real-world evidence at the narrowest supported identity level; characterize evidence maturity; and conduct comparative synthesis only where intervention configurations and studies are genuinely commensurable.
 
-### C1 — Product-linked evidence graph
+### C1 — Product/configuration-linked evidence graph
 
-Represent relationships among:
+Represent relationships without widening configuration-scoped evidence:
 
 ```text
-PRODUCT
-  -> CLAIM
-  -> STUDY
-  -> POPULATION
-  -> INTERVENTION
-  -> COMPARATOR
-  -> OUTCOME
-  -> FOLLOW-UP
-  -> REGULATORY RECORD
+PRODUCT OFFERING
+  -> PRODUCT_CONFIGURATION SYSTEM   # where an exact/bounded configuration is evidenced
+      -> CLAIM
+      -> STUDY
+      -> POPULATION
+      -> INTERVENTION
+      -> COMPARATOR
+      -> OUTCOME
+      -> FOLLOW-UP
+      -> REGULATORY RECORD
+
+PRODUCT OFFERING
+  -> CLAIM                           # only when evidence genuinely applies at offering level
 ```
+
+A configuration-scoped study, regulatory record, safety finding, or effectiveness claim must not be projected to sibling configurations, the entire offering, or a product family without separate evidence.
 
 Each evidence object records:
 
@@ -809,7 +815,9 @@ Each evidence object records:
 - sponsor/funding relationship;
 - publication/registration state;
 - risk-of-bias assessment where applicable;
-- exact product/version binding;
+- `product_offering_id`;
+- `configuration_system_id` where evidenced, otherwise explicit unresolved/not-applicable configuration state;
+- exact assertion subject/scope so configuration-specific evidence cannot be widened;
 - evidence source and observation.
 
 **Output:** evidence-graph schema and ingestion pipeline.
@@ -888,17 +896,17 @@ Candidate dimensions:
 
 If an aggregate index is later introduced, the underlying dimensions and weights must remain visible and validated.
 
-**Output:** product-level evidence maturity profiles.
+**Output:** offering/configuration-level evidence maturity profiles with unresolved configuration coverage reported explicitly.
 
 ### C6 — Comparability graph
 
-Two products enter the same comparative component only where the evidence is sufficiently aligned on:
+Two intervention configurations enter the same comparative component only where the evidence is bound at a sufficiently resolved offering/configuration level and is sufficiently aligned on:
 
 ```text
 (population, indication, intervention objective, comparator, endpoint, horizon)
 ```
 
-The comparability relation is evidence-based, not category-name-based.
+The comparability relation is evidence-based, not category-name-based. Two commercial offerings that share an evidence-supported technical configuration are not automatically independent interventions; conversely, materially different configurations under one offering label are not automatically pooled.
 
 Disconnected products remain non-comparable. “Comparison unsupported” is an admissible and important result.
 
@@ -975,12 +983,12 @@ Evidence quality
 +
 Appropriate synthesis
 +
-Traceable product identity
+Traceable offering/configuration identity and scope
 ```
 
 are all satisfied.
 
-A product may appear in the Evidence Observatory without being eligible for comparative-effectiveness analysis.
+An offering or configuration may appear in the Evidence Observatory without being eligible for comparative-effectiveness analysis. Unresolved configuration identity is an admissible reason to withhold configuration-level comparison.
 
 ## 9. Release D — Integrated NeuroAI Industrial Observatory
 
@@ -995,7 +1003,8 @@ Represent evidence-graded relationships among:
 ```text
 Patent
  <-> Organization
- <-> Product
+ <-> PRODUCT offering/family
+ <-> PRODUCT_CONFIGURATION SYSTEM
  <-> Commercial evidence
  <-> Scientific/clinical evidence
  <-> Deployment
@@ -1357,18 +1366,18 @@ Do not silently repurpose an existing work-package ID for a materially different
 The programme's immediate critical path is:
 
 ```text
-P0.1 Product Measurement Contract
-  ->
-P0.2 D4 execution and freeze
-  ->
-P0.3 Exact-product ontology / registry
-  ->
-P0.4 Discovery-frame contract
-  ->
-P0.5 Analysis preregistration
-  ->
-P0-G
-  ->
+P0.1 Product Measurement Contract freeze
+  |
+  +--> P0.2 D4 execution and freeze -------------------+
+  |                                                    |
+  +--> P0.3 ontology / registry + eligibility schema --+
+       -> P0.4 Discovery-frame contract                |
+       -> P0.5 Analysis preregistration ---------------+
+                                                       |
+                                                       v
+                                                     P0-G
+                                                       |
+                                                       v
 A1/A2 seed + multi-frame discovery
   ->
 A3/A4 capability-first + multilingual studies
