@@ -142,7 +142,9 @@ def _validate_seed_row(
     if row["registry_row_id"] != registry_row_id(row):
         raise ReleaseASeedRegistryError("Seed row registry_row_id is not deterministic")
     if row["identity_level"] == "FAMILY":
-        raise ReleaseASeedRegistryError("Family-only records are not admissible in the high-confidence A1 seed registry")
+        raise ReleaseASeedRegistryError(
+            "Family-only records are not admissible in the high-confidence A1 seed registry"
+        )
     if row["identity_state"] != "RESOLVED":
         raise ReleaseASeedRegistryError("A1 seed rows require resolved exact identity")
     if row["boundary_disposition"] != "INCLUDE":
@@ -162,9 +164,7 @@ def _validate_seed_row(
 
     if binding["canonical_entity_id"] != row["canonical_entity_id"]:
         raise ReleaseASeedRegistryError("Seed binding canonical_entity_id does not match the registry row")
-    if set(cast(list[str], binding["source_observation_refs"])) != set(
-        cast(list[str], row["source_observation_refs"])
-    ):
+    if set(cast(list[str], binding["source_observation_refs"])) != set(cast(list[str], row["source_observation_refs"])):
         raise ReleaseASeedRegistryError("Seed binding source observations do not exactly match the registry row")
     if set(cast(list[str], binding["projected_assertion_refs"])) != set(
         cast(list[str], row["projected_assertion_refs"])
