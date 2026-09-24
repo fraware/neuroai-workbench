@@ -143,7 +143,7 @@ def test_seed_manifest_and_registry_are_deterministic() -> None:
     manifest = _manifest([first, second])
 
     validate_seed_input_manifest(manifest)
-    registry = build_seed_product_registry([second, first], manifest)
+    registry = _build([second, first], manifest)
 
     assert registry["metadata"]["row_count"] == 2
     assert [row["canonical_entity_id"] for row in registry["rows"]] == [
@@ -228,7 +228,7 @@ def test_non_high_confidence_rows_are_rejected(mutation: dict[str, object], mess
     manifest = _manifest([row])
 
     with pytest.raises(ReleaseASeedRegistryError, match=message):
-        build_seed_product_registry([row], manifest)
+        _build([row], manifest)
 
 
 def test_missing_source_observation_is_rejected_by_underlying_registry_contract() -> None:
@@ -249,11 +249,11 @@ def test_seed_rows_must_match_manifest_cutoffs_and_binding_set() -> None:
     drift_manifest["knowledge_time_cutoff"] = "2026-09-24T14:00:00Z"
     drift_manifest["manifest_id"] = seed_input_manifest_id(drift_manifest)
     with pytest.raises(ReleaseASeedRegistryError, match="knowledge_time_cutoff"):
-        build_seed_product_registry([drift], drift_manifest)
+        _build([drift], drift_manifest)
 
     other = _row("PRD-OTHER", assertion_refs=["AST-O"], observation_refs=["OBS-O"])
     with pytest.raises(ReleaseASeedRegistryError, match="exactly match"):
-        build_seed_product_registry([other], manifest)
+        _build([other], manifest)
 
 
 def test_seed_binding_must_exactly_match_row_evidence_and_boundary() -> None:
@@ -288,9 +288,9 @@ def test_configuration_seed_requires_parent_offering_in_same_registry() -> None:
     )
 
     with pytest.raises(ReleaseASeedRegistryError, match="requires its parent offering"):
-        build_seed_product_registry([config], _manifest([config]))
+        _build([config], _manifest([config]))
 
-    registry = build_seed_product_registry([parent, config], _manifest([parent, config]))
+    registry = _build([parent, config], _manifest([parent, config]))
     assert registry["metadata"]["row_count"] == 2
 
 
@@ -298,12 +298,57 @@ def test_duplicate_seed_rows_are_rejected() -> None:
     row = _row()
     manifest = _manifest([row])
     with pytest.raises(ReleaseASeedRegistryError, match="Duplicate seed registry rows"):
-        build_seed_product_registry([row, deepcopy(row)], manifest)
+        _build([row, deepcopy(row)], manifest)
 
 
 def test_seed_registry_digest_rejects_invalid_registry() -> None:
     row = _row()
-    registry = build_seed_product_registry([row], _manifest([row]))
+    registry = _build([row], _manifest([row]))
     registry["metadata"]["row_count"] = 2
     with pytest.raises(ReleaseASeedRegistryError, match="row_count"):
         seed_registry_sha256(registry)
+
+
+def test_evidence_index_is_order_invariant_and_unknown_refs_fail_closed() -> None:
+    row = _row()
+    manifest = _manifest([row])
+
+    assert seed_evidence_index_sha256(["OBS-B", "OBS-A"], ["AST-B", "AST-A"]) == seed_evidence_index_sha256(
+        ["OBS-A", "OBS-B"], ["AST-A", "AST-B"]
+    )
+
+    with pytest.raises(ReleaseASeedRegistryError, match="Evidence index digest"):
+        _build(
+            [row],
+            manifest,
+            known_observation_ids={"OBS-PRODUCT-001", "OBS-EXTRA"},
+            known_assertion_ids={"AST-PRODUCT-001"},
+        )
+
+    bad_observation_manifest = deepcopy(manifest)
+    bad_observation_manifest["evidence_index_sha256"] = seed_evidence_index_sha256(
+        {"OBS-OTHER"},
+        {"AST-PRODUCT-001"},
+    )
+    bad_observation_manifest["manifest_id"] = seed_input_manifest_id(bad_observation_manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="unknown source observations"):
+        _build(
+            [row],
+            bad_observation_manifest,
+            known_observation_ids={"OBS-OTHER"},
+            known_assertion_ids={"AST-PRODUCT-001"},
+        )
+
+    bad_assertion_manifest = deepcopy(manifest)
+    bad_assertion_manifest["evidence_index_sha256"] = seed_evidence_index_sha256(
+        {"OBS-PRODUCT-001"},
+        {"AST-OTHER"},
+    )
+    bad_assertion_manifest["manifest_id"] = seed_input_manifest_id(bad_assertion_manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="unknown product assertions"):
+        _build(
+            [row],
+            bad_assertion_manifest,
+            known_observation_ids={"OBS-PRODUCT-001"},
+            known_assertion_ids={"AST-OTHER"},
+        )
