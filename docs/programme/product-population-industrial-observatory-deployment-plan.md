@@ -10,7 +10,7 @@
 
 This document is the durable repository reference for extending the NeuroAI Landscape Observatory from a representative product/service landscape into four progressively stronger measurement layers:
 
-- **Release A — Product Population Observatory:** establish a validated exact-product population, discovery-coverage evidence, and bounded population estimates.
+- **Release A — Product Population Observatory:** establish a validated exact-product analytical population view, discovery-coverage evidence, and bounded population estimates where the preregistered models are identifiable/adequate; otherwise report the explicit no-estimate outcome.
 - **Release B — Commercial Measurement Layer:** define economically coherent submarkets and estimate market size, adoption, and market share only where defensible denominators exist.
 - **Release C — Evidence and Effectiveness Observatory:** link exact products to clinical/scientific evidence, characterize evidence maturity, and compare effectiveness only inside commensurable evidence groups.
 - **Release D — Integrated NeuroAI Industrial Observatory:** connect patents, organizations, products, commercial penetration, evidence maturity, geography, capital, dependencies, and governance in a longitudinal evidence graph.
@@ -35,7 +35,7 @@ The programme keeps four measurement questions separate:
 Additional programme invariants:
 
 1. Product existence, commercial availability, deployment, regulatory authorization, effectiveness, adoption, and market position remain distinct typed claims.
-2. Exact product/version/jurisdiction identity precedes quantitative aggregation.
+2. Exact offering/configuration identity and explicit jurisdiction-scoped state precede quantitative aggregation.
 3. Automated discovery and model assistance emit candidates, classifications, rankings, or proposed links. They do not independently create canonical truth or publication authority.
 4. Open-world search saturation is reported as saturation under a protocol, never as proof of global completeness.
 5. Multilingual and jurisdictional coverage are measurement dimensions, not an after-the-fact limitations paragraph.
@@ -112,7 +112,7 @@ Define the exact semantics of:
 - service;
 - product family;
 - exact product/version/configuration;
-- jurisdiction-specific product instance;
+- jurisdiction-scoped product state, with a distinct configuration identity only when jurisdiction materially changes the product/configuration;
 - active product;
 - announced product;
 - manufacturing / pre-delivery product;
@@ -303,8 +303,8 @@ At minimum:
 ```text
 N_observed
 N_estimated
-N_unobserved = N_estimated - N_observed
-Coverage = N_observed / N_estimated
+N_unseen = N_estimated - N_observed
+Coverage = N_observed / N_estimated   # only when a valid N_estimated exists and N_estimated > 0
 ```
 
 plus:
@@ -340,7 +340,7 @@ A passing P0 gate does not establish any global product count, pass G2, or estab
 
 ### A objective
 
-Move from representative product cases to a validated exact-product analytical registry projection backed by canonical PRODUCT/SYSTEM identities, with measured discovery coverage and bounded estimates of the residual unseen product population.
+Move from representative product cases to a validated exact-product analytical registry projection backed by canonical PRODUCT/SYSTEM identities, with measured discovery coverage and preregistered population estimation that yields bounded estimates only when identifiability/adequacy criteria are satisfied.
 
 ### A1 — Seed registry construction
 
