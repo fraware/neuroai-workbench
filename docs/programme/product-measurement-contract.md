@@ -281,6 +281,7 @@ A registry row binds:
 ```text
 registry_row_id
 registry_projection_version
+input_release_or_snapshot_id
 product_offering_id
 product_family_id                 # nullable when no evidenced family entity exists
 organization_relationship_refs[]
@@ -320,12 +321,13 @@ configuration_system_id or explicit unresolved marker
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+input_release_or_snapshot_id
 population_view_policy_id
 currentness_policy_id
 registry_projection_version
 ```
 
-The deterministic row key must bind that exact tuple. A changed jurisdiction scope, cutoff pair, population-view policy, currentness policy, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
+The deterministic row key must bind that exact tuple. A changed input release/snapshot, jurisdiction scope, cutoff pair, population-view policy, currentness policy, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
 
 Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
 
@@ -1051,6 +1053,7 @@ Every unseen-population model must bind exactly one declared estimation universe
 ```text
 boundary_contract_id
 registry_projection_version
+input_release_or_snapshot_id
 population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
@@ -1351,6 +1354,7 @@ At minimum, P0.3 must make it possible to represent:
 - operational boundary-disposition protocol identity and exact D4/reference-standard identity/version used;
 - identity resolution state;
 - source/observation provenance and bounded first/last observation chronology;
+- immutable input release/snapshot identity for every governed registry projection/count;
 - typed organization↔offering/configuration relationship references without company-to-product claim propagation;
 - population-view eligibility;
 - declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
@@ -1402,7 +1406,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology;
 35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition;
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
-37. the deterministic registry-row key binds the population-view and currentness policy identities that can change the projected row.
+37. the deterministic registry-row key binds the input release/snapshot plus population-view and currentness policy identities that can change the projected row;
+38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
