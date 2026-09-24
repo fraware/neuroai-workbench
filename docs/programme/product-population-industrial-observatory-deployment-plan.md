@@ -273,7 +273,7 @@ P0.3 must preserve:
 
 ### P0.4 — Discovery-frame contract
 
-Every product discovery source family receives a declared frame record:
+Every product discovery source family receives a declared frame record. The complete register has an immutable register ID/version and canonical digest that later population analyses must bind.
 
 ```text
 frame_id
@@ -292,7 +292,7 @@ rights_class
 
 The discovery system must preserve which frame found each candidate and on which discovery round.
 
-**Deliverable:** `Product Discovery Frame Register v1.0`.
+**Deliverable:** `Product Discovery Frame Register v1.0` with immutable register identity and canonical digest.
 
 ### P0.5 — Preregister Release-A estimands
 
