@@ -283,6 +283,7 @@ registry_row_id
 registry_projection_version
 product_offering_id
 product_family_id                 # nullable when no evidenced family entity exists
+organization_relationship_refs[]
 configuration_system_id           # nullable when no evidenced exact configuration exists
 configuration_coverage_state
 offering_kind
@@ -290,6 +291,8 @@ primary_enumeration_role
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+first_observed_at
+last_observed_at
 currentness_policy_id
 lifecycle_state
 access_commercial_state
@@ -326,6 +329,10 @@ Jurisdiction and time are projection/assertion scopes, not identity components b
 Where `configuration_system_id` is unresolved, offering-level analyses may retain the otherwise eligible row with explicit `configuration_coverage_state`. Configuration-level analyses, including A-P8, exclude the unresolved configuration from the numerator and report the resulting coverage loss.
 
 Capability, form-factor, context, and target-population fields are analytical projections of evidence-backed assertions. They may be multi-label and do not create new canonical identity unless the material-change rule in §6 is independently satisfied.
+
+`organization_relationship_refs[]` retains typed, evidence-backed relationships such as developer, owner, manufacturer, distributor, or seller where applicable. A company-level fact is never projected onto all of that organization’s offerings without product-specific relationship evidence.
+
+`first_observed_at` and `last_observed_at` summarize Observatory knowledge-time observations admitted by the projection. They are traceable to `source_observation_refs` and do not establish launch date, first real-world existence, valid-from time, or continuous availability.
 
 Every projected state or capability value must remain traceable to the exact assertion(s) supporting that value, including the assertion subject and scope. Projection never promotes a configuration-scoped regulatory, capability, safety, or effectiveness assertion to the whole offering/family or to sibling configurations. Offering-scoped commercial/access assertions likewise do not become configuration-specific technical claims without evidence.
 
@@ -1319,7 +1326,8 @@ At minimum, P0.3 must make it possible to represent:
 - governed operational boundary disposition under the approved D1 semantics;
 - operational boundary-disposition protocol identity and exact D4/reference-standard identity/version used;
 - identity resolution state;
-- source/observation provenance;
+- source/observation provenance and bounded first/last observation chronology;
+- typed organization↔offering/configuration relationship references without company-to-product claim propagation;
 - population-view eligibility;
 - declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
 - evidence-supported technical-equivalence relationships without silent identity merges;
@@ -1364,7 +1372,9 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 29. flat projections retain assertion subject/scope and cannot widen claims;
 30. raw registry-row cardinality is prohibited as a product-population denominator;
 31. boundary/unresolved-case mass is reported and receives predeclared sensitivity treatment where material;
-32. N_estimated remains explicitly conditional on the declared discovery-frame/model universe and is never equated with proof of an absolute global census.
+32. N_estimated remains explicitly conditional on the declared discovery-frame/model universe and is never equated with proof of an absolute global census;
+33. registry projections retain typed organization relationships instead of a single ambiguous organization field;
+34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
