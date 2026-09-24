@@ -157,12 +157,15 @@ Minimum controlled case fields:
 
 ```text
 case_id
+candidate_selection_id
 candidate_object_binding
-candidate_canonical_entity_type
+candidate_bound_entity_type
 candidate_identity_level
 candidate_system_or_offering_role
 primary_enumeration_role
 candidate_identity_state
+duplicate_resolution_state
+duplicate_group_ref
 product_measurement_contract_version
 product_measurement_contract_digest
 evidence_packet_version
@@ -178,7 +181,11 @@ review_state
 
 The review packet must contain enough attributable evidence to decide scope without requiring the reviewer to infer product identity from a name alone.
 
-`candidate_identity_level` and entity/role fields are frozen inputs to the D4 review packet, not outputs of the scope reviewer. D4 evaluates the boundary disposition for the bound candidate representation; it does not silently resolve FAMILY/OFFERING/CONFIGURATION identity or convert a research SYSTEM into a PRODUCT.
+`candidate_selection_id` is a stable opaque controlled identifier assigned before sampling. It is distinct from any canonical PRODUCT/SYSTEM ID and remains usable when canonical identity is unresolved.
+
+`candidate_bound_entity_type` records the currently bound or proposed ontology type as `PRODUCT`, `SYSTEM`, or `UNRESOLVED`. `candidate_identity_level` uses `FAMILY`, `OFFERING`, `CONFIGURATION`, `UNRESOLVED`, or `NOT_APPLICABLE`. `primary_enumeration_role` uses the P0.1 offering-role domain when applicable and `NOT_APPLICABLE` for objects such as SYSTEM-only research candidates or family-level candidates. These identity/role fields are frozen inputs to the D4 review packet, not outputs of the scope reviewer.
+
+D4 evaluates the boundary disposition for the bound candidate representation; it does not silently resolve FAMILY/OFFERING/CONFIGURATION identity, force an unresolved candidate into a canonical entity type, or convert a research SYSTEM into a PRODUCT.
 
 The packet may include controlled source excerpts or source references as permitted by rights. Those bytes do not enter public Git.
 
@@ -375,17 +382,20 @@ Calibration cases may remain a development/calibration resource but cannot enter
 
 Before final selection, freeze:
 
-- candidate membership;
+- candidate membership and stable `candidate_selection_id`;
 - exact-object bindings;
 - declared strata;
-- candidate canonical entity type, identity level, system/offering role, and primary enumeration role where applicable;
+- candidate bound/proposed entity type, identity level, system/offering role, and primary enumeration role where applicable;
 - declared private identity/enumeration diagnostic dimensions, or the frozen deterministic mapping used to derive them from those candidate fields;
 - language;
 - jurisdiction;
 - evidence-availability state;
 - applicable rights class;
+- duplicate-resolution state and duplicate-group reference where applicable;
 - pool-construction protocol;
 - candidate-pool canonical digest.
+
+Known duplicate candidate-object bindings must be collapsed or governed as one duplicate group before final selection. If two records are intentionally retained to test an alias/identity boundary, that exception and its sampling treatment must be predeclared. Suspected unresolved duplicates remain explicitly marked and are not silently treated as independent evidence.
 
 No model/pipeline result from the system under evaluation may be used to add, remove, reorder, or relabel candidate sampling/diagnostic dimensions after pool freeze. If diagnostic dimensions are derived rather than stored directly, the exact derivation policy/version is frozen before final selection.
 
@@ -432,11 +442,11 @@ selection_score =
 SHA256(
   "NEUROAI:D4:FINAL_SELECTION:V1"
   || candidate_pool_digest
-  || canonical_candidate_id
+  || candidate_selection_id
 )
 ```
 
-The candidate ID and pool digest remain controlled if disclosure would reveal held-out membership.
+The selection ID and pool digest remain controlled if disclosure would reveal held-out membership. Selection never depends on a canonical entity ID, because identity may legitimately remain unresolved for a boundary case.
 
 ### 11.3 Selection rule
 
