@@ -3,7 +3,7 @@
 **Plan binding:** `P0.4`  
 **Tracking issue:** #326  
 **Depends on:** P0.3 exact-product registry projection v1.0  
-**Status:** implementation candidate
+**Status:** `FROZEN_v1.0` upon merge to `main`
 
 ## Purpose
 
@@ -23,10 +23,15 @@ The deduplication target is the P0.3 canonical offering identity. Multiple sourc
 | F6 | Capability-first discovery | function/capability searches designed to recover weakly labelled and non-traditional products |
 | F7 | Expert nominations | structured expert seeds and edge cases |
 | F8 | Local-language discovery | native-language sources/query families for selected jurisdictions |
+| F9 | Curated-actor seed discovery | known Observatory actors and other predeclared organization seeds, resolved through attributable product evidence |
+| F10 | Patent-commercialization crossover | patent assignees/inventors and patent-linked commercialization leads followed to attributable product evidence |
+| F11 | Snowball expansion | validated products, developers, distributors, trials and related-product links expanded under recorded parent-seed provenance |
 
 A source can be observed through only the frame whose declared retrieval mechanism produced that capture. Post-hoc relabelling solely to improve population estimation is prohibited.
 
 F7 is normally excluded from the primary capture-recapture estimator because expert nomination is purposive and highly selection-dependent. It remains valuable for recall discovery and zero-capture diagnostics. Other frames can also be marked non-estimation-eligible when their sampling mechanism or overlap dependence makes that necessary.
+
+F5 deliberately retains distributor/procurement, funding-investor-accelerator and structured-directory channels under one commercial/ecosystem class only when the exact source class remains recorded on the underlying observation. P0.5 must test whether that aggregation is defensible for estimation; it may predeclare finer analytical groupings if dependence diagnostics require them. F9, F10 and F11 remain distinct because curated actor seeds, patent-to-product crossover, and snowballing have materially different selection mechanisms.
 
 ## Capture unit
 
@@ -45,11 +50,13 @@ A product observed 12 times in F1 is one F1 capture. The same product observed i
 Capture histories must remain tied to one exact:
 - registry projection version;
 - population view;
-- jurisdiction scope;
+- analysis-jurisdiction scope;
 - world-time cutoff;
 - knowledge-time cutoff;
-- language scope;
+- language-scope identifier;
 - discovery-frame register version.
+
+The implementation fails closed if capture histories from different analytical universes are combined.
 
 ## Run and round accounting
 
@@ -68,8 +75,8 @@ Every product-discovery observation records:
 For each round and frame report:
 - raw candidates;
 - newly resolved in-scope offering identities;
-- duplicate known identities;
-- within-round duplicate captures;
+- duplicate identities already known at round start;
+- within-round duplicate captures of the same resolved identity;
 - EXCLUDE;
 - BORDERLINE;
 - ABSTAIN;
@@ -119,6 +126,8 @@ A marginal-yield stop rule is frame-specific and predeclares:
 - minimum raw-candidate count per evaluated round.
 
 A bounded registry/API frame can instead stop through demonstrated source exhaustion under its declared pagination/denominator logic.
+
+Only the literal final consecutive rounds can satisfy a consecutive-low-yield stop rule. An intervening round below the minimum raw-candidate threshold breaks the qualifying tail; low-volume rounds cannot be skipped to manufacture apparent saturation.
 
 No stop state means that every relevant product worldwide has been found.
 
