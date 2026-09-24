@@ -148,12 +148,16 @@ The corrected candidate requires every Release-A count or estimate to bind:
 
 ```text
 boundary_contract_id
+boundary_contract_digest
 registry_projection_version
 input_release_or_snapshot_id
+input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
+boundary_disposition_protocol_digest
 reference_standard_id
 reference_standard_version
+reference_standard_contract_digest
 reference_standard_validation_state
 population_view_id
 identity_level
@@ -162,9 +166,13 @@ jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
 currentness_policy_id
+analysis_preregistration_id
+analysis_execution_pin
 observed_or_estimated
-discovery_protocol_or_model_id
+discovery_frame_register_id
+discovery_frame_register_digest
 discovery_frame_universe
+discovery_protocol_or_model_id
 uncertainty_state
 ```
 
@@ -205,16 +213,16 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C7 | The D4 case packet used `candidate_canonical_entity_type` even though some valid boundary cases intentionally have unresolved canonical identity | Replace it with a bound/proposed entity-type field whose controlled domain includes `UNRESOLVED`, and define unresolved/not-applicable identity semantics explicitly |
 | C8 | D4 deterministic selection used `canonical_candidate_id`, which is undefined for legitimately unresolved identity cases and can couple sampling to later resolution | Introduce a stable opaque `candidate_selection_id` assigned before sampling and use that ID for deterministic selection |
 | C9 | Duplicate candidate bindings were not governed before final held-out selection | Freeze duplicate-resolution state/group, collapse known duplicates unless an identity-boundary exception is predeclared, and keep suspected unresolved duplicates from being treated as independent evidence |
-| C10 | Count/projection metadata identified policies and cutoffs but not the immutable input release/snapshot | Bind every governed registry projection/count/estimate to `input_release_or_snapshot_id` and include it in the deterministic row key |
+| C10 | Count/projection metadata identified policies and cutoffs but not the immutable input release/snapshot | Bind every governed registry projection/count/estimate to the exact immutable input release/snapshot identity and digest, including that input identity in the deterministic row key |
 | C11 | Release-A A2 described capture histories at raw candidate level | Preserve candidate discovery provenance but construct estimation capture histories only after governed inclusion and identity resolution at the preregistered estimation unit |
 | C12 | Release-A A7 still used `N_total`, which could contradict the contract's conditional open-world estimand semantics | Use `N_estimated = N_observed + N_unseen` and state explicitly that it is conditional on the declared discovery-frame/language/jurisdiction/model universe |
 | C13 | Legacy programme-plan display equations contained malformed Markdown and escaped control characters from earlier authoring | Normalize all affected equations to deterministic fenced-text notation without changing their substantive definitions |
 | C14 | Residual “global unique-product count” wording could be misread as a completeness claim even though the contract forbids global-census inference | Use cross-jurisdiction unique-offering terminology and bind it explicitly to the declared discovery/analysis universe |
-| C15 | Governed count metadata still lacked exact content/execution identities needed to reproduce the result from an immutable state | Add exact boundary-contract, input-snapshot, reference-standard and discovery-frame-register digests plus preregistration ID and exact analysis execution pin |
+| C15 | Governed count metadata still lacked exact content/execution identities needed to reproduce the result from an immutable state | Add exact boundary-contract, input-snapshot, operational-disposition-protocol, reference-standard and discovery-frame-register digests plus preregistration ID and an execution pin binding code, environment/configuration and stochastic controls where applicable |
 | C16 | Capability-first and multilingual yield diagnostics did not explicitly distinguish raw candidate gain from deduplicated governed product-identity gain | Define the primary diagnostics on the same governed qualifying identity unit/view/cutoffs and report lead/error/duplicate yield separately |
 | C17 | Opaque D4 candidate selection IDs lacked an anti-gaming assignment rule | Assign each selection ID once in an append-only controlled ledger before pool freeze/score computation; prohibit regeneration or renumbering based on score order |
-| C18 | Required final D4 disposition coverage could be misread as a gold-label sampling quota or invite post-label top-up | Treat disposition coverage as a freeze adequacy criterion only; selection constraints are label-free and a coverage failure forces a successor sampling path rather than post-hoc replacement/top-up |
-| C19 | The protocol named a final human D4 freeze decision point without defining its disposition domain or binding it to exact candidate artifacts | Add `APPROVE_D4_FREEZE / REQUEST_D4_CHANGES / DEFER_D4_FREEZE`; only exact-artifact approval authorizes the frozen public successor |
+| C18 | Required final D4 disposition coverage could be misread as a gold-label sampling quota or invite post-label top-up | Treat disposition coverage as a freeze adequacy criterion only; selection constraints are label-free and a coverage failure forces a successor sampling path rather than post-hoc replacement/top-up, with the previously reviewed sample excluded from a label-informed successor unless a contingency was predeclared |
+| C19 | The protocol named a final human D4 freeze decision point without defining its disposition domain or binding it to exact candidate artifacts | Validate candidate successor artifacts first, then record `APPROVE_D4_FREEZE / REQUEST_D4_CHANGES / DEFER_D4_FREEZE`; only exact-artifact approval authorizes the frozen public successor |
 | C20 | Release A still requested a generic D4 “evaluation report”, which could conflate human reference-standard freeze with separately gated model/pipeline evaluation | Require human calibration/freeze evidence and include a model/pipeline evaluation report only when such automation is actually used and separately gated |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
