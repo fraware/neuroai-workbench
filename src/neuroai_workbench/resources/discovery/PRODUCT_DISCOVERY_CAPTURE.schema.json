@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/product-discovery-capture-1.0.json",
+  "title": "PRODUCT_DISCOVERY_CAPTURE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capture_id",
+    "frame_id",
+    "frame_version",
+    "round_id",
+    "query_or_seed_id",
+    "candidate_key",
+    "canonical_offering_id",
+    "source_observation_ref",
+    "language",
+    "jurisdiction",
+    "outcome",
+    "capture_estimation_eligible",
+    "observed_at",
+    "registry_projection_version",
+    "population_view_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "boundary"
+  ],
+  "properties": {
+    "capture_id": {
+      "type": "string",
+      "pattern": "^PDC-[0-9a-f]{64}$"
+    },
+    "frame_id": {
+      "enum": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8"
+      ]
+    },
+    "frame_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_v1.0"
+    },
+    "round_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "query_or_seed_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidate_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_offering_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_observation_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1
+    },
+    "jurisdiction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outcome": {
+      "enum": [
+        "INCLUDE_RESOLVED",
+        "EXCLUDE",
+        "BORDERLINE",
+        "ABSTAIN",
+        "UNRESOLVED_IDENTITY",
+        "FAILED_INACCESSIBLE"
+      ]
+    },
+    "capture_estimation_eligible": {
+      "type": "boolean"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "registry_projection_version": {
+      "const": "PRODUCT_REGISTRY_v1.0"
+    },
+    "population_view_id": {
+      "enum": [
+        "A-P1",
+        "A-P2",
+        "A-P3",
+        "A-P4",
+        "A-P5",
+        "A-P6",
+        "A-P7",
+        "A-P8"
+      ]
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "format": "date"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
