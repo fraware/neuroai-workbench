@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from importlib.resources import files
 from typing import Any, cast
 
@@ -71,6 +71,7 @@ def _canonical_manifest_material(manifest: Mapping[str, Any]) -> dict[str, Any]:
         "observatory_data_commit": manifest.get("observatory_data_commit"),
         "observatory_release_refs": sorted(cast(list[str], manifest.get("observatory_release_refs", []))),
         "controlled_packet_digests": sorted(cast(list[str], manifest.get("controlled_packet_digests", []))),
+        "evidence_index_sha256": manifest.get("evidence_index_sha256"),
         "world_time_cutoff": manifest.get("world_time_cutoff"),
         "knowledge_time_cutoff": manifest.get("knowledge_time_cutoff"),
         "jurisdiction_scope": manifest.get("jurisdiction_scope"),
@@ -78,6 +79,26 @@ def _canonical_manifest_material(manifest: Mapping[str, Any]) -> dict[str, Any]:
         "bindings": bindings,
         "boundary": manifest.get("boundary"),
     }
+
+
+def seed_evidence_index_sha256(
+    observation_ids: Sequence[str] | set[str] | tuple[str, ...] | Any,
+    assertion_ids: Sequence[str] | set[str] | tuple[str, ...] | Any,
+) -> str:
+    """Return a deterministic digest over the exact evidence-record identity index."""
+
+    material = {
+        "observation_ids": sorted({str(value) for value in observation_ids}),
+        "assertion_ids": sorted({str(value) for value in assertion_ids}),
+    }
+    encoded = json.dumps(
+        material,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def seed_input_manifest_id(manifest: Mapping[str, Any]) -> str:
@@ -177,6 +198,9 @@ def _validate_seed_row(
 def build_seed_product_registry(
     rows: Sequence[Mapping[str, Any]],
     manifest: Mapping[str, Any],
+    *,
+    known_observation_ids: set[str] | None = None,
+    known_assertion_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic high-confidence A1 Product Registry from exact-product evidence rows.
 
@@ -185,7 +209,34 @@ def build_seed_product_registry(
     """
 
     validate_seed_input_manifest(manifest)
+
+    if known_observation_ids is None or known_assertion_ids is None:
+        raise ReleaseASeedRegistryError("Exact evidence identity index is required for A1 seed assembly")
+    evidence_index_digest = seed_evidence_index_sha256(known_observation_ids, known_assertion_ids)
+    if manifest["evidence_index_sha256"] != evidence_index_digest:
+        raise ReleaseASeedRegistryError("Evidence index digest does not match the immutable seed input manifest")
+
     bindings = _binding_map(manifest)
+    referenced_observations = {
+        str(ref)
+        for binding in bindings.values()
+        for ref in cast(Sequence[str], binding["source_observation_refs"])
+    }
+    referenced_assertions = {
+        str(ref)
+        for binding in bindings.values()
+        for ref in cast(Sequence[str], binding["projected_assertion_refs"])
+    }
+    unknown_observations = referenced_observations - known_observation_ids
+    if unknown_observations:
+        raise ReleaseASeedRegistryError(
+            "Seed manifest references unknown source observations: " + ", ".join(sorted(unknown_observations))
+        )
+    unknown_assertions = referenced_assertions - known_assertion_ids
+    if unknown_assertions:
+        raise ReleaseASeedRegistryError(
+            "Seed manifest references unknown product assertions: " + ", ".join(sorted(unknown_assertions))
+        )
     observed_row_ids = {str(row.get("registry_row_id")) for row in rows}
     if observed_row_ids != set(bindings):
         raise ReleaseASeedRegistryError("Seed rows do not exactly match the immutable manifest binding set")
