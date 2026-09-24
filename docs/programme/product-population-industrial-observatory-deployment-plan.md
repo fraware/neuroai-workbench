@@ -418,7 +418,9 @@ N_all_discovery
 N_conventional_terminology
 ```
 
-Report incremental yield by product class and jurisdiction, with false-positive and unresolved rates.
+For the primary product-yield comparison, both `N_all_discovery` and `N_conventional_terminology` are deduplicated governed qualifying identities under the same frozen boundary, population view, cutoff pair, identity level, and review policy. Raw candidate/lead yield is reported separately, with false-positive and unresolved rates.
+
+Report incremental qualifying-identity yield by product class and jurisdiction where the matched design supports it.
 
 **Output:** `Capability-First Recall Study`.
 
@@ -447,7 +449,7 @@ N_j_English_plus_Native
 N_j_English
 ```
 
-and the unique-product gain, error rate, duplicate rate, capability gain, and source-class gain.
+where both terms count deduplicated governed qualifying identities under the same frozen boundary, population view, identity level, cutoff pair, and matched English/native discovery-frame design. Candidate-level lead gain, error rate, duplicate rate, capability gain, and source-class gain are reported separately.
 
 The result must identify which substantive conclusions change when native-language discovery is included.
 
@@ -592,7 +594,7 @@ only with the applicable observed or estimated denominator stated.
 Release A passes only when a reviewer can reconstruct:
 
 1. what was counted;
-2. how exact product identity was resolved;
+2. how offering/configuration identity, deduplication, and unresolved identity were handled;
 3. what source frames were searched;
 4. which languages/jurisdictions were included;
 5. how discovery rounds terminated;
