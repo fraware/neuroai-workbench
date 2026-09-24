@@ -29,7 +29,9 @@ The deduplication target is the P0.3 canonical offering identity. Multiple sourc
 
 A source can be observed through only the frame whose declared retrieval mechanism produced that capture. Post-hoc relabelling solely to improve population estimation is prohibited.
 
-F7 is normally excluded from the primary capture-recapture estimator because expert nomination is purposive and highly selection-dependent. It remains valuable for recall discovery and zero-capture diagnostics. Other frames can also be marked non-estimation-eligible when their sampling mechanism or overlap dependence makes that necessary.
+The machine-readable frozen register is `src/neuroai_workbench/resources/discovery/PRODUCT_DISCOVERY_FRAME_REGISTER.v1.0.json`. It fixes frame classes, source/query families, dependence notes, estimation eligibility and stopping rules for v1.0.
+
+F7, F9 and F11 are excluded from the primary v1.0 capture estimator. Expert nominations and curated known-actor seeds are purposive; snowball expansion is path-dependent on already discovered identities. All three still contribute to the observed product registry and to zero-capture/coverage-risk diagnostics. F1–F6, F8 and F10 are estimation-eligible in the frozen v1.0 register, subject to the dependence and model-admissibility rules preregistered in P0.5.
 
 F5 deliberately retains distributor/procurement, funding-investor-accelerator and structured-directory channels under one commercial/ecosystem class only when the exact source class remains recorded on the underlying observation. P0.5 must test whether that aggregation is defensible for estimation; it may predeclare finer analytical groupings if dependence diagnostics require them. F9, F10 and F11 remain distinct because curated actor seeds, patent-to-product crossover, and snowballing have materially different selection mechanisms.
 
@@ -118,6 +120,8 @@ UNRESOLVED_SOURCE_BARRIER
 ```
 
 or remain `CONTINUE`.
+
+For F1, F4, F5, F6, F8 and F11, v1.0 uses a marginal-yield rule requiring at least 3 completed rounds and 2 literal consecutive qualifying rounds with marginal new-identity yield <= 0.05, with at least 20 raw candidates in each qualifying round. F2, F3, F9 and F10 stop only after exhaustion of their declared bounded input/provider universe. F7 ends at its predeclared nomination limit and is not estimation-eligible.
 
 A marginal-yield stop rule is frame-specific and predeclares:
 - minimum completed rounds;
