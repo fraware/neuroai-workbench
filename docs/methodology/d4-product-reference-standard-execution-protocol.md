@@ -394,7 +394,8 @@ The final sampling plan must be frozen after calibration and before held-out sel
 
 - target total sample size;
 - minimum boundary-disposition coverage objective;
-- required D4 stratum coverage;
+- required public D4 stratum coverage;
+- required private P0.1 identity/enumeration diagnostic coverage;
 - subgroup-analysis objectives;
 - desired uncertainty/precision for headline evaluation metrics;
 - reviewer-resource constraints;
@@ -411,8 +412,9 @@ Before selection, freeze:
 
 - candidate-pool digest;
 - target sample size;
-- required stratum coverage;
-- any stratum quotas;
+- required public stratum coverage;
+- required private identity/enumeration diagnostic coverage;
+- any stratum or diagnostic-dimension quotas;
 - any jurisdiction/language quotas;
 - double-label subset rule;
 - fixed stratum/constraint priority order;
