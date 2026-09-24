@@ -219,6 +219,7 @@ world_time_cutoff
 knowledge_time_cutoff
 first_observed_at
 last_observed_at
+population_view_policy_id
 currentness_policy_id
 lifecycle_state
 access_commercial_state
@@ -247,7 +248,8 @@ P0.3 must preserve:
 - deterministic registry-row grain;
 - canonical-ID deduplication at the declared population-view identity level;
 - technical-equivalence relationships without silent identity merge;
-- versioned currentness policy for every current projection.
+- versioned currentness policy for every current projection;
+- versioned machine predicates for every A-P1–A-P8 population view.
 
 **Deliverables:** ontology/schema changes where required, registry-projection schema, identity and linkage rules, validators, adversarial fixtures, and migration/compatibility notes.
 
