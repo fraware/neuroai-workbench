@@ -1085,6 +1085,7 @@ population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
+reference_standard_contract_digest
 reference_standard_validation_state
 identity_level
 population_view
@@ -1095,6 +1096,8 @@ knowledge_time_cutoff
 currentness_policy_id
 analysis_preregistration_id
 analysis_execution_pin
+discovery_frame_register_id
+discovery_frame_register_digest
 discovery_frame_universe
 ```
 
@@ -1118,11 +1121,15 @@ Every published Release-A count must state, in machine-readable or table-adjacen
 
 ```text
 boundary_contract_id
+boundary_contract_digest
 registry_projection_version
+input_release_or_snapshot_id
+input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
+reference_standard_contract_digest
 reference_standard_validation_state
 population_view_id
 identity_level
@@ -1134,14 +1141,16 @@ currentness_policy_id
 analysis_preregistration_id
 analysis_execution_pin
 observed_or_estimated
-discovery_protocol_or_model_id
+discovery_frame_register_id
+discovery_frame_register_digest
 discovery_frame_universe
+discovery_protocol_or_model_id
 uncertainty_state
 ```
 
 A number without this metadata is not a governed Release-A population claim.
 
-`boundary_contract_digest`, `input_release_or_snapshot_digest`, and `reference_standard_contract_digest` bind the exact immutable methodological/evidence inputs. `analysis_execution_pin` identifies the exact Workbench/code execution identity used to construct the governed analytical result, distinct from package version or S2 compatibility version. The preregistration ID binds the estimand/model-comparison plan approved before fitting the population analysis.
+`boundary_contract_digest`, `input_release_or_snapshot_digest`, `reference_standard_contract_digest`, and `discovery_frame_register_digest` bind the exact immutable methodological/evidence inputs. `analysis_execution_pin` identifies the exact Workbench/code execution identity used to construct the governed analytical result, distinct from package version or S2 compatibility version. The preregistration ID binds the estimand/model-comparison plan approved before fitting the population analysis.
 
 ### 12.10 Observed versus estimated population semantics
 
@@ -1443,7 +1452,7 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
 37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
-39. governed count metadata binds exact contract/snapshot/reference-standard digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility.
+39. governed count metadata binds exact contract/snapshot/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
