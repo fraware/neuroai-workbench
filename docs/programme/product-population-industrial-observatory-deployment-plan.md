@@ -207,6 +207,8 @@ Minimum projection fields include:
 ```text
 registry_row_id
 registry_projection_version
+input_release_or_snapshot_id
+input_release_or_snapshot_digest
 product_offering_id
 product_family_id
 configuration_system_id
@@ -249,6 +251,7 @@ eligibility_state
 eligibility_reason_codes[]
 boundary_disposition_ref
 input_release_or_snapshot_id
+input_release_or_snapshot_digest
 ```
 
 P0.3 must preserve:
@@ -263,7 +266,8 @@ P0.3 must preserve:
 - canonical-ID deduplication at the declared population-view identity level;
 - technical-equivalence relationships without silent identity merge;
 - versioned currentness policy for every current projection;
-- versioned machine predicates for every A-P1–A-P8 population view.
+- versioned machine predicates for every A-P1–A-P8 population view;
+- exact frozen contract/reference-standard digests, Release-A preregistration ID, and analysis execution pin in governed count/estimate metadata.
 
 **Deliverables:** ontology/schema changes where required, registry-projection schema, identity and linkage rules, validators, adversarial fixtures, and migration/compatibility notes.
 
@@ -558,8 +562,8 @@ Population estimates must include model diagnostics, dependence assumptions, sen
 
 Release A produces:
 
-- `Product Registry v1.0`;
-- D4 reference-standard version and evaluation report;
+- `Product Registry Projection v1.0` plus canonical identity graph and eligibility projection;
+- D4 reference-standard version and human calibration/freeze evidence, plus any separately gated model/pipeline evaluation report actually used for automated filtering;
 - Discovery Frame Register;
 - Capability-First Recall Study;
 - Multilingual Coverage Sensitivity Report;
