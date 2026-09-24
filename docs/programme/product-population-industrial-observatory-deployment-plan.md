@@ -219,8 +219,6 @@ world_time_cutoff
 knowledge_time_cutoff
 first_observed_at
 last_observed_at
-population_view_policy_id
-currentness_policy_id
 lifecycle_state
 access_commercial_state
 regulatory_state
@@ -238,6 +236,21 @@ identity_state
 review_state
 ```
 
+Population-view eligibility is a separate derived projection over those rows. Minimum eligibility fields include:
+
+```text
+eligibility_record_id
+registry_row_id
+canonical_counting_identity_id
+population_view_id
+population_view_policy_id
+currentness_policy_id
+eligibility_state
+eligibility_reason_codes[]
+boundary_disposition_ref
+input_release_or_snapshot_id
+```
+
 P0.3 must preserve:
 
 - nullable/unresolved family and configuration bindings instead of fabricating entities;
@@ -245,7 +258,8 @@ P0.3 must preserve:
 - typed organization relationship references rather than one ambiguous organization field;
 - observation chronology separate from world-time product state;
 - exact operational boundary-disposition provenance and D4/reference-standard lineage;
-- deterministic registry-row grain;
+- deterministic view-neutral registry-row grain;
+- deterministic population-view eligibility keys separate from registry-row identity;
 - canonical-ID deduplication at the declared population-view identity level;
 - technical-equivalence relationships without silent identity merge;
 - versioned currentness policy for every current projection;
@@ -341,14 +355,14 @@ For every seed, record:
 
 - canonical offering identity and, where evidenced, family/configuration identity;
 - typed organization relationships;
-- current-state projection under the declared population-view/currentness policies;
+- state projection at the declared world-time/knowledge-time cutoffs, with population-view/currentness eligibility computed separately;
 - source observation and observation chronology;
 - evidence state and governed boundary disposition;
 - relevant jurisdiction scope;
 - applicable capability/context classification;
 - unresolved family/configuration/linkage/state fields.
 
-**Output:** high-confidence seed canonical identity graph plus exact-product registry projection.
+**Output:** high-confidence seed canonical identity graph plus exact-product registry projection and separate population-view eligibility projection.
 
 ### A2 — Multi-frame product discovery
 
