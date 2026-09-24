@@ -261,7 +261,7 @@ def _base_offering_eligible(row: Mapping[str, Any]) -> bool:
         and row.get("boundary_disposition") == "INCLUDE"
         and row.get("currentness_state") == "CURRENT"
         and row.get("lifecycle_state") in CURRENT_LIFECYCLE_STATES
-        and row.get("primary_enumeration_role") in ENUMERATION_ROLES - {"UNRESOLVED", "OTHER_REVIEW_REQUIRED"}
+        and row.get("primary_enumeration_role") in ENUMERATION_ROLES - {"OTHER_REVIEW_REQUIRED"}
         and bool(row.get("boundary_disposition_ref"))
         and bool(row.get("source_observation_refs"))
     )
