@@ -139,13 +139,11 @@ def estimation_universe_id(universe: Mapping[str, Any]) -> str:
             "role",
             "population_view_id",
             "identity_level",
-            "included_enumeration_roles",
             "analysis_jurisdiction_scope",
             "world_time_cutoff",
             "knowledge_time_cutoff",
             "language_scope_id",
             "frame_register_version",
-            "capture_frame_ids",
             "registry_projection_version",
             "population_view_policy_id",
             "currentness_policy_id",
@@ -154,6 +152,10 @@ def estimation_universe_id(universe: Mapping[str, Any]) -> str:
             "reporting_policy_id",
         )
     }
+    material["included_enumeration_roles"] = sorted(
+        cast(list[str], universe.get("included_enumeration_roles", []))
+    )
+    material["capture_frame_ids"] = sorted(cast(list[str], universe.get("capture_frame_ids", [])))
     encoded = json.dumps(
         material,
         ensure_ascii=False,
