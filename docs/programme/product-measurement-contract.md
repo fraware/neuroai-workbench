@@ -227,17 +227,21 @@ A broad count containing more than one enumeration role must be labelled as a co
 
 ## 4. Product-population inclusion boundary
 
-### 4.1 Scope classification and identity are separate
+### 4.1 Scope classification, reference-standard membership, identity, and state are separate
 
-D4 answers:
+The approved D1 boundary answers:
 
 > Does this candidate belong in the study's product/service scope?
 
-Identity resolution answers:
+The D4 Product Reference Standard supplies held-out human-adjudicated cases used to evaluate whether a model, rule system, or review procedure applies that boundary correctly. D4 membership is not required for every operational product candidate.
+
+Operational Release-A candidates receive governed boundary dispositions under the same approved D1 four-way semantics and evidence rules. The operational disposition process must be versioned and validated against D4 as applicable.
+
+Identity resolution separately answers:
 
 > Which exact product/service object does this candidate refer to?
 
-Lifecycle evidence answers:
+Lifecycle evidence separately answers:
 
 > What state was that object in at the relevant time?
 
@@ -268,7 +272,10 @@ D4 classification does not establish exact identity, availability, effectiveness
 A candidate is eligible for a primary product-population count only when:
 
 ```text
-D4 disposition = INCLUDE
+governed operational boundary disposition = INCLUDE
+under the approved D1 semantics
+AND
+the operational disposition procedure/reference-standard version is recorded
 AND
 identity state = RESOLVED at the counting level
 AND
@@ -277,13 +284,15 @@ AND
 required source/observation provenance exists
 ```
 
+A candidate does not need to be a member of the held-out D4 benchmark. D4 evaluates the boundary process; it is not the population registry.
+
 `BORDERLINE`, `ABSTAIN`, and unresolved-identity records remain visible in uncertainty/coverage reporting but stay outside the primary count.
 
 `EXCLUDE` records remain available for benchmark/evaluation provenance but stay outside the product population.
 
 ### 4.4 D1 evidence rules at the D4/count interface
 
-A governed D4 disposition used for Release-A counting must preserve the approved D1 evidence rules:
+A governed operational boundary disposition used for Release-A counting must preserve the approved D1 evidence rules and the approved four-way semantics validated by D4:
 
 - attributable evidence is required;
 - proxy-only evidence cannot establish `INCLUDE`;
@@ -528,6 +537,7 @@ Must distinguish, where evidence supports:
 - in development;
 - manufacturing / pre-delivery;
 - released;
+- cancelled;
 - discontinued;
 - withdrawn;
 - superseded;
@@ -690,7 +700,7 @@ Every count names:
 
 Count canonical `PRODUCT` offering identities that:
 
-- have governed D4 `INCLUDE`;
+- have a governed operational `INCLUDE` disposition under the approved D1 boundary;
 - have resolved product/service offering identity;
 - have a declared enumeration role;
 - are not evidenced as discontinued, cancelled, withdrawn, or superseded out of the applicable current offering view;
@@ -786,6 +796,8 @@ N_V = sum over unique canonical identities i of I(i qualifies for V)
 
 where each `i` is a unique canonical identity at the declared counting level.
 
+For A-P8 only, the analytical counting unit is an evidence-defined technical-equivalence cluster under the declared equivalence method. Constituent commercial identities remain preserved and recoverable; A-P8 does not mutate canonical identity.
+
 ### 12.2 Duplicate candidates
 
 Multiple observations, source pages, distributor listings, trial records, or regulatory records for the same canonical product do not create additional product counts.
@@ -835,6 +847,8 @@ They are reported as separate uncertainty/coverage quantities.
 Every unseen-population model must bind exactly one declared estimation universe:
 
 ```text
+boundary_contract_id
+reference_standard_or_validation_version
 identity_level
 population_view
 enumeration_roles
@@ -863,6 +877,8 @@ Estimates from different population views are separate estimands. They cannot be
 Every published Release-A count must state, in machine-readable or table-adjacent form:
 
 ```text
+boundary_contract_id
+reference_standard_or_validation_version
 population_view_id
 identity_level
 included_enumeration_roles
@@ -1076,7 +1092,8 @@ At minimum, P0.3 must make it possible to represent:
 - jurisdiction-scoped state;
 - lifecycle/access/regulatory/deployment state separation;
 - valid time and knowledge time;
-- D4 disposition;
+- governed operational boundary disposition under the approved D1 semantics;
+- exact boundary-contract/reference-standard or validation version used;
 - identity resolution state;
 - source/observation provenance;
 - population-view eligibility;
