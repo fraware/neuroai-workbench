@@ -169,15 +169,19 @@ BORDERLINE
 ABSTAIN
 ```
 
-Required evidence:
+Required freeze evidence:
 
 - independent human review;
 - disagreement accounting;
 - adjudication provenance;
-- inter-rater agreement;
+- inter-rater agreement and calibration analysis;
 - error taxonomy;
-- held-out evaluation;
-- class- and subgroup-specific performance where sample sizes permit.
+- locked held-out membership inaccessible to tuning;
+- coverage accounting across required dispositions and strata;
+- contamination/exposure and rights review;
+- opaque membership/disposition commitments.
+
+Model or pipeline performance on the frozen held-out D4 set is a separate evaluation step. P0.2 does not claim G2 or model-evaluation passage. Any automated boundary classifier used as a production filter must separately satisfy its applicable held-out evaluation and role-narrowing requirements before scaled use.
 
 **Execution protocol:** [D4 Product Reference Standard execution protocol](../methodology/d4-product-reference-standard-execution-protocol.md).
 
@@ -295,14 +299,14 @@ plus:
 P0 passes only when all of the following are true:
 
 - product inclusion semantics are frozen;
-- D4 has completed human adjudication and evaluation;
+- D4 has completed human calibration, final human adjudication, held-out split lock, commitment generation and reference-standard freeze;
 - exact-product identity rules are frozen;
 - discovery frames and termination semantics are defined;
 - primary Release-A estimands and population-model comparison rules are preregistered;
 - duplicate-resolution and unresolved-identity rules are frozen;
 - multilingual and non-traditional discovery strata are defined.
 
-A passing P0 gate does not establish any global product count.
+A passing P0 gate does not establish any global product count, pass G2, or establish model/pipeline held-out performance. Release-A execution must remain human-governed unless and until any automated production filter separately passes its applicable evaluation gate.
 
 ## 6. Release A — Product Population Observatory
 
