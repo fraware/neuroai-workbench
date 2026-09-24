@@ -137,6 +137,28 @@ def _manifest(rows: list[dict[str, object]]) -> dict[str, object]:
     return value
 
 
+def _build(
+    rows: list[dict[str, object]],
+    manifest: dict[str, object] | None = None,
+    *,
+    known_observation_ids: set[str] | None = None,
+    known_assertion_ids: set[str] | None = None,
+) -> dict[str, object]:
+    manifest = manifest or _manifest(rows)
+    observation_ids = known_observation_ids
+    if observation_ids is None:
+        observation_ids = {str(ref) for row in rows for ref in row["source_observation_refs"]}
+    assertion_ids = known_assertion_ids
+    if assertion_ids is None:
+        assertion_ids = {str(ref) for row in rows for ref in row["projected_assertion_refs"]}
+    return build_seed_product_registry(
+        rows,
+        manifest,
+        known_observation_ids=observation_ids,
+        known_assertion_ids=assertion_ids,
+    )
+
+
 def test_seed_manifest_and_registry_are_deterministic() -> None:
     first = _row("PRD-A")
     second = _row("PRD-B", assertion_refs=["AST-B"], observation_refs=["OBS-B"])
@@ -235,7 +257,7 @@ def test_missing_source_observation_is_rejected_by_underlying_registry_contract(
     row = _row(observation_refs=[])
     manifest = _manifest([row])
     with pytest.raises(ReleaseASeedRegistryError, match="Resolved identity requires source_observation_refs"):
-        build_seed_product_registry([row], manifest)
+        _build([row], manifest)
 
 
 def test_seed_rows_must_match_manifest_cutoffs_and_binding_set() -> None:
@@ -269,7 +291,7 @@ def test_seed_binding_must_exactly_match_row_evidence_and_boundary() -> None:
         manifest["bindings"][0][field] = value
         manifest["manifest_id"] = seed_input_manifest_id(manifest)
         with pytest.raises(ReleaseASeedRegistryError, match=message):
-            build_seed_product_registry([row], manifest)
+            _build([row], manifest)
 
 
 def test_configuration_seed_requires_parent_offering_in_same_registry() -> None:
