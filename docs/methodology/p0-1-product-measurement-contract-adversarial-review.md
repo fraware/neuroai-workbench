@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R30 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R32 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -101,6 +101,8 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R28 | Registry row grain was underspecified | Jurisdiction/cutoff variants could be mistaken for distinct products or irreproducible snapshots | Define a deterministic projection key over offering, optional configuration, jurisdiction, cutoffs and projection version |
 | R29 | Flat projection could widen assertion scope | Configuration-level regulatory/capability claims could leak to sibling configurations or whole families | Retain exact assertion refs/subjects/scopes for every projected state/capability and prohibit scope widening |
 | R30 | Registry row cardinality could be mistaken for product count | Multi-configuration/jurisdiction projections could inflate denominators | Count canonical IDs/equivalence clusters at the declared identity level; never raw registry rows |
+| R31 | Residual wording still treated D4 as operational scope authority | The reference standard could be misread as the population registry or item-level adjudicator | Replace operational D4 wording with approved D1 boundary + governed operational disposition; retain D4 only as validation/reference standard |
+| R32 | Controlling deployment plan still assumed one canonical exact-product object | Plan and contract encoded incompatible identity models, inviting implementation drift | Rewrite P0.3 plan around PRODUCT family/offering + SYSTEM configuration identities and analytical registry projection |
 
 Two additional consistency corrections were made during implementation:
 
@@ -203,7 +205,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R30 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R32 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
