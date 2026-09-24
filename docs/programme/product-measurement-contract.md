@@ -23,7 +23,7 @@ The contract governs:
 - evidence requirements for product existence and product-state claims;
 - prohibited inferences.
 
-Machine-readable schemas, validators, migrations, and registry implementation belong to `P0.3`. This document freezes the measurement semantics those implementations must preserve.
+Machine-readable schemas, validators, migrations, and registry implementation belong to `P0.3`. Once an attributable human disposition approves the exact candidate and it is recorded as `FROZEN_v1.0`, this document freezes the measurement semantics those implementations must preserve.
 
 ### 1.1 Exact governing research-contract binding
 
@@ -1471,9 +1471,24 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
 39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility;
 40. unseen-population estimation preserves non-negative population support and permits a preregistered no-estimate outcome when identifiability or adequacy criteria fail;
-41. access, regulatory, and deployment assertions preserve compatible concurrent states/scopes instead of forcing analytically invalid single-state exclusivity.
+41. access, regulatory, and deployment assertions preserve compatible concurrent states/scopes instead of forcing analytically invalid single-state exclusivity;
+42. an attributable `APPROVE_FREEZE_v1.0` human disposition binds the exact reviewed contract digest.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
+
+### 19.1 Final P0.1 human disposition
+
+After all freeze criteria are reviewed against one exact candidate digest, an attributable human reviewer records exactly one disposition:
+
+```text
+APPROVE_FREEZE_v1.0
+REQUEST_CHANGES
+DEFER
+```
+
+Only `APPROVE_FREEZE_v1.0` on the exact reviewed digest authorizes the status transition to `FROZEN_v1.0`. `REQUEST_CHANGES` keeps the contract unfrozen and identifies successor work. `DEFER` preserves the candidate without approval.
+
+No instruction to continue execution, merge documentation, or proceed to downstream preparation is interpreted as substantive freeze approval.
 
 ## 20. Change control
 
