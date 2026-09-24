@@ -432,7 +432,7 @@ A candidate does not need to be a member of the held-out D4 benchmark. D4 evalua
 
 ### 4.4 D1 evidence rules at the D4/count interface
 
-A governed operational boundary disposition used for Release-A counting must preserve the approved D1 evidence rules and the approved four-way semantics validated by D4:
+A governed operational boundary disposition used for Release-A counting must preserve the approved D1 evidence rules and the approved four-way semantics represented by the frozen D4 reference standard:
 
 - attributable evidence is required;
 - proxy-only evidence cannot establish `INCLUDE`;
@@ -457,7 +457,9 @@ adjudicator_role
 timestamp
 exact_object_binding
 boundary_contract_id
+boundary_contract_digest
 disposition_protocol_id
+disposition_protocol_digest
 reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
@@ -1083,6 +1085,7 @@ input_release_or_snapshot_id
 input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
+boundary_disposition_protocol_digest
 reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
@@ -1150,7 +1153,7 @@ uncertainty_state
 
 A number without this metadata is not a governed Release-A population claim.
 
-`boundary_contract_digest`, `input_release_or_snapshot_digest`, `reference_standard_contract_digest`, and `discovery_frame_register_digest` bind the exact immutable methodological/evidence inputs. `analysis_execution_pin` identifies the exact Workbench/code execution identity used to construct the governed analytical result, distinct from package version or S2 compatibility version. The preregistration ID binds the estimand/model-comparison plan approved before fitting the population analysis.
+`boundary_contract_digest`, `input_release_or_snapshot_digest`, `reference_standard_contract_digest`, and `discovery_frame_register_digest` bind the exact immutable methodological/evidence inputs. `analysis_execution_pin` identifies the exact code execution identity used to construct the governed analytical result, distinct from package version or S2 compatibility version. The execution-pin record must bind the producer commit, dependency/environment lock digest, run/configuration digest, and stochastic seed/chain configuration where applicable. The preregistration ID binds the estimand/model-comparison plan approved before fitting the population analysis.
 
 ### 12.10 Observed versus estimated population semantics
 
@@ -1398,7 +1401,7 @@ At minimum, P0.3 must make it possible to represent:
 - identity resolution state;
 - source/observation provenance and bounded first/last observation chronology;
 - immutable input release/snapshot identity and digest for every governed registry projection/count;
-- exact frozen P0.1 contract digest, D4/reference-standard contract digest, Release-A preregistration ID, and analysis execution pin in governed count metadata;
+- exact frozen P0.1 contract digest, operational-disposition protocol digest, D4/reference-standard contract digest, Release-A preregistration ID, and analysis execution pin in governed count metadata;
 - typed organization↔offering/configuration relationship references without company-to-product claim propagation;
 - population-view eligibility;
 - declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
@@ -1452,7 +1455,7 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
 37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
-39. governed count metadata binds exact contract/snapshot/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility.
+39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
