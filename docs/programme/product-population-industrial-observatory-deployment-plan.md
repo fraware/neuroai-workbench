@@ -1344,7 +1344,7 @@ Do not silently repurpose an existing work-package ID for a materially different
 | Release | Definition of done |
 | --- | --- |
 | P0 | Exact product identity, product inclusion reference standard, discovery frames, and primary estimands are frozen and reviewable |
-| A | Observed product population, coverage process, multilingual/capability sensitivity, saturation, and residual-population estimation are reproducible and bounded |
+| A | Observed product population, coverage process, multilingual/capability sensitivity, saturation, and any accepted residual-population estimate are reproducible and bounded; a preregistered no-estimate outcome is admissible when adequacy/identifiability fails |
 | B | Each quantitative commercial result has an explicit submarket, denominator, evidence chain, estimation method, and uncertainty |
 | C | Product-linked evidence is traceable; evidence maturity is explicit; comparative synthesis occurs only in valid comparability groups |
 | D | Patents, products, organizations, markets, evidence, geography, capital, dependencies, and governance are connected longitudinally without losing upstream claim boundaries |
