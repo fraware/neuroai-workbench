@@ -87,6 +87,7 @@ neuroai_workbench = [
   "resources/observatory_graph/*",
   "resources/benchmarks/*",
   "resources/product_registry/*",
+  "resources/analysis/*",
 ]
 
 [tool.pytest.ini_options]
