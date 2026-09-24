@@ -290,7 +290,10 @@ plus:
 - excluded and unresolved candidate rates;
 - English-only versus multilingual incremental yield;
 - conventional terminology versus capability-first incremental yield;
-- subgroup estimates by product family and jurisdiction where supported.
+- subgroup estimates by product family and jurisdiction where supported;
+- observed BORDERLINE/ABSTAIN/unresolved candidate accounting;
+- predeclared boundary-uncertainty sensitivity/bounds where material;
+- explicit zero-capture/coverage-risk analysis for the declared discovery-frame universe.
 
 **Deliverable:** `Release A Analysis Preregistration v1.0`.
 
