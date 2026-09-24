@@ -203,7 +203,7 @@ A one-off laboratory apparatus described only as an experimental setup remains o
 
 ### 3.8 Enumeration role
 
-Every product/service identity eligible for Release-A counting must carry an explicit enumeration role so heterogeneous offerings are not silently combined.
+Every product/service identity eligible for Release-A counting must carry exactly one `primary_enumeration_role` so heterogeneous offerings are not silently combined or double counted in role composition.
 
 The v1.0 semantic roles are:
 
@@ -219,7 +219,9 @@ Interpretation:
 - `INTEGRATED_SYSTEM` — a complete externally identifiable offering containing the required in-scope capability at the level presented to a user, researcher, clinician, institution, or trial programme.
 - `COMPONENT_OR_SUBSYSTEM` — a separately identifiable component, module, sensor, electrode array, SDK-bound subsystem, or other part of a broader system.
 - `STANDALONE_SOFTWARE_OR_SERVICE` — independently offered software, API, analytics, or service operating on externally supplied or linked signals without constituting the complete hardware/system offering.
-- `OTHER_REVIEW_REQUIRED` — an offering whose enumeration role cannot be assigned without review.
+- `OTHER_REVIEW_REQUIRED` — an offering whose primary enumeration role cannot be assigned without review.
+
+The primary role is assigned from the level at which the offering itself is externally presented, contracted, procured, or supplied. Downstream reuse of an integrated product as a component of another system does not automatically change its primary enumeration role. Secondary technical relationships and deployment contexts are represented separately.
 
 Enumeration role is distinct from deployment context, form factor, lifecycle state, and commercial state.
 
@@ -720,7 +722,9 @@ Announcement-only, internal-only, and investigational-only offerings are exclude
 
 ### 11.3 `A-P3 CURRENT_RESEARCH_OR_INVESTIGATIONAL_ACCESS`
 
-Subset of A-P1 whose evidenced external access is research-use, trial, or investigational and which does not satisfy the applicable commercially accessible definition.
+Subset of A-P1 whose evidenced external access is research-use, trial, or investigational.
+
+A-P3 and A-P2 are allowed to overlap. A research platform sold or licensed commercially to laboratories may legitimately satisfy both views. These views answer different questions and must not be summed as disjoint categories unless an explicit mutually exclusive projection is defined.
 
 ### 11.4 `A-P4 CURRENT_INTEGRATED_END_USER_SYSTEMS`
 
@@ -768,6 +772,8 @@ Rules:
 - A-P8 is not interchangeable with A-P1 or A-P4.
 
 This view is especially relevant to OEM/private-label offerings and technically identical rebrands.
+
+A-P8 is descriptive by default. It may be used as the unit of an unseen-population estimate only when the technical-equivalence procedure is preregistered and frozen before capture-history construction, applied deterministically to the declared estimation universe, and included in the population-model identity. Post hoc clustering based on observed source overlaps is prohibited for population estimation.
 
 ### 11.9 Family and configuration views
 
@@ -1087,7 +1093,7 @@ At minimum, P0.3 must make it possible to represent:
 - product identity;
 - exact configuration identity;
 - v1.0 service representation as a PRODUCT offering with explicit offering kind;
-- enumeration role `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / OTHER_REVIEW_REQUIRED`;
+- exactly one `primary_enumeration_role` from `INTEGRATED_SYSTEM / COMPONENT_OR_SUBSYSTEM / STANDALONE_SOFTWARE_OR_SERVICE / OTHER_REVIEW_REQUIRED`;
 - aliases and lineage;
 - jurisdiction-scoped state;
 - lifecycle/access/regulatory/deployment state separation;
