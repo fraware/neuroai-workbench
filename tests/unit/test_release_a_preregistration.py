@@ -222,6 +222,20 @@ def test_model_envelope_ignores_diagnostic_families_and_spans_admissible_models(
     assert envelope == (125.0, 170.0)
 
 
+def test_nonfinite_population_estimates_and_intervals_are_rejected() -> None:
+    with pytest.raises(ReleaseAPreregistrationError, match="must be finite"):
+        decompose_observed_and_unseen(
+            n_observed_total=120,
+            n_observed_capture_support=100,
+            model_total_estimate=float("nan"),
+        )
+    with pytest.raises(ReleaseAPreregistrationError, match="must be finite"):
+        admissible_model_envelope(
+            {"LOG_LINEAR_DEPENDENCE_INTERACTIONS": (120.0, float("inf"))},
+            n_observed_total=120,
+        )
+
+
 def test_model_envelope_rejects_interval_below_known_observed() -> None:
     with pytest.raises(ReleaseAPreregistrationError, match="below the known observed"):
         admissible_model_envelope(
