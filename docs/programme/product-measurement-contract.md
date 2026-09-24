@@ -648,15 +648,13 @@ and must not be substituted for one another.
 
 ### 12.1 Primary count rule
 
-For a declared population view (V):
+For a declared population view `V`:
 
-[
-N_V
-=
-sum_i I(i qualifies for V)
-]
+```text
+N_V = sum over unique canonical identities i of I(i qualifies for V)
+```
 
-where each (i) is a unique canonical identity at the declared counting level.
+where each `i` is a unique canonical identity at the declared counting level.
 
 ### 12.2 Duplicate candidates
 
@@ -678,11 +676,11 @@ Capability, deployment context, form factor, and evidence categories may be mult
 
 Therefore:
 
-[
-sum_c N_c
-]
+```text
+sum over category counts N_c may exceed the unique-product denominator
+```
 
-may exceed the unique-product denominator.
+because one product may belong to more than one analytical category.
 
 Reports must state whether categories are:
 
