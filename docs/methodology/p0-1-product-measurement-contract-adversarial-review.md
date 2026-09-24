@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R38 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** all identified R1–R40 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
 
 ## 1. Purpose
 
@@ -109,6 +109,8 @@ The review favored false non-merges and explicit unresolved states over silent i
 | R36 | Organization linkage was missing from the registry projection | A flat organization field could collapse developer/owner/manufacturer/distributor roles or propagate company claims | Retain typed evidence-backed organization relationship refs instead of one organization ID |
 | R37 | Observation chronology was implicit | Analysts could confuse Observatory observation time with launch/validity time | Add first/last observed metadata traceable to observations and explicitly separate knowledge time from world time |
 | R38 | D4 case packets did not bind the hardened identity level/role model | FAMILY/OFFERING/CONFIGURATION/SYSTEM cases could be reviewed as though interchangeable | Extend D4 controlled case bindings and calibration coverage to preserve entity type, identity level, system/offering role and enumeration role |
+| R39 | Population-view state predicates were not version-bound | Different P0.3 implementations could produce different A-P2/A-P3/A-P6 numerators while claiming the same view | Bind every view/count/estimate to a versioned population_view_policy_id implementing the frozen P0.1 semantics |
+| R40 | Final D4 sampling could omit newly material P0.1 identity boundaries | The held-out reference standard could validate old strata yet miss component/service/SYSTEM identity failures relevant to Release A | Require private final-sampling diagnostic coverage of the P0.1 identity/enumeration boundaries, bound through sampling/coverage digests without changing public v0.2 required_strata |
 
 Two additional consistency corrections were made during implementation:
 
@@ -211,7 +213,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R38 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R40 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
 
 The appropriate next disposition after successful PR review is one of:
 
