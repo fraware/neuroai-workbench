@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/product-registry-row-1.0.json",
+  "title": "PRODUCT_REGISTRY_ROW",
+  "description": "Deterministic analytical projection over canonical PRODUCT/SYSTEM identities. A row is not a canonical identity and row cardinality is not a population denominator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_row_id",
+    "registry_projection_version",
+    "boundary_contract_id",
+    "boundary_contract_semantic_blob",
+    "reference_standard_id",
+    "reference_standard_version",
+    "reference_standard_validation_state",
+    "population_view_policy_id",
+    "currentness_policy_id",
+    "canonical_entity_id",
+    "canonical_entity_type",
+    "identity_level",
+    "product_family_id",
+    "product_offering_id",
+    "configuration_system_id",
+    "configuration_coverage_state",
+    "system_or_offering_role",
+    "offering_kind",
+    "primary_enumeration_role",
+    "jurisdiction_scope",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "identity_state",
+    "boundary_disposition",
+    "boundary_disposition_ref",
+    "lifecycle_state",
+    "access_commercial_state",
+    "regulatory_state",
+    "deployment_state",
+    "currentness_state",
+    "evidence_state",
+    "organization_relationship_refs",
+    "projected_assertion_refs",
+    "source_observation_refs",
+    "first_observed_at",
+    "last_observed_at",
+    "signal_or_sensing_modality",
+    "inference_capability",
+    "intervention_output_capability",
+    "form_factor",
+    "deployment_context",
+    "target_population",
+    "technical_equivalence_cluster_id",
+    "technical_equivalence_evidence_refs",
+    "boundary"
+  ],
+  "properties": {
+    "registry_row_id": {
+      "type": "string",
+      "pattern": "^PRR-[0-9a-f]{64}$"
+    },
+    "registry_projection_version": {
+      "const": "PRODUCT_REGISTRY_v1.0"
+    },
+    "boundary_contract_id": {
+      "const": "PRODUCT_MEASUREMENT_CONTRACT_v1.0"
+    },
+    "boundary_contract_semantic_blob": {
+      "const": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41"
+    },
+    "reference_standard_id": {
+      "const": "D4_PRODUCT_REFERENCE_STANDARD_v1.0"
+    },
+    "reference_standard_version": {
+      "const": "1.0"
+    },
+    "reference_standard_validation_state": {
+      "const": "FROZEN_WORKING_REFERENCE"
+    },
+    "population_view_policy_id": {
+      "const": "PRODUCT_POPULATION_VIEW_POLICY_v1.0"
+    },
+    "currentness_policy_id": {
+      "const": "PRODUCT_CURRENTNESS_POLICY_v1.0"
+    },
+    "canonical_entity_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_entity_type": {
+      "enum": [
+        "PRODUCT",
+        "SYSTEM"
+      ]
+    },
+    "identity_level": {
+      "enum": [
+        "FAMILY",
+        "OFFERING",
+        "CONFIGURATION"
+      ]
+    },
+    "product_family_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "product_offering_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "configuration_system_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "configuration_coverage_state": {
+      "enum": [
+        "RESOLVED",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "system_or_offering_role": {
+      "enum": [
+        "OFFERING_FAMILY",
+        "OFFERING",
+        "SERVICE_OFFERING",
+        "FORMAL_INVESTIGATIONAL_OFFERING",
+        "PRODUCT_CONFIGURATION"
+      ]
+    },
+    "offering_kind": {
+      "enum": [
+        "HARDWARE",
+        "SOFTWARE",
+        "SERVICE",
+        "BUNDLE",
+        "RESEARCH_PLATFORM",
+        "REGULATED_MEDICAL_PRODUCT",
+        "FORMAL_INVESTIGATIONAL_OFFERING",
+        "OTHER",
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ]
+    },
+    "primary_enumeration_role": {
+      "enum": [
+        "INTEGRATED_SYSTEM",
+        "COMPONENT_OR_SUBSYSTEM",
+        "STANDALONE_SOFTWARE_OR_SERVICE",
+        "UNRESOLVED",
+        "OTHER_REVIEW_REQUIRED"
+      ]
+    },
+    "jurisdiction_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "format": "date"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identity_state": {
+      "enum": [
+        "RESOLVED",
+        "UNRESOLVED"
+      ]
+    },
+    "boundary_disposition": {
+      "enum": [
+        "INCLUDE",
+        "EXCLUDE",
+        "BORDERLINE",
+        "ABSTAIN"
+      ]
+    },
+    "boundary_disposition_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lifecycle_state": {
+      "enum": [
+        "ANNOUNCED",
+        "IN_DEVELOPMENT",
+        "MANUFACTURING_PRE_DELIVERY",
+        "RELEASED",
+        "CANCELLED",
+        "DISCONTINUED",
+        "WITHDRAWN",
+        "SUPERSEDED",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "access_commercial_state": {
+      "enum": [
+        "NOT_EXTERNALLY_OFFERED",
+        "PREORDER_RESERVATION",
+        "COMMERCIAL_DIRECT",
+        "RESEARCH_USE_SOLD_OR_LICENSED",
+        "CLINICAL_COMMERCIAL",
+        "TRIAL_INVESTIGATIONAL",
+        "INSTITUTIONAL_SERVICE",
+        "DISCONTINUED_UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "regulatory_state": {
+      "enum": [
+        "NO_CONTROLLING_RECORD",
+        "INVESTIGATIONAL_AUTHORIZATION",
+        "FILING_SUBMISSION",
+        "DESIGNATION",
+        "CLEARANCE",
+        "APPROVAL_AUTHORIZATION",
+        "CONFORMITY_MARKING",
+        "WITHDRAWAL_RECALL",
+        "OTHER_JURISDICTION_SPECIFIC",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "deployment_state": {
+      "enum": [
+        "INTENDED_MARKETED_USE",
+        "TRIAL_USE",
+        "RESEARCH_DEPLOYMENT",
+        "DOCUMENTED_CLINICAL_DEPLOYMENT",
+        "DOCUMENTED_CONSUMER_ACCESS",
+        "DOCUMENTED_WORKPLACE_INSTITUTIONAL_DEPLOYMENT",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "currentness_state": {
+      "enum": [
+        "CURRENT",
+        "NOT_CURRENT",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "evidence_state": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "COMPANY_REPRESENTATION",
+          "REGULATORY_ADMINISTRATIVE_RECORD",
+          "TRIAL_RECORD",
+          "SCIENTIFIC_PUBLICATION",
+          "INDEPENDENT_STUDY",
+          "PROCUREMENT_DEPLOYMENT_RECORD",
+          "MODELED_DERIVED_ESTIMATE",
+          "UNRESOLVED"
+        ]
+      }
+    },
+    "organization_relationship_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "projected_assertion_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_observation_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "first_observed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "last_observed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "signal_or_sensing_modality": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "inference_capability": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "intervention_output_capability": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "form_factor": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "deployment_context": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "target_population": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "technical_equivalence_cluster_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "technical_equivalence_evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
