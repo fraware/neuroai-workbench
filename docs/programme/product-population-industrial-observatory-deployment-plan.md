@@ -360,7 +360,12 @@ Run independently attributable discovery frames. Minimum source families:
 - **F5 — commercial/ecosystem discovery:** specialist distributors, procurement, accelerator/investor portfolios, industry directories;
 - **F6 — capability-first discovery:** searches driven by function/capability instead of category branding;
 - **F7 — expert nominations:** structured expert seeds and edge cases;
-- **F8 — local-language discovery:** native-language sources and query families for selected jurisdictions.
+- **F8 — local-language discovery:** native-language sources and query families for selected jurisdictions;
+- **F9 — curated-actor seed discovery:** known Observatory actors and other predeclared organization seeds, followed to attributable product evidence;
+- **F10 — patent-commercialization crossover:** patent assignees/inventors and patent-linked commercialization leads followed to attributable product evidence;
+- **F11 — snowball expansion:** validated products, developers, distributors, trials, and related-product links expanded under recorded parent-seed provenance.
+
+F5 retains funding/investor/accelerator and structured-directory channels under one commercial/ecosystem frame at v1.0 only when the underlying source class remains explicit. P0.5 must test whether that aggregation is defensible for estimation and predeclare any finer analytical grouping before model fitting.
 
 Each candidate obtains a capture history:
 
