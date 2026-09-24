@@ -327,9 +327,9 @@ def test_frame_id_has_frozen_semantic_class() -> None:
     wrong = _frame("F9", "FIRST_PARTY")
     with pytest.raises(ProductDiscoveryError, match="frame_class must be"):
         validate_discovery_frame(wrong)
-    validate_discovery_frame(_frame("F9", "CURATED_ACTOR_SEED"))
+    validate_discovery_frame(_frame("F9", "CURATED_ACTOR_SEED", capture_eligible=False))
     validate_discovery_frame(_frame("F10", "PATENT_COMMERCIALIZATION"))
-    validate_discovery_frame(_frame("F11", "SNOWBALL_EXPANSION"))
+    validate_discovery_frame(_frame("F11", "SNOWBALL_EXPANSION", capture_eligible=False))
 
 
 def test_capture_histories_fail_closed_across_analysis_universes() -> None:
