@@ -13,9 +13,11 @@ FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
 RUN_SCHEMA = "PRODUCT_DISCOVERY_RUN.schema.json"
 FRAME_REGISTER_RESOURCE = "PRODUCT_DISCOVERY_FRAME_REGISTER.v1.0.json"
+F9_ACTOR_SEED_REGISTER_RESOURCE = "RELEASE_A_F9_ACTOR_SEED_REGISTER.v1.0.json"
 
 FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
 FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+F9_ACTOR_SEED_REGISTER_ID = "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0"
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
 FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
@@ -123,6 +125,56 @@ def load_default_frame_register() -> dict[str, Any]:
     )
     validate_frame_register(register)
     return register
+
+
+
+def load_f9_actor_seed_register() -> dict[str, Any]:
+    """Load and validate the frozen Release-A F9 curated-actor seed input."""
+
+    register = cast(
+        dict[str, Any],
+        json.loads(files(RESOURCE_PACKAGE).joinpath(F9_ACTOR_SEED_REGISTER_RESOURCE).read_text(encoding="utf-8")),
+    )
+    validate_f9_actor_seed_register(register)
+    return register
+
+
+def validate_f9_actor_seed_register(register: Mapping[str, Any]) -> None:
+    """Validate the exact bounded actor seed set used by F9 discovery."""
+
+    if register.get("register_id") != F9_ACTOR_SEED_REGISTER_ID:
+        raise ProductDiscoveryError(f"F9 actor seed register_id must be {F9_ACTOR_SEED_REGISTER_ID}")
+    if register.get("frame_id") != "F9":
+        raise ProductDiscoveryError("F9 actor seed register must bind frame_id F9")
+    if register.get("frame_register_version") != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError(f"F9 actor seed register must bind {FRAME_REGISTER_VERSION}")
+    if register.get("estimator_role") != "EXCLUDED_FROM_PRIMARY_UNSEEN_POPULATION_ESTIMATOR":
+        raise ProductDiscoveryError("F9 actor seed register must remain excluded from the primary estimator")
+
+    actors = register.get("actors")
+    if not isinstance(actors, list) or not actors:
+        raise ProductDiscoveryError("F9 actor seed register actors must be a non-empty list")
+    if int(register.get("actor_count", -1)) != len(actors):
+        raise ProductDiscoveryError("F9 actor seed actor_count does not match actor list length")
+
+    organization_ids: set[str] = set()
+    for actor in actors:
+        if not isinstance(actor, Mapping):
+            raise ProductDiscoveryError("F9 actor seed entries must be objects")
+        organization_id = str(actor.get("organization_id", "")).strip()
+        canonical_name = str(actor.get("canonical_name", "")).strip()
+        if not organization_id or not canonical_name:
+            raise ProductDiscoveryError("F9 actor seed entries require organization_id and canonical_name")
+        if organization_id in organization_ids:
+            raise ProductDiscoveryError(f"Duplicate F9 actor organization_id: {organization_id}")
+        organization_ids.add(organization_id)
+
+    source_binding = register.get("source_binding")
+    if not isinstance(source_binding, Mapping):
+        raise ProductDiscoveryError("F9 actor seed register requires an exact source_binding")
+    for field in ("repository", "commit_sha", "path", "blob_sha"):
+        if not str(source_binding.get(field, "")).strip():
+            raise ProductDiscoveryError(f"F9 actor seed source_binding requires {field}")
 
 
 def validate_frame_register(register: Mapping[str, Any]) -> None:
