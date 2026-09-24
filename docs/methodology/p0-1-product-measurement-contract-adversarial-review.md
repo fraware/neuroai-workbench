@@ -149,6 +149,7 @@ The corrected candidate requires every Release-A count or estimate to bind:
 ```text
 boundary_contract_id
 registry_projection_version
+input_release_or_snapshot_id
 population_view_policy_id
 boundary_disposition_protocol_id
 reference_standard_id
@@ -191,7 +192,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified nine residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified twelve residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -204,6 +205,9 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C7 | The D4 case packet used `candidate_canonical_entity_type` even though some valid boundary cases intentionally have unresolved canonical identity | Replace it with a bound/proposed entity-type field whose controlled domain includes `UNRESOLVED`, and define unresolved/not-applicable identity semantics explicitly |
 | C8 | D4 deterministic selection used `canonical_candidate_id`, which is undefined for legitimately unresolved identity cases and can couple sampling to later resolution | Introduce a stable opaque `candidate_selection_id` assigned before sampling and use that ID for deterministic selection |
 | C9 | Duplicate candidate bindings were not governed before final held-out selection | Freeze duplicate-resolution state/group, collapse known duplicates unless an identity-boundary exception is predeclared, and keep suspected unresolved duplicates from being treated as independent evidence |
+| C10 | Count/projection metadata identified policies and cutoffs but not the immutable input release/snapshot | Bind every governed registry projection/count/estimate to `input_release_or_snapshot_id` and include it in the deterministic row key |
+| C11 | Release-A A2 described capture histories at raw candidate level | Preserve candidate discovery provenance but construct estimation capture histories only after governed inclusion and identity resolution at the preregistered estimation unit |
+| C12 | Release-A A7 still used `N_total`, which could contradict the contract's conditional open-world estimand semantics | Use `N_estimated = N_observed + N_unseen` and state explicitly that it is conditional on the declared discovery-frame/language/jurisdiction/model universe |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -235,7 +239,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C9 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C12 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
