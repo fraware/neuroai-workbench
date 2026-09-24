@@ -14,6 +14,7 @@
     "observatory_data_commit",
     "observatory_release_refs",
     "controlled_packet_digests",
+    "evidence_index_sha256",
     "world_time_cutoff",
     "knowledge_time_cutoff",
     "jurisdiction_scope",
@@ -59,6 +60,10 @@
         "type": "string",
         "pattern": "^[0-9a-f]{64}$"
       }
+    },
+    "evidence_index_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "world_time_cutoff": {
       "type": "string",
