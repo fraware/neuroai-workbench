@@ -321,11 +321,11 @@ A passing P0 gate does not establish any global product count, pass G2, or estab
 
 ### A objective
 
-Move from representative product cases to a validated exact-product registry with measured discovery coverage and bounded estimates of the residual unseen product population.
+Move from representative product cases to a validated exact-product analytical registry projection backed by canonical PRODUCT/SYSTEM identities, with measured discovery coverage and bounded estimates of the residual unseen product population.
 
 ### A1 — Seed registry construction
 
-Create canonical exact-product records from validated existing evidence, including:
+Create canonical PRODUCT offering/family identities and PRODUCT_CONFIGURATION SYSTEM identities from validated existing evidence, then generate exact-product registry projection rows under the frozen P0.1/P0.3 semantics. Seed evidence may include:
 
 - current Observatory organizations with product evidence;
 - representative product/service cases;
@@ -335,19 +335,20 @@ Create canonical exact-product records from validated existing evidence, includi
 - current commercial product pages;
 - previously adjudicated non-traditional cases.
 
-Organization records must not be mechanically converted into product counts. One organization may map to zero, one, or many exact product objects.
+Organization records must not be mechanically converted into product counts. One organization may relate to zero, one, or many product offerings/configurations through typed evidence-backed relationships. Registry rows remain analytical projections and are never counted directly.
 
 For every seed, record:
 
-- exact identity;
-- current status;
-- source observation;
-- evidence state;
-- relevant jurisdiction;
+- canonical offering identity and, where evidenced, family/configuration identity;
+- typed organization relationships;
+- current-state projection under the declared population-view/currentness policies;
+- source observation and observation chronology;
+- evidence state and governed boundary disposition;
+- relevant jurisdiction scope;
 - applicable capability/context classification;
-- unresolved fields.
+- unresolved family/configuration/linkage/state fields.
 
-**Output:** high-confidence seed Product Registry.
+**Output:** high-confidence seed canonical identity graph plus exact-product registry projection.
 
 ### A2 — Multi-frame product discovery
 
