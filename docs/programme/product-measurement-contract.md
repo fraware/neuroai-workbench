@@ -320,10 +320,12 @@ configuration_system_id or explicit unresolved marker
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
+population_view_policy_id
+currentness_policy_id
 registry_projection_version
 ```
 
-The deterministic row key must bind that exact tuple. A changed jurisdiction scope, cutoff pair, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
+The deterministic row key must bind that exact tuple. A changed jurisdiction scope, cutoff pair, population-view policy, currentness policy, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
 
 Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
 
@@ -1399,7 +1401,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 33. registry projections retain typed organization relationships instead of a single ambiguous organization field;
 34. observation chronology is explicit and cannot be misread as world-time launch/existence chronology;
 35. every population view binds a versioned machine predicate policy consistent with the frozen semantic definition;
-36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator.
+36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
+37. the deterministic registry-row key binds the population-view and currentness policy identities that can change the projected row.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
