@@ -11,8 +11,8 @@ from neuroai_workbench.product_discovery_frames import (
     ProductDiscoveryError,
     build_capture_histories,
     evaluate_frame_stop,
-    identity_set_digest,
     frame_overlap_matrix,
+    identity_set_digest,
     incremental_unique_identities,
     product_capture_id,
     product_discovery_run_id,
@@ -273,7 +273,7 @@ def test_incremental_comparison_rejects_unknown_or_non_nested_frame_sets() -> No
         incremental_unique_identities(
             [capture],
             baseline_frame_ids={"F1"},
-            expanded_frame_ids={"F1", "F9"},
+            expanded_frame_ids={"F1", "F12"},
         )
     with pytest.raises(ProductDiscoveryError, match="must be a subset"):
         incremental_unique_identities(
