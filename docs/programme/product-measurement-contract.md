@@ -1079,6 +1079,8 @@ PENDING_OR_UNREVIEWED   # if any remain at analysis cutoff
 
 The primary observed population numerator remains governed `INCLUDE` only. Where the mass of boundary/unresolved cases is material to interpretation, the P0.5 preregistration must define a sensitivity or bounding analysis. Such analysis must not relabel ambiguous cases as verified products.
 
+For population estimation, candidate review itself is part of the measurement process. A candidate is not an exclusion merely because it was never reviewed. The declared estimation universe must either reach review completion under a frozen candidate-review protocol or use a predeclared probability/sampling/verification design that explicitly models review selection. Confidence-prioritized, frame-dependent, language-dependent, or convenience review that is ignored by the estimator can bias capture histories and invalidates an unadjusted population estimate.
+
 ### 12.8 Population-estimation compatibility contract
 
 Every unseen-population model must bind exactly one declared estimation universe:
@@ -1092,6 +1094,9 @@ input_release_or_snapshot_digest
 population_view_policy_id
 boundary_disposition_protocol_id
 boundary_disposition_protocol_digest
+candidate_review_protocol_id
+candidate_review_protocol_digest
+review_completion_state
 reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
@@ -1205,6 +1210,8 @@ Any reported `N_estimated` must therefore distinguish:
 - sensitivity to source dependence and stratification;
 - boundary/unresolved-case sensitivity where material;
 - residual coverage risk, including plausible zero-capture classes.
+
+An unmodeled incomplete/non-probability candidate-review process is itself grounds for `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE` when it can materially bias the estimation universe.
 
 A numeric `N_estimated` is not mandatory merely because population estimation was preregistered. If the preregistered model families are non-identifiable, diagnostically inadequate, materially unstable to plausible dependence/stratification assumptions, or otherwise fail the predeclared acceptance criteria, the governed result is `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE` with `N_observed` and the failure evidence reported. The programme must not select whichever model produces the most plausible-looking total.
 
@@ -1474,10 +1481,11 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
 37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
-39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register/model digests, the Release-A preregistration, discovery protocol, and exact analysis execution pin required for reproducibility;
+39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/candidate-review-protocol/reference-standard/discovery-frame-register/model digests, review-completion state, the Release-A preregistration, discovery protocol, and exact analysis execution pin required for reproducibility;
 40. unseen-population estimation preserves non-negative population support and permits a preregistered no-estimate outcome when identifiability or adequacy criteria fail;
 41. access, regulatory, and deployment assertions preserve compatible concurrent states/scopes instead of forcing analytically invalid single-state exclusivity;
-42. an attributable `APPROVE_FREEZE_v1.0` human disposition binds the exact reviewed contract digest.
+42. candidate-review selection/completeness is explicitly governed for population estimation so unreviewed candidates are never silently treated as negatives or absent population members;
+43. an attributable `APPROVE_FREEZE_v1.0` human disposition binds the exact reviewed contract digest.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
