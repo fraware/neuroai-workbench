@@ -998,7 +998,7 @@ Those denominators belong to Release B.
 
 A candidate product identity may be represented when attributable evidence supports a named external product/service or formal investigational/research offering. This is an entity-existence statement only.
 
-Entry into a governed Release-A product population additionally requires the D4 boundary-membership evidence and expert-review conditions in §4.4.
+Entry into a governed Release-A product population additionally requires a governed operational `INCLUDE` disposition under the approved D1 evidence and expert-review conditions in §4.4, with the operational procedure/reference-standard lineage recorded as required by §4.5.
 
 A first-party source may support:
 
@@ -1044,7 +1044,7 @@ Effectiveness evidence belongs to Release C.
 | Companion app used only to control/display device | Part of product bundle | No separate service count |
 | Separately subscribed analytics service with material in-scope function | Separate service linked to parent product | Countable service in applicable views |
 | One-off paper prototype with no stable external product/programme identity | Research system, not product | Excluded from product denominator |
-| Named investigational system used in a formal trial with stable configuration | PRODUCT only if a stable external product/formal investigational-product identity is evidenced; otherwise SYSTEM | Product counts only if PRODUCT identity + D4 + count eligibility are satisfied |
+| Named investigational system used in a formal trial with stable configuration | PRODUCT only if a stable external product/formal investigational-product identity is evidenced; otherwise SYSTEM | Product counts only if PRODUCT identity, governed operational `INCLUDE`, and the declared population-view eligibility are satisfied |
 | Announced product with official page but no delivery | Product identity may exist; lifecycle/access state = announced or pre-delivery | Included in A-P1 if current representation is supported; excluded from A-P2 and A-P6 unless later access evidence qualifies it |
 | Product discontinued but still historically important | Preserve product identity and historical assertions | Excluded from A-P1; included in A-P5; if current deployment is independently evidenced, also eligible for A-P7 |
 | Acquisition changes developer/owner | Same product unless material product change | No new count solely from acquisition |
