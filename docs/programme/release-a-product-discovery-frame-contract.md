@@ -66,6 +66,8 @@ Every product-discovery observation records:
 - frame ID/version;
 - discovery round;
 - query/seed provenance;
+- exact query family;
+- source class/channel;
 - source observation reference;
 - source language;
 - jurisdiction;
