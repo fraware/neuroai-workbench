@@ -393,12 +393,12 @@ Search families include, where consistent with the frozen product boundary:
 
 Primary diagnostic:
 
-[
-Delta N_{capability} =
-N_{all discovery}
+```text
+Delta_N_capability =
+N_all_discovery
 -
-N_{conventional terminology}
-]
+N_conventional_terminology
+```
 
 Report incremental yield by product class and jurisdiction, with false-positive and unresolved rates.
 
@@ -410,24 +410,24 @@ Select language/jurisdiction strata using evidence such as patent activity, know
 
 For each selected stratum, run matched discovery protocols:
 
-[
-S_{English}
-]
+```text
+S_English
+```
 
 versus
 
-[
-S_{English+Native}
-]
+```text
+S_English_plus_Native
+```
 
 Measure:
 
-[
+```text
 Delta_j =
-N_{j,English+Native}
+N_j_English_plus_Native
 -
-N_{j,English}
-]
+N_j_English
+```
 
 and the unique-product gain, error rate, duplicate rate, capability gain, and source-class gain.
 
@@ -454,21 +454,21 @@ Every edge-generated object re-enters as a candidate and remains subject to the 
 
 Track each round (r):
 
-[
+```text
 Y_r = new validated products
-]
+```
 
-[
+```text
 D_r = duplicate candidates
-]
+```
 
-[
+```text
 X_r = excluded candidates
-]
+```
 
-[
+```text
 U_r = unresolved candidates
-]
+```
 
 **Output:** round-level discovery ledger.
 
@@ -476,9 +476,9 @@ U_r = unresolved candidates
 
 Measure marginal yield:
 
-[
+```text
 m_r = Y_r / Candidates_r
-]
+```
 
 and decompose it by:
 
@@ -521,9 +521,9 @@ At minimum compare:
 
 The naïve two-source estimator
 
-[
-hat{N}=rac{n_1n_2}{m}
-]
+```text
+N_hat = (n_1 * n_2) / m
+```
 
 is diagnostic only unless independence assumptions are defensible.
 
@@ -627,29 +627,21 @@ Examples:
 
 Distinct market-share quantities remain separate:
 
-[
-S^{revenue}_{i,m}
-=
-rac{R_{i,m}}{sum_j R_{j,m}}
-]
+```text
+S_revenue(i,m) = R(i,m) / sum_j R(j,m)
+```
 
-[
-S^{units}_{i,m}
-=
-rac{U_{i,m}}{sum_j U_{j,m}}
-]
+```text
+S_units(i,m) = U(i,m) / sum_j U(j,m)
+```
 
-[
-S^{installed}_{i,m}
-=
-rac{I_{i,m}}{sum_j I_{j,m}}
-]
+```text
+S_installed(i,m) = I(i,m) / sum_j I(j,m)
+```
 
-[
-S^{users}_{i,m}
-=
-rac{A_{i,m}}{sum_j A_{j,m}}
-]
+```text
+S_users(i,m) = A(i,m) / sum_j A(j,m)
+```
 
 Product-count composition is not market share.
 
@@ -677,28 +669,27 @@ Where direct commercial data do not exist, estimates use explicit models and unc
 
 Example:
 
-[
-R_i = P_i 	imes Q_i
-]
+```text
+R_i = P_i * Q_i
+```
 
 with uncertain inputs:
 
-[
-P_i sim D_P,qquad Q_i sim D_Q
-]
+```text
+P_i ~ D_P; Q_i ~ D_Q
+```
 
 which implies a revenue distribution:
 
-[
-R_i sim D_R
-]
+```text
+R_i ~ D_R
+```
 
 and a market-share distribution:
 
-[
-S_i sim
-rac{R_i}{sum_jR_j}
-]
+```text
+S_i ~ R_i / sum_j R_j
+```
 
 The programme must publish assumptions, input sources, interval estimates, sensitivity analysis, and the distinction between observed and modeled quantities.
 
@@ -721,10 +712,10 @@ Keep these distinct from patent concentration, product-count concentration, vent
 
 Represent commercialization as a vector rather than a binary:
 
-[
+```text
 M_i =
 (availability, deployment, adoption, revenue, regulation, manufacturing scale)
-]
+```
 
 **Output:** market structure and commercial maturity analyses.
 
@@ -879,9 +870,9 @@ If an aggregate index is later introduced, the underlying dimensions and weights
 
 Two products enter the same comparative component only where the evidence is sufficiently aligned on:
 
-[
+```text
 (population, indication, intervention objective, comparator, endpoint, horizon)
-]
+```
 
 The comparability relation is evidence-based, not category-name-based.
 
@@ -915,10 +906,10 @@ Every synthesis records:
 
 For each product:
 
-[
+```text
 G_i =
 Claims_i - IndependentlySupportedClaims_i
-]
+```
 
 Possible claim dispositions:
 
@@ -953,7 +944,7 @@ Release C produces:
 
 No comparative-effectiveness statement passes unless:
 
-[
+```text
 Commensurability
 +
 Evidence quality
@@ -961,7 +952,7 @@ Evidence quality
 Appropriate synthesis
 +
 Traceable product identity
-]
+```
 
 are all satisfied.
 
@@ -1031,25 +1022,25 @@ Events are evidence-bound and temporally explicit.
 
 Where evidence supports them, estimate distributions such as:
 
-[
-T_{patent ightarrow product}
-]
+```text
+T_{patent -> product}
+```
 
-[
-T_{product ightarrow independent evidence}
-]
+```text
+T_{product -> independent evidence}
+```
 
-[
-T_{product ightarrow regulatory}
-]
+```text
+T_{product -> regulatory}
+```
 
-[
-T_{product ightarrow deployment}
-]
+```text
+T_{product -> deployment}
+```
 
-[
-T_{funding ightarrow product}
-]
+```text
+T_{funding -> product}
+```
 
 Analyze transition distributions by product class, capability, jurisdiction, and regulatory context only where source coverage is comparable.
 
@@ -1123,17 +1114,17 @@ A dependency edge requires source evidence; plausible supply-chain narratives re
 
 Apply the mechanism-based chain:
 
-[
+```text
 Observed capability
 +
 Deployment context
-ightarrow
+->
 Mechanism
-ightarrow
+->
 Governance concern
-ightarrow
+->
 Relevant policy instrument
-]
+```
 
 Release D adds empirical denominators to the governance layer.
 
