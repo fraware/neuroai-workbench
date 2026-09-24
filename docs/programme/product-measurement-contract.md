@@ -1096,9 +1096,9 @@ reference_standard_id
 reference_standard_version
 reference_standard_contract_digest
 reference_standard_validation_state
+population_view_id
 identity_level
-population_view
-enumeration_roles
+included_enumeration_roles
 jurisdiction_scope
 world_time_cutoff
 knowledge_time_cutoff
