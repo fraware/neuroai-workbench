@@ -496,7 +496,7 @@ OFFERING
 
 Represents one externally identifiable named product/service or formal investigational product offering as a canonical `PRODUCT` entity with `product_identity_level = OFFERING`.
 
-This is the default Release-A global product/service identity level.
+This is the default Release-A cross-jurisdiction product/service identity level.
 
 ### 5.3 Exact configuration identity level
 
@@ -535,15 +535,15 @@ are assertions about the product/configuration.
 
 They do not automatically create new global product identities.
 
-### 5.5 Global count versus jurisdictional count
+### 5.5 Cross-jurisdiction unique count versus jurisdictional count
 
-For a global unique-product view:
+For a cross-jurisdiction unique-offering view within a declared discovery/analysis universe:
 
 ```text
-N_global = number of unique canonical product identities
+N_unique = number of unique qualifying canonical OFFERING identities
 ```
 
-A product present in five jurisdictions counts once globally.
+An offering present in five jurisdictions counts once in that cross-jurisdiction view. This deduplication rule does not imply that the declared discovery universe is globally complete.
 
 For a jurisdictional availability view:
 
@@ -553,7 +553,7 @@ N_j = number of unique product identities with a qualifying state in jurisdictio
 
 The same product may count once in each applicable jurisdiction.
 
-Jurisdictional counts must not be summed and relabelled as the global unique-product count.
+Jurisdictional counts must not be summed and relabelled as the cross-jurisdiction unique-offering count.
 
 ## 6. Material-change rule for versions and configurations
 
@@ -1020,9 +1020,9 @@ A product developed, manufactured, distributed, licensed, or sold by several org
 
 ### 12.4 Multiple jurisdictions
 
-A global unique-product count deduplicates across jurisdictions.
+A cross-jurisdiction unique-offering count deduplicates canonical OFFERING identities across jurisdictions within its declared discovery/analysis universe.
 
-Jurisdiction-specific views may count the same product once in each jurisdiction where the qualifying state is supported.
+Jurisdiction-specific views may count the same offering once in each jurisdiction where the qualifying state is supported.
 
 ### 12.5 Multi-label analytical categories
 
@@ -1444,7 +1444,7 @@ After freeze, a material change to any of the following requires a dedicated iss
 - component/bundle counting;
 - service-counting rule;
 - OEM/rebrand treatment;
-- global-versus-jurisdictional deduplication;
+- cross-jurisdiction-versus-jurisdictional deduplication;
 - primary population-view definitions;
 - population-view machine predicate semantics.
 
