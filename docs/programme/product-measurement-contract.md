@@ -14,7 +14,7 @@ Its purpose is to prevent product discovery, benchmarking, counting, market anal
 The contract governs:
 
 - the distinction between organization, product family, product, exact configuration, service, component, and technical system;
-- the identity boundary for global and jurisdiction-specific counting;
+- the identity boundary for cross-jurisdiction and jurisdiction-specific counting;
 - lifecycle, commercial, deployment, and regulatory state semantics;
 - treatment of versions, aliases, rebrands, OEM/private-label products, bundles, apps, subscriptions, and research/investigational systems;
 - the interface between the approved D1 boundary, D4 reference-standard validation, operational boundary dispositions, and downstream count eligibility;
@@ -520,7 +520,7 @@ No configuration entity is created solely because an offering exists.
 
 ### 5.4 Jurisdiction is normally state, not identity
 
-The same product sold or studied in multiple jurisdictions remains one global product identity unless jurisdiction changes the underlying product/configuration materially.
+The same product sold or studied in multiple jurisdictions remains one canonical offering identity across jurisdictions unless jurisdiction changes the underlying product/configuration materially.
 
 Jurisdiction-specific:
 
@@ -533,7 +533,7 @@ Jurisdiction-specific:
 
 are assertions about the product/configuration.
 
-They do not automatically create new global product identities.
+They do not automatically create new canonical offering identities.
 
 ### 5.5 Cross-jurisdiction unique count versus jurisdictional count
 
@@ -1237,7 +1237,7 @@ Effectiveness evidence belongs to Release C.
 
 | Case | Product identity treatment | Count treatment |
 | --- | --- | --- |
-| Same product, two official names in two countries, no material configuration difference | One product with aliases/jurisdictional assertions | Once globally; once in each qualifying jurisdictional view |
+| Same product, two official names in two countries, no material configuration difference | One product with aliases/jurisdictional assertions | Once in the declared cross-jurisdiction unique-offering view; once in each qualifying jurisdictional view |
 | Same family, materially different hardware generations | One family, multiple products/configurations | Count at declared level |
 | Routine firmware bug fix | Same configuration unless material capability/evidence effect is established | No new product count |
 | Software/model update materially changes in-scope capability | New configuration; new product only if offering identity also changes materially | Configuration count changes; product count depends on product identity |
