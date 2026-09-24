@@ -78,6 +78,8 @@ def _capture(
         "frame_version": FRAME_VERSION,
         "round_id": round_id,
         "query_or_seed_id": f"Q-{frame_id}",
+        "query_family": "Q1",
+        "source_class": "PUBLIC",
         "candidate_key": candidate,
         "canonical_offering_id": offering_id,
         "source_observation_ref": f"OBS-{frame_id}-{candidate}",
@@ -231,6 +233,24 @@ def test_capability_and_multilingual_incremental_yield_is_computed_after_identit
         expanded_frame_ids={"F1", "F6", "F8"},
     )
     assert multilingual_gain == {"PRD-C"}
+
+
+def test_capture_source_and_query_provenance_must_match_declared_frame() -> None:
+    frame = _frame("F1", "FIRST_PARTY")
+    capture = _capture("F1", "x", offering_id="PRD-X")
+    validate_capture_against_frame(capture, frame)
+
+    wrong_query = deepcopy(capture)
+    wrong_query["query_family"] = "OTHER_QUERY"
+    wrong_query["capture_id"] = product_capture_id(wrong_query)
+    with pytest.raises(ProductDiscoveryError, match="query_family"):
+        validate_capture_against_frame(wrong_query, frame)
+
+    wrong_source = deepcopy(capture)
+    wrong_source["source_class"] = "OTHER_SOURCE"
+    wrong_source["capture_id"] = product_capture_id(wrong_source)
+    with pytest.raises(ProductDiscoveryError, match="source_class"):
+        validate_capture_against_frame(wrong_source, frame)
 
 
 def test_capture_and_frame_eligibility_must_agree() -> None:
