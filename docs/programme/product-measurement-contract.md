@@ -306,7 +306,7 @@ A governed operational boundary disposition used for Release-A counting must pre
 
 Identity resolution alone never authorizes `INCLUDE`.
 
-A single company representation may support the bounded claim that an offering was represented by that company. It does not, by itself, satisfy the governed D4 inclusion decision where D1 requires multi-signal attributable evidence plus expert review.
+A single company representation may support the bounded claim that an offering was represented by that company. It does not, by itself, satisfy the governed operational inclusion decision where D1 requires multi-signal attributable evidence plus expert review.
 
 ### 4.5 Operational boundary-disposition record
 
