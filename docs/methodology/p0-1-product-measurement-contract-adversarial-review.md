@@ -5,7 +5,7 @@
 **Parent issue:** #316  
 **Review target:** `docs/programme/product-measurement-contract.md`  
 **Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
-**Current state:** all identified R1–R40 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+**Current state:** findings R1–R40 were incorporated in merged PR #321; the exact revised semantic candidate was subsequently approved with human disposition `APPROVE_FREEZE_v1.0` on issue #316 (comment #5810759859)
 
 ## 1. Purpose
 
@@ -213,17 +213,9 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+With R1–R40 incorporated, the revised semantic candidate advanced to human freeze review. Exact PR #321 head checks passed CI, CodeQL, and dependency review, and the project authority subsequently recorded `APPROVE_FREEZE_v1.0` on issue #316 against the exact candidate blob `7cbd7f086d80505da7a7c35a38f3aa0ce690ec41`.
 
-The appropriate next disposition after successful PR review is one of:
-
-```text
-APPROVE_FREEZE_v1.0
-REQUEST_CHANGES
-DEFER
-```
-
-Only an attributable human disposition can move the contract from `CANDIDATE FOR FREEZE` to `FROZEN_v1.0`.
+P0.1 is therefore frozen as `FROZEN_v1.0`. This disposition does not execute D4, pass G2 or P0-G, establish a population estimate, or authorize publication.
 
 ## 9. Non-claims
 

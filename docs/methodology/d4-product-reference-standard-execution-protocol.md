@@ -3,8 +3,8 @@
 **Plan binding:** `P0.2` in [Product Population → Industrial Observatory deployment plan](../programme/product-population-industrial-observatory-deployment-plan.md)  
 **Tracking issue:** #318  
 **Parent gate:** #315 / `P0-G`  
-**Depends on:** P0.1 Product Measurement Contract substantive freeze  
-**Status:** EXECUTION PROTOCOL CANDIDATE — no real D4 membership or human dispositions are stored in this repository
+**Depends on:** P0.1 Product Measurement Contract `FROZEN_v1.0`  
+**Status:** READY FOR REAL CALIBRATION — P0.1 freeze prerequisite satisfied; no real D4 membership or human dispositions are stored in this repository
 
 ## 1. Purpose
 

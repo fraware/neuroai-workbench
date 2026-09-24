@@ -3,7 +3,7 @@
 **Plan binding:** `P0.1` in [Product Population → Industrial Observatory deployment plan](product-population-industrial-observatory-deployment-plan.md)  
 **Tracking issue:** #316  
 **Parent gate:** #315 / `P0-G`  
-**Status:** CANDIDATE FOR FREEZE — adversarial-review corrections incorporated; human freeze disposition pending. This is a substantive measurement contract, not a schema, benchmark result, population estimate, market estimate, effectiveness result, or publication authorization
+**Status:** `FROZEN_v1.0` — human disposition `APPROVE_FREEZE_v1.0` recorded on issue #316 against the exact approved semantic blob `7cbd7f086d80505da7a7c35a38f3aa0ce690ec41` (issue comment #5810759859). This freezes P0.1 measurement semantics only; it is not a schema, benchmark result, population estimate, market estimate, effectiveness result, G2/P0-G passage, or publication authorization
 
 ## 1. Purpose
 
@@ -1423,8 +1423,32 @@ Git history preserves predecessor contract states. Do not silently redefine “p
 
 ## 21. Current disposition
 
-This document is a **P0.1 candidate contract with adversarial-review corrections incorporated**. Issue #320 records the pre-freeze review and its predecessor `REVISE_BEFORE_FREEZE` disposition.
+This document is **FROZEN_v1.0**.
 
-It establishes no product count and makes no claim that the existing Observatory contains a complete or statistically estimated product population.
+The attributable human disposition on issue #316 is:
 
-The next programme action after contract review is to freeze P0.1 and execute P0.2 D4 human calibration/adjudication against these semantics before population-scale Release-A interpretation.
+```text
+APPROVE_FREEZE_v1.0
+```
+
+The disposition applies to the exact reviewed semantic candidate:
+
+```text
+main commit:
+57d0eebccb6f97bb4db45ca7efe92cfbebfc3965
+
+Product Measurement Contract semantic blob:
+7cbd7f086d80505da7a7c35a38f3aa0ce690ec41
+
+adversarial review record blob:
+54d77d070ef66d6161c3efba1588cdc72116e834
+
+human disposition record:
+issue #316, comment #5810759859
+```
+
+Issue #320 records the pre-freeze adversarial review and its predecessor `REVISE_BEFORE_FREEZE` disposition. Findings R1–R40 were incorporated before the approval above.
+
+This freeze establishes the controlling P0.1 measurement semantics only. It establishes no product count, D4 completion, G2 or P0-G passage, market denominator, canonical S2 mutation authority, publication authority, or claim that the Observatory contains a complete or statistically estimated product population.
+
+The next programme action is P0.2 real D4 human calibration/adjudication against these frozen semantics.
