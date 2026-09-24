@@ -267,9 +267,6 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "frame_version",
             "frame_register_version",
             "round_id",
-            "query_or_seed_ids",
-            "languages",
-            "jurisdictions",
             "analysis_jurisdiction_scope",
             "language_scope_id",
             "registry_projection_version",
@@ -279,6 +276,8 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "known_identity_set_sha256",
         )
     }
+    for set_field in ("query_or_seed_ids", "languages", "jurisdictions"):
+        material[set_field] = sorted(cast(list[str], run.get(set_field, [])))
     encoded = json.dumps(
         material,
         ensure_ascii=False,
