@@ -1,0 +1,189 @@
+# P0.1 Product Measurement Contract adversarial review R1
+
+**Plan binding:** `P0.1`  
+**Tracking issue:** #320  
+**Parent issue:** #316  
+**Review target:** `docs/programme/product-measurement-contract.md`  
+**Review disposition on predecessor text:** `REVISE_BEFORE_FREEZE`  
+**Current state:** all identified R1 findings have candidate corrections on branch `docs/p0-1-adversarial-revision`; human freeze disposition remains pending
+
+## 1. Purpose
+
+This record documents the adversarial pre-freeze review of Product Measurement Contract v1.0.
+
+The review asks whether the contract is strong enough to support:
+
+- D4 product-boundary calibration;
+- exact-product registry implementation;
+- Release-A product counting;
+- open-world population estimation;
+- later commercial and effectiveness layers;
+
+without silently changing the approved D1 research boundary or introducing denominator ambiguity.
+
+This record is methodological review evidence only. It does not freeze P0.1, execute D4, pass P0-G, establish a product population, or authorize publication.
+
+## 2. Exact governing evidence checked
+
+The review checked the contract against the exact approved research-contract line:
+
+```text
+D1:
+LANDSCAPE_RESEARCH_CONTRACT_v0.1
+canonical JSON SHA-256:
+7d270002094dcdecb703d5b70ef2268e4869005c284ffd98db3eb936641a78cb
+
+G1 disposition:
+HUMAN_G1_DISPOSITION_2026-09-05_D1_D2_v0.1
+canonical JSON SHA-256:
+ed6489fe1085b5aec1b594970dd1c574b57bd6bbd25a659643e9bd1b7b72d8ef
+decision:
+APPROVE
+```
+
+Relevant approved D1 constraints include:
+
+- no global-completeness claim in the open-world product discovery track;
+- four-way boundary dispositions `INCLUDE / EXCLUDE / BORDERLINE / ABSTAIN`;
+- attributable evidence required for inclusion;
+- proxy-only evidence cannot establish inclusion;
+- expert review required for governed boundary membership;
+- open-world unknowns remain explicit;
+- gray-third discovery is retrieval-only, not a canonical population class;
+- concentration claims require a validated analytical denominator;
+- product existence does not establish effectiveness or regulatory authorization.
+
+The review also checked the current Observatory v2 ontology, entity identity model, temporal model, evidence boundary, D4 benchmark schema/evaluator semantics, and Release-A population-estimation objective.
+
+## 3. Review method
+
+The contract was attacked from five directions:
+
+1. **Construct validity** — does the counted object match the intended product/service construct?
+2. **Identity validity** — could one real-world object become multiple counts, or different objects collapse into one?
+3. **Temporal validity** — could current, historical, announced, discontinued, and deployed states be conflated?
+4. **Denominator validity** — could heterogeneous object types or population views be aggregated into an invalid count?
+5. **Reference-standard validity** — could D4 benchmark membership or benchmark semantics be confused with operational population inclusion?
+
+The review favored false non-merges and explicit unresolved states over silent identity aggregation or unsupported denominator expansion.
+
+## 4. Findings and resolutions
+
+| ID | Finding | Risk if unresolved | Candidate correction |
+| --- | --- | --- | --- |
+| R1 | Exact D1/G1 binding was implicit | Later contract revisions could drift from the approved boundary without detection | Bind exact D1 artifact/digest and G1 disposition/digest; state that P0.1 cannot redefine scope |
+| R2 | Service representation was underspecified against the current ontology | P0.3 would have to invent entity semantics during implementation | Represent an independently countable service as a `PRODUCT` offering with an explicit service/offering kind under v1.0 |
+| R3 | “Product-like” investigational systems could contaminate product counts | Stable research systems could be counted as products without an offering identity | Require a stable external/formal investigational product identity; otherwise retain `SYSTEM` outside product counts |
+| R4 | Announcement-only objects were ambiguous in the main current view | “Product count” could change depending on an unstated treatment of announced products | Define A-P1 as announcement-inclusive offering inventory and add A-P6 for released/externally accessible offerings |
+| R5 | Discontinued but still deployed systems disappeared from current analysis | Commercial lifecycle could be confused with real-world installed/deployed presence | Add A-P7 current deployed legacy view |
+| R6 | Broad counts mixed integrated systems, components, and standalone services | A single count could be misread as complete end-user systems or distinct technologies | Add mandatory enumeration role and require role composition in broad counts |
+| R7 | OEM/private-label offerings had no separate technical-equivalence view | Commercial labels could inflate perceived technology diversity | Add A-P8 technical-implementation view; equivalence requires attributable evidence and never mutates product identity |
+| R8 | Population-estimation unit was not locked | Capture histories could mix family/product/configuration or lifecycle universes, invalidating unseen-population estimates | Bind each estimator to one boundary contract, identity level, population view, roles, cutoffs, jurisdiction and discovery-frame universe |
+| R9 | D1 boundary evidence rules were not explicit at the count interface | Identity resolution or a single company claim could be misread as sufficient for inclusion | Restate attributable-evidence, proxy, expert-review, abstention, borderline-rationale, unknown and gray-third rules |
+| R10 | Post-freeze P0.1 changes did not explicitly trigger D4 compatibility review | A frozen D4 reference standard could be reused under changed enumeration semantics without revalidation | Require D4 compatibility review and, where affected, successor D4 review/re-freeze |
+| R11 | D4 benchmark disposition was conflated with operational product inclusion | Counted products could appear to require D4 held-out membership, or D4 could be misused as the population registry | Separate D4 reference-standard membership from operational D1-governed product dispositions; record exact validation/reference-standard version |
+
+Two additional consistency corrections were made during implementation:
+
+- add `cancelled` to lifecycle state because the current-offering views use that state;
+- treat A-P8 as an analytical equivalence-cluster count, not a canonical-identity merge.
+
+## 5. Resulting population-view architecture
+
+The corrected candidate contract distinguishes:
+
+```text
+A-P1  CURRENT_IDENTIFIABLE_OFFERING_INVENTORY
+A-P2  CURRENT_COMMERCIALLY_ACCESSIBLE
+A-P3  CURRENT_RESEARCH_OR_INVESTIGATIONAL_ACCESS
+A-P4  CURRENT_INTEGRATED_END_USER_SYSTEMS
+A-P5  HISTORICAL_CUMULATIVE_OFFERINGS
+A-P6  CURRENT_RELEASED_OR_EXTERNALLY_ACCESSIBLE
+A-P7  CURRENT_DEPLOYED_LEGACY
+A-P8  CURRENT_DISTINCT_TECHNICAL_IMPLEMENTATIONS
+```
+
+These views intentionally answer different questions.
+
+A-P1 is the broad inventory of current identifiable offering identities and includes supported announcement/pre-delivery objects.
+
+A-P6 is the narrower view for offerings that have progressed beyond announcement/development representation.
+
+A-P7 captures products no longer offered but still documented in current deployment.
+
+A-P8 is a technical-equivalence analytical view and cannot replace commercial-offering identity.
+
+## 6. Minimum governed count metadata
+
+The corrected candidate requires every Release-A count or estimate to bind:
+
+```text
+boundary_contract_id
+reference_standard_or_validation_version
+population_view_id
+identity_level
+included_enumeration_roles
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
+observed_or_estimated
+discovery_protocol_or_model_id
+uncertainty_state
+```
+
+This is a central precondition for denominator validity.
+
+## 7. Residual methodological risks
+
+The adversarial review does not eliminate the following later risks:
+
+### 7.1 Technical-equivalence evidence
+
+A-P8 will require a graded equivalence relation or equivalent implementation contract. P0.1 defines the semantic boundary but P0.3/Release A must still specify how strong the evidence must be to cluster two offerings.
+
+### 7.2 Operational boundary-review scaling
+
+Approved D1 requires expert review for governed boundary membership. Release A will need an operational review design that scales without weakening that authority boundary. D4 evaluates that process; it does not replace it.
+
+### 7.3 Currentness under sparse evidence
+
+The temporal model prevents a null end date from meaning “current”, but operational rules will still need explicit currentness evidence windows and stale-evidence handling in P0.3/P0.4.
+
+### 7.4 Population-estimation dependence
+
+Even with a fixed estimand, discovery frames are dependent. Release A must therefore compare multiple-systems/source-dependence models and report sensitivity. P0.1 only prevents unit mismatch.
+
+### 7.5 International product equivalence
+
+Regional branding, modified labeling, hardware variants, and jurisdiction-specific configurations will remain a major identity-resolution burden. The contract prevents silent merge but cannot resolve those cases without evidence.
+
+## 8. Pre-freeze review conclusion
+
+The predecessor contract should not be frozen.
+
+With R1–R11 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review**, subject to exact-head validation and confirmation that the final diff contains no unintended semantic drift.
+
+The appropriate next disposition after successful PR review is one of:
+
+```text
+APPROVE_FREEZE_v1.0
+REQUEST_CHANGES
+DEFER
+```
+
+Only an attributable human disposition can move the contract from `CANDIDATE FOR FREEZE` to `FROZEN_v1.0`.
+
+## 9. Non-claims
+
+This review does not establish:
+
+- correctness of future product identities;
+- completeness of the product population;
+- adequacy of D4 human labels;
+- population-estimation validity;
+- market share;
+- effectiveness;
+- G2 passage;
+- P0-G passage;
+- canonical S2 authority;
+- publication authority.
