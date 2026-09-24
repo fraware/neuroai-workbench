@@ -136,9 +136,7 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
     if capture["frame_version"] != FRAME_VERSION:
         raise ProductDiscoveryError(f"frame_version must be {FRAME_VERSION}")
     if capture["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
-        raise ProductDiscoveryError(
-            f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}"
-        )
+        raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
 
     outcome = capture["outcome"]
     if outcome not in CAPTURE_OUTCOMES:
@@ -149,9 +147,7 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
         if not capture.get("source_observation_ref"):
             raise ProductDiscoveryError("INCLUDE_RESOLVED capture requires source_observation_ref")
     if capture["capture_estimation_eligible"] and outcome != "INCLUDE_RESOLVED":
-        raise ProductDiscoveryError(
-            "Only resolved in-scope offering captures can be capture-estimation eligible"
-        )
+        raise ProductDiscoveryError("Only resolved in-scope offering captures can be capture-estimation eligible")
 
 
 def validate_capture_against_frame(
@@ -165,9 +161,7 @@ def validate_capture_against_frame(
     if capture["frame_version"] != frame["frame_version"]:
         raise ProductDiscoveryError("Capture frame_version does not match frame definition")
     if capture["capture_estimation_eligible"] and not frame["capture_estimation_eligible"]:
-        raise ProductDiscoveryError(
-            "Capture cannot be estimation-eligible when its discovery frame is excluded"
-        )
+        raise ProductDiscoveryError("Capture cannot be estimation-eligible when its discovery frame is excluded")
 
 
 def _frame_map(frames: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
@@ -194,10 +188,7 @@ def build_capture_histories(
         frame_id
         for frame_id in FRAME_IDS
         if frame_id in indexed_frames
-        and (
-            not estimation_eligible_only
-            or bool(indexed_frames[frame_id]["capture_estimation_eligible"])
-        )
+        and (not estimation_eligible_only or bool(indexed_frames[frame_id]["capture_estimation_eligible"]))
     ]
     histories: dict[str, dict[str, int]] = {}
     for capture in captures:
@@ -237,16 +228,10 @@ def frame_overlap_matrix(
             frame_id
             for frame_id in FRAME_IDS
             if frame_id in indexed
-            and (
-                not estimation_eligible_only
-                or bool(indexed[frame_id]["capture_estimation_eligible"])
-            )
+            and (not estimation_eligible_only or bool(indexed[frame_id]["capture_estimation_eligible"]))
         ]
 
-    matrix = {
-        left: {right: 0 for right in frame_ids}
-        for left in frame_ids
-    }
+    matrix = {left: {right: 0 for right in frame_ids} for left in frame_ids}
     for history in histories.values():
         captured = [frame_id for frame_id, value in history.items() if value]
         for left in captured:
@@ -266,21 +251,13 @@ def summarize_discovery_round(
     for capture in captures:
         validate_product_capture(capture)
 
-    include_captures = [
-        capture
-        for capture in captures
-        if capture["outcome"] == "INCLUDE_RESOLVED"
-    ]
-    unique_include_ids = {
-        str(capture["canonical_offering_id"])
-        for capture in include_captures
-    }
+    include_captures = [capture for capture in captures if capture["outcome"] == "INCLUDE_RESOLVED"]
+    unique_include_ids = {str(capture["canonical_offering_id"]) for capture in include_captures}
     new_ids = unique_include_ids - known
     duplicate_capture_count = len(include_captures) - len(new_ids)
 
     outcome_counts = {
-        outcome: sum(capture["outcome"] == outcome for capture in captures)
-        for outcome in sorted(CAPTURE_OUTCOMES)
+        outcome: sum(capture["outcome"] == outcome for capture in captures) for outcome in sorted(CAPTURE_OUTCOMES)
     }
     raw_count = len(captures)
     return {
