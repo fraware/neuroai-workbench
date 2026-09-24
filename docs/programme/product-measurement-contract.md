@@ -1144,6 +1144,7 @@ currentness_policy_id
 analysis_preregistration_id
 analysis_execution_pin
 observed_or_estimated
+estimation_status
 discovery_frame_register_id
 discovery_frame_register_digest
 discovery_frame_universe
@@ -1177,7 +1178,9 @@ The residual:
 N_unseen = N_estimated - N_observed
 ```
 
-represents latent estimated population mass conditional on the declared discovery/model universe. It is not a list of individually identified products, does not imply item-level human adjudication for unseen members, cannot be exposed as though those products had been directly discovered, and does not establish that classes with effectively zero capture probability are represented.
+is constrained by construction to satisfy `N_estimated >= N_observed` and `N_unseen >= 0`. A model or numerical fit that violates those support constraints is not a valid population estimate and must be treated as a diagnostic/method failure rather than repaired by silent post-hoc truncation.
+
+`N_unseen` represents latent estimated population mass conditional on the declared discovery/model universe. It is not a list of individually identified products, does not imply item-level human adjudication for unseen members, cannot be exposed as though those products had been directly discovered, and does not establish that classes with effectively zero capture probability are represented.
 
 Any reported `N_estimated` must therefore distinguish:
 
@@ -1188,6 +1191,8 @@ Any reported `N_estimated` must therefore distinguish:
 - sensitivity to source dependence and stratification;
 - boundary/unresolved-case sensitivity where material;
 - residual coverage risk, including plausible zero-capture classes.
+
+A numeric `N_estimated` is not mandatory merely because population estimation was preregistered. If the preregistered model families are non-identifiable, diagnostically inadequate, materially unstable to plausible dependence/stratification assumptions, or otherwise fail the predeclared acceptance criteria, the governed result is `ESTIMATE_NOT_IDENTIFIED` or `WITHHELD_METHOD_FAILURE` with `N_observed` and the failure evidence reported. The programme must not select whichever model produces the most plausible-looking total.
 
 Absolute “global census” language remains prohibited. A geographically broad estimate may be described as a global-protocol or worldwide-frame estimate only when its exact language/jurisdiction/frame coverage and residual uncertainty are stated next to the estimate.
 
@@ -1455,7 +1460,8 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 36. every governed count/estimate reports the registry projection version and discovery-frame universe needed to reproduce its denominator;
 37. the deterministic base registry-row key is view-policy-independent, while a separate eligibility key binds population-view/currentness policies and the input release/snapshot;
 38. every governed count/estimate binds the immutable input release or controlled snapshot from which it was computed;
-39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility.
+39. governed count metadata binds exact contract/snapshot/operational-disposition-protocol/reference-standard/discovery-frame-register digests, the Release-A preregistration, and the exact analysis execution pin required for reproducibility;
+40. unseen-population estimation preserves non-negative population support and permits a preregistered no-estimate outcome when identifiability or adequacy criteria fail.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
