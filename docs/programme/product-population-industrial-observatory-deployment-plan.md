@@ -169,52 +169,89 @@ BORDERLINE
 ABSTAIN
 ```
 
-Required evidence:
+Required freeze evidence:
 
 - independent human review;
 - disagreement accounting;
 - adjudication provenance;
-- inter-rater agreement;
+- inter-rater agreement and calibration analysis;
 - error taxonomy;
-- held-out evaluation;
-- class- and subgroup-specific performance where sample sizes permit.
+- locked held-out membership inaccessible to tuning;
+- coverage accounting across required dispositions and strata;
+- contamination/exposure and rights review;
+- opaque membership/disposition commitments.
 
-**Execution protocol:** [D4 Product Reference Standard execution protocol](../methodology/d4-product-reference-standard-execution-protocol.md).\n\n**Deliverable:** `D4 Product Reference Standard v1.0`.
+Model or pipeline performance on the frozen held-out D4 set is a separate evaluation step. P0.2 does not claim G2 or model-evaluation passage. Any automated boundary classifier used as a production filter must separately satisfy its applicable held-out evaluation and role-narrowing requirements before scaled use.
+
+**Execution protocol:** [D4 Product Reference Standard execution protocol](../methodology/d4-product-reference-standard-execution-protocol.md).
+
+**Deliverable:** `D4 Product Reference Standard v1.0`.
 
 ### P0.3 — Exact-product ontology and registry schema
 
-The canonical analytical unit is an exact product object, not an organization record.
+Implement the frozen P0.1 Product Measurement Contract without collapsing canonical identity levels.
 
-Minimum fields:
+The canonical graph separates:
 
 ```text
-product_id
+PRODUCT family identity          # only where an evidenced family exists
+PRODUCT offering identity
+SYSTEM product-configuration identity
+evidence-backed family/offering/configuration relations
+```
+
+The “exact product/version registry” is a reproducible analytical projection over those canonical objects and scoped assertions. It is not a new canonical entity class, and raw registry-row cardinality is not a product denominator.
+
+Minimum projection fields include:
+
+```text
+registry_row_id
+registry_projection_version
+product_offering_id
 product_family_id
-organization_id
-product_name
-version_configuration
-jurisdiction
+configuration_system_id
+configuration_coverage_state
+organization_relationship_refs[]
+offering_kind
+primary_enumeration_role
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
 first_observed_at
-valid_from
-valid_to
-commercial_state
+last_observed_at
+population_view_policy_id
+currentness_policy_id
+lifecycle_state
+access_commercial_state
 regulatory_state
 deployment_state
-form_factor
-signal_modality
-inference_capability
-output_intervention
-deployment_context
-target_population
-source_observation_refs
-evidence_tier
+form_factor[]
+signal_or_sensing_modality[]
+inference_capability[]
+intervention_output_capability[]
+deployment_context[]
+target_population[]
+boundary_disposition_ref
+projected_assertion_refs[]
+source_observation_refs[]
 identity_state
 review_state
 ```
 
-The implementation may normalize these fields into graph entities/relationships. The semantic requirement is that product family, exact configuration, organization, jurisdiction, time, and evidence state remain independently recoverable.
+P0.3 must preserve:
 
-**Deliverables:** exact-product schema, identity rules, validation rules, representative fixtures.
+- nullable/unresolved family and configuration bindings instead of fabricating entities;
+- assertion subject/scope through analytical flattening;
+- typed organization relationship references rather than one ambiguous organization field;
+- observation chronology separate from world-time product state;
+- exact operational boundary-disposition provenance and D4/reference-standard lineage;
+- deterministic registry-row grain;
+- canonical-ID deduplication at the declared population-view identity level;
+- technical-equivalence relationships without silent identity merge;
+- versioned currentness policy for every current projection;
+- versioned machine predicates for every A-P1–A-P8 population view.
+
+**Deliverables:** ontology/schema changes where required, registry-projection schema, identity and linkage rules, validators, adversarial fixtures, and migration/compatibility notes.
 
 ### P0.4 — Discovery-frame contract
 
@@ -245,21 +282,12 @@ Predeclare the primary measurements before population estimation is fit to the o
 
 At minimum:
 
-[
-N_{observed}
-]
-
-[
-N_{estimated}
-]
-
-[
-N_{unobserved} = N_{estimated} - N_{observed}
-]
-
-[
-Coverage = N_{observed} / N_{estimated}
-]
+```text
+N_observed
+N_estimated
+N_unobserved = N_estimated - N_observed
+Coverage = N_observed / N_estimated
+```
 
 plus:
 
@@ -268,7 +296,10 @@ plus:
 - excluded and unresolved candidate rates;
 - English-only versus multilingual incremental yield;
 - conventional terminology versus capability-first incremental yield;
-- subgroup estimates by product family and jurisdiction where supported.
+- subgroup estimates by product family and jurisdiction where supported;
+- observed BORDERLINE/ABSTAIN/unresolved candidate accounting;
+- predeclared boundary-uncertainty sensitivity/bounds where material;
+- explicit zero-capture/coverage-risk analysis for the declared discovery-frame universe.
 
 **Deliverable:** `Release A Analysis Preregistration v1.0`.
 
@@ -277,14 +308,14 @@ plus:
 P0 passes only when all of the following are true:
 
 - product inclusion semantics are frozen;
-- D4 has completed human adjudication and evaluation;
+- D4 has completed human calibration, final human adjudication, held-out split lock, commitment generation and reference-standard freeze;
 - exact-product identity rules are frozen;
 - discovery frames and termination semantics are defined;
 - primary Release-A estimands and population-model comparison rules are preregistered;
 - duplicate-resolution and unresolved-identity rules are frozen;
 - multilingual and non-traditional discovery strata are defined.
 
-A passing P0 gate does not establish any global product count.
+A passing P0 gate does not establish any global product count, pass G2, or establish model/pipeline held-out performance. Release-A execution must remain human-governed unless and until any automated production filter separately passes its applicable evaluation gate.
 
 ## 6. Release A — Product Population Observatory
 

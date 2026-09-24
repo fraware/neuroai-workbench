@@ -158,7 +158,10 @@ Minimum controlled case fields:
 ```text
 case_id
 candidate_object_binding
-candidate_object_type
+candidate_canonical_entity_type
+candidate_identity_level
+candidate_system_or_offering_role
+primary_enumeration_role
 candidate_identity_state
 product_measurement_contract_version
 product_measurement_contract_digest
@@ -173,6 +176,8 @@ review_state
 ```
 
 The review packet must contain enough attributable evidence to decide scope without requiring the reviewer to infer product identity from a name alone.
+
+`candidate_identity_level` and entity/role fields are frozen inputs to the D4 review packet, not outputs of the scope reviewer. D4 evaluates the boundary disposition for the bound candidate representation; it does not silently resolve FAMILY/OFFERING/CONFIGURATION identity or convert a research SYSTEM into a PRODUCT.
 
 The packet may include controlled source excerpts or source references as permitted by rights. Those bytes do not enter public Git.
 
@@ -230,6 +235,10 @@ The 60-case set must deliberately cover:
 - multilingual cases;
 - multi-jurisdiction cases;
 - software/service interpretation layers;
+- component versus integrated-system offerings;
+- PRODUCT family versus PRODUCT offering boundary cases;
+- PRODUCT_CONFIGURATION SYSTEM versus offering-identity cases;
+- research/investigational SYSTEM-only cases that lack a qualifying product/service offering identity;
 - regulated products;
 - investigational systems;
 - discontinued/superseded cases that test temporal and identity boundaries.
@@ -385,7 +394,8 @@ The final sampling plan must be frozen after calibration and before held-out sel
 
 - target total sample size;
 - minimum boundary-disposition coverage objective;
-- required D4 stratum coverage;
+- required public D4 stratum coverage;
+- required private P0.1 identity/enumeration diagnostic coverage;
 - subgroup-analysis objectives;
 - desired uncertainty/precision for headline evaluation metrics;
 - reviewer-resource constraints;
@@ -402,8 +412,9 @@ Before selection, freeze:
 
 - candidate-pool digest;
 - target sample size;
-- required stratum coverage;
-- any stratum quotas;
+- required public stratum coverage;
+- required private identity/enumeration diagnostic coverage;
+- any stratum or diagnostic-dimension quotas;
 - any jurisdiction/language quotas;
 - double-label subset rule;
 - fixed stratum/constraint priority order;

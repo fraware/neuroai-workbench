@@ -36,6 +36,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 | --- | --- |
 | [Product Population → Industrial Observatory deployment plan](programme/product-population-industrial-observatory-deployment-plan.md) | Dependency- and gate-based deployment plan for product population, commercial measurement, evidence/effectiveness, and integrated industrial-observatory releases |
 | [Product Measurement Contract v1.0](programme/product-measurement-contract.md) | P0.1 measurement semantics for product/service identity, state, counting, and downstream denominator discipline |
+| [P0.1 Product Measurement Contract adversarial review R1](methodology/p0-1-product-measurement-contract-adversarial-review.md) | Pre-freeze adversarial review, R1–R40 findings, corrections, residual risks, and human-freeze boundary |
 | [D4 Product Reference Standard execution protocol](methodology/d4-product-reference-standard-execution-protocol.md) | P0.2 controlled execution protocol for real human calibration, deterministic final selection, adjudication, commitments, and freeze |
 
 ## Architecture decision records
