@@ -643,7 +643,7 @@ At least one frozen resolved case is required for:
 
 That structural minimum is not a scientific sample-size sufficiency claim.
 
-If the deterministically selected fixed final sample does not contain at least one resolved `INCLUDE`, `EXCLUDE`, and `BORDERLINE` case after human review, D4 freeze fails closed for inadequate final disposition coverage. The programme must not add, replace, or cherry-pick cases post hoc under the same sampling plan using observed gold labels. A successor candidate-pool/sampling protocol must be issued, and exposure of the prior reviewed sample must be accounted for before any successor held-out construction.
+If the deterministically selected fixed final sample does not contain at least one resolved `INCLUDE`, `EXCLUDE`, and `BORDERLINE` case after human review, D4 freeze fails closed for inadequate final disposition coverage. The programme must not add, replace, or cherry-pick cases post hoc under the same sampling plan using observed gold labels. A successor candidate-pool/sampling protocol must be issued, and exposure of the prior reviewed sample must be accounted for before any successor held-out construction. Because that successor design is now informed by the prior sample's gold-label coverage failure, the previously reviewed final-sample cases do not re-enter the successor held-out membership unless an extension rule covering that exact contingency was frozen before their labels were observed.
 
 ### 18.2 Strata coverage report
 
@@ -668,8 +668,8 @@ No item IDs are included in the public form.
 
 Before recording P0.2 complete:
 
-1. validate the exact frozen public D4 contract with the current packaged/public contract validator;
-2. validate the exact D4 freeze manifest against that contract;
+1. validate the exact candidate successor D4 contract with the current packaged/public contract validator;
+2. validate the exact candidate D4 freeze manifest against that candidate contract;
 3. verify all public digests against controlled canonical reports;
 4. verify no protected item-level material entered Git/public artifacts;
 5. verify the final held-out membership was not used for tuning;
@@ -712,9 +712,9 @@ P0.2 reaches `COMPLETE_FROZEN_D4` only when:
 - rights review is complete;
 - private membership/disposition payloads are frozen;
 - public opaque commitments are generated;
-- the public D4 contract is `FROZEN_COMMITMENTS_ONLY`;
-- the D4 freeze manifest validates against the exact contract;
 - an attributable `APPROVE_D4_FREEZE` disposition binds the exact validated candidate artifacts;
+- the approved public D4 contract is recorded as `FROZEN_COMMITMENTS_ONLY`;
+- the approved D4 freeze manifest validates against that exact contract;
 - no protected item-level material has been published.
 
 P0.2 completion does not pass G2.
