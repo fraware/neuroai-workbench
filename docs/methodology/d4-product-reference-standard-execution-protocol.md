@@ -181,7 +181,7 @@ review_state
 
 The review packet must contain enough attributable evidence to decide scope without requiring the reviewer to infer product identity from a name alone.
 
-`candidate_selection_id` is a stable opaque controlled identifier assigned before sampling. It is distinct from any canonical PRODUCT/SYSTEM ID and remains usable when canonical identity is unresolved.
+`candidate_selection_id` is a stable opaque controlled identifier assigned exactly once when the candidate first enters the controlled final-pool construction ledger. It is distinct from any canonical PRODUCT/SYSTEM ID and remains usable when canonical identity is unresolved. Assignment is append-only and must occur before final pool freeze and before any selection score is computed. IDs may not be regenerated, renumbered, or chosen in response to the resulting selection order. The candidate-pool canonical digest binds the selection-ID-to-object-binding mapping.
 
 `candidate_bound_entity_type` records the currently bound or proposed ontology type as `PRODUCT`, `SYSTEM`, or `UNRESOLVED`. `candidate_identity_level` uses `FAMILY`, `OFFERING`, `CONFIGURATION`, `UNRESOLVED`, or `NOT_APPLICABLE`. `primary_enumeration_role` uses the P0.1 offering-role domain when applicable and `NOT_APPLICABLE` for objects such as SYSTEM-only research candidates or family-level candidates. These identity/role fields are frozen inputs to the D4 review packet, not outputs of the scope reviewer.
 
@@ -417,6 +417,8 @@ The final sampling plan must be frozen after calibration and before held-out sel
 
 The final sample size must be justified by the measurement objective and uncertainty plan, not chosen after seeing held-out model performance.
 
+The minimum boundary-disposition coverage objective is a **freeze adequacy criterion**, not a gold-label sampling quota. Final human D4 dispositions are unavailable to the deterministic selector. Selection constraints may use only predeclared label-free candidate metadata/strata/diagnostic dimensions that were frozen before selection.
+
 ## 11. Stage 5 — Deterministic final selection
 
 ### 11.1 Predeclared constraints
@@ -433,6 +435,8 @@ Before selection, freeze:
 - fixed stratum/constraint priority order;
 - deterministic selection algorithm version.
 
+No final human D4 disposition, adjudicated label, or model prediction may be used as a selection constraint.
+
 ### 11.2 Deterministic score
 
 Within the frozen candidate pool, assign each candidate a deterministic selection score:
@@ -446,7 +450,7 @@ SHA256(
 )
 ```
 
-The selection ID and pool digest remain controlled if disclosure would reveal held-out membership. Selection never depends on a canonical entity ID, because identity may legitimately remain unresolved for a boundary case.
+The selection ID and pool digest remain controlled if disclosure would reveal held-out membership. Selection never depends on a canonical entity ID, because identity may legitimately remain unresolved for a boundary case. Selection scores are computed only after the candidate-pool digest and sampling constraints are frozen; pool construction must not iterate on candidate membership or selection IDs to obtain a preferred score ordering.
 
 ### 11.3 Selection rule
 
@@ -566,7 +570,7 @@ The public commitment establishes payload identity under possession of the secre
 
 ## 16. Stage 10 — Public D4 contract successor
 
-Create a successor public D4 contract that retains the exact current D1/G1 semantic bindings and changes the benchmark state to:
+Construct a **candidate** successor public D4 contract that retains the exact current D1/G1 semantic bindings and, if ultimately authorized, changes the benchmark state to:
 
 ```text
 FROZEN_COMMITMENTS_ONLY
@@ -590,7 +594,7 @@ No item-level benchmark data enters the public contract.
 
 ## 17. Stage 11 — D4 freeze manifest
 
-Construct the current v0.2 `BENCHMARK_FREEZE` manifest against the exact frozen public D4 contract.
+Construct a candidate current v0.2 `BENCHMARK_FREEZE` manifest against the exact candidate frozen public D4 contract.
 
 The manifest must bind the current required fields, including:
 
@@ -639,6 +643,8 @@ At least one frozen resolved case is required for:
 
 That structural minimum is not a scientific sample-size sufficiency claim.
 
+If the deterministically selected fixed final sample does not contain at least one resolved `INCLUDE`, `EXCLUDE`, and `BORDERLINE` case after human review, D4 freeze fails closed for inadequate final disposition coverage. The programme must not add, replace, or cherry-pick cases post hoc under the same sampling plan using observed gold labels. A successor candidate-pool/sampling protocol must be issued, and exposure of the prior reviewed sample must be accounted for before any successor held-out construction.
+
 ### 18.2 Strata coverage report
 
 Records aggregate membership coverage for every required D4 stratum.
@@ -673,6 +679,24 @@ Before recording P0.2 complete:
 
 A software validator PASS establishes structural consistency and exact bindings only.
 
+### 19.1 Final human D4 freeze disposition
+
+After the exact candidate public contract, candidate freeze manifest, controlled aggregate reports, rights review, and contamination/exposure review are complete and validated, an attributable human reviewer records exactly one disposition:
+
+```text
+APPROVE_D4_FREEZE
+REQUEST_D4_CHANGES
+DEFER_D4_FREEZE
+```
+
+`APPROVE_D4_FREEZE` is permitted only for the exact reviewed candidate artifacts and only when the reviewer confirms that the sampling plan was followed, required public strata and private diagnostic dimensions are covered, required resolved boundary dispositions are present, unresolved disagreement/ABSTAIN accounting is preserved, rights/contamination states are acceptable, and no known methodological failure invalidates the reference standard.
+
+`REQUEST_D4_CHANGES` records the required successor action. Changes that affect membership, sampling, evidence packets, adjudication, or exposure require the applicable successor protocol/pool/review path and cannot be silently patched into the reviewed held-out set.
+
+`DEFER_D4_FREEZE` preserves the candidate state without authorization.
+
+Only `APPROVE_D4_FREEZE` authorizes the reviewed candidate public contract/manifest to become the recorded `FROZEN_COMMITMENTS_ONLY` D4 successor. Until then, generated successor artifacts are candidates and do not constitute a frozen reference standard.
+
 ## 20. P0.2 definition of done
 
 P0.2 reaches `COMPLETE_FROZEN_D4` only when:
@@ -690,6 +714,7 @@ P0.2 reaches `COMPLETE_FROZEN_D4` only when:
 - public opaque commitments are generated;
 - the public D4 contract is `FROZEN_COMMITMENTS_ONLY`;
 - the D4 freeze manifest validates against the exact contract;
+- an attributable `APPROVE_D4_FREEZE` disposition binds the exact validated candidate artifacts;
 - no protected item-level material has been published.
 
 P0.2 completion does not pass G2.
