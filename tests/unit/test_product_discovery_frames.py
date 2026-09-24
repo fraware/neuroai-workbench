@@ -409,3 +409,22 @@ def test_frame_register_rejects_missing_frame_and_eligibility_policy_drift() -> 
     drift["estimation_policy"]["purposive_frames_excluded"] = ["F7"]
     with pytest.raises(ProductDiscoveryError, match="exclusions"):
         validate_frame_register(drift)
+
+
+def test_frame_register_rejects_identity_status_and_shape_drift() -> None:
+    register = load_default_frame_register()
+
+    wrong_id = deepcopy(register)
+    wrong_id["register_id"] = "OTHER"
+    with pytest.raises(ProductDiscoveryError, match="register_id"):
+        validate_frame_register(wrong_id)
+
+    wrong_status = deepcopy(register)
+    wrong_status["status"] = "DRAFT"
+    with pytest.raises(ProductDiscoveryError, match="FROZEN_v1.0"):
+        validate_frame_register(wrong_status)
+
+    wrong_shape = deepcopy(register)
+    wrong_shape["frames"] = {}
+    with pytest.raises(ProductDiscoveryError, match="must be a list"):
+        validate_frame_register(wrong_shape)
