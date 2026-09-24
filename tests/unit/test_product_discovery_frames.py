@@ -14,12 +14,14 @@ from neuroai_workbench.product_discovery_frames import (
     frame_overlap_matrix,
     identity_set_digest,
     incremental_unique_identities,
+    load_default_frame_register,
     product_capture_id,
     product_discovery_run_id,
     summarize_discovery_contributions,
     summarize_discovery_round,
     validate_capture_against_frame,
     validate_discovery_frame,
+    validate_frame_register,
     validate_discovery_run,
     validate_product_capture,
     validate_run_against_captures,
@@ -381,3 +383,29 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
     drift["run_id"] = product_discovery_run_id(drift)
     with pytest.raises(ProductDiscoveryError, match="capture_count"):
         validate_run_against_captures(drift, captures, frame)
+
+
+def test_default_frame_register_is_complete_and_freezes_estimation_eligibility() -> None:
+    register = load_default_frame_register()
+    frames = {frame["frame_id"]: frame for frame in register["frames"]}
+    assert set(frames) == {"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11"}
+    assert {frame_id for frame_id, frame in frames.items() if not frame["capture_estimation_eligible"]} == {
+        "F7",
+        "F9",
+        "F11",
+    }
+    assert frames["F2"]["stopping_rule"]["mode"] == "BOUNDED_SOURCE_EXHAUSTION"
+    assert frames["F6"]["stopping_rule"]["maximum_marginal_new_identity_yield"] == 0.05
+
+
+def test_frame_register_rejects_missing_frame_and_eligibility_policy_drift() -> None:
+    register = load_default_frame_register()
+    missing = deepcopy(register)
+    missing["frames"] = [frame for frame in missing["frames"] if frame["frame_id"] != "F11"]
+    with pytest.raises(ProductDiscoveryError, match="exactly F1-F11"):
+        validate_frame_register(missing)
+
+    drift = deepcopy(register)
+    drift["estimation_policy"]["purposive_frames_excluded"] = ["F7"]
+    with pytest.raises(ProductDiscoveryError, match="exclusions"):
+        validate_frame_register(drift)
