@@ -70,7 +70,7 @@ The programme must not collapse the following into one identifier:
 ```text
 ORGANIZATION
 PRODUCT FAMILY
-MARKET-FACING PRODUCT / SERVICE
+PRODUCT / SERVICE OFFERING
 EXACT TECHNICAL CONFIGURATION
 COMPONENT
 SOFTWARE / SERVICE LAYER
@@ -240,7 +240,7 @@ The v1.0 projection is:
 | Measurement semantic | Canonical v2 representation |
 | --- | --- |
 | Product family | `PRODUCT` entity with `product_identity_level = FAMILY` |
-| Market-facing product offering | `PRODUCT` entity with `product_identity_level = OFFERING` |
+| Product/service offering | `PRODUCT` entity with `product_identity_level = OFFERING` |
 | Separately countable service | `PRODUCT` entity with `product_identity_level = OFFERING` and `offering_kind = SERVICE` |
 | Exact/bounded product configuration | `SYSTEM` entity with `system_role = PRODUCT_CONFIGURATION`, linked to the relevant offering and, where present, family |
 | Research/investigational technical system with no qualifying offering identity | `SYSTEM` only; excluded from product/service offering counts |
@@ -251,7 +251,28 @@ A separate FAMILY-level `PRODUCT` entity is created only where attributable evid
 
 An offering may exist without a separately evidenced exact/bounded configuration `SYSTEM`. That absence remains explicit. The programme must not synthesize a default configuration entity merely to complete the graph.
 
-### 3.10 Exact-product registry row is an analytical projection
+### 3.10 Family–offering–configuration linkage semantics
+
+The canonical graph must preserve directed, evidence-backed linkage among the semantic levels.
+
+At minimum, P0.3 must support the semantics:
+
+```text
+OFFERING PRODUCT  -> member of / associated with -> FAMILY PRODUCT
+CONFIGURATION SYSTEM -> configuration of -> OFFERING PRODUCT
+```
+
+The exact predicate names are a reviewed P0.3 schema decision. Their semantics must preserve:
+
+- no relation inferred from shared label, developer, owner, website, or branding alone;
+- offering→family links only where the family relation is attributable or otherwise governed by the identity-resolution contract;
+- configuration→offering links only where the exact configuration association is supported;
+- many-to-many configuration↔offering linkage where evidence supports OEM/private-label or shared technical implementation;
+- unresolved linkage as an explicit state rather than a forced join.
+
+These relationships establish graph association only. They do not transfer regulatory, commercial, deployment, or effectiveness claims across linked objects.
+
+### 3.11 Exact-product registry row is an analytical projection
 
 The “one row per exact product/version” registry is a reproducible analytical projection, not a new canonical entity class.
 
@@ -259,6 +280,7 @@ A registry row binds:
 
 ```text
 registry_row_id
+registry_projection_version
 product_offering_id
 product_family_id                 # nullable when no evidenced family entity exists
 configuration_system_id           # nullable when no evidenced exact configuration exists
@@ -280,16 +302,32 @@ form_factor[]
 deployment_context[]
 target_population[]
 boundary_disposition_ref
+projected_assertion_refs[]
 source_observation_refs
 ```
 
 `registry_row_id` is a deterministic analytical key. It is not a canonical PRODUCT or SYSTEM identifier and must never be used to merge canonical entities.
+
+The registry grain is one analytical projection over:
+
+```text
+product_offering_id
+configuration_system_id or explicit unresolved marker
+jurisdiction_scope
+world_time_cutoff
+knowledge_time_cutoff
+registry_projection_version
+```
+
+The deterministic row key must bind that exact tuple. A changed jurisdiction scope, cutoff pair, configuration binding, or projection version creates a different analytical row without creating a new canonical entity.
 
 Jurisdiction and time are projection/assertion scopes, not identity components by default. They create a distinct canonical configuration only when evidence supports a materially different configuration under §6.
 
 Where `configuration_system_id` is unresolved, offering-level analyses may retain the otherwise eligible row with explicit `configuration_coverage_state`. Configuration-level analyses, including A-P8, exclude the unresolved configuration from the numerator and report the resulting coverage loss.
 
 Capability, form-factor, context, and target-population fields are analytical projections of evidence-backed assertions. They may be multi-label and do not create new canonical identity unless the material-change rule in §6 is independently satisfied.
+
+Every projected state or capability value must remain traceable to the exact assertion(s) supporting that value, including the assertion subject and scope. Projection never promotes a configuration-scoped regulatory, capability, safety, or effectiveness assertion to the whole offering/family or to sibling configurations. Offering-scoped commercial/access assertions likewise do not become configuration-specific technical claims without evidence.
 
 ## 4. Product-population inclusion boundary
 
@@ -922,9 +960,13 @@ For A-P8 only, the starting unit is an evidenced current PRODUCT_CONFIGURATION `
 
 Multiple observations, source pages, distributor listings, trial records, or regulatory records for the same canonical product do not create additional product counts.
 
+Raw registry-row cardinality is never a product-population denominator. One offering may generate multiple rows because of configuration, jurisdiction, or projection cutoffs.
+
+Offering-level views count unique qualifying OFFERING-level `PRODUCT` IDs. Configuration-level views count unique qualifying PRODUCT_CONFIGURATION `SYSTEM` IDs or, for A-P8, the declared equivalence clusters. Jurisdictional views apply their declared jurisdiction filter and deduplication rule before counting.
+
 ### 12.3 Multiple organizations
 
-A product developed, manufactured, distributed, licensed, or sold by several organizations remains one product identity unless distinct market-facing products exist.
+A product developed, manufactured, distributed, licensed, or sold by several organizations remains one product identity unless distinct externally identifiable offering identities exist.
 
 ### 12.4 Multiple jurisdictions
 
@@ -968,6 +1010,7 @@ Every unseen-population model must bind exactly one declared estimation universe
 
 ```text
 boundary_contract_id
+registry_projection_version
 boundary_disposition_protocol_id
 reference_standard_id
 reference_standard_version
@@ -1247,7 +1290,7 @@ At minimum, P0.3 must make it possible to represent:
 - PRODUCT family identity level without synthesizing a family for every offering;
 - PRODUCT offering identity level;
 - exact configuration as a SYSTEM with PRODUCT_CONFIGURATION role;
-- explicit offering-to-configuration linkage;
+- explicit evidence-backed family↔offering and offering↔configuration linkage semantics, including unresolved and many-to-many cases;
 - exact-product registry rows as analytical projections, not canonical entities;
 - nullable/unresolved family and configuration bindings with explicit coverage state;
 - v1.0 service representation as a PRODUCT offering with explicit offering kind;
@@ -1263,7 +1306,9 @@ At minimum, P0.3 must make it possible to represent:
 - population-view eligibility;
 - declared world-time and knowledge-time cutoffs plus versioned currentness policy for current projections;
 - evidence-supported technical-equivalence relationships without silent identity merges;
-- analytical registry projections containing the capability/context/state fields in §3.10 without promoting those fields into identity by default.
+- analytical registry projections containing the capability/context/state fields in §3.11 without promoting those fields into identity by default;
+- assertion-reference retention so flat projection never widens the subject/scope of a source claim;
+- population-count code that deduplicates canonical IDs at the declared identity level and never uses raw registry-row count.
 
 P0.3 must include validation tests for the edge cases in §15.
 
@@ -1296,7 +1341,11 @@ This contract reaches `FROZEN_v1.0` only after review confirms:
 23. every current population view binds a versioned currentness policy;
 24. registry projection preserves sensing/inference/output/form-factor/context/state dimensions required by the working methodology;
 25. offering identity terminology does not imply commercialization;
-26. A-P6, not A-P1, is the default view for present-tense externally accessible/released product counts.
+26. A-P6, not A-P1, is the default view for present-tense externally accessible/released product counts;
+27. family/offering/configuration joins are typed, evidence-backed, and never name-inferred;
+28. registry row grain and deterministic projection key are explicit;
+29. flat projections retain assertion subject/scope and cannot widen claims;
+30. raw registry-row cardinality is prohibited as a product-population denominator.
 
 Freeze status does not mean the D4 benchmark has been executed, the registry exists, or Release A has a denominator.
 
