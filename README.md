@@ -219,6 +219,7 @@ Normative v4.2 machine-readable resources ship inside the package. Treat edits t
 | Start here | Purpose |
 | --- | --- |
 | [Documentation map](docs/README.md) | Full index of architecture, ops, and reference docs |
+| [Product Population → Industrial Observatory plan](docs/programme/product-population-industrial-observatory-deployment-plan.md) | Stable deployment roadmap and release gates for the next research programme |
 | [Architecture overview](docs/architecture/overview.md) | Component and storage boundaries |
 | [Evidence and decision boundary](docs/governance/evidence-boundary.md) | What software can and cannot decide |
 | [Observatory automation](docs/operations/observatory-automation.md) | Monitoring operating model |
