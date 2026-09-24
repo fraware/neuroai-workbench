@@ -191,7 +191,7 @@ The exact-product registry is a projection joining these canonical objects and s
 
 ## 6.2 Final pre-review consistency audit
 
-A final repository- and methodology-level audit after the R1–R40 merge identified five residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
+A final repository- and methodology-level audit after the R1–R40 merge identified nine residual consistency defects. These are corrections to the same candidate contract and dependent execution documents, not a new substantive research direction.
 
 | ID | Residual inconsistency | Correction |
 | --- | --- | --- |
@@ -200,6 +200,10 @@ A final repository- and methodology-level audit after the R1–R40 merge identif
 | C3 | Release-A seed construction still described canonical “exact-product records/objects”, conflicting with the PRODUCT-offering / SYSTEM-configuration model | Define A1 as canonical identity-graph construction plus analytical registry projection; prohibit row-count denominators |
 | C4 | Final D4 sampling required private identity/enumeration diagnostic coverage without freezing each candidate's diagnostic assignment or deterministic derivation rule | Bind the diagnostic dimensions or their frozen derivation policy into the candidate-pool freeze |
 | C5 | The D4 protocol unnecessarily serialized P0.3 implementation behind full P0.2 completion | Permit P0.3 schema/projection implementation after P0.1 freeze while retaining D4 completion as a P0-G/Release-A operational dependency |
+| C6 | The deterministic registry-row key omitted population-view and currentness policy identities even though either can change the projected row | Bind `population_view_policy_id` and `currentness_policy_id` into the deterministic row-key tuple |
+| C7 | The D4 case packet used `candidate_canonical_entity_type` even though some valid boundary cases intentionally have unresolved canonical identity | Replace it with a bound/proposed entity-type field whose controlled domain includes `UNRESOLVED`, and define unresolved/not-applicable identity semantics explicitly |
+| C8 | D4 deterministic selection used `canonical_candidate_id`, which is undefined for legitimately unresolved identity cases and can couple sampling to later resolution | Introduce a stable opaque `candidate_selection_id` assigned before sampling and use that ID for deterministic selection |
+| C9 | Duplicate candidate bindings were not governed before final held-out selection | Freeze duplicate-resolution state/group, collapse known duplicates unless an identity-boundary exception is predeclared, and keep suspected unresolved duplicates from being treated as independent evidence |
 
 The final audit also rechecked the contract against the current Observatory v2 PRODUCT/SYSTEM ontology, conservative identity-resolution rules, two-axis temporal model, evidence/decision boundary, 23 September working methodology, product/services working analysis, and integrated-report denominator cautions. No additional unresolved semantic contradiction was identified in those source materials.
 
@@ -231,7 +235,7 @@ Regional branding, modified labeling, hardware variants, and jurisdiction-specif
 
 The predecessor contract should not be frozen.
 
-With R1–R40 and C1–C5 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
+With R1–R40 and C1–C9 incorporated, the candidate contract is methodologically stronger and is suitable to advance to **human freeze review** once the exact final correction head passes the repository's required checks and the merged candidate is confirmed unchanged on `main`.
 
 The appropriate next disposition after successful PR review is one of:
 
