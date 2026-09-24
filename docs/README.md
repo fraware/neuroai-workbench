@@ -35,6 +35,7 @@ Audience-oriented index for the NeuroAI Workbench. Root project files remain the
 | Document | Purpose |
 | --- | --- |
 | [Product Population → Industrial Observatory deployment plan](programme/product-population-industrial-observatory-deployment-plan.md) | Dependency- and gate-based deployment plan for product population, commercial measurement, evidence/effectiveness, and integrated industrial-observatory releases |
+| [Product Measurement Contract v1.0](programme/product-measurement-contract.md) | P0.1 measurement semantics for product/service identity, state, counting, and downstream denominator discipline |
 
 ## Architecture decision records
 
