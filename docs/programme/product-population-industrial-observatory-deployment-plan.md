@@ -363,15 +363,17 @@ Run independently attributable discovery frames. Minimum source families:
 - **F7 — expert nominations:** structured expert seeds and edge cases;
 - **F8 — local-language discovery:** native-language sources and query families for selected jurisdictions.
 
-Each candidate obtains a capture history:
+Every raw candidate retains frame-level discovery provenance and round history.
 
-[
-C_i=(F_1,F_2,ldots,F_k)
-]
+For population estimation, capture histories are constructed only after governed boundary review and identity resolution at the exact preregistered estimation unit:
 
-with discovery round and source provenance retained.
+```text
+C_i = (F_1, F_2, ..., F_k)
+```
 
-**Output:** multi-frame candidate and capture-history dataset.
+where `i` is the unique qualifying canonical identity or other explicitly preregistered estimation unit, never an unreconciled raw candidate row. Duplicate observations collapse into the same unit-level capture history. BORDERLINE, ABSTAIN and unresolved-identity candidates remain in coverage/uncertainty accounting and are not silently converted into population members.
+
+**Output:** multi-frame raw candidate ledger plus unit-resolved capture-history dataset.
 
 ### A3 — Capability-first recall study
 
@@ -500,16 +502,13 @@ It must never be described as proof that every relevant product worldwide has be
 
 ### A7 — Unseen-population estimation
 
-Estimate:
+Estimate, conditional on the exact preregistered discovery-frame/language/jurisdiction/model universe:
 
-[
-N_{total} =
-N_{observed}
-+
-N_{unobserved}
-]
+```text
+N_estimated = N_observed + N_unseen
+```
 
-using preregistered model families and sensitivity checks.
+using preregistered model families and sensitivity checks. `N_estimated` is not an absolute world-total claim and must preserve residual zero-capture/coverage uncertainty.
 
 At minimum compare:
 
