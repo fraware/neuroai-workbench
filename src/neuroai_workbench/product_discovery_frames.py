@@ -267,9 +267,6 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "frame_version",
             "frame_register_version",
             "round_id",
-            "query_or_seed_ids",
-            "languages",
-            "jurisdictions",
             "analysis_jurisdiction_scope",
             "language_scope_id",
             "registry_projection_version",
@@ -279,6 +276,8 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "known_identity_set_sha256",
         )
     }
+    for set_field in ("query_or_seed_ids", "languages", "jurisdictions"):
+        material[set_field] = sorted(cast(list[str], run.get(set_field, [])))
     encoded = json.dumps(
         material,
         ensure_ascii=False,
@@ -317,12 +316,18 @@ def validate_run_against_captures(
 
     expected_ids: list[str] = []
     query_or_seed_ids = set(cast(list[str], run["query_or_seed_ids"]))
+    languages = set(cast(list[str], run["languages"]))
+    jurisdictions = set(cast(list[str], run["jurisdictions"]))
     for capture in captures:
         validate_capture_against_frame(capture, frame)
         if capture["round_id"] != run["round_id"]:
             raise ProductDiscoveryError("Capture round_id does not match discovery run")
         if capture["query_or_seed_id"] not in query_or_seed_ids:
             raise ProductDiscoveryError("Capture query_or_seed_id is outside the discovery run declaration")
+        if capture["language"] not in languages:
+            raise ProductDiscoveryError("Capture language is outside the discovery run declaration")
+        if capture["jurisdiction"] not in jurisdictions:
+            raise ProductDiscoveryError("Capture jurisdiction is outside the discovery run declaration")
         for field in (
             "frame_register_version",
             "registry_projection_version",
@@ -429,6 +434,14 @@ def summarize_discovery_round(
     known = set(known_identity_ids_before)
     for capture in captures:
         validate_product_capture(capture)
+    _require_one_capture_universe(captures)
+
+    frame_ids = {str(capture["frame_id"]) for capture in captures}
+    round_ids = {str(capture["round_id"]) for capture in captures}
+    if len(frame_ids) > 1:
+        raise ProductDiscoveryError("A discovery-round summary cannot mix discovery frames")
+    if len(round_ids) > 1:
+        raise ProductDiscoveryError("A discovery-round summary cannot mix round_id values")
 
     include_captures = [capture for capture in captures if capture["outcome"] == "INCLUDE_RESOLVED"]
     unique_include_ids = {str(capture["canonical_offering_id"]) for capture in include_captures}
@@ -443,6 +456,8 @@ def summarize_discovery_round(
     }
     raw_count = len(captures)
     return {
+        "frame_id": next(iter(frame_ids), None),
+        "round_id": next(iter(round_ids), None),
         "raw_candidates": raw_count,
         "unique_resolved_include_identities": len(unique_include_ids),
         "new_resolved_include_identities": len(new_ids),
@@ -467,6 +482,7 @@ def summarize_discovery_contributions(
     known = set(known_identity_ids_before)
     for capture in captures:
         validate_product_capture(capture)
+    _require_one_capture_universe(captures)
 
     def summarize(field: str) -> dict[str, dict[str, int]]:
         grouped: dict[str, set[str]] = {}

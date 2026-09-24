@@ -213,6 +213,24 @@ def test_round_summary_separates_new_products_from_duplicate_captures_and_failur
     assert summary["duplicate_yield"] == pytest.approx(0.4)
 
 
+def test_round_summary_rejects_mixed_frames_rounds_and_analysis_universes() -> None:
+    first = _capture("F1", "a", offering_id="PRD-A")
+    other_frame = _capture("F2", "b", offering_id="PRD-B")
+    with pytest.raises(ProductDiscoveryError, match="cannot mix discovery frames"):
+        summarize_discovery_round([first, other_frame])
+
+    other_round = _capture("F1", "c", offering_id="PRD-C", round_id="R2")
+    with pytest.raises(ProductDiscoveryError, match="cannot mix round_id"):
+        summarize_discovery_round([first, other_round])
+
+    other_view = deepcopy(first)
+    other_view["candidate_key"] = "other-view"
+    other_view["population_view_id"] = "A-P6"
+    other_view["capture_id"] = product_capture_id(other_view)
+    with pytest.raises(ProductDiscoveryError, match="cannot mix registry/view"):
+        summarize_discovery_round([first, other_view])
+
+
 def test_capability_and_multilingual_incremental_yield_is_computed_after_identity_deduplication() -> None:
     captures = [
         _capture("F1", "base-a", offering_id="PRD-A"),
@@ -402,6 +420,24 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
     run["run_id"] = product_discovery_run_id(run)
     validate_discovery_run(run)
     validate_run_against_captures(run, captures, frame)
+
+    permuted = deepcopy(run)
+    permuted["query_or_seed_ids"] = list(reversed(permuted["query_or_seed_ids"]))
+    permuted["languages"] = list(reversed(permuted["languages"]))
+    permuted["jurisdictions"] = list(reversed(permuted["jurisdictions"]))
+    assert product_discovery_run_id(permuted) == run["run_id"]
+
+    wrong_language = deepcopy(captures[0])
+    wrong_language["language"] = "ja"
+    wrong_language["capture_id"] = product_capture_id(wrong_language)
+    with pytest.raises(ProductDiscoveryError, match="language"):
+        validate_run_against_captures(run, [wrong_language, captures[1]], frame)
+
+    wrong_jurisdiction = deepcopy(captures[0])
+    wrong_jurisdiction["jurisdiction"] = "JP"
+    wrong_jurisdiction["capture_id"] = product_capture_id(wrong_jurisdiction)
+    with pytest.raises(ProductDiscoveryError, match="jurisdiction"):
+        validate_run_against_captures(run, [wrong_jurisdiction, captures[1]], frame)
 
     drift = deepcopy(run)
     drift["capture_count"] = 1
