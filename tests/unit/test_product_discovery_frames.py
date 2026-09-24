@@ -6,17 +6,23 @@ import pytest
 
 from neuroai_workbench.product_discovery_frames import (
     DISCOVERY_BOUNDARY,
+    FRAME_REGISTER_VERSION,
     FRAME_VERSION,
     ProductDiscoveryError,
     build_capture_histories,
     evaluate_frame_stop,
+    identity_set_digest,
     frame_overlap_matrix,
     incremental_unique_identities,
     product_capture_id,
+    product_discovery_run_id,
+    summarize_discovery_contributions,
     summarize_discovery_round,
     validate_capture_against_frame,
     validate_discovery_frame,
+    validate_discovery_run,
     validate_product_capture,
+    validate_run_against_captures,
 )
 
 
@@ -79,7 +85,10 @@ def _capture(
         "capture_estimation_eligible": estimation_eligible,
         "observed_at": "2026-09-24T12:00:00Z",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "frame_register_version": FRAME_REGISTER_VERSION,
         "population_view_id": "A-P1",
+        "analysis_jurisdiction_scope": "GLOBAL",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
         "boundary": DISCOVERY_BOUNDARY,
@@ -186,6 +195,8 @@ def test_round_summary_separates_new_products_from_duplicate_captures_and_failur
     assert summary["raw_candidates"] == 5
     assert summary["unique_resolved_include_identities"] == 2
     assert summary["new_resolved_include_identities"] == 1
+    assert summary["known_identity_duplicate_count"] == 1
+    assert summary["within_round_duplicate_count"] == 1
     assert summary["duplicate_capture_count"] == 2
     assert summary["outcome_counts"]["EXCLUDE"] == 1
     assert summary["outcome_counts"]["FAILED_INACCESSIBLE"] == 1
@@ -283,3 +294,90 @@ def test_stop_rule_continues_with_too_few_or_too_small_rounds() -> None:
         {"raw_candidates": 5, "marginal_new_identity_yield": 0.01},
     ]
     assert evaluate_frame_stop(frame, too_small) == "CONTINUE"
+
+
+def test_frame_id_has_frozen_semantic_class() -> None:
+    wrong = _frame("F9", "FIRST_PARTY")
+    with pytest.raises(ProductDiscoveryError, match="frame_class must be"):
+        validate_discovery_frame(wrong)
+    validate_discovery_frame(_frame("F9", "CURATED_ACTOR_SEED"))
+    validate_discovery_frame(_frame("F10", "PATENT_COMMERCIALIZATION"))
+    validate_discovery_frame(_frame("F11", "SNOWBALL_EXPANSION"))
+
+
+def test_capture_histories_fail_closed_across_analysis_universes() -> None:
+    frame = _frame("F1", "FIRST_PARTY")
+    a = _capture("F1", "a", offering_id="PRD-A")
+    b = _capture("F1", "b", offering_id="PRD-B")
+    b["population_view_id"] = "A-P6"
+    b["capture_id"] = product_capture_id(b)
+    with pytest.raises(ProductDiscoveryError, match="cannot mix"):
+        build_capture_histories([a, b], [frame])
+
+
+def test_language_and_jurisdiction_contributions_are_deduplicated() -> None:
+    captures = [
+        _capture("F1", "a-en", offering_id="PRD-A", language="en"),
+        _capture("F8", "a-ja", offering_id="PRD-A", language="ja"),
+        _capture("F8", "b-ja", offering_id="PRD-B", language="ja"),
+    ]
+    captures[1]["jurisdiction"] = "JP"
+    captures[1]["capture_id"] = product_capture_id(captures[1])
+    captures[2]["jurisdiction"] = "JP"
+    captures[2]["capture_id"] = product_capture_id(captures[2])
+    result = summarize_discovery_contributions(
+        captures,
+        known_identity_ids_before={"PRD-A"},
+    )
+    assert result["by_language"]["ja"]["unique_resolved_include_identities"] == 2
+    assert result["by_language"]["ja"]["new_resolved_include_identities"] == 1
+    assert result["by_jurisdiction"]["JP"]["new_resolved_include_identities"] == 1
+
+
+def test_underpowered_intervening_round_breaks_low_yield_consecutive_tail() -> None:
+    frame = _frame("F6", "CAPABILITY_FIRST")
+    summaries = [
+        {"raw_candidates": 30, "marginal_new_identity_yield": 0.20},
+        {"raw_candidates": 30, "marginal_new_identity_yield": 0.04},
+        {"raw_candidates": 5, "marginal_new_identity_yield": 0.01},
+    ]
+    assert evaluate_frame_stop(frame, summaries) == "CONTINUE"
+
+
+def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
+    frame = _frame("F1", "FIRST_PARTY")
+    captures = [
+        _capture("F1", "a", offering_id="PRD-A"),
+        _capture("F1", "b", offering_id="PRD-B"),
+    ]
+    run: dict[str, object] = {
+        "run_id": "",
+        "frame_id": "F1",
+        "frame_version": FRAME_VERSION,
+        "frame_register_version": FRAME_REGISTER_VERSION,
+        "round_id": "R1",
+        "query_or_seed_ids": ["Q-F1"],
+        "languages": ["en"],
+        "jurisdictions": ["GLOBAL"],
+        "analysis_jurisdiction_scope": "GLOBAL",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+        "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "population_view_id": "A-P1",
+        "world_time_cutoff": "2026-09-24",
+        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
+        "capture_count": 2,
+        "capture_ids": [str(capture["capture_id"]) for capture in captures],
+        "stop_state": "CONTINUE",
+        "stop_reason": "Further declared rounds remain.",
+        "boundary": DISCOVERY_BOUNDARY,
+    }
+    run["run_id"] = product_discovery_run_id(run)
+    validate_discovery_run(run)
+    validate_run_against_captures(run, captures, frame)
+
+    drift = deepcopy(run)
+    drift["capture_count"] = 1
+    drift["run_id"] = product_discovery_run_id(drift)
+    with pytest.raises(ProductDiscoveryError, match="capture_count"):
+        validate_run_against_captures(drift, captures, frame)
