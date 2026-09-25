@@ -228,6 +228,8 @@ def validate_f9_actor_completion_record(
         roles = surface.get("roles")
         if not isinstance(roles, list) or not roles or not set(roles) <= F9_SURFACE_ROLES:
             raise ProductDiscoveryError("F9 inspection surface roles are invalid")
+        if "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE" in roles and source_class != "MANUFACTURER_VENDOR_OFFICIAL":
+            raise ProductDiscoveryError("F9 catalogue/technology inspection requires first-party manufacturer/vendor source")
 
         if locator == expected_official_locator and "FROZEN_OFFICIAL_LOCATOR" in roles:
             official_locator_seen = official_locator_seen or retrieval_outcome == "RETRIEVED"
@@ -238,6 +240,7 @@ def validate_f9_actor_completion_record(
     if not isinstance(candidates, list):
         raise ProductDiscoveryError("F9 actor completion record candidate_manifest must be a list")
     candidate_keys: set[str] = set()
+    candidate_capture_ids: set[str] = set()
     all_candidates_captured = True
     for candidate in candidates:
         if not isinstance(candidate, Mapping):
@@ -245,6 +248,8 @@ def validate_f9_actor_completion_record(
         candidate_key = str(candidate.get("candidate_key", "")).strip()
         if not candidate_key:
             raise ProductDiscoveryError("F9 candidate_manifest entry requires candidate_key")
+        if not candidate_key.startswith(f"{actor_id}::"):
+            raise ProductDiscoveryError("F9 candidate_key must remain bound to its frozen actor")
         if candidate_key in candidate_keys:
             raise ProductDiscoveryError(f"Duplicate F9 candidate_key in actor manifest: {candidate_key}")
         candidate_keys.add(candidate_key)
@@ -254,6 +259,10 @@ def validate_f9_actor_completion_record(
         capture_outcome = candidate.get("capture_outcome")
         if capture_id and re.fullmatch(r"PDC-[0-9a-f]{64}", capture_id) is None:
             raise ProductDiscoveryError("F9 candidate_manifest capture_id must be an exact PDC identifier")
+        if capture_id in candidate_capture_ids:
+            raise ProductDiscoveryError(f"Duplicate F9 capture_id in actor manifest: {capture_id}")
+        if capture_id:
+            candidate_capture_ids.add(capture_id)
         if not capture_id or capture_outcome not in CAPTURE_OUTCOMES:
             all_candidates_captured = False
 
@@ -298,12 +307,20 @@ def f9_bounded_exhaustion_state(
     validate_f9_actor_enumeration_procedure(bound_procedure)
 
     records_by_actor: dict[str, Mapping[str, Any]] = {}
+    ledger_capture_ids: set[str] = set()
     for record in records:
         validate_f9_actor_completion_record(record, bound_procedure)
         actor_id = str(record["actor_organization_id"])
         if actor_id in records_by_actor:
             raise ProductDiscoveryError(f"Duplicate F9 actor completion record: {actor_id}")
         records_by_actor[actor_id] = record
+        for candidate in cast(list[Mapping[str, Any]], record["candidate_manifest"]):
+            capture_id = str(candidate.get("capture_id") or "")
+            if not capture_id:
+                continue
+            if capture_id in ledger_capture_ids:
+                raise ProductDiscoveryError(f"F9 capture_id reused across actor completion records: {capture_id}")
+            ledger_capture_ids.add(capture_id)
 
     expected_actor_ids = set(cast(list[str], bound_procedure["actor_identity_ids"]))
     if set(records_by_actor) != expected_actor_ids:
