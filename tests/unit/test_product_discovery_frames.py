@@ -818,8 +818,8 @@ def test_analysis_universe_rejects_frozen_binding_drift() -> None:
         ("frame_register_blob_sha", "3" * 40, "frame-register blob"),
         ("world_time_cutoff", "2026-09-23", "world_time_cutoff"),
         ("knowledge_time_cutoff", "2026-10-23T23:59:59Z", "knowledge_time_cutoff"),
-        ("analysis_jurisdiction_scope", "US_ONLY", "jurisdiction scope"),
-        ("language_scope_id", "EN_ONLY", "language scope"),
+        ("analysis_jurisdiction_scope", "US_ONLY", "analysis_jurisdiction_scope"),
+        ("language_scope_id", "EN_ONLY", "language_scope_id"),
     )
     for field, value, match in cases:
         changed = deepcopy(universe)
