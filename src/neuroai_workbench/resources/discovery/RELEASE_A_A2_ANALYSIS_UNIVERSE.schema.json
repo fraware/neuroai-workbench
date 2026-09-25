@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/release-a-a2-analysis-universe-1.0.json",
+  "title": "RELEASE_A_A2_ANALYSIS_UNIVERSE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "analysis_universe_id",
+    "status",
+    "workbench_baseline_sha",
+    "a1_seed_manifest_id",
+    "a1_seed_registry_sha256",
+    "a1_evidence_index_sha256",
+    "registry_projection_version",
+    "frame_register_version",
+    "population_view_id",
+    "identity_level",
+    "analysis_jurisdiction_scope",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "collection_window",
+    "language_scope",
+    "primary_estimation_frame_ids",
+    "diagnostic_only_frame_ids",
+    "initial_known_offering_ids",
+    "initial_known_offering_count",
+    "initial_known_identity_set_sha256",
+    "round_start_known_identity_policy",
+    "post_world_cutoff_observation_policy",
+    "boundary"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0"
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^A2U-[0-9a-f]{64}$"
+    },
+    "status": {
+      "const": "FROZEN_v1.0"
+    },
+    "workbench_baseline_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "a1_seed_manifest_id": {
+      "type": "string",
+      "pattern": "^RASIM-[0-9a-f]{64}$"
+    },
+    "a1_seed_registry_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "a1_evidence_index_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "registry_projection_version": {
+      "const": "PRODUCT_REGISTRY_v1.0"
+    },
+    "frame_register_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+    },
+    "population_view_id": {
+      "const": "A-P1"
+    },
+    "identity_level": {
+      "const": "OFFERING"
+    },
+    "analysis_jurisdiction_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "format": "date"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "collection_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opened_at",
+        "closes_at"
+      ],
+      "properties": {
+        "opened_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closes_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "language_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language_scope_id",
+        "baseline_language",
+        "native_language_strata",
+        "selection_basis",
+        "f8_execution_policy"
+      ],
+      "properties": {
+        "language_scope_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline_language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "native_language_strata": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "language",
+              "jurisdiction"
+            ],
+            "properties": {
+              "language": {
+                "type": "string",
+                "minLength": 1
+              },
+              "jurisdiction": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "selection_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "f8_execution_policy": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "primary_estimation_frame_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^F(?:[1-9]|10|11)$"
+      }
+    },
+    "diagnostic_only_frame_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^F(?:[1-9]|10|11)$"
+      }
+    },
+    "initial_known_offering_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "initial_known_offering_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "initial_known_identity_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "round_start_known_identity_policy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "post_world_cutoff_observation_policy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
