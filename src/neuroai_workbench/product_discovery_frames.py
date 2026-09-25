@@ -22,11 +22,14 @@ FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
 FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
 F9_ACTOR_SEED_REGISTER_ID = "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0"
 ANALYSIS_UNIVERSE_VERSION = "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0"
-DEFAULT_ANALYSIS_UNIVERSE_ID = "RAU-241571c4d7c3f362eee14aa7d36ee03c76f8cfa1fa557160d1ea1e4247ccb299"
+DEFAULT_ANALYSIS_UNIVERSE_ID = "RAU-f1485a88e41e789f7115f4e3850d4c106831eefee3f9a1d865aa3e2be05cb58d"
 A1_SEED_MANIFEST_ID = "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf"
 A1_SEED_REGISTRY_SHA256 = "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+A1_IDENTITY_REGISTRY_ID = "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
+A1_IDENTITY_REGISTRY_SHA256 = "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
+A1_IDENTITY_BINDING_ID = "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
 A1_INITIAL_KNOWN_IDENTITY_SHA256 = "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
-A2_WORKBENCH_BASELINE_SHA = "11c516209fc77dea497fc3bb61012e2f3daecdf7"
+A2_WORKBENCH_BASELINE_SHA = "3d4348abd3256913edc6b30c97dc09d5f1aa6d88"
 A2_FRAME_REGISTER_BLOB_SHA = "bb3d95226dc0ed528e5eed8e6de707430399b9ae"
 A2_WORLD_TIME_CUTOFF = "2026-09-24"
 A2_KNOWLEDGE_TIME_CUTOFF = "2026-10-24T23:59:59Z"
@@ -146,6 +149,12 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("Analysis universe does not bind the frozen A1 seed manifest")
     if universe["a1_seed_registry_sha256"] != A1_SEED_REGISTRY_SHA256:
         raise ProductDiscoveryError("Analysis universe does not bind the frozen A1 seed registry digest")
+    if universe["a1_identity_registry_id"] != A1_IDENTITY_REGISTRY_ID:
+        raise ProductDiscoveryError("Analysis universe does not bind the canonical A1 product identity registry")
+    if universe["a1_identity_registry_sha256"] != A1_IDENTITY_REGISTRY_SHA256:
+        raise ProductDiscoveryError("Analysis universe does not bind the canonical A1 identity-registry digest")
+    if universe["a1_identity_binding_id"] != A1_IDENTITY_BINDING_ID:
+        raise ProductDiscoveryError("Analysis universe does not bind the A1 seed-to-identity authority record")
     if universe["initial_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
         raise ProductDiscoveryError("Analysis universe initial known-identity digest does not match A1")
     if int(universe["initial_known_identity_count"]) != 6:
