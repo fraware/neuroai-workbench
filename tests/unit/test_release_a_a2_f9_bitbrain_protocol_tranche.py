@@ -97,7 +97,9 @@ def test_bitbrain_protocol_tranche_preserves_nonadmission_and_exact_capture_bind
     captures = cast(list[dict[str, Any]], packet["captures"])
 
     assert len(packet["queries"]) == len(packet["observations"]) == len(captures) == 16
-    assert (\n        identity_set_digest(packet["round_start_known_identity_ids"]) == packet["round_start_known_identity_set_sha256"]\n    )
+    assert (
+        identity_set_digest(packet["round_start_known_identity_ids"]) == packet["round_start_known_identity_set_sha256"]
+    )
     assert packet["source_recheck_registration"]["issue_number"] == 357
     assert packet["source_recheck_registration"]["issue_comment_id"] == 5837669615
 
