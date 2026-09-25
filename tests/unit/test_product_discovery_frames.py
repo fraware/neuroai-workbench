@@ -742,6 +742,15 @@ def test_default_analysis_universe_is_frozen_and_binds_a1_seed_state() -> None:
     validate_analysis_universe(universe)
     assert universe["analysis_universe_id"] == DEFAULT_ANALYSIS_UNIVERSE_ID
     assert universe["a1_seed_registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+    assert universe["a1_identity_registry_id"] == "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
+    assert (
+        universe["a1_identity_registry_sha256"]
+        == "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
+    )
+    assert (
+        universe["a1_identity_binding_id"]
+        == "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
+    )
     assert (
         universe["initial_known_identity_set_sha256"]
         == "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
@@ -824,6 +833,9 @@ def test_analysis_universe_rejects_frozen_binding_drift() -> None:
     cases = (
         ("a1_seed_manifest_id", "OTHER", "A1 seed manifest"),
         ("a1_seed_registry_sha256", "0" * 64, "A1 seed registry digest"),
+        ("a1_identity_registry_id", "OTHER", "product identity registry"),
+        ("a1_identity_registry_sha256", "0" * 64, "identity-registry digest"),
+        ("a1_identity_binding_id", "RAIB-" + "0" * 64, "seed-to-identity authority"),
         ("initial_known_identity_set_sha256", "1" * 64, "known-identity digest"),
         ("initial_known_identity_count", 7, "initial_known_identity_count"),
         ("workbench_baseline_sha", "2" * 40, "workbench baseline"),
