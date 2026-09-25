@@ -13,12 +13,19 @@ RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
 RUN_SCHEMA = "PRODUCT_DISCOVERY_RUN.schema.json"
+ANALYSIS_UNIVERSE_SCHEMA = "RELEASE_A_A2_ANALYSIS_UNIVERSE.schema.json"
 FRAME_REGISTER_RESOURCE = "PRODUCT_DISCOVERY_FRAME_REGISTER.v1.0.json"
 F9_ACTOR_SEED_REGISTER_RESOURCE = "RELEASE_A_F9_ACTOR_SEED_REGISTER.v1.0.json"
+ANALYSIS_UNIVERSE_RESOURCE = "RELEASE_A_A2_ANALYSIS_UNIVERSE.v1.0.json"
 
 FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
 FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
 F9_ACTOR_SEED_REGISTER_ID = "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0"
+ANALYSIS_UNIVERSE_VERSION = "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0"
+DEFAULT_ANALYSIS_UNIVERSE_ID = "RAU-241571c4d7c3f362eee14aa7d36ee03c76f8cfa1fa557160d1ea1e4247ccb299"
+A1_SEED_MANIFEST_ID = "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf"
+A1_SEED_REGISTRY_SHA256 = "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+A1_INITIAL_KNOWN_IDENTITY_SHA256 = "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
 FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
@@ -92,6 +99,66 @@ def _parse_bound_timestamp(value: Any, *, field: str) -> datetime:
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ProductDiscoveryError(f"{field} must include an explicit timezone")
     return parsed
+
+
+def analysis_universe_id(universe: Mapping[str, Any]) -> str:
+    """Return the deterministic identity of one frozen Release-A A2 analysis universe."""
+
+    material = {key: value for key, value in universe.items() if key != "analysis_universe_id"}
+    encoded = json.dumps(
+        material,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return "RAU-" + hashlib.sha256(encoded).hexdigest()
+
+
+def load_default_analysis_universe() -> dict[str, Any]:
+    """Load and validate the frozen Release-A A2 analysis universe."""
+
+    universe = cast(
+        dict[str, Any],
+        json.loads(files(RESOURCE_PACKAGE).joinpath(ANALYSIS_UNIVERSE_RESOURCE).read_text(encoding="utf-8")),
+    )
+    validate_analysis_universe(universe)
+    return universe
+
+
+def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
+    errors = _schema_errors(universe, ANALYSIS_UNIVERSE_SCHEMA)
+    if errors:
+        raise ProductDiscoveryError("Analysis-universe schema validation failed: " + "; ".join(errors))
+    if universe["analysis_universe_id"] != analysis_universe_id(universe):
+        raise ProductDiscoveryError("analysis_universe_id does not match the deterministic frozen universe")
+    if universe["manifest_version"] != ANALYSIS_UNIVERSE_VERSION:
+        raise ProductDiscoveryError(f"manifest_version must be {ANALYSIS_UNIVERSE_VERSION}")
+    if universe["status"] != "FROZEN_v1.0":
+        raise ProductDiscoveryError("Release-A A2 analysis universe must be FROZEN_v1.0")
+    if universe["a1_seed_manifest_id"] != A1_SEED_MANIFEST_ID:
+        raise ProductDiscoveryError("Analysis universe does not bind the frozen A1 seed manifest")
+    if universe["a1_seed_registry_sha256"] != A1_SEED_REGISTRY_SHA256:
+        raise ProductDiscoveryError("Analysis universe does not bind the frozen A1 seed registry digest")
+    if universe["initial_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("Analysis universe initial known-identity digest does not match A1")
+    if int(universe["initial_known_identity_count"]) != 6:
+        raise ProductDiscoveryError("Analysis universe initial_known_identity_count must be 6")
+    if universe["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
+        raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
+    if universe["frame_register_version"] != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError(f"frame_register_version must be {FRAME_REGISTER_VERSION}")
+    if universe["population_view_id"] != "A-P1":
+        raise ProductDiscoveryError("A2 v1.0 analysis universe must bind A-P1")
+    primary = set(cast(list[str], universe["primary_estimation_frame_ids"]))
+    diagnostic = set(cast(list[str], universe["diagnostic_only_frame_ids"]))
+    expected_primary = FRAME_ID_SET - PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS
+    if primary != expected_primary:
+        raise ProductDiscoveryError("Analysis universe primary frame set does not match the frozen P0.5 estimator set")
+    if diagnostic != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS:
+        raise ProductDiscoveryError("Analysis universe diagnostic-only frame set must be F7/F9/F11")
+    if primary & diagnostic:
+        raise ProductDiscoveryError("Analysis universe primary and diagnostic frame sets must be disjoint")
 
 
 def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
@@ -232,11 +299,13 @@ def product_capture_id(capture: Mapping[str, Any]) -> str:
             "observed_at",
             "registry_projection_version",
             "frame_register_version",
+            "analysis_universe_id",
             "population_view_id",
             "analysis_jurisdiction_scope",
             "language_scope_id",
             "world_time_cutoff",
             "knowledge_time_cutoff",
+            "world_time_alignment",
         )
     }
     encoded = json.dumps(
@@ -272,6 +341,10 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
             raise ProductDiscoveryError("INCLUDE_RESOLVED capture requires canonical_offering_id")
         if not capture.get("source_observation_ref"):
             raise ProductDiscoveryError("INCLUDE_RESOLVED capture requires source_observation_ref")
+        if capture.get("world_time_alignment") != "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF":
+            raise ProductDiscoveryError(
+                "INCLUDE_RESOLVED capture requires evidence supporting identity/state at or before the world-time cutoff"
+            )
     if capture["capture_estimation_eligible"] and outcome != "INCLUDE_RESOLVED":
         raise ProductDiscoveryError("Only resolved in-scope offering captures can be capture-estimation eligible")
 
@@ -282,6 +355,29 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
     )
     if observed_at > knowledge_cutoff:
         raise ProductDiscoveryError("Product capture observed_at cannot exceed its knowledge_time_cutoff")
+
+
+def validate_capture_against_analysis_universe(
+    capture: Mapping[str, Any],
+    universe: Mapping[str, Any],
+) -> None:
+    """Require one capture to bind exactly to the frozen A2 analysis universe."""
+
+    validate_product_capture(capture)
+    validate_analysis_universe(universe)
+    if capture["analysis_universe_id"] != universe["analysis_universe_id"]:
+        raise ProductDiscoveryError("Capture analysis_universe_id does not match the frozen A2 universe")
+    for field in (
+        "registry_projection_version",
+        "frame_register_version",
+        "population_view_id",
+        "analysis_jurisdiction_scope",
+        "language_scope_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+    ):
+        if capture[field] != universe[field]:
+            raise ProductDiscoveryError(f"Capture {field} does not match the frozen A2 analysis universe")
 
 
 def validate_capture_against_frame(
@@ -306,6 +402,7 @@ def _capture_universe_key(capture: Mapping[str, Any]) -> tuple[Any, ...]:
     return (
         capture.get("registry_projection_version"),
         capture.get("frame_register_version"),
+        capture.get("analysis_universe_id"),
         capture.get("population_view_id"),
         capture.get("analysis_jurisdiction_scope"),
         capture.get("language_scope_id"),
@@ -341,6 +438,7 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "frame_id",
             "frame_version",
             "frame_register_version",
+            "analysis_universe_id",
             "round_id",
             "analysis_jurisdiction_scope",
             "language_scope_id",
@@ -410,6 +508,7 @@ def validate_run_against_captures(
             raise ProductDiscoveryError("Capture jurisdiction is outside the discovery run declaration")
         for field in (
             "frame_register_version",
+            "analysis_universe_id",
             "registry_projection_version",
             "population_view_id",
             "analysis_jurisdiction_scope",
@@ -425,6 +524,29 @@ def validate_run_against_captures(
         raise ProductDiscoveryError("capture_count does not match exact discovery-run captures")
     if sorted(cast(list[str], run["capture_ids"])) != sorted(expected_ids):
         raise ProductDiscoveryError("capture_ids do not match exact discovery-run captures")
+
+
+def validate_run_against_analysis_universe(
+    run: Mapping[str, Any],
+    universe: Mapping[str, Any],
+) -> None:
+    """Require one run declaration to bind exactly to the frozen A2 analysis universe."""
+
+    validate_discovery_run(run)
+    validate_analysis_universe(universe)
+    if run["analysis_universe_id"] != universe["analysis_universe_id"]:
+        raise ProductDiscoveryError("Discovery run analysis_universe_id does not match the frozen A2 universe")
+    for field in (
+        "registry_projection_version",
+        "frame_register_version",
+        "population_view_id",
+        "analysis_jurisdiction_scope",
+        "language_scope_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+    ):
+        if run[field] != universe[field]:
+            raise ProductDiscoveryError(f"Discovery run {field} does not match the frozen A2 analysis universe")
 
 
 def _frame_map(frames: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
