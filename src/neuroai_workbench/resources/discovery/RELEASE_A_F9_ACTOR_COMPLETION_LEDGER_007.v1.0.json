@@ -1,0 +1,1811 @@
+{
+  "ledger_id": "RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_007_v1.0",
+  "ledger_sha256": "7af9f8324852dc300c586594095ff180bb668e401d6569e74884a5eb5e8ac833",
+  "ledger_sequence": 7,
+  "predecessor_ledger_id": "RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_006_v1.0",
+  "predecessor_ledger_sha256": "036d4c370894ffde464a440696075557a1a078c398c2842a52726fcd695a6306",
+  "status": "IMMUTABLE_SUCCESSOR",
+  "assembled_on": "2026-09-25",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+  "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+  "actor_seed_register_id": "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0",
+  "actor_seed_count": 37,
+  "completion_records": [
+    {
+      "completion_record_id": "F9AC-af35e1dedb601910e94c23fc59e1892431e0103a3374d707bfe6c3780ca2e30d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0003",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.bitbrain.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.bitbrain.com/neurotechnology-products",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://downloads.bitbrain.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0003::Diadem EEG 12ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-86943654345ab06f576f06ec9a50d422adbedc339d8974d49d6ce41d0e5875a8",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Air EEG 8ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-0093e10189b16f42a325c890656ae7247375a5165e4aeda9bb5acc558b949e8c",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Hero EEG 9ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-97f5305ba3d4f26d73a988f181fe2be757c7aee710864caa86370dd7c69cabf2",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Ikon EEG 5ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-198db15a3d9430b45f4f7d5f6a2a5f0e0e6eb6b370305de7a3a4634fe4a0432c",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Ikon Sleep EEG",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-07f1e4f326b900e1defb759219f1b1f062429cba3ffb3ca2eee365ec166d1eb7",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Plus EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-36fbb491290caefbe82dbcc1bdefb6256dd6cb73b681ef616dece8d1707e5b7b",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-c1c4ca0f623d1d314c8a50941189133a3e32316001553698580e154e21340ab3",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Kids EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-2d27e0a58ba96805c92a3ed6fac6cbb0faac84e02aab790d5a338c604a5a1b5f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Bio Amplifier",
+          "object_class": "OTHER_SCOPE_BOUNDARY",
+          "capture_id": "PDC-a24b3f439668f23ee95bd1ffefa482f24b1038b53880683b4cbb0b384fefade1",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Ring Biosignal GSR BVP",
+          "object_class": "OTHER_SCOPE_BOUNDARY",
+          "capture_id": "PDC-5852d6773a172226267aa8299874f37846dc0149306f57a2658f6e854da05223",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsLite Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-77c714cab918118ad1a69ace84077fad6f40da32d870c93d00ad5dd6ee95047f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SDK Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-0aa2b6a3eec1ae0383a7d9221480e52535860e057c788eb5a13ee87fe2313e43",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsLab Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-b9903abffabb8be8d2ffab44a458485467a40af4a78cdfa2fc6a430e20cda5d0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsMetrics Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-74a3d7667651efb8be6d99ee87870379cfa5a5f327250bf7aa633d4e9cff9ba0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::IRT Online",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-fe9d87c536fb020ae0186c2f2038345f3441d0bc98d14e98afb70e57cb746da3",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Bitbrain Human Behaviour Research Labs",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-1db5864ca4380fc88b37f7439d0abac7c05ee57bc7f9fff6c5ef4b3394e55458",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official site, current product catalogue, and current download/documentation index were inspected; all named Bitbrain objects on those surfaces that could plausibly affect PRODUCT/OFFERING accounting were retained with explicit F9 capture dispositions, while partner-only technologies were kept outside Bitbrain identity allocation.",
+      "recorded_at": "2026-09-25T18:40:44Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-0eac8b3aaa7162ceb5004fd5017d3a8414d91a748bd2fac34a61c9341a0fd952",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0006",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://choosemuse.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0006::Muse S Athena",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-0b85098c8c2cb33b3720fc1a60ce364e3b16705b15f0770811f9a95c8afced68",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0006::Muse 2",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-a7dd4308c1b58bc13634209d59e8cc5f113f51bc3f8dbef2f2be76ff2cf8c220",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0006::Muse Premium",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-2882d9a2b5a26d81799ed8c172e7db76b1f71eecbde7795c49d7c42a153372dc",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Muse locator was retrieved and used as the first-party catalogue surface; all named Muse objects on that surface that could affect PRODUCT/OFFERING accounting were retained with explicit F9 capture dispositions under post-cutoff non-admission.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-79da778ed4f7a93b4fb45b4858fa6d8fa565ae690df4c4561270ea0bede5b61d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0005",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.nextsense.io/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.nextsense.io/products/smartbuds",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0005::NextSense Smartbuds",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-78806d640eeb71acf459ec28cea5d48a7ca6e79d8b5ef1a2f0d063a0d9a5849b",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0005::Focus Mode",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-7e54c81c4c9036b9d36f67d08034eb1bf3120ca2d56f378c46b3700ae6d2f1b1",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0005::Meditate Mode",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-4882996ac29b9c0c3118c6b2925481c721a6ac3b399d503f6800a1df9ffbef78",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0005::NextSense Companion App",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-789ee2d591199ecbf93ea9e0dba2691d87b14b3f4145600124721f6bc5cda36e",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0005::Smartbuds Fit Kit Tips Wings",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-f28c3abaead9ac37fe1115edee2ea67ebd9bb22b5ad883823b951f42455fc1bb",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official NextSense locator and Smartbuds product/technology surface were inspected; named offering, software-mode, and accessory objects on those surfaces were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-76be7cc30ab0fa339179bbe541de48a702db2e31800c7ecb6f182a9903411c60",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0007",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.emotiv.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0007::EMOTIV EPOC X",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-fbca17e6d6303161090c0c815a67e715cf530202dfba8fccacad097c1b995bed",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0007::EMOTIV EPOC X PRO",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-967e50d0ae713f5243a21e9941a531a8ac29ec461720f6cb5c27eeb89393abe2",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0007::EMOTIV MN8",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-97d99948118bb4a9220372460f25b21f2b89383268d419f5028bdb36b410d004",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0007::EMOTIV Flex 2.0",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-13210137dd458ed7b9570f0a406ad1cf42ff068271a477d8385549949e051f9e",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0007::EMOTIV Insight",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-1b17b3da0ac745d244d720b1ff15431ff3c6603c6b37b802d1029a547a2c920c",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0007::Emotiv Studio",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-92a99932675cf8c6c0f016c388d2d72b349383eb35f4409c03b2c92daddfe017",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::EmotivPRO",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-87c3e7a1457100fc66a9d9e8f3ab9516885b7db62d7459806bba2b6962a19c08",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::EmotivBCI",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-a947823cd9e17cae8792e5de0df63b41630d77690e447c2e14180a1f1eb68681",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::BrainViz",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-9ef401292b724006080fec8a5a19ae5d3bd5ca0e34f8e2f411dbaae02f01c51a",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::Emotiv Launcher",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-0090e3299a22d5c641ff72c44a4a000b8edf83abdb65c59c9dd33ea7d00cba3a",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::Brainwear App",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-bb88ff26480268fa5858265eee81960bf90ce463ddb1dddb0fdae4dfb7e210cb",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0007::Emotiv Accessories",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-ff7e962b22901bac2dfba6cf6979793f5d432898018c33168d2c6410913a8771",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Emotiv locator was retrieved as the first-party catalogue; named headset offerings, software products, and accessory category objects were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-0ecc775b207ab2296718660ef3e75c3d830242e302671f7c029a5ad959304a08",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0013",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.flowneuroscience.com/temporary-en-us/clinician/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0013::Flow FL-100",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-27f2e0a4bdd3cf0b4a8be91f14ab57fccb28292401fd76643432a63a2254a149",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Flow Neuroscience clinician locator was retrieved and used as the first-party catalogue/technology surface; the named Flow treatment offering was retained with an explicit F9 disposition.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-bb46fa8b6fc7cda82b3ea9e424e7f7dc98ae3a22f3053533793f33223ccbd8a0",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0004",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPMN/denovo.cfm?knumber=DEN250013&start_search=1",
+          "source_class": "CURATED_OBSERVATORY_ACTOR",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://neurovalens.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://neurovalens.com/modiusspero/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://neurovalens.com/modiussleep/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0004::Modius Spero",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-2b1a988b9bdaa131ce1e4919057a724dfbaacc5a6c66edaf4732a4d000a70efd",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0004::Modius Sleep",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-d3ba4159f0f1b855976eea96e6189ce5ecbd16f2977061493a49a81a42b9d183",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0004::Modius Stimulation Pads",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-c4dc9ccc8759fa66769c5ee5946f306ef908772936ea1402d0c74423ca4cc66c",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen FDA De Novo official locator was retrieved, and first-party Neurovalens catalogue/detail surfaces were inspected; named Modius offerings and stimulation-pad accessories were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-880571253683edb64435123ca7f695330fbe0989c2ec08d9001f41b26cc490dc",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0029",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://synchron.com/research",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0029::Synchron Stentrode",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-1e7e172bd7cd4141c9d6362c3e08ed24f6b9ab006ceb7d718a8f7d0692af72b9",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Synchron research locator was retrieved as the first-party technology surface; the named Stentrode investigational offering was retained with an explicit F9 disposition.",
+      "recorded_at": "2026-09-25T21:29:52Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-4b35feab122e9efd64b4bde1a6aa1d592bf89a9710e0d5c18e2a0c579bed1228",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0001",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.neurable.com/products/mw75neurolt",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.neurable.com/products/mw75neuro",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0001::MW75 Neuro LT",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-0093a72899ce44c594572348a6ae7bece37f57e168d2695ada2f9693d5ed43a1",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0001::MW75 Neuro",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-91e7d8d142b3062a99a2d1bf66059d93cfd47f9d5f1733a7f31e8c2bee267d2e",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0001::Neurable App AI",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-79e2f1a084ab388ca602b96b6146e3d9afc0d24aaf83151ef9d58a7f42c3f946",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Neurable MW75 Neuro LT locator and sibling MW75 Neuro product surface were inspected; named headphone offerings and app/AI software were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-dd1164e8ec71e799cb8fee40c81069e299f689bd3318cc8b49236e65a1b26e29",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0002",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://neurosity.co/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://neurosity.co/developers",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0002::Crown",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-81889a12ad5864a3f4a07e59f6a0c6e05d602d6bc9e8c511755ea4197367e62a",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0002::Neurosity App",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-574c4348e9258dbcaac681f368839320ddbad75445219aa56dfddc7b301c2cf8",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0002::Neurosity SDK Console Kinesis",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-66f393104fdda504480b538f29d3571b90b1b82fe3ffcf5fda8bc361e48a8356",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Neurosity locator and developer technology surface were inspected; Crown headset offering and app/SDK software objects were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-20114d0f89a3d8783096283a2be321e721588587f3cc7794b3a67b8cbc8c86c6",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0012",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://paradromics.com/news/paradromics-completes-first-human-brain-computer-interface-bci-implantation/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://paradromics.com/connexus",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0012::Connexus BCI",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-3220e4e946d5a8f18336e99aea1889d9aa5434987b30725d764fc8f584f8f3c5",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0012::Connexus External Decode Stack",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-0454a12e307a177acd2ae9cabb4e2f1d2515b838ad9a7210dd9b090e48904f0e",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0012::Connexus BCI Platform",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-fcf21a65199ad703420ce587da31c6fcd0671cfa49aef80f69eaddb0be9c92ae",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Paradromics news locator and Connexus technology surface were inspected; named Connexus BCI offering and software/system boundary objects were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-378a22371728f8d7918abe4fe74123197556530dd9da799970e400ed48bb99a5",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0023",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://elemindtech.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://elemindtech.com/products/elemind",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0023::Elemind Sleep Headband",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-2e5c579dc04732f5fbb7d9f2f4ea8cc4963a23bd8e9fea2f22d831d20cf7467a",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0023::Elemind App AI Sleep Tailor",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-3899e6e15d2c9ba1d66dd785de2f670dc99800c047dd9b0ed0fcb66865ede7fc",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0023::Deep Sleep Stimulation Coming Soon",
+          "object_class": "OTHER_SCOPE_BOUNDARY",
+          "capture_id": "PDC-f97a461df782aa98c228afdb39046e67e49236a4f4d790088163baab4abdca3b",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Elemind locator and product detail surface were inspected; named sleep headband offering and app/feature boundary objects were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-b53600f31aec0d77ec45e7f5694fd88d5c60badd2c75165d991460f41412bc52",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0025",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.cognixion.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.cognixion.com/axon-r",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0025::Cognixion ONE Axon-R",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-30d3e1acbf04095a60cce0dd1fbfa61ae4bd4b6ad7a32bdee91560da9d3d2c94",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0025::BCI Studio",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-fdeb456fcee8c10d2a94835ed3de6a8821dd52921880aa055c95f772b19c5935",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Cognixion locator and Axon-R technology surface were inspected; named Axon-R offering and BCI Studio software were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-e64b538cca0d15bbc46ba4f8e3b56b2017563c599d41349f90f5a1d843f834f0",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0027",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://yneuro.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0027::Neuro ID",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-a7f2ecd28e31df8b4efdaef2308071772302d765d16e4dd9980c9ae1ceed9248",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Yneuro locator was inspected as the first-party technology surface; Neuro ID software was retained as an explicit software-boundary candidate with an F9 disposition.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-cf64661ff800408ccbc7c0fb5be56f20af39b49a2a55fae24015d529960e7929",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0041",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://cortec-neuro.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://cortec-neuro.com/bci/brain-interchange",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://cortec-neuro.com/products/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0041::Brain Interchange",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-41333a93b689cc93e2bf42d248edcfd992d2af5d6b8cc3556c34916406a3fd66",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0041::CorTec CDMO Partnership",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-5cc0daceb3c32528179ef6e8257adfa71dad6ef3384038189276e1fde4a59394",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0041::CorTec Electrode Leads Packaging",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-f2332af54f074de0678db79341e9b9110ab71363b834e39629bdad7b9b1bbdc6",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0041::CorTec Implant Platform",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-5bb937ac55293b37269d36a4aa9c76f32fa9783195189afb73dba71b7079d9ef",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official CorTec locator, Brain Interchange page, and products catalogue were inspected; named Brain Interchange offering plus CDMO/electrode/platform boundary objects were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:46:16Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-756fa966c3e28479bca7b7e642495e6ed810e52fe0a6e82c16473b1a03577600",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0008",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.kernel.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.kernel.com/products",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.kernel.com/experience",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0008::Kernel Flow 2",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-bb0929c57e87a4097c45f7995646ee3364f1bde5a6cf6503ff7b4314f6baa4e4",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0008::DevKit-3",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-33bc9686a000b0022aa6ad14bf3d893e7b4bd8455a82f7382dc5d3954868b9c0",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0008::Brain Age Tracer",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-ba18b0be92b68bc97caf246758bbc7bcc0f362eab68132f99c98044a260d071a",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0008::Cognition Tracer",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-04728d4797369cfcc7b85deaed17ba8caf94293b29cdd72d4d411d948ddeae00",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0008::Kernel Cloud",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-f798b2fa7523ed23bca24dc712e549c3ee10e4e31a26f39ef9ab1287dd830e1a",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0008::Data Acquisition Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-ae2b3fe3ba4544ca2de5f321adf2127b7464324e9b8dfbd379170890d0124a18",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0008::Real-time SDK",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-8d107ecf96ed4ba82695eea1805a8b2f574597d91b748d2825a749821087d55c",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0008::Synchronization Accessory Box",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-98b483bf9ceb7bedb1930d82d55f76a2a5df88ad0ca106fdf1d7a409be891d05",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Kernel locator and products/experience surfaces were inspected; named Flow/DevKit/tracer offerings and software/accessory boundaries were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:53:59Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-cdbff7ef88ef8e924feb446ada99be76a8842f2f2fe78bdf61a3a9e7af7b8c0d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0009",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.openwater.health/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.openwater.health/open-motion",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.openwater.health/openlifu",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0009::Open-Motion",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-f4ab851924a0709271ed185e440b7510262bb0eb381b2b1e6649e7c0fbb7664a",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0009::Open-LIFU",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-99c61feec484b56972668f9091ffb64bc63c7b82d59baa2e6682e081895e6944",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0009::Openwater Software AI Layer",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-7e156a8585e8e6e5ba2c310e2bcdabd22eff2af9555bc9e5805ef78ad92c75ba",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0009::Android Targeting App",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-c2d6b155d4b014d5da2446c730506ce7c1bbbe932f5875838b1319d6bafc635a",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Openwater locator and Open-Motion/Open-LIFU technology surfaces were inspected; named research platforms and software boundaries were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:53:59Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-f6f2e47f725fc3c2686c838c6c21c8b2fc6481a4d39d45e0700f081b049460ba",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0010",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.neuropace.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.neuropace.com/the-rns-system/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0010::RNS System",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-bc848a17606e1673cc92c7165ebd89eab7a711593cb20e4ca809f0c2c3f1c12d",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0010::RNS-320 Neurostimulator",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-1a9521d3db598923eab433eee40b5f76ec8bf617e2a47e37469c078d4c7e9951",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official NeuroPace locator and RNS System surface were inspected; named RNS System offering and stimulator component were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:53:59Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-c767a3ab997eebcd00010b5649011f80f441eb01295729ffa61217ab1208001d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0014",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://mindportal.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0014::MindSpeech",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-08dafac10c50b9d1904d8cadd2c09d822abd74bee0f84c3b81cf51e547d67c4b",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0014::MindGPT",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-39cd3f4e9e7919829962d3e34ff0269aff91b307eed362bca5edfb14714d0511",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0014::MindClick",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-b92b5c2523050c90ec268f2d6934b1b5a82801b824dc6e05ed4272bd513dfb51",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official MindPortal locator was inspected as the first-party technology surface; named research models MindSpeech/MindGPT/MindClick were retained as software-boundary candidates with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T21:53:59Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-7a8b84db1876fb87803bd1c9c8f1a0724ed3274be79e5d163ead9a91f65379c5",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0024",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://neuronsinc.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.neuronsinc.com/neurons-ai",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.neuronsinc.com/api",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0024::Neurons AI",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-46a45db6450bac3981aea04197752b80996ebff2b016be49ac7124f45963f09a",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0024::Neurons API",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-e755a5851d427e1983d608a8122fed1c5e5638627820375a2ccd75dae7760a39",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Neurons Inc locator and Neurons AI/API surfaces were inspected; software/service offerings were retained with explicit F9 dispositions and no hardware PRODUCT identity was allocated.",
+      "recorded_at": "2026-09-25T21:53:59Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-3916de09f1269bb3a39e802b38b7e3f2d888bbfe5d65fd93d85111bd11068509",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0018",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://neurogeneces.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.neurogeneces.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://shop.neurogeneces.com/products/neuroinsight-1",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0018::NeuroInsight",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-804107a3b5454d78e2c1afc720f6215773f4280512760d56a5173858ced6ad1a",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0018::NeuroInsight Brain Age Report",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-2f152fbfc214c5aa9debdda04b0a9c850e62bd7c328fdad8f3c039010490fe2c",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official NeuroGeneces locator and shop/product surfaces were inspected; NeuroInsight offering and report software boundary were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:00:53Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-a04593449fdbcd438730c349e4b477f388964195be879a4608f03bde83d30af1",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0019",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://bioserenity.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://careers.bioserenity.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0019::IceCap",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-1c513be56ec22050589106fd23ee17fb081c8c66b8ff6a50aec48e9a401b9b95",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0019::IceCap Neonatal",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-82b19f5ce4c4879c962db95290a7f557f0a11d5f3d00cca3ec580bad1af3474b",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0019::Neuronaute",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-be5b09330e3e6cf122352973634b7307e1953215102fc9f92f87c2fd382ad5fc",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0019::Neuronaute+",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-083bb39fc91d51ef63e159602ca6532cf589edbadbd78e2f808d3bf90fc97b26",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0019::Large Brain Model",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-bb71ba2cd8543274df8f966b24db1aa0198eba80f2ad7751338104632284ca55",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official BioSerenity locator and first-party careers/product-history surface were inspected; named IceCap/Neuronaute offerings and Large Brain Model software were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:00:53Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-5b7fe91f3a163431a0006cda7bde8fe9da1b015c906588b9e778492ff2ef7de7",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0032",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://science.xyz/patients/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://prima.science.xyz/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_DETAIL_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0032::PRIMA",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-2285047b249b17cfb7e78d2f01e94c9344b270e68eb86d06add2c1846b30fca1",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0032::PRIMA Implant",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-3d3afc78006f663038afa221771a0c0b025036bd5ddd21a70c291bb6603e4878",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0032::PRIMA Glasses",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-d3df1e5d92807271e83839543393b683608a9d95f6de04bc276e8fc75dc1af37",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Science Corporation patients locator and PRIMA detail surface were inspected; named PRIMA offering and implant/glasses components were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:00:53Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-b418703b0b8e70612efd8c8bc6a708a671f8e2173a9d00a9a841a7211ad0261f",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0034",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.coherenceneuro.com/articles",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.coherenceneuro.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.coherenceneuro.com/article/coherence-neuro-has-started-its-first-clinical-study",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0034::SOMA",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-e207c4c68accf8a743830c99879f477d46f747bf326230bc8955bccc6fabe6c8",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0034::SOMA-1",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-d3c95ab5627de74f270966449964e3de5d5a58621da5af6a45bb67bc40f6c5f5",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0034::CIPHER System",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-90c77d231e588232367549a7898e84ffde6a9150180961f6a6ac5af70248a1e3",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0034::SOMA App",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-879f5a5eb01815fbf2b6e0432fffa6785de80650ab94e195197d09c2309b4c90",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0034::SOMA Over-ear Wearable",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-50f3a1eeb435876ef5216b79faa102714210b991915ed6d1b5aa5ed390f2326f",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Coherence Neuro articles locator and homepage/clinical-study surfaces were inspected; named SOMA/CIPHER offerings and app/wearable boundaries were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:00:53Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-9730c148b5b7802bbfcb8d52c9aad76c41b94c80a308abc5ee475f00061b39cf",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0036",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.medtronic.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.medtronic.com/us-en/healthcare-professionals/products/neurological/deep-brain-stimulation-systems/percept-pc.html",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "PRODUCT_DETAIL_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0036::Percept PC Neurostimulator",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-dd400b855c9e1fbadaf0ee3c82d82f6d5080840197e5a29be33ec8e1b51e3513",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0036::Percept RC Neurostimulator",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-1f4b4b9105d4597ffa6e75096599bd1d024f81d90f15b1ff946cda3f8ebb3725",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0036::SenSight Directional Lead",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-d094f7ce7d30e11266847ad2e4caa5097bb0dd447022d6a9f6652f95cc0ba82f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0036::BrainSense Technology",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-ffc800b3527f45a2570acd7b6a2fea40542b9948305a83615e4948d427f572a0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0036::Medtronic DBS Patient Programmer",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-eefd23884e2527fe2ac56557bb57b1c5f5430155ba9de4cb741721e82bb39374",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official Medtronic locator was retrieved via first-party browser retrieval and the Percept PC neurological product surface was inspected; named Percept neurostimulators and DBS accessory/technology boundaries were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:00:53Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-01ae1b269434850f4ec5c9586f3581d65617ebeec07b38b6396fdfefe3e82428",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0020",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.gtec.at/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR",
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://www.gtec.at/product/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0020::g.HIamp",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-9bc2f40256a181df2e307d26662be39b4bd5ac9bd74edb0df42497e27904ecaa",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::g.USBamp RESEARCH",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-728921f169866fc1e18d5458254ed52fb784498ffaabed9e0ce3abb6a9824fb5",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::g.USBamp",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-53157c4a264cbd4cceeceb28e898ab1c72bcc73a3b1b61cf501ff4f880f22cd3",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::g.Nautilus PRO Flexible",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-b0401d8f0c76b64cf1c5c97a5e00923ee00dfd7f13051e8b94062cca9823ad11",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::g.Nautilus Research",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-975d3298ce81c897bdc205133171c13ade2810b25ebe693304659099d37da8f9",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::NAUTILUS Multi-Purpose",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-084dc0b8caf98ce2d072ec096dcee6f605c8999522ba69b2732d4375dc9bfd31",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::Unicorn Hybrid Black",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-34309cf6c970e71e0caaad697144c481174bc1b16149c85ff14550ea9f701ffb",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::Unicorn BCI Core-8",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-bdcc8e207d9c2081b2f64edc2b32604149f3fab0a0b4b381b69c78f117b5a557",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::recoveriX",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-367da449f2a2e276a2c37a0f7aa5d395c286445bd72b5c716a841e676e00c996",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::cortiQ",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-6705b9ca80c76f2652857c82b55623a9b8ead35e99b8adb57f2e1def19b59cfe",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::mindBEAGLE",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-454909222f5710758cf422add785615a16cbe066beb4bee359696a4554678a31",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0020::g.Pangolin",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-be9372b2f5c16a6a206c28a0885902d9da9b5a0372dd26d8cbf68f9ec4a8c838",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0020::g.LADYbird",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-e1a762a211a295726b4d95e516b4c610d86f8dad77185c676196d1d3eff8059f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0020::g.tec Suite 2024",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-7874e0f548769bf2c7adf5fd19ece6c835836372dbd9bf3516043a6b54e6e4a0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0020::g.HIsys",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-03d6d5089211592c091742d0dc89cfe06d2cb0757c88a6f5797c6fcb373859c6",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0020::g.Pype",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-5724444d9bd437dabdd2439d649e47a0ff024604093b24c45c0c1a7a9f2a94b9",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official g.tec locator and product catalogue were inspected; dense named amplifier/BCI/system offerings plus electrode/software boundaries on those surfaces were retained with explicit F9 dispositions (adversarial catalogue coverage check).",
+      "recorded_at": "2026-09-25T22:07:44Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    },
+    {
+      "completion_record_id": "F9AC-31e1cac7de807e20a277fc5544a1f5d005e06a5a2a34185e03b275dc8e00692d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0017",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://openbci.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://shop.openbci.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://docs.openbci.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0017::Galea",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-15970371d8701766105b3fa0cc3957e64883f29e0af9fdbef73d4fb88fb5172d",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Cyton Biosensing Board 8ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-bc91f0ba1eecdcb97c6e4d887fc169deea63ff71aec20d7e7f4b53ec208e9e11",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Cyton Daisy Biosensing Boards 16ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-99a397d3ee78976c398ff6ec7d7d9a661e759b3f731023acbc8cfc5b36dd94e0",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Ganglion Board 4ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-35afee0ad71573463e6367e8cff96a4d5a51b7e4916fee342120ef1a6ccee90d",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Ultracortex Mark IV EEG Headset",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-bd81f1899766af3185bfd94706f5dcceebfd8b6a1416f9f55c573fece022d287",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Complete Ultracortex",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-507afb47f26d2cd538d08e556784294b93fb187b0620f1c0a62ecd71196a2433",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Open-cEEGrid Kit",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-ec6f88f8169807df48940e66c19932879d4908bf425037447ca2c0d1b1fa694d",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Open-cEEGrid Around-the-Ear EEG Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-4520135f90f1411fa6cd9a72f83cc994f5399c19453a154fbdc8a7ce89f3fa11",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::OpenBCI EEG Headband Kit",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-5410a22b0163929f9ca95d15bd8b1c790808058bdf59152d01d2d42a0360b756",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::All-in-One EEG Electrode Cap Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-9b89a1106d2275c6954ab68208ef9218be680a7ad9f8caf1a7f9100693ec5efd",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::All-in-One Gelfree Electrode Cap Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-b950288c6f284b79328cd6fa660e8e772d34ec162d6ba30b63b22b91295a7627",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::All-in-One Biosensing R&D Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-e992a7e77c52e55c4a2d86b46f5b7092b5b20a94b720672baa79f8fc4f2c7e92",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::Biosensing Starter Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-caab1841f4d6bb0fb3a1b3aa1df7d3b1b1fa9c92b6fb1e7b2416047845cf9c3d",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::EXG Experiment Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-b5fcc50af7195c5a020c94410d0a5aebb3fd15453c9c7f6f6643b03f7ea6d1ee",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::3D-Print-It-Yourself Neurotechnologist Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-8d6d2ad542ee60328e5474408f9e82c69982c46ab04515e791fe7db637a1eab6",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::OpenBCI Instructional Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-93324b6ffd1bd6bdc5a35d031168e2288eb06153c5ad263d67b38ae1b613a5ff",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::All-in-One EmotiBit Bundle",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-2154615d8d0500003a4622405f4eb65b0df97259e027e48bb63e11e81f4bf640",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0017::ThinkPulse Active Electrode Add-on Kits",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-8c61f705868572d6b18d98ccc29c6fd74d3100a0db3f0362079dcb2fdf341b12",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::External Trigger Add-on for Cyton Board",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-02971507079234310aafd02b8c01c59d2d9bdbbc60f9e7f0054f75bfb7ecdab9",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::EEG Electrode Cap Kit",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-cb6326c12700205d59bd61b99612e54050d433ef83bd0aaa837f2511ab46aecd",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::Gelfree BCI Electrode Cap Kit",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-d0dd6ff2fbdf9f2508c65f8f0b1451956128b98fad2424b7c489191ffcc448fd",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::Cyton Dongle Replacement",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-12ff5576bf1f34d96f42c51f23e072ab7cde2c63d2c2e2f0c7f252e0c32f46a1",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::Ganglion Dongle",
+          "object_class": "COMPONENT_OR_ACCESSORY_BOUNDARY",
+          "capture_id": "PDC-219caef9cd66a5e55c3a47a1a457b9237607bc94926dee4cbfc90c7603d1e3e0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0017::OpenBCI GUI",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-153fc0da2f113f82cf77a53e7d1324c9dd47c3adca3ac84e44b8e03152ba971c",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official OpenBCI locator was retrieved via first-party browser session; shop and docs catalogue surfaces were inspected; dense named boards/headsets/bundles plus accessory/software boundaries were retained with explicit F9 dispositions.",
+      "recorded_at": "2026-09-25T22:14:50Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    }
+  ],
+  "completion_record_count": 26,
+  "completed_actor_ids": [
+    "ORG-0003",
+    "ORG-0006",
+    "ORG-0005",
+    "ORG-0007",
+    "ORG-0013",
+    "ORG-0004",
+    "ORG-0029",
+    "ORG-0001",
+    "ORG-0002",
+    "ORG-0012",
+    "ORG-0023",
+    "ORG-0025",
+    "ORG-0027",
+    "ORG-0041",
+    "ORG-0008",
+    "ORG-0009",
+    "ORG-0010",
+    "ORG-0014",
+    "ORG-0024",
+    "ORG-0018",
+    "ORG-0019",
+    "ORG-0032",
+    "ORG-0034",
+    "ORG-0036",
+    "ORG-0020",
+    "ORG-0017"
+  ],
+  "actor_completion_records_remaining": 11,
+  "f9_exhaustion_state": "CONTINUE",
+  "source_packet_id": "RELEASE_A_A2_F9_OPENBCI_PROTOCOL_TRANCHE_11_v1.0",
+  "source_packet_sha256": "c17567c3ec47875a4e0305bfcb46d4b3b6e15adc3fd5e2128ed0a73226ae5350",
+  "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+}
