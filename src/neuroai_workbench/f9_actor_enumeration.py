@@ -299,6 +299,120 @@ def validate_f9_actor_completion_record(
             )
 
 
+def f9_actor_completion_ledger_digest(ledger: Mapping[str, Any]) -> str:
+    """Return the deterministic SHA-256 for an F9 actor completion ledger."""
+
+    material = {key: value for key, value in ledger.items() if key != "ledger_sha256"}
+    encoded = json.dumps(
+        material,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_f9_actor_completion_ledger(
+    ledger: Mapping[str, Any],
+    *,
+    predecessor: Mapping[str, Any] | None = None,
+    procedure: Mapping[str, Any] | None = None,
+) -> None:
+    """Fail closed on digest, predecessor, growth, duplicate-actor, and capture-reuse faults."""
+
+    bound_procedure = procedure or load_default_f9_actor_enumeration_procedure()
+    validate_f9_actor_enumeration_procedure(bound_procedure)
+
+    if ledger.get("ledger_sha256") != f9_actor_completion_ledger_digest(ledger):
+        raise ProductDiscoveryError("F9 actor completion ledger_sha256 does not match deterministic content")
+    if ledger.get("procedure_id") != bound_procedure["procedure_id"]:
+        raise ProductDiscoveryError("F9 actor completion ledger does not bind the frozen procedure ID")
+    if ledger.get("procedure_sha256") != bound_procedure["procedure_sha256"]:
+        raise ProductDiscoveryError("F9 actor completion ledger does not bind the frozen procedure digest")
+    if ledger.get("boundary") != F9_ENUMERATION_BOUNDARY:
+        raise ProductDiscoveryError("F9 actor completion ledger boundary drift")
+
+    sequence = ledger.get("ledger_sequence")
+    if not isinstance(sequence, int) or sequence < 1:
+        raise ProductDiscoveryError("F9 actor completion ledger_sequence must be a positive integer")
+
+    predecessor_id = ledger.get("predecessor_ledger_id")
+    predecessor_sha = ledger.get("predecessor_ledger_sha256")
+    if sequence == 1:
+        if predecessor_id is not None or predecessor_sha is not None:
+            raise ProductDiscoveryError("F9 ledger sequence 1 must not declare a predecessor link")
+        if predecessor is not None:
+            raise ProductDiscoveryError("F9 ledger sequence 1 must not be validated against a predecessor object")
+    else:
+        if not isinstance(predecessor_id, str) or not predecessor_id.strip():
+            raise ProductDiscoveryError("F9 ledger after sequence 1 requires predecessor_ledger_id")
+        if not isinstance(predecessor_sha, str) or re.fullmatch(r"[0-9a-f]{64}", predecessor_sha) is None:
+            raise ProductDiscoveryError("F9 ledger after sequence 1 requires predecessor_ledger_sha256")
+        if predecessor is None:
+            raise ProductDiscoveryError("F9 ledger after sequence 1 requires the predecessor ledger object")
+        validate_f9_actor_completion_ledger(predecessor, procedure=bound_procedure)
+        if predecessor.get("ledger_id") != predecessor_id:
+            raise ProductDiscoveryError("F9 ledger predecessor_ledger_id does not match predecessor ledger_id")
+        if predecessor.get("ledger_sha256") != predecessor_sha:
+            raise ProductDiscoveryError("F9 ledger predecessor_ledger_sha256 does not match predecessor digest")
+        if int(predecessor.get("ledger_sequence", -1)) != sequence - 1:
+            raise ProductDiscoveryError("F9 ledger predecessor sequence must be exactly prior by one")
+
+    records = ledger.get("completion_records")
+    if not isinstance(records, list):
+        raise ProductDiscoveryError("F9 actor completion ledger completion_records must be a list")
+    if int(ledger.get("completion_record_count", -1)) != len(records):
+        raise ProductDiscoveryError("F9 actor completion ledger completion_record_count drift")
+
+    completed_actor_ids = ledger.get("completed_actor_ids")
+    if not isinstance(completed_actor_ids, list):
+        raise ProductDiscoveryError("F9 actor completion ledger completed_actor_ids must be a list")
+
+    records_by_actor: dict[str, Mapping[str, Any]] = {}
+    ledger_capture_ids: set[str] = set()
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise ProductDiscoveryError("F9 actor completion ledger records must be objects")
+        validate_f9_actor_completion_record(record, bound_procedure)
+        actor_id = str(record["actor_organization_id"])
+        if actor_id in records_by_actor:
+            raise ProductDiscoveryError(f"Duplicate F9 actor completion record: {actor_id}")
+        records_by_actor[actor_id] = record
+        for candidate in cast(list[Mapping[str, Any]], record["candidate_manifest"]):
+            capture_id = str(candidate.get("capture_id") or "")
+            if not capture_id:
+                continue
+            if capture_id in ledger_capture_ids:
+                raise ProductDiscoveryError(f"F9 capture_id reused across actor completion records: {capture_id}")
+            ledger_capture_ids.add(capture_id)
+
+    if len(completed_actor_ids) != len(set(str(actor_id) for actor_id in completed_actor_ids)):
+        raise ProductDiscoveryError("F9 completed_actor_ids contains duplicate actor identities")
+    if set(str(actor_id) for actor_id in completed_actor_ids) != set(records_by_actor):
+        raise ProductDiscoveryError("F9 completed_actor_ids must exactly match completion_records actors")
+
+    expected_remaining = int(bound_procedure["actor_count"]) - len(records_by_actor)
+    if int(ledger.get("actor_completion_records_remaining", -1)) != expected_remaining:
+        raise ProductDiscoveryError("F9 actor_completion_records_remaining drift")
+
+    exhaustion = f9_bounded_exhaustion_state(cast(list[Mapping[str, Any]], records), bound_procedure)
+    if ledger.get("f9_exhaustion_state") != exhaustion:
+        raise ProductDiscoveryError("F9 ledger f9_exhaustion_state does not match bounded exhaustion function")
+
+    if sequence > 1 and predecessor is not None:
+        prior_actors = cast(list[str], predecessor["completed_actor_ids"])
+        if not set(prior_actors) <= set(completed_actor_ids):
+            raise ProductDiscoveryError("F9 successor ledger shrunk completed_actor_ids versus predecessor")
+        prior_records = {
+            str(record["actor_organization_id"]): record
+            for record in cast(list[Mapping[str, Any]], predecessor["completion_records"])
+        }
+        for actor_id, prior_record in prior_records.items():
+            if records_by_actor.get(actor_id) != prior_record:
+                raise ProductDiscoveryError(f"F9 successor ledger mutated predecessor completion record for {actor_id}")
+
+
 def f9_bounded_exhaustion_state(
     records: Sequence[Mapping[str, Any]],
     procedure: Mapping[str, Any] | None = None,
