@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable, Mapping, Sequence
+from datetime import datetime
 from importlib.resources import files
 from typing import Any, cast
 
@@ -79,6 +80,18 @@ def _schema_errors(value: Any, schema_name: str) -> list[str]:
         f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
         for error in sorted(validator.iter_errors(value), key=lambda item: list(item.absolute_path))
     ]
+
+
+def _parse_bound_timestamp(value: Any, *, field: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        raise ProductDiscoveryError(f"{field} requires a non-empty timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ProductDiscoveryError(f"{field} must be a valid offset-aware timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ProductDiscoveryError(f"{field} must include an explicit timezone")
+    return parsed
 
 
 def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
@@ -215,6 +228,7 @@ def product_capture_id(capture: Mapping[str, Any]) -> str:
             "language",
             "jurisdiction",
             "outcome",
+            "capture_estimation_eligible",
             "observed_at",
             "registry_projection_version",
             "frame_register_version",
@@ -247,6 +261,8 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
     if capture["frame_register_version"] != FRAME_REGISTER_VERSION:
         raise ProductDiscoveryError(f"frame_register_version must be {FRAME_REGISTER_VERSION}")
+    if capture["boundary"] != DISCOVERY_BOUNDARY:
+        raise ProductDiscoveryError("Product capture boundary does not match the frozen Release-A boundary")
 
     outcome = capture["outcome"]
     if outcome not in CAPTURE_OUTCOMES:
@@ -258,6 +274,14 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
             raise ProductDiscoveryError("INCLUDE_RESOLVED capture requires source_observation_ref")
     if capture["capture_estimation_eligible"] and outcome != "INCLUDE_RESOLVED":
         raise ProductDiscoveryError("Only resolved in-scope offering captures can be capture-estimation eligible")
+
+    observed_at = _parse_bound_timestamp(capture["observed_at"], field="Product capture observed_at")
+    knowledge_cutoff = _parse_bound_timestamp(
+        capture["knowledge_time_cutoff"],
+        field="Product capture knowledge_time_cutoff",
+    )
+    if observed_at > knowledge_cutoff:
+        raise ProductDiscoveryError("Product capture observed_at cannot exceed its knowledge_time_cutoff")
 
 
 def validate_capture_against_frame(
@@ -325,9 +349,12 @@ def product_discovery_run_id(run: Mapping[str, Any]) -> str:
             "world_time_cutoff",
             "knowledge_time_cutoff",
             "known_identity_set_sha256",
+            "capture_count",
+            "stop_state",
+            "stop_reason",
         )
     }
-    for set_field in ("query_or_seed_ids", "languages", "jurisdictions"):
+    for set_field in ("query_or_seed_ids", "languages", "jurisdictions", "capture_ids"):
         material[set_field] = sorted(cast(list[str], run.get(set_field, [])))
     encoded = json.dumps(
         material,
@@ -351,6 +378,8 @@ def validate_discovery_run(run: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"frame_register_version must be {FRAME_REGISTER_VERSION}")
     if run["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
         raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
+    if run["boundary"] != DISCOVERY_BOUNDARY:
+        raise ProductDiscoveryError("Discovery run boundary does not match the frozen Release-A boundary")
 
 
 def validate_run_against_captures(
@@ -432,6 +461,8 @@ def build_capture_histories(
             raise ProductDiscoveryError(f"Capture references undeclared frame {frame_id}")
         validate_capture_against_frame(capture, indexed_frames[frame_id])
         if frame_id not in selected_frame_ids or capture["outcome"] != "INCLUDE_RESOLVED":
+            continue
+        if estimation_eligible_only and not capture["capture_estimation_eligible"]:
             continue
         offering_id = str(capture["canonical_offering_id"])
         histories.setdefault(
