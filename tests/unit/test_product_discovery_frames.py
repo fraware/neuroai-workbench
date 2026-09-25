@@ -741,6 +741,7 @@ def test_default_analysis_universe_is_frozen_and_binds_a1_seed_state() -> None:
     universe = load_default_analysis_universe()
     validate_analysis_universe(universe)
     assert universe["analysis_universe_id"] == DEFAULT_ANALYSIS_UNIVERSE_ID
+    assert universe["workbench_baseline_sha"] == "f4df0c5be5db65ecdf49a6c7202746f0acb560b7"
     assert universe["a1_seed_registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
     assert universe["a1_identity_registry_id"] == "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
     assert (
