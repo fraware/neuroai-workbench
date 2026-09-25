@@ -84,9 +84,7 @@ def load_default_f9_actor_enumeration_procedure() -> dict[str, Any]:
     procedure = cast(
         dict[str, Any],
         json.loads(
-            files(RESOURCE_PACKAGE)
-            .joinpath(F9_ACTOR_ENUMERATION_PROCEDURE_RESOURCE)
-            .read_text(encoding="utf-8")
+            files(RESOURCE_PACKAGE).joinpath(F9_ACTOR_ENUMERATION_PROCEDURE_RESOURCE).read_text(encoding="utf-8")
         ),
     )
     validate_f9_actor_enumeration_procedure(procedure)
@@ -138,9 +136,7 @@ def validate_f9_actor_enumeration_procedure(procedure: Mapping[str, Any]) -> Non
         raise ProductDiscoveryError("F9 enumeration procedure actor identities do not exactly match frozen seed order")
 
     frame = _f9_frame()
-    if set(cast(list[str], procedure.get("allowed_source_classes"))) != set(
-        cast(list[str], frame["source_classes"])
-    ):
+    if set(cast(list[str], procedure.get("allowed_source_classes"))) != set(cast(list[str], frame["source_classes"])):
         raise ProductDiscoveryError("F9 enumeration procedure allowed source classes drift from frozen F9")
     if [procedure.get("query_family")] != cast(list[str], frame["query_families"]):
         raise ProductDiscoveryError("F9 enumeration procedure query family does not exactly match frozen F9")
@@ -279,11 +275,17 @@ def validate_f9_actor_completion_record(
         if not official_locator_seen:
             raise ProductDiscoveryError("Complete F9 actor enumeration requires retrieved frozen official locator")
         if not catalogue_surface_retrieved:
-            raise ProductDiscoveryError("Complete F9 actor enumeration requires retrieved first-party catalogue surface")
+            raise ProductDiscoveryError(
+                "Complete F9 actor enumeration requires retrieved first-party catalogue surface"
+            )
         if not catalogue_manifest_complete:
-            raise ProductDiscoveryError("Complete F9 actor enumeration requires complete inspected-surface candidate manifest")
+            raise ProductDiscoveryError(
+                "Complete F9 actor enumeration requires complete inspected-surface candidate manifest"
+            )
         if not all_candidates_captured:
-            raise ProductDiscoveryError("Complete F9 actor enumeration requires a capture disposition for every candidate")
+            raise ProductDiscoveryError(
+                "Complete F9 actor enumeration requires a capture disposition for every candidate"
+            )
 
 
 def f9_bounded_exhaustion_state(
@@ -306,9 +308,7 @@ def f9_bounded_exhaustion_state(
     expected_actor_ids = set(cast(list[str], bound_procedure["actor_identity_ids"]))
     if set(records_by_actor) != expected_actor_ids:
         return "CONTINUE"
-    if any(
-        record["completion_state"] == "ACTOR_ENUMERATION_BLOCKED" for record in records_by_actor.values()
-    ):
+    if any(record["completion_state"] == "ACTOR_ENUMERATION_BLOCKED" for record in records_by_actor.values()):
         return "UNRESOLVED_SOURCE_BARRIER"
     if any(
         record["completion_state"] != "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL"
