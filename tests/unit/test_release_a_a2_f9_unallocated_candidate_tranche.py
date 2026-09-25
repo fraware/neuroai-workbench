@@ -21,7 +21,7 @@ from neuroai_workbench.product_discovery_frames import (
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 PACKET_RESOURCE = "RELEASE_A_A2_F9_UNALLOCATED_CANDIDATE_TRANCHE_2.v1.0.json"
 PRIOR_PACKET_RESOURCE = "RELEASE_A_A2_F9_KNOWN_OVERLAP_TRANCHE_1.v1.0.json"
-PACKET_SHA256 = "81dc8d8529d3fade6b4fd19ba95721de73a7b0ccd82dec854777a9718aacd809"
+PACKET_SHA256 = "c1259a991171104fb692b054ad43a033f98f0af9d25b51544b8340c8a2e82270"
 
 
 def _load_json(name: str) -> dict[str, Any]:
