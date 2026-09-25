@@ -1,0 +1,39 @@
+{
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "manifest_version": "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0",
+  "status": "FROZEN_v1.0",
+  "workbench_baseline_sha": "f4df0c5be5db65ecdf49a6c7202746f0acb560b7",
+  "a1_seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "a1_seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
+  "initial_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "initial_known_identity_count": 6,
+  "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+  "population_view_id": "A-P1",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "knowledge_window_rule": "Fixed retrospective evidence window ending 30 calendar days after the world-time cutoff.",
+  "primary_estimation_frame_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F8",
+    "F10"
+  ],
+  "diagnostic_only_frame_ids": [
+    "F7",
+    "F9",
+    "F11"
+  ],
+  "later_observation_policy": "Observations after the world-time cutoff are admissible only as evidence about product identity or state valid on or before 2026-09-24; post-cutoff world-state changes must not be projected backward into this analysis universe.",
+  "boundary": "This manifest freezes the Release-A A2 analytical universe and evidence cutoffs. It does not establish global completeness, unseen-population size, market share, comparative effectiveness, S2 publication authority, or v4.2 assessment effect.",
+  "a1_identity_registry_id": "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0",
+  "a1_identity_registry_sha256": "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc",
+  "a1_identity_binding_id": "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
+}
