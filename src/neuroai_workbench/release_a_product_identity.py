@@ -83,7 +83,9 @@ def validate_seed_product_entity_registry(
         raise ReleaseAProductIdentityError("Canonical Product Entity authority is not frozen")
     if authority_state == "FROZEN_v1.0":
         if not registry.get("approved_candidate_blob_sha") or not registry.get("approval_ref"):
-            raise ReleaseAProductIdentityError("Frozen Product Entity authority requires exact candidate blob and approval ref")
+            raise ReleaseAProductIdentityError(
+                "Frozen Product Entity authority requires exact candidate blob and approval ref"
+            )
     else:
         if registry.get("approved_candidate_blob_sha") is not None or registry.get("approval_ref") is not None:
             raise ReleaseAProductIdentityError("Pending Product Entity authority cannot claim an approval binding")
@@ -154,29 +156,22 @@ def cross_validate_product_entities_against_a1(
     validate_seed_product_entity_registry(entity_registry, require_frozen=require_frozen)
 
     bindings = {
-        str(item["canonical_entity_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], seed_manifest["bindings"])
+        str(item["canonical_entity_id"]): item for item in cast(Sequence[Mapping[str, Any]], seed_manifest["bindings"])
     }
-    rows = {
-        str(item["canonical_entity_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], seed_registry["rows"])
-    }
+    rows = {str(item["canonical_entity_id"]): item for item in cast(Sequence[Mapping[str, Any]], seed_registry["rows"])}
     observations = {
-        str(item["observation_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], evidence_packet["observations"])
+        str(item["observation_id"]): item for item in cast(Sequence[Mapping[str, Any]], evidence_packet["observations"])
     }
     entity_bindings = {
-        str(item["entity_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], entity_registry["identity_bindings"])
+        str(item["entity_id"]): item for item in cast(Sequence[Mapping[str, Any]], entity_registry["identity_bindings"])
     }
-    entities = {
-        str(item["entity_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], entity_registry["entities"])
-    }
+    entities = {str(item["entity_id"]): item for item in cast(Sequence[Mapping[str, Any]], entity_registry["entities"])}
 
     expected_ids = set(bindings)
     if set(rows) != expected_ids or set(entities) != expected_ids or set(entity_bindings) != expected_ids:
-        raise ReleaseAProductIdentityError("A1 Product Entity authority must exactly cover the seed offering identity set")
+        raise ReleaseAProductIdentityError(
+            "A1 Product Entity authority must exactly cover the seed offering identity set"
+        )
 
     for entity_id in sorted(expected_ids):
         seed_binding = bindings[entity_id]
@@ -192,10 +187,14 @@ def cross_validate_product_entities_against_a1(
         expected_observations = {str(ref) for ref in seed_binding["source_observation_refs"]}
         observed_binding_refs = {str(ref) for ref in identity_binding["source_observation_refs"]}
         if observed_binding_refs != expected_observations:
-            raise ReleaseAProductIdentityError(f"{entity_id} identity evidence does not exactly match A1 seed observations")
+            raise ReleaseAProductIdentityError(
+                f"{entity_id} identity evidence does not exactly match A1 seed observations"
+            )
         for observation_ref in expected_observations:
             observation = observations.get(observation_ref)
             if observation is None:
                 raise ReleaseAProductIdentityError(f"{entity_id} identity evidence references unknown observation")
             if observation.get("exact_product_label") != entity["canonical_label"]:
-                raise ReleaseAProductIdentityError(f"{entity_id} source observation label does not match canonical label")
+                raise ReleaseAProductIdentityError(
+                    f"{entity_id} source observation label does not match canonical label"
+                )
