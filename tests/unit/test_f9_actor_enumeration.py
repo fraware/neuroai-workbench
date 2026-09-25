@@ -43,7 +43,7 @@ def _completion(
             {
                 "candidate_key": f"{actor_id}::EXAMPLE",
                 "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
-                "capture_id": "PDC-" + "a" * 64,
+                "capture_id": "PDC-" + actor_id.removeprefix("ORG-").zfill(64),
                 "capture_outcome": "UNRESOLVED_IDENTITY",
             }
         )
@@ -189,6 +189,12 @@ def test_complete_actor_record_requires_exact_candidate_capture_dispositions() -
     with pytest.raises(ProductDiscoveryError, match="Duplicate F9 candidate_key"):
         validate_f9_actor_completion_record(record)
 
+    record = _completion("ORG-0001")
+    record["candidate_manifest"][0]["candidate_key"] = "ORG-0002::OTHER"
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="bound to its frozen actor"):
+        validate_f9_actor_completion_record(record)
+
 
 def test_actor_record_fails_closed_on_identity_source_and_completion_semantics() -> None:
     record = _completion("ORG-0001")
@@ -201,6 +207,12 @@ def test_actor_record_fails_closed_on_identity_source_and_completion_semantics()
     record["inspection_surfaces"][0]["source_class"] = "MEDIA"
     _reseal_record(record)
     with pytest.raises(ProductDiscoveryError, match="source_class"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"][0]["source_class"] = "CURATED_OBSERVATORY_ACTOR"
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="first-party manufacturer/vendor"):
         validate_f9_actor_completion_record(record)
 
     record = _completion("ORG-0001")
@@ -245,7 +257,14 @@ def test_partial_and_blocked_records_do_not_claim_bounded_exhaustion() -> None:
     assert f9_bounded_exhaustion_state(blocked) == "UNRESOLVED_SOURCE_BARRIER"
 
 
-def test_exhaustion_ledger_rejects_duplicate_actor_completion_records() -> None:
+def test_exhaustion_ledger_rejects_duplicate_actor_or_capture_bindings() -> None:
     record = _completion("ORG-0001")
     with pytest.raises(ProductDiscoveryError, match="Duplicate F9 actor completion record"):
         f9_bounded_exhaustion_state([record, deepcopy(record)])
+
+    first = _completion("ORG-0001")
+    second = _completion("ORG-0002")
+    second["candidate_manifest"][0]["capture_id"] = first["candidate_manifest"][0]["capture_id"]
+    _reseal_record(second)
+    with pytest.raises(ProductDiscoveryError, match="reused across actor"):
+        f9_bounded_exhaustion_state([first, second])
