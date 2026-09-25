@@ -1,0 +1,164 @@
+{
+  "ledger_id": "RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_001_v1.0",
+  "ledger_sha256": "daec7d933de5a5496c397a87c1105adca162157451c920a68ba2d4d03c958166",
+  "ledger_sequence": 1,
+  "predecessor_ledger_id": null,
+  "predecessor_ledger_sha256": null,
+  "status": "IMMUTABLE_SUCCESSOR",
+  "assembled_on": "2026-09-25",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+  "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+  "actor_seed_register_id": "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0",
+  "actor_seed_count": 37,
+  "completion_records": [
+    {
+      "completion_record_id": "F9AC-af35e1dedb601910e94c23fc59e1892431e0103a3374d707bfe6c3780ca2e30d",
+      "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+      "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+      "actor_organization_id": "ORG-0003",
+      "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+      "inspection_surfaces": [
+        {
+          "locator": "https://www.bitbrain.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "FROZEN_OFFICIAL_LOCATOR"
+          ]
+        },
+        {
+          "locator": "https://www.bitbrain.com/neurotechnology-products",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        },
+        {
+          "locator": "https://downloads.bitbrain.com/",
+          "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+          "retrieval_outcome": "RETRIEVED",
+          "roles": [
+            "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+            "BOUNDARY_EVIDENCE_SURFACE"
+          ]
+        }
+      ],
+      "candidate_manifest": [
+        {
+          "candidate_key": "ORG-0003::Diadem EEG 12ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-86943654345ab06f576f06ec9a50d422adbedc339d8974d49d6ce41d0e5875a8",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Air EEG 8ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-0093e10189b16f42a325c890656ae7247375a5165e4aeda9bb5acc558b949e8c",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Hero EEG 9ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-97f5305ba3d4f26d73a988f181fe2be757c7aee710864caa86370dd7c69cabf2",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Ikon EEG 5ch",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-198db15a3d9430b45f4f7d5f6a2a5f0e0e6eb6b370305de7a3a4634fe4a0432c",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Ikon Sleep EEG",
+          "object_class": "PLAUSIBLE_PRODUCT_OFFERING",
+          "capture_id": "PDC-07f1e4f326b900e1defb759219f1b1f062429cba3ffb3ca2eee365ec166d1eb7",
+          "capture_outcome": "UNRESOLVED_IDENTITY"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Plus EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-36fbb491290caefbe82dbcc1bdefb6256dd6cb73b681ef616dece8d1707e5b7b",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-c1c4ca0f623d1d314c8a50941189133a3e32316001553698580e154e21340ab3",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Kids EEG",
+          "object_class": "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+          "capture_id": "PDC-2d27e0a58ba96805c92a3ed6fac6cbb0faac84e02aab790d5a338c604a5a1b5f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Versatile Bio Amplifier",
+          "object_class": "OTHER_SCOPE_BOUNDARY",
+          "capture_id": "PDC-a24b3f439668f23ee95bd1ffefa482f24b1038b53880683b4cbb0b384fefade1",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Ring Biosignal GSR BVP",
+          "object_class": "OTHER_SCOPE_BOUNDARY",
+          "capture_id": "PDC-5852d6773a172226267aa8299874f37846dc0149306f57a2658f6e854da05223",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsLite Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-77c714cab918118ad1a69ace84077fad6f40da32d870c93d00ad5dd6ee95047f",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SDK Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-0aa2b6a3eec1ae0383a7d9221480e52535860e057c788eb5a13ee87fe2313e43",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsLab Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-b9903abffabb8be8d2ffab44a458485467a40af4a78cdfa2fc6a430e20cda5d0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::SennsMetrics Software",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-74a3d7667651efb8be6d99ee87870379cfa5a5f327250bf7aa633d4e9cff9ba0",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::IRT Online",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-fe9d87c536fb020ae0186c2f2038345f3441d0bc98d14e98afb70e57cb746da3",
+          "capture_outcome": "ABSTAIN"
+        },
+        {
+          "candidate_key": "ORG-0003::Bitbrain Human Behaviour Research Labs",
+          "object_class": "SERVICE_OR_SOFTWARE_BOUNDARY",
+          "capture_id": "PDC-1db5864ca4380fc88b37f7439d0abac7c05ee57bc7f9fff6c5ef4b3394e55458",
+          "capture_outcome": "ABSTAIN"
+        }
+      ],
+      "no_named_product_evidence": false,
+      "catalogue_manifest_complete_under_inspected_surfaces": true,
+      "completion_state": "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+      "completion_reason": "Frozen official site, current product catalogue, and current download/documentation index were inspected; all named Bitbrain objects on those surfaces that could plausibly affect PRODUCT/OFFERING accounting were retained with explicit F9 capture dispositions, while partner-only technologies were kept outside Bitbrain identity allocation.",
+      "recorded_at": "2026-09-25T18:40:44Z",
+      "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+    }
+  ],
+  "completion_record_count": 1,
+  "completed_actor_ids": [
+    "ORG-0003"
+  ],
+  "actor_completion_records_remaining": 36,
+  "f9_exhaustion_state": "CONTINUE",
+  "source_packet_id": "RELEASE_A_A2_F9_BITBRAIN_PROTOCOL_TRANCHE_5_v1.0",
+  "source_packet_sha256": "8295c6cdeb48655938c7bdb08bdfd1af66677ca4861e879ef9372b798f482ba4",
+  "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+}
