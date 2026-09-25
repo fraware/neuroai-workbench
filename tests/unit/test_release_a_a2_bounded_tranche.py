@@ -20,7 +20,7 @@ from neuroai_workbench.product_discovery_frames import (
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 PACKET_RESOURCE = "RELEASE_A_A2_BOUNDED_TRANCHE_1.v1.0.json"
 PACKET_ID = "RELEASE_A_A2_BOUNDED_TRANCHE_1_v1.0"
-PACKET_SHA256 = "bf77141a2bcff1c2a995d751ae339678517d48765e1aaf6a7e7ec927dc0176b9"
+PACKET_SHA256 = "0f5c6e9f83ca1e212d235dac82724ac146d63ed6db3b4abe6f8bd9f681595777"
 
 
 def _load_packet() -> dict[str, Any]:
