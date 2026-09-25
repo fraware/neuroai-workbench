@@ -175,8 +175,6 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("Analysis universe primary frame set does not match the frozen P0.5 estimator set")
     if diagnostic != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS:
         raise ProductDiscoveryError("Analysis universe diagnostic-only frame set must be F7/F9/F11")
-    if primary & diagnostic:
-        raise ProductDiscoveryError("Analysis universe primary and diagnostic frame sets must be disjoint")
 
 
 def validate_discovery_frame(frame: Mapping[str, Any]) -> None:
