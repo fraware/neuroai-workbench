@@ -33,7 +33,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "9e42888084f121cc114c41cf793545b355f48d807d63c6d7fec8ed5db40d2641"
     },
     {
       "object_class": "Entity",
@@ -53,7 +54,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "f654857fca7db6805f4f6436d0e61066929f16c6fb77a5bc761ff245cf8401c9"
     },
     {
       "object_class": "Entity",
@@ -73,7 +75,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "ccec718d7c65716851e5d604d372ea5ae90beb264688f465d9413b5a1df51c5a"
     },
     {
       "object_class": "Entity",
@@ -88,7 +91,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "6ae731605b741d53ab9051a3ff5a8c63a53d63d9cbd4fd5a05a3b93c83fa05d9"
     },
     {
       "object_class": "Entity",
@@ -103,7 +107,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "831dc1a68bde6a24103e4391c050617b75ba6e6e413e46d0f81451a8ad82e8c9"
     },
     {
       "object_class": "Entity",
@@ -118,7 +123,8 @@
         "successor_entity_ids": [],
         "supersession_state": "NONE"
       },
-      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority.",
+      "canonical_sha256": "365601ffa3f8e4a416123acd1d2c5898dd7a38b8d1fbbff7db70c80a57955933"
     }
   ],
   "identity_bindings": [
