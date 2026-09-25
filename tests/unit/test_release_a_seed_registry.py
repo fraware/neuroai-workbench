@@ -624,7 +624,6 @@ def test_seed_identity_authority_fails_closed_on_projection_evidence_mismatch() 
         )
 
 
-
 @pytest.mark.parametrize(
     ("case", "message"),
     [
