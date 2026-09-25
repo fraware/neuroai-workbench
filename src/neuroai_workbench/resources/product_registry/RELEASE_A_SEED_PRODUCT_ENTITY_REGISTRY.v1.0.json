@@ -1,0 +1,219 @@
+{
+  "registry_id": "RELEASE_A_SEED_PRODUCT_ENTITY_REGISTRY_v1.0",
+  "registry_version": "1.0",
+  "authority_state": "PENDING_OWNER_DISPOSITION",
+  "source_seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "source_seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
+  "entity_count": 6,
+  "checked_authority_surfaces": [
+    {
+      "repository": "fraware/neuroai-workbench",
+      "commit_sha": "11c516209fc77dea497fc3bb61012e2f3daecdf7",
+      "authority_scope": "WORKBENCH_CANONICAL_ENTITY_RESOURCES",
+      "finding": "NO_PREEXISTING_LIVE_PRODUCT_ENTITY_REGISTRY_FOR_A1_IDS"
+    },
+    {
+      "repository": "fraware/neuroai-observatory-data",
+      "commit_sha": "35dcf13431eca40321bb64a88e1743d9313f9247",
+      "authority_scope": "PUBLIC_GOVERNING_V1_4_RELEASE",
+      "finding": "NO_PRD_CANONICAL_PRODUCT_ENTITIES_IN_ORGANIZATION_CENTRIC_RELEASE"
+    }
+  ],
+  "entities": [
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-EMOTIV-EPOC-X",
+      "entity_type": "PRODUCT",
+      "canonical_label": "EMOTIV EPOC X",
+      "aliases": [],
+      "identifiers": [],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    },
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-FLOW-FL-100",
+      "entity_type": "PRODUCT",
+      "canonical_label": "Flow FL-100",
+      "aliases": [],
+      "identifiers": [
+        {
+          "scheme": "FDA_PMA",
+          "value": "P230024"
+        }
+      ],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    },
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-MODIUS-SPERO",
+      "entity_type": "PRODUCT",
+      "canonical_label": "Modius Spero",
+      "aliases": [],
+      "identifiers": [
+        {
+          "scheme": "FDA_DE_NOVO",
+          "value": "DEN250013"
+        }
+      ],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    },
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-MUSE-S-ATHENA",
+      "entity_type": "PRODUCT",
+      "canonical_label": "Muse S Athena",
+      "aliases": [],
+      "identifiers": [],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    },
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "entity_type": "PRODUCT",
+      "canonical_label": "NextSense Smartbuds",
+      "aliases": [],
+      "identifiers": [],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    },
+    {
+      "object_class": "Entity",
+      "entity_id": "PRD-SYNCHRON-STENTRODE",
+      "entity_type": "PRODUCT",
+      "canonical_label": "Synchron Stentrode",
+      "aliases": [],
+      "identifiers": [],
+      "status": "ACTIVE",
+      "lineage": {
+        "predecessor_entity_ids": [],
+        "successor_entity_ids": [],
+        "supersession_state": "NONE"
+      },
+      "boundary": "Release-A seed Product Entity records establish graph identity only for the exact A1 OFFERING identities. They do not establish product effectiveness, commercialization, deployment, regulatory scope beyond bound evidence, market position, population completeness, or publication authority."
+    }
+  ],
+  "identity_bindings": [
+    {
+      "entity_id": "PRD-EMOTIV-EPOC-X",
+      "identity_level": "OFFERING",
+      "exact_product_label": "EMOTIV EPOC X",
+      "source_observation_refs": [
+        "OBS-A1-0075b8ecf8b68bc9c168c1ae"
+      ],
+      "organization_seed_refs": [
+        "ORG-0007"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    },
+    {
+      "entity_id": "PRD-FLOW-FL-100",
+      "identity_level": "OFFERING",
+      "exact_product_label": "Flow FL-100",
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "organization_seed_refs": [
+        "ORG-0013"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    },
+    {
+      "entity_id": "PRD-MODIUS-SPERO",
+      "identity_level": "OFFERING",
+      "exact_product_label": "Modius Spero",
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "organization_seed_refs": [
+        "ORG-0004"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    },
+    {
+      "entity_id": "PRD-MUSE-S-ATHENA",
+      "identity_level": "OFFERING",
+      "exact_product_label": "Muse S Athena",
+      "source_observation_refs": [
+        "OBS-A1-0f28ddca3e7a867f7793e0ad"
+      ],
+      "organization_seed_refs": [
+        "ORG-0006"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    },
+    {
+      "entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "identity_level": "OFFERING",
+      "exact_product_label": "NextSense Smartbuds",
+      "source_observation_refs": [
+        "OBS-A1-4a387a3e9af44d7ef2816664"
+      ],
+      "organization_seed_refs": [
+        "ORG-0005"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    },
+    {
+      "entity_id": "PRD-SYNCHRON-STENTRODE",
+      "identity_level": "OFFERING",
+      "exact_product_label": "Synchron Stentrode",
+      "source_observation_refs": [
+        "OBS-A1-466bbeeaf6f8c653a1bababc"
+      ],
+      "organization_seed_refs": [
+        "ORG-0029"
+      ],
+      "allocation_state": "NEW_CANONICAL_ENTITY_CANDIDATE",
+      "allocation_method": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION",
+      "collision_state": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES",
+      "boundary": "Identity allocation binds an exact A1 product label and source observation to one canonical PRODUCT Entity ID. It does not transfer substantive product-state claims and does not authorize identity reuse or fuzzy merge."
+    }
+  ],
+  "approved_candidate_blob_sha": null,
+  "approval_ref": null,
+  "boundary": "Candidate append-only canonical Product Entity authority for the six evidence-bound A1 seed OFFERING identities. Pending explicit owner identity disposition; no A2 authoritative capture may rely on this candidate until frozen."
+}
