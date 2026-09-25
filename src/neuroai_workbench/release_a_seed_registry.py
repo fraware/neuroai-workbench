@@ -356,13 +356,6 @@ def load_default_seed_artifacts() -> dict[str, Any]:
                 "Seed registry observation chronology does not match its bound observation registrations"
             )
 
-    validate_seed_identity_binding(
-        identity_binding,
-        manifest=manifest,
-        registry=registry,
-        identity_registry=identity_registry,
-    )
-
     rebuilt = build_seed_product_registry(
         cast(Sequence[Mapping[str, Any]], registry["rows"]),
         manifest,
@@ -373,6 +366,13 @@ def load_default_seed_artifacts() -> dict[str, Any]:
         raise ReleaseASeedRegistryError(
             "Materialized A1 seed Product Registry does not match deterministic compiler output"
         )
+
+    validate_seed_identity_binding(
+        identity_binding,
+        manifest=manifest,
+        registry=registry,
+        identity_registry=identity_registry,
+    )
 
     return {
         "packet": packet,
