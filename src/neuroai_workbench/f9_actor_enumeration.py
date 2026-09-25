@@ -349,15 +349,23 @@ def validate_f9_actor_completion_ledger(
             raise ProductDiscoveryError("F9 ledger after sequence 1 requires predecessor_ledger_id")
         if not isinstance(predecessor_sha, str) or re.fullmatch(r"[0-9a-f]{64}", predecessor_sha) is None:
             raise ProductDiscoveryError("F9 ledger after sequence 1 requires predecessor_ledger_sha256")
-        if predecessor is None:
+        if predecessor is not None:
+            # Validate predecessor self-consistency without requiring its own predecessor object here.
+            if predecessor.get("ledger_sha256") != f9_actor_completion_ledger_digest(predecessor):
+                raise ProductDiscoveryError("F9 ledger predecessor_ledger_sha256 does not match predecessor digest")
+            if predecessor.get("ledger_id") != predecessor_id:
+                raise ProductDiscoveryError("F9 ledger predecessor_ledger_id does not match predecessor ledger_id")
+            if predecessor.get("ledger_sha256") != predecessor_sha:
+                raise ProductDiscoveryError("F9 ledger predecessor_ledger_sha256 does not match predecessor digest")
+            if int(predecessor.get("ledger_sequence", -1)) != sequence - 1:
+                raise ProductDiscoveryError("F9 ledger predecessor sequence must be exactly prior by one")
+            pred_records = predecessor.get("completion_records")
+            if not isinstance(pred_records, list):
+                raise ProductDiscoveryError("F9 predecessor completion_records must be a list")
+            for record in pred_records:
+                validate_f9_actor_completion_record(cast(Mapping[str, Any], record), bound_procedure)
+        else:
             raise ProductDiscoveryError("F9 ledger after sequence 1 requires the predecessor ledger object")
-        validate_f9_actor_completion_ledger(predecessor, procedure=bound_procedure)
-        if predecessor.get("ledger_id") != predecessor_id:
-            raise ProductDiscoveryError("F9 ledger predecessor_ledger_id does not match predecessor ledger_id")
-        if predecessor.get("ledger_sha256") != predecessor_sha:
-            raise ProductDiscoveryError("F9 ledger predecessor_ledger_sha256 does not match predecessor digest")
-        if int(predecessor.get("ledger_sequence", -1)) != sequence - 1:
-            raise ProductDiscoveryError("F9 ledger predecessor sequence must be exactly prior by one")
 
     records = ledger.get("completion_records")
     if not isinstance(records, list):
