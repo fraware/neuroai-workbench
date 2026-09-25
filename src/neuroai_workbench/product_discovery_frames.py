@@ -24,6 +24,19 @@ FRAME_VERSION = "PRODUCT_DISCOVERY_FRAME_v1.0"
 FRAME_REGISTER_VERSION = "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
 F9_ACTOR_SEED_REGISTER_ID = "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0"
 ANALYSIS_UNIVERSE_VERSION = "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0"
+DEFAULT_ANALYSIS_UNIVERSE_ID = "A2U-bd43d6cf93edec79809785e8ae76e31873073d1670751818853244b953b4e439"
+A2_WORKBENCH_BASELINE_SHA = "11c516209fc77dea497fc3bb61012e2f3daecdf7"
+A2_KNOWLEDGE_TIME_CUTOFF = "2026-10-08T21:00:00Z"
+A2_LANGUAGE_SCOPE_ID = "RELEASE_A_CORE_MULTILINGUAL_v1.0"
+A2_NATIVE_LANGUAGE_STRATA = frozenset(
+    {
+        ("de", "Germany"),
+        ("es", "Spain"),
+        ("fr", "France"),
+        ("ja", "Japan"),
+        ("zh-Hans", "China"),
+    }
+)
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
 FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
@@ -141,6 +154,12 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"manifest_version must be {ANALYSIS_UNIVERSE_VERSION}")
     if universe["analysis_universe_id"] != analysis_universe_id(universe):
         raise ProductDiscoveryError("analysis_universe_id does not match the deterministic universe material")
+    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("A2 v1.0 analysis_universe_id does not match the frozen default universe")
+    if universe["workbench_baseline_sha"] != A2_WORKBENCH_BASELINE_SHA:
+        raise ProductDiscoveryError("A2 v1.0 workbench baseline does not match the frozen execution baseline")
+    if universe["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("A2 v1.0 knowledge-time cutoff does not match the frozen collection window")
     if universe["status"] != "FROZEN_v1.0":
         raise ProductDiscoveryError("A2 analysis universe must be FROZEN_v1.0")
     if universe["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
@@ -188,12 +207,16 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("A2 initial known-identity digest does not match the A1 offering identity set")
 
     language_scope = cast(Mapping[str, Any], universe["language_scope"])
+    if language_scope["language_scope_id"] != A2_LANGUAGE_SCOPE_ID:
+        raise ProductDiscoveryError("A2 language_scope_id does not match the frozen v1.0 multilingual scope")
     if language_scope["baseline_language"] != "en":
         raise ProductDiscoveryError("A2 multilingual scope must retain English as the matched baseline")
     strata = cast(Sequence[Mapping[str, Any]], language_scope["native_language_strata"])
     stratum_keys = [(str(item["language"]), str(item["jurisdiction"])) for item in strata]
     if len(stratum_keys) != len(set(stratum_keys)):
         raise ProductDiscoveryError("A2 multilingual scope contains duplicate language/jurisdiction strata")
+    if set(stratum_keys) != A2_NATIVE_LANGUAGE_STRATA:
+        raise ProductDiscoveryError("A2 native-language strata do not match the frozen v1.0 matched design")
     if any(language == "en" for language, _ in stratum_keys):
         raise ProductDiscoveryError("A2 native-language strata must remain distinct from the English baseline")
 
