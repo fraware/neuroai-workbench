@@ -585,6 +585,8 @@ def test_seed_identity_authority_fails_closed_on_missing_or_drifted_entity() -> 
     identity_binding = deepcopy(artifacts["identity_binding"])
 
     identity_registry["records"][0]["entity"]["canonical_label"] = "Wrong offering"
+    identity_binding["identity_registry_sha256"] = product_identity_registry_sha256(identity_registry)
+    identity_binding["binding_id"] = seed_module.seed_identity_binding_id(identity_binding)
     with pytest.raises(ReleaseASeedRegistryError, match="label"):
         validate_seed_identity_binding(
             identity_binding,
