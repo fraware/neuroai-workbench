@@ -105,6 +105,7 @@ def _capture(
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "world_time_alignment": "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
+        "world_time_support_ref": None,
         "boundary": DISCOVERY_BOUNDARY,
     }
     capture["capture_id"] = product_capture_id(capture)
@@ -805,6 +806,17 @@ def test_resolved_capture_cannot_backdate_post_cutoff_only_evidence() -> None:
     unresolved["world_time_alignment"] = "UNRESOLVED"
     unresolved["capture_id"] = product_capture_id(unresolved)
     validate_product_capture(unresolved)
+
+    retrospective = _capture("F1", "retrospective", offering_id="PRD-RETRO")
+    retrospective["observed_at"] = "2026-09-30T12:00:00Z"
+    retrospective["world_time_support_ref"] = None
+    retrospective["capture_id"] = product_capture_id(retrospective)
+    with pytest.raises(ProductDiscoveryError, match="world_time_support_ref"):
+        validate_product_capture(retrospective)
+
+    retrospective["world_time_support_ref"] = "OBS-PRIOR-WORLD-TIME-SUPPORT"
+    retrospective["capture_id"] = product_capture_id(retrospective)
+    validate_product_capture(retrospective)
 
 
 def test_analysis_universe_rejects_frozen_binding_drift() -> None:
