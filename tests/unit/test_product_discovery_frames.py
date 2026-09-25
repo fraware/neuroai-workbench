@@ -179,6 +179,27 @@ def test_estimation_histories_exclude_noneligible_expert_frame() -> None:
     assert histories == {"PRD-A": {"F1": 1}}
 
 
+def test_estimation_histories_respect_per_capture_eligibility_within_eligible_frame() -> None:
+    frame = _frame("F1", "FIRST_PARTY")
+    eligible = _capture("F1", "eligible", offering_id="PRD-ELIGIBLE", estimation_eligible=True)
+    outside_target_view = _capture(
+        "F1",
+        "outside-target-view",
+        offering_id="PRD-OUTSIDE",
+        estimation_eligible=False,
+    )
+
+    observed = build_capture_histories([eligible, outside_target_view], [frame])
+    assert set(observed) == {"PRD-ELIGIBLE", "PRD-OUTSIDE"}
+
+    estimator = build_capture_histories(
+        [eligible, outside_target_view],
+        [frame],
+        estimation_eligible_only=True,
+    )
+    assert estimator == {"PRD-ELIGIBLE": {"F1": 1}}
+
+
 def test_round_summary_separates_new_products_from_duplicate_captures_and_failures() -> None:
     captures = [
         _capture("F1", "known", offering_id="PRD-KNOWN"),
@@ -255,6 +276,35 @@ def test_capability_and_multilingual_incremental_yield_is_computed_after_identit
     assert multilingual_gain == {"PRD-C"}
 
 
+def test_capture_cannot_postdate_its_knowledge_cutoff() -> None:
+    capture = _capture("F1", "future", offering_id="PRD-X")
+    capture["observed_at"] = "2026-09-24T13:00:01Z"
+    capture["knowledge_time_cutoff"] = "2026-09-24T13:00:00Z"
+    capture["capture_id"] = product_capture_id(capture)
+    with pytest.raises(ProductDiscoveryError, match="cannot exceed"):
+        validate_product_capture(capture)
+
+    offset_equivalent = _capture("F1", "offset", offering_id="PRD-Y")
+    offset_equivalent["observed_at"] = "2026-09-24T14:00:00+02:00"
+    offset_equivalent["knowledge_time_cutoff"] = "2026-09-24T12:00:00Z"
+    offset_equivalent["capture_id"] = product_capture_id(offset_equivalent)
+    validate_product_capture(offset_equivalent)
+
+
+def test_capture_rejects_invalid_or_naive_bound_timestamps() -> None:
+    naive = _capture("F1", "naive-time", offering_id="PRD-X")
+    naive["observed_at"] = "2026-09-24T12:00:00"
+    naive["capture_id"] = product_capture_id(naive)
+    with pytest.raises(ProductDiscoveryError, match="explicit timezone"):
+        validate_product_capture(naive)
+
+    invalid = _capture("F1", "invalid-time", offering_id="PRD-Y")
+    invalid["knowledge_time_cutoff"] = "not-a-timestamp"
+    invalid["capture_id"] = product_capture_id(invalid)
+    with pytest.raises(ProductDiscoveryError, match="valid offset-aware timestamp"):
+        validate_product_capture(invalid)
+
+
 def test_capture_source_and_query_provenance_must_match_declared_frame() -> None:
     frame = _frame("F1", "FIRST_PARTY")
     capture = _capture("F1", "x", offering_id="PRD-X")
@@ -278,6 +328,15 @@ def test_capture_and_frame_eligibility_must_agree() -> None:
     capture = _capture("F7", "expert", offering_id="PRD-X", estimation_eligible=True)
     with pytest.raises(ProductDiscoveryError, match="estimation-eligible"):
         validate_capture_against_frame(capture, frame)
+
+    eligible_frame = _frame("F1", "FIRST_PARTY", capture_eligible=True)
+    nonqualifying_for_target_view = _capture(
+        "F1",
+        "known-in-scope-not-in-target-view",
+        offering_id="PRD-X",
+        estimation_eligible=False,
+    )
+    validate_capture_against_frame(nonqualifying_for_target_view, eligible_frame)
 
 
 def test_predeclared_stop_rule_uses_consecutive_low_yield_rounds_only() -> None:
@@ -391,6 +450,53 @@ def test_underpowered_intervening_round_breaks_low_yield_consecutive_tail() -> N
     assert evaluate_frame_stop(frame, summaries) == "CONTINUE"
 
 
+def test_capture_identity_binds_estimator_eligibility() -> None:
+    capture = _capture("F1", "x", offering_id="PRD-X")
+    changed = deepcopy(capture)
+    changed["capture_estimation_eligible"] = False
+    assert product_capture_id(changed) != capture["capture_id"]
+
+
+def test_discovery_run_identity_binds_capture_set_and_stop_state() -> None:
+    captures = [
+        _capture("F1", "a", offering_id="PRD-A"),
+        _capture("F1", "b", offering_id="PRD-B"),
+    ]
+    run: dict[str, object] = {
+        "run_id": "",
+        "frame_id": "F1",
+        "frame_version": FRAME_VERSION,
+        "frame_register_version": FRAME_REGISTER_VERSION,
+        "round_id": "R1",
+        "query_or_seed_ids": ["Q-F1"],
+        "languages": ["en"],
+        "jurisdictions": ["GLOBAL"],
+        "analysis_jurisdiction_scope": "GLOBAL",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+        "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "population_view_id": "A-P1",
+        "world_time_cutoff": "2026-09-24",
+        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
+        "capture_count": 2,
+        "capture_ids": [str(capture["capture_id"]) for capture in captures],
+        "stop_state": "CONTINUE",
+        "stop_reason": "Further declared rounds remain.",
+        "boundary": DISCOVERY_BOUNDARY,
+    }
+    run["run_id"] = product_discovery_run_id(run)
+
+    changed_capture_set = deepcopy(run)
+    changed_capture_set["capture_ids"] = [str(captures[0]["capture_id"])]
+    changed_capture_set["capture_count"] = 1
+    assert product_discovery_run_id(changed_capture_set) != run["run_id"]
+
+    changed_stop = deepcopy(run)
+    changed_stop["stop_state"] = "BUDGET_COVERAGE_TERMINATION"
+    changed_stop["stop_reason"] = "Declared budget reached."
+    assert product_discovery_run_id(changed_stop) != run["run_id"]
+
+
 def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
     frame = _frame("F1", "FIRST_PARTY")
     captures = [
@@ -427,6 +533,7 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
     permuted["query_or_seed_ids"] = list(reversed(permuted["query_or_seed_ids"]))
     permuted["languages"] = list(reversed(permuted["languages"]))
     permuted["jurisdictions"] = list(reversed(permuted["jurisdictions"]))
+    permuted["capture_ids"] = list(reversed(permuted["capture_ids"]))
     assert product_discovery_run_id(permuted) == run["run_id"]
 
     wrong_language = deepcopy(captures[0])
@@ -582,3 +689,37 @@ def test_f9_actor_seed_register_rejects_each_missing_source_binding_field() -> N
         changed["source_binding"][field] = ""
         with pytest.raises(ProductDiscoveryError, match=f"source_binding requires {field}"):
             validate_f9_actor_seed_register(changed)
+
+
+def test_discovery_records_reject_boundary_drift() -> None:
+    capture = _capture("F1", "x", offering_id="PRD-X")
+    capture["boundary"] = "weaker boundary"
+    with pytest.raises(ProductDiscoveryError, match="capture boundary"):
+        validate_product_capture(capture)
+
+    valid_capture = _capture("F1", "x", offering_id="PRD-X")
+    run: dict[str, object] = {
+        "run_id": "",
+        "frame_id": "F1",
+        "frame_version": FRAME_VERSION,
+        "frame_register_version": FRAME_REGISTER_VERSION,
+        "round_id": "R1",
+        "query_or_seed_ids": ["Q-F1"],
+        "languages": ["en"],
+        "jurisdictions": ["GLOBAL"],
+        "analysis_jurisdiction_scope": "GLOBAL",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+        "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "population_view_id": "A-P1",
+        "world_time_cutoff": "2026-09-24",
+        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
+        "capture_count": 1,
+        "capture_ids": [str(valid_capture["capture_id"])],
+        "stop_state": "CONTINUE",
+        "stop_reason": "Further declared rounds remain.",
+        "boundary": "weaker boundary",
+    }
+    run["run_id"] = product_discovery_run_id(run)
+    with pytest.raises(ProductDiscoveryError, match="run boundary"):
+        validate_discovery_run(run)
