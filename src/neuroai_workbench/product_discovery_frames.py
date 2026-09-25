@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable, Mapping, Sequence
-from datetime import datetime
+from datetime import date, datetime, timezone
 from importlib.resources import files
 from typing import Any, cast
 
@@ -322,6 +322,7 @@ def product_capture_id(capture: Mapping[str, Any]) -> str:
             "world_time_cutoff",
             "knowledge_time_cutoff",
             "world_time_alignment",
+            "world_time_support_ref",
         )
     }
     encoded = json.dumps(
@@ -371,6 +372,20 @@ def validate_product_capture(capture: Mapping[str, Any]) -> None:
     )
     if observed_at > knowledge_cutoff:
         raise ProductDiscoveryError("Product capture observed_at cannot exceed its knowledge_time_cutoff")
+
+    try:
+        world_cutoff = date.fromisoformat(str(capture["world_time_cutoff"]))
+    except ValueError as exc:
+        raise ProductDiscoveryError("Product capture world_time_cutoff must be a valid date") from exc
+    observed_utc_date = observed_at.astimezone(timezone.utc).date()
+    if (
+        outcome == "INCLUDE_RESOLVED"
+        and observed_utc_date > world_cutoff
+        and not str(capture.get("world_time_support_ref") or "").strip()
+    ):
+        raise ProductDiscoveryError(
+            "Post-cutoff INCLUDE_RESOLVED capture requires world_time_support_ref binding evidence to the world-time cutoff"
+        )
 
 
 def validate_capture_against_analysis_universe(
