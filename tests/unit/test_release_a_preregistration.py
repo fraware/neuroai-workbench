@@ -90,11 +90,14 @@ def _capture(frame_id: str = "F1") -> dict[str, object]:
         "observed_at": "2026-09-24T11:00:00Z",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": "RAU-" + "1" * 64,
         "population_view_id": "A-P1",
         "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "world_time_alignment": "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
+        "world_time_support_ref": None,
         "boundary": DISCOVERY_BOUNDARY,
     }
     capture["capture_id"] = product_capture_id(capture)
