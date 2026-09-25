@@ -66,8 +66,7 @@ def _completion(
         ],
         "candidate_manifest": candidates,
         "no_named_product_evidence": not with_candidate,
-        "catalogue_manifest_complete_under_inspected_surfaces": state
-        == "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+        "catalogue_manifest_complete_under_inspected_surfaces": state == "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
         "completion_state": state,
         "completion_reason": "Protocol-bounded test completion.",
         "recorded_at": "2026-09-25T18:30:00Z",
