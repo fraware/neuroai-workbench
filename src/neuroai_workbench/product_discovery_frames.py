@@ -154,8 +154,6 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError(f"manifest_version must be {ANALYSIS_UNIVERSE_VERSION}")
     if universe["analysis_universe_id"] != analysis_universe_id(universe):
         raise ProductDiscoveryError("analysis_universe_id does not match the deterministic universe material")
-    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
-        raise ProductDiscoveryError("A2 v1.0 analysis_universe_id does not match the frozen default universe")
     if universe["workbench_baseline_sha"] != A2_WORKBENCH_BASELINE_SHA:
         raise ProductDiscoveryError("A2 v1.0 workbench baseline does not match the frozen execution baseline")
     if universe["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
@@ -231,6 +229,8 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("A2 collection-window close must equal the A2 knowledge-time cutoff")
     if closes_at <= opened_at:
         raise ProductDiscoveryError("A2 collection window must close after it opens")
+    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("A2 v1.0 analysis_universe_id does not match the frozen default universe")
 
 
 def validate_capture_against_analysis_universe(
