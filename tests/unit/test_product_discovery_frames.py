@@ -866,7 +866,7 @@ def test_analysis_universe_identity_and_record_field_drift_fail_closed() -> None
         ("population_view_id", "A-P6"),
         ("analysis_jurisdiction_scope", "US_ONLY"),
         ("language_scope_id", "EN_ONLY"),
-        ("world_time_cutoff", "2026-09-23"),
+        ("world_time_cutoff", "2026-09-25"),
         ("knowledge_time_cutoff", "2026-10-23T23:59:59Z"),
     )
     for field, value in capture_drift_cases:
