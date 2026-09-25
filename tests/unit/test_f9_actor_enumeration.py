@@ -10,10 +10,12 @@ from neuroai_workbench.f9_actor_enumeration import (
     F9_ACTOR_ENUMERATION_PROCEDURE_SHA256,
     F9_ENUMERATION_BOUNDARY,
     F9_QUERY_FAMILY,
+    f9_actor_completion_ledger_digest,
     f9_actor_completion_record_id,
     f9_bounded_exhaustion_state,
     f9_enumeration_procedure_digest,
     load_default_f9_actor_enumeration_procedure,
+    validate_f9_actor_completion_ledger,
     validate_f9_actor_completion_record,
     validate_f9_actor_enumeration_procedure,
 )
@@ -367,3 +369,86 @@ def test_actor_completion_record_rejects_malformed_candidate_manifest() -> None:
     _reseal_record(record)
     with pytest.raises(ProductDiscoveryError, match="boolean no_named_product_evidence"):
         validate_f9_actor_completion_record(record)
+
+
+def _ledger(
+    records: list[dict[str, Any]],
+    *,
+    sequence: int = 1,
+    predecessor: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    completed = [str(record["actor_organization_id"]) for record in records]
+    ledger: dict[str, Any] = {
+        "ledger_id": f"TEST_F9_LEDGER_{sequence:03d}",
+        "ledger_sha256": "",
+        "ledger_sequence": sequence,
+        "predecessor_ledger_id": None if predecessor is None else predecessor["ledger_id"],
+        "predecessor_ledger_sha256": None if predecessor is None else predecessor["ledger_sha256"],
+        "status": "IMMUTABLE_SUCCESSOR",
+        "assembled_on": "2026-09-25",
+        "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+        "procedure_id": F9_ACTOR_ENUMERATION_PROCEDURE_ID,
+        "procedure_sha256": F9_ACTOR_ENUMERATION_PROCEDURE_SHA256,
+        "actor_seed_register_id": "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0",
+        "actor_seed_count": 37,
+        "completion_records": records,
+        "completion_record_count": len(records),
+        "completed_actor_ids": completed,
+        "actor_completion_records_remaining": 37 - len(records),
+        "f9_exhaustion_state": f9_bounded_exhaustion_state(records),
+        "source_packet_id": "TEST_PACKET",
+        "source_packet_sha256": "0" * 64,
+        "boundary": F9_ENUMERATION_BOUNDARY,
+    }
+    ledger["ledger_sha256"] = f9_actor_completion_ledger_digest(ledger)
+    return ledger
+
+
+def test_f9_completion_ledger_accepts_sequence_one_and_growing_successor() -> None:
+    first = _ledger([_completion("ORG-0001")])
+    validate_f9_actor_completion_ledger(first)
+    second = _ledger([_completion("ORG-0001"), _completion("ORG-0002")], sequence=2, predecessor=first)
+    validate_f9_actor_completion_ledger(second, predecessor=first)
+
+
+def test_f9_completion_ledger_fail_closes_on_digest_and_predecessor_faults() -> None:
+    first = _ledger([_completion("ORG-0001")])
+    first["ledger_sha256"] = "0" * 64
+    with pytest.raises(ProductDiscoveryError, match="ledger_sha256"):
+        validate_f9_actor_completion_ledger(first)
+
+    first = _ledger([_completion("ORG-0001")])
+    second = _ledger([_completion("ORG-0001"), _completion("ORG-0002")], sequence=2, predecessor=first)
+    second["predecessor_ledger_id"] = None
+    second["ledger_sha256"] = f9_actor_completion_ledger_digest(second)
+    with pytest.raises(ProductDiscoveryError, match="predecessor_ledger_id"):
+        validate_f9_actor_completion_ledger(second, predecessor=first)
+
+    second = _ledger([_completion("ORG-0001"), _completion("ORG-0002")], sequence=2, predecessor=first)
+    with pytest.raises(ProductDiscoveryError, match="requires the predecessor ledger object"):
+        validate_f9_actor_completion_ledger(second)
+
+
+def test_f9_completion_ledger_fail_closes_on_shrink_duplicate_and_capture_reuse() -> None:
+    first = _ledger([_completion("ORG-0001"), _completion("ORG-0002")])
+    shrunk = _ledger([_completion("ORG-0001")], sequence=2, predecessor=first)
+    with pytest.raises(ProductDiscoveryError, match="shrunk completed_actor_ids"):
+        validate_f9_actor_completion_ledger(shrunk, predecessor=first)
+
+    duplicate = _ledger([_completion("ORG-0001")])
+    duplicate["completion_records"] = [_completion("ORG-0001"), deepcopy(_completion("ORG-0001"))]
+    duplicate["completion_record_count"] = 2
+    duplicate["completed_actor_ids"] = ["ORG-0001", "ORG-0001"]
+    duplicate["actor_completion_records_remaining"] = 35
+    duplicate["ledger_sha256"] = f9_actor_completion_ledger_digest(duplicate)
+    with pytest.raises(ProductDiscoveryError, match="Duplicate F9 actor"):
+        validate_f9_actor_completion_ledger(duplicate)
+
+    reused = _ledger([_completion("ORG-0001"), _completion("ORG-0002")])
+    reused["completion_records"][1]["candidate_manifest"][0]["capture_id"] = reused["completion_records"][0][
+        "candidate_manifest"
+    ][0]["capture_id"]
+    reused["completion_records"][1] = _reseal_record(reused["completion_records"][1])
+    reused["ledger_sha256"] = f9_actor_completion_ledger_digest(reused)
+    with pytest.raises(ProductDiscoveryError, match="reused across actor"):
+        validate_f9_actor_completion_ledger(reused)
