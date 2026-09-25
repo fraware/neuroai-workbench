@@ -229,7 +229,9 @@ def validate_f9_actor_completion_record(
         if not isinstance(roles, list) or not roles or not set(roles) <= F9_SURFACE_ROLES:
             raise ProductDiscoveryError("F9 inspection surface roles are invalid")
         if "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE" in roles and source_class != "MANUFACTURER_VENDOR_OFFICIAL":
-            raise ProductDiscoveryError("F9 catalogue/technology inspection requires first-party manufacturer/vendor source")
+            raise ProductDiscoveryError(
+                "F9 catalogue/technology inspection requires first-party manufacturer/vendor source"
+            )
 
         if locator == expected_official_locator and "FROZEN_OFFICIAL_LOCATOR" in roles:
             official_locator_seen = official_locator_seen or retrieval_outcome == "RETRIEVED"
