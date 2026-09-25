@@ -5,6 +5,7 @@ from copy import deepcopy
 import pytest
 
 from neuroai_workbench.product_discovery_frames import (
+    DEFAULT_ANALYSIS_UNIVERSE_ID,
     DISCOVERY_BOUNDARY,
     FRAME_REGISTER_VERSION,
     FRAME_VERSION,
@@ -14,18 +15,22 @@ from neuroai_workbench.product_discovery_frames import (
     frame_overlap_matrix,
     identity_set_digest,
     incremental_unique_identities,
+    load_default_analysis_universe,
     load_default_frame_register,
     load_f9_actor_seed_register,
     product_capture_id,
     product_discovery_run_id,
     summarize_discovery_contributions,
     summarize_discovery_round,
+    validate_analysis_universe,
+    validate_capture_against_analysis_universe,
     validate_capture_against_frame,
     validate_discovery_frame,
     validate_discovery_run,
     validate_f9_actor_seed_register,
     validate_frame_register,
     validate_product_capture,
+    validate_run_against_analysis_universe,
     validate_run_against_captures,
 )
 
@@ -92,11 +97,13 @@ def _capture(
         "observed_at": "2026-09-24T12:00:00Z",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
         "population_view_id": "A-P1",
         "analysis_jurisdiction_scope": "GLOBAL",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "world_time_cutoff": "2026-09-24",
-        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+        "world_time_alignment": "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
         "boundary": DISCOVERY_BOUNDARY,
     }
     capture["capture_id"] = product_capture_id(capture)
@@ -467,6 +474,7 @@ def test_discovery_run_identity_binds_capture_set_and_stop_state() -> None:
         "frame_id": "F1",
         "frame_version": FRAME_VERSION,
         "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
         "round_id": "R1",
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
@@ -476,7 +484,7 @@ def test_discovery_run_identity_binds_capture_set_and_stop_state() -> None:
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
         "world_time_cutoff": "2026-09-24",
-        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
         "capture_count": 2,
         "capture_ids": [str(capture["capture_id"]) for capture in captures],
@@ -508,6 +516,7 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
         "frame_id": "F1",
         "frame_version": FRAME_VERSION,
         "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
         "round_id": "R1",
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
@@ -517,7 +526,7 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
         "world_time_cutoff": "2026-09-24",
-        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
         "capture_count": 2,
         "capture_ids": [str(capture["capture_id"]) for capture in captures],
@@ -703,6 +712,7 @@ def test_discovery_records_reject_boundary_drift() -> None:
         "frame_id": "F1",
         "frame_version": FRAME_VERSION,
         "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
         "round_id": "R1",
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
@@ -712,7 +722,7 @@ def test_discovery_records_reject_boundary_drift() -> None:
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
         "world_time_cutoff": "2026-09-24",
-        "knowledge_time_cutoff": "2026-09-24T12:00:00Z",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
         "capture_count": 1,
         "capture_ids": [str(valid_capture["capture_id"])],
@@ -723,3 +733,71 @@ def test_discovery_records_reject_boundary_drift() -> None:
     run["run_id"] = product_discovery_run_id(run)
     with pytest.raises(ProductDiscoveryError, match="run boundary"):
         validate_discovery_run(run)
+
+
+def test_default_analysis_universe_is_frozen_and_binds_a1_seed_state() -> None:
+    universe = load_default_analysis_universe()
+    validate_analysis_universe(universe)
+    assert universe["analysis_universe_id"] == DEFAULT_ANALYSIS_UNIVERSE_ID
+    assert universe["a1_seed_registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+    assert universe["initial_known_identity_set_sha256"] == "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+    assert universe["initial_known_identity_count"] == 6
+    assert set(universe["primary_estimation_frame_ids"]) == {"F1", "F2", "F3", "F4", "F5", "F6", "F8", "F10"}
+    assert set(universe["diagnostic_only_frame_ids"]) == {"F7", "F9", "F11"}
+
+
+def test_capture_and_run_must_bind_exact_frozen_analysis_universe() -> None:
+    universe = load_default_analysis_universe()
+    capture = _capture("F1", "a", offering_id="PRD-A")
+    validate_capture_against_analysis_universe(capture, universe)
+
+    drift = deepcopy(capture)
+    drift["analysis_universe_id"] = "RAU-" + "0" * 64
+    drift["capture_id"] = product_capture_id(drift)
+    with pytest.raises(ProductDiscoveryError, match="analysis_universe_id"):
+        validate_capture_against_analysis_universe(drift, universe)
+
+    frame = _frame("F1", "FIRST_PARTY")
+    run: dict[str, object] = {
+        "run_id": "",
+        "frame_id": "F1",
+        "frame_version": FRAME_VERSION,
+        "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
+        "round_id": "R1",
+        "query_or_seed_ids": ["Q-F1"],
+        "languages": ["en"],
+        "jurisdictions": ["GLOBAL"],
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+        "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "population_view_id": "A-P1",
+        "world_time_cutoff": "2026-09-24",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+        "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
+        "capture_count": 1,
+        "capture_ids": [str(capture["capture_id"])],
+        "stop_state": "CONTINUE",
+        "stop_reason": "Further declared rounds remain.",
+        "boundary": DISCOVERY_BOUNDARY,
+    }
+    run["run_id"] = product_discovery_run_id(run)
+    validate_run_against_analysis_universe(run, universe)
+    validate_run_against_captures(run, [capture], frame)
+
+
+def test_resolved_capture_cannot_backdate_post_cutoff_only_evidence() -> None:
+    capture = _capture("F1", "late", offering_id="PRD-LATE")
+    capture["observed_at"] = "2026-09-30T12:00:00Z"
+    capture["world_time_alignment"] = "POST_CUTOFF_ONLY"
+    capture["capture_id"] = product_capture_id(capture)
+    with pytest.raises(ProductDiscoveryError, match="world-time cutoff"):
+        validate_product_capture(capture)
+
+    unresolved = deepcopy(capture)
+    unresolved["outcome"] = "UNRESOLVED_IDENTITY"
+    unresolved["canonical_offering_id"] = None
+    unresolved["capture_estimation_eligible"] = False
+    unresolved["world_time_alignment"] = "UNRESOLVED"
+    unresolved["capture_id"] = product_capture_id(unresolved)
+    validate_product_capture(unresolved)
