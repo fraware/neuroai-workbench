@@ -268,3 +268,102 @@ def test_exhaustion_ledger_rejects_duplicate_actor_or_capture_bindings() -> None
     _reseal_record(second)
     with pytest.raises(ProductDiscoveryError, match="reused across actor"):
         f9_bounded_exhaustion_state([first, second])
+
+
+def test_f9_enumeration_procedure_rejects_additional_frozen_domain_drift() -> None:
+    cases = [
+        ("procedure_id", "OTHER", "procedure_id"),
+        ("frame_register_version", "OTHER", "frame register version"),
+        ("actor_seed_register_id", "OTHER", "actor-seed register"),
+        ("actor_count", 36, "actor_count"),
+        ("surface_roles", ["FROZEN_OFFICIAL_LOCATOR"], "surface-role domain"),
+        ("retrieval_outcomes", ["RETRIEVED"], "retrieval-outcome domain"),
+        ("capture_outcomes", ["INCLUDE_RESOLVED"], "capture-outcome domain"),
+        ("actor_completion_states", ["ACTOR_ENUMERATION_PARTIAL"], "actor-completion domain"),
+    ]
+    for field, replacement, message in cases:
+        procedure = load_default_f9_actor_enumeration_procedure()
+        procedure[field] = replacement
+        _reseal_procedure(procedure)
+        with pytest.raises(ProductDiscoveryError, match=message):
+            validate_f9_actor_enumeration_procedure(procedure)
+
+
+def test_actor_completion_record_rejects_binding_drift() -> None:
+    cases = [
+        ("procedure_id", "OTHER", "procedure ID"),
+        ("procedure_sha256", "0" * 64, "procedure digest"),
+        ("query_family", "OTHER", "query_family"),
+        ("boundary", "weaker", "boundary"),
+    ]
+    for field, replacement, message in cases:
+        record = _completion("ORG-0001")
+        record[field] = replacement
+        _reseal_record(record)
+        with pytest.raises(ProductDiscoveryError, match=message):
+            validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["completion_record_id"] = "F9AC-bad"
+    with pytest.raises(ProductDiscoveryError, match="completion_record_id"):
+        validate_f9_actor_completion_record(record)
+
+
+def test_actor_completion_record_rejects_malformed_surfaces() -> None:
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"] = []
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="non-empty inspection_surfaces"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"] = ["bad"]
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="surfaces must be objects"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"][0]["locator"] = ""
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="exact locator"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"][0]["retrieval_outcome"] = "UNKNOWN"
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="retrieval_outcome"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["inspection_surfaces"][0]["roles"] = ["UNKNOWN"]
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="roles are invalid"):
+        validate_f9_actor_completion_record(record)
+
+
+def test_actor_completion_record_rejects_malformed_candidate_manifest() -> None:
+    record = _completion("ORG-0001")
+    record["candidate_manifest"] = ["bad"]
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="entries must be objects"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["candidate_manifest"][0]["candidate_key"] = ""
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="requires candidate_key"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    second = deepcopy(record["candidate_manifest"][0])
+    second["candidate_key"] = "ORG-0001::SECOND"
+    record["candidate_manifest"].append(second)
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="Duplicate F9 capture_id"):
+        validate_f9_actor_completion_record(record)
+
+    record = _completion("ORG-0001")
+    record["no_named_product_evidence"] = "false"
+    _reseal_record(record)
+    with pytest.raises(ProductDiscoveryError, match="boolean no_named_product_evidence"):
+        validate_f9_actor_completion_record(record)
