@@ -11,6 +11,9 @@
     "workbench_baseline_sha",
     "a1_seed_manifest_id",
     "a1_seed_registry_sha256",
+    "a1_identity_binding_id",
+    "a1_identity_registry_sha256",
+    "a1_identity_registry_id",
     "initial_known_identity_set_sha256",
     "initial_known_identity_count",
     "registry_projection_version",
@@ -136,6 +139,17 @@
     "boundary": {
       "type": "string",
       "minLength": 1
+    },
+    "a1_identity_registry_id": {
+      "const": "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
+    },
+    "a1_identity_registry_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "a1_identity_binding_id": {
+      "type": "string",
+      "pattern": "^RAIB-[0-9a-f]{64}$"
     }
   }
 }
