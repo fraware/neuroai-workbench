@@ -1,0 +1,155 @@
+{
+  "registry_id": "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0",
+  "version": "1.0",
+  "status": "FROZEN_v1.0",
+  "identity_unit": "PRODUCT/OFFERING",
+  "allocation_rule": "One controlled canonical PRODUCT ID per exact source-bound offering identity; no fuzzy-name merge, family synthesis, configuration synthesis, or organization-to-product projection.",
+  "record_count": 6,
+  "records": [
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-MUSE-S-ATHENA",
+        "entity_type": "PRODUCT",
+        "canonical_label": "Muse S Athena",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-0f28ddca3e7a867f7793e0ad"
+      ],
+      "seed_registry_row_id": "PRR-53ff5378568df0e22fff330c854d69283c5f7fe7a2334c31a4dcc8bd3aff477b",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    },
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+        "entity_type": "PRODUCT",
+        "canonical_label": "NextSense Smartbuds",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-4a387a3e9af44d7ef2816664"
+      ],
+      "seed_registry_row_id": "PRR-0447428a0e2d014908a6616cd30fb2c84bb0af6cef83f84e69494c330c81a482",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    },
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-EMOTIV-EPOC-X",
+        "entity_type": "PRODUCT",
+        "canonical_label": "EMOTIV EPOC X",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-0075b8ecf8b68bc9c168c1ae"
+      ],
+      "seed_registry_row_id": "PRR-efaf6b07ef7fc20468d42fa4071e5c9f8f25e547f8d341434561a9a01f19b0b3",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    },
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-FLOW-FL-100",
+        "entity_type": "PRODUCT",
+        "canonical_label": "Flow FL-100",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "seed_registry_row_id": "PRR-0a1567442b4e56a45d3e8dcd22ea404a56cd6ca17455a61f3ada8d0dbd553914",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    },
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-MODIUS-SPERO",
+        "entity_type": "PRODUCT",
+        "canonical_label": "Modius Spero",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "seed_registry_row_id": "PRR-f5d9f50c21901e87ec856f41188f91012a665639a486e35a54ccb4250c3babd9",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    },
+    {
+      "entity": {
+        "object_class": "Entity",
+        "entity_id": "PRD-SYNCHRON-STENTRODE",
+        "entity_type": "PRODUCT",
+        "canonical_label": "Synchron Stentrode",
+        "aliases": [],
+        "identifiers": [],
+        "status": "ACTIVE",
+        "lineage": {
+          "predecessor_entity_ids": [],
+          "successor_entity_ids": [],
+          "supersession_state": "NONE"
+        },
+        "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+      },
+      "product_identity_level": "OFFERING",
+      "allocation_state": "ALLOCATED",
+      "source_observation_refs": [
+        "OBS-A1-466bbeeaf6f8c653a1bababc"
+      ],
+      "seed_registry_row_id": "PRR-f0601eca0e52cd0a0f7cd6a4d7bb765bd75c27131db8977974db77644991533b",
+      "allocation_basis": "Exact product/offering identity supported by the A1 source observation and preserved separately from the analytical Product Registry projection."
+    }
+  ],
+  "boundary": "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, deployment, regulatory status, effectiveness, market importance, or global completeness."
+}

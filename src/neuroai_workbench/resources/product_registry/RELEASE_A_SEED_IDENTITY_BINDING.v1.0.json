@@ -1,0 +1,18 @@
+{
+  "binding_id": "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04",
+  "binding_version": "RELEASE_A_SEED_IDENTITY_BINDING_v1.0",
+  "status": "FROZEN_v1.0",
+  "seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
+  "identity_registry_id": "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0",
+  "identity_registry_sha256": "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc",
+  "entity_ids": [
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "boundary": "This successor binding demonstrates that every canonical PRODUCT/OFFERING ID used by the A1 seed Product Registry is separately materialized in the controlled product identity registry. It does not change product scope, state, count, or publication authority."
+}

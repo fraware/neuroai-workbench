@@ -9,6 +9,7 @@ from typing import Any, cast
 
 from jsonschema import Draft202012Validator
 
+from neuroai_workbench.observatory_graph import validate_graph_object
 from neuroai_workbench.product_registry import (
     BOUNDARY_CONTRACT_ID,
     CURRENTNESS_POLICY_ID,
@@ -27,8 +28,12 @@ SEED_MANIFEST_SCHEMA = "RELEASE_A_SEED_INPUT_MANIFEST.schema.json"
 SEED_EVIDENCE_PACKET_RESOURCE = "RELEASE_A_SEED_EVIDENCE_PACKET.v1.0.json"
 SEED_INPUT_MANIFEST_RESOURCE = "RELEASE_A_SEED_INPUT_MANIFEST.v1.0.json"
 SEED_PRODUCT_REGISTRY_RESOURCE = "RELEASE_A_SEED_PRODUCT_REGISTRY.v1.0.json"
+PRODUCT_IDENTITY_REGISTRY_RESOURCE = "RELEASE_A_PRODUCT_IDENTITY_REGISTRY.v1.0.json"
+SEED_IDENTITY_BINDING_RESOURCE = "RELEASE_A_SEED_IDENTITY_BINDING.v1.0.json"
 
 SEED_MANIFEST_VERSION = "RELEASE_A_SEED_INPUT_MANIFEST_v1.0"
+PRODUCT_IDENTITY_REGISTRY_ID = "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
+SEED_IDENTITY_BINDING_VERSION = "RELEASE_A_SEED_IDENTITY_BINDING_v1.0"
 OBSERVATORY_DATA_REPO = "fraware/neuroai-observatory-data"
 SEED_EVIDENCE_BASIS = "EXACT_PRODUCT_OR_SERVICE_EVIDENCE"
 
@@ -36,6 +41,18 @@ SEED_REGISTRY_BOUNDARY = (
     "Release-A seed assembly admits only resolved INCLUDE exact-product/service evidence at the frozen "
     "PRODUCT_REGISTRY_v1.0 grain. Organization records and broad family mentions may seed discovery but cannot "
     "be converted mechanically into product rows. Seed-registry composition is not a global product count."
+)
+
+PRODUCT_IDENTITY_BOUNDARY = (
+    "Release-A product identity allocation establishes canonical PRODUCT identity only for the exact source-bound "
+    "OFFERING labels in this registry. It does not establish scope inclusion, currentness, commercialization, "
+    "deployment, regulatory status, effectiveness, market importance, or global completeness."
+)
+
+SEED_IDENTITY_BINDING_BOUNDARY = (
+    "This successor binding demonstrates that every canonical PRODUCT/OFFERING ID used by the A1 seed Product "
+    "Registry is separately materialized in the controlled product identity registry. It does not change product "
+    "scope, state, count, or publication authority."
 )
 
 
@@ -63,6 +80,149 @@ def seed_evidence_packet_sha256(packet: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _canonical_sha256(value: Mapping[str, Any]) -> str:
+    encoded = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def product_identity_registry_sha256(registry: Mapping[str, Any]) -> str:
+    """Return the canonical digest of the controlled Release-A product identity registry."""
+
+    validate_product_identity_registry(registry)
+    return _canonical_sha256(registry)
+
+
+def seed_identity_binding_id(binding: Mapping[str, Any]) -> str:
+    """Return the deterministic identity of one A1 seed-to-identity authority binding."""
+
+    material = {key: value for key, value in binding.items() if key != "binding_id"}
+    return "RAIB-" + _canonical_sha256(material)
+
+
+def validate_product_identity_registry(registry: Mapping[str, Any]) -> None:
+    """Validate the canonical PRODUCT/OFFERING identities backing the A1 seed projection."""
+
+    if registry.get("registry_id") != PRODUCT_IDENTITY_REGISTRY_ID:
+        raise ReleaseASeedRegistryError(f"identity registry_id must be {PRODUCT_IDENTITY_REGISTRY_ID}")
+    if registry.get("version") != "1.0" or registry.get("status") != "FROZEN_v1.0":
+        raise ReleaseASeedRegistryError("Product identity registry must be frozen v1.0")
+    if registry.get("identity_unit") != "PRODUCT/OFFERING":
+        raise ReleaseASeedRegistryError("Product identity registry must use PRODUCT/OFFERING as its identity unit")
+    if registry.get("boundary") != PRODUCT_IDENTITY_BOUNDARY:
+        raise ReleaseASeedRegistryError(
+            "Product identity registry boundary does not match the frozen identity boundary"
+        )
+
+    records = registry.get("records")
+    if not isinstance(records, list) or not records:
+        raise ReleaseASeedRegistryError("Product identity registry records must be a non-empty list")
+    if int(registry.get("record_count", -1)) != len(records):
+        raise ReleaseASeedRegistryError("Product identity registry record_count does not match records")
+
+    entity_ids: set[str] = set()
+    row_ids: set[str] = set()
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise ReleaseASeedRegistryError("Product identity registry records must be objects")
+        entity = record.get("entity")
+        if not isinstance(entity, Mapping):
+            raise ReleaseASeedRegistryError("Product identity registry record requires an Entity object")
+        schema_errors = validate_graph_object(dict(entity), "Entity")
+        if schema_errors:
+            raise ReleaseASeedRegistryError(
+                "Product identity Entity schema validation failed: " + "; ".join(str(error) for error in schema_errors)
+            )
+        entity_id = str(entity.get("entity_id", "")).strip()
+        if entity.get("entity_type") != "PRODUCT" or not entity_id.startswith("PRD-"):
+            raise ReleaseASeedRegistryError("A1 canonical identities must be PRODUCT entities with PRD- IDs")
+        if entity.get("status") != "ACTIVE":
+            raise ReleaseASeedRegistryError("A1 canonical product identities must be ACTIVE")
+        if entity.get("boundary") != PRODUCT_IDENTITY_BOUNDARY:
+            raise ReleaseASeedRegistryError("A1 product Entity boundary does not match the identity registry boundary")
+        if entity_id in entity_ids:
+            raise ReleaseASeedRegistryError(f"Duplicate canonical product entity_id: {entity_id}")
+        entity_ids.add(entity_id)
+
+        if record.get("product_identity_level") != "OFFERING" or record.get("allocation_state") != "ALLOCATED":
+            raise ReleaseASeedRegistryError("A1 product identities must be allocated at OFFERING level")
+        source_refs = record.get("source_observation_refs")
+        if not isinstance(source_refs, list) or not source_refs or any(not str(ref).strip() for ref in source_refs):
+            raise ReleaseASeedRegistryError("A1 product identity allocation requires source_observation_refs")
+        row_id = str(record.get("seed_registry_row_id", "")).strip()
+        if not row_id or row_id in row_ids:
+            raise ReleaseASeedRegistryError("A1 product identity allocation requires unique seed_registry_row_id")
+        row_ids.add(row_id)
+
+
+def validate_seed_identity_binding(
+    binding: Mapping[str, Any],
+    *,
+    manifest: Mapping[str, Any],
+    registry: Mapping[str, Any],
+    identity_registry: Mapping[str, Any],
+) -> None:
+    """Validate the immutable successor binding from A1 seed projection to canonical identities."""
+
+    validate_seed_input_manifest(manifest)
+    try:
+        validate_product_registry(registry)
+    except ProductRegistryError as exc:
+        raise ReleaseASeedRegistryError(str(exc)) from exc
+    validate_product_identity_registry(identity_registry)
+
+    if binding.get("binding_version") != SEED_IDENTITY_BINDING_VERSION:
+        raise ReleaseASeedRegistryError(f"binding_version must be {SEED_IDENTITY_BINDING_VERSION}")
+    if binding.get("status") != "FROZEN_v1.0":
+        raise ReleaseASeedRegistryError("Seed identity binding must be FROZEN_v1.0")
+    if binding.get("boundary") != SEED_IDENTITY_BINDING_BOUNDARY:
+        raise ReleaseASeedRegistryError("Seed identity binding boundary does not match the frozen boundary")
+    if binding.get("binding_id") != seed_identity_binding_id(binding):
+        raise ReleaseASeedRegistryError("Seed identity binding_id does not match deterministic identity")
+    if binding.get("seed_manifest_id") != manifest.get("manifest_id"):
+        raise ReleaseASeedRegistryError("Seed identity binding does not bind the exact A1 seed manifest")
+    if binding.get("seed_registry_sha256") != seed_registry_sha256(registry):
+        raise ReleaseASeedRegistryError("Seed identity binding does not bind the exact A1 seed registry digest")
+    if binding.get("identity_registry_id") != identity_registry.get("registry_id"):
+        raise ReleaseASeedRegistryError("Seed identity binding does not bind the exact product identity registry")
+    if binding.get("identity_registry_sha256") != product_identity_registry_sha256(identity_registry):
+        raise ReleaseASeedRegistryError("Seed identity binding product identity registry digest mismatch")
+
+    identity_records = cast(Sequence[Mapping[str, Any]], identity_registry["records"])
+    identity_by_id = {
+        str(cast(Mapping[str, Any], record["entity"])["entity_id"]): record for record in identity_records
+    }
+    seed_bindings = cast(Sequence[Mapping[str, Any]], manifest["bindings"])
+    seed_entity_ids = {str(item["canonical_entity_id"]) for item in seed_bindings}
+    declared_entity_ids = {str(value) for value in cast(Sequence[str], binding.get("entity_ids", []))}
+    if declared_entity_ids != seed_entity_ids or set(identity_by_id) != seed_entity_ids:
+        raise ReleaseASeedRegistryError("Seed identity authority must cover exactly the A1 canonical entity set")
+
+    rows_by_id = {str(row["registry_row_id"]): row for row in cast(Sequence[Mapping[str, Any]], registry["rows"])}
+    binding_by_entity = {str(item["canonical_entity_id"]): item for item in seed_bindings}
+    for entity_id, identity_record in identity_by_id.items():
+        seed_binding = binding_by_entity[entity_id]
+        entity = cast(Mapping[str, Any], identity_record["entity"])
+        if str(entity.get("canonical_label", "")).strip() != str(seed_binding["exact_product_label"]).strip():
+            raise ReleaseASeedRegistryError("Canonical product identity label does not match A1 exact product label")
+        if set(cast(Sequence[str], identity_record["source_observation_refs"])) != set(
+            cast(Sequence[str], seed_binding["source_observation_refs"])
+        ):
+            raise ReleaseASeedRegistryError("Canonical product identity evidence does not match A1 seed evidence")
+        row_id = str(identity_record["seed_registry_row_id"])
+        if row_id != str(seed_binding["registry_row_id"]) or row_id not in rows_by_id:
+            raise ReleaseASeedRegistryError("Canonical product identity does not bind the exact A1 seed registry row")
+        if str(rows_by_id[row_id]["canonical_entity_id"]) != entity_id:
+            raise ReleaseASeedRegistryError(
+                "A1 seed registry row canonical_entity_id lacks matching identity authority"
+            )
+
+
 def _parse_bound_timestamp(value: Any, *, field: str) -> datetime:
     if not isinstance(value, str) or not value.strip():
         raise ReleaseASeedRegistryError(f"{field} requires a non-empty timestamp")
@@ -81,6 +241,8 @@ def load_default_seed_artifacts() -> dict[str, Any]:
     packet = _resource_json(SEED_EVIDENCE_PACKET_RESOURCE)
     manifest = _resource_json(SEED_INPUT_MANIFEST_RESOURCE)
     registry = _resource_json(SEED_PRODUCT_REGISTRY_RESOURCE)
+    identity_registry = _resource_json(PRODUCT_IDENTITY_REGISTRY_RESOURCE)
+    identity_binding = _resource_json(SEED_IDENTITY_BINDING_RESOURCE)
 
     validate_seed_input_manifest(manifest)
     try:
@@ -209,13 +371,24 @@ def load_default_seed_artifacts() -> dict[str, Any]:
             "Materialized A1 seed Product Registry does not match deterministic compiler output"
         )
 
+    validate_seed_identity_binding(
+        identity_binding,
+        manifest=manifest,
+        registry=registry,
+        identity_registry=identity_registry,
+    )
+
     return {
         "packet": packet,
         "manifest": manifest,
         "registry": registry,
+        "identity_registry": identity_registry,
+        "identity_binding": identity_binding,
         "packet_sha256": packet_digest,
         "evidence_index_sha256": manifest["evidence_index_sha256"],
         "registry_sha256": seed_registry_sha256(registry),
+        "identity_registry_sha256": product_identity_registry_sha256(identity_registry),
+        "identity_binding_id": identity_binding["binding_id"],
     }
 
 
