@@ -1,0 +1,120 @@
+{
+  "procedure_id": "RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE_v1.0",
+  "procedure_sha256": "402af2464750688b6f7cb36f3444c113871836d4dd4fe9feac17350431710e72",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F9",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "actor_seed_register_id": "RELEASE_A_F9_ACTOR_SEED_REGISTER_v1.0",
+  "actor_seed_register_blob_sha": "ddee79131b4eaf73193a1432039bf0eb470aa776",
+  "actor_count": 37,
+  "actor_identity_ids": [
+    "ORG-0001",
+    "ORG-0002",
+    "ORG-0003",
+    "ORG-0004",
+    "ORG-0005",
+    "ORG-0006",
+    "ORG-0007",
+    "ORG-0008",
+    "ORG-0009",
+    "ORG-0010",
+    "ORG-0011",
+    "ORG-0012",
+    "ORG-0013",
+    "ORG-0014",
+    "ORG-0015",
+    "ORG-0016",
+    "ORG-0017",
+    "ORG-0018",
+    "ORG-0019",
+    "ORG-0020",
+    "ORG-0021",
+    "ORG-0022",
+    "ORG-0023",
+    "ORG-0024",
+    "ORG-0025",
+    "ORG-0026",
+    "ORG-0027",
+    "ORG-0028",
+    "ORG-0029",
+    "ORG-0030",
+    "ORG-0031",
+    "ORG-0032",
+    "ORG-0033",
+    "ORG-0034",
+    "ORG-0036",
+    "ORG-0041",
+    "ORG-0042"
+  ],
+  "query_family": "FROZEN_ACTOR_PRODUCT_ENUMERATION",
+  "allowed_source_classes": [
+    "CURATED_OBSERVATORY_ACTOR",
+    "MANUFACTURER_VENDOR_OFFICIAL"
+  ],
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "inspection_step_ids": [
+    "INSPECT_FROZEN_OFFICIAL_LOCATOR",
+    "INSPECT_FIRST_PARTY_PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACES",
+    "ENUMERATE_ALL_NAMED_PLAUSIBLE_PRODUCT_OBJECTS",
+    "RETAIN_BOUNDARY_OBJECTS_EXPLICITLY",
+    "RECORD_EXACT_LOCATORS_AND_RETRIEVAL_OUTCOMES",
+    "DECLARE_ACTOR_COMPLETION_STATE"
+  ],
+  "surface_roles": [
+    "FROZEN_OFFICIAL_LOCATOR",
+    "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE",
+    "PRODUCT_DETAIL_SURFACE",
+    "BOUNDARY_EVIDENCE_SURFACE"
+  ],
+  "retrieval_outcomes": [
+    "RETRIEVED",
+    "FAILED_INACCESSIBLE"
+  ],
+  "candidate_object_classes": [
+    "PLAUSIBLE_PRODUCT_OFFERING",
+    "COMPONENT_OR_ACCESSORY_BOUNDARY",
+    "SERVICE_OR_SOFTWARE_BOUNDARY",
+    "SYSTEM_OR_CONFIGURATION_BOUNDARY",
+    "DISCONTINUED_OR_HISTORICAL_BOUNDARY",
+    "OTHER_SCOPE_BOUNDARY"
+  ],
+  "capture_outcomes": [
+    "INCLUDE_RESOLVED",
+    "EXCLUDE",
+    "BORDERLINE",
+    "ABSTAIN",
+    "UNRESOLVED_IDENTITY",
+    "FAILED_INACCESSIBLE"
+  ],
+  "actor_completion_states": [
+    "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL",
+    "ACTOR_ENUMERATION_PARTIAL",
+    "ACTOR_ENUMERATION_BLOCKED"
+  ],
+  "completion_rule": {
+    "complete_requires_frozen_official_locator_inspected": true,
+    "complete_requires_first_party_catalogue_or_technology_surface_inspected": true,
+    "complete_requires_all_retained_candidates_have_capture_disposition": true,
+    "complete_requires_exact_locator_and_retrieval_outcome_for_every_inspected_surface": true,
+    "complete_requires_catalogue_manifest_declared_complete_under_inspected_surfaces": true,
+    "component_accessory_service_system_configuration_and_historical_boundary_cases_must_be_retained_when_they_could_change_product_row_accounting": true,
+    "no_named_product_evidence_is_permitted_only_with_an_explicit_empty_candidate_manifest_and_completion_reason": true
+  },
+  "temporal_rule": {
+    "post_world_cutoff_retrieval_does_not_establish_pre_cutoff_inclusion_by_itself": true,
+    "resolved_post_cutoff_capture_requires_world_time_support_ref": true,
+    "later_world_state_changes_must_not_be_back_projected": true
+  },
+  "bounded_exhaustion_rule": {
+    "requires_all_37_actor_completion_records": true,
+    "requires_every_actor_state_complete_under_protocol": true,
+    "requires_every_retained_candidate_have_exact_f9_capture_disposition": true,
+    "permits_unresolved_identity_as_capture_disposition": true,
+    "global_completeness_claim_prohibited": true
+  },
+  "boundary": "F9 exhaustion is bounded only by the frozen 37-actor seed set and this declared per-actor first-party enumeration procedure. Actor completion does not establish that no other products exist on the open web, does not allocate canonical PRODUCT identity, and does not establish global product completeness, unseen-population size, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+}
