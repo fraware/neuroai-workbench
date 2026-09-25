@@ -1,0 +1,169 @@
+{
+  "packet_id": "RELEASE_A_SEED_EVIDENCE_PACKET_v1.0",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-24",
+  "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+  "capture_note": "Repository-safe observation metadata and bounded paraphrases only; full source bytes are not archived in this packet.",
+  "observations": [
+    {
+      "observation_id": "OBS-A1-0f28ddca3e7a867f7793e0ad",
+      "observed_on": "2026-09-24",
+      "source_url": "https://eu.choosemuse.com/products/muse-s-athena",
+      "publisher": "InteraXon Inc. / Muse",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "exact_product_label": "Muse S Athena",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "Current product page identifies Muse S Athena as a sold headband using EEG-based brain-activity sensing, with current sleep, focus and feedback functions.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    },
+    {
+      "observation_id": "OBS-A1-4a387a3e9af44d7ef2816664",
+      "observed_on": "2026-09-24",
+      "source_url": "https://nextsense.io/products/smartbuds",
+      "publisher": "NextSense",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "exact_product_label": "NextSense Smartbuds",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "Current product page identifies Smartbuds as a sold/backordered earbud offering using EEG sensing, real-time sleep-stage detection, personalized sound stimulation and focus functions.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    },
+    {
+      "observation_id": "OBS-A1-0075b8ecf8b68bc9c168c1ae",
+      "observed_on": "2026-09-24",
+      "source_url": "https://www.emotiv.com/epoc-x",
+      "publisher": "EMOTIV",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "exact_product_label": "EMOTIV EPOC X",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "Current product page identifies EPOC X as a 14-channel wireless EEG headset for brain research, with software-supported detections including attention and other performance metrics.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    },
+    {
+      "observation_id": "OBS-A1-c728ee8be8c2a6f704406d00",
+      "observed_on": "2026-09-24",
+      "source_url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpma/pma.cfm?id=P230024",
+      "publisher": "U.S. Food and Drug Administration",
+      "source_class": "REGULATOR_OFFICIAL",
+      "exact_product_label": "Flow FL-100",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "FDA PMA P230024 identifies Flow FL-100 as a cranial electrotherapy stimulator approved on 2025-12-08 for specified adult major-depressive-disorder treatment use.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    },
+    {
+      "observation_id": "OBS-A1-b4cd2e58122bce7bd8b233c5",
+      "observed_on": "2026-09-24",
+      "source_url": "https://www.accessdata.fda.gov/cdrh_docs/pdf25/DEN250013.pdf",
+      "publisher": "U.S. Food and Drug Administration",
+      "source_class": "REGULATOR_OFFICIAL",
+      "exact_product_label": "Modius Spero",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "FDA De Novo DEN250013 identifies Modius Spero as a prescription home-use transcranial nerve stimulation device classified Class II on 2026-05-08 for PTSD-associated symptoms under specified conditions.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    },
+    {
+      "observation_id": "OBS-A1-466bbeeaf6f8c653a1bababc",
+      "observed_on": "2026-09-24",
+      "source_url": "https://synchron.com/",
+      "publisher": "Synchron",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "exact_product_label": "Synchron Stentrode",
+      "capture_mode": "LIVE_PUBLIC_SOURCE_OBSERVATION_METADATA_AND_BOUNDED_PARAPHRASE",
+      "content_bytes_archived": false,
+      "bounded_observation": "Current first-party page identifies Stentrode as Synchron's first endovascular BCI product, currently assessed in clinical trials; the Synchron BCI System is stated to be investigational and not approved for commercial use.",
+      "claim_boundary": "Supports only the bounded exact-product identity/capability/state claim stated here.",
+      "observation_registered_at": "2026-09-24T17:23:06Z",
+      "observation_time_basis": "SOURCE_RECHECK_REGISTERED_IN_ISSUE_COMMENT_5818856902"
+    }
+  ],
+  "assertions": [
+    {
+      "assertion_id": "AST-A1-3a6b91199d2a1f64f69c7279",
+      "canonical_entity_id": "PRD-MUSE-S-ATHENA",
+      "source_observation_refs": [
+        "OBS-A1-0f28ddca3e7a867f7793e0ad"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "Current product page identifies Muse S Athena as a sold headband using EEG-based brain-activity sensing, with current sleep, focus and feedback functions.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    },
+    {
+      "assertion_id": "AST-A1-1463af52cdff5035146e4157",
+      "canonical_entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "source_observation_refs": [
+        "OBS-A1-4a387a3e9af44d7ef2816664"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "Current product page identifies Smartbuds as a sold/backordered earbud offering using EEG sensing, real-time sleep-stage detection, personalized sound stimulation and focus functions.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    },
+    {
+      "assertion_id": "AST-A1-01da0f469eb503832a827c62",
+      "canonical_entity_id": "PRD-EMOTIV-EPOC-X",
+      "source_observation_refs": [
+        "OBS-A1-0075b8ecf8b68bc9c168c1ae"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "Current product page identifies EPOC X as a 14-channel wireless EEG headset for brain research, with software-supported detections including attention and other performance metrics.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    },
+    {
+      "assertion_id": "AST-A1-eef7bc1eccc3d1544cdadad9",
+      "canonical_entity_id": "PRD-FLOW-FL-100",
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "FDA PMA P230024 identifies Flow FL-100 as a cranial electrotherapy stimulator approved on 2025-12-08 for specified adult major-depressive-disorder treatment use.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    },
+    {
+      "assertion_id": "AST-A1-b7d3fa31d2e2ec010fcdbd47",
+      "canonical_entity_id": "PRD-MODIUS-SPERO",
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "FDA De Novo DEN250013 identifies Modius Spero as a prescription home-use transcranial nerve stimulation device classified Class II on 2026-05-08 for PTSD-associated symptoms under specified conditions.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    },
+    {
+      "assertion_id": "AST-A1-e65f93ed2c0c13f964d25d07",
+      "canonical_entity_id": "PRD-SYNCHRON-STENTRODE",
+      "source_observation_refs": [
+        "OBS-A1-466bbeeaf6f8c653a1bababc"
+      ],
+      "assertion_scope": "EXACT_PRODUCT_IDENTITY_CAPABILITY_AND_STATE",
+      "statement": "Current first-party page identifies Stentrode as Synchron's first endovascular BCI product, currently assessed in clinical trials; the Synchron BCI System is stated to be investigational and not approved for commercial use.",
+      "assertion_status": "PROJECTED_FROM_SOURCE_OBSERVATION",
+      "boundary": "Limited to cited observation; no independent effectiveness or market claim."
+    }
+  ],
+  "boundary": "Binds source locators, observation identities and bounded projected assertions for A1 seed assembly; not a source archive, publication authority, effectiveness assessment, or population estimate.",
+  "source_recheck_registration": {
+    "repository": "fraware/neuroai-workbench",
+    "issue_number": 334,
+    "issue_comment_id": 5818856902,
+    "registered_at": "2026-09-24T17:23:06Z",
+    "semantics": "Upper-bound knowledge-time registration for the source recheck documented in the issue comment; not represented as exact HTTP retrieval time."
+  }
+}

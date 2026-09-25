@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "title": "Release A high-confidence seed Product Registry",
+    "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+    "row_count": 6,
+    "world_time_cutoff": "2026-09-24",
+    "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+    "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+    "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+    "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+    "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+    "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0"
+  },
+  "rows": [
+    {
+      "registry_row_id": "PRR-0447428a0e2d014908a6616cd30fb2c84bb0af6cef83f84e69494c330c81a482",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "OFFERING",
+      "offering_kind": "BUNDLE",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "RELEASED",
+      "access_commercial_state": "PREORDER_RESERVATION",
+      "regulatory_state": "NO_CONTROLLING_RECORD",
+      "deployment_state": "INTENDED_MARKETED_USE",
+      "currentness_state": "CURRENT",
+      "evidence_state": [
+        "COMPANY_REPRESENTATION"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-1463af52cdff5035146e4157"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-4a387a3e9af44d7ef2816664"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "SENSE_EAR_EEG"
+      ],
+      "inference_capability": [
+        "STATE_SLEEP",
+        "STATE_ATTENTION_VIGILANCE"
+      ],
+      "intervention_output_capability": [
+        "OUTPUT_ADAPTIVE_AUDIO"
+      ],
+      "form_factor": [
+        "FORM_EARBUDS"
+      ],
+      "deployment_context": [
+        "CONTEXT_CONSUMER_WELLNESS"
+      ],
+      "target_population": [
+        "GENERAL_ADULT"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    },
+    {
+      "registry_row_id": "PRR-0a1567442b4e56a45d3e8dcd22ea404a56cd6ca17455a61f3ada8d0dbd553914",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-FLOW-FL-100",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-FLOW-FL-100",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "OFFERING",
+      "offering_kind": "REGULATED_MEDICAL_PRODUCT",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "UNRESOLVED",
+      "access_commercial_state": "UNRESOLVED",
+      "regulatory_state": "APPROVAL_AUTHORIZATION",
+      "deployment_state": "INTENDED_MARKETED_USE",
+      "currentness_state": "UNRESOLVED",
+      "evidence_state": [
+        "REGULATORY_ADMINISTRATIVE_RECORD"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-eef7bc1eccc3d1544cdadad9"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "INTERVENTION_TRANSCRANIAL_ELECTRICAL_STIMULATION"
+      ],
+      "inference_capability": [],
+      "intervention_output_capability": [
+        "OUTPUT_THERAPEUTIC_STIMULATION"
+      ],
+      "form_factor": [
+        "FORM_HEAD_WORN_STIMULATOR"
+      ],
+      "deployment_context": [
+        "CONTEXT_CLINICAL_HOME_USE"
+      ],
+      "target_population": [
+        "ADULT_MDD"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    },
+    {
+      "registry_row_id": "PRR-53ff5378568df0e22fff330c854d69283c5f7fe7a2334c31a4dcc8bd3aff477b",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-MUSE-S-ATHENA",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-MUSE-S-ATHENA",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "OFFERING",
+      "offering_kind": "BUNDLE",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "RELEASED",
+      "access_commercial_state": "COMMERCIAL_DIRECT",
+      "regulatory_state": "NO_CONTROLLING_RECORD",
+      "deployment_state": "DOCUMENTED_CONSUMER_ACCESS",
+      "currentness_state": "CURRENT",
+      "evidence_state": [
+        "COMPANY_REPRESENTATION"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-3a6b91199d2a1f64f69c7279"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-0f28ddca3e7a867f7793e0ad"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "SENSE_SCALP_EEG"
+      ],
+      "inference_capability": [
+        "STATE_ATTENTION_VIGILANCE",
+        "STATE_SLEEP"
+      ],
+      "intervention_output_capability": [
+        "OUTPUT_NEUROFEEDBACK",
+        "OUTPUT_ADAPTIVE_AUDIO"
+      ],
+      "form_factor": [
+        "FORM_HEADBAND"
+      ],
+      "deployment_context": [
+        "CONTEXT_CONSUMER_WELLNESS"
+      ],
+      "target_population": [
+        "GENERAL_ADULT"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    },
+    {
+      "registry_row_id": "PRR-efaf6b07ef7fc20468d42fa4071e5c9f8f25e547f8d341434561a9a01f19b0b3",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-EMOTIV-EPOC-X",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-EMOTIV-EPOC-X",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "OFFERING",
+      "offering_kind": "RESEARCH_PLATFORM",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "RELEASED",
+      "access_commercial_state": "RESEARCH_USE_SOLD_OR_LICENSED",
+      "regulatory_state": "NO_CONTROLLING_RECORD",
+      "deployment_state": "INTENDED_MARKETED_USE",
+      "currentness_state": "CURRENT",
+      "evidence_state": [
+        "COMPANY_REPRESENTATION"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-01da0f469eb503832a827c62"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-0075b8ecf8b68bc9c168c1ae"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "SENSE_SCALP_EEG"
+      ],
+      "inference_capability": [
+        "STATE_ATTENTION_VIGILANCE",
+        "STATE_AFFECTIVE_STRESS"
+      ],
+      "intervention_output_capability": [
+        "OUTPUT_ANALYTICS"
+      ],
+      "form_factor": [
+        "FORM_EEG_HEADSET"
+      ],
+      "deployment_context": [
+        "CONTEXT_RESEARCH"
+      ],
+      "target_population": [
+        "RESEARCH_PARTICIPANTS"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    },
+    {
+      "registry_row_id": "PRR-f0601eca0e52cd0a0f7cd6a4d7bb765bd75c27131db8977974db77644991533b",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-SYNCHRON-STENTRODE",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-SYNCHRON-STENTRODE",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "FORMAL_INVESTIGATIONAL_OFFERING",
+      "offering_kind": "FORMAL_INVESTIGATIONAL_OFFERING",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "IN_DEVELOPMENT",
+      "access_commercial_state": "TRIAL_INVESTIGATIONAL",
+      "regulatory_state": "NO_CONTROLLING_RECORD",
+      "deployment_state": "TRIAL_USE",
+      "currentness_state": "CURRENT",
+      "evidence_state": [
+        "COMPANY_REPRESENTATION"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-e65f93ed2c0c13f964d25d07"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-466bbeeaf6f8c653a1bababc"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "SENSE_ENDOVASCULAR_NEURAL_RECORDING"
+      ],
+      "inference_capability": [
+        "NEURAL_DECODING_DEVICE_CONTROL"
+      ],
+      "intervention_output_capability": [
+        "OUTPUT_DEVICE_CONTROL"
+      ],
+      "form_factor": [
+        "FORM_ENDOVASCULAR_IMPLANT"
+      ],
+      "deployment_context": [
+        "CONTEXT_CLINICAL_TRIAL",
+        "CONTEXT_ASSISTIVE_BCI"
+      ],
+      "target_population": [
+        "PARALYSIS_SEVERE_MOTOR_IMPAIRMENT"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    },
+    {
+      "registry_row_id": "PRR-f5d9f50c21901e87ec856f41188f91012a665639a486e35a54ccb4250c3babd9",
+      "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+      "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+      "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+      "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+      "reference_standard_version": "1.0",
+      "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+      "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+      "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+      "canonical_entity_id": "PRD-MODIUS-SPERO",
+      "canonical_entity_type": "PRODUCT",
+      "identity_level": "OFFERING",
+      "product_family_id": null,
+      "product_offering_id": "PRD-MODIUS-SPERO",
+      "configuration_system_id": null,
+      "configuration_coverage_state": "NOT_APPLICABLE",
+      "system_or_offering_role": "OFFERING",
+      "offering_kind": "REGULATED_MEDICAL_PRODUCT",
+      "primary_enumeration_role": "INTEGRATED_SYSTEM",
+      "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+      "world_time_cutoff": "2026-09-24",
+      "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+      "identity_state": "RESOLVED",
+      "boundary_disposition": "INCLUDE",
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "lifecycle_state": "UNRESOLVED",
+      "access_commercial_state": "UNRESOLVED",
+      "regulatory_state": "APPROVAL_AUTHORIZATION",
+      "deployment_state": "INTENDED_MARKETED_USE",
+      "currentness_state": "UNRESOLVED",
+      "evidence_state": [
+        "REGULATORY_ADMINISTRATIVE_RECORD"
+      ],
+      "organization_relationship_refs": [],
+      "projected_assertion_refs": [
+        "AST-A1-b7d3fa31d2e2ec010fcdbd47"
+      ],
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "first_observed_at": "2026-09-24T17:23:06Z",
+      "last_observed_at": "2026-09-24T17:23:06Z",
+      "signal_or_sensing_modality": [
+        "INTERVENTION_TRANSCRANIAL_NERVE_STIMULATION"
+      ],
+      "inference_capability": [],
+      "intervention_output_capability": [
+        "OUTPUT_THERAPEUTIC_STIMULATION"
+      ],
+      "form_factor": [
+        "FORM_HEAD_WORN_STIMULATOR"
+      ],
+      "deployment_context": [
+        "CONTEXT_CLINICAL_HOME_USE"
+      ],
+      "target_population": [
+        "ADULT_PTSD_ASSOCIATED_SYMPTOMS"
+      ],
+      "technical_equivalence_cluster_id": null,
+      "technical_equivalence_evidence_refs": [],
+      "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+    }
+  ],
+  "boundary": "Product-registry rows are deterministic analytical projections over canonical PRODUCT and SYSTEM identities. They do not create canonical identity, product effectiveness, commercial success, regulatory authorization, deployment, market share, or global completeness by themselves."
+}

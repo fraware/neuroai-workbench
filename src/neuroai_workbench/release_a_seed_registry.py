@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable, Mapping, Sequence
+from datetime import datetime
 from importlib.resources import files
 from typing import Any, cast
 
@@ -23,6 +24,9 @@ from neuroai_workbench.product_registry import (
 
 RESOURCE_PACKAGE = "neuroai_workbench.resources.product_registry"
 SEED_MANIFEST_SCHEMA = "RELEASE_A_SEED_INPUT_MANIFEST.schema.json"
+SEED_EVIDENCE_PACKET_RESOURCE = "RELEASE_A_SEED_EVIDENCE_PACKET.v1.0.json"
+SEED_INPUT_MANIFEST_RESOURCE = "RELEASE_A_SEED_INPUT_MANIFEST.v1.0.json"
+SEED_PRODUCT_REGISTRY_RESOURCE = "RELEASE_A_SEED_PRODUCT_REGISTRY.v1.0.json"
 
 SEED_MANIFEST_VERSION = "RELEASE_A_SEED_INPUT_MANIFEST_v1.0"
 OBSERVATORY_DATA_REPO = "fraware/neuroai-observatory-data"
@@ -37,6 +41,182 @@ SEED_REGISTRY_BOUNDARY = (
 
 class ReleaseASeedRegistryError(ValueError):
     """Raised when Release-A seed-registry inputs violate the A1 evidence boundary."""
+
+
+def _resource_json(name: str) -> dict[str, Any]:
+    return cast(
+        dict[str, Any],
+        json.loads(files(RESOURCE_PACKAGE).joinpath(name).read_text(encoding="utf-8")),
+    )
+
+
+def seed_evidence_packet_sha256(packet: Mapping[str, Any]) -> str:
+    """Return the canonical JSON digest used to bind the repository-safe A1 evidence packet."""
+
+    encoded = json.dumps(
+        packet,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _parse_bound_timestamp(value: Any, *, field: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        raise ReleaseASeedRegistryError(f"{field} requires a non-empty timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ReleaseASeedRegistryError(f"{field} must be a valid offset-aware timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ReleaseASeedRegistryError(f"{field} must include an explicit timezone")
+    return parsed
+
+
+def load_default_seed_artifacts() -> dict[str, Any]:
+    """Load and cross-validate the substantive Release-A A1 seed artifacts."""
+
+    packet = _resource_json(SEED_EVIDENCE_PACKET_RESOURCE)
+    manifest = _resource_json(SEED_INPUT_MANIFEST_RESOURCE)
+    registry = _resource_json(SEED_PRODUCT_REGISTRY_RESOURCE)
+
+    validate_seed_input_manifest(manifest)
+    try:
+        validate_product_registry(registry)
+    except ProductRegistryError as exc:
+        raise ReleaseASeedRegistryError(str(exc)) from exc
+
+    packet_digest = seed_evidence_packet_sha256(packet)
+    if packet_digest not in set(cast(list[str], manifest["controlled_packet_digests"])):
+        raise ReleaseASeedRegistryError("Default A1 evidence packet digest is not bound by the seed input manifest")
+
+    observations = packet.get("observations")
+    assertions = packet.get("assertions")
+    if not isinstance(observations, list) or not isinstance(assertions, list):
+        raise ReleaseASeedRegistryError("Default A1 evidence packet requires observation and assertion lists")
+
+    observation_index: dict[str, Mapping[str, Any]] = {}
+    for item in observations:
+        if not isinstance(item, Mapping):
+            raise ReleaseASeedRegistryError("Default A1 evidence packet observations must be objects")
+        observation_id = str(item.get("observation_id", "")).strip()
+        if not observation_id or observation_id in observation_index:
+            raise ReleaseASeedRegistryError("Default A1 evidence packet contains missing or duplicate observation IDs")
+        registered_at = _parse_bound_timestamp(
+            item.get("observation_registered_at"),
+            field=f"Observation {observation_id} observation_registered_at",
+        )
+        knowledge_cutoff = _parse_bound_timestamp(
+            manifest["knowledge_time_cutoff"],
+            field="Seed manifest knowledge_time_cutoff",
+        )
+        if registered_at > knowledge_cutoff:
+            raise ReleaseASeedRegistryError(
+                f"Observation {observation_id} registration cannot exceed the seed knowledge-time cutoff"
+            )
+        observation_index[observation_id] = item
+
+    assertion_index: dict[str, Mapping[str, Any]] = {}
+    for item in assertions:
+        if not isinstance(item, Mapping):
+            raise ReleaseASeedRegistryError("Default A1 evidence packet assertions must be objects")
+        assertion_id = str(item.get("assertion_id", "")).strip()
+        if not assertion_id or assertion_id in assertion_index:
+            raise ReleaseASeedRegistryError("Default A1 evidence packet contains missing or duplicate assertion IDs")
+        source_refs = item.get("source_observation_refs")
+        if not isinstance(source_refs, list) or not source_refs:
+            raise ReleaseASeedRegistryError("Default A1 projected assertions require source_observation_refs")
+        missing_observations = {str(ref) for ref in source_refs} - set(observation_index)
+        if missing_observations:
+            raise ReleaseASeedRegistryError(
+                "Default A1 projected assertion references unknown source observations: "
+                + ", ".join(sorted(missing_observations))
+            )
+        assertion_index[assertion_id] = item
+
+    observation_ids = set(observation_index)
+    assertion_ids = set(assertion_index)
+    if seed_evidence_index_sha256(observation_ids, assertion_ids) != manifest["evidence_index_sha256"]:
+        raise ReleaseASeedRegistryError("Default A1 evidence identity index does not match the seed input manifest")
+    if packet.get("knowledge_time_cutoff") != manifest["knowledge_time_cutoff"]:
+        raise ReleaseASeedRegistryError("Default A1 evidence packet knowledge cutoff does not match the seed manifest")
+
+    registry_rows_by_id = {
+        str(row["registry_row_id"]): row for row in cast(Sequence[Mapping[str, Any]], registry["rows"])
+    }
+    for binding in cast(Sequence[Mapping[str, Any]], manifest["bindings"]):
+        canonical_entity_id = str(binding["canonical_entity_id"])
+        exact_product_label = str(binding["exact_product_label"])
+        binding_observation_refs = {str(ref) for ref in cast(Sequence[str], binding["source_observation_refs"])}
+        for observation_ref in binding_observation_refs:
+            observation = observation_index.get(observation_ref)
+            if observation is None:
+                continue
+            if str(observation.get("exact_product_label", "")).strip() != exact_product_label:
+                raise ReleaseASeedRegistryError(
+                    "Seed binding exact product label does not match its source observation"
+                )
+        for assertion_ref in cast(Sequence[str], binding["projected_assertion_refs"]):
+            assertion = assertion_index.get(str(assertion_ref))
+            if assertion is None:
+                continue
+            if str(assertion.get("canonical_entity_id", "")).strip() != canonical_entity_id:
+                raise ReleaseASeedRegistryError("Seed binding canonical entity does not match its projected assertion")
+            assertion_source_refs = {
+                str(ref) for ref in cast(Sequence[str], assertion.get("source_observation_refs", []))
+            }
+            if not assertion_source_refs <= binding_observation_refs:
+                raise ReleaseASeedRegistryError(
+                    "Seed binding does not bind every source observation used by its projected assertion"
+                )
+
+        row = registry_rows_by_id.get(str(binding["registry_row_id"]))
+        if row is None:
+            continue
+        bound_registration_times = sorted(
+            _parse_bound_timestamp(
+                observation_index[observation_ref]["observation_registered_at"],
+                field=f"Observation {observation_ref} observation_registered_at",
+            )
+            for observation_ref in binding_observation_refs
+            if observation_ref in observation_index
+        )
+        if not bound_registration_times:
+            raise ReleaseASeedRegistryError("Seed binding requires at least one attributable observation registration")
+        first_observed_at = _parse_bound_timestamp(
+            row.get("first_observed_at"),
+            field=f"Seed row {row['registry_row_id']} first_observed_at",
+        )
+        last_observed_at = _parse_bound_timestamp(
+            row.get("last_observed_at"),
+            field=f"Seed row {row['registry_row_id']} last_observed_at",
+        )
+        if first_observed_at != bound_registration_times[0] or last_observed_at != bound_registration_times[-1]:
+            raise ReleaseASeedRegistryError(
+                "Seed registry observation chronology does not match its bound observation registrations"
+            )
+
+    rebuilt = build_seed_product_registry(
+        cast(Sequence[Mapping[str, Any]], registry["rows"]),
+        manifest,
+        known_observation_ids=observation_ids,
+        known_assertion_ids=assertion_ids,
+    )
+    if rebuilt != registry:
+        raise ReleaseASeedRegistryError(
+            "Materialized A1 seed Product Registry does not match deterministic compiler output"
+        )
+
+    return {
+        "packet": packet,
+        "manifest": manifest,
+        "registry": registry,
+        "packet_sha256": packet_digest,
+        "evidence_index_sha256": manifest["evidence_index_sha256"],
+        "registry_sha256": seed_registry_sha256(registry),
+    }
 
 
 def _manifest_schema() -> dict[str, Any]:

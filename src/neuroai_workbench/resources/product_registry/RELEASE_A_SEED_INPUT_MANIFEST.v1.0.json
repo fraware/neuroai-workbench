@@ -1,0 +1,118 @@
+{
+  "manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "manifest_version": "RELEASE_A_SEED_INPUT_MANIFEST_v1.0",
+  "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+  "workbench_baseline_sha": "b9282a12271f19cea6e46d4146d44b4feb8cbe0d",
+  "observatory_data_repo": "fraware/neuroai-observatory-data",
+  "observatory_data_commit": "35dcf13431eca40321bb64a88e1743d9313f9247",
+  "observatory_release_refs": [
+    "data-v0.1.0-public-governing"
+  ],
+  "controlled_packet_digests": [
+    "ec04294c78dffbefa6b95a076b663df5a07d6b75a660d04b9d56598f4fc3c67f"
+  ],
+  "evidence_index_sha256": "6de1ece87016b74c859611e91cb3974bd55fbcd28f1b36a128582dffaf45fe60",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-09-24T21:00:00Z",
+  "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+  "seed_input_count": 6,
+  "bindings": [
+    {
+      "registry_row_id": "PRR-53ff5378568df0e22fff330c854d69283c5f7fe7a2334c31a4dcc8bd3aff477b",
+      "canonical_entity_id": "PRD-MUSE-S-ATHENA",
+      "exact_product_label": "Muse S Athena",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-0f28ddca3e7a867f7793e0ad"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-3a6b91199d2a1f64f69c7279"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0006"
+      ]
+    },
+    {
+      "registry_row_id": "PRR-0447428a0e2d014908a6616cd30fb2c84bb0af6cef83f84e69494c330c81a482",
+      "canonical_entity_id": "PRD-NEXTSENSE-SMARTBUDS",
+      "exact_product_label": "NextSense Smartbuds",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-4a387a3e9af44d7ef2816664"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-1463af52cdff5035146e4157"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0005"
+      ]
+    },
+    {
+      "registry_row_id": "PRR-efaf6b07ef7fc20468d42fa4071e5c9f8f25e547f8d341434561a9a01f19b0b3",
+      "canonical_entity_id": "PRD-EMOTIV-EPOC-X",
+      "exact_product_label": "EMOTIV EPOC X",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-0075b8ecf8b68bc9c168c1ae"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-01da0f469eb503832a827c62"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0007"
+      ]
+    },
+    {
+      "registry_row_id": "PRR-0a1567442b4e56a45d3e8dcd22ea404a56cd6ca17455a61f3ada8d0dbd553914",
+      "canonical_entity_id": "PRD-FLOW-FL-100",
+      "exact_product_label": "Flow FL-100",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-eef7bc1eccc3d1544cdadad9"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0013"
+      ]
+    },
+    {
+      "registry_row_id": "PRR-f5d9f50c21901e87ec856f41188f91012a665639a486e35a54ccb4250c3babd9",
+      "canonical_entity_id": "PRD-MODIUS-SPERO",
+      "exact_product_label": "Modius Spero",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-b7d3fa31d2e2ec010fcdbd47"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0004"
+      ]
+    },
+    {
+      "registry_row_id": "PRR-f0601eca0e52cd0a0f7cd6a4d7bb765bd75c27131db8977974db77644991533b",
+      "canonical_entity_id": "PRD-SYNCHRON-STENTRODE",
+      "exact_product_label": "Synchron Stentrode",
+      "evidence_basis": "EXACT_PRODUCT_OR_SERVICE_EVIDENCE",
+      "source_observation_refs": [
+        "OBS-A1-466bbeeaf6f8c653a1bababc"
+      ],
+      "projected_assertion_refs": [
+        "AST-A1-e65f93ed2c0c13f964d25d07"
+      ],
+      "boundary_disposition_ref": "D4_PRODUCT_REFERENCE_STANDARD_v1.0:WORKING_BOUNDARY_RULE",
+      "organization_seed_refs": [
+        "ORG-0029"
+      ]
+    }
+  ],
+  "boundary": "Release-A seed assembly admits only resolved INCLUDE exact-product/service evidence at the frozen PRODUCT_REGISTRY_v1.0 grain. Organization records and broad family mentions may seed discovery but cannot be converted mechanically into product rows. Seed-registry composition is not a global product count."
+}
