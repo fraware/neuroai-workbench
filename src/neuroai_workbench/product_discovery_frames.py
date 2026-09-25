@@ -197,8 +197,9 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
     if any(language == "en" for language, _ in stratum_keys):
         raise ProductDiscoveryError("A2 native-language strata must remain distinct from the English baseline")
 
-    opened_at = _parse_bound_timestamp(universe["collection_window"]["opened_at"], field="A2 collection opened_at")
-    closes_at = _parse_bound_timestamp(universe["collection_window"]["closes_at"], field="A2 collection closes_at")
+    collection_window = cast(Mapping[str, Any], universe["collection_window"])
+    opened_at = _parse_bound_timestamp(collection_window["opened_at"], field="A2 collection opened_at")
+    closes_at = _parse_bound_timestamp(collection_window["closes_at"], field="A2 collection closes_at")
     knowledge_cutoff = _parse_bound_timestamp(universe["knowledge_time_cutoff"], field="A2 knowledge_time_cutoff")
     seed_knowledge_cutoff = _parse_bound_timestamp(seed_manifest["knowledge_time_cutoff"], field="A1 knowledge_time_cutoff")
     if opened_at != seed_knowledge_cutoff:
