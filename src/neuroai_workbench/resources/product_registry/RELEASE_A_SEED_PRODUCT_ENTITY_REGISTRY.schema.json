@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/release-a-seed-product-entity-registry-1.0.json",
+  "title": "RELEASE_A_SEED_PRODUCT_ENTITY_REGISTRY",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_id",
+    "registry_version",
+    "authority_state",
+    "source_seed_manifest_id",
+    "source_seed_registry_sha256",
+    "entity_count",
+    "checked_authority_surfaces",
+    "entities",
+    "identity_bindings",
+    "approved_candidate_blob_sha",
+    "approval_ref",
+    "boundary"
+  ],
+  "properties": {
+    "registry_id": {
+      "const": "RELEASE_A_SEED_PRODUCT_ENTITY_REGISTRY_v1.0"
+    },
+    "registry_version": {
+      "const": "1.0"
+    },
+    "authority_state": {
+      "enum": [
+        "PENDING_OWNER_DISPOSITION",
+        "FROZEN_v1.0"
+      ]
+    },
+    "source_seed_manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_seed_registry_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "entity_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "checked_authority_surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository",
+          "commit_sha",
+          "authority_scope",
+          "finding"
+        ],
+        "properties": {
+          "repository": {
+            "type": "string",
+            "minLength": 1
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "authority_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "finding": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object"
+      }
+    },
+    "identity_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entity_id",
+          "identity_level",
+          "exact_product_label",
+          "source_observation_refs",
+          "organization_seed_refs",
+          "allocation_state",
+          "allocation_method",
+          "collision_state",
+          "boundary"
+        ],
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "pattern": "^PRD-[A-Z0-9-]+$"
+          },
+          "identity_level": {
+            "const": "OFFERING"
+          },
+          "exact_product_label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_observation_refs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "organization_seed_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "allocation_state": {
+            "enum": [
+              "NEW_CANONICAL_ENTITY_CANDIDATE",
+              "CANONICAL_ENTITY_APPROVED"
+            ]
+          },
+          "allocation_method": {
+            "const": "CONTROLLED_APPEND_ONLY_EXACT_PRODUCT_ALLOCATION"
+          },
+          "collision_state": {
+            "const": "NO_PREEXISTING_CANONICAL_PRODUCT_ENTITY_ON_CHECKED_AUTHORITY_SURFACES"
+          },
+          "boundary": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "approved_candidate_blob_sha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
