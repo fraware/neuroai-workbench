@@ -7,6 +7,7 @@
   "additionalProperties": false,
   "required": [
     "run_id",
+    "analysis_universe_id",
     "frame_id",
     "frame_version",
     "frame_register_version",
@@ -31,6 +32,10 @@
     "run_id": {
       "type": "string",
       "pattern": "^PDR-[0-9a-f]{64}$"
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^A2U-[0-9a-f]{64}$"
     },
     "frame_id": {
       "enum": [
