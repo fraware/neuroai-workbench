@@ -1,8 +1,8 @@
 {
-  "analysis_universe_id": "RAU-241571c4d7c3f362eee14aa7d36ee03c76f8cfa1fa557160d1ea1e4247ccb299",
+  "analysis_universe_id": "RAU-f1485a88e41e789f7115f4e3850d4c106831eefee3f9a1d865aa3e2be05cb58d",
   "manifest_version": "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0",
   "status": "FROZEN_v1.0",
-  "workbench_baseline_sha": "11c516209fc77dea497fc3bb61012e2f3daecdf7",
+  "workbench_baseline_sha": "3d4348abd3256913edc6b30c97dc09d5f1aa6d88",
   "a1_seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
   "a1_seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
   "initial_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
@@ -32,5 +32,8 @@
     "F11"
   ],
   "later_observation_policy": "Observations after the world-time cutoff are admissible only as evidence about product identity or state valid on or before 2026-09-24; post-cutoff world-state changes must not be projected backward into this analysis universe.",
-  "boundary": "This manifest freezes the Release-A A2 analytical universe and evidence cutoffs. It does not establish global completeness, unseen-population size, market share, comparative effectiveness, S2 publication authority, or v4.2 assessment effect."
+  "boundary": "This manifest freezes the Release-A A2 analytical universe and evidence cutoffs. It does not establish global completeness, unseen-population size, market share, comparative effectiveness, S2 publication authority, or v4.2 assessment effect.",
+  "a1_identity_registry_id": "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0",
+  "a1_identity_registry_sha256": "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc",
+  "a1_identity_binding_id": "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
 }
