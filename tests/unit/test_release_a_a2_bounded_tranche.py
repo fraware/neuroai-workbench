@@ -117,9 +117,7 @@ def test_bounded_tranche_runs_and_round_summaries_reproduce_exactly() -> None:
     frames = {frame["frame_id"]: frame for frame in frame_register["frames"]}
     captures = cast(list[dict[str, Any]], packet["captures"])
     known_ids = cast(list[str], packet["round_start_known_identity_ids"])
-    summaries = {
-        (summary["frame_id"], summary["round_id"]): summary for summary in packet["round_summaries"]
-    }
+    summaries = {(summary["frame_id"], summary["round_id"]): summary for summary in packet["round_summaries"]}
 
     assert {run["frame_id"] for run in packet["runs"]} == {"F2", "F3"}
     for run in packet["runs"]:
