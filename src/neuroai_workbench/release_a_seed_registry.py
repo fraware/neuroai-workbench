@@ -115,7 +115,9 @@ def validate_product_identity_registry(registry: Mapping[str, Any]) -> None:
     if registry.get("identity_unit") != "PRODUCT/OFFERING":
         raise ReleaseASeedRegistryError("Product identity registry must use PRODUCT/OFFERING as its identity unit")
     if registry.get("boundary") != PRODUCT_IDENTITY_BOUNDARY:
-        raise ReleaseASeedRegistryError("Product identity registry boundary does not match the frozen identity boundary")
+        raise ReleaseASeedRegistryError(
+            "Product identity registry boundary does not match the frozen identity boundary"
+        )
 
     records = registry.get("records")
     if not isinstance(records, list) or not records:
@@ -133,7 +135,9 @@ def validate_product_identity_registry(registry: Mapping[str, Any]) -> None:
             raise ReleaseASeedRegistryError("Product identity registry record requires an Entity object")
         schema_errors = validate_graph_object(dict(entity), "Entity")
         if schema_errors:
-            raise ReleaseASeedRegistryError("Product identity Entity schema validation failed: " + "; ".join(schema_errors))
+            raise ReleaseASeedRegistryError(
+                "Product identity Entity schema validation failed: " + "; ".join(schema_errors)
+            )
         entity_id = str(entity.get("entity_id", "")).strip()
         if entity.get("entity_type") != "PRODUCT" or not entity_id.startswith("PRD-"):
             raise ReleaseASeedRegistryError("A1 canonical identities must be PRODUCT entities with PRD- IDs")
@@ -199,9 +203,7 @@ def validate_seed_identity_binding(
     if declared_entity_ids != seed_entity_ids or set(identity_by_id) != seed_entity_ids:
         raise ReleaseASeedRegistryError("Seed identity authority must cover exactly the A1 canonical entity set")
 
-    rows_by_id = {
-        str(row["registry_row_id"]): row for row in cast(Sequence[Mapping[str, Any]], registry["rows"])
-    }
+    rows_by_id = {str(row["registry_row_id"]): row for row in cast(Sequence[Mapping[str, Any]], registry["rows"])}
     binding_by_entity = {str(item["canonical_entity_id"]): item for item in seed_bindings}
     for entity_id, identity_record in identity_by_id.items():
         seed_binding = binding_by_entity[entity_id]
@@ -216,7 +218,9 @@ def validate_seed_identity_binding(
         if row_id != str(seed_binding["registry_row_id"]) or row_id not in rows_by_id:
             raise ReleaseASeedRegistryError("Canonical product identity does not bind the exact A1 seed registry row")
         if str(rows_by_id[row_id]["canonical_entity_id"]) != entity_id:
-            raise ReleaseASeedRegistryError("A1 seed registry row canonical_entity_id lacks matching identity authority")
+            raise ReleaseASeedRegistryError(
+                "A1 seed registry row canonical_entity_id lacks matching identity authority"
+            )
 
 
 def _parse_bound_timestamp(value: Any, *, field: str) -> datetime:
