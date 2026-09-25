@@ -10,6 +10,7 @@
     "frame_id",
     "frame_version",
     "frame_register_version",
+    "analysis_universe_id",
     "round_id",
     "query_or_seed_ids",
     "languages",
@@ -147,6 +148,10 @@
     "boundary": {
       "type": "string",
       "minLength": 1
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
     }
   }
 }
