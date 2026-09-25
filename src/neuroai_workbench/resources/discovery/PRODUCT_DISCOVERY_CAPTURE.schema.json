@@ -22,11 +22,13 @@
     "observed_at",
     "registry_projection_version",
     "frame_register_version",
+    "analysis_universe_id",
     "analysis_jurisdiction_scope",
     "language_scope_id",
     "population_view_id",
     "world_time_cutoff",
     "knowledge_time_cutoff",
+    "world_time_alignment",
     "boundary"
   ],
   "properties": {
@@ -146,6 +148,17 @@
     "source_class": {
       "type": "string",
       "minLength": 1
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
+    },
+    "world_time_alignment": {
+      "enum": [
+        "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
+        "POST_CUTOFF_ONLY",
+        "UNRESOLVED"
+      ]
     }
   }
 }
