@@ -4,6 +4,7 @@ from copy import deepcopy
 
 import pytest
 
+import neuroai_workbench.product_discovery_frames as discovery_module
 from neuroai_workbench.product_discovery_frames import (
     DEFAULT_ANALYSIS_UNIVERSE_ID,
     DISCOVERY_BOUNDARY,
@@ -828,7 +829,7 @@ def test_analysis_universe_rejects_frozen_binding_drift() -> None:
     cases = (
         ("a1_seed_manifest_id", "OTHER", "A1 seed manifest"),
         ("a1_seed_registry_sha256", "0" * 64, "A1 seed registry digest"),
-        ("a1_identity_registry_id", "OTHER", "product identity registry"),
+        ("a1_identity_registry_id", "OTHER", "a1_identity_registry_id"),
         ("a1_identity_registry_sha256", "0" * 64, "identity-registry digest"),
         ("a1_identity_binding_id", "RAIB-" + "0" * 64, "seed-to-identity authority"),
         ("initial_known_identity_set_sha256", "1" * 64, "known-identity digest"),
@@ -858,6 +859,26 @@ def test_analysis_universe_rejects_frozen_binding_drift() -> None:
     wrong_diagnostic["analysis_universe_id"] = analysis_universe_id(wrong_diagnostic)
     with pytest.raises(ProductDiscoveryError, match="diagnostic-only"):
         validate_analysis_universe(wrong_diagnostic)
+
+
+def test_analysis_universe_semantic_authority_guards_fail_closed_without_schema(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    universe = load_default_analysis_universe()
+    monkeypatch.setattr(discovery_module, "_schema_errors", lambda *_args, **_kwargs: [])
+
+    cases = (
+        ("a1_identity_registry_id", "OTHER", "canonical A1 product identity registry"),
+        ("a1_identity_registry_sha256", "0" * 64, "identity-registry digest"),
+        ("a1_identity_binding_id", "RAIB-" + "0" * 64, "seed-to-identity authority"),
+        ("workbench_baseline_sha", "0" * 40, "workbench baseline"),
+    )
+    for field, value, match in cases:
+        changed = deepcopy(universe)
+        changed[field] = value
+        changed["analysis_universe_id"] = analysis_universe_id(changed)
+        with pytest.raises(ProductDiscoveryError, match=match):
+            validate_analysis_universe(changed)
 
 
 def test_analysis_universe_identity_and_record_field_drift_fail_closed() -> None:
