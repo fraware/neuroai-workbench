@@ -8,6 +8,7 @@ from neuroai_workbench.product_discovery_frames import (
     DEFAULT_ANALYSIS_UNIVERSE_ID,
     DISCOVERY_BOUNDARY,
     FRAME_REGISTER_VERSION,
+    analysis_universe_id,
     FRAME_VERSION,
     ProductDiscoveryError,
     build_capture_histories,
@@ -99,7 +100,7 @@ def _capture(
         "frame_register_version": FRAME_REGISTER_VERSION,
         "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
         "population_view_id": "A-P1",
-        "analysis_jurisdiction_scope": "GLOBAL",
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
@@ -479,7 +480,7 @@ def test_discovery_run_identity_binds_capture_set_and_stop_state() -> None:
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
         "jurisdictions": ["GLOBAL"],
-        "analysis_jurisdiction_scope": "GLOBAL",
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
@@ -521,7 +522,7 @@ def test_discovery_run_binds_exact_universe_and_capture_set() -> None:
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
         "jurisdictions": ["GLOBAL"],
-        "analysis_jurisdiction_scope": "GLOBAL",
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
@@ -717,7 +718,7 @@ def test_discovery_records_reject_boundary_drift() -> None:
         "query_or_seed_ids": ["Q-F1"],
         "languages": ["en"],
         "jurisdictions": ["GLOBAL"],
-        "analysis_jurisdiction_scope": "GLOBAL",
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
         "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
         "population_view_id": "A-P1",
@@ -740,7 +741,10 @@ def test_default_analysis_universe_is_frozen_and_binds_a1_seed_state() -> None:
     validate_analysis_universe(universe)
     assert universe["analysis_universe_id"] == DEFAULT_ANALYSIS_UNIVERSE_ID
     assert universe["a1_seed_registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
-    assert universe["initial_known_identity_set_sha256"] == "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+    assert (
+        universe["initial_known_identity_set_sha256"]
+        == "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+    )
     assert universe["initial_known_identity_count"] == 6
     assert set(universe["primary_estimation_frame_ids"]) == {"F1", "F2", "F3", "F4", "F5", "F6", "F8", "F10"}
     assert set(universe["diagnostic_only_frame_ids"]) == {"F7", "F9", "F11"}
@@ -801,3 +805,37 @@ def test_resolved_capture_cannot_backdate_post_cutoff_only_evidence() -> None:
     unresolved["world_time_alignment"] = "UNRESOLVED"
     unresolved["capture_id"] = product_capture_id(unresolved)
     validate_product_capture(unresolved)
+
+
+def test_analysis_universe_rejects_frozen_binding_drift() -> None:
+    universe = load_default_analysis_universe()
+    cases = (
+        ("a1_seed_manifest_id", "OTHER", "A1 seed manifest"),
+        ("a1_seed_registry_sha256", "0" * 64, "A1 seed registry digest"),
+        ("initial_known_identity_set_sha256", "1" * 64, "known-identity digest"),
+        ("initial_known_identity_count", 7, "initial_known_identity_count"),
+        ("workbench_baseline_sha", "2" * 40, "workbench baseline"),
+        ("frame_register_blob_sha", "3" * 40, "frame-register blob"),
+        ("world_time_cutoff", "2026-09-23", "world_time_cutoff"),
+        ("knowledge_time_cutoff", "2026-10-23T23:59:59Z", "knowledge_time_cutoff"),
+        ("analysis_jurisdiction_scope", "US_ONLY", "jurisdiction scope"),
+        ("language_scope_id", "EN_ONLY", "language scope"),
+    )
+    for field, value, match in cases:
+        changed = deepcopy(universe)
+        changed[field] = value
+        changed["analysis_universe_id"] = analysis_universe_id(changed)
+        with pytest.raises(ProductDiscoveryError, match=match):
+            validate_analysis_universe(changed)
+
+    wrong_primary = deepcopy(universe)
+    wrong_primary["primary_estimation_frame_ids"] = ["F1", "F2"]
+    wrong_primary["analysis_universe_id"] = analysis_universe_id(wrong_primary)
+    with pytest.raises(ProductDiscoveryError, match="primary frame set"):
+        validate_analysis_universe(wrong_primary)
+
+    wrong_diagnostic = deepcopy(universe)
+    wrong_diagnostic["diagnostic_only_frame_ids"] = ["F7", "F9"]
+    wrong_diagnostic["analysis_universe_id"] = analysis_universe_id(wrong_diagnostic)
+    with pytest.raises(ProductDiscoveryError, match="diagnostic-only"):
+        validate_analysis_universe(wrong_diagnostic)
