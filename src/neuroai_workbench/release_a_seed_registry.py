@@ -136,7 +136,8 @@ def validate_product_identity_registry(registry: Mapping[str, Any]) -> None:
         schema_errors = validate_graph_object(dict(entity), "Entity")
         if schema_errors:
             raise ReleaseASeedRegistryError(
-                "Product identity Entity schema validation failed: " + "; ".join(schema_errors)
+                "Product identity Entity schema validation failed: "
+                + "; ".join(str(error) for error in schema_errors)
             )
         entity_id = str(entity.get("entity_id", "")).strip()
         if entity.get("entity_type") != "PRODUCT" or not entity_id.startswith("PRD-"):
