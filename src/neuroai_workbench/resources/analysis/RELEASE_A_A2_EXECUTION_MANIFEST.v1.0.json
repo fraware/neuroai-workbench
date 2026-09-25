@@ -1,0 +1,130 @@
+{
+  "manifest_version": "RELEASE_A_A2_EXECUTION_MANIFEST_v1.0",
+  "execution_manifest_id": "A2X-4e5d3e5801e480b94c078d02619e82df83b6026a2ed06a0e77ea830a1f68fb82",
+  "status": "FROZEN_v1.0",
+  "workbench_baseline_sha": "11c516209fc77dea497fc3bb61012e2f3daecdf7",
+  "a1_seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "a1_seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
+  "a1_evidence_index_sha256": "6de1ece87016b74c859611e91cb3974bd55fbcd28f1b36a128582dffaf45fe60",
+  "estimation_universe": {
+    "universe_id": "RAEU-f98a7ee6f5be7a7ea68d7b20ff5723fc03e23e2f7aafc5186bc2c24e9ae99fb8",
+    "preregistration_version": "RELEASE_A_ANALYSIS_PREREGISTRATION_v1.0",
+    "role": "PRIMARY",
+    "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+    "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+    "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+    "reference_standard_version": "1.0",
+    "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+    "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+    "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+    "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+    "population_view_id": "A-P1",
+    "identity_level": "OFFERING",
+    "included_enumeration_roles": [
+      "INTEGRATED_SYSTEM",
+      "COMPONENT_OR_SUBSYSTEM",
+      "STANDALONE_SOFTWARE_OR_SERVICE"
+    ],
+    "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+    "world_time_cutoff": "2026-09-24",
+    "knowledge_time_cutoff": "2026-10-08T21:00:00Z",
+    "language_scope_id": "RELEASE_A_CORE_MULTILINGUAL_v1.0",
+    "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+    "capture_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8",
+      "F10"
+    ],
+    "frame_set_policy_id": "RELEASE_A_FRAME_SET_POLICY_v1.0",
+    "holdback_policy_id": "RELEASE_A_LATE_ROUND_HOLDBACK_v1.0",
+    "reporting_policy_id": "RELEASE_A_MODEL_ENVELOPE_REPORTING_v1.0",
+    "observed_identity_unit": "CANONICAL_PRODUCT_OFFERING",
+    "latent_residual_unit": "UNOBSERVED_DISTINCT_PRODUCT_OFFERINGS",
+    "model_families": [
+      "OBSERVED_ONLY_BASELINE",
+      "PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC",
+      "LOG_LINEAR_INDEPENDENCE_BASELINE",
+      "LOG_LINEAR_DEPENDENCE_INTERACTIONS",
+      "STRATIFIED_DEPENDENCE_MODEL",
+      "BAYESIAN_HIERARCHICAL_SENSITIVITY"
+    ],
+    "naive_pairwise_role": "DIAGNOSTIC_ONLY",
+    "required_diagnostics": [
+      "BOUNDARY_IDENTITY_SENSITIVITY",
+      "CAPTURE_HETEROGENEITY",
+      "FRAME_DEPENDENCE",
+      "FRAME_SET_SENSITIVITY",
+      "IDENTIFIABILITY_STABILITY",
+      "KNOWN_EXTERNAL_ONLY_IDENTITIES",
+      "LATE_ROUND_PREDICTIVE_CHECK",
+      "MODEL_SPREAD",
+      "SOURCE_CLASS_DEPENDENCE",
+      "SPARSE_OVERLAP_CELLS",
+      "ZERO_CAPTURE_RISK"
+    ],
+    "required_sensitivities": [
+      "BORDERLINE_ABSTAIN",
+      "CURRENTNESS_UNCERTAINTY",
+      "ENUMERATION_ROLE",
+      "FRAME_SET",
+      "MULTILINGUAL_GAIN",
+      "UNRESOLVED_IDENTITY"
+    ],
+    "boundary": "Release-A population estimates apply only to one preregistered product identity, population view, jurisdiction/language scope, cutoff pair, and discovery-frame universe. Observed identities remain distinct from the latent unseen residual; no estimate establishes a complete global census or market share."
+  },
+  "collection_window": {
+    "opened_at": "2026-09-24T21:00:00Z",
+    "closes_at": "2026-10-08T21:00:00Z"
+  },
+  "language_design": {
+    "language_scope_id": "RELEASE_A_CORE_MULTILINGUAL_v1.0",
+    "baseline_language": "en",
+    "native_language_strata": [
+      {
+        "language": "de",
+        "jurisdiction": "Germany"
+      },
+      {
+        "language": "es",
+        "jurisdiction": "Spain"
+      },
+      {
+        "language": "fr",
+        "jurisdiction": "France"
+      },
+      {
+        "language": "ja",
+        "jurisdiction": "Japan"
+      },
+      {
+        "language": "zh-Hans",
+        "jurisdiction": "China"
+      }
+    ],
+    "selection_basis": "Fixed before any authoritative A2 capture or frame-yield calculation from pre-existing programme geography, known non-English NeuroAI activity, and strategic coverage objectives.",
+    "f8_execution_policy": "F8 uses only these matched native-language/jurisdiction strata against an English baseline over the same declared jurisdiction; adding or removing a stratum requires a successor execution manifest and estimation universe."
+  },
+  "diagnostic_only_frame_ids": [
+    "F7",
+    "F9",
+    "F11"
+  ],
+  "initial_known_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "initial_known_offering_count": 6,
+  "initial_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "round_start_known_identity_policy": "Known identity means any resolved canonical OFFERING identity accepted before the round starts, regardless of whether its current state qualifies for A-P1; this prevents rediscovery of a known offering from being counted as a new identity.",
+  "post_world_cutoff_observation_policy": "A source may be observed after the world-time cutoff and before the knowledge-time cutoff, but it supports the A2 snapshot only to the extent that attributable evidence establishes the offering identity or relevant state at or before 2026-09-24. Later world changes remain successor evidence and do not backdate the snapshot.",
+  "boundary": "A2 execution binds discovery runs to the frozen A1 seed basis and one exact preregistered estimation universe. It does not establish global completeness, unseen-population size, market share, effectiveness, publication authority, or v4.2 assessment effect."
+}
