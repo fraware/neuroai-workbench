@@ -744,14 +744,8 @@ def test_default_analysis_universe_is_frozen_and_binds_a1_seed_state() -> None:
     assert universe["workbench_baseline_sha"] == "f4df0c5be5db65ecdf49a6c7202746f0acb560b7"
     assert universe["a1_seed_registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
     assert universe["a1_identity_registry_id"] == "RELEASE_A_PRODUCT_IDENTITY_REGISTRY_v1.0"
-    assert (
-        universe["a1_identity_registry_sha256"]
-        == "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
-    )
-    assert (
-        universe["a1_identity_binding_id"]
-        == "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
-    )
+    assert universe["a1_identity_registry_sha256"] == "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
+    assert universe["a1_identity_binding_id"] == "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
     assert (
         universe["initial_known_identity_set_sha256"]
         == "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
