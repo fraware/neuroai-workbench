@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/release-a-a2-analysis-universe-1.0.json",
+  "title": "RELEASE_A_A2_ANALYSIS_UNIVERSE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "analysis_universe_id",
+    "manifest_version",
+    "status",
+    "workbench_baseline_sha",
+    "a1_seed_manifest_id",
+    "a1_seed_registry_sha256",
+    "initial_known_identity_set_sha256",
+    "initial_known_identity_count",
+    "registry_projection_version",
+    "population_view_id",
+    "frame_register_version",
+    "frame_register_blob_sha",
+    "analysis_jurisdiction_scope",
+    "language_scope_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "knowledge_window_rule",
+    "primary_estimation_frame_ids",
+    "diagnostic_only_frame_ids",
+    "later_observation_policy",
+    "boundary"
+  ],
+  "properties": {
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
+    },
+    "manifest_version": {
+      "const": "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0"
+    },
+    "status": {
+      "const": "FROZEN_v1.0"
+    },
+    "workbench_baseline_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "a1_seed_manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "a1_seed_registry_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "initial_known_identity_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "initial_known_identity_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "registry_projection_version": {
+      "const": "PRODUCT_REGISTRY_v1.0"
+    },
+    "population_view_id": {
+      "const": "A-P1"
+    },
+    "frame_register_version": {
+      "const": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+    },
+    "frame_register_blob_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "analysis_jurisdiction_scope": {
+      "const": "GLOBAL_PROTOCOL_SCOPE"
+    },
+    "language_scope_id": {
+      "const": "EN_PLUS_PRIORITY_NATIVE_v1"
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "format": "date"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "knowledge_window_rule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primary_estimation_frame_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6",
+          "F7",
+          "F8",
+          "F9",
+          "F10",
+          "F11"
+        ]
+      }
+    },
+    "diagnostic_only_frame_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6",
+          "F7",
+          "F8",
+          "F9",
+          "F10",
+          "F11"
+        ]
+      }
+    },
+    "later_observation_policy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
