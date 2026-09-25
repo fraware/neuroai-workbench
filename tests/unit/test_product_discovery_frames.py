@@ -839,3 +839,66 @@ def test_analysis_universe_rejects_frozen_binding_drift() -> None:
     wrong_diagnostic["analysis_universe_id"] = analysis_universe_id(wrong_diagnostic)
     with pytest.raises(ProductDiscoveryError, match="diagnostic-only"):
         validate_analysis_universe(wrong_diagnostic)
+
+
+def test_analysis_universe_identity_and_record_field_drift_fail_closed() -> None:
+    universe = load_default_analysis_universe()
+
+    wrong_id = deepcopy(universe)
+    wrong_id["analysis_universe_id"] = "RAU-" + "f" * 64
+    with pytest.raises(ProductDiscoveryError, match="analysis_universe_id"):
+        validate_analysis_universe(wrong_id)
+
+    capture = _capture("F1", "field-drift", offering_id="PRD-A")
+    capture_drift_cases = (
+        ("population_view_id", "A-P6"),
+        ("analysis_jurisdiction_scope", "US_ONLY"),
+        ("language_scope_id", "EN_ONLY"),
+        ("world_time_cutoff", "2026-09-23"),
+        ("knowledge_time_cutoff", "2026-10-23T23:59:59Z"),
+    )
+    for field, value in capture_drift_cases:
+        changed = deepcopy(capture)
+        changed[field] = value
+        changed["capture_id"] = product_capture_id(changed)
+        with pytest.raises(ProductDiscoveryError, match=field):
+            validate_capture_against_analysis_universe(changed, universe)
+
+    run: dict[str, object] = {
+        "run_id": "",
+        "frame_id": "F1",
+        "frame_version": FRAME_VERSION,
+        "frame_register_version": FRAME_REGISTER_VERSION,
+        "analysis_universe_id": DEFAULT_ANALYSIS_UNIVERSE_ID,
+        "round_id": "R1",
+        "query_or_seed_ids": ["Q-F1"],
+        "languages": ["en"],
+        "jurisdictions": ["GLOBAL"],
+        "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+        "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+        "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+        "population_view_id": "A-P1",
+        "world_time_cutoff": "2026-09-24",
+        "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+        "known_identity_set_sha256": identity_set_digest({"PRD-KNOWN"}),
+        "capture_count": 1,
+        "capture_ids": [str(capture["capture_id"])],
+        "stop_state": "CONTINUE",
+        "stop_reason": "Further declared rounds remain.",
+        "boundary": DISCOVERY_BOUNDARY,
+    }
+    run["run_id"] = product_discovery_run_id(run)
+
+    run_drift_cases = (
+        ("population_view_id", "A-P6"),
+        ("analysis_jurisdiction_scope", "US_ONLY"),
+        ("language_scope_id", "EN_ONLY"),
+        ("world_time_cutoff", "2026-09-23"),
+        ("knowledge_time_cutoff", "2026-10-23T23:59:59Z"),
+    )
+    for field, value in run_drift_cases:
+        changed = deepcopy(run)
+        changed[field] = value
+        changed["run_id"] = product_discovery_run_id(changed)
+        with pytest.raises(ProductDiscoveryError, match=field):
+            validate_run_against_analysis_universe(changed, universe)
