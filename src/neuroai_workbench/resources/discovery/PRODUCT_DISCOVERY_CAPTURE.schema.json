@@ -6,6 +6,7 @@
   "additionalProperties": false,
   "required": [
     "capture_id",
+    "analysis_universe_id",
     "frame_id",
     "frame_version",
     "round_id",
@@ -33,6 +34,10 @@
     "capture_id": {
       "type": "string",
       "pattern": "^PDC-[0-9a-f]{64}$"
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^A2U-[0-9a-f]{64}$"
     },
     "frame_id": {
       "enum": [
