@@ -622,3 +622,132 @@ def test_seed_identity_authority_fails_closed_on_projection_evidence_mismatch() 
             registry=artifacts["registry"],
             identity_registry=identity_registry,
         )
+
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    [
+        ("registry_id", "registry_id"),
+        ("version", "frozen v1.0"),
+        ("identity_unit", "PRODUCT/OFFERING"),
+        ("boundary", "identity boundary"),
+        ("empty_records", "non-empty list"),
+        ("record_count", "record_count"),
+        ("record_not_object", "records must be objects"),
+        ("missing_entity", "requires an Entity object"),
+        ("schema_error", "schema validation failed"),
+        ("wrong_product_type", "PRODUCT entities"),
+        ("inactive_entity", "must be ACTIVE"),
+        ("entity_boundary", "Entity boundary"),
+        ("duplicate_entity", "Duplicate canonical product"),
+        ("wrong_identity_level", "OFFERING level"),
+        ("missing_source_refs", "source_observation_refs"),
+        ("duplicate_row_binding", "unique seed_registry_row_id"),
+    ],
+)
+def test_product_identity_registry_validator_fails_closed(case: str, message: str) -> None:
+    registry = deepcopy(load_default_seed_artifacts()["identity_registry"])
+
+    if case == "registry_id":
+        registry["registry_id"] = "OTHER"
+    elif case == "version":
+        registry["version"] = "2.0"
+    elif case == "identity_unit":
+        registry["identity_unit"] = "PRODUCT"
+    elif case == "boundary":
+        registry["boundary"] = "weaker boundary"
+    elif case == "empty_records":
+        registry["records"] = []
+        registry["record_count"] = 0
+    elif case == "record_count":
+        registry["record_count"] = 7
+    elif case == "record_not_object":
+        registry["records"][0] = "not-an-object"
+    elif case == "missing_entity":
+        registry["records"][0].pop("entity")
+    elif case == "schema_error":
+        registry["records"][0]["entity"]["object_class"] = "Wrong"
+    elif case == "wrong_product_type":
+        registry["records"][0]["entity"]["entity_type"] = "SYSTEM"
+    elif case == "inactive_entity":
+        registry["records"][0]["entity"]["status"] = "SUPERSEDED"
+    elif case == "entity_boundary":
+        registry["records"][0]["entity"]["boundary"] = "weaker boundary"
+    elif case == "duplicate_entity":
+        registry["records"][1]["entity"]["entity_id"] = registry["records"][0]["entity"]["entity_id"]
+    elif case == "wrong_identity_level":
+        registry["records"][0]["product_identity_level"] = "FAMILY"
+    elif case == "missing_source_refs":
+        registry["records"][0]["source_observation_refs"] = []
+    elif case == "duplicate_row_binding":
+        registry["records"][1]["seed_registry_row_id"] = registry["records"][0]["seed_registry_row_id"]
+    else:
+        raise AssertionError(f"unhandled case {case}")
+
+    with pytest.raises(ReleaseASeedRegistryError, match=message):
+        validate_product_identity_registry(registry)
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    [
+        ("invalid_seed_registry", "row_count"),
+        ("binding_version", "binding_version"),
+        ("binding_status", "FROZEN_v1.0"),
+        ("binding_boundary", "binding boundary"),
+        ("binding_id", "binding_id"),
+        ("seed_manifest_id", "seed manifest"),
+        ("seed_registry_digest", "seed registry digest"),
+        ("identity_registry_id", "product identity registry"),
+        ("identity_registry_digest", "identity registry digest mismatch"),
+        ("declared_entity_set", "cover exactly"),
+        ("row_binding", "exact A1 seed registry row"),
+    ],
+)
+def test_seed_identity_binding_validator_fails_closed(case: str, message: str) -> None:
+    artifacts = load_default_seed_artifacts()
+    manifest = deepcopy(artifacts["manifest"])
+    registry = deepcopy(artifacts["registry"])
+    identity_registry = deepcopy(artifacts["identity_registry"])
+    binding = deepcopy(artifacts["identity_binding"])
+
+    if case == "invalid_seed_registry":
+        registry["metadata"]["row_count"] = 7
+    elif case == "binding_version":
+        binding["binding_version"] = "OTHER"
+    elif case == "binding_status":
+        binding["status"] = "DRAFT"
+    elif case == "binding_boundary":
+        binding["boundary"] = "weaker boundary"
+    elif case == "binding_id":
+        binding["binding_id"] = "RAIB-" + "0" * 64
+    elif case == "seed_manifest_id":
+        binding["seed_manifest_id"] = "OTHER"
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    elif case == "seed_registry_digest":
+        binding["seed_registry_sha256"] = "0" * 64
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    elif case == "identity_registry_id":
+        binding["identity_registry_id"] = "OTHER"
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    elif case == "identity_registry_digest":
+        binding["identity_registry_sha256"] = "0" * 64
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    elif case == "declared_entity_set":
+        binding["entity_ids"] = binding["entity_ids"][1:]
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    elif case == "row_binding":
+        identity_registry["records"][0]["seed_registry_row_id"] = "PRR-" + "0" * 64
+        binding["identity_registry_sha256"] = product_identity_registry_sha256(identity_registry)
+        binding["binding_id"] = seed_module.seed_identity_binding_id(binding)
+    else:
+        raise AssertionError(f"unhandled case {case}")
+
+    with pytest.raises(ReleaseASeedRegistryError, match=message):
+        validate_seed_identity_binding(
+            binding,
+            manifest=manifest,
+            registry=registry,
+            identity_registry=identity_registry,
+        )
