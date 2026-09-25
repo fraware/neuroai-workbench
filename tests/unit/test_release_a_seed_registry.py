@@ -4,6 +4,7 @@ from copy import deepcopy
 
 import pytest
 
+import neuroai_workbench.release_a_seed_registry as seed_module
 from neuroai_workbench.product_registry import (
     BOUNDARY_CONTRACT_ID,
     BOUNDARY_CONTRACT_SEMANTIC_BLOB,
@@ -23,7 +24,9 @@ from neuroai_workbench.release_a_seed_registry import (
     SEED_REGISTRY_BOUNDARY,
     ReleaseASeedRegistryError,
     build_seed_product_registry,
+    load_default_seed_artifacts,
     seed_evidence_index_sha256,
+    seed_evidence_packet_sha256,
     seed_input_manifest_id,
     seed_registry_sha256,
     validate_seed_input_manifest,
@@ -384,3 +387,168 @@ def test_evidence_index_is_order_invariant_and_unknown_refs_fail_closed() -> Non
             known_observation_ids={"OBS-PRODUCT-001"},
             known_assertion_ids={"AST-OTHER"},
         )
+
+
+def test_materialized_a1_seed_artifacts_are_cross_bound_and_reproducible() -> None:
+    artifacts = load_default_seed_artifacts()
+    assert artifacts["manifest"]["seed_input_count"] == 6
+    assert artifacts["registry"]["metadata"]["row_count"] == 6
+    assert artifacts["packet_sha256"] == "ec04294c78dffbefa6b95a076b663df5a07d6b75a660d04b9d56598f4fc3c67f"
+    assert artifacts["evidence_index_sha256"] == "6de1ece87016b74c859611e91cb3974bd55fbcd28f1b36a128582dffaf45fe60"
+    assert artifacts["registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+    assert all(observation["content_bytes_archived"] is False for observation in artifacts["packet"]["observations"])
+
+
+def test_seed_evidence_packet_digest_is_order_and_content_sensitive() -> None:
+    artifacts = load_default_seed_artifacts()
+    packet = artifacts["packet"]
+    assert seed_evidence_packet_sha256(packet) == artifacts["packet_sha256"]
+
+    changed = deepcopy(packet)
+    changed["observations"][0]["bounded_observation"] += " changed"
+    assert seed_evidence_packet_sha256(changed) != artifacts["packet_sha256"]
+
+
+def _patched_default_artifacts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    monkeypatch.undo()
+    artifacts = load_default_seed_artifacts()
+    packet = deepcopy(artifacts["packet"])
+    manifest = deepcopy(artifacts["manifest"])
+    registry = deepcopy(artifacts["registry"])
+
+    def fake_resource_json(name: str) -> dict[str, object]:
+        if name == seed_module.SEED_EVIDENCE_PACKET_RESOURCE:
+            return packet
+        if name == seed_module.SEED_INPUT_MANIFEST_RESOURCE:
+            return manifest
+        if name == seed_module.SEED_PRODUCT_REGISTRY_RESOURCE:
+            return registry
+        raise AssertionError(f"unexpected resource {name}")
+
+    monkeypatch.setattr(seed_module, "_resource_json", fake_resource_json)
+    return packet, manifest, registry
+
+
+def _rebind_packet_digest(packet: dict[str, object], manifest: dict[str, object]) -> None:
+    manifest["controlled_packet_digests"] = [seed_evidence_packet_sha256(packet)]
+    manifest["manifest_id"] = seed_input_manifest_id(manifest)
+
+
+def test_default_seed_loader_rejects_unbound_packet_digest(monkeypatch: pytest.MonkeyPatch) -> None:
+    _, manifest, _ = _patched_default_artifacts(monkeypatch)
+    manifest["controlled_packet_digests"] = ["0" * 64]
+    manifest["manifest_id"] = seed_input_manifest_id(manifest)
+
+    with pytest.raises(ReleaseASeedRegistryError, match="packet digest"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_malformed_or_duplicate_evidence_index(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["assertions"] = None
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="observation and assertion lists"):
+        load_default_seed_artifacts()
+
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["observations"][1]["observation_id"] = packet["observations"][0]["observation_id"]
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="missing or duplicate observation IDs"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_evidence_index_drift(monkeypatch: pytest.MonkeyPatch) -> None:
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    previous_id = packet["observations"][0]["observation_id"]
+    packet["observations"][0]["observation_id"] = "OBS-A1-CHANGED"
+    for assertion in packet["assertions"]:
+        assertion["source_observation_refs"] = [
+            "OBS-A1-CHANGED" if ref == previous_id else ref for ref in assertion["source_observation_refs"]
+        ]
+    _rebind_packet_digest(packet, manifest)
+
+    with pytest.raises(ReleaseASeedRegistryError, match="evidence identity index"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_wraps_registry_validation_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    _, _, registry = _patched_default_artifacts(monkeypatch)
+    registry["metadata"]["row_count"] = 7
+
+    with pytest.raises(ReleaseASeedRegistryError, match="row_count"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_materialized_registry_order_drift(monkeypatch: pytest.MonkeyPatch) -> None:
+    _, _, registry = _patched_default_artifacts(monkeypatch)
+    registry["rows"] = list(reversed(registry["rows"]))
+
+    with pytest.raises(ReleaseASeedRegistryError, match="does not match deterministic compiler output"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_evidence_graph_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["assertions"][0]["canonical_entity_id"] = "PRD-WRONG"
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="canonical entity"):
+        load_default_seed_artifacts()
+
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["observations"][0]["exact_product_label"] = "Wrong product"
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="exact product label"):
+        load_default_seed_artifacts()
+
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["assertions"][0]["source_observation_refs"] = [packet["observations"][1]["observation_id"]]
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="does not bind every source observation"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_unknown_assertion_source_and_cutoff_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["assertions"][0]["source_observation_refs"] = ["OBS-UNKNOWN"]
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="unknown source observations"):
+        load_default_seed_artifacts()
+
+    packet, manifest, _ = _patched_default_artifacts(monkeypatch)
+    packet["knowledge_time_cutoff"] = "2026-09-24T20:59:59Z"
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="knowledge cutoff"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_binds_attributable_observation_chronology(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    packet, manifest, registry = _patched_default_artifacts(monkeypatch)
+    assert all(
+        observation["observation_registered_at"] == "2026-09-24T17:23:06Z" for observation in packet["observations"]
+    )
+    assert all(row["first_observed_at"] == "2026-09-24T17:23:06Z" for row in registry["rows"])
+    assert all(row["last_observed_at"] == "2026-09-24T17:23:06Z" for row in registry["rows"])
+
+    packet["observations"][0]["observation_registered_at"] = "2026-09-24T21:00:01Z"
+    _rebind_packet_digest(packet, manifest)
+    with pytest.raises(ReleaseASeedRegistryError, match="cannot exceed"):
+        load_default_seed_artifacts()
+
+
+def test_default_seed_loader_rejects_fabricated_registry_observation_time(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, _, registry = _patched_default_artifacts(monkeypatch)
+    registry["rows"][0]["first_observed_at"] = "2026-09-24T21:00:00Z"
+    registry["rows"][0]["last_observed_at"] = "2026-09-24T21:00:00Z"
+
+    with pytest.raises(ReleaseASeedRegistryError, match="observation chronology"):
+        load_default_seed_artifacts()
