@@ -25,10 +25,13 @@ from neuroai_workbench.release_a_seed_registry import (
     ReleaseASeedRegistryError,
     build_seed_product_registry,
     load_default_seed_artifacts,
+    product_identity_registry_sha256,
     seed_evidence_index_sha256,
     seed_evidence_packet_sha256,
     seed_input_manifest_id,
     seed_registry_sha256,
+    validate_product_identity_registry,
+    validate_seed_identity_binding,
     validate_seed_input_manifest,
 )
 
@@ -396,6 +399,9 @@ def test_materialized_a1_seed_artifacts_are_cross_bound_and_reproducible() -> No
     assert artifacts["packet_sha256"] == "ec04294c78dffbefa6b95a076b663df5a07d6b75a660d04b9d56598f4fc3c67f"
     assert artifacts["evidence_index_sha256"] == "6de1ece87016b74c859611e91cb3974bd55fbcd28f1b36a128582dffaf45fe60"
     assert artifacts["registry_sha256"] == "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+    assert artifacts["identity_registry_sha256"] == "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
+    assert artifacts["identity_binding_id"] == "RAIB-3d4fd6550011d5dd06368369479c1ee4f64eff88142af95b4b41258bfa8adc04"
+    assert artifacts["identity_registry"]["record_count"] == 6
     assert all(observation["content_bytes_archived"] is False for observation in artifacts["packet"]["observations"])
 
 
@@ -417,6 +423,8 @@ def _patched_default_artifacts(
     packet = deepcopy(artifacts["packet"])
     manifest = deepcopy(artifacts["manifest"])
     registry = deepcopy(artifacts["registry"])
+    identity_registry = deepcopy(artifacts["identity_registry"])
+    identity_binding = deepcopy(artifacts["identity_binding"])
 
     def fake_resource_json(name: str) -> dict[str, object]:
         if name == seed_module.SEED_EVIDENCE_PACKET_RESOURCE:
@@ -425,6 +433,10 @@ def _patched_default_artifacts(
             return manifest
         if name == seed_module.SEED_PRODUCT_REGISTRY_RESOURCE:
             return registry
+        if name == seed_module.PRODUCT_IDENTITY_REGISTRY_RESOURCE:
+            return identity_registry
+        if name == seed_module.SEED_IDENTITY_BINDING_RESOURCE:
+            return identity_binding
         raise AssertionError(f"unexpected resource {name}")
 
     monkeypatch.setattr(seed_module, "_resource_json", fake_resource_json)
@@ -552,3 +564,59 @@ def test_default_seed_loader_rejects_fabricated_registry_observation_time(
 
     with pytest.raises(ReleaseASeedRegistryError, match="observation chronology"):
         load_default_seed_artifacts()
+
+
+def test_product_identity_registry_is_separate_from_projection_and_exactly_bound() -> None:
+    artifacts = load_default_seed_artifacts()
+    identity_registry = artifacts["identity_registry"]
+    validate_product_identity_registry(identity_registry)
+    assert product_identity_registry_sha256(identity_registry) == artifacts["identity_registry_sha256"]
+
+    identity_ids = {record["entity"]["entity_id"] for record in identity_registry["records"]}
+    row_ids = {row["canonical_entity_id"] for row in artifacts["registry"]["rows"]}
+    assert identity_ids == row_ids
+    assert all(record["entity"]["entity_type"] == "PRODUCT" for record in identity_registry["records"])
+    assert all(record["product_identity_level"] == "OFFERING" for record in identity_registry["records"])
+
+
+def test_seed_identity_authority_fails_closed_on_missing_or_drifted_entity() -> None:
+    artifacts = load_default_seed_artifacts()
+    identity_registry = deepcopy(artifacts["identity_registry"])
+    identity_binding = deepcopy(artifacts["identity_binding"])
+
+    identity_registry["records"][0]["entity"]["canonical_label"] = "Wrong offering"
+    with pytest.raises(ReleaseASeedRegistryError, match="label"):
+        validate_seed_identity_binding(
+            identity_binding,
+            manifest=artifacts["manifest"],
+            registry=artifacts["registry"],
+            identity_registry=identity_registry,
+        )
+
+    identity_registry = deepcopy(artifacts["identity_registry"])
+    identity_registry["records"] = identity_registry["records"][1:]
+    identity_registry["record_count"] = 5
+    with pytest.raises(ReleaseASeedRegistryError, match="digest mismatch|cover exactly"):
+        validate_seed_identity_binding(
+            identity_binding,
+            manifest=artifacts["manifest"],
+            registry=artifacts["registry"],
+            identity_registry=identity_registry,
+        )
+
+
+def test_seed_identity_authority_fails_closed_on_projection_evidence_mismatch() -> None:
+    artifacts = load_default_seed_artifacts()
+    identity_registry = deepcopy(artifacts["identity_registry"])
+    identity_binding = deepcopy(artifacts["identity_binding"])
+
+    identity_registry["records"][0]["source_observation_refs"] = ["OBS-A1-WRONG"]
+    identity_binding["identity_registry_sha256"] = product_identity_registry_sha256(identity_registry)
+    identity_binding["binding_id"] = seed_module.seed_identity_binding_id(identity_binding)
+    with pytest.raises(ReleaseASeedRegistryError, match="evidence does not match"):
+        validate_seed_identity_binding(
+            identity_binding,
+            manifest=artifacts["manifest"],
+            registry=artifacts["registry"],
+            identity_registry=identity_registry,
+        )
