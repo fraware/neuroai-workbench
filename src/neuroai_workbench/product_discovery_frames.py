@@ -26,6 +26,12 @@ DEFAULT_ANALYSIS_UNIVERSE_ID = "RAU-241571c4d7c3f362eee14aa7d36ee03c76f8cfa1fa55
 A1_SEED_MANIFEST_ID = "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf"
 A1_SEED_REGISTRY_SHA256 = "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
 A1_INITIAL_KNOWN_IDENTITY_SHA256 = "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+A2_WORKBENCH_BASELINE_SHA = "11c516209fc77dea497fc3bb61012e2f3daecdf7"
+A2_FRAME_REGISTER_BLOB_SHA = "bb3d95226dc0ed528e5eed8e6de707430399b9ae"
+A2_WORLD_TIME_CUTOFF = "2026-09-24"
+A2_KNOWLEDGE_TIME_CUTOFF = "2026-10-24T23:59:59Z"
+A2_JURISDICTION_SCOPE = "GLOBAL_PROTOCOL_SCOPE"
+A2_LANGUAGE_SCOPE_ID = "EN_PLUS_PRIORITY_NATIVE_v1"
 REGISTRY_PROJECTION_VERSION = "PRODUCT_REGISTRY_v1.0"
 FRAME_IDS = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11")
 FRAME_ID_SET = frozenset(FRAME_IDS)
@@ -144,6 +150,18 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("Analysis universe initial known-identity digest does not match A1")
     if int(universe["initial_known_identity_count"]) != 6:
         raise ProductDiscoveryError("Analysis universe initial_known_identity_count must be 6")
+    if universe["workbench_baseline_sha"] != A2_WORKBENCH_BASELINE_SHA:
+        raise ProductDiscoveryError("Analysis universe does not bind the exact A2 workbench baseline")
+    if universe["frame_register_blob_sha"] != A2_FRAME_REGISTER_BLOB_SHA:
+        raise ProductDiscoveryError("Analysis universe does not bind the frozen frame-register blob")
+    if universe["world_time_cutoff"] != A2_WORLD_TIME_CUTOFF:
+        raise ProductDiscoveryError("Analysis universe world_time_cutoff does not match frozen A2 v1.0")
+    if universe["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("Analysis universe knowledge_time_cutoff does not match frozen A2 v1.0")
+    if universe["analysis_jurisdiction_scope"] != A2_JURISDICTION_SCOPE:
+        raise ProductDiscoveryError("Analysis universe jurisdiction scope does not match frozen A2 v1.0")
+    if universe["language_scope_id"] != A2_LANGUAGE_SCOPE_ID:
+        raise ProductDiscoveryError("Analysis universe language scope does not match frozen A2 v1.0")
     if universe["registry_projection_version"] != REGISTRY_PROJECTION_VERSION:
         raise ProductDiscoveryError(f"registry_projection_version must be {REGISTRY_PROJECTION_VERSION}")
     if universe["frame_register_version"] != FRAME_REGISTER_VERSION:
