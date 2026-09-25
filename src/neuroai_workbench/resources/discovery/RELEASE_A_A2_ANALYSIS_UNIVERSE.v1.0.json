@@ -1,0 +1,36 @@
+{
+  "analysis_universe_id": "RAU-241571c4d7c3f362eee14aa7d36ee03c76f8cfa1fa557160d1ea1e4247ccb299",
+  "manifest_version": "RELEASE_A_A2_ANALYSIS_UNIVERSE_v1.0",
+  "status": "FROZEN_v1.0",
+  "workbench_baseline_sha": "11c516209fc77dea497fc3bb61012e2f3daecdf7",
+  "a1_seed_manifest_id": "RASIM-7b6a3eb9271c7f8b33b6b467594789f230f6ebcd80d4f53cfac814c26e3b52bf",
+  "a1_seed_registry_sha256": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672",
+  "initial_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "initial_known_identity_count": 6,
+  "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+  "population_view_id": "A-P1",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "knowledge_window_rule": "Fixed retrospective evidence window ending 30 calendar days after the world-time cutoff.",
+  "primary_estimation_frame_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F8",
+    "F10"
+  ],
+  "diagnostic_only_frame_ids": [
+    "F7",
+    "F9",
+    "F11"
+  ],
+  "later_observation_policy": "Observations after the world-time cutoff are admissible only as evidence about product identity or state valid on or before 2026-09-24; post-cutoff world-state changes must not be projected backward into this analysis universe.",
+  "boundary": "This manifest freezes the Release-A A2 analytical universe and evidence cutoffs. It does not establish global completeness, unseen-population size, market share, comparative effectiveness, S2 publication authority, or v4.2 assessment effect."
+}
