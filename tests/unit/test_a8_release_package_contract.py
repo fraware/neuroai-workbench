@@ -115,12 +115,58 @@ def test_helpers_reject_non_objects() -> None:
             "headline_count_rules.every_headline_must_name_denominator",
         ),
         (
+            lambda p: p["headline_count_rules"].__setitem__("primary_population_view_id", "A-P8"),
+            "headline_count_rules.primary_population_view_id",
+        ),
+        (
+            lambda p: p["headline_count_rules"].__setitem__("primary_denominator_label", "wrong"),
+            "headline_count_rules.primary_denominator_label",
+        ),
+        (
+            lambda p: p["d4_binding_policy"].__setitem__("reference_standard_id", "WRONG"),
+            "d4_binding_policy.reference_standard_id",
+        ),
+        (
+            lambda p: p["d4_binding_policy"].__setitem__("reference_standard_version", "9.9"),
+            "d4_binding_policy.reference_standard_version",
+        ),
+        (
+            lambda p: p["d4_binding_policy"].__setitem__("bind_version_and_working_summary_only", False),
+            "d4_binding_policy.bind_version_and_working_summary_only",
+        ),
+        (
             lambda p: p["d4_binding_policy"].__setitem__("do_not_invent_d4_case_results", False),
             "d4_binding_policy.do_not_invent_d4_case_results",
         ),
         (
+            lambda p: p["d4_binding_policy"]["working_distribution"].__setitem__("EXCLUDE", 0),
+            "d4_binding_policy.working_distribution.EXCLUDE",
+        ),
+        (
+            lambda p: p["a7_fail_closed_preservation"].__setitem__("n_observed", 1),
+            "a7_fail_closed_preservation.n_observed",
+        ),
+        (
             lambda p: p["a7_fail_closed_preservation"].__setitem__("n_estimated", 100),
             "n_estimated null",
+        ),
+        (
+            lambda p: p["a7_fail_closed_preservation"].__setitem__("estimation_outcome", "OK"),
+            "a7_fail_closed_preservation.estimation_outcome",
+        ),
+        (
+            lambda p: p["a7_fail_closed_preservation"].__setitem__("fail_closed_outcome", "WRONG"),
+            "a7_fail_closed_preservation.fail_closed_outcome",
+        ),
+        (
+            lambda p: p["a7_fail_closed_preservation"].__setitem__(
+                "observed_count_reported_separately_from_estimate", False
+            ),
+            "observed_count_reported_separately_from_estimate",
+        ),
+        (
+            lambda p: p["a7_fail_closed_preservation"].__setitem__("forbid_invented_n_estimated", False),
+            "forbid_invented_n_estimated",
         ),
         (
             lambda p: p["execution_gate"].__setitem__("does_not_start_ag", False),
@@ -133,6 +179,20 @@ def test_helpers_reject_non_objects() -> None:
         (
             lambda p: p.__setitem__("predeclaration_rule", "no claim separation and no A-G mention"),
             "claim-class",
+        ),
+        (
+            lambda p: p.__setitem__(
+                "predeclaration_rule",
+                "Bind claim-class separations before package materialization. Freeze alone does not start A-G.",
+            ),
+            "denominator",
+        ),
+        (
+            lambda p: p.__setitem__(
+                "predeclaration_rule",
+                "Bind claim-class separations and denominators before package materialization.",
+            ),
+            "A-G",
         ),
     ],
 )

@@ -532,9 +532,6 @@ def validate_a8_product_population_release_package(package: Mapping[str, Any]) -
     components = _require_mapping(package["components"], "components")
     if set(components.keys()) != set(COMPONENT_KEYS):
         raise ProductDiscoveryError("components key set drift")
-    for component_key in COMPONENT_KEYS:
-        if component_key not in components:
-            raise ProductDiscoveryError(f"components missing {component_key}")
 
     product_registry = _require_mapping(components["product_registry"], "product_registry")
     if product_registry.get("resource_sha256") != frozen_product_registry_sha256():
@@ -652,10 +649,10 @@ def validate_a8_product_population_release_package(package: Mapping[str, Any]) -
         mapping = _require_mapping(headline, "headline")
         for field in ("headline_id", "claim_class", "label", "denominator_label", "population_view_id"):
             _require_str(mapping.get(field), field)
-        if mapping["claim_class"] not in CLAIM_CLASSES:
-            raise ProductDiscoveryError("headline claim_class must be a permitted claim class")
         if mapping["claim_class"] in FORBIDDEN_CLAIM_CLASSES:
             raise ProductDiscoveryError("headline uses forbidden claim class")
+        if mapping["claim_class"] not in CLAIM_CLASSES:
+            raise ProductDiscoveryError("headline claim_class must be a permitted claim class")
         if mapping["headline_id"] == "N_OBSERVED_A_P1" and mapping.get("value") != N_OBSERVED:
             raise ProductDiscoveryError("N_OBSERVED headline value drift")
         if mapping["headline_id"] == "N_ESTIMATED_A_P1" and mapping.get("value") is not None:
