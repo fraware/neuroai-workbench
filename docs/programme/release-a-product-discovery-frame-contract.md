@@ -182,6 +182,14 @@ barrier. Protocol saturation must never be converted into a claim of global
 completeness. Freeze alone does not emit the report, allocate identity, or
 start A7+.
 
+Executed A6 results are recorded in
+`RELEASE_A_A6_PRODUCT_DISCOVERY_COVERAGE_SATURATION_REPORT.v1.0.json`, which
+binds the A6 preregistration digest, A2–A5 digests, the A5 round-metrics
+ledger and decompositions, the F1–F11 coverage/stop inventory under permitted
+stop descriptions, and explicit refusal of global-completeness claims. The key
+result is protocol coverage/saturation under declared protocols, not a census
+of every relevant product worldwide.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

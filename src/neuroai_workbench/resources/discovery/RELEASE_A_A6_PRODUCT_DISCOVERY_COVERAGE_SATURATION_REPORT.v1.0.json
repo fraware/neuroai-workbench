@@ -1,0 +1,309 @@
+{
+  "packet_id": "RELEASE_A_A6_PRODUCT_DISCOVERY_COVERAGE_SATURATION_REPORT_v1.0",
+  "packet_sha256": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-26",
+  "study_id": "RELEASE_A_A6_PRODUCT_DISCOVERY_COVERAGE_SATURATION_REPORT_v1.0",
+  "preregistration_id": "RELEASE_A_A6_COVERAGE_SATURATION_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "5edcea38f40a4874bdc5404add331a888730277982315f66b5c4cf53c37be00d",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "final_known_identity_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "final_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "report_contract_id": "A6_PRODUCT_DISCOVERY_COVERAGE_SATURATION_REPORT_CONTRACT_v1",
+  "a3_preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+  "a3_study_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+  "a4_preregistration_sha256": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23",
+  "a4_study_sha256": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+  "a5_preregistration_sha256": "127e4ba8fb17ce071ad50a8ef628125031b6625bcda27f812bbaf26d8ca114ad",
+  "a5_study_id": "RELEASE_A_A5_CONTROLLED_SNOWBALL_DISCOVERY_STUDY_v1.0",
+  "a5_study_sha256": "b8279338c577c54fc5674c08324b95272a20e992a8240b11f7d542cbc55c3cbd",
+  "upstream_digest_bindings": {
+    "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+    "a3_preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+    "a3_study_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+    "a4_preregistration_sha256": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23",
+    "a4_study_sha256": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+    "a5_preregistration_sha256": "127e4ba8fb17ce071ad50a8ef628125031b6625bcda27f812bbaf26d8ca114ad",
+    "a5_study_sha256": "b8279338c577c54fc5674c08324b95272a20e992a8240b11f7d542cbc55c3cbd",
+    "known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+    "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+  },
+  "round_metrics": [
+    {
+      "round_id": "R1",
+      "Y_r": 0,
+      "D_r": 15,
+      "X_r": 0,
+      "U_r": 4,
+      "Candidates_r": 40,
+      "m_r": 0.0
+    },
+    {
+      "round_id": "R2",
+      "Y_r": 0,
+      "D_r": 15,
+      "X_r": 0,
+      "U_r": 4,
+      "Candidates_r": 40,
+      "m_r": 0.0
+    },
+    {
+      "round_id": "R3",
+      "Y_r": 0,
+      "D_r": 15,
+      "X_r": 0,
+      "U_r": 4,
+      "Candidates_r": 40,
+      "m_r": 0.0
+    }
+  ],
+  "marginal_yield_decomposition": {
+    "by_source_frame": [
+      {
+        "dimension_value": "F11",
+        "Candidates_r_total": 120,
+        "Y_total": 0,
+        "m": 0.0
+      }
+    ],
+    "by_language": [
+      {
+        "dimension_value": "en",
+        "Candidates_r_total": 120,
+        "Y_total": 0,
+        "m": 0.0
+      }
+    ],
+    "by_jurisdiction": [
+      {
+        "dimension_value": "GLOBAL",
+        "Candidates_r_total": 120,
+        "Y_total": 0,
+        "m": 0.0
+      }
+    ],
+    "by_product_class": [
+      {
+        "dimension_value": "NOT_ATTRIBUTABLE",
+        "Candidates_r_total": 120,
+        "Y_total": 0,
+        "m": 0.0,
+        "reason": "No exact product-class label recorded on F11 captures; fail closed."
+      }
+    ],
+    "by_capability_family": [
+      {
+        "dimension_value": "NOT_ATTRIBUTABLE",
+        "Candidates_r_total": 120,
+        "Y_total": 0,
+        "m": 0.0,
+        "reason": "PRODUCT_TO_CAPABILITY_QUERY edges present but no frozen A3 capability-family label recorded on captures; fail closed."
+      }
+    ],
+    "by_discovery_round": [
+      {
+        "dimension_value": "R1",
+        "Candidates_r_total": 40,
+        "Y_total": 0,
+        "m": 0.0
+      },
+      {
+        "dimension_value": "R2",
+        "Candidates_r_total": 40,
+        "Y_total": 0,
+        "m": 0.0
+      },
+      {
+        "dimension_value": "R3",
+        "Candidates_r_total": 40,
+        "Y_total": 0,
+        "m": 0.0
+      }
+    ]
+  },
+  "frame_coverage_stop_inventory": [
+    {
+      "frame_id": "F1",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85"
+    },
+    {
+      "frame_id": "F2",
+      "declared_stop_state": "BOUNDED_FRAME_EXHAUSTED",
+      "a6_permitted_stop_description": "BOUNDED_SOURCE_EXHAUSTION",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2_v1.0",
+      "source_packet_sha256": "d66590970362ac82b880e5fe4b9d7c66a913b6dc91618d31fbf67fa39a31c39b"
+    },
+    {
+      "frame_id": "F3",
+      "declared_stop_state": "BOUNDED_FRAME_EXHAUSTED",
+      "a6_permitted_stop_description": "BOUNDED_SOURCE_EXHAUSTION",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3_v1.0",
+      "source_packet_sha256": "584ab1dae1fcf0885a51ec527bea953a2ee4ad5452c10b7bb6985ca652edb82b"
+    },
+    {
+      "frame_id": "F4",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3"
+    },
+    {
+      "frame_id": "F5",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5"
+    },
+    {
+      "frame_id": "F6",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c"
+    },
+    {
+      "frame_id": "F7",
+      "declared_stop_state": "MANUAL_DECLARED_LIMIT",
+      "a6_permitted_stop_description": "BUDGET_COVERAGE_TERMINATION",
+      "estimator_excluded": true,
+      "source_packet_id": null,
+      "source_packet_sha256": null,
+      "note": "Expert-nomination frame under register MANUAL_DECLARED_LIMIT; no A2 execution packet; estimator-excluded."
+    },
+    {
+      "frame_id": "F8",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "07e79f2ba1501379315850d3756cb4758f632b5f337e47a140fe50c861e2043f"
+    },
+    {
+      "frame_id": "F9",
+      "declared_stop_state": "BOUNDED_FRAME_EXHAUSTED",
+      "a6_permitted_stop_description": "BOUNDED_SOURCE_EXHAUSTION",
+      "estimator_excluded": true,
+      "source_packet_id": "RELEASE_A_A2_F9_REMAINING_ACTORS_PROTOCOL_TRANCHE_12_v1.0",
+      "source_packet_sha256": "ec36291d58685e30e19903a04ec83b9ba03a8cf3931f311881438eea4b3c8407",
+      "completion_ledger_id": "RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_008_v1.0",
+      "completion_ledger_sha256": "8ed73ad8e53c341f28a749527e5cc6e7277b5a37ba205231ed8219d24c27fc9e"
+    },
+    {
+      "frame_id": "F10",
+      "declared_stop_state": "BOUNDED_FRAME_EXHAUSTED",
+      "a6_permitted_stop_description": "BOUNDED_SOURCE_EXHAUSTION",
+      "estimator_excluded": false,
+      "source_packet_id": "RELEASE_A_A2_F10_PATENT_CROSSOVER_EXHAUSTION_TRANCHE_1_v1.0",
+      "source_packet_sha256": "2fb9cfddb9c49c97114127fb8fc5f14a0dcbb724195c6f7cd95b5ae7599b862c"
+    },
+    {
+      "frame_id": "F11",
+      "declared_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "a6_permitted_stop_description": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "estimator_excluded": true,
+      "source_packet_id": "RELEASE_A_A2_F11_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_sha256": "e6da0402653a89bb1c55e61b630864271f80daa7d0a1f11cc38d451917d3e88a"
+    }
+  ],
+  "stop_state_evidence": {
+    "final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+    "permitted": true,
+    "primary_programme_stop_source": "A5_STUDY_STOP_STATE_EVIDENCE",
+    "a5_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+    "frames_with_saturation_under_declared_protocol": [
+      "F1",
+      "F4",
+      "F5",
+      "F6",
+      "F8",
+      "F11"
+    ],
+    "frames_with_bounded_source_exhaustion": [
+      "F2",
+      "F3",
+      "F9",
+      "F10"
+    ],
+    "frames_with_budget_coverage_termination": [
+      "F7"
+    ],
+    "frames_with_unresolved_source_barrier": [],
+    "interpretation": "Under the frozen A6 preregistration, the primary programme stop is A5/F11 SATURATION_UNDER_DECLARED_PROTOCOL with m_r=0.0 across R1–R3. Frame inventory maps declared stops onto the four permitted A6 descriptions only. This is protocol saturation under declared protocols, not proof that every relevant product worldwide has been found."
+  },
+  "new_canonical_allocations": 0,
+  "authority_controls": {
+    "no_identity_allocation_by_implication": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "rau_not_mutated": true,
+    "stop_never_means_global_completeness": true,
+    "protocol_saturation_is_not_global_completeness": true,
+    "does_not_start_a7_or_later": true
+  },
+  "key_result": {
+    "headline": "PRODUCT_DISCOVERY_COVERAGE_AND_SATURATION",
+    "total_Y": 0,
+    "rounds": [
+      {
+        "round_id": "R1",
+        "Y_r": 0,
+        "D_r": 15,
+        "X_r": 0,
+        "U_r": 4,
+        "Candidates_r": 40,
+        "m_r": 0.0
+      },
+      {
+        "round_id": "R2",
+        "Y_r": 0,
+        "D_r": 15,
+        "X_r": 0,
+        "U_r": 4,
+        "Candidates_r": 40,
+        "m_r": 0.0
+      },
+      {
+        "round_id": "R3",
+        "Y_r": 0,
+        "D_r": 15,
+        "X_r": 0,
+        "U_r": 4,
+        "Candidates_r": 40,
+        "m_r": 0.0
+      }
+    ],
+    "final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+    "interpretation": "Coverage/saturation report under frozen A2–A5 digests: controlled snowball ledger shows Y_r=0 and m_r=0.0 for R1–R3; frame stops remain within permitted bounded forms. Not a global-completeness claim."
+  },
+  "next_required_state": "A6 Product Discovery Coverage and Saturation Report complete under frozen preregistration. Next gated step is pre-fit model-specification lock then A7 (unseen-population estimation) — not A8 or A-G without separate gate.",
+  "boundary": "Repository-safe A6 Product Discovery Coverage and Saturation Report under the frozen A6 preregistration and A2–A5 digest bindings. Round metrics and decompositions reuse the declared A5 ledger. Stop language is limited to the four permitted bounded forms. Protocol saturation is not proof that every relevant product worldwide has been found. No global completeness, market share, effectiveness, unseen-population size, S2 publication authority, or v4.2 assessment effect. Does not execute A7+."
+}
