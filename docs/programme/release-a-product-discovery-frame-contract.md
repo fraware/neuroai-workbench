@@ -241,6 +241,12 @@ and the required headlines including at least one frame stop-state claim.
 Freeze alone does not emit a PASSED or UNPASSED A-G outcome and does not
 authorize Release B/C/D.
 
+Executed A-G results are recorded in
+`RELEASE_A_AG_RECONSTRUCTION_PACKET.v1.0.json`. Automated checks walk the A8
+package to upstream digests and source packets for each required headline. The
+packet emits an explicit `PASSED` or `UNPASSED` outcome with an evidence table.
+A-G does not authorize Release B/C/D.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

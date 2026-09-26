@@ -1,0 +1,772 @@
+{
+  "packet_id": "RELEASE_A_AG_RECONSTRUCTION_PACKET_v1.0",
+  "packet_sha256": "33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-26",
+  "protocol_id": "RELEASE_A_AG_RECONSTRUCTION_PROTOCOL_v1.0",
+  "protocol_sha256": "5fba335b37459d0b474f9b868d14275f8bf62372332aba2d6cb1a9b565aebb76",
+  "a8_package_id": "RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE_v1.0",
+  "a8_package_sha256": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+  "a8_contract_sha256": "f5acad2896c767b80bd75a951ea933cc1d2c319a9580aa560e46db46e824cf78",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+  "population_view_id": "A-P1",
+  "n_observed": 6,
+  "n_estimated": null,
+  "estimator_excluded_frame_ids": [
+    "F11",
+    "F7",
+    "F9"
+  ],
+  "evidence_table": [
+    {
+      "headline_id": "N_OBSERVED_A_P1",
+      "reconstructed_value": 6,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "canonical PRODUCT/OFFERING identities under A-P1",
+          "binding": "headline_counts.N_OBSERVED_A_P1.denominator_label",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": [
+            "PRD-EMOTIV-EPOC-X",
+            "PRD-FLOW-FL-100",
+            "PRD-MODIUS-SPERO",
+            "PRD-MUSE-S-ATHENA",
+            "PRD-NEXTSENSE-SMARTBUDS",
+            "PRD-SYNCHRON-STENTRODE"
+          ],
+          "binding": "a8.observed_offering_ids + product identity registry",
+          "digest_or_ref": "65023d77ca9187ef068a40366c919e858149054764d06a7146e2282768e0fadc"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "A1 seed Product Registry analytical projection rows",
+          "binding": "components.product_registry.resource",
+          "digest_or_ref": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": "A1 seed registry (pre-multi-frame discovery denominator)",
+          "binding": "A1 seed + A2 analysis universe",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "A1 seed freeze; discovery increments measured separately in A2–A6",
+          "binding": "A8 product_registry component note",
+          "digest_or_ref": "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "DIRECT_OBSERVATION_ONLY",
+          "binding": "n_observed reported separately from n_estimated",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": "No unseen-population model enters N_observed",
+          "binding": "A8 claim class OBSERVED_FACT",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": [
+            "A7_FAIL_CLOSED_NO_N_ESTIMATED",
+            "F7_F9_F11_ESTIMATOR_EXCLUDED",
+            "F9_EXHAUSTION_NOT_GLOBAL",
+            "OPEN_WORLD_SATURATION_NOT_CENSUS",
+            "POORLY_OBSERVED_CLASSES",
+            "ZERO_NEW_CANONICAL_ALLOCATIONS"
+          ],
+          "binding": "source_coverage_uncertainty_register",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": 416,
+          "binding": "explicit_unknown_unresolved_register",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "9ba43d5614fb1ebb668c097a20c2279dbaaa74511956c16ee6f278cbfc109672"
+      ]
+    },
+    {
+      "headline_id": "N_ESTIMATED_A_P1",
+      "reconstructed_value": null,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "unseen PRODUCT/OFFERING population under A-P1 (no estimate admitted)",
+          "binding": "headline_counts.N_ESTIMATED_A_P1.denominator_label",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": [
+            "PRD-EMOTIV-EPOC-X",
+            "PRD-FLOW-FL-100",
+            "PRD-MODIUS-SPERO",
+            "PRD-MUSE-S-ATHENA",
+            "PRD-NEXTSENSE-SMARTBUDS",
+            "PRD-SYNCHRON-STENTRODE"
+          ],
+          "binding": "a7.observed_offering_ids (observed separately)",
+          "digest_or_ref": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "estimator-eligible capture history under frozen A7 dataset",
+          "binding": "a7.capture_history_dataset_sha256",
+          "digest_or_ref": "f3718778dada33bafd55c7d2ce45aa0305eb04db15ffad85c2306393004d0af8"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": [
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F8",
+            "F10"
+          ],
+          "binding": "a7.assumptions.primary_estimation_frames",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA",
+          "binding": "a7.fail_closed_outcome under preregistered acceptance criteria",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "ESTIMATED_COMPONENT_NULL_FAIL_CLOSED",
+          "binding": "n_estimated is null; n_observed reported separately",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": {
+            "identity_unit": "OFFERING",
+            "population_view_id": "A-P1",
+            "primary_estimation_frames": [
+              "F1",
+              "F2",
+              "F3",
+              "F4",
+              "F5",
+              "F6",
+              "F8",
+              "F10"
+            ],
+            "estimator_excluded_frames": [
+              "F11",
+              "F7",
+              "F9"
+            ],
+            "f10_patent_leads_are_not_products": true,
+            "independence_not_assumed_for_headline": true,
+            "no_forced_point_estimate_when_inadmissible": true,
+            "model_total_below_n_observed_is_incoherent_not_floored": true
+          },
+          "binding": "a7.assumptions + model_specification_sha256",
+          "digest_or_ref": "9986bb58515955a53962df6bae5d79e250a9c9076c74f030347c82f52d3ce04b"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": [
+            "CAPTURE_TABLE_TOO_SPARSE",
+            "INSUFFICIENT_MULTI_FRAME_OVERLAP"
+          ],
+          "binding": "a7.fail_closed_reasons + interval_or_sensitivity",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": [
+            {
+              "class_id": "REGULATORY_TRIAL_CAPTURE_SPARSE",
+              "evidence": "F2 eligible captures only 2 known overlaps; F3 eligible INCLUDE_RESOLVED count is 0 under exhaustion."
+            },
+            {
+              "class_id": "LOCAL_LANGUAGE_STRUCTURAL_ZERO",
+              "evidence": "F8 estimator-eligible INCLUDE_RESOLVED count is 0 under R1-R3 protocol."
+            },
+            {
+              "class_id": "PATENT_CROSSOVER_STRUCTURAL_ZERO",
+              "evidence": "F10 eligible INCLUDE_RESOLVED count is 0; patent leads are not products."
+            },
+            {
+              "class_id": "PURPOSIVE_DIAGNOSTIC_ONLY_FRAMES",
+              "evidence": "F7/F9/F11 contribute registry/coverage diagnostics but remain excluded from the primary estimator."
+            },
+            {
+              "class_id": "OPEN_WORLD_KNOWN_IDENTITY_ONLY",
+              "evidence": "F1/F4/F5/F6 eligible INCLUDE_RESOLVED rows are A1 known-identity overlaps only; discovery allocated 0 new canonical IDs."
+            }
+          ],
+          "binding": "a7.classes_likely_poorly_observed",
+          "digest_or_ref": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+      ]
+    },
+    {
+      "headline_id": "DELTA_N_CAPABILITY",
+      "reconstructed_value": 0,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "exact offering IDs in capability-expanded arm absent from conventional arm",
+          "binding": "a3.denominator / A8 a3 component denominator_label",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": [],
+          "binding": "a3 unique capability-only offering IDs",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "A3 capability-first recall study captures under frozen preregistration",
+          "binding": "a3 packet + preregistration digests",
+          "digest_or_ref": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": [
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5",
+            "F6"
+          ],
+          "binding": "conventional F1-F5 versus capability-expanded F6",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "A3 study complete under frozen preregistration; no A4+ from this packet",
+          "binding": "a3.boundary / next_required_state",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "DIRECT_OBSERVATION_DERIVED_DELTA",
+          "binding": "derived quantitative result over observed offering IDs",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": "Exact-ID increment only; no identity allocation by implication",
+          "binding": "a3.authority_controls",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": "delta_n_capability remains zero under declared capability expansion",
+          "binding": "a3.key_result",
+          "digest_or_ref": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": 416,
+          "binding": "A8 unresolved register retained alongside A3",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8"
+      ]
+    },
+    {
+      "headline_id": "DELTA_N_MULTILINGUAL",
+      "reconstructed_value": 0,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "exact offering IDs in English+native arm absent from English arm",
+          "binding": "a4.denominator / A8 a4 component denominator_label",
+          "digest_or_ref": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": [],
+          "binding": "a4 unique native-only offering IDs",
+          "digest_or_ref": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "A4 multilingual coverage sensitivity study under frozen preregistration",
+          "binding": "a4 packet + preregistration digests",
+          "digest_or_ref": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": [
+            "F8"
+          ],
+          "binding": "local-language frame contribution under EN_PLUS_PRIORITY_NATIVE_v1",
+          "digest_or_ref": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "A4 study complete under frozen preregistration; no A5+ from this packet alone",
+          "binding": "a4.boundary / next_required_state",
+          "digest_or_ref": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "DIRECT_OBSERVATION_DERIVED_DELTA",
+          "binding": "derived quantitative result over observed offering IDs",
+          "digest_or_ref": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": "Language/jurisdiction strata frozen before sensitivity readout",
+          "binding": "language_jurisdiction_strata_sha256",
+          "digest_or_ref": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": "delta_n_multilingual remains zero under declared strata",
+          "binding": "a4.key_result",
+          "digest_or_ref": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": 416,
+          "binding": "A8 unresolved register retained alongside A4",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+        "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4"
+      ]
+    },
+    {
+      "headline_id": "D4_WORKING_INCLUDE",
+      "reconstructed_value": 49,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "D4 working-reference boundary cases with INCLUDE disposition",
+          "binding": "d4.working_distribution.INCLUDE over TOTAL",
+          "digest_or_ref": "1.0"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+          "binding": "D4_PRODUCT_REFERENCE_STANDARD_v1.0 version-only binding",
+          "digest_or_ref": "1.0"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "docs/methodology/d4-product-reference-standard-v1.0.md",
+          "binding": "docs/methodology/d4-product-reference-standard-v1.0.md",
+          "digest_or_ref": "1.0"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": "D4 product reference standard (measurement foundation, not discovery frame)",
+          "binding": "d4_reference_standard_summary",
+          "digest_or_ref": "1.0"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "FROZEN_WORKING_REFERENCE; package does not re-adjudicate D4 cases",
+          "binding": "d4.validation_state + note",
+          "digest_or_ref": "1.0"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "DIRECT_OBSERVATION_WORKING_SUMMARY",
+          "binding": "OBSERVED_FACT working distribution",
+          "digest_or_ref": "1.0"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": "Bind version and working summary only; do not invent D4 case results",
+          "binding": "A8 contract d4_binding_policy",
+          "digest_or_ref": "f5acad2896c767b80bd75a951ea933cc1d2c319a9580aa560e46db46e824cf78"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": "Working-reference summary only; not a product-population census",
+          "binding": "d4.note",
+          "digest_or_ref": "1.0"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": {
+            "BORDERLINE": 0,
+            "ABSTAIN": 0
+          },
+          "binding": "d4.working_distribution residual dispositions",
+          "digest_or_ref": "1.0"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "1.0"
+      ],
+      "denominator": 60
+    },
+    {
+      "headline_id": "UNRESOLVED_CANDIDATES_RETAINED",
+      "reconstructed_value": 416,
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "unresolved candidates retained under A2 checkpoint (not products)",
+          "binding": "unresolved_candidate_count_denominator_label",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": "candidate_key + frame_id pairs; no canonical PRODUCT/OFFERING allocation",
+          "binding": "explicit_unknown_unresolved_register.candidates",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": [
+            {
+              "frame_id": "F3",
+              "count": 310
+            },
+            {
+              "frame_id": "F9",
+              "count": 106
+            }
+          ],
+          "binding": "A2 checkpoint unresolved_candidates projected into A8 register",
+          "digest_or_ref": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": [
+            "F3",
+            "F9"
+          ],
+          "binding": "unresolved by_frame inventory",
+          "digest_or_ref": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "A2 bounded-frame checkpoint freeze retains unresolved set",
+          "binding": "a2_checkpoint_id/sha256",
+          "digest_or_ref": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "DIRECT_OBSERVATION_OF_UNRESOLVED_CANDIDATES",
+          "binding": "candidates are not estimated products",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": "Unresolved candidates never enter N_observed or N_estimated",
+          "binding": "A8 forbidden UNQUALIFIED_HETEROGENEOUS_PRODUCT_COUNT",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": "416 unresolved candidates remain after A2–A7",
+          "binding": "source_coverage_uncertainty_register + unresolved register",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": 416,
+          "binding": "explicit_unknown_unresolved_register.unresolved_candidate_count",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+        "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+      ]
+    },
+    {
+      "headline_id": "FRAME_STOP_STATE_A6",
+      "reconstructed_value": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "reconstruction_status": "RESOLVED",
+      "fields": {
+        "counted_object": {
+          "resolved": true,
+          "value": "protocol stop-state under declared A6 coverage/saturation rules",
+          "binding": "a6.stop_state_evidence.final_stop_state",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "exact_identity": {
+          "resolved": true,
+          "value": [
+            "PRD-EMOTIV-EPOC-X",
+            "PRD-FLOW-FL-100",
+            "PRD-MODIUS-SPERO",
+            "PRD-MUSE-S-ATHENA",
+            "PRD-NEXTSENSE-SMARTBUDS",
+            "PRD-SYNCHRON-STENTRODE"
+          ],
+          "binding": "a6.final_known_identity_set_sha256",
+          "digest_or_ref": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0"
+        },
+        "source_observations": {
+          "resolved": true,
+          "value": "A6 coverage/saturation report under frozen preregistration",
+          "binding": "a6 packet + preregistration digests",
+          "digest_or_ref": "5edcea38f40a4874bdc5404add331a888730277982315f66b5c4cf53c37be00d"
+        },
+        "source_frames": {
+          "resolved": true,
+          "value": {
+            "saturation": [
+              "F1",
+              "F4",
+              "F5",
+              "F6",
+              "F8",
+              "F11"
+            ],
+            "bounded_exhaustion": [
+              "F2",
+              "F3",
+              "F9",
+              "F10"
+            ],
+            "budget_termination": [
+              "F7"
+            ]
+          },
+          "binding": "a6.stop_state_evidence frame inventories",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "language_jurisdiction_scope": {
+          "resolved": true,
+          "value": "EN_PLUS_PRIORITY_NATIVE_v1/GLOBAL_PROTOCOL_SCOPE",
+          "binding": "A2 language_scope_id + analysis_jurisdiction_scope",
+          "digest_or_ref": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e"
+        },
+        "world_knowledge_cutoffs": {
+          "resolved": true,
+          "value": "2026-09-24/2026-10-24T23:59:59Z",
+          "binding": "A8/A2 world_time_cutoff + knowledge_time_cutoff",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        },
+        "discovery_stopping_rule": {
+          "resolved": true,
+          "value": "SATURATION_UNDER_DECLARED_PROTOCOL",
+          "binding": "SATURATION_UNDER_DECLARED_PROTOCOL; not a census",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "observed_vs_estimated": {
+          "resolved": true,
+          "value": "BOUNDED_INFERENCE_PROTOCOL_STOP",
+          "binding": "A6 claim class BOUNDED_INFERENCE; not an unseen-population estimate",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "model_assumptions": {
+          "resolved": true,
+          "value": {
+            "protocol_saturation_is_not_global_completeness": true,
+            "f9_ledger_sha256": "8ed73ad8e53c341f28a749527e5cc6e7277b5a37ba205231ed8219d24c27fc9e",
+            "estimator_excluded_frames": [
+              "F11",
+              "F7",
+              "F9"
+            ]
+          },
+          "binding": "a6.authority_controls + F9 ledger binding",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "uncertainty": {
+          "resolved": true,
+          "value": "Under the frozen A6 preregistration, the primary programme stop is A5/F11 SATURATION_UNDER_DECLARED_PROTOCOL with m_r=0.0 across R1–R3. Frame inventory maps declared stops onto the four permitted A6 descriptions only. This is protocol saturation under declared protocols, not proof that every relevant product worldwide has been found.",
+          "binding": "a6.stop_state_evidence.interpretation",
+          "digest_or_ref": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+        },
+        "unresolved_evidence": {
+          "resolved": true,
+          "value": 416,
+          "binding": "A8 unresolved register retained after A6 stop",
+          "digest_or_ref": "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+        },
+        "publication_authority": {
+          "resolved": true,
+          "value": "NO_S2_PUBLICATION_AUTHORITY_CONTROLLED_RESEARCH_PACKET_ONLY",
+          "binding": "A8 status CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE; no S2 authority",
+          "digest_or_ref": "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+        }
+      },
+      "upstream_digest_chain": [
+        "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190",
+        "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b"
+      ]
+    }
+  ],
+  "outcome": "PASSED",
+  "authority_controls": {
+    "does_not_authorize_release_b_c_d": true,
+    "does_not_establish_s2_publication_authority": true,
+    "does_not_create_v4_2_assessment_effect": true,
+    "preserves_a7_fail_closed": true,
+    "f9_exhaustion_is_not_global_completeness": true,
+    "open_world_saturation_is_not_census": true,
+    "reconstruction_not_paperwork_signoff": true,
+    "reconstruction_complete_for_required_headlines": true
+  },
+  "key_result": {
+    "outcome": "PASSED",
+    "n_observed": 6,
+    "n_estimated": null,
+    "a7_fail_closed_outcome": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA",
+    "headlines_resolved": [
+      "N_OBSERVED_A_P1",
+      "N_ESTIMATED_A_P1",
+      "DELTA_N_CAPABILITY",
+      "DELTA_N_MULTILINGUAL",
+      "D4_WORKING_INCLUDE",
+      "UNRESOLVED_CANDIDATES_RETAINED",
+      "FRAME_STOP_STATE_A6"
+    ],
+    "summary": "A-G reconstruction PASSED: all required headlines reconstruct from A8 and upstream immutable digests. Does not authorize Release B/C/D."
+  },
+  "next_required_state": "RELEASE_A_COMPLETE_AG_PASSED_NO_BCD_AUTHORIZATION",
+  "boundary": "Repository-safe A-G reconstruction packet under the frozen A-G protocol and exact A8 package digest. Automated checks walk A8 to upstream digests and source packets for each required headline and resolve the twelve reconstruction fields. Outcome is PASSED only when every required field resolves from immutable artifacts; otherwise UNPASSED. Does not authorize Release B/C/D, establish S2 publication authority, or create v4.2 assessment effect. A7 fail-closed N_observed=6 with no N_estimated is preserved. F9 exhaustion is not global completeness; open-world saturation is not a census."
+}
