@@ -8,6 +8,7 @@ from typing import Any, cast
 from neuroai_workbench.f9_actor_enumeration import (
     F9_ACTOR_ENUMERATION_PROCEDURE_SHA256,
     f9_bounded_exhaustion_state,
+    f9_sole_product_detail_catalogue_risk,
     validate_f9_actor_completion_ledger,
     validate_f9_actor_completion_record,
 )
@@ -54,11 +55,14 @@ def test_openbci_protocol_tranche_and_ledger() -> None:
         validate_capture_against_analysis_universe(c, universe)
         validate_capture_against_frame(c, f9)
         assert c["canonical_offering_id"] is None
+        assert c["world_time_support_ref"] is None
+        assert c["capture_estimation_eligible"] is False
     validate_discovery_run(packet["run"])
     validate_run_against_analysis_universe(packet["run"], universe)
     validate_run_against_captures(packet["run"], captures, f9)
     for record in packet["actor_completion_records"]:
         validate_f9_actor_completion_record(record)
+        assert f9_sole_product_detail_catalogue_risk(record) is None
     assert ledger["ledger_sha256"] == LEDGER_SHA256 == _sha(ledger, "ledger_sha256")
     assert ledger["completion_record_count"] == 26
     validate_f9_actor_completion_ledger(ledger, predecessor=predecessor)
