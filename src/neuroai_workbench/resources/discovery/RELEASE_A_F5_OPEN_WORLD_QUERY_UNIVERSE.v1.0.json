@@ -1,0 +1,799 @@
+{
+  "universe_id": "RELEASE_A_F5_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "universe_sha256": "fcebb63bcbe4b1c23d1ba1c9e0e62b79c9585426b8c9518d4db61842c8dcc233",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F5",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "frame_class": "COMMERCIAL_ECOSYSTEM",
+  "label": "Commercial/ecosystem discovery",
+  "capture_estimation_eligible": true,
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "open_world_round_protocol_id": "RELEASE_A_OPEN_WORLD_ROUND_PROTOCOL_v1.0",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "census_registered_at": "2026-09-26T10:00:00Z",
+  "query_families": [
+    "DISTRIBUTOR_PROCUREMENT_SEARCH",
+    "STRUCTURED_DIRECTORY_SEARCH",
+    "FUNDING_PORTFOLIO_PRODUCT_SEARCH"
+  ],
+  "source_classes": [
+    "DISTRIBUTOR_PROCUREMENT",
+    "STRUCTURED_DIRECTORY",
+    "FUNDING_INVESTOR_ACCELERATOR"
+  ],
+  "minimum_rounds": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "round_seed_ids": {
+    "R1": [
+      "F5-R1-DIST-EEG-HEADSETS",
+      "F5-R1-DIST-NEUROSTIM",
+      "F5-R1-DIST-RESEARCH-EEG",
+      "F5-R1-DIST-BCI-IMPLANT",
+      "F5-R1-DIST-FNIRS",
+      "F5-R1-DIR-NEUROTECH-STARTUPS",
+      "F5-R1-DIR-BCI-COMPANIES",
+      "F5-R1-DIR-DIGITAL-NEURO",
+      "F5-R1-DIR-WEARABLE-EEG",
+      "F5-R1-DIR-NEUROMOD",
+      "F5-R1-FUND-BCI-PORTFOLIO",
+      "F5-R1-FUND-NEUROTECH-ACCEL",
+      "F5-R1-FUND-EEG-STARTUPS",
+      "F5-R1-FUND-IMPLANT-BCI",
+      "F5-R1-DIST-CLINICAL-EEG",
+      "F5-R1-DIR-CONSUMER-NEURO",
+      "F5-R1-FUND-CLOSED-LOOP",
+      "F5-R1-DIST-NEUROFEEDBACK",
+      "F5-R1-DIR-DBS",
+      "F5-R1-FUND-SPEECH-BCI",
+      "F5-R1-DIST-TDCS-HELMET",
+      "F5-R1-DIR-EAR-EEG"
+    ],
+    "R2": [
+      "F5-R2-DIST-OPENBCI-CHANNEL",
+      "F5-R2-DIST-GTEC-CHANNEL",
+      "F5-R2-DIST-BITBRAIN-CHANNEL",
+      "F5-R2-DIST-EMOTIV-CHANNEL",
+      "F5-R2-DIST-NEUROELECTRICS-CHANNEL",
+      "F5-R2-DIR-CBINSIGHTS-NEURO",
+      "F5-R2-DIR-PITCHBOOK-NEURO",
+      "F5-R2-DIR-MEDTECH-BCI",
+      "F5-R2-DIR-DIGITAL-THERAPEUTICS",
+      "F5-R2-FUND-YCOMB-NEURO",
+      "F5-R2-FUND-NEUROTECH-FUNDS",
+      "F5-R2-FUND-BCI-INVESTORS",
+      "F5-R2-DIST-MUSE-RETAIL",
+      "F5-R2-DIST-FLOW-CHANNEL",
+      "F5-R2-DIR-SLEEP-NEURO",
+      "F5-R2-FUND-CONSUMER-EEG",
+      "F5-R2-DIST-CLINICAL-RECORDER",
+      "F5-R2-DIR-IMPLANTABLE",
+      "F5-R2-FUND-VISION-BCI",
+      "F5-R2-DIST-NEUROFEEDBACK-CLINIC",
+      "F5-R2-DIR-ATTENTION-TRAINING",
+      "F5-R2-FUND-EAR-EEG"
+    ],
+    "R3": [
+      "F5-R3-DIST-HOSPITAL-BCI",
+      "F5-R3-DIST-UNIVERSITY-EEG",
+      "F5-R3-DIST-REHAB-BCI",
+      "F5-R3-DIST-TMS-EEG",
+      "F5-R3-DIR-EU-NEUROTECH",
+      "F5-R3-DIR-ASIA-BCI",
+      "F5-R3-DIR-US-NEUROMOD",
+      "F5-R3-DIR-CONSUMER-WELLNESS",
+      "F5-R3-FUND-CORPORATE-VENTURE",
+      "F5-R3-FUND-GOV-ACCEL",
+      "F5-R3-FUND-SEED-BCI",
+      "F5-R3-FUND-GROWTH-NEURO",
+      "F5-R3-DIST-VET-NEURO",
+      "F5-R3-DIR-SOFTWARE-NEUROAI",
+      "F5-R3-FUND-AUTH-NEURAL",
+      "F5-R3-DIST-DRY-EEG",
+      "F5-R3-DIR-CLOSED-LOOP-DBS",
+      "F5-R3-FUND-ULTRASOUND",
+      "F5-R3-DIST-HOME-NEUROFEEDBACK",
+      "F5-R3-DIR-AR-BCI",
+      "F5-R3-FUND-GRAPHENE-NEURAL",
+      "F5-R3-DIST-EPOC-EDU"
+    ]
+  },
+  "query_seeds": [
+    {
+      "query_or_seed_id": "F5-R1-DIST-EEG-HEADSETS",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "specialist distributor EEG headset BCI product catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-NEUROSTIM",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "distributor neurostimulation OR tDCS device procurement listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-RESEARCH-EEG",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "research EEG system distributor catalogue named products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-BCI-IMPLANT",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "procurement listing implantable BCI OR neural interface system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-FNIRS",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "fNIRS system distributor OR procurement catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-NEUROTECH-STARTUPS",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "structured industry directory neurotechnology startups products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-BCI-COMPANIES",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "industry directory brain-computer interface companies products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-DIGITAL-NEURO",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "digital neurology OR neurotech product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-WEARABLE-EEG",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "wearable EEG product industry directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-NEUROMOD",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "neuromodulation company product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-BCI-PORTFOLIO",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "venture OR accelerator portfolio brain-computer interface products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-NEUROTECH-ACCEL",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "accelerator portfolio neurotechnology named products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-EEG-STARTUPS",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "investor portfolio EEG wearable OR neurofeedback products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-IMPLANT-BCI",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "investor portfolio implantable neural interface products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-CLINICAL-EEG",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "clinical EEG recorder distributor product listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-CONSUMER-NEURO",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "consumer neurotech product directory headband OR earbuds",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-CLOSED-LOOP",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "accelerator closed-loop neuromodulation portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-NEUROFEEDBACK",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "neurofeedback system distributor catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-DBS",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "deep brain stimulation product industry directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-FUND-SPEECH-BCI",
+      "round_id": "R1",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "investor portfolio speech BCI OR neural decoding products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIST-TDCS-HELMET",
+      "round_id": "R1",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "tDCS OR CES device distributor product listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R1-DIR-EAR-EEG",
+      "round_id": "R1",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "ear-EEG OR earbuds EEG product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-OPENBCI-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "OpenBCI authorized distributor OR reseller catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-GTEC-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "g.tec distributor OR partner product listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-BITBRAIN-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "Bitbrain distributor OR partner product listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-EMOTIV-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "EMOTIV reseller OR education distributor catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-NEUROELECTRICS-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "Neuroelectrics distributor product catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-CBINSIGHTS-NEURO",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "structured directory neurotech companies EEG BCI products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-PITCHBOOK-NEURO",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "industry directory neurotechnology product companies",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-MEDTECH-BCI",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "medtech directory brain-computer interface products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-DIGITAL-THERAPEUTICS",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "digital therapeutics directory neuromodulation products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-YCOMB-NEURO",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "Y Combinator OR accelerator neurotech portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-NEUROTECH-FUNDS",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "specialist neurotech venture fund portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-BCI-INVESTORS",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "BCI company investor portfolio named products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-MUSE-RETAIL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "Muse EEG headband retail OR distributor listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-FLOW-CHANNEL",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "Flow Neuroscience FL-100 distributor OR clinic channel",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-SLEEP-NEURO",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "sleep neurotech product directory headband EEG",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-CONSUMER-EEG",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "consumer EEG headphone investor portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-CLINICAL-RECORDER",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "clinical ambulatory EEG recorder distributor listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-IMPLANTABLE",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "implantable neural interface industry directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-VISION-BCI",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "vision prosthesis OR retinal BCI investor portfolio",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIST-NEUROFEEDBACK-CLINIC",
+      "round_id": "R2",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "clinic procurement neurofeedback EEG system listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-DIR-ATTENTION-TRAINING",
+      "round_id": "R2",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "attention training EEG product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R2-FUND-EAR-EEG",
+      "round_id": "R2",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "ear-EEG startup investor OR accelerator portfolio",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-HOSPITAL-BCI",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "hospital procurement neural interface OR BCI system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-UNIVERSITY-EEG",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "university lab procurement EEG amplifier OR headset",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-REHAB-BCI",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "rehabilitation clinic BCI OR neurofeedback procurement",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-TMS-EEG",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "combined TMS-EEG OR neuromodulation distributor catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-EU-NEUROTECH",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "European neurotechnology product company directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-ASIA-BCI",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "Asia Pacific BCI OR EEG product industry directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-US-NEUROMOD",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "US neuromodulation device company directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-CONSUMER-WELLNESS",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "consumer wellness EEG OR neurofeedback product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-CORPORATE-VENTURE",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "corporate venture neurotech portfolio named products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-GOV-ACCEL",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "government OR nonprofit accelerator neurotech products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-SEED-BCI",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "seed-stage BCI company portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-GROWTH-NEURO",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "growth-stage neurotechnology portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-VET-NEURO",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "veterinary OR preclinical neural interface distributor",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-SOFTWARE-NEUROAI",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "neuroAI software OR SDK product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-AUTH-NEURAL",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "neural authentication OR biometric EEG portfolio",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-DRY-EEG",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "dry EEG headset distributor catalogue",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-CLOSED-LOOP-DBS",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "closed-loop DBS product industry directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-ULTRASOUND",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "focused ultrasound neuromodulation investor portfolio",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-HOME-NEUROFEEDBACK",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "home neurofeedback device retail OR distributor listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIR-AR-BCI",
+      "round_id": "R3",
+      "query_family": "STRUCTURED_DIRECTORY_SEARCH",
+      "source_class": "STRUCTURED_DIRECTORY",
+      "query_expression": "AR OR XR brain-computer interface product directory",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-FUND-GRAPHENE-NEURAL",
+      "round_id": "R3",
+      "query_family": "FUNDING_PORTFOLIO_PRODUCT_SEARCH",
+      "source_class": "FUNDING_INVESTOR_ACCELERATOR",
+      "query_expression": "graphene neural interface investor portfolio products",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    },
+    {
+      "query_or_seed_id": "F5-R3-DIST-EPOC-EDU",
+      "round_id": "R3",
+      "query_family": "DISTRIBUTOR_PROCUREMENT_SEARCH",
+      "source_class": "DISTRIBUTOR_PROCUREMENT",
+      "query_expression": "education channel EMOTIV OR research EEG kit listing",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F5 commercial/ecosystem route; source class remains explicit."
+    }
+  ],
+  "query_seed_count": 66,
+  "query_seed_set_sha256": "dda5b38ec338232c2afe223f7aabe1fd31a93ef3499f8a066164803d1931d722",
+  "per_round_seed_counts": {
+    "R1": 22,
+    "R2": 22,
+    "R3": 22
+  },
+  "stopping_rule": {
+    "mode": "MARGINAL_YIELD",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20,
+    "literal_tail_only": true,
+    "note": "Saturation requires at least three completed rounds and the final two qualifying rounds each having at least 20 raw candidates with marginal new-identity yield <= 0.05. An intervening sub-threshold round breaks the qualifying tail."
+  },
+  "independence_rule": {
+    "independently_attributable_from_other_frames": true,
+    "does_not_credit_f9_actor_enumeration_or_f2_f3_exhaustion": true,
+    "same_product_may_appear_via_independent_route_with_distinct_provenance": true
+  },
+  "temporal_rule": {
+    "post_world_cutoff_retrieval_does_not_establish_pre_cutoff_inclusion_by_itself": true,
+    "resolved_post_cutoff_capture_requires_world_time_support_ref": true,
+    "no_canonical_identity_allocation_by_implication": true
+  },
+  "boundary": "Open-world query/round contracts fix declared retrieval seeds, round accounting, independence, and the literal marginal-yield stop rule under the frozen A2 analysis universe and A2 bounded-frame checkpoint. They do not establish global completeness, unseen-population size, market share, effectiveness, commercialization, S2 publication authority, or v4.2 assessment effect. F11 remains diagnostic-only for the primary unseen-population estimator.",
+  "open_world_round_protocol_sha256": "43b610d8a6446011b47a0761c8a18f13bb00d6f8a5001742f30968851395a377"
+}
