@@ -110,6 +110,15 @@ Population models in P0.5/A7 must treat frame dependence as an empirical/model-s
 
 F6 is the controlled capability-first frame used for the A3 recall study.
 
+For A3, engineers follow the frozen preregistration
+`RELEASE_A_A3_CAPABILITY_RECALL_PREREGISTRATION.v1.0.json`. That artifact binds
+the conventional terminology search-family set and the capability-expanded
+search-family set, plus the `ΔN_capability` metrics contract, **before** any
+yield difference is computed or interpreted. Post-hoc family edits after seeing
+`ΔN_capability` are prohibited. Increments count only exact canonical offering
+IDs; raw search hits are not the increment unit. Freeze alone does not compute
+`ΔN_capability`, allocate identity, or start A4+.
+
 F8 is the controlled local-language frame used for A4. Matched language/jurisdiction analyses must compare the same product-identity and population-view semantics.
 
 Incremental yield is always computed after exact-product deduplication.
