@@ -47,9 +47,7 @@ UNIVERSE_RESOURCES = {
     "F6": "RELEASE_A_F6_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json",
     "F11": "RELEASE_A_F11_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json",
 }
-UNIVERSE_IDS = {
-    frame_id: f"RELEASE_A_{frame_id}_OPEN_WORLD_QUERY_UNIVERSE_v1.0" for frame_id in OPEN_WORLD_FRAME_IDS
-}
+UNIVERSE_IDS = {frame_id: f"RELEASE_A_{frame_id}_OPEN_WORLD_QUERY_UNIVERSE_v1.0" for frame_id in OPEN_WORLD_FRAME_IDS}
 UNIVERSE_SHA256 = {
     "F1": "848231b5fc88afc6efd790dc371c1644d8fdd222c782c003edafa89ae37d1662",
     "F4": "32259556bb138afc3927d1ba65f0213af132ebad7782b3ab67419c4e88f3c770",
@@ -85,9 +83,9 @@ def open_world_content_digest(material: Mapping[str, Any], *, exclude: str) -> s
 def query_seed_set_digest(seed_ids: Iterable[str]) -> str:
     """Return SHA-256 over the sorted unique query-or-seed ID list."""
 
-    encoded = json.dumps(sorted({str(seed_id) for seed_id in seed_ids}), ensure_ascii=False, separators=(",", ":")).encode(
-        "utf-8"
-    )
+    encoded = json.dumps(
+        sorted({str(seed_id) for seed_id in seed_ids}), ensure_ascii=False, separators=(",", ":")
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -325,7 +323,9 @@ def validate_open_world_query_universe(universe: Mapping[str, Any], *, frame_id:
         frame["stopping_rule"]["maximum_marginal_new_identity_yield"]
     ):
         raise ProductDiscoveryError(f"{frame_id} maximum_marginal_new_identity_yield drift")
-    if int(stopping["minimum_raw_candidates_per_round"]) != int(frame["stopping_rule"]["minimum_raw_candidates_per_round"]):
+    if int(stopping["minimum_raw_candidates_per_round"]) != int(
+        frame["stopping_rule"]["minimum_raw_candidates_per_round"]
+    ):
         raise ProductDiscoveryError(f"{frame_id} minimum_raw_candidates_per_round drift")
 
     seeds = _require_list(universe["query_seeds"], "query_seeds")
