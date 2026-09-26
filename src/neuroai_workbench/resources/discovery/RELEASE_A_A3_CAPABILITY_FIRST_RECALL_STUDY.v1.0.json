@@ -1,0 +1,218 @@
+{
+  "packet_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "packet_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-26",
+  "study_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "preregistration_id": "RELEASE_A_A3_CAPABILITY_RECALL_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "final_known_identity_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "final_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "conventional_search_family_set_id": "A3_CONVENTIONAL_TERMINOLOGY_v1",
+  "capability_search_family_set_id": "A3_CAPABILITY_EXPANDED_v1",
+  "f6_query_universe_id": "RELEASE_A_F6_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "f6_query_universe_sha256": "65ff66464b7cba60e0347c061069a59b59f6102041b7a3b24a723a7d09cbdfbc",
+  "evidence_substrate_bindings": {
+    "conventional_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5"
+    ],
+    "capability_frame_ids": [
+      "F6"
+    ],
+    "all_discovery_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "conventional_frame_set_alignment": "CONVENTIONAL_SOURCE_CORE",
+    "source_packets": [
+      {
+        "frame_id": "F1",
+        "packet_id": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85",
+        "resource": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "include_resolved_offering_ids": [
+          "PRD-EMOTIV-EPOC-X",
+          "PRD-FLOW-FL-100",
+          "PRD-MODIUS-SPERO",
+          "PRD-MUSE-S-ATHENA",
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 6
+      },
+      {
+        "frame_id": "F2",
+        "packet_id": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2_v1.0",
+        "packet_sha256": "d66590970362ac82b880e5fe4b9d7c66a913b6dc91618d31fbf67fa39a31c39b",
+        "resource": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2.v1.0.json",
+        "include_resolved_offering_ids": [],
+        "include_resolved_count": 0
+      },
+      {
+        "frame_id": "F3",
+        "packet_id": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3_v1.0",
+        "packet_sha256": "584ab1dae1fcf0885a51ec527bea953a2ee4ad5452c10b7bb6985ca652edb82b",
+        "resource": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3.v1.0.json",
+        "include_resolved_offering_ids": [],
+        "include_resolved_count": 0
+      },
+      {
+        "frame_id": "F4",
+        "packet_id": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3",
+        "resource": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "include_resolved_offering_ids": [
+          "PRD-EMOTIV-EPOC-X",
+          "PRD-FLOW-FL-100",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 3
+      },
+      {
+        "frame_id": "F5",
+        "packet_id": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5",
+        "resource": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "include_resolved_offering_ids": [
+          "PRD-MUSE-S-ATHENA",
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 3
+      },
+      {
+        "frame_id": "F6",
+        "packet_id": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c",
+        "resource": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "include_resolved_offering_ids": [
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 2
+      }
+    ]
+  },
+  "n_conventional_terminology": 6,
+  "n_all_discovery": 6,
+  "delta_n_capability": 0,
+  "unique_product_gain": 0,
+  "conventional_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "all_discovery_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "unique_capability_offering_ids": [],
+  "conventional_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "all_discovery_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "capability_arm_rates": {
+    "frame_id": "F6",
+    "raw_candidates": 99,
+    "exclude_count": 0,
+    "unresolved_count": 48,
+    "known_identity_duplicate_count": 6,
+    "within_round_duplicate_count": 0,
+    "false_positive_rate": 0.0,
+    "unresolved_rate": 0.48484848484848486,
+    "duplicate_rate": 0.06060606060606061,
+    "rate_basis": "Aggregated F6 R1-R3 round_summaries under frozen F6 open-world packet; rates are companion diagnostics to ΔN_capability, not identity increments."
+  },
+  "stratification": {
+    "by_product_class": [
+      {
+        "stratum_id": "INTEGRATED_SYSTEM",
+        "defensible": true,
+        "n_all_discovery": 6,
+        "n_conventional_terminology": 6,
+        "delta_n_capability": 0,
+        "unique_capability_offering_ids": [],
+        "offering_ids": [
+          "PRD-EMOTIV-EPOC-X",
+          "PRD-FLOW-FL-100",
+          "PRD-MODIUS-SPERO",
+          "PRD-MUSE-S-ATHENA",
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ]
+      },
+      {
+        "stratum_id": "COMPONENT_OR_SUBSYSTEM",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_all_discovery": 0,
+        "n_conventional_terminology": 0,
+        "delta_n_capability": 0
+      },
+      {
+        "stratum_id": "STANDALONE_SOFTWARE_OR_SERVICE",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_all_discovery": 0,
+        "n_conventional_terminology": 0,
+        "delta_n_capability": 0
+      }
+    ],
+    "by_jurisdiction": [
+      {
+        "stratum_id": "GLOBAL",
+        "defensible": true,
+        "n_all_discovery": 6,
+        "n_conventional_terminology": 6,
+        "delta_n_capability": 0,
+        "unique_capability_offering_ids": [],
+        "note": "All INCLUDE_RESOLVED captures in F1-F6 substrate use jurisdiction GLOBAL under GLOBAL_PROTOCOL_SCOPE."
+      }
+    ]
+  },
+  "new_canonical_allocations": 0,
+  "authority_controls": {
+    "no_identity_allocation_by_implication": true,
+    "increments_only_on_exact_offering_ids": true,
+    "raw_search_hits_are_not_the_increment_unit": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "f10_patent_leads_are_not_products": true,
+    "f8_reserved_for_a4_not_executed": true,
+    "rau_not_mutated": true,
+    "post_hoc_family_edits_prohibited": true
+  },
+  "key_result": {
+    "headline": "DELTA_N_CAPABILITY",
+    "delta_n_capability": 0,
+    "interpretation": "Under the frozen A3 preregistration and F1-F6 evidence substrate, capability-expanded search (F6) recovered only exact offering IDs already present in the conventional terminology arm (F1-F5). Measured unique-product gain is 0. This is not a claim that F6 found N things; the governed increment is ΔN_capability=0."
+  },
+  "next_required_state": "A3 capability-first recall study complete under frozen preregistration. Next gated step is A4 (multilingual coverage study) — not A5–A8 or A-G without separate gate.",
+  "boundary": "Repository-safe A3 capability-first recall study under the frozen A3 preregistration. ΔN_capability counts only exact canonical PRODUCT offering IDs. No identity allocation by implication. No global completeness, market share, effectiveness, unseen-population size, S2 publication authority, or v4.2 assessment effect. Does not execute A4+."
+}

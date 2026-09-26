@@ -119,6 +119,12 @@ yield difference is computed or interpreted. Post-hoc family edits after seeing
 IDs; raw search hits are not the increment unit. Freeze alone does not compute
 `ΔN_capability`, allocate identity, or start A4+.
 
+Executed A3 results are recorded in
+`RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY.v1.0.json`, which binds the
+preregistration digest, F1–F6 source-packet digests, measured `ΔN_capability`,
+and companion false-positive / unresolved / duplicate rates. The key result is
+the measured exact-offering increment, not a raw F6 hit count.
+
 F8 is the controlled local-language frame used for A4. Matched language/jurisdiction analyses must compare the same product-identity and population-view semantics.
 
 Incremental yield is always computed after exact-product deduplication.
