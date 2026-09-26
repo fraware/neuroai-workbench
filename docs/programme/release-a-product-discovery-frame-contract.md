@@ -190,6 +190,19 @@ stop descriptions, and explicit refusal of global-completeness claims. The key
 result is protocol coverage/saturation under declared protocols, not a census
 of every relevant product worldwide.
 
+Before A7 fitting, engineers freeze
+`RELEASE_A_A7_CAPTURE_HISTORY_DATASET.v1.0.json` and
+`RELEASE_A_A7_POPULATION_MODEL_SPECIFICATION.v1.0.json`. The capture-history
+dataset compiles exact-offering captures across F1–F11 under one analysis
+universe, reproduces source-packet digests, and exposes an estimator-eligible
+subset that contains no F7/F9/F11 records. The model-specification lock binds
+declared model families, acceptance/fail-closed criteria, and the observed
+offering universe to that capture history **before** any unseen-population
+model is fit. Freeze alone does not emit the Population Estimation Report,
+allocate identity, or start A8 / A-G. A valid later A7 outcome may be that no
+defensible unseen-population estimate exists under the preregistered
+acceptance criteria.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

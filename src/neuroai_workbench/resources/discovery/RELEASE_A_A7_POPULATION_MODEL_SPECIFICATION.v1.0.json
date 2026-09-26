@@ -1,0 +1,254 @@
+{
+  "specification_id": "RELEASE_A_A7_POPULATION_MODEL_SPECIFICATION_v1.0",
+  "specification_sha256": "9986bb58515955a53962df6bae5d79e250a9c9076c74f030347c82f52d3ce04b",
+  "status": "FROZEN_v1.0",
+  "study_id": "RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT_v1.0",
+  "census_registered_at": "2026-09-26T17:00:00Z",
+  "preregistration_version": "RELEASE_A_ANALYSIS_PREREGISTRATION_v1.0",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "estimation_universe_id": "RAEU-40e80ac633f06b77c2b566dd19e8f3bac80288357b9a77d9101cd163b5df2584",
+  "estimation_universe": {
+    "universe_id": "RAEU-40e80ac633f06b77c2b566dd19e8f3bac80288357b9a77d9101cd163b5df2584",
+    "preregistration_version": "RELEASE_A_ANALYSIS_PREREGISTRATION_v1.0",
+    "role": "PRIMARY",
+    "boundary_contract_id": "PRODUCT_MEASUREMENT_CONTRACT_v1.0",
+    "boundary_contract_semantic_blob": "7cbd7f086d80505da7a7c35a38f3aa0ce690ec41",
+    "reference_standard_id": "D4_PRODUCT_REFERENCE_STANDARD_v1.0",
+    "reference_standard_version": "1.0",
+    "reference_standard_validation_state": "FROZEN_WORKING_REFERENCE",
+    "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+    "population_view_policy_id": "PRODUCT_POPULATION_VIEW_POLICY_v1.0",
+    "currentness_policy_id": "PRODUCT_CURRENTNESS_POLICY_v1.0",
+    "population_view_id": "A-P1",
+    "identity_level": "OFFERING",
+    "included_enumeration_roles": [
+      "COMPONENT_OR_SUBSYSTEM",
+      "INTEGRATED_SYSTEM",
+      "STANDALONE_SOFTWARE_OR_SERVICE"
+    ],
+    "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+    "world_time_cutoff": "2026-09-24",
+    "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+    "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+    "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+    "capture_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8",
+      "F10"
+    ],
+    "frame_set_policy_id": "RELEASE_A_FRAME_SET_POLICY_v1.0",
+    "holdback_policy_id": "RELEASE_A_LATE_ROUND_HOLDBACK_v1.0",
+    "reporting_policy_id": "RELEASE_A_MODEL_ENVELOPE_REPORTING_v1.0",
+    "observed_identity_unit": "CANONICAL_PRODUCT_OFFERING",
+    "latent_residual_unit": "UNOBSERVED_DISTINCT_PRODUCT_OFFERINGS",
+    "model_families": [
+      "OBSERVED_ONLY_BASELINE",
+      "PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC",
+      "LOG_LINEAR_INDEPENDENCE_BASELINE",
+      "LOG_LINEAR_DEPENDENCE_INTERACTIONS",
+      "STRATIFIED_DEPENDENCE_MODEL",
+      "BAYESIAN_HIERARCHICAL_SENSITIVITY"
+    ],
+    "naive_pairwise_role": "DIAGNOSTIC_ONLY",
+    "required_diagnostics": [
+      "BOUNDARY_IDENTITY_SENSITIVITY",
+      "CAPTURE_HETEROGENEITY",
+      "FRAME_DEPENDENCE",
+      "FRAME_SET_SENSITIVITY",
+      "IDENTIFIABILITY_STABILITY",
+      "KNOWN_EXTERNAL_ONLY_IDENTITIES",
+      "LATE_ROUND_PREDICTIVE_CHECK",
+      "MODEL_SPREAD",
+      "SOURCE_CLASS_DEPENDENCE",
+      "SPARSE_OVERLAP_CELLS",
+      "ZERO_CAPTURE_RISK"
+    ],
+    "required_sensitivities": [
+      "BORDERLINE_ABSTAIN",
+      "CURRENTNESS_UNCERTAINTY",
+      "ENUMERATION_ROLE",
+      "FRAME_SET",
+      "MULTILINGUAL_GAIN",
+      "UNRESOLVED_IDENTITY"
+    ],
+    "boundary": "Release-A population estimates apply only to one preregistered product identity, population view, jurisdiction/language scope, cutoff pair, and discovery-frame universe. Observed identities remain distinct from the latent unseen residual; no estimate establishes a complete global census or market share."
+  },
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "observed_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "n_observed_declared": 6,
+  "capture_history_dataset_id": "RELEASE_A_A7_CAPTURE_HISTORY_DATASET_v1.0",
+  "capture_history_dataset_sha256": "f3718778dada33bafd55c7d2ce45aa0305eb04db15ffad85c2306393004d0af8",
+  "estimator_eligible_capture_records_sha256": "c1c1eb216285941085a4f158cbcf0d076216e36f9646a98f4fa841da0f327851",
+  "a6_preregistration_sha256": "5edcea38f40a4874bdc5404add331a888730277982315f66b5c4cf53c37be00d",
+  "a6_study_sha256": "eb865319d27fb9904e1b1ad7685372e077445488236097f1e8d3f6814ead5b6b",
+  "predeclaration_rule": "Freeze the exact model families, interaction hierarchy rules, stratification support minima, Bayesian prior settings (when justified), uncertainty-interval construction, late-round holdback measure, and identifiability/fail-closed thresholds BEFORE any capture table is supplied to a fitted unseen-population model. Specification choices must not use observed population estimates, model totals, or interval widths.",
+  "model_families": [
+    "OBSERVED_ONLY_BASELINE",
+    "PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC",
+    "LOG_LINEAR_INDEPENDENCE_BASELINE",
+    "LOG_LINEAR_DEPENDENCE_INTERACTIONS",
+    "STRATIFIED_DEPENDENCE_MODEL",
+    "BAYESIAN_HIERARCHICAL_SENSITIVITY"
+  ],
+  "model_family_specifications": {
+    "OBSERVED_ONLY_BASELINE": {
+      "role": "BASELINE",
+      "fits_unseen_population": false,
+      "headline_admissible": false,
+      "outputs": [
+        "N_observed"
+      ],
+      "notes": "Reports the known observed offering count only; makes no unseen-population claim."
+    },
+    "PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC": {
+      "role": "DIAGNOSTIC_ONLY",
+      "fits_unseen_population": true,
+      "headline_admissible": false,
+      "estimator": "NAIVE_TWO_SOURCE_N1_N2_OVER_M",
+      "independence_assumption": "REQUIRED_BUT_NOT_DEFAULTED_TO_TRUE",
+      "notes": "Exposes pairwise overlap/dependence. Never headline-admissible by default under P0.5."
+    },
+    "LOG_LINEAR_INDEPENDENCE_BASELINE": {
+      "role": "HEADLINE_CANDIDATE",
+      "fits_unseen_population": true,
+      "headline_admissible_when": "IDENTIFIABILITY_AND_INDEPENDENCE_DIAGNOSTICS_PASS",
+      "interaction_hierarchy": "MAIN_EFFECTS_ONLY",
+      "model_comparison_criterion": "NOT_USED_FOR_POST_HOC_SELECTION",
+      "structural_zeros": "FRAMES_WITH_PROTOCOL_ZERO_CAPTURE_REMAIN_EXPLICIT",
+      "uncertainty_interval": "PROFILE_LIKELIHOOD_OR_WALD_WHEN_STABLE_ELSE_FAIL_CLOSED"
+    },
+    "LOG_LINEAR_DEPENDENCE_INTERACTIONS": {
+      "role": "HEADLINE_CANDIDATE",
+      "fits_unseen_population": true,
+      "headline_admissible_when": "IDENTIFIABILITY_AND_DECLARED_DEPENDENCE_STRUCTURE_PASS",
+      "interaction_hierarchy": "DECLARED_FRAME_REGISTER_DEPENDENCIES_ONLY",
+      "prohibited": "POST_HOC_INTERACTIONS_CHOSEN_TO_CHANGE_ESTIMATE",
+      "uncertainty_interval": "PROFILE_LIKELIHOOD_OR_WALD_WHEN_STABLE_ELSE_FAIL_CLOSED"
+    },
+    "STRATIFIED_DEPENDENCE_MODEL": {
+      "role": "HEADLINE_CANDIDATE_IF_SUPPORT",
+      "fits_unseen_population": true,
+      "headline_admissible_when": "STRATUM_MEETS_MINIMUM_SUPPORT_AND_IDENTIFIABLE",
+      "stratification_variables": [
+        "ENUMERATION_ROLE",
+        "LANGUAGE_SCOPE",
+        "JURISDICTION_SCOPE"
+      ],
+      "minimum_support_per_stratum": {
+        "min_distinct_offerings": 10,
+        "min_frames_with_positive_capture": 3,
+        "min_multi_frame_offerings": 5
+      },
+      "pooling_collapse_rule": "DO_NOT_POOL_ACROSS_STRATA_TO_RESCUE_SPARSE_CELLS_AFTER_SEEING_ESTIMATES"
+    },
+    "BAYESIAN_HIERARCHICAL_SENSITIVITY": {
+      "role": "SENSITIVITY_ONLY_WHEN_JUSTIFIED",
+      "fits_unseen_population": true,
+      "headline_admissible_when": "JUSTIFIED_BY_DECLARED_HETEROGENEITY_AND_CONVERGED",
+      "justification_gate": "REQUIRES_ADEQUATE_CAPTURE_DENSITY_OR_EXPLICIT_HETEROGENEITY_DIAGNOSTIC_NEED",
+      "likelihood": "MULTIPLE_SYSTEMS_BERNOULLI_CAPTURE",
+      "prior_policy": "WEAKLY_INFORMATIVE_ON_LOGIT_CAPTURE_PROBABILITIES_WITH_DECLARED_HYPERPARAMETERS_AT_EXECUTION_IF_JUSTIFIED",
+      "prior_sensitivity_variants_required": true,
+      "sampler_policy": "DECLARE_AT_EXECUTION_ONLY_IF_JUSTIFICATION_GATE_PASSES",
+      "convergence_criteria": "R_HAT_LT_1_01_AND_ESS_GT_400_OR_FAIL_CLOSED",
+      "posterior_summaries": [
+        "MEDIAN",
+        "EQUAL_TAIL_95"
+      ]
+    }
+  },
+  "frame_set_sensitivities": {
+    "NO_PATENT_CROSSOVER": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8"
+    ],
+    "CONVENTIONAL_SOURCE_CORE": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5"
+    ],
+    "NO_CAPABILITY_OR_LOCAL_LANGUAGE": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F10"
+    ]
+  },
+  "late_round_holdback": {
+    "policy_id": "RELEASE_A_LATE_ROUND_HOLDBACK_v1.0",
+    "measure": "COMPARE_HELD_BACK_FINAL_ROUND_FIRST_DISCOVERIES_TO_PREDICTED_RESIDUAL_UNSEEN_MASS",
+    "pass_fail": "MODEL_CLAIMING_NEAR_ZERO_UNSEEN_MASS_FAILS_IF_HELD_BACK_ROUND_YIELDS_NEW_IDENTITIES_OUTSIDE_PREDICTED_INTERVAL",
+    "final_estimates_refit_on_all_eligible_data_after_diagnostic": true
+  },
+  "acceptance_and_fail_closed_criteria": {
+    "report_n_observed_separately_from_any_estimate": true,
+    "no_forced_point_estimate_when_inadmissible": true,
+    "headline_requires_at_least_one_admissible_non_diagnostic_family": true,
+    "model_total_below_n_observed_is_incoherent_not_floored": true,
+    "identifiability_thresholds": {
+      "min_estimator_eligible_distinct_offerings": 20,
+      "min_primary_frames_with_positive_eligible_capture": 4,
+      "min_offerings_captured_in_gte_2_eligible_frames": 10,
+      "min_pairwise_positive_overlaps_among_positive_frames": 3,
+      "reject_if_majority_eligible_frames_are_structural_zeros": true
+    },
+    "sparseness_fail_closed_reasons": [
+      "CAPTURE_STRUCTURE_NON_IDENTIFIABLE",
+      "CAPTURE_TABLE_TOO_SPARSE",
+      "INSUFFICIENT_MULTI_FRAME_OVERLAP",
+      "INDEPENDENCE_ASSUMPTION_CONTRADICTED",
+      "NO_HEADLINE_ADMISSIBLE_MODEL",
+      "STRATUM_SUPPORT_INADEQUATE",
+      "BAYESIAN_SENSITIVITY_NOT_JUSTIFIED"
+    ],
+    "valid_scientific_outcome_without_estimate": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA"
+  },
+  "required_diagnostics": [
+    "BOUNDARY_IDENTITY_SENSITIVITY",
+    "CAPTURE_HETEROGENEITY",
+    "FRAME_DEPENDENCE",
+    "FRAME_SET_SENSITIVITY",
+    "IDENTIFIABILITY_STABILITY",
+    "KNOWN_EXTERNAL_ONLY_IDENTITIES",
+    "LATE_ROUND_PREDICTIVE_CHECK",
+    "MODEL_SPREAD",
+    "SOURCE_CLASS_DEPENDENCE",
+    "SPARSE_OVERLAP_CELLS",
+    "ZERO_CAPTURE_RISK"
+  ],
+  "required_sensitivities": [
+    "BORDERLINE_ABSTAIN",
+    "CURRENTNESS_UNCERTAINTY",
+    "ENUMERATION_ROLE",
+    "FRAME_SET",
+    "MULTILINGUAL_GAIN",
+    "UNRESOLVED_IDENTITY"
+  ],
+  "reporting_policy_id": "RELEASE_A_MODEL_ENVELOPE_REPORTING_v1.0",
+  "execution_gate": {
+    "requires_frozen_capture_history_before_fit": true,
+    "freeze_alone_does_not_fit_models": true,
+    "does_not_emit_a7_estimation_report": true,
+    "does_not_start_a8_or_ag": true,
+    "specification_immutable_without_named_successor": true,
+    "f7_f9_f11_remain_estimator_excluded": true
+  },
+  "boundary": "A7 population-model specification lock freezes model families, interaction/stratification/Bayesian rules, uncertainty construction, late-round holdback interpretation, and identifiability/fail-closed thresholds before fitting. It binds the observed offering universe and estimator-eligible capture histories without using estimates to choose a preferred specification. Freeze alone does not fit models, emit the Population Estimation Report, allocate identity, or establish global completeness, market share, effectiveness, S2 publication authority, or v4.2 assessment effect."
+}
