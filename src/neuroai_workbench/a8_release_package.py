@@ -364,9 +364,9 @@ def validate_a8_package_manifest_contract(contract: Mapping[str, Any]) -> None:
     if not _require_bool(d4.get("do_not_invent_d4_case_results"), "do_not_invent_d4_case_results"):
         raise ProductDiscoveryError("d4_binding_policy.do_not_invent_d4_case_results must be true")
     distribution = _require_mapping(d4.get("working_distribution"), "working_distribution")
-    for key, expected in D4_WORKING_DISTRIBUTION.items():
-        if distribution.get(key) != expected:
-            raise ProductDiscoveryError(f"d4_binding_policy.working_distribution.{key} drift")
+    for disposition, count in D4_WORKING_DISTRIBUTION.items():
+        if distribution.get(disposition) != count:
+            raise ProductDiscoveryError(f"d4_binding_policy.working_distribution.{disposition} drift")
 
     a7 = _require_mapping(contract["a7_fail_closed_preservation"], "a7_fail_closed_preservation")
     if a7.get("n_observed") != N_OBSERVED:
