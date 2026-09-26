@@ -113,9 +113,7 @@ def content_digest(material: Mapping[str, Any], *, exclude: str) -> str:
 def id_set_digest(ids: Sequence[str]) -> str:
     """Return SHA-256 over the sorted unique ID list."""
 
-    encoded = json.dumps(sorted({str(item) for item in ids}), ensure_ascii=False, separators=(",", ":")).encode(
-        "utf-8"
-    )
+    encoded = json.dumps(sorted({str(item) for item in ids}), ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -317,9 +315,14 @@ def validate_a4_multilingual_sensitivity_preregistration(prereg: Mapping[str, An
     if prereg["boundary"] != A4_BOUNDARY:
         raise ProductDiscoveryError("boundary text drift")
 
-    bound = tuple(_require_str(item, "bound_stratum_id") for item in _require_list(prereg["bound_stratum_ids"], "bound_stratum_ids"))
+    bound = tuple(
+        _require_str(item, "bound_stratum_id")
+        for item in _require_list(prereg["bound_stratum_ids"], "bound_stratum_ids")
+    )
     if bound != REQUIRED_STRATUM_IDS:
-        raise ProductDiscoveryError("bound_stratum_ids must equal the frozen EN_PLUS_PRIORITY_NATIVE_v1 stratum set in order")
+        raise ProductDiscoveryError(
+            "bound_stratum_ids must equal the frozen EN_PLUS_PRIORITY_NATIVE_v1 stratum set in order"
+        )
 
     arms = _require_list(prereg["matched_arms"], "matched_arms")
     if len(arms) != 2:
@@ -413,7 +416,8 @@ def validate_a4_multilingual_sensitivity_preregistration(prereg: Mapping[str, An
 
     _require_str(prereg["predeclaration_rule"], "predeclaration_rule")
     _require_str(prereg["census_registered_at"], "census_registered_at")
-    if "fruitful" not in str(prereg["predeclaration_rule"]).lower() and "post-hoc" not in str(
-        prereg["predeclaration_rule"]
-    ).lower():
+    if (
+        "fruitful" not in str(prereg["predeclaration_rule"]).lower()
+        and "post-hoc" not in str(prereg["predeclaration_rule"]).lower()
+    ):
         raise ProductDiscoveryError("predeclaration_rule must forbid post-hoc/fruitful language selection")
