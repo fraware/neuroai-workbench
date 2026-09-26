@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from importlib.resources import files
 from typing import Any, cast
 
@@ -927,7 +927,7 @@ def build_ag_reconstruction_evidence_table() -> list[dict[str, Any]]:
     ]
 
 
-def determine_ag_outcome(evidence_table: list[Mapping[str, Any]]) -> str:
+def determine_ag_outcome(evidence_table: Sequence[Mapping[str, Any]]) -> str:
     """Return PASSED only when every required headline fully resolves."""
 
     if len(evidence_table) != len(REQUIRED_HEADLINE_IDS):
