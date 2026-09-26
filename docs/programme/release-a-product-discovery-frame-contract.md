@@ -222,6 +222,15 @@ D4 version/working-summary binding only, and exact upstream digests through A7.
 Freeze alone does not emit the Product Population Release Package or start A-G.
 A7 fail-closed `N_observed=6` with no `N_estimated` remains preserved.
 
+Executed A8 results are recorded in
+`RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE.v1.0.json`, which binds the
+frozen A8 contract digest and exact A1–A7 upstream digests, packages the
+Product Registry, D4 working-summary binding, Frame Register, A3/A4/A6/A7
+reports, analytical figure tables, source/coverage/uncertainty register, and
+explicit unresolved-candidate register. Headline counts name denominators and
+population views. The package preserves A7 fail-closed (`N_estimated` remains
+null) and does not start A-G.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

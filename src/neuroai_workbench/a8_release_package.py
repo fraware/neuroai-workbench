@@ -411,3 +411,285 @@ def validate_a8_package_manifest_contract(contract: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("predeclaration_rule must require denominators")
     if "a-g" not in lowered:
         raise ProductDiscoveryError("predeclaration_rule must refuse starting A-G")
+
+
+A8_PACKAGE_RESOURCE = "RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE.v1.0.json"
+A8_PACKAGE_SHA256 = "71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190"
+UNRESOLVED_REGISTER_SHA256 = "ac2535466b9041a8f0dfee898a963afc19d3af4283df405051af5c4b8aac2ce7"
+UNRESOLVED_CANDIDATE_COUNT = 416
+OBSERVED_OFFERING_IDS = (
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE",
+)
+
+A8_PACKAGE_BOUNDARY = (
+    "Repository-safe A8 Product Population Release Package under the frozen A8 "
+    "package-manifest contract and exact A1–A7 upstream digests. Headline counts "
+    "name denominators and population views. N_observed=6 is reported separately; "
+    "N_estimated is null under A7 fail-closed. Does not publish market share, "
+    "comparative effectiveness, or national leadership. F9 exhaustion is not "
+    "global completeness; open-world saturation is not a census. Does not start "
+    "A-G reconstruction, Release B/C/D, or reopen closed discovery fitting. No "
+    "S2 publication authority or v4.2 assessment effect."
+)
+
+COMPONENT_KEYS = (
+    "product_registry",
+    "d4_reference_standard_summary",
+    "discovery_frame_register",
+    "a3_capability_first_recall_study",
+    "a4_multilingual_coverage_sensitivity_report",
+    "a6_coverage_saturation_report",
+    "a7_population_estimation_report",
+    "analytical_workbook_figure_data",
+    "source_coverage_uncertainty_register",
+    "explicit_unknown_unresolved_register",
+)
+
+
+def load_default_a8_product_population_release_package() -> dict[str, Any]:
+    """Load the frozen A8 Product Population Release Package."""
+
+    package = _load_resource(A8_PACKAGE_RESOURCE)
+    validate_a8_product_population_release_package(package)
+    if package["package_sha256"] != A8_PACKAGE_SHA256:
+        raise ProductDiscoveryError("Loaded A8 package digest drifted from frozen A8_PACKAGE_SHA256")
+    return package
+
+
+def validate_a8_product_population_release_package(package: Mapping[str, Any]) -> None:
+    """Validate the materialized A8 package against the frozen contract and upstream locks."""
+
+    required = (
+        "package_id",
+        "package_sha256",
+        "status",
+        "assembled_on",
+        "contract_id",
+        "contract_sha256",
+        "analysis_universe_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+        "a2_checkpoint_id",
+        "a2_checkpoint_sha256",
+        "observed_offering_ids",
+        "observed_offering_set_sha256",
+        "population_view_id",
+        "n_observed",
+        "n_estimated",
+        "components",
+        "headline_counts",
+        "forbidden_claims_absent",
+        "authority_controls",
+        "key_result",
+        "next_required_state",
+        "boundary",
+    )
+    missing = [field for field in required if field not in package]
+    if missing:
+        raise ProductDiscoveryError("A8 package missing fields: " + ", ".join(missing))
+
+    if package["package_id"] != A8_PACKAGE_ID:
+        raise ProductDiscoveryError(f"package_id must be {A8_PACKAGE_ID}")
+    if package["status"] != "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE":
+        raise ProductDiscoveryError("status must be CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE")
+    if package["contract_id"] != A8_CONTRACT_ID:
+        raise ProductDiscoveryError(f"contract_id must be {A8_CONTRACT_ID}")
+    if package["contract_sha256"] != A8_CONTRACT_SHA256:
+        raise ProductDiscoveryError("contract_sha256 drift")
+    if content_digest(package, exclude="package_sha256") != package["package_sha256"]:
+        raise ProductDiscoveryError("package_sha256 does not match content digest")
+    if package["boundary"] != A8_PACKAGE_BOUNDARY:
+        raise ProductDiscoveryError("boundary text drift")
+
+    if package["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id must equal frozen A2 analysis universe")
+    if package["world_time_cutoff"] != A2_WORLD_TIME_CUTOFF:
+        raise ProductDiscoveryError("world_time_cutoff drift")
+    if package["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("knowledge_time_cutoff drift")
+    if package["a2_checkpoint_id"] != CHECKPOINT_ID:
+        raise ProductDiscoveryError("a2_checkpoint_id must equal frozen A2 checkpoint")
+    if package["a2_checkpoint_sha256"] != CHECKPOINT_SHA256:
+        raise ProductDiscoveryError("a2_checkpoint_sha256 drift from frozen A2 checkpoint")
+    if package["observed_offering_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("observed_offering_set_sha256 must equal A1 known-identity digest")
+    if tuple(package["observed_offering_ids"]) != OBSERVED_OFFERING_IDS:
+        raise ProductDiscoveryError("observed_offering_ids drift")
+    if package["population_view_id"] != POPULATION_VIEW_ID:
+        raise ProductDiscoveryError(f"population_view_id must be {POPULATION_VIEW_ID}")
+    if _require_int(package["n_observed"], "n_observed") != N_OBSERVED:
+        raise ProductDiscoveryError(f"n_observed must be {N_OBSERVED}")
+    if package["n_estimated"] is not None:
+        raise ProductDiscoveryError("package must not invent n_estimated")
+    if package["next_required_state"] != "A-G_RELEASE_A_RECONSTRUCTION_REVIEW":
+        raise ProductDiscoveryError("next_required_state must be A-G_RELEASE_A_RECONSTRUCTION_REVIEW")
+
+    components = _require_mapping(package["components"], "components")
+    if set(components.keys()) != set(COMPONENT_KEYS):
+        raise ProductDiscoveryError("components key set drift")
+    for component_key in COMPONENT_KEYS:
+        if component_key not in components:
+            raise ProductDiscoveryError(f"components missing {component_key}")
+
+    product_registry = _require_mapping(components["product_registry"], "product_registry")
+    if product_registry.get("resource_sha256") != frozen_product_registry_sha256():
+        raise ProductDiscoveryError("product_registry.resource_sha256 drift")
+    if product_registry.get("identity_registry_sha256") != frozen_product_identity_registry_sha256():
+        raise ProductDiscoveryError("product_registry.identity_registry_sha256 drift")
+    if product_registry.get("row_count") != N_OBSERVED or product_registry.get("identity_count") != N_OBSERVED:
+        raise ProductDiscoveryError("product_registry counts must equal N_observed")
+
+    d4 = _require_mapping(components["d4_reference_standard_summary"], "d4_reference_standard_summary")
+    if d4.get("reference_standard_id") != D4_REFERENCE_STANDARD_ID:
+        raise ProductDiscoveryError("d4 reference_standard_id drift")
+    if d4.get("reference_standard_version") != D4_REFERENCE_STANDARD_VERSION:
+        raise ProductDiscoveryError("d4 reference_standard_version drift")
+    distribution = _require_mapping(d4.get("working_distribution"), "working_distribution")
+    for disposition, count in D4_WORKING_DISTRIBUTION.items():
+        if distribution.get(disposition) != count:
+            raise ProductDiscoveryError(f"d4 working_distribution.{disposition} drift")
+
+    frame_register = _require_mapping(components["discovery_frame_register"], "discovery_frame_register")
+    if frame_register.get("frame_register_version") != FRAME_REGISTER_VERSION:
+        raise ProductDiscoveryError("frame_register_version drift")
+    if frame_register.get("frame_register_blob_sha") != A2_FRAME_REGISTER_BLOB_SHA:
+        raise ProductDiscoveryError("frame_register_blob_sha drift")
+    if frame_register.get("f9_completion_ledger_sha256") != F9_LEDGER_SHA256:
+        raise ProductDiscoveryError("f9_completion_ledger_sha256 drift")
+
+    a3 = _require_mapping(components["a3_capability_first_recall_study"], "a3_capability_first_recall_study")
+    if a3.get("packet_sha256") != A3_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a3 study digest drift")
+    if a3.get("preregistration_sha256") != A3_PREREG_SHA256:
+        raise ProductDiscoveryError("a3 preregistration digest drift")
+    if a3.get("delta_n_capability") != 0:
+        raise ProductDiscoveryError("delta_n_capability drift")
+
+    a4 = _require_mapping(
+        components["a4_multilingual_coverage_sensitivity_report"],
+        "a4_multilingual_coverage_sensitivity_report",
+    )
+    if a4.get("packet_sha256") != A4_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a4 study digest drift")
+    if a4.get("preregistration_sha256") != A4_PREREG_SHA256:
+        raise ProductDiscoveryError("a4 preregistration digest drift")
+    if a4.get("language_jurisdiction_strata_sha256") != LANGUAGE_STRATA_SHA256:
+        raise ProductDiscoveryError("language strata digest drift")
+    if a4.get("delta_n_multilingual") != 0:
+        raise ProductDiscoveryError("delta_n_multilingual drift")
+
+    a6 = _require_mapping(components["a6_coverage_saturation_report"], "a6_coverage_saturation_report")
+    if a6.get("packet_sha256") != A6_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a6 study digest drift")
+    if a6.get("preregistration_sha256") != A6_PREREG_SHA256:
+        raise ProductDiscoveryError("a6 preregistration digest drift")
+    if a6.get("final_stop_state") != "SATURATION_UNDER_DECLARED_PROTOCOL":
+        raise ProductDiscoveryError("a6 final_stop_state drift")
+
+    a7 = _require_mapping(components["a7_population_estimation_report"], "a7_population_estimation_report")
+    if a7.get("packet_sha256") != A7_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a7 report digest drift")
+    if a7.get("capture_history_sha256") != A7_CAPTURE_HISTORY_SHA256:
+        raise ProductDiscoveryError("a7 capture_history digest drift")
+    if a7.get("model_specification_sha256") != A7_MODEL_SPEC_SHA256:
+        raise ProductDiscoveryError("a7 model_specification digest drift")
+    if a7.get("eligible_capture_records_sha256") != A7_ELIGIBLE_CAPTURE_RECORDS_SHA256:
+        raise ProductDiscoveryError("a7 eligible capture digest drift")
+    if a7.get("n_observed") != N_OBSERVED:
+        raise ProductDiscoveryError("a7 component n_observed drift")
+    if a7.get("n_estimated") is not None:
+        raise ProductDiscoveryError("a7 component must not invent n_estimated")
+    if a7.get("estimation_outcome") != "FAIL_CLOSED":
+        raise ProductDiscoveryError("a7 estimation_outcome must be FAIL_CLOSED")
+    if a7.get("fail_closed_outcome") != VALID_NO_ESTIMATE_OUTCOME:
+        raise ProductDiscoveryError("a7 fail_closed_outcome drift")
+
+    workbook = _require_mapping(components["analytical_workbook_figure_data"], "analytical_workbook_figure_data")
+    tables = _require_mapping(workbook.get("tables"), "analytical_workbook_figure_data.tables")
+    for table_name, rows in tables.items():
+        row_list = _require_list(rows, table_name)
+        if not row_list:
+            raise ProductDiscoveryError(f"figure table {table_name} must be non-empty")
+        for row in row_list:
+            mapping = _require_mapping(row, f"{table_name} row")
+            if "denominator_label" not in mapping or "population_view_id" not in mapping:
+                raise ProductDiscoveryError(f"figure table {table_name} rows must name denominator and population view")
+
+    uncertainty = _require_mapping(
+        components["source_coverage_uncertainty_register"],
+        "source_coverage_uncertainty_register",
+    )
+    entries = _require_list(uncertainty.get("entries"), "uncertainty entries")
+    if len(entries) < 4:
+        raise ProductDiscoveryError("source_coverage_uncertainty_register must retain major residual uncertainties")
+
+    unresolved = _require_mapping(
+        components["explicit_unknown_unresolved_register"],
+        "explicit_unknown_unresolved_register",
+    )
+    if unresolved.get("unresolved_candidate_count") != UNRESOLVED_CANDIDATE_COUNT:
+        raise ProductDiscoveryError("unresolved_candidate_count drift")
+    if unresolved.get("unresolved_register_sha256") != UNRESOLVED_REGISTER_SHA256:
+        raise ProductDiscoveryError("unresolved_register_sha256 drift")
+    candidates = _require_list(unresolved.get("candidates"), "unresolved candidates")
+    if len(candidates) != UNRESOLVED_CANDIDATE_COUNT:
+        raise ProductDiscoveryError("unresolved candidates length drift")
+    encoded = json.dumps(candidates, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode(
+        "utf-8"
+    )
+    if hashlib.sha256(encoded).hexdigest() != UNRESOLVED_REGISTER_SHA256:
+        raise ProductDiscoveryError("unresolved candidates content digest drift")
+
+    headlines = _require_list(package["headline_counts"], "headline_counts")
+    if not headlines:
+        raise ProductDiscoveryError("headline_counts must be non-empty")
+    for headline in headlines:
+        mapping = _require_mapping(headline, "headline")
+        for field in ("headline_id", "claim_class", "label", "denominator_label", "population_view_id"):
+            _require_str(mapping.get(field), field)
+        if mapping["claim_class"] not in CLAIM_CLASSES:
+            raise ProductDiscoveryError("headline claim_class must be a permitted claim class")
+        if mapping["claim_class"] in FORBIDDEN_CLAIM_CLASSES:
+            raise ProductDiscoveryError("headline uses forbidden claim class")
+        if mapping["headline_id"] == "N_OBSERVED_A_P1" and mapping.get("value") != N_OBSERVED:
+            raise ProductDiscoveryError("N_OBSERVED headline value drift")
+        if mapping["headline_id"] == "N_ESTIMATED_A_P1" and mapping.get("value") is not None:
+            raise ProductDiscoveryError("N_ESTIMATED headline must remain null")
+
+    forbidden = _require_list(package["forbidden_claims_absent"], "forbidden_claims_absent")
+    if tuple(forbidden) != FORBIDDEN_CLAIM_CLASSES:
+        raise ProductDiscoveryError("forbidden_claims_absent drift")
+
+    authority = _require_mapping(package["authority_controls"], "authority_controls")
+    for field in (
+        "does_not_start_ag",
+        "does_not_allocate_canonical_identity",
+        "does_not_claim_global_completeness",
+        "does_not_publish_market_share",
+        "does_not_publish_comparative_effectiveness",
+        "does_not_publish_national_leadership",
+        "preserves_a7_fail_closed",
+        "observed_count_reported_separately_from_estimate",
+        "f9_exhaustion_is_not_global_completeness",
+        "open_world_saturation_is_not_census",
+        "claim_classes_kept_distinct",
+    ):
+        if not _require_bool(authority.get(field), field):
+            raise ProductDiscoveryError(f"authority_controls.{field} must be true")
+
+    key = _require_mapping(package["key_result"], "key_result")
+    if key.get("n_observed") != N_OBSERVED:
+        raise ProductDiscoveryError("key_result.n_observed drift")
+    if key.get("n_estimated") is not None:
+        raise ProductDiscoveryError("key_result must not invent n_estimated")
+    if key.get("estimation_outcome") != "FAIL_CLOSED":
+        raise ProductDiscoveryError("key_result.estimation_outcome must be FAIL_CLOSED")
+    if key.get("population_view_id") != POPULATION_VIEW_ID:
+        raise ProductDiscoveryError("key_result.population_view_id drift")
+    if not _require_bool(key.get("package_complete"), "package_complete"):
+        raise ProductDiscoveryError("key_result.package_complete must be true")
