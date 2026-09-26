@@ -127,6 +127,21 @@ the measured exact-offering increment, not a raw F6 hit count.
 
 F8 is the controlled local-language frame used for A4. Matched language/jurisdiction analyses must compare the same product-identity and population-view semantics.
 
+For A4, engineers follow the frozen preregistration
+`RELEASE_A_A4_MULTILINGUAL_SENSITIVITY_PREREGISTRATION.v1.0.json`. That artifact
+binds the matched English (`S_ENGLISH` = F1–F6) versus English+native
+(`S_ENGLISH_PLUS_NATIVE` = F1–F6+F8) protocol and the `ΔN_multilingual` /
+per-stratum `Δ_j` metrics contract to the frozen
+`EN_PLUS_PRIORITY_NATIVE_v1` language/jurisdiction strata
+(`RELEASE_A_LANGUAGE_JURISDICTION_STRATA.v1.0.json`, digest `25010299…`)
+**before** any yield difference is computed or interpreted. Languages and
+strata must not be chosen, added, dropped, or relabelled because they looked
+fruitful during exploratory or F8 work. Increments count only exact canonical
+offering IDs; raw search hits are not the increment unit. Required companion
+metrics include unique-product gain, false-positive / unresolved / duplicate
+rates, capability gain, and source-class gain. Freeze alone does not compute
+`ΔN_multilingual`, allocate identity, or start A5+.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
