@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuroai-workbench.example/schemas/release-a-a2-bounded-frame-checkpoint-1.0.json",
+  "title": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "checkpoint_id",
+    "checkpoint_sha256",
+    "status",
+    "assembled_on",
+    "analysis_universe_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "claim_scope",
+    "round_start_known_identity_ids",
+    "round_start_known_identity_set_sha256",
+    "final_known_identity_ids",
+    "final_known_identity_set_sha256",
+    "canonical_offering_ids",
+    "canonical_offering_set_sha256",
+    "canonical_offering_binding",
+    "frame_terminal_bindings",
+    "unresolved_candidates",
+    "unresolved_candidate_count",
+    "unresolved_candidate_set_sha256",
+    "estimator_exclusion",
+    "open_world_frames_not_started",
+    "next_required_state",
+    "boundary"
+  ],
+  "properties": {
+    "checkpoint_id": {
+      "const": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0"
+    },
+    "checkpoint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "const": "FROZEN_v1.0"
+    },
+    "assembled_on": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_scope": {
+      "const": "BOUNDED_FRAME_EXHAUSTION_UNDER_FROZEN_PROTOCOLS"
+    },
+    "round_start_known_identity_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "round_start_known_identity_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "final_known_identity_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "final_known_identity_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canonical_offering_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "canonical_offering_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canonical_offering_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "a1_identity_registry_id",
+        "a1_identity_registry_sha256",
+        "new_canonical_allocations_during_bounded_frames",
+        "note"
+      ],
+      "properties": {
+        "a1_identity_registry_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "a1_identity_registry_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "new_canonical_allocations_during_bounded_frames": {
+          "type": "integer",
+          "const": 0
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "frame_terminal_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["F2", "F3", "F9"],
+      "properties": {
+        "F2": {
+          "$ref": "#/$defs/f2_f3_terminal_binding"
+        },
+        "F3": {
+          "$ref": "#/$defs/f2_f3_terminal_binding"
+        },
+        "F9": {
+          "$ref": "#/$defs/f9_terminal_binding"
+        }
+      }
+    },
+    "unresolved_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "frame_id",
+          "candidate_key",
+          "capture_id",
+          "source_packet_id",
+          "source_packet_sha256"
+        ],
+        "properties": {
+          "frame_id": {
+            "type": "string",
+            "enum": ["F2", "F3", "F9"]
+          },
+          "candidate_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capture_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_packet_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_packet_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "unresolved_candidate_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unresolved_candidate_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "estimator_exclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_estimation_excluded_frame_ids",
+        "bounded_checkpoint_feeds_primary_estimator",
+        "note"
+      ],
+      "properties": {
+        "primary_estimation_excluded_frame_ids": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "string",
+            "enum": ["F7", "F9", "F11"]
+          }
+        },
+        "bounded_checkpoint_feeds_primary_estimator": {
+          "type": "boolean",
+          "const": false
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "open_world_frames_not_started": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["F1", "F4", "F5", "F6", "F8", "F10", "F11"]
+      }
+    },
+    "next_required_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "f2_f3_terminal_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_id",
+        "stop_state",
+        "barrier_state",
+        "source_exhaustion_state",
+        "final_run_id",
+        "final_packet_id",
+        "final_packet_sha256",
+        "provider_query_universe_id",
+        "provider_query_universe_sha256"
+      ],
+      "properties": {
+        "frame_id": {
+          "type": "string",
+          "enum": ["F2", "F3"]
+        },
+        "stop_state": {
+          "const": "BOUNDED_FRAME_EXHAUSTED"
+        },
+        "barrier_state": {
+          "type": ["string", "null"]
+        },
+        "source_exhaustion_state": {
+          "const": "PROVIDER_QUERY_UNIVERSE_EXHAUSTED"
+        },
+        "final_run_id": {
+          "type": "string",
+          "pattern": "^PDR-[0-9a-f]{64}$"
+        },
+        "final_packet_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_packet_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "provider_query_universe_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider_query_universe_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "f9_terminal_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_id",
+        "stop_state",
+        "barrier_state",
+        "source_exhaustion_state",
+        "final_completion_ledger_id",
+        "final_completion_ledger_sha256",
+        "procedure_id",
+        "procedure_sha256",
+        "final_source_packet_id",
+        "final_source_packet_sha256"
+      ],
+      "properties": {
+        "frame_id": {
+          "const": "F9"
+        },
+        "stop_state": {
+          "const": "BOUNDED_FRAME_EXHAUSTED"
+        },
+        "barrier_state": {
+          "type": ["string", "null"]
+        },
+        "source_exhaustion_state": {
+          "const": "ACTOR_SEED_SET_EXHAUSTED"
+        },
+        "final_completion_ledger_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_completion_ledger_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "procedure_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "procedure_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "final_source_packet_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_source_packet_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}
