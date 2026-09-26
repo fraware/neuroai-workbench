@@ -124,6 +124,15 @@ tranches omit candidates. One convenient product-detail page is not actor
 exhaustion for catalogue actors; boundary objects stay in the candidate
 manifest. F9 remains diagnostic-only for primary estimation.
 
+For F2/F3 bounded-frame execution, engineers follow the frozen provider/query
+universes `RELEASE_A_F2_PROVIDER_QUERY_UNIVERSE.v1.0.json` and
+`RELEASE_A_F3_PROVIDER_QUERY_UNIVERSE.v1.0.json`. Those artifacts bind exact
+providers, query parameters, pagination/termination rules, and frozen
+record-ID denominators. Example FDA/ClinicalTrials.gov identity lookups are not
+exhaustion. Regulatory and trial records remain candidates until offering
+identity and scope are dispositioned separately. Failed authoritative lookups
+are retried only as successor observations.
+
 A frame can stop only with one of:
 
 ```text

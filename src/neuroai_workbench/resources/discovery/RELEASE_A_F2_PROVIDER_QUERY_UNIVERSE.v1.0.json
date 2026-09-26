@@ -1,0 +1,1177 @@
+{
+  "universe_id": "RELEASE_A_F2_PROVIDER_QUERY_UNIVERSE_v1.0",
+  "universe_sha256": "7100742182020a7afb91fee5b9c175211eed4d10adac7c2f40bf52ee705af7b0",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F2",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "census_registered_at": "2026-09-26T08:34:26Z",
+  "source_class": "REGULATOR_OFFICIAL",
+  "providers": [
+    {
+      "provider_id": "OPENFDA_DEVICE",
+      "base_url": "https://api.fda.gov",
+      "authority": "U.S. Food and Drug Administration openFDA",
+      "role": "STRUCTURED_REGISTRY_AND_CLEARANCE_ENUMERATION"
+    },
+    {
+      "provider_id": "FDA_ACCESSDATA",
+      "base_url": "https://www.accessdata.fda.gov",
+      "authority": "U.S. Food and Drug Administration accessdata CDRH",
+      "role": "OFFICIAL_REGULATORY_RECORD_PAGES"
+    }
+  ],
+  "query_families": [
+    {
+      "query_family": "DEVICE_REGISTRY_ENUMERATION",
+      "query_id": "F2-OPENFDA-CLASS-NEUROAI-v1",
+      "provider_id": "OPENFDA_DEVICE",
+      "endpoint_path": "/device/classification.json",
+      "http_method": "GET",
+      "search_expression": "(device_name:brain OR device_name:neural OR device_name:EEG OR device_name:\"cranial electrotherapy\" OR device_name:neurofeedback OR device_name:\"nerve stimulator\")",
+      "forced_product_codes": [
+        "SHX"
+      ],
+      "pagination": {
+        "mode": "OPENFDA_SKIP_LIMIT",
+        "limit": 100,
+        "skip_start": 0,
+        "termination_rule": "Continue while returned>0 and skip < meta.results.total; empty/404 ends that walk."
+      },
+      "record_identity_field": "product_code",
+      "frozen_record_ids": [
+        "GZE",
+        "JXK",
+        "KGG",
+        "LOK",
+        "MFR",
+        "OLM",
+        "PFN",
+        "PIW",
+        "PKR",
+        "PSR",
+        "PZR",
+        "QAK",
+        "QAT",
+        "QEA",
+        "QGL",
+        "QHH",
+        "QJQ",
+        "QNU",
+        "QOL",
+        "QQC",
+        "QSL",
+        "QSQ",
+        "SDG",
+        "SDL",
+        "SFJ",
+        "SFN",
+        "SFW",
+        "SGN",
+        "SGS",
+        "SHX"
+      ],
+      "frozen_record_count": 30,
+      "frozen_record_set_sha256": "90df82c4cf7b06d9c97a7b4327a2d89af86d4e629a4a9e98e9bf2844fec56db2",
+      "class_records": [
+        {
+          "product_code": "GZE",
+          "device_name": "Implanted Diaphragmatic/Phrenic Nerve Stimulator",
+          "device_class": "3",
+          "regulation_number": "882.5830"
+        },
+        {
+          "product_code": "JXK",
+          "device_name": "Cranial Electrotherapy Stimulator To Treat Depression",
+          "device_class": "3",
+          "regulation_number": "882.5800"
+        },
+        {
+          "product_code": "KGG",
+          "device_name": "Tissue Adhesive For Use In Embolization Of Brain Arteriovenous Malformations",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "LOK",
+          "device_name": "Kit, Test, Alpha-Fetoprotein For Neural Tube Defects",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "MFR",
+          "device_name": "Stimulator, Brain, Implanted, For Behavior Modification",
+          "device_class": "f",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "OLM",
+          "device_name": "Deep Brain Stimulator For Obsessive Compulsive Disorder (Ocd)",
+          "device_class": "f",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "PFN",
+          "device_name": "Implanted Brain Stimulator For Epilepsy",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "PIW",
+          "device_name": "Brain Injury Adjunctive Interpretive Electroencephalograph Assessment Aid",
+          "device_class": "2",
+          "regulation_number": "882.1450"
+        },
+        {
+          "product_code": "PKR",
+          "device_name": "Non-Invasive Vagus Nerve Stimulator - Headache",
+          "device_class": "2",
+          "regulation_number": "882.5892"
+        },
+        {
+          "product_code": "PSR",
+          "device_name": "Implanted Phrenic Nerve Stimulator For Central Sleep Apnea",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "PZR",
+          "device_name": "Percutaneous Nerve Stimulator For Opioid Withdrawal",
+          "device_class": "2",
+          "regulation_number": "882.5896"
+        },
+        {
+          "product_code": "QAK",
+          "device_name": "Non-Invasive Vagus Nerve Stimulator For Migraine Headache",
+          "device_class": "2",
+          "regulation_number": "882.5892"
+        },
+        {
+          "product_code": "QAT",
+          "device_name": "Brain Trauma Assessment Test",
+          "device_class": "2",
+          "regulation_number": "866.5830"
+        },
+        {
+          "product_code": "QEA",
+          "device_name": "Brain Injury Adjunctive Interpretive Oculomotor Assessment Aid",
+          "device_class": "2",
+          "regulation_number": "882.1455"
+        },
+        {
+          "product_code": "QGL",
+          "device_name": "Transcutaneous Nerve Stimulator For Adhd",
+          "device_class": "2",
+          "regulation_number": "882.5898"
+        },
+        {
+          "product_code": "QHH",
+          "device_name": "Non-Implanted Nerve Stimulator For Pain Associated With Irritable Bowel Syndrome (Ibs)",
+          "device_class": "2",
+          "regulation_number": "876.5340"
+        },
+        {
+          "product_code": "QJQ",
+          "device_name": "Cranial Electrotherapy Stimulator To Treat Insomnia And/Or Anxiety",
+          "device_class": "2",
+          "regulation_number": "882.5800"
+        },
+        {
+          "product_code": "QNU",
+          "device_name": "Transcutaneous Electrical Nerve Stimulator For The Relief Of Congestion",
+          "device_class": "2",
+          "regulation_number": "874.6000"
+        },
+        {
+          "product_code": "QOL",
+          "device_name": "Electroencephalography (Eeg)-Driven Upper Extremity Powered Exerciser",
+          "device_class": "2",
+          "regulation_number": "890.5420"
+        },
+        {
+          "product_code": "QQC",
+          "device_name": "Brain Stimulation Programming Planning Software.",
+          "device_class": "2",
+          "regulation_number": "882.5855"
+        },
+        {
+          "product_code": "QSL",
+          "device_name": "Brain Temperature Measurement System",
+          "device_class": "2",
+          "regulation_number": "882.1565"
+        },
+        {
+          "product_code": "QSQ",
+          "device_name": "Transcutaneous Electrical Nerve Stimulator To Treat Fibromyalgia Symptoms",
+          "device_class": "2",
+          "regulation_number": "882.5888"
+        },
+        {
+          "product_code": "SDG",
+          "device_name": "Brain Intraparenchymal Infusion Cannula",
+          "device_class": "2",
+          "regulation_number": "882.4110"
+        },
+        {
+          "product_code": "SDL",
+          "device_name": "Transvenous Temporary Phrenic Nerve Stimulator",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "SFJ",
+          "device_name": "Vagus Nerve Stimulator For Rheumatoid Arthritis",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "SFN",
+          "device_name": "Non-Invasive Evoked Response Brain Stimulator",
+          "device_class": "2",
+          "regulation_number": "882.1860"
+        },
+        {
+          "product_code": "SFW",
+          "device_name": "Cranial Electrotherapy Stimulator For Weight Management",
+          "device_class": "1",
+          "regulation_number": "876.5984"
+        },
+        {
+          "product_code": "SGN",
+          "device_name": "High Intensity Focused Ultrasound System For Peripheral Neural Tissue Ablation",
+          "device_class": "2",
+          "regulation_number": "882.4420"
+        },
+        {
+          "product_code": "SGS",
+          "device_name": "Deep Brain Stimulation For The Treatment Of Dystonia",
+          "device_class": "3",
+          "regulation_number": ""
+        },
+        {
+          "product_code": "SHX",
+          "device_name": "Transcranial Nerve Stimulation Device For The Treatment Of Post-Traumatic Stress Disorder Associated Symptoms",
+          "device_class": "2",
+          "regulation_number": "882.5807"
+        }
+      ],
+      "notes": "Forced product code SHX is included because the Modius Spero De Novo seed uses SHX and the free-text class search misses its classification title."
+    },
+    {
+      "query_family": "AUTHORIZATION_CLEARANCE_SEARCH",
+      "query_id": "F2-OPENFDA-CLEARANCE-BY-CLASS-CODE-v1",
+      "provider_id": "OPENFDA_DEVICE",
+      "endpoint_paths": [
+        "/device/510k.json",
+        "/device/pma.json"
+      ],
+      "http_method": "GET",
+      "search_template": "product_code:{PRODUCT_CODE}",
+      "product_codes_in_scope": [
+        "GZE",
+        "JXK",
+        "KGG",
+        "MFR",
+        "OLM",
+        "PFN",
+        "PIW",
+        "PKR",
+        "PSR",
+        "PZR",
+        "QAK",
+        "QAT",
+        "QEA",
+        "QGL",
+        "QHH",
+        "QJQ",
+        "QNU",
+        "QOL",
+        "QQC",
+        "QSL",
+        "QSQ",
+        "SDG",
+        "SDL",
+        "SFJ",
+        "SFN",
+        "SFW",
+        "SGN",
+        "SGS",
+        "SHX"
+      ],
+      "product_codes_excluded": [
+        "LOK"
+      ],
+      "exclusion_reasons": {
+        "LOK": "AFP neural-tube lab test kit; retained in DEVICE_REGISTRY_ENUMERATION as a class hit but excluded from clearance enumeration as non-device-offering lab IVD."
+      },
+      "pagination": {
+        "mode": "OPENFDA_SKIP_LIMIT",
+        "limit": 100,
+        "skip_start": 0,
+        "termination_rule": "For each product_code and endpoint, walk until skip>=total or empty/404. PMA supplements that share pma_number collapse to one record_id."
+      },
+      "record_identity_field": "k_number_or_pma_number",
+      "frozen_record_ids": [
+        "DEN140025",
+        "DEN150048",
+        "DEN170018",
+        "DEN170045",
+        "DEN170091",
+        "DEN180041",
+        "DEN180057",
+        "DEN200006",
+        "DEN200042",
+        "DEN200046",
+        "DEN210003",
+        "DEN210046",
+        "DEN240023",
+        "DEN240076",
+        "DEN250002",
+        "DEN250013",
+        "DEN250015",
+        "K024377",
+        "K060158",
+        "K062284",
+        "K070412",
+        "K090052",
+        "K143643",
+        "K161068",
+        "K171306",
+        "K172270",
+        "K173442",
+        "K173861",
+        "K180538",
+        "K181179",
+        "K181785",
+        "K182311",
+        "K182369",
+        "K183241",
+        "K190815",
+        "K191183",
+        "K191830",
+        "K201778",
+        "K201841",
+        "K201873",
+        "K202927",
+        "K202940",
+        "K203546",
+        "K211856",
+        "K211971",
+        "K212310",
+        "K213629",
+        "K213930",
+        "K221231",
+        "K223602",
+        "K230526",
+        "K230796",
+        "K230826",
+        "K231914",
+        "K232253",
+        "K232669",
+        "K232991",
+        "K233166",
+        "K233293",
+        "K234143",
+        "K240279",
+        "K241533",
+        "K242116",
+        "K243289",
+        "K243426",
+        "K243520",
+        "K250451",
+        "K251246",
+        "K252024",
+        "K252951",
+        "K254086",
+        "K771534",
+        "K873920",
+        "K883812",
+        "K894097",
+        "K894515",
+        "K895175",
+        "K903014",
+        "K903654",
+        "K910616",
+        "K932050",
+        "P100026",
+        "P160039",
+        "P230024",
+        "P240012",
+        "P240039",
+        "P250010",
+        "P860026",
+        "P960009",
+        "P990040"
+      ],
+      "frozen_record_count": 90,
+      "frozen_record_set_sha256": "ad83aecb6823611107b39d78fc9a73b0eb4e93a019b541838bc34820695cebee",
+      "record_index": [
+        {
+          "record_id": "DEN140025",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2014-11-17",
+          "device_name": "BrainScope Ahead 100",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "DEN150048",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2017-04-14",
+          "device_name": "gammaCore Non-invasive Vagus Nerve Stimulator",
+          "applicant": "Electrocore, LLC"
+        },
+        {
+          "record_id": "DEN170018",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2017-11-15",
+          "device_name": "NSS-2 System",
+          "applicant": "Innovative Health Solutions (Ihs), Inc."
+        },
+        {
+          "record_id": "DEN170045",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2018-02-14",
+          "device_name": "Banyan BTI",
+          "applicant": "Banyan Biomarkers, Inc."
+        },
+        {
+          "record_id": "DEN170091",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2018-12-28",
+          "device_name": "EyeBOX",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "DEN180041",
+          "endpoint": "510k",
+          "product_code": "QGL",
+          "decision_date": "2019-04-19",
+          "device_name": "Monarch eTNS System",
+          "applicant": "Neurosigma, Inc."
+        },
+        {
+          "record_id": "DEN180057",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2019-06-07",
+          "device_name": "IB-Stim",
+          "applicant": "Innovative Health Solutions (Ihs), Inc."
+        },
+        {
+          "record_id": "DEN200006",
+          "endpoint": "510k",
+          "product_code": "QNU",
+          "decision_date": "2021-03-05",
+          "device_name": "ClearUP Sinus Relief",
+          "applicant": "Tivic Health Systems, Inc."
+        },
+        {
+          "record_id": "DEN200042",
+          "endpoint": "510k",
+          "product_code": "QSL",
+          "decision_date": "2022-03-29",
+          "device_name": "BrainTemp Neonate System (BTNeo System)",
+          "applicant": "Brain Temp, Inc."
+        },
+        {
+          "record_id": "DEN200046",
+          "endpoint": "510k",
+          "product_code": "QOL",
+          "decision_date": "2021-04-23",
+          "device_name": "Neurolutions Upper Extremity Rehabilitation System",
+          "applicant": "Neurolutions, Inc."
+        },
+        {
+          "record_id": "DEN210003",
+          "endpoint": "510k",
+          "product_code": "QQC",
+          "decision_date": "2021-08-23",
+          "device_name": "SureTune4 Software",
+          "applicant": "Medtronic Neuromodulation"
+        },
+        {
+          "record_id": "DEN210046",
+          "endpoint": "510k",
+          "product_code": "QSQ",
+          "decision_date": "2022-05-18",
+          "device_name": "Quell-FM",
+          "applicant": "Neurometrix, Inc."
+        },
+        {
+          "record_id": "DEN240023",
+          "endpoint": "510k",
+          "product_code": "SDG",
+          "decision_date": "2024-11-13",
+          "device_name": "SmartFlow Neuro Cannula",
+          "applicant": "ClearPoint Neuro, Inc."
+        },
+        {
+          "record_id": "DEN240076",
+          "endpoint": "510k",
+          "product_code": "SFW",
+          "decision_date": "2025-10-17",
+          "device_name": "Modius Lean",
+          "applicant": "Neurovalens Limited"
+        },
+        {
+          "record_id": "DEN250002",
+          "endpoint": "510k",
+          "product_code": "SFN",
+          "decision_date": "2025-08-20",
+          "device_name": "Delphi-MD System",
+          "applicant": "Quantalx Neuroscience, Ltd."
+        },
+        {
+          "record_id": "DEN250013",
+          "endpoint": "510k",
+          "product_code": "SHX",
+          "decision_date": "2026-05-08",
+          "device_name": "Modius Spero",
+          "applicant": "Neurovalens Limited"
+        },
+        {
+          "record_id": "DEN250015",
+          "endpoint": "510k",
+          "product_code": "SGN",
+          "decision_date": "2025-11-14",
+          "device_name": "Neurolyser XR (NXR100)",
+          "applicant": "Fusmobile, Inc."
+        },
+        {
+          "record_id": "K024377",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2003-07-21",
+          "device_name": "TRANSCRANIAL ELECTROTHERAPY STIMULATOR-A, MODEL TESA-1",
+          "applicant": "Kalaco Scientific, Inc."
+        },
+        {
+          "record_id": "K060158",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2006-10-13",
+          "device_name": "NET-2000 MICROCURRENT STIMULATOR",
+          "applicant": "Auri-Stem Medical, Inc."
+        },
+        {
+          "record_id": "K062284",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2007-04-05",
+          "device_name": "CES ULTRA",
+          "applicant": "Neuro-Fitness, LLC"
+        },
+        {
+          "record_id": "K070412",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2008-05-21",
+          "device_name": "ELEXOMA MEDIC",
+          "applicant": "Redplane AG"
+        },
+        {
+          "record_id": "K090052",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2009-05-29",
+          "device_name": "CRANIAL ELECTRICAL NERVE STIMULATOR, MODEL FM 10/C",
+          "applicant": "Johari Digital Healthcare , Ltd."
+        },
+        {
+          "record_id": "K143643",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2015-05-15",
+          "device_name": "Brainscope Ahead 200",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K161068",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2016-09-22",
+          "device_name": "Ahead 300",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K171306",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2017-05-30",
+          "device_name": "gammaCore-S",
+          "applicant": "Electrocore, LLC"
+        },
+        {
+          "record_id": "K172270",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2017-12-07",
+          "device_name": "gammaCore-2",
+          "applicant": "Eletrocore, LLC"
+        },
+        {
+          "record_id": "K173442",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2018-01-23",
+          "device_name": "gammaCore-S",
+          "applicant": "Electrocore, LLC"
+        },
+        {
+          "record_id": "K173861",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2018-05-02",
+          "device_name": "Drug Relief",
+          "applicant": "Dyansys, Inc."
+        },
+        {
+          "record_id": "K180538",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2018-03-30",
+          "device_name": "gammaCore Sapphire",
+          "applicant": "Electrocore, LLC"
+        },
+        {
+          "record_id": "K181179",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2018-05-18",
+          "device_name": "BrainScope One",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K181785",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2018-12-19",
+          "device_name": "Modified BrainScope One",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K182311",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2019-03-07",
+          "device_name": "Cervella",
+          "applicant": "Innovative Neurological Devices, LLC"
+        },
+        {
+          "record_id": "K182369",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2018-11-27",
+          "device_name": "gammaCore Sapphire",
+          "applicant": "Electrocore, Inc."
+        },
+        {
+          "record_id": "K183241",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2019-02-19",
+          "device_name": "BrainScope TBI (Model: Ahead 400)",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K190815",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2019-09-11",
+          "device_name": "BrainScope TBI",
+          "applicant": "Brainscope Company, Inc."
+        },
+        {
+          "record_id": "K191183",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2019-07-31",
+          "device_name": "EyeBOX",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "K191830",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2020-03-26",
+          "device_name": "gammaCore Sapphire",
+          "applicant": "Electrocore, Inc."
+        },
+        {
+          "record_id": "K201778",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2021-01-08",
+          "device_name": "i-STAT TBI Plasma cartridge with the i-STAT Alinity System",
+          "applicant": "Abbott Laboratories"
+        },
+        {
+          "record_id": "K201841",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2020-09-06",
+          "device_name": "EyeBOX",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "K201873",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2021-01-02",
+          "device_name": "Sparrow Therapy System",
+          "applicant": "Spark Biomedical, Inc."
+        },
+        {
+          "record_id": "K202927",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2021-10-02",
+          "device_name": "EYE-SYNC",
+          "applicant": "Syncthink, Inc."
+        },
+        {
+          "record_id": "K202940",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2020-12-29",
+          "device_name": "First Relief v1",
+          "applicant": "Dyansys, Inc."
+        },
+        {
+          "record_id": "K203546",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2021-02-12",
+          "device_name": "gammaCore Sapphire",
+          "applicant": "Electrocore, Inc."
+        },
+        {
+          "record_id": "K211856",
+          "endpoint": "510k",
+          "product_code": "PKR",
+          "decision_date": "2021-09-10",
+          "device_name": "gammaCore Sapphire",
+          "applicant": "Electrocore, Inc."
+        },
+        {
+          "record_id": "K211971",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2021-11-05",
+          "device_name": "Drug Relief v1",
+          "applicant": "Dyansys, Inc."
+        },
+        {
+          "record_id": "K212310",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2021-12-22",
+          "device_name": "EyeBOX (Model EBX-4)",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "K213629",
+          "endpoint": "510k",
+          "product_code": "QGL",
+          "decision_date": "2023-02-12",
+          "device_name": "SMILE",
+          "applicant": "Nu Eyne Co., Ltd."
+        },
+        {
+          "record_id": "K213930",
+          "endpoint": "510k",
+          "product_code": "QQC",
+          "decision_date": "2022-04-19",
+          "device_name": "Brainlab Elements Guide XT, Guide 3.0",
+          "applicant": "Brainlab AG"
+        },
+        {
+          "record_id": "K221231",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2022-06-06",
+          "device_name": "Drug Relief v1",
+          "applicant": "Dyansys, Inc."
+        },
+        {
+          "record_id": "K223602",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2023-03-02",
+          "device_name": "Traumatic brain injury (TBI) test",
+          "applicant": "Abbott Laboratories"
+        },
+        {
+          "record_id": "K230526",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2023-09-14",
+          "device_name": "TEA Device",
+          "applicant": "Transtimulation Research, Inc."
+        },
+        {
+          "record_id": "K230796",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2023-06-20",
+          "device_name": "Sparrow Ascent",
+          "applicant": "Spark Biomedical, Inc."
+        },
+        {
+          "record_id": "K230826",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2023-10-27",
+          "device_name": "Modius Sleep",
+          "applicant": "Neurovalens , Ltd."
+        },
+        {
+          "record_id": "K231914",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2023-12-27",
+          "device_name": "Nurochek-II System",
+          "applicant": "Headsafe Mfg Pty, Ltd."
+        },
+        {
+          "record_id": "K232253",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2024-03-27",
+          "device_name": "Modius Stress",
+          "applicant": "Neurovalens Limited"
+        },
+        {
+          "record_id": "K232669",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2023-09-29",
+          "device_name": "TBI",
+          "applicant": "Abbott Laboratories"
+        },
+        {
+          "record_id": "K232991",
+          "endpoint": "510k",
+          "product_code": "QGL",
+          "decision_date": "2024-08-28",
+          "device_name": "BT-1000",
+          "applicant": "Bistos Co., Ltd."
+        },
+        {
+          "record_id": "K233166",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2024-05-29",
+          "device_name": "NET Recovery Corp/NET Device",
+          "applicant": "Net Recovery"
+        },
+        {
+          "record_id": "K233293",
+          "endpoint": "510k",
+          "product_code": "QGL",
+          "decision_date": "2024-01-16",
+          "device_name": "Generation 2.0 Monarch external Trigeminal Nerve Stimulation (eTNS) System®",
+          "applicant": "Neurosigma, Inc."
+        },
+        {
+          "record_id": "K234143",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2024-03-27",
+          "device_name": "i-STAT TBI Cartridge with the i-STAT Alinity System",
+          "applicant": "Abbott Point of Care"
+        },
+        {
+          "record_id": "K240279",
+          "endpoint": "510k",
+          "product_code": "QAT",
+          "decision_date": "2024-05-01",
+          "device_name": "VIDAS TBI (GFAP, UCH-L1)",
+          "applicant": "bioMerieux, Inc."
+        },
+        {
+          "record_id": "K241533",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2024-10-30",
+          "device_name": "NeurAxis IB-Stim (01-1020)",
+          "applicant": "Neuraxis"
+        },
+        {
+          "record_id": "K242116",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2025-04-04",
+          "device_name": "EyeBOX EBX-4.1",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "K243289",
+          "endpoint": "510k",
+          "product_code": "QGL",
+          "decision_date": "2025-01-16",
+          "device_name": "ADDNOX (BPSPM1)",
+          "applicant": "Nu Eyne Co., Ltd."
+        },
+        {
+          "record_id": "K243426",
+          "endpoint": "510k",
+          "product_code": "PIW",
+          "decision_date": "2025-03-27",
+          "device_name": "Nurochek-Pro System",
+          "applicant": "Headsafe Mfg Pty, Ltd."
+        },
+        {
+          "record_id": "K243520",
+          "endpoint": "510k",
+          "product_code": "QQC",
+          "decision_date": "2025-03-28",
+          "device_name": "Bullsai Confirm",
+          "applicant": "Turing Medical Technologies, Inc."
+        },
+        {
+          "record_id": "K250451",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2025-05-15",
+          "device_name": "NeurAxis IB-Stim (01-1020)",
+          "applicant": "Neuraxis"
+        },
+        {
+          "record_id": "K251246",
+          "endpoint": "510k",
+          "product_code": "PZR",
+          "decision_date": "2025-08-25",
+          "device_name": "Sparrow Ascent",
+          "applicant": "Spark Biomedical, Inc."
+        },
+        {
+          "record_id": "K252024",
+          "endpoint": "510k",
+          "product_code": "QHH",
+          "decision_date": "2025-10-16",
+          "device_name": "NeurAxis IB-Stim (01-1020)",
+          "applicant": "Neuraxis"
+        },
+        {
+          "record_id": "K252951",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "2025-12-31",
+          "device_name": "Genesis Sleep",
+          "applicant": "Neurofield, Inc."
+        },
+        {
+          "record_id": "K254086",
+          "endpoint": "510k",
+          "product_code": "QEA",
+          "decision_date": "2026-06-05",
+          "device_name": "EyeBOX SNAP",
+          "applicant": "Oculogica, Inc."
+        },
+        {
+          "record_id": "K771534",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1977-08-26",
+          "device_name": "BIOTRON 18",
+          "applicant": "Biotronics Corp."
+        },
+        {
+          "record_id": "K873920",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1987-12-29",
+          "device_name": "BR-2 BIOREST",
+          "applicant": "Biorest, Inc."
+        },
+        {
+          "record_id": "K883812",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1988-11-28",
+          "device_name": "HP-1 (HEALTHPAX)",
+          "applicant": "Healthdirections, Inc."
+        },
+        {
+          "record_id": "K894097",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1989-09-25",
+          "device_name": "NTI-1000",
+          "applicant": "Neurotek, Inc."
+        },
+        {
+          "record_id": "K894515",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1990-05-03",
+          "device_name": "LISS CRANIAL STIMULATOR MODEL SBL201-M",
+          "applicant": "Medical Consultants Intl. , Ltd."
+        },
+        {
+          "record_id": "K895175",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1989-11-08",
+          "device_name": "NF-1 MINDPEACE",
+          "applicant": "Neurofitness"
+        },
+        {
+          "record_id": "K903014",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1992-05-12",
+          "device_name": "ALPHA-STIM CS",
+          "applicant": "Electromedical Products, Inc."
+        },
+        {
+          "record_id": "K903654",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1990-10-04",
+          "device_name": "LISS CRANIAL STIMULATOR MODEL SBL202-B",
+          "applicant": "Medical Consultants Intl. , Ltd."
+        },
+        {
+          "record_id": "K910616",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1992-05-12",
+          "device_name": "LB-2000 CRANIAL ELECTROTHERAPY STIMULATOR",
+          "applicant": "Life Balance Intl., Inc."
+        },
+        {
+          "record_id": "K932050",
+          "endpoint": "510k",
+          "product_code": "QJQ",
+          "decision_date": "1995-06-05",
+          "device_name": "NH-2002",
+          "applicant": "New Horizon Health Care"
+        },
+        {
+          "record_id": "P100026",
+          "endpoint": "pma",
+          "product_code": "PFN",
+          "decision_date": "2020-02-20",
+          "device_name": "NeuroPace RNS System",
+          "applicant": "NeuroPace, Inc."
+        },
+        {
+          "record_id": "P160039",
+          "endpoint": "pma",
+          "product_code": "PSR",
+          "decision_date": "2017-12-21",
+          "device_name": "remede® System",
+          "applicant": "Respicardia"
+        },
+        {
+          "record_id": "P230024",
+          "endpoint": "pma",
+          "product_code": "JXK",
+          "decision_date": "2026-07-14",
+          "device_name": "Flow FL-100",
+          "applicant": "Flow Neuroscience AB"
+        },
+        {
+          "record_id": "P240012",
+          "endpoint": "pma",
+          "product_code": "SDL",
+          "decision_date": "2026-06-22",
+          "device_name": "AeroPace® System",
+          "applicant": "Lungpacer Medical USA, Inc."
+        },
+        {
+          "record_id": "P240039",
+          "endpoint": "pma",
+          "product_code": "SFJ",
+          "decision_date": "2025-07-30",
+          "device_name": "SetPoint System",
+          "applicant": "SetPoint Medical"
+        },
+        {
+          "record_id": "P250010",
+          "endpoint": "pma",
+          "product_code": "JXK",
+          "decision_date": "2025-12-31",
+          "device_name": "ProlivRx System",
+          "applicant": "Neurolief , Ltd."
+        },
+        {
+          "record_id": "P860026",
+          "endpoint": "pma",
+          "product_code": "GZE",
+          "decision_date": "1996-07-09",
+          "device_name": "DIAPHRAGMATIC PACEMAKER PHRENIC NERVE STIMULATOR",
+          "applicant": "Avery Biomedical Devices, Inc."
+        },
+        {
+          "record_id": "P960009",
+          "endpoint": "pma",
+          "product_code": "SGS",
+          "decision_date": "2025-11-22",
+          "device_name": "Medtronic DBS Therapy for Dystonia",
+          "applicant": "Medtronic, Inc."
+        },
+        {
+          "record_id": "P990040",
+          "endpoint": "pma",
+          "product_code": "KGG",
+          "decision_date": "2009-12-23",
+          "device_name": "TRUFILL N-BUTYL CYANOACRYLATE (N-BCA) LIQUID EMBOLIC SYSTEM",
+          "applicant": "Cerenovus, Inc."
+        }
+      ]
+    },
+    {
+      "query_family": "REGULATORY_PRODUCT_IDENTITY_SEARCH",
+      "query_id": "F2-FDA-IDENTITY-SEED-LOOKUP-v1",
+      "provider_id": "FDA_ACCESSDATA",
+      "http_method": "GET",
+      "lookup_mode": "EXACT_REGULATORY_ID",
+      "frozen_record_ids": [
+        "DEN250002",
+        "DEN250013",
+        "P150031",
+        "P230024"
+      ],
+      "frozen_record_count": 4,
+      "frozen_record_set_sha256": "7595a2b01525884e5914f83955f1156f898e4ac7a33e9070bcf6025550d3066b",
+      "official_locators": {
+        "P230024": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpma/pma.cfm?id=P230024",
+        "DEN250013": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/denovo.cfm?id=DEN250013",
+        "DEN250002": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/denovo.cfm?id=DEN250002",
+        "P150031": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpma/pma.cfm?id=P150031"
+      },
+      "prior_packet_observations": {
+        "packet_id": "RELEASE_A_A2_BOUNDED_TRANCHE_1_v1.0",
+        "packet_sha256": "0f5c6e9f83ca1e212d235dac82724ac146d63ed6db3b4abe6f8bd9f681595777",
+        "already_dispositioned_record_ids": [
+          "P230024",
+          "DEN250013",
+          "DEN250002"
+        ],
+        "remaining_record_ids": [
+          "P150031"
+        ]
+      },
+      "notes": "R1 identity lookups remain immutable evidence. Successor packets may cite them for cumulative exhaustion accounting without rewriting the prior packet."
+    }
+  ],
+  "bounded_exhaustion_rule": {
+    "requires_every_query_family_record_id_dispositioned": true,
+    "permits_prior_immutable_packet_credit_for_matching_record_ids": true,
+    "candidate_is_not_automatic_product_identity": true,
+    "global_completeness_claim_prohibited": true
+  },
+  "boundary": "F2/F3 exhaustion applies only to the frozen provider/query/pagination universes declared here. Regulatory and trial records are candidate source objects, not automatic NeuroAI PRODUCT identities. Exhaustion does not establish global completeness, unseen-population size, market share, effectiveness, commercialization, S2 publication authority, or v4.2 assessment effect."
+}
