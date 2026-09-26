@@ -150,6 +150,20 @@ gain, source-class gain, and an explicit substantive-conclusion-change
 statement. The key result is the measured exact-offering increment under the
 matched English versus English+native design, not a raw F8 hit count.
 
+For A5, engineers follow the frozen preregistration
+`RELEASE_A_A5_SNOWBALL_DISCOVERY_PREREGISTRATION.v1.0.json`. That artifact
+binds the controlled snowball edge taxonomy (product→organization;
+organization→other product; product→trial; product→regulatory;
+product→publication; product→distributor/procurement; product→related product;
+product→related capability query), parent-seed provenance rules, the
+`Y_r`/`D_r`/`X_r`/`U_r`/`m_r` metrics contract, marginal-yield decomposition
+dimensions, and the permitted stop descriptions **before** any round yield is
+computed or interpreted. Every generated object re-enters as a candidate; a
+snowball edge itself never establishes inclusion or canonical identity. F11
+remains the path-dependent diagnostic execution substrate and stays excluded
+from the primary unseen-population estimator. Freeze alone does not compute
+round metrics, allocate identity, or start A6+.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

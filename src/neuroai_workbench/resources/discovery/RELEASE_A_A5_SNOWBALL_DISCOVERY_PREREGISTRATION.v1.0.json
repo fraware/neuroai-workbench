@@ -1,0 +1,193 @@
+{
+  "preregistration_id": "RELEASE_A_A5_SNOWBALL_DISCOVERY_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "127e4ba8fb17ce071ad50a8ef628125031b6625bcda27f812bbaf26d8ca114ad",
+  "status": "FROZEN_v1.0",
+  "study_id": "RELEASE_A_A5_CONTROLLED_SNOWBALL_DISCOVERY_STUDY_v1.0",
+  "census_registered_at": "2026-09-26T15:00:00Z",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "open_world_round_protocol_id": "RELEASE_A_OPEN_WORLD_ROUND_PROTOCOL_v1.0",
+  "open_world_round_protocol_sha256": "43b610d8a6446011b47a0761c8a18f13bb00d6f8a5001742f30968851395a377",
+  "f11_query_universe_id": "RELEASE_A_F11_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "f11_query_universe_sha256": "d965a9395740bdf7bb75ed8b4c380b12760c28e31461c98af01b8b8f19a28488",
+  "f11_execution_packet_id": "RELEASE_A_A2_F11_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+  "f11_execution_packet_sha256": "e6da0402653a89bb1c55e61b630864271f80daa7d0a1f11cc38d451917d3e88a",
+  "a3_preregistration_id": "RELEASE_A_A3_CAPABILITY_RECALL_PREREGISTRATION_v1.0",
+  "a3_preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+  "a3_study_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "a3_study_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+  "a4_preregistration_id": "RELEASE_A_A4_MULTILINGUAL_SENSITIVITY_PREREGISTRATION_v1.0",
+  "a4_preregistration_sha256": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23",
+  "a4_study_id": "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY_v1.0",
+  "a4_study_sha256": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+  "predeclaration_rule": "Bind the controlled snowball edge taxonomy, parent-seed provenance rules, round metrics contract (Y_r, D_r, X_r, U_r, m_r), marginal-yield decomposition dimensions, and permitted stop descriptions before any A5 round yield is computed or interpreted. Post-hoc addition, deletion, or relabelling of edge types after seeing yield is prohibited. A snowball edge itself never establishes inclusion or canonical identity.",
+  "edge_taxonomy_set_id": "A5_CONTROLLED_SNOWBALL_EDGE_TAXONOMY_v1",
+  "edge_types": [
+    {
+      "edge_type_id": "PRODUCT_TO_ORGANIZATION",
+      "label": "Product to organization",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "ORGANIZATION",
+      "f11_query_family_binding": "PRODUCT_TO_ORGANIZATION",
+      "notes": "Parent seed must be a validated PRODUCT offering ID. Generated organization objects re-enter as candidates only."
+    },
+    {
+      "edge_type_id": "ORGANIZATION_TO_PRODUCT",
+      "label": "Organization to other product",
+      "parent_seed_class": "ORGANIZATION",
+      "generated_object_class": "PRODUCT_CANDIDATE",
+      "f11_query_family_binding": "ORGANIZATION_TO_PRODUCT",
+      "notes": "Organization expansion from a parent PRODUCT seed. Generated product objects re-enter as candidates; edge alone does not allocate canonical identity."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_TRIAL",
+      "label": "Product to trial",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "TRIAL_RECORD",
+      "f11_query_family_binding": "PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION",
+      "notes": "A5 reporting edge type; F11 execution substrate combines trial/regulatory/publication into PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_REGULATORY",
+      "label": "Product to regulatory record",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "REGULATORY_RECORD",
+      "f11_query_family_binding": "PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION",
+      "notes": "A5 reporting edge type; shares F11 PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION substrate with PRODUCT_TO_TRIAL and PRODUCT_TO_PUBLICATION."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_PUBLICATION",
+      "label": "Product to publication",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "PUBLICATION",
+      "f11_query_family_binding": "PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION",
+      "notes": "A5 reporting edge type; shares F11 PRODUCT_TO_TRIAL_REGULATORY_PUBLICATION substrate."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_DISTRIBUTOR",
+      "label": "Product to distributor or procurement record",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "DISTRIBUTOR_OR_PROCUREMENT",
+      "f11_query_family_binding": "PRODUCT_TO_DISTRIBUTOR",
+      "notes": "Distributor/procurement expansion under recorded parent PRODUCT seed."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_RELATED_PRODUCT",
+      "label": "Product to related or competitor product candidate",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "PRODUCT_CANDIDATE",
+      "f11_query_family_binding": "PRODUCT_TO_RELATED_PRODUCT",
+      "notes": "Related/competitor/alternative candidate expansion. Generated objects re-enter as candidates only."
+    },
+    {
+      "edge_type_id": "PRODUCT_TO_CAPABILITY_QUERY",
+      "label": "Product to related capability query",
+      "parent_seed_class": "PRODUCT",
+      "generated_object_class": "CAPABILITY_QUERY_CANDIDATE",
+      "f11_query_family_binding": "PRODUCT_TO_CAPABILITY_QUERY",
+      "notes": "Capability-query expansion from a parent PRODUCT seed; does not invent capability-family yield by implication."
+    }
+  ],
+  "parent_seed_rules": {
+    "every_edge_requires_parent_seed": true,
+    "parent_seed_must_be_among_permitted_edge_types": true,
+    "parent_seed_offering_id_required_when_parent_is_product": true,
+    "parent_seed_recorded_on_every_edge": true,
+    "snowball_edge_never_establishes_inclusion": true,
+    "generated_object_reenters_as_candidate": true,
+    "no_identity_allocation_by_implication": true,
+    "no_inclusion_from_edge_alone": true
+  },
+  "evidence_substrate": {
+    "controlled_snowball_frame_id": "F11",
+    "f11_is_path_dependent_diagnostic_frame": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "capture_estimation_eligible": false,
+    "identity_unit": "CANONICAL_PRODUCT_OFFERING",
+    "increment_requires_exact_offering_id": true,
+    "no_identity_allocation_by_implication": true,
+    "post_cutoff_include_requires_world_time_support_ref": true,
+    "minimum_rounds": [
+      "R1",
+      "R2",
+      "R3"
+    ]
+  },
+  "metrics_contract": {
+    "primary_round_metrics": [
+      "Y_r",
+      "D_r",
+      "X_r",
+      "U_r",
+      "m_r"
+    ],
+    "y_r_definition": "Y_r = count of new validated products in round r: distinct canonical PRODUCT offering IDs with INCLUDE_RESOLVED that are absent from the known-identity set entering the round. Never raw edge or hit counts.",
+    "d_r_definition": "D_r = duplicate candidates in round r: known-identity duplicates plus within-round INCLUDE_RESOLVED duplicates (same offering ID).",
+    "x_r_definition": "X_r = excluded candidates in round r: captures with outcome EXCLUDE.",
+    "u_r_definition": "U_r = unresolved candidates in round r: captures with outcome UNRESOLVED_IDENTITY.",
+    "candidates_r_definition": "Candidates_r = raw candidate count in round r (all captures dispositioned in that round).",
+    "m_r_definition": "m_r = Y_r / Candidates_r (marginal new-identity yield). Fail closed when Candidates_r is zero.",
+    "formula_m_r": "m_r = Y_r / Candidates_r",
+    "decomposition_dimensions": [
+      "SOURCE_FRAME",
+      "LANGUAGE",
+      "JURISDICTION",
+      "PRODUCT_CLASS",
+      "CAPABILITY_FAMILY",
+      "DISCOVERY_ROUND"
+    ],
+    "decomposition_policy": {
+      "by_source_frame": "Attribute marginal yield to the capture frame_id (F11 for controlled snowball substrate).",
+      "by_language": "Attribute using capture.language; fail closed to NOT_ATTRIBUTABLE when language is missing.",
+      "by_jurisdiction": "Attribute using capture.jurisdiction; fail closed to NOT_ATTRIBUTABLE when jurisdiction is missing.",
+      "by_product_class": "Attribute only when an exact product-class label is recorded on the candidate or known offering; otherwise NOT_ATTRIBUTABLE. Do not invent class from organization or edge type.",
+      "by_capability_family": "Attribute only when the edge binds PRODUCT_TO_CAPABILITY_QUERY and a frozen capability family is recorded; otherwise NOT_ATTRIBUTABLE.",
+      "by_discovery_round": "Attribute using capture.round_id (R1, R2, R3, …).",
+      "no_post_hoc_dimension_invention": true
+    },
+    "denominator_rules": {
+      "raw_edges_are_not_validated_products": true,
+      "only_include_resolved_exact_offering_ids_enter_y_r": true,
+      "unresolved_borderline_abstain_exclude_do_not_inflate_y_r": true,
+      "known_a1_overlaps_are_duplicates_not_new_validated_products": true
+    }
+  },
+  "permitted_stop_descriptions": [
+    "SATURATION_UNDER_DECLARED_PROTOCOL",
+    "BUDGET_COVERAGE_TERMINATION",
+    "BOUNDED_SOURCE_EXHAUSTION",
+    "UNRESOLVED_SOURCE_BARRIER"
+  ],
+  "stop_semantics": {
+    "stop_never_means_global_completeness": true,
+    "forbidden_completeness_claims": [
+      "every relevant product worldwide has been found",
+      "global product census complete",
+      "no further products exist"
+    ],
+    "f11_marginal_yield_rule_bound": true,
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20
+  },
+  "execution_gate": {
+    "requires_frozen_preregistration_before_yield": true,
+    "requires_parent_seed_on_every_edge": true,
+    "freeze_alone_does_not_compute_round_metrics": true,
+    "does_not_start_a6_or_later": true,
+    "does_not_mutate_rau": true,
+    "does_not_allocate_canonical_identity": true,
+    "snowball_edge_never_establishes_inclusion": true,
+    "post_hoc_edge_taxonomy_edits_prohibited": true,
+    "f7_f9_f11_remain_estimator_excluded": true
+  },
+  "boundary": "A5 controlled snowball discovery preregistration freezes the edge taxonomy, parent-seed provenance rules, Y_r/D_r/X_r/U_r/m_r metrics contract, marginal-yield decomposition dimensions, and permitted stop descriptions under the A2 analysis universe before yield interpretation. It does not establish global completeness, market share, effectiveness, unseen-population size, commercialization, S2 publication authority, or v4.2 assessment effect. A snowball edge never establishes inclusion or canonical PRODUCT identity. Freeze alone does not compute round metrics. F11 remains estimator-excluded."
+}
