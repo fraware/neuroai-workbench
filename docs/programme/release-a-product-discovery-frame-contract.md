@@ -142,6 +142,14 @@ metrics include unique-product gain, false-positive / unresolved / duplicate
 rates, capability gain, and source-class gain. Freeze alone does not compute
 `ΔN_multilingual`, allocate identity, or start A5+.
 
+Executed A4 results are recorded in
+`RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY.v1.0.json`, which binds
+the preregistration digest, language-strata digest `25010299…`, F1–F6+F8
+source-packet digests, measured `ΔN_multilingual`, companion rates, capability
+gain, source-class gain, and an explicit substantive-conclusion-change
+statement. The key result is the measured exact-offering increment under the
+matched English versus English+native design, not a raw F8 hit count.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
