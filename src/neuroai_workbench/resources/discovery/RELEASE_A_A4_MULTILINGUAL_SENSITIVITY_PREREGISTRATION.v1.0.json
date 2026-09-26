@@ -1,0 +1,162 @@
+{
+  "preregistration_id": "RELEASE_A_A4_MULTILINGUAL_SENSITIVITY_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23",
+  "status": "FROZEN_v1.0",
+  "study_id": "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY_v1.0",
+  "census_registered_at": "2026-09-26T14:00:00Z",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "language_jurisdiction_strata_id": "RELEASE_A_LANGUAGE_JURISDICTION_STRATA_v1.0",
+  "language_jurisdiction_strata_sha256": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "f8_round_protocol_id": "RELEASE_A_F8_ROUND_PROTOCOL_v1.0",
+  "f8_round_protocol_sha256": "fb4893f9512471919dcdd5a1d91456805ce0c62d23804e4ac0a1dc57dc8a787e",
+  "f8_query_universe_id": "RELEASE_A_F8_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "f8_query_universe_sha256": "0e9ef6155520225ef9826ffb6fdfe89b85df3c706be47e1a5c8a4edea7486fe2",
+  "a3_preregistration_id": "RELEASE_A_A3_CAPABILITY_RECALL_PREREGISTRATION_v1.0",
+  "a3_preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+  "a3_study_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "a3_study_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+  "predeclaration_rule": "Bind the frozen EN_PLUS_PRIORITY_NATIVE_v1 language/jurisdiction strata (digest 25010299…) and the matched English versus English+native protocol/metrics contract before any A4 yield difference is computed or interpreted. Do not choose, add, drop, or relabel languages or strata because they looked fruitful during exploratory or F8 work. Post-hoc language selection after seeing ΔN_multilingual is prohibited.",
+  "matched_protocol_set_id": "A4_MATCHED_EN_VS_EN_PLUS_NATIVE_v1",
+  "matched_arms": [
+    {
+      "arm_id": "S_ENGLISH",
+      "label": "Matched English discovery arm",
+      "frame_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6"
+      ],
+      "language_mode": "ENGLISH_CONVENTIONAL_AND_CAPABILITY",
+      "notes": "English-language discovery substrate under the frozen A2 analysis universe. Includes conventional (F1–F5) and capability-expanded (F6) English routes already measured under A3. Does not include F8 native-language routes."
+    },
+    {
+      "arm_id": "S_ENGLISH_PLUS_NATIVE",
+      "label": "Matched English+native discovery arm",
+      "frame_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F8"
+      ],
+      "language_mode": "ENGLISH_PLUS_PRIORITY_NATIVE",
+      "notes": "English arm plus the controlled local-language frame F8 under frozen strata EN_PLUS_PRIORITY_NATIVE_v1. Native routes are attributable only through F8 captures bound to predeclared strata."
+    }
+  ],
+  "native_arm": {
+    "arm_id": "S_NATIVE_F8",
+    "frame_ids": [
+      "F8"
+    ],
+    "controlled_local_language_frame": true,
+    "query_families": [
+      "NATIVE_LANGUAGE_CATEGORY",
+      "NATIVE_LANGUAGE_CAPABILITY",
+      "LOCAL_PRODUCT_SOURCE"
+    ],
+    "source_classes": [
+      "LOCAL_LANGUAGE_PUBLIC",
+      "LOCAL_REGULATORY_OR_INSTITUTIONAL",
+      "MANUFACTURER_VENDOR_OFFICIAL"
+    ]
+  },
+  "bound_stratum_ids": [
+    "LL-ES-ES",
+    "LL-DE-DE-AT",
+    "LL-FR-FR",
+    "LL-ZH-CN",
+    "LL-JA-JP",
+    "LL-HE-IL",
+    "LL-SV-SE"
+  ],
+  "evidence_substrate": {
+    "english_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "native_frame_ids": [
+      "F8"
+    ],
+    "english_plus_native_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8"
+    ],
+    "f8_is_controlled_local_language_frame": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "f10_patent_leads_are_not_products": true,
+    "identity_unit": "CANONICAL_PRODUCT_OFFERING",
+    "increment_requires_exact_offering_id": true,
+    "no_identity_allocation_by_implication": true,
+    "no_post_hoc_language_selection": true
+  },
+  "metrics_contract": {
+    "primary_estimand_id": "DELTA_N_MULTILINGUAL",
+    "formula": "DELTA_N_MULTILINGUAL = N_ENGLISH_PLUS_NATIVE - N_ENGLISH",
+    "n_english_definition": "Cardinality of the set of distinct canonical PRODUCT offering IDs with at least one INCLUDE_RESOLVED capture under english_frame_ids (F1–F6), after exact-product deduplication, under the frozen analysis universe and cutoffs.",
+    "n_english_plus_native_definition": "Cardinality of the set of distinct canonical PRODUCT offering IDs with at least one INCLUDE_RESOLVED capture under english_plus_native_frame_ids (F1–F6+F8), after exact-product deduplication, under the same universe and cutoffs.",
+    "delta_n_multilingual_definition": "N_ENGLISH_PLUS_NATIVE minus N_ENGLISH. Equals the count of exact offering IDs recovered in the English+native arm that are absent from the English arm. Never raw search-hit counts.",
+    "stratum_estimand_id": "DELTA_J",
+    "stratum_formula": "DELTA_J = N_J_ENGLISH_PLUS_NATIVE - N_J_ENGLISH",
+    "stratum_definition": "For each bound stratum_id in the frozen EN_PLUS_PRIORITY_NATIVE_v1 design, compute the exact-offering increment attributable to adding native-language discovery for that stratum. Stratum membership follows the frozen language_code and matched_jurisdictions; do not invent post-hoc strata.",
+    "required_companion_metrics": [
+      "UNIQUE_PRODUCT_GAIN",
+      "FALSE_POSITIVE_RATE",
+      "UNRESOLVED_RATE",
+      "DUPLICATE_RATE",
+      "CAPABILITY_GAIN",
+      "SOURCE_CLASS_GAIN"
+    ],
+    "unique_product_gain_definition": "Identical to DELTA_N_MULTILINGUAL: unique exact-offering gain attributable to adding native-language discovery to matched English discovery.",
+    "false_positive_rate_definition": "Among raw candidates in the native arm (F8), the share with outcome EXCLUDE (error/false-positive relative to the frozen product boundary). Reported separately from BORDERLINE/ABSTAIN.",
+    "unresolved_rate_definition": "Among raw candidates in the native arm (F8), the share with outcome UNRESOLVED_IDENTITY.",
+    "duplicate_rate_definition": "Among raw candidates in the native arm (F8), the share that are known-identity duplicates or within-round duplicates (not new exact offerings).",
+    "capability_gain_definition": "Count of exact offering IDs uniquely recovered through F8 query family NATIVE_LANGUAGE_CAPABILITY that are absent from the English arm. Fail closed: zero when no such INCLUDE_RESOLVED IDs exist.",
+    "source_class_gain_definition": "Per F8 source_class, the count of exact offering IDs uniquely recovered through that source class that are absent from the English arm. Fail closed per class.",
+    "stratification_policy": {
+      "by_frozen_language_stratum": "Report DELTA_J and companion metrics for each bound_stratum_id. When a stratum has no INCLUDE_RESOLVED offering in either arm that is attributable under frozen language/jurisdiction matching, mark stratum NOT_DEFENSIBLE for jurisdiction-attributable counts while still reporting the native-arm raw companion rates.",
+      "no_post_hoc_stratum_invention": true,
+      "no_post_hoc_language_selection": true,
+      "languages_not_selected_for_yield": true
+    },
+    "denominator_rules": {
+      "raw_search_hits_are_not_the_increment_unit": true,
+      "only_include_resolved_exact_offering_ids_enter_n_counts": true,
+      "unresolved_borderline_abstain_exclude_do_not_inflate_delta_n": true,
+      "known_a1_overlaps_are_duplicates_not_unique_gain": true
+    },
+    "substantive_conclusion_change_rule": "The final report must state explicitly which substantive conclusions changed once native-language discovery was added, or state that no substantive conclusion changed when DELTA_N_MULTILINGUAL and all stratum DELTA_J values are zero under fail-closed exact-offering accounting."
+  },
+  "execution_gate": {
+    "requires_frozen_preregistration_before_yield": true,
+    "requires_frozen_language_jurisdiction_strata": true,
+    "freeze_alone_does_not_compute_delta_n": true,
+    "does_not_start_a5_or_later": true,
+    "does_not_mutate_rau": true,
+    "does_not_allocate_canonical_identity": true,
+    "post_hoc_language_selection_prohibited": true,
+    "post_hoc_stratum_edits_prohibited": true
+  },
+  "boundary": "A4 multilingual coverage sensitivity preregistration freezes the matched English versus English+native protocol and metrics contract under the frozen EN_PLUS_PRIORITY_NATIVE_v1 language/jurisdiction strata before yield interpretation. It does not establish global completeness, market share, effectiveness, unseen-population size, commercialization, S2 publication authority, or v4.2 assessment effect. Freeze alone does not compute ΔN_multilingual or allocate canonical PRODUCT identity. Languages are not chosen because they looked fruitful during exploratory work."
+}
