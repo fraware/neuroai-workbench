@@ -41,6 +41,7 @@ from neuroai_workbench.product_discovery_frames import (
     DEFAULT_ANALYSIS_UNIVERSE_ID,
     FRAME_REGISTER_VERSION,
     ProductDiscoveryError,
+    identity_set_digest,
 )
 
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
@@ -420,3 +421,308 @@ def validate_a5_snowball_discovery_preregistration(prereg: Mapping[str, Any]) ->
         raise ProductDiscoveryError("predeclaration_rule must forbid post-hoc edge taxonomy edits")
     if "never establishes inclusion" not in rule and "never establish inclusion" not in rule:
         raise ProductDiscoveryError("predeclaration_rule must state that a snowball edge never establishes inclusion")
+
+
+A5_STUDY_RESOURCE = "RELEASE_A_A5_CONTROLLED_SNOWBALL_DISCOVERY_STUDY.v1.0.json"
+A5_STUDY_PACKET_ID = "RELEASE_A_A5_CONTROLLED_SNOWBALL_DISCOVERY_STUDY_v1.0"
+A5_STUDY_PACKET_SHA256 = "b8279338c577c54fc5674c08324b95272a20e992a8240b11f7d542cbc55c3cbd"
+
+A5_STUDY_BOUNDARY = (
+    "Repository-safe A5 controlled snowball discovery study under the frozen A5 "
+    "preregistration and F11 diagnostic substrate. Y_r counts only new exact canonical "
+    "PRODUCT offering IDs. A snowball edge never establishes inclusion or identity. No "
+    "global completeness, market share, effectiveness, unseen-population size, S2 "
+    "publication authority, or v4.2 assessment effect. Does not execute A6+."
+)
+
+KNOWN_OFFERING_IDS = (
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE",
+)
+
+EXPECTED_ROUND_METRICS = (
+    {"round_id": "R1", "Y_r": 0, "D_r": 15, "X_r": 0, "U_r": 4, "Candidates_r": 40, "m_r": 0.0},
+    {"round_id": "R2", "Y_r": 0, "D_r": 15, "X_r": 0, "U_r": 4, "Candidates_r": 40, "m_r": 0.0},
+    {"round_id": "R3", "Y_r": 0, "D_r": 15, "X_r": 0, "U_r": 4, "Candidates_r": 40, "m_r": 0.0},
+)
+
+DECOMPOSITION_KEYS = (
+    "by_source_frame",
+    "by_language",
+    "by_jurisdiction",
+    "by_product_class",
+    "by_capability_family",
+    "by_discovery_round",
+)
+
+
+def load_default_a5_snowball_discovery_study() -> dict[str, Any]:
+    """Load the frozen A5 controlled snowball discovery study packet."""
+
+    packet = _load_resource(A5_STUDY_RESOURCE)
+    validate_a5_snowball_discovery_study(packet)
+    if packet["packet_sha256"] != A5_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("Loaded A5 study digest drifted from frozen A5_STUDY_PACKET_SHA256")
+    return packet
+
+
+def validate_a5_snowball_discovery_study(packet: Mapping[str, Any]) -> None:
+    """Validate the executed A5 snowball study against the frozen preregistration."""
+
+    required = (
+        "packet_id",
+        "packet_sha256",
+        "status",
+        "assembled_on",
+        "study_id",
+        "preregistration_id",
+        "preregistration_sha256",
+        "analysis_universe_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+        "a2_checkpoint_id",
+        "a2_checkpoint_sha256",
+        "round_start_known_identity_ids",
+        "round_start_known_identity_set_sha256",
+        "final_known_identity_ids",
+        "final_known_identity_set_sha256",
+        "language_scope_id",
+        "edge_taxonomy_set_id",
+        "open_world_round_protocol_id",
+        "open_world_round_protocol_sha256",
+        "f11_query_universe_id",
+        "f11_query_universe_sha256",
+        "f11_execution_packet_id",
+        "f11_execution_packet_sha256",
+        "a4_study_id",
+        "a4_study_sha256",
+        "evidence_substrate_bindings",
+        "round_metrics",
+        "edge_provenance_summary",
+        "edge_provenance_ledger",
+        "marginal_yield_decomposition",
+        "marginal_yield_by_f11_query_family",
+        "stop_state_evidence",
+        "new_canonical_allocations",
+        "authority_controls",
+        "key_result",
+        "next_required_state",
+        "boundary",
+    )
+    missing = [field for field in required if field not in packet]
+    if missing:
+        raise ProductDiscoveryError("A5 study packet missing fields: " + ", ".join(missing))
+
+    if packet["packet_id"] != A5_STUDY_PACKET_ID:
+        raise ProductDiscoveryError(f"packet_id must be {A5_STUDY_PACKET_ID}")
+    if packet["status"] != "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE":
+        raise ProductDiscoveryError("status must be CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE")
+    if packet["study_id"] != A5_STUDY_ID:
+        raise ProductDiscoveryError(f"study_id must be {A5_STUDY_ID}")
+    if content_digest(packet, exclude="packet_sha256") != packet["packet_sha256"]:
+        raise ProductDiscoveryError("packet_sha256 does not match content digest")
+    if packet["preregistration_id"] != A5_PREREG_ID:
+        raise ProductDiscoveryError("preregistration_id must equal frozen A5 preregistration")
+    if packet["preregistration_sha256"] != A5_PREREG_SHA256:
+        raise ProductDiscoveryError("preregistration_sha256 must equal frozen A5 preregistration digest")
+    if packet["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id must equal the frozen A2 analysis universe")
+    if packet["world_time_cutoff"] != A2_WORLD_TIME_CUTOFF:
+        raise ProductDiscoveryError("world_time_cutoff must equal the frozen A2 world cutoff")
+    if packet["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("knowledge_time_cutoff must equal the frozen A2 knowledge cutoff")
+    if packet["a2_checkpoint_id"] != CHECKPOINT_ID:
+        raise ProductDiscoveryError("a2_checkpoint_id must equal the frozen A2 checkpoint")
+    if packet["a2_checkpoint_sha256"] != CHECKPOINT_SHA256:
+        raise ProductDiscoveryError("a2_checkpoint_sha256 must equal the frozen A2 checkpoint")
+    if packet["round_start_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("round_start_known_identity_set_sha256 must equal the A1 known-identity digest")
+    if packet["final_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("final_known_identity_set_sha256 must equal the A1 known-identity digest")
+    if packet["language_scope_id"] != LANGUAGE_SCOPE_ID:
+        raise ProductDiscoveryError("language_scope_id must be EN_PLUS_PRIORITY_NATIVE_v1")
+    if packet["edge_taxonomy_set_id"] != EDGE_TAXONOMY_SET_ID:
+        raise ProductDiscoveryError("edge_taxonomy_set_id mismatch")
+    if packet["open_world_round_protocol_id"] != PROTOCOL_ID:
+        raise ProductDiscoveryError("open_world_round_protocol_id must equal the frozen open-world protocol")
+    if packet["open_world_round_protocol_sha256"] != PROTOCOL_SHA256:
+        raise ProductDiscoveryError("open_world_round_protocol_sha256 must equal the frozen open-world protocol digest")
+    if packet["f11_query_universe_id"] != UNIVERSE_IDS["F11"]:
+        raise ProductDiscoveryError("f11_query_universe_id must equal the frozen F11 universe")
+    if packet["f11_query_universe_sha256"] != UNIVERSE_SHA256["F11"]:
+        raise ProductDiscoveryError("f11_query_universe_sha256 must equal the frozen F11 universe digest")
+    if packet["f11_execution_packet_id"] != F11_PACKET_ID:
+        raise ProductDiscoveryError("f11_execution_packet_id must equal the frozen F11 execution packet")
+    if packet["f11_execution_packet_sha256"] != F11_PACKET_SHA256:
+        raise ProductDiscoveryError("f11_execution_packet_sha256 must equal the frozen F11 packet digest")
+    if packet["a4_study_id"] != A4_STUDY_ID:
+        raise ProductDiscoveryError("a4_study_id must equal frozen A4 study")
+    if packet["a4_study_sha256"] != A4_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a4_study_sha256 must equal frozen A4 study digest")
+    if packet["boundary"] != A5_STUDY_BOUNDARY:
+        raise ProductDiscoveryError("boundary text drift")
+
+    start_ids = [
+        str(item) for item in _require_list(packet["round_start_known_identity_ids"], "round_start_known_identity_ids")
+    ]
+    final_ids = [str(item) for item in _require_list(packet["final_known_identity_ids"], "final_known_identity_ids")]
+    if tuple(sorted(start_ids)) != KNOWN_OFFERING_IDS:
+        raise ProductDiscoveryError("round_start_known_identity_ids must equal the frozen A1 six offering set")
+    if tuple(sorted(final_ids)) != KNOWN_OFFERING_IDS:
+        raise ProductDiscoveryError("final_known_identity_ids must equal the frozen A1 six offering set")
+    if identity_set_digest(start_ids) != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("round_start_known_identity_ids digest drift")
+    if identity_set_digest(final_ids) != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("final_known_identity_ids digest drift")
+    if int(packet["new_canonical_allocations"]) != 0:
+        raise ProductDiscoveryError("new_canonical_allocations must be 0")
+
+    substrate = _require_mapping(packet["evidence_substrate_bindings"], "evidence_substrate_bindings")
+    if substrate.get("controlled_snowball_frame_id") != "F11":
+        raise ProductDiscoveryError("controlled_snowball_frame_id must be F11")
+    sources = _require_list(substrate.get("source_packets"), "source_packets")
+    if len(sources) != 1:
+        raise ProductDiscoveryError("source_packets must bind exactly the F11 execution packet")
+    source = _require_mapping(sources[0], "F11 source packet")
+    if source.get("frame_id") != "F11":
+        raise ProductDiscoveryError("source packet frame_id must be F11")
+    if source.get("packet_sha256") != F11_PACKET_SHA256:
+        raise ProductDiscoveryError("F11 source packet digest drift")
+    if int(source.get("new_validated_product_count", -1)) != 0:
+        raise ProductDiscoveryError("new_validated_product_count must be 0")
+
+    rounds = _require_list(packet["round_metrics"], "round_metrics")
+    if len(rounds) != 3:
+        raise ProductDiscoveryError("round_metrics must contain exactly R1–R3")
+    for expected, row in zip(EXPECTED_ROUND_METRICS, rounds, strict=True):
+        mapping = _require_mapping(row, "round_metrics row")
+        for key, value in expected.items():
+            if key == "m_r":
+                observed_m = mapping.get(key)
+                if not isinstance(observed_m, (int, float)) or float(observed_m) != value:
+                    raise ProductDiscoveryError(f"round {expected['round_id']} {key} mismatch")
+            elif mapping.get(key) != value:
+                raise ProductDiscoveryError(f"round {expected['round_id']} {key} mismatch")
+        computed = compute_round_metrics(
+            y_r=int(mapping["Y_r"]),
+            d_r=int(mapping["D_r"]),
+            x_r=int(mapping["X_r"]),
+            u_r=int(mapping["U_r"]),
+            candidates_r=int(mapping["Candidates_r"]),
+        )
+        if float(mapping["m_r"]) != computed["m_r"]:
+            raise ProductDiscoveryError(f"round {expected['round_id']} m_r does not equal Y_r/Candidates_r")
+        if int(mapping["D_r"]) != int(mapping["known_identity_duplicate_count"]) + int(
+            mapping["within_round_duplicate_count"]
+        ):
+            raise ProductDiscoveryError(f"round {expected['round_id']} D_r must equal known+within-round duplicates")
+
+    summary = _require_mapping(packet["edge_provenance_summary"], "edge_provenance_summary")
+    if int(summary["edge_count"]) != 120:
+        raise ProductDiscoveryError("edge_count must be 120")
+    if int(summary["edges_with_parent_seed"]) != 120:
+        raise ProductDiscoveryError("edges_with_parent_seed must equal edge_count")
+    if int(summary["edges_missing_parent_seed"]) != 0:
+        raise ProductDiscoveryError("edges_missing_parent_seed must be 0")
+    if int(summary["edges_establishing_inclusion"]) != 0:
+        raise ProductDiscoveryError("edges_establishing_inclusion must be 0")
+    if not _require_bool(summary.get("all_parents_among_a1_known_identities"), "all_parents_among_a1_known_identities"):
+        raise ProductDiscoveryError("all_parents_among_a1_known_identities must be true")
+    if int(summary["candidate_reentry_count"]) != 120:
+        raise ProductDiscoveryError("candidate_reentry_count must equal edge_count")
+
+    ledger = _require_list(packet["edge_provenance_ledger"], "edge_provenance_ledger")
+    if len(ledger) != 120:
+        raise ProductDiscoveryError("edge_provenance_ledger must contain 120 edges")
+    known = set(KNOWN_OFFERING_IDS)
+    for row in ledger:
+        mapping = _require_mapping(row, "edge ledger row")
+        parent = _require_str(mapping.get("parent_seed_offering_id"), "parent_seed_offering_id")
+        if parent not in known:
+            raise ProductDiscoveryError("parent_seed_offering_id must be among A1 known identities")
+        if not _require_bool(mapping.get("candidate_reentered"), "candidate_reentered"):
+            raise ProductDiscoveryError("candidate_reentered must be true")
+        if mapping.get("edge_establishes_inclusion") is not False:
+            raise ProductDiscoveryError("edge_establishes_inclusion must be false")
+        family = _require_str(mapping.get("f11_query_family"), "f11_query_family")
+        if family not in set(F11_QUERY_FAMILY_BINDINGS.values()):
+            raise ProductDiscoveryError(f"unexpected f11_query_family {family}")
+
+    decomp = _require_mapping(packet["marginal_yield_decomposition"], "marginal_yield_decomposition")
+    for key in DECOMPOSITION_KEYS:
+        rows = _require_list(decomp.get(key), key)
+        if not rows:
+            raise ProductDiscoveryError(f"{key} must be non-empty")
+        for row in rows:
+            mapping = _require_mapping(row, f"{key} row")
+            _require_str(mapping.get("dimension_value"), "dimension_value")
+            if int(mapping.get("Y_total", -1)) != 0:
+                raise ProductDiscoveryError(f"{key} Y_total must be 0 under measured A5 evidence")
+            if float(mapping.get("m", -1.0)) != 0.0:
+                raise ProductDiscoveryError(f"{key} m must be 0.0 under measured A5 evidence")
+
+    families = _require_list(packet["marginal_yield_by_f11_query_family"], "marginal_yield_by_f11_query_family")
+    if len(families) != 6:
+        raise ProductDiscoveryError("marginal_yield_by_f11_query_family must cover all six F11 query families")
+    for row in families:
+        mapping = _require_mapping(row, "family yield row")
+        if int(mapping.get("Y_total", -1)) != 0:
+            raise ProductDiscoveryError("family Y_total must be 0")
+        if float(mapping.get("m", -1.0)) != 0.0:
+            raise ProductDiscoveryError("family m must be 0.0")
+
+    stop = _require_mapping(packet["stop_state_evidence"], "stop_state_evidence")
+    if stop.get("final_stop_state") != "SATURATION_UNDER_DECLARED_PROTOCOL":
+        raise ProductDiscoveryError("final_stop_state must be SATURATION_UNDER_DECLARED_PROTOCOL")
+    if stop.get("final_stop_state") not in PERMITTED_STOP_DESCRIPTIONS:
+        raise ProductDiscoveryError("final_stop_state must be a permitted stop description")
+    if not _require_bool(stop.get("permitted"), "permitted"):
+        raise ProductDiscoveryError("stop_state_evidence.permitted must be true")
+    if stop.get("f11_packet_final_stop_state") != "SATURATION_UNDER_DECLARED_PROTOCOL":
+        raise ProductDiscoveryError("f11_packet_final_stop_state must match F11 packet")
+    if not _require_bool(
+        stop.get("each_qualifying_round_raw_candidates_gte_20"),
+        "each_qualifying_round_raw_candidates_gte_20",
+    ):
+        raise ProductDiscoveryError("each_qualifying_round_raw_candidates_gte_20 must be true")
+    if not _require_bool(stop.get("each_qualifying_round_m_r_lte_0_05"), "each_qualifying_round_m_r_lte_0_05"):
+        raise ProductDiscoveryError("each_qualifying_round_m_r_lte_0_05 must be true")
+    interpretation = _require_str(stop.get("interpretation"), "stop interpretation").lower()
+    if "worldwide" in interpretation and "not proof" not in interpretation and "not" not in interpretation:
+        raise ProductDiscoveryError("stop interpretation must refuse global-completeness claims")
+
+    controls = _require_mapping(packet["authority_controls"], "authority_controls")
+    for flag in (
+        "no_identity_allocation_by_implication",
+        "no_inclusion_from_edge_alone",
+        "snowball_edge_never_establishes_inclusion",
+        "generated_object_reenters_as_candidate",
+        "increments_only_on_exact_offering_ids",
+        "f7_f9_f11_estimator_excluded",
+        "post_cutoff_include_requires_world_time_support_ref",
+        "rau_not_mutated",
+        "stop_never_means_global_completeness",
+    ):
+        if not _require_bool(controls.get(flag), flag):
+            raise ProductDiscoveryError(f"{flag} must be true")
+
+    key_result = _require_mapping(packet["key_result"], "key_result")
+    if key_result.get("headline") != "CONTROLLED_SNOWBALL_ROUND_METRICS":
+        raise ProductDiscoveryError("key_result.headline must be CONTROLLED_SNOWBALL_ROUND_METRICS")
+    if int(key_result.get("total_Y", -1)) != 0:
+        raise ProductDiscoveryError("key_result.total_Y must be 0")
+    if key_result.get("final_stop_state") != "SATURATION_UNDER_DECLARED_PROTOCOL":
+        raise ProductDiscoveryError("key_result.final_stop_state mismatch")
+    key_rounds = _require_list(key_result.get("rounds"), "key_result.rounds")
+    if len(key_rounds) != 3:
+        raise ProductDiscoveryError("key_result.rounds must contain R1–R3")
+
+    next_state = str(packet["next_required_state"])
+    if "A6" not in next_state:
+        raise ProductDiscoveryError("next_required_state must gate A6 next")
+    if "not A7" not in next_state and "not A7–A8" not in next_state:
+        raise ProductDiscoveryError("next_required_state must keep A7+ out of scope")
