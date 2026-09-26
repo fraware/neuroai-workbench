@@ -231,6 +231,16 @@ explicit unresolved-candidate register. Headline counts name denominators and
 population views. The package preserves A7 fail-closed (`N_estimated` remains
 null) and does not start A-G.
 
+Before A-G reconstruction execution, engineers freeze
+`RELEASE_A_AG_RECONSTRUCTION_PROTOCOL.v1.0.json`. That protocol binds the exact
+A8 package digest, the twelve reconstruction fields (counted object, exact
+identity, source observations, source frames, language/jurisdiction scope,
+world/knowledge cutoffs, discovery stopping rule, observed versus estimated,
+model assumptions, uncertainty, unresolved evidence, publication authority),
+and the required headlines including at least one frame stop-state claim.
+Freeze alone does not emit a PASSED or UNPASSED A-G outcome and does not
+authorize Release B/C/D.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
