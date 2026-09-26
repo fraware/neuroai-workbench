@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from copy import deepcopy
 from typing import Any
 
 import pytest
@@ -83,7 +82,10 @@ def test_load_rejects_constant_digest_drift(monkeypatch: pytest.MonkeyPatch) -> 
         (lambda p: p.__setitem__("d4_working_include_declared", 1), "d4_working_include_declared"),
         (lambda p: p.__setitem__("d4_working_total_declared", 1), "d4_working_total_declared"),
         (lambda p: p.__setitem__("observed_offering_ids", ["PRD-X"]), "observed_offering_ids"),
-        (lambda p: p.__setitem__("required_reconstruction_fields", ["counted_object"]), "required_reconstruction_fields"),
+        (
+            lambda p: p.__setitem__("required_reconstruction_fields", ["counted_object"]),
+            "required_reconstruction_fields",
+        ),
         (lambda p: p.__setitem__("required_headline_ids", ["N_OBSERVED_A_P1"]), "required_headline_ids"),
         (lambda p: p.__setitem__("boundary", "drift"), "boundary text drift"),
         (
@@ -109,9 +111,7 @@ def test_load_rejects_constant_digest_drift(monkeypatch: pytest.MonkeyPatch) -> 
             "mixed_universe_is_rejected must be true",
         ),
         (
-            lambda p: p["fail_closed_rules"].__setitem__(
-                "estimator_contamination_f7_f9_f11_is_rejected", False
-            ),
+            lambda p: p["fail_closed_rules"].__setitem__("estimator_contamination_f7_f9_f11_is_rejected", False),
             "estimator_contamination_f7_f9_f11_is_rejected must be true",
         ),
         (

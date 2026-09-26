@@ -222,13 +222,15 @@ def validate_ag_reconstruction_protocol(protocol: Mapping[str, Any]) -> None:
         UNRESOLVED_CANDIDATE_COUNT
     ):
         raise ProductDiscoveryError("unresolved_candidate_count_declared drift")
-    if _require_int(protocol["d4_working_include_declared"], "d4_working_include_declared") != D4_WORKING_DISTRIBUTION[
-        "INCLUDE"
-    ]:
+    if (
+        _require_int(protocol["d4_working_include_declared"], "d4_working_include_declared")
+        != D4_WORKING_DISTRIBUTION["INCLUDE"]
+    ):
         raise ProductDiscoveryError("d4_working_include_declared drift")
-    if _require_int(protocol["d4_working_total_declared"], "d4_working_total_declared") != D4_WORKING_DISTRIBUTION[
-        "TOTAL"
-    ]:
+    if (
+        _require_int(protocol["d4_working_total_declared"], "d4_working_total_declared")
+        != D4_WORKING_DISTRIBUTION["TOTAL"]
+    ):
         raise ProductDiscoveryError("d4_working_total_declared drift")
     if tuple(protocol["observed_offering_ids"]) != OBSERVED_OFFERING_IDS:
         raise ProductDiscoveryError("observed_offering_ids drift")
@@ -249,9 +251,7 @@ def validate_ag_reconstruction_protocol(protocol: Mapping[str, Any]) -> None:
         _require_str(binding.get("a8_component_path"), f"{headline_id}.a8_component_path")
         _require_str(binding.get("upstream_digest_field"), f"{headline_id}.upstream_digest_field")
         _require_str(binding.get("expected_value_description"), f"{headline_id}.expected_value_description")
-        field_checklist = _require_list(
-            binding.get("required_fields"), f"{headline_id}.required_fields"
-        )
+        field_checklist = _require_list(binding.get("required_fields"), f"{headline_id}.required_fields")
         if tuple(field_checklist) != REQUIRED_RECONSTRUCTION_FIELDS:
             raise ProductDiscoveryError(f"{headline_id} must require all twelve reconstruction fields")
 
@@ -271,7 +271,9 @@ def validate_ag_reconstruction_protocol(protocol: Mapping[str, Any]) -> None:
     excluded = _require_list(exclusion.get("excluded_frame_ids"), "excluded_frame_ids")
     if set(excluded) != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS:
         raise ProductDiscoveryError("estimator exclusion must be exactly F7/F9/F11")
-    if not _require_bool(exclusion.get("reject_primary_estimator_contamination"), "reject_primary_estimator_contamination"):
+    if not _require_bool(
+        exclusion.get("reject_primary_estimator_contamination"), "reject_primary_estimator_contamination"
+    ):
         raise ProductDiscoveryError("reject_primary_estimator_contamination must be true")
 
     gate = _require_mapping(protocol["execution_gate"], "execution_gate")
