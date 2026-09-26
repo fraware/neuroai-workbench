@@ -211,6 +211,17 @@ preregistered acceptance criteria. Under the current sparse eligible capture
 table the admissible outcome is fail-closed with no headline unseen-population
 estimate. The report does not start A8 / A-G.
 
+Before A8 package materialization, engineers freeze
+`RELEASE_A_A8_PACKAGE_MANIFEST_CONTRACT.v1.0.json`. That contract binds the
+required Release-A package components, claim-class separations (observed fact /
+derived quantitative result / bounded inference / policy interpretation),
+forbidden claim classes (including market share, comparative effectiveness,
+national leadership, invented `N_estimated`, F9-exhaustion-as-global-completeness,
+and open-world-saturation-as-census), headline denominator/population-view rules,
+D4 version/working-summary binding only, and exact upstream digests through A7.
+Freeze alone does not emit the Product Population Release Package or start A-G.
+A7 fail-closed `N_observed=6` with no `N_estimated` remains preserved.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

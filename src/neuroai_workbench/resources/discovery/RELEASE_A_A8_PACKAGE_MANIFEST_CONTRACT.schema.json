@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RELEASE_A_A8_PACKAGE_MANIFEST_CONTRACT.schema.json",
+  "title": "Release A A8 Package Manifest Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_sha256",
+    "status",
+    "package_id",
+    "census_registered_at",
+    "analysis_universe_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "a2_checkpoint_id",
+    "a2_checkpoint_sha256",
+    "observed_offering_set_sha256",
+    "n_observed_declared",
+    "population_view_id",
+    "frame_register_version",
+    "frame_register_blob_sha",
+    "predeclaration_rule",
+    "upstream_digest_bindings",
+    "required_package_components",
+    "claim_classes",
+    "forbidden_claim_classes",
+    "headline_count_rules",
+    "d4_binding_policy",
+    "a7_fail_closed_preservation",
+    "execution_gate",
+    "boundary"
+  ],
+  "properties": {
+    "contract_id": {
+      "type": "string",
+      "const": "RELEASE_A_A8_PACKAGE_MANIFEST_CONTRACT_v1.0"
+    },
+    "contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "const": "FROZEN_v1.0"
+    },
+    "package_id": {
+      "type": "string",
+      "const": "RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE_v1.0"
+    },
+    "census_registered_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "minLength": 1
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "minLength": 1
+    },
+    "a2_checkpoint_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "a2_checkpoint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "observed_offering_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "n_observed_declared": {
+      "type": "integer",
+      "const": 6
+    },
+    "population_view_id": {
+      "type": "string",
+      "const": "A-P1"
+    },
+    "frame_register_version": {
+      "type": "string",
+      "const": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0"
+    },
+    "frame_register_blob_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "predeclaration_rule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "upstream_digest_bindings": {
+      "type": "object"
+    },
+    "required_package_components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "claim_classes": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_claim_classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "headline_count_rules": {
+      "type": "object"
+    },
+    "d4_binding_policy": {
+      "type": "object"
+    },
+    "a7_fail_closed_preservation": {
+      "type": "object"
+    },
+    "execution_gate": {
+      "type": "object"
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
