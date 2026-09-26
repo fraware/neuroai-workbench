@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RELEASE_A_AG_RECONSTRUCTION_PROTOCOL.schema.json",
+  "title": "Release A A-G Reconstruction Protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol_id",
+    "protocol_sha256",
+    "status",
+    "study_id",
+    "census_registered_at",
+    "a8_package_id",
+    "a8_package_sha256",
+    "a8_contract_sha256",
+    "analysis_universe_id",
+    "world_time_cutoff",
+    "knowledge_time_cutoff",
+    "language_scope_id",
+    "jurisdiction_scope",
+    "population_view_id",
+    "n_observed_declared",
+    "n_estimated_declared",
+    "unresolved_candidate_count_declared",
+    "d4_working_include_declared",
+    "d4_working_total_declared",
+    "observed_offering_ids",
+    "required_reconstruction_fields",
+    "required_headline_ids",
+    "headline_reconstruction_bindings",
+    "fail_closed_rules",
+    "estimator_exclusion_policy",
+    "execution_gate",
+    "predeclaration_rule",
+    "boundary"
+  ],
+  "properties": {
+    "protocol_id": {
+      "type": "string",
+      "const": "RELEASE_A_AG_RECONSTRUCTION_PROTOCOL_v1.0"
+    },
+    "protocol_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "const": "FROZEN_v1.0"
+    },
+    "study_id": {
+      "type": "string",
+      "const": "RELEASE_A_AG_RECONSTRUCTION_PACKET_v1.0"
+    },
+    "census_registered_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "a8_package_id": {
+      "type": "string",
+      "const": "RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE_v1.0"
+    },
+    "a8_package_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "a8_contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "analysis_universe_id": {
+      "type": "string",
+      "pattern": "^RAU-[0-9a-f]{64}$"
+    },
+    "world_time_cutoff": {
+      "type": "string",
+      "minLength": 1
+    },
+    "knowledge_time_cutoff": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language_scope_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "jurisdiction_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "population_view_id": {
+      "type": "string",
+      "const": "A-P1"
+    },
+    "n_observed_declared": {
+      "type": "integer",
+      "const": 6
+    },
+    "n_estimated_declared": {
+      "type": ["null"]
+    },
+    "unresolved_candidate_count_declared": {
+      "type": "integer",
+      "const": 416
+    },
+    "d4_working_include_declared": {
+      "type": "integer",
+      "const": 49
+    },
+    "d4_working_total_declared": {
+      "type": "integer",
+      "const": 60
+    },
+    "observed_offering_ids": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_reconstruction_fields": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_headline_ids": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "headline_reconstruction_bindings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "a8_component_path",
+          "upstream_digest_field",
+          "expected_value_description",
+          "required_fields"
+        ],
+        "properties": {
+          "a8_component_path": { "type": "string", "minLength": 1 },
+          "upstream_digest_field": { "type": "string", "minLength": 1 },
+          "expected_value_description": { "type": "string", "minLength": 1 },
+          "required_fields": {
+            "type": "array",
+            "minItems": 12,
+            "maxItems": 12,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "fail_closed_rules": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "estimator_exclusion_policy": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "execution_gate": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "predeclaration_rule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
