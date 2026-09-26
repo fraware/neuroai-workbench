@@ -131,9 +131,7 @@ def test_a6_report_rejects_missing_fields_and_digest_drift() -> None:
             "a6_permitted_stop_description mismatch",
         ),
         (
-            lambda p: p["frame_coverage_stop_inventory"][0].__setitem__(
-                "declared_stop_state", "GLOBAL_COMPLETE"
-            ),
+            lambda p: p["frame_coverage_stop_inventory"][0].__setitem__("declared_stop_state", "GLOBAL_COMPLETE"),
             "declared_stop_state mismatch",
         ),
         (
