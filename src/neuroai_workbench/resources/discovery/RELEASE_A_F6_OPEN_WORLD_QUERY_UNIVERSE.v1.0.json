@@ -1,0 +1,770 @@
+{
+  "universe_id": "RELEASE_A_F6_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "universe_sha256": "65ff66464b7cba60e0347c061069a59b59f6102041b7a3b24a723a7d09cbdfbc",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F6",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "frame_class": "CAPABILITY_FIRST",
+  "label": "Capability-first discovery",
+  "capture_estimation_eligible": true,
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "open_world_round_protocol_id": "RELEASE_A_OPEN_WORLD_ROUND_PROTOCOL_v1.0",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "census_registered_at": "2026-09-26T10:00:00Z",
+  "query_families": [
+    "ATTENTION_VIGILANCE",
+    "FATIGUE_DROWSINESS",
+    "COGNITIVE_AFFECTIVE_STATE",
+    "ADAPTIVE_INTERFACE",
+    "NEUROFEEDBACK_TRAINING",
+    "NEURAL_DECODING_CONTROL",
+    "NONTRADITIONAL_FORM_FACTOR"
+  ],
+  "source_classes": [
+    "PUBLIC_WEB_ATTRIBUTABLE",
+    "SCIENTIFIC_PUBLICATION",
+    "MANUFACTURER_VENDOR_OFFICIAL"
+  ],
+  "minimum_rounds": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "round_seed_ids": {
+    "R1": [
+      "F6-R1-ATTENTION_VIGILANCE-V1",
+      "F6-R1-ATTENTION_VIGILANCE-V2",
+      "F6-R1-ATTENTION_VIGILANCE-V3",
+      "F6-R1-FATIGUE_DROWSINESS-V1",
+      "F6-R1-FATIGUE_DROWSINESS-V2",
+      "F6-R1-FATIGUE_DROWSINESS-V3",
+      "F6-R1-COGNITIVE_AFFECTIVE_STATE-V1",
+      "F6-R1-COGNITIVE_AFFECTIVE_STATE-V2",
+      "F6-R1-COGNITIVE_AFFECTIVE_STATE-V3",
+      "F6-R1-ADAPTIVE_INTERFACE-V1",
+      "F6-R1-ADAPTIVE_INTERFACE-V2",
+      "F6-R1-ADAPTIVE_INTERFACE-V3",
+      "F6-R1-NEUROFEEDBACK_TRAINING-V1",
+      "F6-R1-NEUROFEEDBACK_TRAINING-V2",
+      "F6-R1-NEUROFEEDBACK_TRAINING-V3",
+      "F6-R1-NEURAL_DECODING_CONTROL-V1",
+      "F6-R1-NEURAL_DECODING_CONTROL-V2",
+      "F6-R1-NEURAL_DECODING_CONTROL-V3",
+      "F6-R1-NONTRADITIONAL_FORM_FACTOR-V1",
+      "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2",
+      "F6-R1-NONTRADITIONAL_FORM_FACTOR-V3"
+    ],
+    "R2": [
+      "F6-R2-ATTENTION_VIGILANCE-V1",
+      "F6-R2-ATTENTION_VIGILANCE-V2",
+      "F6-R2-ATTENTION_VIGILANCE-V3",
+      "F6-R2-FATIGUE_DROWSINESS-V1",
+      "F6-R2-FATIGUE_DROWSINESS-V2",
+      "F6-R2-FATIGUE_DROWSINESS-V3",
+      "F6-R2-COGNITIVE_AFFECTIVE_STATE-V1",
+      "F6-R2-COGNITIVE_AFFECTIVE_STATE-V2",
+      "F6-R2-COGNITIVE_AFFECTIVE_STATE-V3",
+      "F6-R2-ADAPTIVE_INTERFACE-V1",
+      "F6-R2-ADAPTIVE_INTERFACE-V2",
+      "F6-R2-ADAPTIVE_INTERFACE-V3",
+      "F6-R2-NEUROFEEDBACK_TRAINING-V1",
+      "F6-R2-NEUROFEEDBACK_TRAINING-V2",
+      "F6-R2-NEUROFEEDBACK_TRAINING-V3",
+      "F6-R2-NEURAL_DECODING_CONTROL-V1",
+      "F6-R2-NEURAL_DECODING_CONTROL-V2",
+      "F6-R2-NEURAL_DECODING_CONTROL-V3",
+      "F6-R2-NONTRADITIONAL_FORM_FACTOR-V1",
+      "F6-R2-NONTRADITIONAL_FORM_FACTOR-V2",
+      "F6-R2-NONTRADITIONAL_FORM_FACTOR-V3"
+    ],
+    "R3": [
+      "F6-R3-ATTENTION_VIGILANCE-V1",
+      "F6-R3-ATTENTION_VIGILANCE-V2",
+      "F6-R3-ATTENTION_VIGILANCE-V3",
+      "F6-R3-FATIGUE_DROWSINESS-V1",
+      "F6-R3-FATIGUE_DROWSINESS-V2",
+      "F6-R3-FATIGUE_DROWSINESS-V3",
+      "F6-R3-COGNITIVE_AFFECTIVE_STATE-V1",
+      "F6-R3-COGNITIVE_AFFECTIVE_STATE-V2",
+      "F6-R3-COGNITIVE_AFFECTIVE_STATE-V3",
+      "F6-R3-ADAPTIVE_INTERFACE-V1",
+      "F6-R3-ADAPTIVE_INTERFACE-V2",
+      "F6-R3-ADAPTIVE_INTERFACE-V3",
+      "F6-R3-NEUROFEEDBACK_TRAINING-V1",
+      "F6-R3-NEUROFEEDBACK_TRAINING-V2",
+      "F6-R3-NEUROFEEDBACK_TRAINING-V3",
+      "F6-R3-NEURAL_DECODING_CONTROL-V1",
+      "F6-R3-NEURAL_DECODING_CONTROL-V2",
+      "F6-R3-NEURAL_DECODING_CONTROL-V3",
+      "F6-R3-NONTRADITIONAL_FORM_FACTOR-V1",
+      "F6-R3-NONTRADITIONAL_FORM_FACTOR-V2",
+      "F6-R3-NONTRADITIONAL_FORM_FACTOR-V3"
+    ]
+  },
+  "query_seeds": [
+    {
+      "query_or_seed_id": "F6-R1-ATTENTION_VIGILANCE-V1",
+      "round_id": "R1",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-ATTENTION_VIGILANCE-V2",
+      "round_id": "R1",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-ATTENTION_VIGILANCE-V3",
+      "round_id": "R1",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-FATIGUE_DROWSINESS-V1",
+      "round_id": "R1",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-FATIGUE_DROWSINESS-V2",
+      "round_id": "R1",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-FATIGUE_DROWSINESS-V3",
+      "round_id": "R1",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-COGNITIVE_AFFECTIVE_STATE-V1",
+      "round_id": "R1",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-COGNITIVE_AFFECTIVE_STATE-V2",
+      "round_id": "R1",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-COGNITIVE_AFFECTIVE_STATE-V3",
+      "round_id": "R1",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-ADAPTIVE_INTERFACE-V1",
+      "round_id": "R1",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-ADAPTIVE_INTERFACE-V2",
+      "round_id": "R1",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-ADAPTIVE_INTERFACE-V3",
+      "round_id": "R1",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEUROFEEDBACK_TRAINING-V1",
+      "round_id": "R1",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neurofeedback training system OR device named product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEUROFEEDBACK_TRAINING-V2",
+      "round_id": "R1",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neurofeedback training system OR device named product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEUROFEEDBACK_TRAINING-V3",
+      "round_id": "R1",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neurofeedback training system OR device named product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEURAL_DECODING_CONTROL-V1",
+      "round_id": "R1",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neural decoding control OR intention decoding BCI product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEURAL_DECODING_CONTROL-V2",
+      "round_id": "R1",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neural decoding control OR intention decoding BCI product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NEURAL_DECODING_CONTROL-V3",
+      "round_id": "R1",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neural decoding control OR intention decoding BCI product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NONTRADITIONAL_FORM_FACTOR-V1",
+      "round_id": "R1",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product commercial OR consumer OR clinical round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2",
+      "round_id": "R1",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product research OR investigational OR platform round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R1-NONTRADITIONAL_FORM_FACTOR-V3",
+      "round_id": "R1",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product wearable OR implantable OR software SDK round1",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ATTENTION_VIGILANCE-V1",
+      "round_id": "R2",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ATTENTION_VIGILANCE-V2",
+      "round_id": "R2",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ATTENTION_VIGILANCE-V3",
+      "round_id": "R2",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-FATIGUE_DROWSINESS-V1",
+      "round_id": "R2",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-FATIGUE_DROWSINESS-V2",
+      "round_id": "R2",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-FATIGUE_DROWSINESS-V3",
+      "round_id": "R2",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-COGNITIVE_AFFECTIVE_STATE-V1",
+      "round_id": "R2",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-COGNITIVE_AFFECTIVE_STATE-V2",
+      "round_id": "R2",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-COGNITIVE_AFFECTIVE_STATE-V3",
+      "round_id": "R2",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ADAPTIVE_INTERFACE-V1",
+      "round_id": "R2",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ADAPTIVE_INTERFACE-V2",
+      "round_id": "R2",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-ADAPTIVE_INTERFACE-V3",
+      "round_id": "R2",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEUROFEEDBACK_TRAINING-V1",
+      "round_id": "R2",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neurofeedback training system OR device named product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEUROFEEDBACK_TRAINING-V2",
+      "round_id": "R2",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neurofeedback training system OR device named product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEUROFEEDBACK_TRAINING-V3",
+      "round_id": "R2",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neurofeedback training system OR device named product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEURAL_DECODING_CONTROL-V1",
+      "round_id": "R2",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neural decoding control OR intention decoding BCI product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEURAL_DECODING_CONTROL-V2",
+      "round_id": "R2",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neural decoding control OR intention decoding BCI product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NEURAL_DECODING_CONTROL-V3",
+      "round_id": "R2",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neural decoding control OR intention decoding BCI product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NONTRADITIONAL_FORM_FACTOR-V1",
+      "round_id": "R2",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product commercial OR consumer OR clinical round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NONTRADITIONAL_FORM_FACTOR-V2",
+      "round_id": "R2",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product research OR investigational OR platform round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R2-NONTRADITIONAL_FORM_FACTOR-V3",
+      "round_id": "R2",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product wearable OR implantable OR software SDK round2",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ATTENTION_VIGILANCE-V1",
+      "round_id": "R3",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ATTENTION_VIGILANCE-V2",
+      "round_id": "R3",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ATTENTION_VIGILANCE-V3",
+      "round_id": "R3",
+      "query_family": "ATTENTION_VIGILANCE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "attention OR vigilance monitoring EEG OR neural wearable product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-FATIGUE_DROWSINESS-V1",
+      "round_id": "R3",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-FATIGUE_DROWSINESS-V2",
+      "round_id": "R3",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-FATIGUE_DROWSINESS-V3",
+      "round_id": "R3",
+      "query_family": "FATIGUE_DROWSINESS",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "fatigue OR drowsiness detection EEG OR neural wearable product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-COGNITIVE_AFFECTIVE_STATE-V1",
+      "round_id": "R3",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-COGNITIVE_AFFECTIVE_STATE-V2",
+      "round_id": "R3",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-COGNITIVE_AFFECTIVE_STATE-V3",
+      "round_id": "R3",
+      "query_family": "COGNITIVE_AFFECTIVE_STATE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "cognitive OR affective state decoding EEG OR neural product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ADAPTIVE_INTERFACE-V1",
+      "round_id": "R3",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ADAPTIVE_INTERFACE-V2",
+      "round_id": "R3",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-ADAPTIVE_INTERFACE-V3",
+      "round_id": "R3",
+      "query_family": "ADAPTIVE_INTERFACE",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "adaptive interface OR adaptive UI neural OR EEG control product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEUROFEEDBACK_TRAINING-V1",
+      "round_id": "R3",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neurofeedback training system OR device named product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEUROFEEDBACK_TRAINING-V2",
+      "round_id": "R3",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neurofeedback training system OR device named product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEUROFEEDBACK_TRAINING-V3",
+      "round_id": "R3",
+      "query_family": "NEUROFEEDBACK_TRAINING",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neurofeedback training system OR device named product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEURAL_DECODING_CONTROL-V1",
+      "round_id": "R3",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "neural decoding control OR intention decoding BCI product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEURAL_DECODING_CONTROL-V2",
+      "round_id": "R3",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "neural decoding control OR intention decoding BCI product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NEURAL_DECODING_CONTROL-V3",
+      "round_id": "R3",
+      "query_family": "NEURAL_DECODING_CONTROL",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neural decoding control OR intention decoding BCI product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NONTRADITIONAL_FORM_FACTOR-V1",
+      "round_id": "R3",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product commercial OR consumer OR clinical round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NONTRADITIONAL_FORM_FACTOR-V2",
+      "round_id": "R3",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "PUBLIC_WEB_ATTRIBUTABLE",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product research OR investigational OR platform round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    },
+    {
+      "query_or_seed_id": "F6-R3-NONTRADITIONAL_FORM_FACTOR-V3",
+      "round_id": "R3",
+      "query_family": "NONTRADITIONAL_FORM_FACTOR",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "ear-EEG OR headphone EEG OR tattoo electrode OR soft ECoG product wearable OR implantable OR software SDK round3",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F6 capability-first route; branding-independent retrieval."
+    }
+  ],
+  "query_seed_count": 63,
+  "query_seed_set_sha256": "fd464e882b28cac82ed08347d6b79cdc237f8c878e254d5aae93a944a0dced55",
+  "per_round_seed_counts": {
+    "R1": 21,
+    "R2": 21,
+    "R3": 21
+  },
+  "stopping_rule": {
+    "mode": "MARGINAL_YIELD",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20,
+    "literal_tail_only": true,
+    "note": "Saturation requires at least three completed rounds and the final two qualifying rounds each having at least 20 raw candidates with marginal new-identity yield <= 0.05. An intervening sub-threshold round breaks the qualifying tail."
+  },
+  "independence_rule": {
+    "independently_attributable_from_other_frames": true,
+    "does_not_credit_f9_actor_enumeration_or_f2_f3_exhaustion": true,
+    "same_product_may_appear_via_independent_route_with_distinct_provenance": true
+  },
+  "temporal_rule": {
+    "post_world_cutoff_retrieval_does_not_establish_pre_cutoff_inclusion_by_itself": true,
+    "resolved_post_cutoff_capture_requires_world_time_support_ref": true,
+    "no_canonical_identity_allocation_by_implication": true
+  },
+  "boundary": "Open-world query/round contracts fix declared retrieval seeds, round accounting, independence, and the literal marginal-yield stop rule under the frozen A2 analysis universe and A2 bounded-frame checkpoint. They do not establish global completeness, unseen-population size, market share, effectiveness, commercialization, S2 publication authority, or v4.2 assessment effect. F11 remains diagnostic-only for the primary unseen-population estimator.",
+  "open_world_round_protocol_sha256": "43b610d8a6446011b47a0761c8a18f13bb00d6f8a5001742f30968851395a377"
+}

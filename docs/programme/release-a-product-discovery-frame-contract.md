@@ -133,6 +133,15 @@ exhaustion. Regulatory and trial records remain candidates until offering
 identity and scope are dispositioned separately. Failed authoritative lookups
 are retried only as successor observations.
 
+For F1/F4/F5/F6/F11 open-world execution, engineers follow the frozen shared
+round protocol `RELEASE_A_OPEN_WORLD_ROUND_PROTOCOL.v1.0.json` and the per-frame
+query universes `RELEASE_A_F{1,4,5,6,11}_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json`.
+Those artifacts bind the A2 checkpoint, declared query seeds for at least R1–R3,
+independence/temporal fail-closed rules, and the literal marginal-yield stop
+parameters. Freezing those contracts does not itself establish saturation;
+executed round summaries must still satisfy the stop rule. F11 remains
+diagnostic-only for the primary unseen-population estimator.
+
 A frame can stop only with one of:
 
 ```text

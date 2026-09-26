@@ -1,0 +1,798 @@
+{
+  "universe_id": "RELEASE_A_F4_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "universe_sha256": "32259556bb138afc3927d1ba65f0213af132ebad7782b3ab67419c4e88f3c770",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F4",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "frame_class": "SCIENTIFIC_RESEARCH",
+  "label": "Scientific/research discovery",
+  "capture_estimation_eligible": true,
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "open_world_round_protocol_id": "RELEASE_A_OPEN_WORLD_ROUND_PROTOCOL_v1.0",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "census_registered_at": "2026-09-26T10:00:00Z",
+  "query_families": [
+    "PRODUCT_NAME_LITERATURE_SEARCH",
+    "RESEARCH_INSTRUMENT_SEARCH",
+    "NEUROAI_PLATFORM_SEARCH"
+  ],
+  "source_classes": [
+    "SCIENTIFIC_PUBLICATION",
+    "RESEARCH_DOCUMENTATION"
+  ],
+  "minimum_rounds": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "round_seed_ids": {
+    "R1": [
+      "F4-R1-LIT-EEG-BCI-PRODUCT",
+      "F4-R1-LIT-NEUROFEEDBACK-DEVICE",
+      "F4-R1-LIT-TDCS-PRODUCT",
+      "F4-R1-LIT-FNIRS-SYSTEM",
+      "F4-R1-LIT-IMPLANTABLE-BCI",
+      "F4-R1-LIT-DBS-SENSING",
+      "F4-R1-LIT-DRY-EEG",
+      "F4-R1-INST-RESEARCH-PLATFORM",
+      "F4-R1-INST-NEUROTECH-LAB",
+      "F4-R1-INST-BCI-TOOLCHAIN",
+      "F4-R1-INST-ECOG-ARRAY",
+      "F4-R1-INST-TD-FNIRS",
+      "F4-R1-PLAT-NEUROAI",
+      "F4-R1-PLAT-CLOSED-LOOP",
+      "F4-R1-PLAT-SPEECH-BCI",
+      "F4-R1-PLAT-MOTOR-BCI",
+      "F4-R1-PLAT-CONSUMER-EEG-AI",
+      "F4-R1-PLAT-NEUROREHAB",
+      "F4-R1-LIT-EAR-EEG",
+      "F4-R1-LIT-SLEEP-EEG",
+      "F4-R1-INST-HD-EEG",
+      "F4-R1-PLAT-ADAPTIVE-DBS"
+    ],
+    "R2": [
+      "F4-R2-LIT-EPOC",
+      "F4-R2-LIT-MUSE",
+      "F4-R2-LIT-OPENBCI",
+      "F4-R2-LIT-GTEC",
+      "F4-R2-LIT-BITBRAIN",
+      "F4-R2-LIT-STARSTIM",
+      "F4-R2-LIT-KERNEL-FLOW",
+      "F4-R2-LIT-RNS",
+      "F4-R2-LIT-STENTRODE",
+      "F4-R2-LIT-CONNEXUS",
+      "F4-R2-LIT-NEURALINK-N1",
+      "F4-R2-LIT-PERCEPT",
+      "F4-R2-LIT-FLOW-TDCS",
+      "F4-R2-LIT-MODIUS",
+      "F4-R2-INST-BLACKROCK",
+      "F4-R2-INST-CORTEC",
+      "F4-R2-INST-OPEN-LIFU",
+      "F4-R2-PLAT-COGNIXION",
+      "F4-R2-PLAT-NEURABLE",
+      "F4-R2-PLAT-NEUROSITY",
+      "F4-R2-PLAT-IDUN",
+      "F4-R2-PLAT-ELEMIND"
+    ],
+    "R3": [
+      "F4-R3-LIT-URGONIGHT",
+      "F4-R3-LIT-NEVR",
+      "F4-R3-LIT-DELPHI-MD",
+      "F4-R3-LIT-LAYER7",
+      "F4-R3-LIT-PRIMA",
+      "F4-R3-LIT-NEURONAUTE",
+      "F4-R3-LIT-NEUROINSIGHT",
+      "F4-R3-LIT-SOFT-ECOG",
+      "F4-R3-LIT-SOMA-CIPHER",
+      "F4-R3-LIT-FOCUSXIN",
+      "F4-R3-INST-ENOBIO",
+      "F4-R3-INST-VERSATILE",
+      "F4-R3-INST-G-NAUTILUS",
+      "F4-R3-INST-DEVKIT3",
+      "F4-R3-INST-OPEN-MOTION",
+      "F4-R3-PLAT-MINDMAZE",
+      "F4-R3-PLAT-NEUROSTEER",
+      "F4-R3-PLAT-YNEURO",
+      "F4-R3-PLAT-INBRAIN",
+      "F4-R3-PLAT-MINDPORTAL",
+      "F4-R3-LIT-NEXTSENSE",
+      "F4-R3-LIT-SMARTBUDS"
+    ]
+  },
+  "query_seeds": [
+    {
+      "query_or_seed_id": "F4-R1-LIT-EEG-BCI-PRODUCT",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "EEG brain-computer interface named commercial device OR headset product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-NEUROFEEDBACK-DEVICE",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neurofeedback EEG device OR headset named product clinical study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-TDCS-PRODUCT",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "transcranial direct current stimulation commercial device named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-FNIRS-SYSTEM",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "functional near-infrared spectroscopy wearable system named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-IMPLANTABLE-BCI",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "implantable brain-computer interface named investigational device",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-DBS-SENSING",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "deep brain stimulation sensing closed-loop named system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-DRY-EEG",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "dry electrode EEG headset commercial product validation study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-RESEARCH-PLATFORM",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "research EEG platform instrumentation named system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-NEUROTECH-LAB",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "neurotechnology laboratory acquisition system named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-BCI-TOOLCHAIN",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "BCI research toolchain amplifier headset named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-ECOG-ARRAY",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "ECoG electrode array research system named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-TD-FNIRS",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "time-domain fNIRS research system named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-NEUROAI",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "NeuroAI OR neural decoding platform named product OR system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-CLOSED-LOOP",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "closed-loop neuromodulation platform named investigational product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-SPEECH-BCI",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "speech decoding brain-computer interface named system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-MOTOR-BCI",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "motor decoding brain-computer interface named implant OR system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-CONSUMER-EEG-AI",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "consumer EEG artificial intelligence attention OR meditation product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-NEUROREHAB",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "neurorehabilitation BCI OR EEG named therapy system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-EAR-EEG",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "ear-EEG OR in-ear EEG wearable named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-LIT-SLEEP-EEG",
+      "round_id": "R1",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "sleep EEG headband commercial named product study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-INST-HD-EEG",
+      "round_id": "R1",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "high-density EEG research system named product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R1-PLAT-ADAPTIVE-DBS",
+      "round_id": "R1",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "adaptive deep brain stimulation named sensing system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-EPOC",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "EMOTIV EPOC EEG validation OR BCI study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-MUSE",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Muse EEG headband OR Muse S Athena study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-OPENBCI",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "OpenBCI Cyton OR Galea research study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-GTEC",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "g.tec g.Nautilus OR Unicorn BCI study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-BITBRAIN",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Bitbrain Diadem OR Versatile EEG study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-STARSTIM",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neuroelectrics Starstim OR Enobio study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-KERNEL-FLOW",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Kernel Flow fNIRS study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-RNS",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "NeuroPace RNS System responsive neurostimulation study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-STENTRODE",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Synchron Stentrode endovascular BCI study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-CONNEXUS",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Paradromics Connexus BCI study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-NEURALINK-N1",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neuralink N1 Implant PRIME study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-PERCEPT",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Medtronic Percept BrainSense adaptive DBS study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-FLOW-TDCS",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Flow Neuroscience FL-100 tDCS depression study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-LIT-MODIUS",
+      "round_id": "R2",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Modius Spero vestibular stimulation study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-INST-BLACKROCK",
+      "round_id": "R2",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Blackrock NeuroPort OR Utah Array research system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-INST-CORTEC",
+      "round_id": "R2",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "CorTec Brain Interchange closed-loop BCI",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-INST-OPEN-LIFU",
+      "round_id": "R2",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Openwater Open-LIFU focused ultrasound research platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-PLAT-COGNIXION",
+      "round_id": "R2",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Cognixion Axon-R EEG AR BCI platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-PLAT-NEURABLE",
+      "round_id": "R2",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neurable MW75 Neuro EEG headphone AI",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-PLAT-NEUROSITY",
+      "round_id": "R2",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neurosity Crown EEG BCI platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-PLAT-IDUN",
+      "round_id": "R2",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "IDUN Guardian ear-EEG platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R2-PLAT-ELEMIND",
+      "round_id": "R2",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Elemind headband EEG acoustic stimulation",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-URGONIGHT",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "URGOnight EEG neurofeedback portable device study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-NEVR",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neurofeedback-EEG-VR NEVR system study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-DELPHI-MD",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "QuantalX Delphi-MD evoked response brain stimulator",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-LAYER7",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Precision Neuroscience Layer 7 cortical interface",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-PRIMA",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Science Corporation PRIMA visual prosthesis",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-NEURONAUTE",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "BioSerenity Neuronaute EEG recorder study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-NEUROINSIGHT",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "NeuroGeneces NeuroInsight EEG Brain Age assessment",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-SOFT-ECOG",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neurosoft SOFT ECoG OR MINDZ OR SOFT TINNIT",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-SOMA-CIPHER",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Coherence Neuro SOMA OR CIPHER System BCI",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-FOCUSXIN",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "BrainCo FocusXin attention training EEG system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-INST-ENOBIO",
+      "round_id": "R3",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Neuroelectrics Enobio research EEG system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-INST-VERSATILE",
+      "round_id": "R3",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Bitbrain Versatile EEG research system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-INST-G-NAUTILUS",
+      "round_id": "R3",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "g.tec g.Nautilus research wireless EEG",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-INST-DEVKIT3",
+      "round_id": "R3",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Kernel DevKit-3 TD-fNIRS research system",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-INST-OPEN-MOTION",
+      "round_id": "R3",
+      "query_family": "RESEARCH_INSTRUMENT_SEARCH",
+      "source_class": "RESEARCH_DOCUMENTATION",
+      "query_expression": "Openwater Open-Motion optical research platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-PLAT-MINDMAZE",
+      "round_id": "R3",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "MindMaze MindMotion OR Brain Vitals neurorehab platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-PLAT-NEUROSTEER",
+      "round_id": "R3",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Neurosteer hdrEEG brain activity monitor platform",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-PLAT-YNEURO",
+      "round_id": "R3",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "Yneuro Neuro ID neural authentication SDK",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-PLAT-INBRAIN",
+      "round_id": "R3",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "INBRAIN graphene bidirectional cortical interface",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-PLAT-MINDPORTAL",
+      "round_id": "R3",
+      "query_family": "NEUROAI_PLATFORM_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "MindPortal MindSpeech OR MindGPT OR MindClick",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-NEXTSENSE",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "NextSense Smartbuds ear-EEG study",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    },
+    {
+      "query_or_seed_id": "F4-R3-LIT-SMARTBUDS",
+      "round_id": "R3",
+      "query_family": "PRODUCT_NAME_LITERATURE_SEARCH",
+      "source_class": "SCIENTIFIC_PUBLICATION",
+      "query_expression": "earbud EEG ambulatory epilepsy OR sleep monitoring product",
+      "language": "en",
+      "jurisdiction": "GLOBAL",
+      "notes": "Independently attributable F4 scientific/research route."
+    }
+  ],
+  "query_seed_count": 66,
+  "query_seed_set_sha256": "57026de73eb759eb5106479acefe80f635b33af01b99d651ced51485cf388a32",
+  "per_round_seed_counts": {
+    "R1": 22,
+    "R2": 22,
+    "R3": 22
+  },
+  "stopping_rule": {
+    "mode": "MARGINAL_YIELD",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20,
+    "literal_tail_only": true,
+    "note": "Saturation requires at least three completed rounds and the final two qualifying rounds each having at least 20 raw candidates with marginal new-identity yield <= 0.05. An intervening sub-threshold round breaks the qualifying tail."
+  },
+  "independence_rule": {
+    "independently_attributable_from_other_frames": true,
+    "does_not_credit_f9_actor_enumeration_or_f2_f3_exhaustion": true,
+    "same_product_may_appear_via_independent_route_with_distinct_provenance": true
+  },
+  "temporal_rule": {
+    "post_world_cutoff_retrieval_does_not_establish_pre_cutoff_inclusion_by_itself": true,
+    "resolved_post_cutoff_capture_requires_world_time_support_ref": true,
+    "no_canonical_identity_allocation_by_implication": true
+  },
+  "boundary": "Open-world query/round contracts fix declared retrieval seeds, round accounting, independence, and the literal marginal-yield stop rule under the frozen A2 analysis universe and A2 bounded-frame checkpoint. They do not establish global completeness, unseen-population size, market share, effectiveness, commercialization, S2 publication authority, or v4.2 assessment effect. F11 remains diagnostic-only for the primary unseen-population estimator.",
+  "open_world_round_protocol_sha256": "43b610d8a6446011b47a0761c8a18f13bb00d6f8a5001742f30968851395a377"
+}
