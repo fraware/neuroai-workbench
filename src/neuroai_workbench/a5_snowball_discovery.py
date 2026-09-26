@@ -394,7 +394,8 @@ def validate_a5_snowball_discovery_preregistration(prereg: Mapping[str, Any]) ->
         raise ProductDiscoveryError("minimum_completed_rounds must be 3")
     if stop_sem.get("consecutive_low_yield_rounds") != 2:
         raise ProductDiscoveryError("consecutive_low_yield_rounds must be 2")
-    if float(stop_sem.get("maximum_marginal_new_identity_yield")) != 0.05:
+    max_yield = stop_sem.get("maximum_marginal_new_identity_yield")
+    if not isinstance(max_yield, (int, float)) or float(max_yield) != 0.05:
         raise ProductDiscoveryError("maximum_marginal_new_identity_yield must be 0.05")
     if stop_sem.get("minimum_raw_candidates_per_round") != 20:
         raise ProductDiscoveryError("minimum_raw_candidates_per_round must be 20")
