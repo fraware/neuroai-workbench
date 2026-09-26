@@ -171,6 +171,17 @@ every edge, candidate re-entry, per-round `Y_r`/`D_r`/`X_r`/`U_r`/`m_r`,
 marginal-yield decomposition, and stop-state evidence. The key result is the
 measured round ledger under the frozen snowball protocol, not an edge count.
 
+For A6, engineers follow the frozen preregistration
+`RELEASE_A_A6_COVERAGE_SATURATION_PREREGISTRATION.v1.0.json`. That artifact
+binds A2–A5 digests, the Coverage and Saturation Report contract, reuse of the
+declared round-metrics and decomposition dimensions, and the permitted stop
+descriptions **before** any coverage/saturation interpretation. Permitted stop
+language remains limited to saturation under the declared protocol,
+budget/coverage termination, bounded-source exhaustion, or unresolved-source
+barrier. Protocol saturation must never be converted into a claim of global
+completeness. Freeze alone does not emit the report, allocate identity, or
+start A7+.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
