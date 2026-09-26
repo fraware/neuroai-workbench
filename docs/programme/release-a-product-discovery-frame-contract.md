@@ -142,6 +142,21 @@ parameters. Freezing those contracts does not itself establish saturation;
 executed round summaries must still satisfy the stop rule. F11 remains
 diagnostic-only for the primary unseen-population estimator.
 
+For F8 local-language execution, engineers follow the frozen language/jurisdiction
+strata `RELEASE_A_LANGUAGE_JURISDICTION_STRATA.v1.0.json` (binding
+`EN_PLUS_PRIORITY_NATIVE_v1` before yield interpretation), the F8 round protocol
+`RELEASE_A_F8_ROUND_PROTOCOL.v1.0.json`, and the F8 query universe
+`RELEASE_A_F8_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json`. F8 remains estimation-eligible
+at frame level under the same literal marginal-yield bar as F1/F4/F5/F6/F11.
+
+For F10 patent-commercialization crossover, engineers follow the frozen
+patent/assignee candidate universe
+`RELEASE_A_F10_PATENT_ASSIGNEE_CANDIDATE_UNIVERSE.v1.0.json`. Patent and assignee
+matches are retrieval leads only; product identity requires separate attributable
+product evidence; commercialization is not inferred from patent ownership;
+semantic similarity does not create product links. F10 stops only after bounded
+exhaustion of that frozen candidate set.
+
 A frame can stop only with one of:
 
 ```text

@@ -1,0 +1,2599 @@
+{
+  "universe_id": "RELEASE_A_F10_PATENT_ASSIGNEE_CANDIDATE_UNIVERSE_v1.0",
+  "universe_sha256": "7652eb4f2cee689821b59c8df00ab3822b309b762a478f57715c0e98d24d21fa",
+  "status": "FROZEN_v1.0",
+  "frame_id": "F10",
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "frame_class": "PATENT_COMMERCIALIZATION",
+  "label": "Patent-commercialization crossover",
+  "capture_estimation_eligible": true,
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "census_registered_at": "2026-09-26T11:30:00Z",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "providers": [
+    {
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "base_url": "https://patents.google.com/xhr/query",
+      "authority": "Google Patents public search projection",
+      "role": "PATENT_BIBLIOGRAPHIC_CANDIDATE_ENUMERATION"
+    }
+  ],
+  "query_families": [
+    "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+    "PATENT_CAPABILITY_PRODUCT_CROSSOVER"
+  ],
+  "source_classes": [
+    "PATENT_BIBLIOGRAPHIC",
+    "ATTRIBUTABLE_PRODUCT_EVIDENCE"
+  ],
+  "declared_patent_jurisdictions": [
+    "US",
+    "EP",
+    "WO",
+    "CN",
+    "JP",
+    "KR",
+    "DE",
+    "FR"
+  ],
+  "query_family_executions": [
+    {
+      "query_id": "F10-CAP-BCI",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "brain computer interface",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 124441
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "EEG headset wearable neuro",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 8509
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-TDCS",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "transcranial direct current stimulation device",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 26162
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-FNIRS",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 144955
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "neural implant brain computer electrode",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 40751
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "neurofeedback EEG device system",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 3219
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 216167
+        }
+      ]
+    },
+    {
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "seeded_assignee_label": null,
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [
+          0
+        ],
+        "termination_rule": "Bounded freeze retrieves page 0 only (max 10 hits/query) from the live Google Patents xhr probe; remaining hits are out of this frozen universe."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "n": 10,
+          "total": 10049
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-NEURABLE",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Neurable",
+      "seeded_assignee_label": "Neurable",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-EMOTIV",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Emotiv",
+      "seeded_assignee_label": "Emotiv",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-SYNCHRON",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Synchron",
+      "seeded_assignee_label": "Synchron",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-NEUROPACE",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:NeuroPace",
+      "seeded_assignee_label": "NeuroPace",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-BITBRAIN",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Bitbrain",
+      "seeded_assignee_label": "Bitbrain",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-GTEC",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Guger",
+      "seeded_assignee_label": "G.TEC Medical",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-BLACKROCK",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Blackrock",
+      "seeded_assignee_label": "Blackrock Neurotech",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    },
+    {
+      "query_id": "F10-ASN-KERNEL",
+      "query_family": "PATENT_ASSIGNEE_PRODUCT_CROSSOVER",
+      "query_expression": "assignee:Kernel",
+      "seeded_assignee_label": "Kernel",
+      "provider_id": "GOOGLE_PATENTS_XHR",
+      "pagination": {
+        "mode": "GOOGLE_PATENTS_XHR_PAGE_NUM",
+        "page_size": 10,
+        "pages_retrieved": [],
+        "termination_rule": "Bounded freeze retrieves page 0 only; this query failed closed and contributes no patents."
+      },
+      "pages": [
+        {
+          "page": 0,
+          "error": "HTTP Error 503: Service Unavailable"
+        }
+      ]
+    }
+  ],
+  "patent_candidate_count": 80,
+  "patent_candidates": [
+    {
+      "candidate_id": "DOCDB-LEAD:CN100482155C",
+      "publication_number": "CN100482155C",
+      "google_result_id": "patent/CN100482155C/en",
+      "title": "Instant detection system and detection method for state of attention based on ...",
+      "assignee_name": "西安电子科技大学",
+      "inventor_name": "黄力宇",
+      "priority_date": "2007-05-09",
+      "filing_date": "2007-05-09",
+      "publication_date": "2009-04-29",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN100482155C",
+      "google_patents_locator": "https://patents.google.com/patent/CN100482155C"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN105167769A",
+      "publication_number": "CN105167769A",
+      "google_result_id": "patent/CN105167769A/en",
+      "title": "A headphone-type EEG acquisition device",
+      "assignee_name": "中山衡思健康科技有限公司",
+      "inventor_name": "董豪",
+      "priority_date": "2015-09-07",
+      "filing_date": "2015-09-07",
+      "publication_date": "2015-12-23",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN105167769A",
+      "google_patents_locator": "https://patents.google.com/patent/CN105167769A"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN106823133A",
+      "publication_number": "CN106823133A",
+      "google_result_id": "patent/CN106823133A/en",
+      "title": "Electrical transcranial stimulation and trans-skull magnetic stimulating device ...",
+      "assignee_name": "博睿泰克科技（宁波）有限公司",
+      "inventor_name": "董孝峰",
+      "priority_date": "2017-04-07",
+      "filing_date": "2017-04-07",
+      "publication_date": "2017-06-13",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN106823133A",
+      "google_patents_locator": "https://patents.google.com/patent/CN106823133A"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN107073278B",
+      "publication_number": "CN107073278B",
+      "google_result_id": "patent/CN107073278B/en",
+      "title": "Electrode selection for electrical stimulation therapy",
+      "assignee_name": "美敦力公司",
+      "inventor_name": "W·F·凯尔米勒",
+      "priority_date": "2014-11-21",
+      "filing_date": "2015-10-14",
+      "publication_date": "2021-01-26",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN107073278B",
+      "google_patents_locator": "https://patents.google.com/patent/CN107073278B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN107343250B",
+      "publication_number": "CN107343250B",
+      "google_result_id": "patent/CN107343250B/en",
+      "title": "Hearing device comprising electrodes for picking up physiological reactions",
+      "assignee_name": "奥迪康有限公司",
+      "inventor_name": "C·尼尔森",
+      "priority_date": "2016-04-26",
+      "filing_date": "2017-04-26",
+      "publication_date": "2021-02-09",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN107343250B",
+      "google_patents_locator": "https://patents.google.com/patent/CN107343250B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN107530012B",
+      "publication_number": "CN107530012B",
+      "google_result_id": "patent/CN107530012B/en",
+      "title": "system for brain activity resolution",
+      "assignee_name": "内森·英特拉托",
+      "inventor_name": "内森·英特拉托",
+      "priority_date": "2015-02-16",
+      "filing_date": "2016-02-16",
+      "publication_date": "2019-12-10",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN107530012B",
+      "google_patents_locator": "https://patents.google.com/patent/CN107530012B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN108304068B",
+      "publication_number": "CN108304068B",
+      "google_result_id": "patent/CN108304068B/en",
+      "title": "...  training robot control system and method based on brain-computer interface",
+      "assignee_name": "山东建筑大学",
+      "inventor_name": "高诺",
+      "priority_date": "2018-01-30",
+      "filing_date": "2018-01-30",
+      "publication_date": "2021-11-16",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN108304068B",
+      "google_patents_locator": "https://patents.google.com/patent/CN108304068B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN110062318B",
+      "publication_number": "CN110062318B",
+      "google_result_id": "patent/CN110062318B/en",
+      "title": "Hearing aid system",
+      "assignee_name": "奥迪康有限公司",
+      "inventor_name": "E·B·皮特森",
+      "priority_date": "2017-12-13",
+      "filing_date": "2018-12-12",
+      "publication_date": "2022-03-04",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN110062318B",
+      "google_patents_locator": "https://patents.google.com/patent/CN110062318B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN110558978B",
+      "publication_number": "CN110558978B",
+      "google_result_id": "patent/CN110558978B/en",
+      "title": "System and method for collecting and analyzing electroencephalographic data",
+      "assignee_name": "尼尔森消费者有限责任公司",
+      "inventor_name": "Y.巴道尔",
+      "priority_date": "2012-08-17",
+      "filing_date": "2013-08-17",
+      "publication_date": "2022-09-06",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN110558978B",
+      "google_patents_locator": "https://patents.google.com/patent/CN110558978B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN111134667B",
+      "publication_number": "CN111134667B",
+      "google_result_id": "patent/CN111134667B/en",
+      "title": "Time migration emotion recognition method and system based on EEG signals",
+      "assignee_name": "中国人民解放军战略支援部队信息工程大学",
+      "inventor_name": "曾颖",
+      "priority_date": "2020-01-19",
+      "filing_date": "2020-01-19",
+      "publication_date": "2024-01-26",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN111134667B",
+      "google_patents_locator": "https://patents.google.com/patent/CN111134667B"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN203556061U",
+      "publication_number": "CN203556061U",
+      "google_result_id": "patent/CN203556061U/en",
+      "title": "Transcranial stimulation apparatus",
+      "assignee_name": "深圳英智科技有限公司",
+      "inventor_name": "杨亦铮",
+      "priority_date": "2013-10-10",
+      "filing_date": "2013-10-10",
+      "publication_date": "2014-04-23",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN203556061U",
+      "google_patents_locator": "https://patents.google.com/patent/CN203556061U"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN204765635U",
+      "publication_number": "CN204765635U",
+      "google_result_id": "patent/CN204765635U/en",
+      "title": "Function nuclear magnetic resonance and brain electricity synchronous sampling ...",
+      "assignee_name": "昆明理工大学",
+      "inventor_name": "伏云发",
+      "priority_date": "2015-05-27",
+      "filing_date": "2015-05-27",
+      "publication_date": "2015-11-18",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN204765635U",
+      "google_patents_locator": "https://patents.google.com/patent/CN204765635U"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN205697764U",
+      "publication_number": "CN205697764U",
+      "google_result_id": "patent/CN205697764U/en",
+      "title": "Glasses-type brain activity sensor and glasses-type electrophysiological ...",
+      "assignee_name": "周常安",
+      "inventor_name": "周常安",
+      "priority_date": "2016-01-22",
+      "filing_date": "2016-01-22",
+      "publication_date": "2016-11-23",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN205697764U",
+      "google_patents_locator": "https://patents.google.com/patent/CN205697764U"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN210835473U",
+      "publication_number": "CN210835473U",
+      "google_result_id": "patent/CN210835473U/en",
+      "title": "Ear-wearing electrode structure and wearable physiological sensing device",
+      "assignee_name": "周常安",
+      "inventor_name": "周常安",
+      "priority_date": "2016-01-22",
+      "filing_date": "2017-01-18",
+      "publication_date": "2020-06-23",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN210835473U",
+      "google_patents_locator": "https://patents.google.com/patent/CN210835473U"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:CN217904625U",
+      "publication_number": "CN217904625U",
+      "google_result_id": "patent/CN217904625U/en",
+      "title": "Open TWS earphone structure of wearing",
+      "assignee_name": "深圳市豪恩声学股份有限公司",
+      "inventor_name": "华涛",
+      "priority_date": "2022-07-19",
+      "filing_date": "2022-07-19",
+      "publication_date": "2022-11-25",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DCN217904625U",
+      "google_patents_locator": "https://patents.google.com/patent/CN217904625U"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP2340078B1",
+      "publication_number": "EP2340078B1",
+      "google_result_id": "patent/EP2340078B1/en",
+      "title": "Non-regular electrical stimulation patterns for treating neurological disorders",
+      "assignee_name": "Duke University",
+      "inventor_name": "Warren M. Grill",
+      "priority_date": "2008-10-03",
+      "filing_date": "2009-10-05",
+      "publication_date": "2023-08-30",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP2340078B1",
+      "google_patents_locator": "https://patents.google.com/patent/EP2340078B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP3372274B1",
+      "publication_number": "EP3372274B1",
+      "google_result_id": "patent/EP3372274B1/en",
+      "title": "Non-regular electrical stimulation patterns for treating neurological disorders",
+      "assignee_name": "Duke University",
+      "inventor_name": "Warren M. Grill",
+      "priority_date": "2011-10-11",
+      "filing_date": "2012-10-11",
+      "publication_date": "2020-06-24",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP3372274B1",
+      "google_patents_locator": "https://patents.google.com/patent/EP3372274B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP3785625A1",
+      "publication_number": "EP3785625A1",
+      "google_result_id": "patent/EP3785625A1/en",
+      "title": "System for integrated eeg - functional magnetic resonance image data ...",
+      "assignee_name": "Koninklijke Philips N.V.",
+      "inventor_name": "Nick FLAESCHNER",
+      "priority_date": "2019-08-29",
+      "filing_date": "2019-08-29",
+      "publication_date": "2021-03-03",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP3785625A1",
+      "google_patents_locator": "https://patents.google.com/patent/EP3785625A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP3824372B1",
+      "publication_number": "EP3824372B1",
+      "google_result_id": "patent/EP3824372B1/en",
+      "title": "Neuronal communication system",
+      "assignee_name": "CereGate GmbH",
+      "inventor_name": "Bálint VÁRKUTI",
+      "priority_date": "2019-02-27",
+      "filing_date": "2020-02-27",
+      "publication_date": "2023-08-23",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP3824372B1",
+      "google_patents_locator": "https://patents.google.com/patent/EP3824372B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP3986249B1",
+      "publication_number": "EP3986249B1",
+      "google_result_id": "patent/EP3986249B1/en",
+      "title": "Ear tips capable of capturing bioelectrical signals and providing nerve ...",
+      "assignee_name": "Bose Corporation",
+      "inventor_name": "Shawn Prevoir",
+      "priority_date": "2019-06-21",
+      "filing_date": "2020-06-19",
+      "publication_date": "2025-05-14",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP3986249B1",
+      "google_patents_locator": "https://patents.google.com/patent/EP3986249B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:EP4380454A1",
+      "publication_number": "EP4380454A1",
+      "google_result_id": "patent/EP4380454A1/en",
+      "title": "Method of detecting and tracking blink and blink patterns using biopotential ...",
+      "assignee_name": "AAVAA Inc.",
+      "inventor_name": "Naeem KOMEILIPOOR",
+      "priority_date": "2021-08-03",
+      "filing_date": "2022-07-26",
+      "publication_date": "2024-06-12",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DEP4380454A1",
+      "google_patents_locator": "https://patents.google.com/patent/EP4380454A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:JP5432166B2",
+      "publication_number": "JP5432166B2",
+      "google_result_id": "patent/JP5432166B2/en",
+      "title": "Closed-loop feedback for manipulating stimulation energy in tissue",
+      "assignee_name": "ボストン サイエンティフィック ニューロモデュレイション コーポレイション",
+      "inventor_name": "マイケル アダム モフィット",
+      "priority_date": "2007-11-02",
+      "filing_date": "2008-10-30",
+      "publication_date": "2014-03-05",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DJP5432166B2",
+      "google_patents_locator": "https://patents.google.com/patent/JP5432166B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:JP6125670B2",
+      "publication_number": "JP6125670B2",
+      "google_result_id": "patent/JP6125670B2/en",
+      "title": "Brain-computer interface (BCI) system based on temporal and spatial patterns of ...",
+      "assignee_name": "インテル コーポレイション",
+      "inventor_name": "ピー． クローフォード，リチャード",
+      "priority_date": "2013-03-15",
+      "filing_date": "2013-03-15",
+      "publication_date": "2017-05-10",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DJP6125670B2",
+      "google_patents_locator": "https://patents.google.com/patent/JP6125670B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:JP6852162B2",
+      "publication_number": "JP6852162B2",
+      "google_result_id": "patent/JP6852162B2/en",
+      "title": "General purpose ear device with electrodes",
+      "assignee_name": "ティ・オ・ドォッブルビィ・エンジニアリング・アー／エス",
+      "inventor_name": "アンデルセン・ミケール",
+      "priority_date": "2016-12-09",
+      "filing_date": "2016-12-09",
+      "publication_date": "2021-03-31",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DJP6852162B2",
+      "google_patents_locator": "https://patents.google.com/patent/JP6852162B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:KR100866378B1",
+      "publication_number": "KR100866378B1",
+      "google_result_id": "patent/KR100866378B1/en",
+      "title": "Low frequency magnetic physiotherapy device using EEG as main treatment ...",
+      "assignee_name": "이승영",
+      "inventor_name": "이승영",
+      "priority_date": "2007-04-12",
+      "filing_date": "2007-04-12",
+      "publication_date": "2008-11-03",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DKR100866378B1",
+      "google_patents_locator": "https://patents.google.com/patent/KR100866378B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:KR102349087B1",
+      "publication_number": "KR102349087B1",
+      "google_result_id": "patent/KR102349087B1/en",
+      "title": "Method for controlling robot based on brain-computer interface and apparatus ...",
+      "assignee_name": "한국과학기술연구원",
+      "inventor_name": "김래현",
+      "priority_date": "2019-10-10",
+      "filing_date": "2019-10-10",
+      "publication_date": "2022-01-12",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DKR102349087B1",
+      "google_patents_locator": "https://patents.google.com/patent/KR102349087B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:TW202031056A",
+      "publication_number": "TW202031056A",
+      "google_result_id": "patent/TW202031056A/en",
+      "title": "Hearing device",
+      "assignee_name": "日商精良股份有限公司",
+      "inventor_name": "細井裕司",
+      "priority_date": "2018-09-28",
+      "filing_date": "2019-09-27",
+      "publication_date": "2020-08-16",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DTW202031056A",
+      "google_patents_locator": "https://patents.google.com/patent/TW202031056A"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10004901B2",
+      "publication_number": "US10004901B2",
+      "google_result_id": "patent/US10004901B2/en",
+      "title": "Systems and methods for enhancing or optimizing neural stimulation therapy for ...",
+      "assignee_name": "Advanced Neuromodulation Systems, Inc.",
+      "inventor_name": "Bradford Evan Gliner",
+      "priority_date": "2002-12-10",
+      "filing_date": "2016-08-29",
+      "publication_date": "2018-06-26",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10004901B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10004901B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10044712B2",
+      "publication_number": "US10044712B2",
+      "google_result_id": "patent/US10044712B2/en",
+      "title": "Authentication based on gaze and physiological response to stimuli",
+      "assignee_name": "Microsoft Technology Licensing, Llc",
+      "inventor_name": "John C. Gordon",
+      "priority_date": "2016-05-31",
+      "filing_date": "2016-05-31",
+      "publication_date": "2018-08-07",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10044712B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10044712B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10234942B2",
+      "publication_number": "US10234942B2",
+      "google_result_id": "patent/US10234942B2/en",
+      "title": "Wearable and mobile brain computer interface (BCI) device and method",
+      "assignee_name": "Medibotics Llc",
+      "inventor_name": "Robert A. Connor",
+      "priority_date": "2014-01-28",
+      "filing_date": "2016-04-24",
+      "publication_date": "2019-03-19",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10234942B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10234942B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10286211B2",
+      "publication_number": "US10286211B2",
+      "google_result_id": "patent/US10286211B2/en",
+      "title": "Systems and methods for vagal nerve stimulation",
+      "assignee_name": "Electrocore, Inc.",
+      "inventor_name": "Bruce J. Simon",
+      "priority_date": "2011-08-31",
+      "filing_date": "2017-02-13",
+      "publication_date": "2019-05-14",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10286211B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10286211B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10441780B2",
+      "publication_number": "US10441780B2",
+      "google_result_id": "patent/US10441780B2/en",
+      "title": "Systems and methods for vagal nerve stimulation",
+      "assignee_name": "Electrocore, Inc.",
+      "inventor_name": "Bruce J. Simon",
+      "priority_date": "2005-11-10",
+      "filing_date": "2013-07-29",
+      "publication_date": "2019-10-15",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10441780B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10441780B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10532211B2",
+      "publication_number": "US10532211B2",
+      "google_result_id": "patent/US10532211B2/en",
+      "title": "Method and system for neuromodulation and stimulation",
+      "assignee_name": "Mc10, Inc.",
+      "inventor_name": "Roozbeh Ghaffari",
+      "priority_date": "2015-10-05",
+      "filing_date": "2016-10-05",
+      "publication_date": "2020-01-14",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10532211B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10532211B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10548501B2",
+      "publication_number": "US10548501B2",
+      "google_result_id": "patent/US10548501B2/en",
+      "title": "Electrophysiology measurement and training and remote databased and data ...",
+      "assignee_name": "Evoke Neuroscience, Inc.",
+      "inventor_name": "David W Hagedorn",
+      "priority_date": "2010-01-06",
+      "filing_date": "2017-03-13",
+      "publication_date": "2020-02-04",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10548501B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10548501B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10660537B2",
+      "publication_number": "US10660537B2",
+      "google_result_id": "patent/US10660537B2/en",
+      "title": "Headgear with displaceable sensors for electrophysiology measurement and ...",
+      "assignee_name": "Evoke Neuroscience, Inc.",
+      "inventor_name": "David W Hagedorn",
+      "priority_date": "2010-01-06",
+      "filing_date": "2017-08-16",
+      "publication_date": "2020-05-26",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10660537B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10660537B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10821285B2",
+      "publication_number": "US10821285B2",
+      "google_result_id": "patent/US10821285B2/en",
+      "title": "Dueling bandits algorithm for neuromodulation therapy",
+      "assignee_name": "California Institute Of Technology",
+      "inventor_name": "Joel W. Burdick",
+      "priority_date": "2017-01-05",
+      "filing_date": "2018-01-05",
+      "publication_date": "2020-11-03",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10821285B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10821285B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10890972B2",
+      "publication_number": "US10890972B2",
+      "google_result_id": "patent/US10890972B2/en",
+      "title": "Prefrontal-based cognitive brain-machine interfacing apparatus and method ...",
+      "assignee_name": "Korea University Research And Business Foundation",
+      "inventor_name": "Byoung-Kyong Min",
+      "priority_date": "2017-04-06",
+      "filing_date": "2018-04-06",
+      "publication_date": "2021-01-12",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10890972B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10890972B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10898130B2",
+      "publication_number": "US10898130B2",
+      "google_result_id": "patent/US10898130B2/en",
+      "title": "System and method for pain detection and computation of a pain quantification ...",
+      "assignee_name": "New York University",
+      "inventor_name": "Erwin Roy John",
+      "priority_date": "2007-04-05",
+      "filing_date": "2016-06-28",
+      "publication_date": "2021-01-26",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10898130B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10898130B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US10901509B2",
+      "publication_number": "US10901509B2",
+      "google_result_id": "patent/US10901509B2/en",
+      "title": "Wearable computing apparatus and method",
+      "assignee_name": "Interaxon Inc.",
+      "inventor_name": "Christopher Allen Aimone",
+      "priority_date": "2013-03-15",
+      "filing_date": "2019-06-13",
+      "publication_date": "2021-01-26",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS10901509B2",
+      "google_patents_locator": "https://patents.google.com/patent/US10901509B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US11172859B2",
+      "publication_number": "US11172859B2",
+      "google_result_id": "patent/US11172859B2/en",
+      "title": "Wearable brain activity device with auditory interface",
+      "assignee_name": "Medibotics",
+      "inventor_name": "Robert A. Connor",
+      "priority_date": "2014-01-28",
+      "filing_date": "2018-06-29",
+      "publication_date": "2021-11-16",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS11172859B2",
+      "google_patents_locator": "https://patents.google.com/patent/US11172859B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US11235156B2",
+      "publication_number": "US11235156B2",
+      "google_result_id": "patent/US11235156B2/en",
+      "title": "Wearable audio device with vagus nerve stimulation",
+      "assignee_name": "Bose Corporation",
+      "inventor_name": "Stephen L. Romine",
+      "priority_date": "2019-09-11",
+      "filing_date": "2019-09-11",
+      "publication_date": "2022-02-01",
+      "query_id": "F10-CAP-EAR-EEG",
+      "query_expression": "ear EEG in-ear electrode wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS11235156B2",
+      "google_patents_locator": "https://patents.google.com/patent/US11235156B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US11458318B2",
+      "publication_number": "US11458318B2",
+      "google_result_id": "patent/US11458318B2/en",
+      "title": "Non-regular electrical stimulation patterns for treating neurological disorders",
+      "assignee_name": "Duke University",
+      "inventor_name": "Warren M. Grill",
+      "priority_date": "2008-10-03",
+      "filing_date": "2020-07-17",
+      "publication_date": "2022-10-04",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS11458318B2",
+      "google_patents_locator": "https://patents.google.com/patent/US11458318B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US11464973B2",
+      "publication_number": "US11464973B2",
+      "google_result_id": "patent/US11464973B2/en",
+      "title": "Transcranial stimulation device and method based on electrophysiological ...",
+      "assignee_name": "Evoke Neuroscience, Inc",
+      "inventor_name": "David W. Hagedorn",
+      "priority_date": "2010-01-06",
+      "filing_date": "2020-06-26",
+      "publication_date": "2022-10-11",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS11464973B2",
+      "google_patents_locator": "https://patents.google.com/patent/US11464973B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12014464B2",
+      "publication_number": "US12014464B2",
+      "google_result_id": "patent/US12014464B2/en",
+      "title": "Contextual awareness of user interface menus",
+      "assignee_name": "Magic Leap, Inc.",
+      "inventor_name": "James M. Powderly",
+      "priority_date": "2016-05-20",
+      "filing_date": "2022-04-06",
+      "publication_date": "2024-06-18",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12014464B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12014464B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12193784B2",
+      "publication_number": "US12193784B2",
+      "google_result_id": "patent/US12193784B2/en",
+      "title": "Method and device for target identification, electronic apparatus, storage ...",
+      "assignee_name": "Beijing Galaxy Circumference Technologies Co., Ltd.",
+      "inventor_name": "Kecheng Wei",
+      "priority_date": "2021-07-05",
+      "filing_date": "2022-06-27",
+      "publication_date": "2025-01-14",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12193784B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12193784B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12329964B2",
+      "publication_number": "US12329964B2",
+      "google_result_id": "patent/US12329964B2/en",
+      "title": "Treatment paradigms for nerve stimulation",
+      "assignee_name": "Electrocore, Inc.",
+      "inventor_name": "Bruce J. Simon",
+      "priority_date": "2010-08-19",
+      "filing_date": "2023-08-01",
+      "publication_date": "2025-06-17",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12329964B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12329964B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12350504B2",
+      "publication_number": "US12350504B2",
+      "google_result_id": "patent/US12350504B2/en",
+      "title": "System and method for transcranial current loop brain stimulation",
+      "assignee_name": "EPIC Neuro, Inc.",
+      "inventor_name": "James William Phillips",
+      "priority_date": "2014-10-01",
+      "filing_date": "2023-07-12",
+      "publication_date": "2025-07-08",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12350504B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12350504B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12393274B2",
+      "publication_number": "US12393274B2",
+      "google_result_id": "patent/US12393274B2/en",
+      "title": "Brain computer interface for augmented reality",
+      "assignee_name": "Cognixion Corporation",
+      "inventor_name": "Andreas Forsland",
+      "priority_date": "2017-04-26",
+      "filing_date": "2024-04-16",
+      "publication_date": "2025-08-19",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12393274B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12393274B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12455625B2",
+      "publication_number": "US12455625B2",
+      "google_result_id": "patent/US12455625B2/en",
+      "title": "Brain-computer interface with high-speed eye tracking features",
+      "assignee_name": "Neurable Inc.",
+      "inventor_name": "Ramses ALCAIDE",
+      "priority_date": "2017-08-23",
+      "filing_date": "2024-03-22",
+      "publication_date": "2025-10-28",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12455625B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12455625B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US12555232B2",
+      "publication_number": "US12555232B2",
+      "google_result_id": "patent/US12555232B2/en",
+      "title": "Supervised classifier for optimizing target for neuromodulation, implant ...",
+      "assignee_name": "Washington University",
+      "inventor_name": "Eric Leuthardt",
+      "priority_date": "2017-09-26",
+      "filing_date": "2023-05-23",
+      "publication_date": "2026-02-17",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS12555232B2",
+      "google_patents_locator": "https://patents.google.com/patent/US12555232B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20080082020A1",
+      "publication_number": "US20080082020A1",
+      "google_result_id": "patent/US20080082020A1/en",
+      "title": "System and method for biofeedback administration",
+      "assignee_name": "Collura Thomas F",
+      "inventor_name": "Thomas F. Collura",
+      "priority_date": "2006-08-30",
+      "filing_date": "2006-08-30",
+      "publication_date": "2008-04-03",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20080082020A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20080082020A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20100094156A1",
+      "publication_number": "US20100094156A1",
+      "google_result_id": "patent/US20100094156A1/en",
+      "title": "System and Method for Biofeedback Administration",
+      "assignee_name": "Collura Thomas F",
+      "inventor_name": "Thomas F. Collura",
+      "priority_date": "2008-10-13",
+      "filing_date": "2008-10-13",
+      "publication_date": "2010-04-15",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20100094156A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20100094156A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20130096363A1",
+      "publication_number": "US20130096363A1",
+      "google_result_id": "patent/US20130096363A1/en",
+      "title": "Neuromodulation of deep-brain targets by transcranial magnetic stimulation ...",
+      "assignee_name": "M. Bret Schneider",
+      "inventor_name": "M. Bret Schneider",
+      "priority_date": "2010-04-02",
+      "filing_date": "2011-03-30",
+      "publication_date": "2013-04-18",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20130096363A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20130096363A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20160345901A1",
+      "publication_number": "US20160345901A1",
+      "google_result_id": "patent/US20160345901A1/en",
+      "title": "Wearable Brain Activity Monitor",
+      "assignee_name": "Medibotics Llc",
+      "inventor_name": "Robert A. Connor",
+      "priority_date": "2014-01-28",
+      "filing_date": "2016-08-13",
+      "publication_date": "2016-12-01",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20160345901A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20160345901A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20190269922A1",
+      "publication_number": "US20190269922A1",
+      "google_result_id": "patent/US20190269922A1/en",
+      "title": "Extracranial implantable devices, systems and methods for the treatment of ...",
+      "assignee_name": "The Regents Of The University Of California",
+      "inventor_name": "Christopher DeGiorgio",
+      "priority_date": "2009-10-05",
+      "filing_date": "2019-03-04",
+      "publication_date": "2019-09-05",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20190269922A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20190269922A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20190380607A1",
+      "publication_number": "US20190380607A1",
+      "google_result_id": "patent/US20190380607A1/en",
+      "title": "Mobile Wearable Device for Measuring Electromagnetic Brain Activity",
+      "assignee_name": "Medibotics Llc",
+      "inventor_name": "Robert A. Connor",
+      "priority_date": "2014-01-28",
+      "filing_date": "2019-08-28",
+      "publication_date": "2019-12-19",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20190380607A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20190380607A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20200289815A1",
+      "publication_number": "US20200289815A1",
+      "google_result_id": "patent/US20200289815A1/en",
+      "title": "Method and System For Physiological Target Localization From Macroelectrode ...",
+      "assignee_name": "Greenville Neuromodulation Center",
+      "inventor_name": "He Huang",
+      "priority_date": "2014-08-20",
+      "filing_date": "2019-10-07",
+      "publication_date": "2020-09-17",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20200289815A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20200289815A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20200375465A1",
+      "publication_number": "US20200375465A1",
+      "google_result_id": "patent/US20200375465A1/en",
+      "title": "Super-pixel detection for wearable diffuse optical tomography",
+      "assignee_name": "Washington University",
+      "inventor_name": "Joseph P. Culver",
+      "priority_date": "2014-10-17",
+      "filing_date": "2020-08-19",
+      "publication_date": "2020-12-03",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20200375465A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20200375465A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20200393902A1",
+      "publication_number": "US20200393902A1",
+      "google_result_id": "patent/US20200393902A1/en",
+      "title": "Wearable closed loop ai with light based brain sensing: technology at the ...",
+      "assignee_name": "Blueberry X Technologies Inc.",
+      "inventor_name": "William Steve G. Mann",
+      "priority_date": "2019-06-11",
+      "filing_date": "2020-06-11",
+      "publication_date": "2020-12-17",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20200393902A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20200393902A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20210059552A1",
+      "publication_number": "US20210059552A1",
+      "google_result_id": "patent/US20210059552A1/en",
+      "title": "Smart system and method for monitoring cognition status",
+      "assignee_name": "National Chung-Shan Institute Of Science And Technology",
+      "inventor_name": "Li-Wei KO",
+      "priority_date": "2019-09-02",
+      "filing_date": "2019-09-02",
+      "publication_date": "2021-03-04",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20210059552A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20210059552A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20230190196A1",
+      "publication_number": "US20230190196A1",
+      "google_result_id": "patent/US20230190196A1/en",
+      "title": "Force-controlled electroencephalogram monitoring device",
+      "assignee_name": "Microsoft Technology Licensing, Llc",
+      "inventor_name": "Yu-Te Wang",
+      "priority_date": "2021-12-17",
+      "filing_date": "2021-12-17",
+      "publication_date": "2023-06-22",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20230190196A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20230190196A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20240161017A1",
+      "publication_number": "US20240161017A1",
+      "google_result_id": "patent/US20240161017A1/en",
+      "title": "Connectome Ensemble Transfer Learning",
+      "assignee_name": "Derek Alexander Pisner",
+      "inventor_name": "Derek Alexander Pisner",
+      "priority_date": "2022-05-17",
+      "filing_date": "2023-05-16",
+      "publication_date": "2024-05-16",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20240161017A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20240161017A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20240221751A1",
+      "publication_number": "US20240221751A1",
+      "google_result_id": "patent/US20240221751A1/en",
+      "title": "Wearable silent speech device, systems, and methods",
+      "assignee_name": "Wispr Al, Inc.",
+      "inventor_name": "Sahaj Garg",
+      "priority_date": "2023-01-04",
+      "filing_date": "2023-06-21",
+      "publication_date": "2024-07-04",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20240221751A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20240221751A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20250186001A1",
+      "publication_number": "US20250186001A1",
+      "google_result_id": "patent/US20250186001A1/en",
+      "title": "Brain-computer interface with adaptations for high-speed, accurate, and ...",
+      "assignee_name": "Neurable Inc.",
+      "inventor_name": "Ramses ALCAIDE",
+      "priority_date": "2018-01-18",
+      "filing_date": "2024-06-28",
+      "publication_date": "2025-06-12",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20250186001A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20250186001A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US20250295921A1",
+      "publication_number": "US20250295921A1",
+      "google_result_id": "patent/US20250295921A1/en",
+      "title": "Systems and methods related to the treatment of back pain",
+      "assignee_name": "Spr Therapeutics, Inc.",
+      "inventor_name": "Meredith McGee",
+      "priority_date": "2012-03-15",
+      "filing_date": "2025-06-06",
+      "publication_date": "2025-09-25",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS20250295921A1",
+      "google_patents_locator": "https://patents.google.com/patent/US20250295921A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US7231254B2",
+      "publication_number": "US7231254B2",
+      "google_result_id": "patent/US7231254B2/en",
+      "title": "Closed-loop feedback-driven neuromodulation",
+      "assignee_name": "Bioneuronics Corporation",
+      "inventor_name": "Daniel John DiLorenzo",
+      "priority_date": "1998-08-05",
+      "filing_date": "2004-07-12",
+      "publication_date": "2007-06-12",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS7231254B2",
+      "google_patents_locator": "https://patents.google.com/patent/US7231254B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US7949401B2",
+      "publication_number": "US7949401B2",
+      "google_result_id": "patent/US7949401B2/en",
+      "title": "Electromagnetic signal delivery for tissue affected by neuronal dysfunction, ...",
+      "assignee_name": "Advanced Neuromodulation Systems, Inc.",
+      "inventor_name": "Brad Fowler",
+      "priority_date": "2006-04-11",
+      "filing_date": "2007-04-06",
+      "publication_date": "2011-05-24",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS7949401B2",
+      "google_patents_locator": "https://patents.google.com/patent/US7949401B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US7974696B1",
+      "publication_number": "US7974696B1",
+      "google_result_id": "patent/US7974696B1/en",
+      "title": "Closed-loop autonomic neuromodulation for optimal control of neurological and ...",
+      "assignee_name": "Dilorenzo Biomedical, Llc",
+      "inventor_name": "Daniel John DiLorenzo",
+      "priority_date": "1998-08-05",
+      "filing_date": "2005-07-23",
+      "publication_date": "2011-07-05",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS7974696B1",
+      "google_patents_locator": "https://patents.google.com/patent/US7974696B1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US8396557B2",
+      "publication_number": "US8396557B2",
+      "google_result_id": "patent/US8396557B2/en",
+      "title": "Extracranial monitoring of brain activity",
+      "assignee_name": "Neurovista Corporation",
+      "inventor_name": "Daniel John DiLorenzo",
+      "priority_date": "1998-08-05",
+      "filing_date": "2012-04-04",
+      "publication_date": "2013-03-12",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS8396557B2",
+      "google_patents_locator": "https://patents.google.com/patent/US8396557B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US8718779B2",
+      "publication_number": "US8718779B2",
+      "google_result_id": "patent/US8718779B2/en",
+      "title": "Treatment of mood and/or anxiety disorders by electrical brain stimulation and/ ...",
+      "assignee_name": "Boston Scientific Neuromodulation Corporation",
+      "inventor_name": "Todd K. Whitehurst",
+      "priority_date": "2000-06-20",
+      "filing_date": "2013-03-05",
+      "publication_date": "2014-05-06",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS8718779B2",
+      "google_patents_locator": "https://patents.google.com/patent/US8718779B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US8818515B2",
+      "publication_number": "US8818515B2",
+      "google_result_id": "patent/US8818515B2/en",
+      "title": "Voltage limited neurostimulation",
+      "assignee_name": "Research Foundation Of The City University Of New York",
+      "inventor_name": "Marom Bikson",
+      "priority_date": "2012-01-13",
+      "filing_date": "2012-01-13",
+      "publication_date": "2014-08-26",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS8818515B2",
+      "google_patents_locator": "https://patents.google.com/patent/US8818515B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9042988B2",
+      "publication_number": "US9042988B2",
+      "google_result_id": "patent/US9042988B2/en",
+      "title": "Closed-loop vagus nerve stimulation",
+      "assignee_name": "Cyberonics, Inc.",
+      "inventor_name": "Daniel John DiLorenzo",
+      "priority_date": "1998-08-05",
+      "filing_date": "2005-11-17",
+      "publication_date": "2015-05-26",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9042988B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9042988B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9248286B2",
+      "publication_number": "US9248286B2",
+      "google_result_id": "patent/US9248286B2/en",
+      "title": "Medical self-treatment using non-invasive vagus nerve stimulation",
+      "assignee_name": "ElectroCore, LLC",
+      "inventor_name": "Bruce J. Simon",
+      "priority_date": "2009-03-20",
+      "filing_date": "2013-04-08",
+      "publication_date": "2016-02-02",
+      "query_id": "F10-CAP-DBS-CLOSED-LOOP",
+      "query_expression": "deep brain stimulation sensing closed loop",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9248286B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9248286B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9421366B2",
+      "publication_number": "US9421366B2",
+      "google_result_id": "patent/US9421366B2/en",
+      "title": "Methods of treating medical conditions by population based encoding of neural ...",
+      "assignee_name": "Case Western Reserve University",
+      "inventor_name": "Dustin Tyler",
+      "priority_date": "2012-12-14",
+      "filing_date": "2013-12-16",
+      "publication_date": "2016-08-23",
+      "query_id": "F10-CAP-NEURAL-IMPLANT",
+      "query_expression": "neural implant brain computer electrode",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9421366B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9421366B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9440070B2",
+      "publication_number": "US9440070B2",
+      "google_result_id": "patent/US9440070B2/en",
+      "title": "Wearable transdermal electrical stimulation devices and methods of using them",
+      "assignee_name": "Thyne Global, Inc.",
+      "inventor_name": "Isy Goldwasser",
+      "priority_date": "2012-11-26",
+      "filing_date": "2014-12-02",
+      "publication_date": "2016-09-13",
+      "query_id": "F10-CAP-FNIRS",
+      "query_expression": "functional near infrared spectroscopy wearable",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9440070B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9440070B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9532748B2",
+      "publication_number": "US9532748B2",
+      "google_result_id": "patent/US9532748B2/en",
+      "title": "Methods and devices for brain activity monitoring supporting mental state ...",
+      "assignee_name": "Personal Neuro Devices Inc.",
+      "inventor_name": "Steve Denison",
+      "priority_date": "2013-04-22",
+      "filing_date": "2014-04-22",
+      "publication_date": "2017-01-03",
+      "query_id": "F10-CAP-NEUROFEEDBACK",
+      "query_expression": "neurofeedback EEG device system",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9532748B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9532748B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9750933B2",
+      "publication_number": "US9750933B2",
+      "google_result_id": "patent/US9750933B2/en",
+      "title": "Transcutaneous neural stimulation device",
+      "assignee_name": "Daniel T. Gregory",
+      "inventor_name": "Daniel T. Gregory",
+      "priority_date": "2014-12-18",
+      "filing_date": "2015-12-18",
+      "publication_date": "2017-09-05",
+      "query_id": "F10-CAP-TDCS",
+      "query_expression": "transcranial direct current stimulation device",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9750933B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9750933B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:US9955895B2",
+      "publication_number": "US9955895B2",
+      "google_result_id": "patent/US9955895B2/en",
+      "title": "Wearable head-mounted, glass-style computing devices with EOG acquisition and ...",
+      "assignee_name": "The Research Foundation For The State University Of New York",
+      "inventor_name": "Zhanpeng Jin",
+      "priority_date": "2013-11-05",
+      "filing_date": "2014-11-05",
+      "publication_date": "2018-05-01",
+      "query_id": "F10-CAP-BCI",
+      "query_expression": "brain computer interface",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DUS9955895B2",
+      "google_patents_locator": "https://patents.google.com/patent/US9955895B2"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:WO2019173733A1",
+      "publication_number": "WO2019173733A1",
+      "google_result_id": "patent/WO2019173733A1/en",
+      "title": "Mobile, wearable eeg device with high quality sensors",
+      "assignee_name": "The Trustees Of The University Of Pennsylvania",
+      "inventor_name": "Arjun RAMAKRISHNAN",
+      "priority_date": "2018-03-09",
+      "filing_date": "2019-03-08",
+      "publication_date": "2019-09-12",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DWO2019173733A1",
+      "google_patents_locator": "https://patents.google.com/patent/WO2019173733A1"
+    },
+    {
+      "candidate_id": "DOCDB-LEAD:WO2024071994A1",
+      "publication_number": "WO2024071994A1",
+      "google_result_id": "patent/WO2024071994A1/en",
+      "title": "Motion sickness prevention and mitigation electronic device",
+      "assignee_name": "주식회사 뉴라이브",
+      "inventor_name": "홍기환",
+      "priority_date": "2022-09-26",
+      "filing_date": "2023-09-26",
+      "publication_date": "2024-04-04",
+      "query_id": "F10-CAP-EEG-HEADSET",
+      "query_expression": "EEG headset wearable neuro",
+      "query_family": "PATENT_CAPABILITY_PRODUCT_CROSSOVER",
+      "source_class": "PATENT_BIBLIOGRAPHIC",
+      "retrieval_page": 0,
+      "seeded_assignee_label": null,
+      "espacenet_locator": "https://worldwide.espacenet.com/patent/search?q=pn%3DWO2024071994A1",
+      "google_patents_locator": "https://patents.google.com/patent/WO2024071994A1"
+    }
+  ],
+  "patent_publication_set_sha256": "086500f71822e379bcbbc9ae75145e646c5e21915fca2c8fbd562b147fd116b7",
+  "assignee_candidate_count": 65,
+  "assignee_candidates": [
+    {
+      "assignee_candidate_id": "ASN:724ce820564dfae4",
+      "assignee_name": "AAVAA Inc.",
+      "patent_publication_numbers": [
+        "EP4380454A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:bb4e095a5be49c54",
+      "assignee_name": "Advanced Neuromodulation Systems, Inc.",
+      "patent_publication_numbers": [
+        "US7949401B2",
+        "US10004901B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS",
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:a573878c35c60b89",
+      "assignee_name": "Beijing Galaxy Circumference Technologies Co., Ltd.",
+      "patent_publication_numbers": [
+        "US12193784B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:6f9d928c1d76fd8f",
+      "assignee_name": "Bioneuronics Corporation",
+      "patent_publication_numbers": [
+        "US7231254B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:a10f746a825de829",
+      "assignee_name": "Blueberry X Technologies Inc.",
+      "patent_publication_numbers": [
+        "US20200393902A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:2c53ffa38dc61c53",
+      "assignee_name": "Bose Corporation",
+      "patent_publication_numbers": [
+        "EP3986249B1",
+        "US11235156B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:d1f670365897927d",
+      "assignee_name": "Boston Scientific Neuromodulation Corporation",
+      "patent_publication_numbers": [
+        "US8718779B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:8331122e8aae1aee",
+      "assignee_name": "California Institute Of Technology",
+      "patent_publication_numbers": [
+        "US10821285B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:975baf152daabc81",
+      "assignee_name": "Case Western Reserve University",
+      "patent_publication_numbers": [
+        "US9421366B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:1c3cdaa64b3607bb",
+      "assignee_name": "CereGate GmbH",
+      "patent_publication_numbers": [
+        "EP3824372B1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:5d7ff0e77699b6c9",
+      "assignee_name": "Cognixion Corporation",
+      "patent_publication_numbers": [
+        "US12393274B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:2380a697866b3b70",
+      "assignee_name": "Collura Thomas F",
+      "patent_publication_numbers": [
+        "US20100094156A1",
+        "US20080082020A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:a096441770bd8d19",
+      "assignee_name": "Cyberonics, Inc.",
+      "patent_publication_numbers": [
+        "US9042988B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:4f63382be11794f2",
+      "assignee_name": "Daniel T. Gregory",
+      "patent_publication_numbers": [
+        "US9750933B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:0146aec272218264",
+      "assignee_name": "Derek Alexander Pisner",
+      "patent_publication_numbers": [
+        "US20240161017A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:e490f0ab2fc9b611",
+      "assignee_name": "Dilorenzo Biomedical, Llc",
+      "patent_publication_numbers": [
+        "US7974696B1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:781afa4ed50a74b8",
+      "assignee_name": "Duke University",
+      "patent_publication_numbers": [
+        "US11458318B2",
+        "EP3372274B1",
+        "EP2340078B1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:b99691a9e72dd804",
+      "assignee_name": "Electrocore, Inc.",
+      "patent_publication_numbers": [
+        "US10441780B2",
+        "US10286211B2",
+        "US12329964B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:7e58886effa16258",
+      "assignee_name": "ElectroCore, LLC",
+      "patent_publication_numbers": [
+        "US9248286B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:59e7ad0f4ccd5479",
+      "assignee_name": "EPIC Neuro, Inc.",
+      "patent_publication_numbers": [
+        "US12350504B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:cd98e26d283755c9",
+      "assignee_name": "Evoke Neuroscience, Inc",
+      "patent_publication_numbers": [
+        "US11464973B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:31619e79fadc0a82",
+      "assignee_name": "Evoke Neuroscience, Inc.",
+      "patent_publication_numbers": [
+        "US10548501B2",
+        "US10660537B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI",
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:1ac5884b38060ea5",
+      "assignee_name": "Greenville Neuromodulation Center",
+      "patent_publication_numbers": [
+        "US20200289815A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:19d2528846523b29",
+      "assignee_name": "Interaxon Inc.",
+      "patent_publication_numbers": [
+        "US10901509B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:113340b12cc26272",
+      "assignee_name": "Koninklijke Philips N.V.",
+      "patent_publication_numbers": [
+        "EP3785625A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:695a136fb87c74a6",
+      "assignee_name": "Korea University Research And Business Foundation",
+      "patent_publication_numbers": [
+        "US10890972B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:46380569522a4201",
+      "assignee_name": "M. Bret Schneider",
+      "patent_publication_numbers": [
+        "US20130096363A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:a03ecb93939d2ba7",
+      "assignee_name": "Magic Leap, Inc.",
+      "patent_publication_numbers": [
+        "US12014464B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:dfce1a9ec04c9354",
+      "assignee_name": "Mc10, Inc.",
+      "patent_publication_numbers": [
+        "US10532211B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:e2deb0df9c8c0f84",
+      "assignee_name": "Medibotics",
+      "patent_publication_numbers": [
+        "US11172859B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:61240d792f8e6aab",
+      "assignee_name": "Medibotics Llc",
+      "patent_publication_numbers": [
+        "US20160345901A1",
+        "US10234942B2",
+        "US20190380607A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:0b19e8981c1e0c6a",
+      "assignee_name": "Microsoft Technology Licensing, Llc",
+      "patent_publication_numbers": [
+        "US20230190196A1",
+        "US10044712B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET",
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:e9a36160cd2f29af",
+      "assignee_name": "National Chung-Shan Institute Of Science And Technology",
+      "patent_publication_numbers": [
+        "US20210059552A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:d49c2344e0f4620f",
+      "assignee_name": "Neurable Inc.",
+      "patent_publication_numbers": [
+        "US20250186001A1",
+        "US12455625B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:9e9f1be666d1d07b",
+      "assignee_name": "Neurovista Corporation",
+      "patent_publication_numbers": [
+        "US8396557B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-DBS-CLOSED-LOOP"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:c83aeae887827902",
+      "assignee_name": "New York University",
+      "patent_publication_numbers": [
+        "US10898130B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:c415b9bdb3d4e435",
+      "assignee_name": "Personal Neuro Devices Inc.",
+      "patent_publication_numbers": [
+        "US9532748B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:3e0f183e37dbb46e",
+      "assignee_name": "Research Foundation Of The City University Of New York",
+      "patent_publication_numbers": [
+        "US8818515B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:952cd6c931cb8e9f",
+      "assignee_name": "Spr Therapeutics, Inc.",
+      "patent_publication_numbers": [
+        "US20250295921A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:2df233dc79a292a3",
+      "assignee_name": "The Regents Of The University Of California",
+      "patent_publication_numbers": [
+        "US20190269922A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:005357ba18840d9d",
+      "assignee_name": "The Research Foundation For The State University Of New York",
+      "patent_publication_numbers": [
+        "US9955895B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:79c3cbeae9795cac",
+      "assignee_name": "The Trustees Of The University Of Pennsylvania",
+      "patent_publication_numbers": [
+        "WO2019173733A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:889869f2fff786a7",
+      "assignee_name": "Thyne Global, Inc.",
+      "patent_publication_numbers": [
+        "US9440070B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:14f8438e438a22ca",
+      "assignee_name": "Washington University",
+      "patent_publication_numbers": [
+        "US12555232B2",
+        "US20200375465A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI",
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:0eed1e1f610d860a",
+      "assignee_name": "Wispr Al, Inc.",
+      "patent_publication_numbers": [
+        "US20240221751A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:10e287422826a14f",
+      "assignee_name": "インテル コーポレイション",
+      "patent_publication_numbers": [
+        "JP6125670B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-FNIRS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:bfe0c3f60a949b57",
+      "assignee_name": "ティ・オ・ドォッブルビィ・エンジニアリング・アー／エス",
+      "patent_publication_numbers": [
+        "JP6852162B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:e0ed9c81f49ed19d",
+      "assignee_name": "ボストン サイエンティフィック ニューロモデュレイション コーポレイション",
+      "patent_publication_numbers": [
+        "JP5432166B2"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:27f3db33febf5180",
+      "assignee_name": "中国人民解放军战略支援部队信息工程大学",
+      "patent_publication_numbers": [
+        "CN111134667B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:4709c12301bc1a1f",
+      "assignee_name": "中山衡思健康科技有限公司",
+      "patent_publication_numbers": [
+        "CN105167769A"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:23fc78511c44cd38",
+      "assignee_name": "内森·英特拉托",
+      "patent_publication_numbers": [
+        "CN107530012B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:97ae56ce1d42d895",
+      "assignee_name": "博睿泰克科技（宁波）有限公司",
+      "patent_publication_numbers": [
+        "CN106823133A"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:b992646b780ff3ae",
+      "assignee_name": "周常安",
+      "patent_publication_numbers": [
+        "CN205697764U",
+        "CN210835473U"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:0621ed2188f4c0a0",
+      "assignee_name": "奥迪康有限公司",
+      "patent_publication_numbers": [
+        "CN107343250B",
+        "CN110062318B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:f5f431b5246c026a",
+      "assignee_name": "尼尔森消费者有限责任公司",
+      "patent_publication_numbers": [
+        "CN110558978B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:7eb7637670e773e8",
+      "assignee_name": "山东建筑大学",
+      "patent_publication_numbers": [
+        "CN108304068B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:1ae833df48729283",
+      "assignee_name": "日商精良股份有限公司",
+      "patent_publication_numbers": [
+        "TW202031056A"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:1fbae2caadf6bbad",
+      "assignee_name": "昆明理工大学",
+      "patent_publication_numbers": [
+        "CN204765635U"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:6c3ae4392db702ad",
+      "assignee_name": "深圳市豪恩声学股份有限公司",
+      "patent_publication_numbers": [
+        "CN217904625U"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EAR-EEG"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:86877b12c50e9f73",
+      "assignee_name": "深圳英智科技有限公司",
+      "patent_publication_numbers": [
+        "CN203556061U"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:3210fb49afee4d39",
+      "assignee_name": "美敦力公司",
+      "patent_publication_numbers": [
+        "CN107073278B"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEURAL-IMPLANT"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:6c67abc9e7f19bb0",
+      "assignee_name": "西安电子科技大学",
+      "patent_publication_numbers": [
+        "CN100482155C"
+      ],
+      "source_query_ids": [
+        "F10-CAP-NEUROFEEDBACK"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:7c8978c816d997d1",
+      "assignee_name": "이승영",
+      "patent_publication_numbers": [
+        "KR100866378B1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-TDCS"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:8bc52890a3cbf541",
+      "assignee_name": "주식회사 뉴라이브",
+      "patent_publication_numbers": [
+        "WO2024071994A1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-EEG-HEADSET"
+      ]
+    },
+    {
+      "assignee_candidate_id": "ASN:ed5a78ec6d20263b",
+      "assignee_name": "한국과학기술연구원",
+      "patent_publication_numbers": [
+        "KR102349087B1"
+      ],
+      "source_query_ids": [
+        "F10-CAP-BCI"
+      ]
+    }
+  ],
+  "assignee_candidate_set_sha256": "c4431659151de579df22f6751fa6cd5504426fa990b8d8b0b956dabd3c66e246",
+  "bounded_exhaustion_rule": {
+    "mode": "BOUNDED_SOURCE_EXHAUSTION",
+    "requires_disposition_credit_for_every_frozen_patent_publication": true,
+    "requires_disposition_credit_for_every_frozen_assignee_candidate": true,
+    "patent_match_is_retrieval_lead_only": true,
+    "assignee_match_is_retrieval_lead_only": true,
+    "product_identity_requires_separate_attributable_product_evidence": true,
+    "commercialization_not_inferred_from_patent_ownership": true,
+    "semantic_similarity_does_not_create_product_link": true,
+    "l4_semantic_relationships_remain_discovery_candidates_until_reviewed": true,
+    "termination_note": "BOUNDED_FRAME_EXHAUSTED only when every frozen patent publication and every frozen assignee candidate has an exact disposition credit. Remaining Google Patents hits outside pages 0-1 of declared queries are out of this universe."
+  },
+  "contamination_controls": {
+    "patent_or_assignee_match_is_retrieval_lead_only": true,
+    "patent_ownership_does_not_establish_commercialization": true,
+    "semantic_similarity_does_not_create_product_identity": true,
+    "no_canonical_offering_allocation_from_patent_freeze": true,
+    "estimator_eligible_only_for_include_resolved_with_attributable_product_evidence": true,
+    "f7_f9_f11_remain_estimator_excluded": true
+  },
+  "retrieval_provenance": {
+    "provider": "GOOGLE_PATENTS_XHR",
+    "retrieved_at_knowledge_time": "2026-09-26T11:25:00Z",
+    "provider_base_url": "https://patents.google.com/xhr/query"
+  },
+  "boundary": "F10 patent/assignee candidate universe freezes bibliographic patent publications and assignee strings as retrieval leads only under the A2 analysis universe. Patent ownership does not establish commercialization, product identity, deployment, or effectiveness. Semantic similarity does not create product links. INCLUDE_RESOLVED requires separate attributable product evidence. Exhaustion applies only to this frozen candidate set."
+}

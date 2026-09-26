@@ -1,0 +1,81 @@
+{
+  "strata_id": "RELEASE_A_LANGUAGE_JURISDICTION_STRATA_v1.0",
+  "strata_sha256": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4",
+  "status": "FROZEN_v1.0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "census_registered_at": "2026-09-26T11:30:00Z",
+  "selection_rule": "Bind native-language/jurisdiction strata using frozen F9 actor jurisdictions and predeclared English-language discovery-bias correction before any F8 yield is observed. Do not add or drop strata after seeing F8 yield.",
+  "stratum_count": 7,
+  "strata": [
+    {
+      "stratum_id": "LL-ES-ES",
+      "language_code": "es",
+      "language_label": "Spanish",
+      "matched_jurisdictions": [
+        "ES"
+      ],
+      "selection_basis": "Frozen F9 actors Bitbrain, Neuroelectrics, and INBRAIN Neuroelectronics list Spain; Spanish-language public/regulatory surfaces are a declared English-bias correction stratum."
+    },
+    {
+      "stratum_id": "LL-DE-DE-AT",
+      "language_code": "de",
+      "language_label": "German",
+      "matched_jurisdictions": [
+        "DE",
+        "AT"
+      ],
+      "selection_basis": "Frozen F9 actors CorTec (Germany) and G.TEC Medical (Austria); German-language manufacturer and institutional surfaces."
+    },
+    {
+      "stratum_id": "LL-FR-FR",
+      "language_code": "fr",
+      "language_label": "French",
+      "matched_jurisdictions": [
+        "FR"
+      ],
+      "selection_basis": "Frozen F9 actors BioSerenity and Yneuro list France; French-language public product surfaces."
+    },
+    {
+      "stratum_id": "LL-ZH-CN",
+      "language_code": "zh",
+      "language_label": "Chinese",
+      "matched_jurisdictions": [
+        "CN"
+      ],
+      "selection_basis": "Frozen F9 actor BrainCo maintains a Chinese-language official surface (brainco.cn); Chinese is a high English-language discovery-bias risk stratum."
+    },
+    {
+      "stratum_id": "LL-JA-JP",
+      "language_code": "ja",
+      "language_label": "Japanese",
+      "matched_jurisdictions": [
+        "JP"
+      ],
+      "selection_basis": "Predeclared A4 English-bias correction stratum for Japanese-language neurotechnology product surfaces; required before F8 yield interpretation per A2.4."
+    },
+    {
+      "stratum_id": "LL-HE-IL",
+      "language_code": "he",
+      "language_label": "Hebrew",
+      "matched_jurisdictions": [
+        "IL"
+      ],
+      "selection_basis": "Frozen F9 actor Neurosteer lists Israel; Hebrew/local institutional surfaces as a matched stratum."
+    },
+    {
+      "stratum_id": "LL-SV-SE",
+      "language_code": "sv",
+      "language_label": "Swedish",
+      "matched_jurisdictions": [
+        "SE"
+      ],
+      "selection_basis": "Frozen F9 actor Flow Neuroscience lists Sweden; Swedish-language public/regulatory surfaces."
+    }
+  ],
+  "boundary": "These strata define the matched A4/F8 language-jurisdiction design for EN_PLUS_PRIORITY_NATIVE_v1. They do not establish completeness of multilingual coverage."
+}

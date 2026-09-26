@@ -1,0 +1,74 @@
+{
+  "protocol_id": "RELEASE_A_F8_ROUND_PROTOCOL_v1.0",
+  "protocol_sha256": "fb4893f9512471919dcdd5a1d91456805ce0c62d23804e4ac0a1dc57dc8a787e",
+  "status": "FROZEN_v1.0",
+  "frame_ids": [
+    "F8"
+  ],
+  "frame_version": "PRODUCT_DISCOVERY_FRAME_v1.0",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "language_jurisdiction_strata_id": "RELEASE_A_LANGUAGE_JURISDICTION_STRATA_v1.0",
+  "language_jurisdiction_strata_sha256": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4",
+  "protocol_registered_at": "2026-09-26T11:30:00Z",
+  "stopping_rule": {
+    "mode": "MARGINAL_YIELD",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20,
+    "literal_tail_only": true,
+    "note": "Saturation requires at least three completed rounds and the final two qualifying rounds each having at least 20 raw candidates with marginal new-identity yield <= 0.05. An intervening sub-threshold round breaks the qualifying tail."
+  },
+  "round_accounting_fields": [
+    "raw_candidates",
+    "new_resolved_include_identities",
+    "known_identity_duplicate_count",
+    "within_round_duplicate_count",
+    "outcome_counts.EXCLUDE",
+    "outcome_counts.BORDERLINE",
+    "outcome_counts.ABSTAIN",
+    "outcome_counts.UNRESOLVED_IDENTITY",
+    "outcome_counts.FAILED_INACCESSIBLE",
+    "marginal_new_identity_yield",
+    "duplicate_yield"
+  ],
+  "independence_rule": {
+    "frames_independently_attributable": true,
+    "prohibit_pooling_source_routes_merely_because_same_product_found": true,
+    "source_frame_follows_retrieval_mechanism_actually_used": true,
+    "post_hoc_relabelling_prohibited": true,
+    "does_not_credit_f9_or_prior_open_world_routes": true
+  },
+  "temporal_rule": {
+    "post_world_cutoff_retrieval_does_not_establish_pre_cutoff_inclusion_by_itself": true,
+    "resolved_post_cutoff_capture_requires_world_time_support_ref": true,
+    "later_world_state_changes_must_not_be_back_projected": true,
+    "no_canonical_identity_allocation_by_implication": true
+  },
+  "estimator_policy": {
+    "frame_capture_estimation_eligible": true,
+    "include_resolved_estimator_eligible_only_when_exact_offering_and_universe_constraints_hold": true,
+    "f7_f9_f11_remain_estimator_excluded": true
+  },
+  "minimum_declared_rounds": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "execution_gate": {
+    "requires_frozen_language_jurisdiction_strata": true,
+    "requires_frozen_f8_query_universe": true,
+    "requires_a2_checkpoint_binding": true,
+    "does_not_start_a3_or_later": true,
+    "language_strata_bound_before_yield_interpretation": true
+  },
+  "boundary": "F8 local-language query/round contracts freeze predeclared native-language/jurisdiction strata and retrieval seeds under the A2 analysis universe and A2 bounded-frame checkpoint. They do not establish global completeness, unseen-population size, market share, effectiveness, commercialization, S2 publication authority, or v4.2 assessment effect. Language strata are bound before yield interpretation."
+}
