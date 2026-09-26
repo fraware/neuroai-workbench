@@ -1,0 +1,263 @@
+{
+  "packet_id": "RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT_v1.0",
+  "packet_sha256": "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-26",
+  "study_id": "RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT_v1.0",
+  "model_specification_id": "RELEASE_A_A7_POPULATION_MODEL_SPECIFICATION_v1.0",
+  "model_specification_sha256": "9986bb58515955a53962df6bae5d79e250a9c9076c74f030347c82f52d3ce04b",
+  "capture_history_dataset_id": "RELEASE_A_A7_CAPTURE_HISTORY_DATASET_v1.0",
+  "capture_history_dataset_sha256": "f3718778dada33bafd55c7d2ce45aa0305eb04db15ffad85c2306393004d0af8",
+  "estimator_eligible_capture_records_sha256": "c1c1eb216285941085a4f158cbcf0d076216e36f9646a98f4fa841da0f327851",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "estimation_universe_id": "RAEU-40e80ac633f06b77c2b566dd19e8f3bac80288357b9a77d9101cd163b5df2584",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "observed_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "observed_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "n_observed": 6,
+  "n_estimated": null,
+  "n_unobserved": null,
+  "coverage_estimated": null,
+  "estimation_outcome": "FAIL_CLOSED",
+  "fail_closed_outcome": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA",
+  "fail_closed_reasons": [
+    "CAPTURE_TABLE_TOO_SPARSE",
+    "INSUFFICIENT_MULTI_FRAME_OVERLAP"
+  ],
+  "identifiability_diagnostics": {
+    "n_estimator_eligible_distinct_offerings": 6,
+    "primary_frames_with_positive_eligible_capture": [
+      "F1",
+      "F2",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "n_primary_frames_with_positive_eligible_capture": 5,
+    "n_offerings_captured_in_gte_2_eligible_frames": 6,
+    "n_pairwise_positive_overlaps_among_positive_frames": 8,
+    "n_structural_zero_primary_frames": 3,
+    "majority_primary_frames_structural_zeros": false,
+    "identifiability_gate_passed": false,
+    "fail_closed_reasons": [
+      "CAPTURE_TABLE_TOO_SPARSE",
+      "INSUFFICIENT_MULTI_FRAME_OVERLAP"
+    ],
+    "valid_outcome_if_failed": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA"
+  },
+  "assumptions": {
+    "identity_unit": "OFFERING",
+    "population_view_id": "A-P1",
+    "primary_estimation_frames": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8",
+      "F10"
+    ],
+    "estimator_excluded_frames": [
+      "F11",
+      "F7",
+      "F9"
+    ],
+    "f10_patent_leads_are_not_products": true,
+    "independence_not_assumed_for_headline": true,
+    "no_forced_point_estimate_when_inadmissible": true,
+    "model_total_below_n_observed_is_incoherent_not_floored": true
+  },
+  "dependence_diagnostics": {
+    "pairwise_unique_offering_overlap_matrix": {
+      "F1": {
+        "F1": 6,
+        "F2": 2,
+        "F3": 0,
+        "F4": 3,
+        "F5": 3,
+        "F6": 2,
+        "F8": 0,
+        "F10": 0
+      },
+      "F2": {
+        "F1": 2,
+        "F2": 2,
+        "F3": 0,
+        "F4": 1,
+        "F5": 0,
+        "F6": 0,
+        "F8": 0,
+        "F10": 0
+      },
+      "F3": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0,
+        "F8": 0,
+        "F10": 0
+      },
+      "F4": {
+        "F1": 3,
+        "F2": 1,
+        "F3": 0,
+        "F4": 3,
+        "F5": 1,
+        "F6": 1,
+        "F8": 0,
+        "F10": 0
+      },
+      "F5": {
+        "F1": 3,
+        "F2": 0,
+        "F3": 0,
+        "F4": 1,
+        "F5": 3,
+        "F6": 2,
+        "F8": 0,
+        "F10": 0
+      },
+      "F6": {
+        "F1": 2,
+        "F2": 0,
+        "F3": 0,
+        "F4": 1,
+        "F5": 2,
+        "F6": 2,
+        "F8": 0,
+        "F10": 0
+      },
+      "F8": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0,
+        "F8": 0,
+        "F10": 0
+      },
+      "F10": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0,
+        "F8": 0,
+        "F10": 0
+      }
+    },
+    "frames_with_positive_eligible_capture": [
+      "F1",
+      "F2",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "structural_zero_primary_frames": [
+      "F3",
+      "F8",
+      "F10"
+    ],
+    "notes": "Overlap is exact unique-offering co-capture under estimator-eligible INCLUDE_RESOLVED rows only. Structural zeros for F3/F8/F10 reflect zero eligible INCLUDE_RESOLVED captures under frozen protocols, not proof those frames cannot ever yield products."
+  },
+  "model_family_results": [
+    {
+      "model_family": "OBSERVED_ONLY_BASELINE",
+      "status": "REPORTED_BASELINE",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Reports N_observed=6 only; no unseen-population claim."
+    },
+    {
+      "model_family": "PAIRWISE_CAPTURE_RECAPTURE_DIAGNOSTIC",
+      "status": "DIAGNOSTIC_ONLY_NOT_HEADLINE",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Pairwise overlap matrix retained as dependence diagnostic. No naive N1*N2/m headline estimate is emitted under sparse fail-closed gate."
+    },
+    {
+      "model_family": "LOG_LINEAR_INDEPENDENCE_BASELINE",
+      "status": "NOT_FIT_FAIL_CLOSED",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Identifiability/sparseness gate failed before fitting; no defensible unseen-population estimate under preregistered acceptance criteria."
+    },
+    {
+      "model_family": "LOG_LINEAR_DEPENDENCE_INTERACTIONS",
+      "status": "NOT_FIT_FAIL_CLOSED",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Identifiability/sparseness gate failed before fitting; no defensible unseen-population estimate under preregistered acceptance criteria."
+    },
+    {
+      "model_family": "STRATIFIED_DEPENDENCE_MODEL",
+      "status": "NOT_FIT_FAIL_CLOSED",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Identifiability/sparseness gate failed before fitting; no defensible unseen-population estimate under preregistered acceptance criteria."
+    },
+    {
+      "model_family": "BAYESIAN_HIERARCHICAL_SENSITIVITY",
+      "status": "NOT_FIT_FAIL_CLOSED",
+      "headline_admissible": false,
+      "fitted_unseen_estimate": false,
+      "notes": "Identifiability/sparseness gate failed before fitting; no defensible unseen-population estimate under preregistered acceptance criteria."
+    }
+  ],
+  "headline_admissible_models": [],
+  "admissible_model_envelope": null,
+  "interval_or_sensitivity": null,
+  "classes_likely_poorly_observed": [
+    {
+      "class_id": "REGULATORY_TRIAL_CAPTURE_SPARSE",
+      "evidence": "F2 eligible captures only 2 known overlaps; F3 eligible INCLUDE_RESOLVED count is 0 under exhaustion."
+    },
+    {
+      "class_id": "LOCAL_LANGUAGE_STRUCTURAL_ZERO",
+      "evidence": "F8 estimator-eligible INCLUDE_RESOLVED count is 0 under R1-R3 protocol."
+    },
+    {
+      "class_id": "PATENT_CROSSOVER_STRUCTURAL_ZERO",
+      "evidence": "F10 eligible INCLUDE_RESOLVED count is 0; patent leads are not products."
+    },
+    {
+      "class_id": "PURPOSIVE_DIAGNOSTIC_ONLY_FRAMES",
+      "evidence": "F7/F9/F11 contribute registry/coverage diagnostics but remain excluded from the primary estimator."
+    },
+    {
+      "class_id": "OPEN_WORLD_KNOWN_IDENTITY_ONLY",
+      "evidence": "F1/F4/F5/F6 eligible INCLUDE_RESOLVED rows are A1 known-identity overlaps only; discovery allocated 0 new canonical IDs."
+    }
+  ],
+  "authority_controls": {
+    "does_not_start_a8_or_ag": true,
+    "does_not_allocate_canonical_identity": true,
+    "does_not_claim_global_completeness": true,
+    "observed_count_reported_separately_from_estimate": true,
+    "no_headline_unseen_population_estimate": true
+  },
+  "key_result": {
+    "n_observed": 6,
+    "n_estimated": null,
+    "estimation_outcome": "FAIL_CLOSED",
+    "fail_closed_outcome": "NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA",
+    "summary": "Directly observed offering population is 6. No defensible unseen-population estimate is admitted under the preregistered identifiability/sparseness criteria (N_eligible_offerings=6 < 20; multi-frame support below threshold)."
+  },
+  "next_required_state": "A8_PRODUCT_POPULATION_RELEASE_PACKAGE",
+  "boundary": "Repository-safe A7 Product Population Estimation Report under the frozen capture-history and model-specification digests. N_observed is reported separately from any estimate. Because the preregistered identifiability/sparseness gate failed, no unseen-population point estimate or headline interval is emitted. This does not establish global completeness, market share, effectiveness, S2 publication authority, or v4.2 assessment effect. Does not start A8 or A-G."
+}

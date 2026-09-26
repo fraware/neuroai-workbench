@@ -678,3 +678,227 @@ def validate_a7_population_model_specification(spec: Mapping[str, Any]) -> None:
     }
     if forbidden_result_keys & set(spec):
         raise ProductDiscoveryError("model-spec lock must not contain fitted estimate fields")
+
+
+A7_STUDY_RESOURCE = "RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT.v1.0.json"
+A7_STUDY_PACKET_ID = "RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT_v1.0"
+A7_STUDY_PACKET_SHA256 = "a533cc52517f8611770910597a83a60745fbb7d781ac73f2a7b3890031d371eb"
+
+A7_STUDY_BOUNDARY = (
+    "Repository-safe A7 Product Population Estimation Report under the frozen "
+    "capture-history and model-specification digests. N_observed is reported "
+    "separately from any estimate. Because the preregistered identifiability/"
+    "sparseness gate failed, no unseen-population point estimate or headline "
+    "interval is emitted. This does not establish global completeness, market "
+    "share, effectiveness, S2 publication authority, or v4.2 assessment effect. "
+    "Does not start A8 or A-G."
+)
+
+EXPECTED_FAIL_CLOSED_REASONS = (
+    "CAPTURE_TABLE_TOO_SPARSE",
+    "INSUFFICIENT_MULTI_FRAME_OVERLAP",
+)
+
+POORLY_OBSERVED_CLASS_IDS = (
+    "REGULATORY_TRIAL_CAPTURE_SPARSE",
+    "LOCAL_LANGUAGE_STRUCTURAL_ZERO",
+    "PATENT_CROSSOVER_STRUCTURAL_ZERO",
+    "PURPOSIVE_DIAGNOSTIC_ONLY_FRAMES",
+    "OPEN_WORLD_KNOWN_IDENTITY_ONLY",
+)
+
+
+def load_default_a7_population_estimation_report() -> dict[str, Any]:
+    """Load the frozen A7 Product Population Estimation Report."""
+
+    packet = _load_resource(A7_STUDY_RESOURCE)
+    validate_a7_population_estimation_report(packet)
+    if packet["packet_sha256"] != A7_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("Loaded A7 report digest drifted from frozen A7_STUDY_PACKET_SHA256")
+    return packet
+
+
+def validate_a7_population_estimation_report(packet: Mapping[str, Any]) -> None:
+    """Validate the executed A7 estimation report against frozen pre-fit locks."""
+
+    required = (
+        "packet_id",
+        "packet_sha256",
+        "status",
+        "assembled_on",
+        "study_id",
+        "model_specification_id",
+        "model_specification_sha256",
+        "capture_history_dataset_id",
+        "capture_history_dataset_sha256",
+        "estimator_eligible_capture_records_sha256",
+        "analysis_universe_id",
+        "estimation_universe_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+        "a2_checkpoint_id",
+        "a2_checkpoint_sha256",
+        "observed_offering_ids",
+        "observed_offering_set_sha256",
+        "n_observed",
+        "n_estimated",
+        "n_unobserved",
+        "coverage_estimated",
+        "estimation_outcome",
+        "fail_closed_outcome",
+        "fail_closed_reasons",
+        "identifiability_diagnostics",
+        "assumptions",
+        "dependence_diagnostics",
+        "model_family_results",
+        "headline_admissible_models",
+        "admissible_model_envelope",
+        "interval_or_sensitivity",
+        "classes_likely_poorly_observed",
+        "authority_controls",
+        "key_result",
+        "next_required_state",
+        "boundary",
+    )
+    missing = [field for field in required if field not in packet]
+    if missing:
+        raise ProductDiscoveryError("A7 report packet missing fields: " + ", ".join(missing))
+
+    if packet["packet_id"] != A7_STUDY_PACKET_ID:
+        raise ProductDiscoveryError(f"packet_id must be {A7_STUDY_PACKET_ID}")
+    if packet["status"] != "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE":
+        raise ProductDiscoveryError("status must be CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE")
+    if packet["study_id"] != A7_STUDY_ID:
+        raise ProductDiscoveryError(f"study_id must be {A7_STUDY_ID}")
+    if content_digest(packet, exclude="packet_sha256") != packet["packet_sha256"]:
+        raise ProductDiscoveryError("packet_sha256 does not match content digest")
+
+    if packet["model_specification_id"] != A7_MODEL_SPEC_ID:
+        raise ProductDiscoveryError("model_specification_id drift")
+    if packet["model_specification_sha256"] != A7_MODEL_SPEC_SHA256:
+        raise ProductDiscoveryError("model_specification_sha256 drift")
+    if packet["capture_history_dataset_id"] != A7_CAPTURE_HISTORY_ID:
+        raise ProductDiscoveryError("capture_history_dataset_id drift")
+    if packet["capture_history_dataset_sha256"] != A7_CAPTURE_HISTORY_SHA256:
+        raise ProductDiscoveryError("capture_history_dataset_sha256 drift")
+    if packet["estimator_eligible_capture_records_sha256"] != A7_ELIGIBLE_CAPTURE_RECORDS_SHA256:
+        raise ProductDiscoveryError("estimator_eligible_capture_records_sha256 drift")
+
+    if packet["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id must equal the frozen A2 analysis universe")
+    if packet["world_time_cutoff"] != A2_WORLD_TIME_CUTOFF:
+        raise ProductDiscoveryError("world_time_cutoff drift")
+    if packet["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("knowledge_time_cutoff drift")
+    if packet["a2_checkpoint_id"] != CHECKPOINT_ID:
+        raise ProductDiscoveryError("a2_checkpoint_id drift")
+    if packet["a2_checkpoint_sha256"] != CHECKPOINT_SHA256:
+        raise ProductDiscoveryError("a2_checkpoint_sha256 drift")
+
+    observed_ids = [str(item) for item in _require_list(packet["observed_offering_ids"], "observed_offering_ids")]
+    if observed_ids != list(OBSERVED_OFFERING_IDS):
+        raise ProductDiscoveryError("observed_offering_ids must equal the frozen A1 known-identity set")
+    if identity_set_digest(observed_ids) != packet["observed_offering_set_sha256"]:
+        raise ProductDiscoveryError("observed_offering_set_sha256 digest mismatch")
+    if packet["observed_offering_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("observed_offering_set_sha256 must equal A1 known-identity digest")
+    if _require_int(packet["n_observed"], "n_observed") != N_OBSERVED:
+        raise ProductDiscoveryError(f"n_observed must be {N_OBSERVED}")
+
+    # Observed count must remain separate from any estimate; fail-closed emits nulls.
+    if packet["n_estimated"] is not None:
+        raise ProductDiscoveryError("fail-closed report must not emit n_estimated")
+    if packet["n_unobserved"] is not None:
+        raise ProductDiscoveryError("fail-closed report must not emit n_unobserved")
+    if packet["coverage_estimated"] is not None:
+        raise ProductDiscoveryError("fail-closed report must not emit coverage_estimated")
+    if packet["estimation_outcome"] != "FAIL_CLOSED":
+        raise ProductDiscoveryError("estimation_outcome must be FAIL_CLOSED under sparse capture structure")
+    if packet["fail_closed_outcome"] != VALID_NO_ESTIMATE_OUTCOME:
+        raise ProductDiscoveryError("fail_closed_outcome drift")
+    reasons = tuple(_require_list(packet["fail_closed_reasons"], "fail_closed_reasons"))
+    if set(reasons) != set(EXPECTED_FAIL_CLOSED_REASONS):
+        raise ProductDiscoveryError("fail_closed_reasons must match the frozen sparse-gate outcome")
+
+    dataset = load_default_a7_capture_history_dataset()
+    spec = load_default_a7_population_model_specification()
+    if packet["estimation_universe_id"] != spec["estimation_universe_id"]:
+        raise ProductDiscoveryError("estimation_universe_id must match frozen model-spec")
+    expected_gate = evaluate_identifiability_gate(dataset["estimator_eligible_offering_binary_histories"])
+    diagnostics = _require_mapping(packet["identifiability_diagnostics"], "identifiability_diagnostics")
+    if diagnostics != expected_gate:
+        raise ProductDiscoveryError("identifiability_diagnostics must reproduce from frozen capture histories")
+    if diagnostics.get("identifiability_gate_passed") is not False:
+        raise ProductDiscoveryError("identifiability gate must fail closed for this sparse capture table")
+
+    assumptions = _require_mapping(packet["assumptions"], "assumptions")
+    for field in (
+        "f10_patent_leads_are_not_products",
+        "independence_not_assumed_for_headline",
+        "no_forced_point_estimate_when_inadmissible",
+        "model_total_below_n_observed_is_incoherent_not_floored",
+    ):
+        if assumptions.get(field) is not True:
+            raise ProductDiscoveryError(f"assumptions.{field} must be true")
+    if tuple(assumptions.get("primary_estimation_frames", ())) != PRIMARY_ESTIMATION_FRAME_IDS:
+        raise ProductDiscoveryError("assumptions.primary_estimation_frames drift")
+    if set(assumptions.get("estimator_excluded_frames", ())) != PRIMARY_ESTIMATION_EXCLUDED_FRAME_IDS:
+        raise ProductDiscoveryError("assumptions.estimator_excluded_frames drift")
+
+    dependence = _require_mapping(packet["dependence_diagnostics"], "dependence_diagnostics")
+    matrix = _require_mapping(dependence.get("pairwise_unique_offering_overlap_matrix"), "overlap matrix")
+    if set(matrix) != set(PRIMARY_ESTIMATION_FRAME_IDS):
+        raise ProductDiscoveryError("pairwise overlap matrix must cover primary estimation frames")
+    if list(dependence.get("structural_zero_primary_frames", [])) != ["F3", "F8", "F10"]:
+        raise ProductDiscoveryError("structural_zero_primary_frames must be F3/F8/F10")
+
+    family_results = [
+        _require_mapping(item, "model_family_result")
+        for item in _require_list(packet["model_family_results"], "model_family_results")
+    ]
+    if [item["model_family"] for item in family_results] != list(REQUIRED_MODEL_FAMILIES):
+        raise ProductDiscoveryError("model_family_results must follow the preregistered family order")
+    for item in family_results:
+        if item.get("headline_admissible") is not False:
+            raise ProductDiscoveryError(f"{item['model_family']} must not be headline-admissible")
+        if item.get("fitted_unseen_estimate") is not False:
+            raise ProductDiscoveryError(f"{item['model_family']} must not emit a fitted unseen estimate")
+    if _require_list(packet["headline_admissible_models"], "headline_admissible_models"):
+        raise ProductDiscoveryError("headline_admissible_models must be empty under fail-closed")
+    if packet["admissible_model_envelope"] is not None:
+        raise ProductDiscoveryError("admissible_model_envelope must be null under fail-closed")
+    if packet["interval_or_sensitivity"] is not None:
+        raise ProductDiscoveryError("interval_or_sensitivity must be null under fail-closed")
+
+    poorly = [
+        _require_mapping(item, "poorly_observed_class")
+        for item in _require_list(packet["classes_likely_poorly_observed"], "classes_likely_poorly_observed")
+    ]
+    if [item["class_id"] for item in poorly] != list(POORLY_OBSERVED_CLASS_IDS):
+        raise ProductDiscoveryError("classes_likely_poorly_observed class_id set drift")
+
+    controls = _require_mapping(packet["authority_controls"], "authority_controls")
+    for field in (
+        "does_not_start_a8_or_ag",
+        "does_not_allocate_canonical_identity",
+        "does_not_claim_global_completeness",
+        "observed_count_reported_separately_from_estimate",
+        "no_headline_unseen_population_estimate",
+    ):
+        if controls.get(field) is not True:
+            raise ProductDiscoveryError(f"authority_controls.{field} must be true")
+
+    key = _require_mapping(packet["key_result"], "key_result")
+    if key.get("n_observed") != N_OBSERVED:
+        raise ProductDiscoveryError("key_result.n_observed drift")
+    if key.get("n_estimated") is not None:
+        raise ProductDiscoveryError("key_result must not emit n_estimated under fail-closed")
+    if key.get("estimation_outcome") != "FAIL_CLOSED":
+        raise ProductDiscoveryError("key_result.estimation_outcome must be FAIL_CLOSED")
+    if key.get("fail_closed_outcome") != VALID_NO_ESTIMATE_OUTCOME:
+        raise ProductDiscoveryError("key_result.fail_closed_outcome drift")
+
+    if packet["next_required_state"] != "A8_PRODUCT_POPULATION_RELEASE_PACKAGE":
+        raise ProductDiscoveryError("next_required_state must be A8_PRODUCT_POPULATION_RELEASE_PACKAGE")
+    if packet["boundary"] != A7_STUDY_BOUNDARY:
+        raise ProductDiscoveryError("boundary text drift")

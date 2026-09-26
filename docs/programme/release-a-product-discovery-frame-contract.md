@@ -203,6 +203,14 @@ allocate identity, or start A8 / A-G. A valid later A7 outcome may be that no
 defensible unseen-population estimate exists under the preregistered
 acceptance criteria.
 
+Executed A7 results are recorded in
+`RELEASE_A_A7_PRODUCT_POPULATION_ESTIMATION_REPORT.v1.0.json`, which binds the
+frozen capture-history and model-specification digests, reports `N_observed`
+separately from any estimate, and records model-family status under the
+preregistered acceptance criteria. Under the current sparse eligible capture
+table the admissible outcome is fail-closed with no headline unseen-population
+estimate. The report does not start A8 / A-G.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
