@@ -377,8 +377,12 @@ def validate_a8_package_manifest_contract(contract: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("a7_fail_closed_preservation.estimation_outcome must be FAIL_CLOSED")
     if a7.get("fail_closed_outcome") != VALID_NO_ESTIMATE_OUTCOME:
         raise ProductDiscoveryError("a7_fail_closed_preservation.fail_closed_outcome drift")
-    if not _require_bool(a7.get("observed_count_reported_separately_from_estimate"), "observed_count_reported_separately"):
-        raise ProductDiscoveryError("a7_fail_closed_preservation.observed_count_reported_separately_from_estimate must be true")
+    if not _require_bool(
+        a7.get("observed_count_reported_separately_from_estimate"), "observed_count_reported_separately"
+    ):
+        raise ProductDiscoveryError(
+            "a7_fail_closed_preservation.observed_count_reported_separately_from_estimate must be true"
+        )
     if not _require_bool(a7.get("forbid_invented_n_estimated"), "forbid_invented_n_estimated"):
         raise ProductDiscoveryError("a7_fail_closed_preservation.forbid_invented_n_estimated must be true")
 
