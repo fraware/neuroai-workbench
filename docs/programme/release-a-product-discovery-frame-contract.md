@@ -164,6 +164,13 @@ remains the path-dependent diagnostic execution substrate and stays excluded
 from the primary unseen-population estimator. Freeze alone does not compute
 round metrics, allocate identity, or start A6+.
 
+Executed A5 results are recorded in
+`RELEASE_A_A5_CONTROLLED_SNOWBALL_DISCOVERY_STUDY.v1.0.json`, which binds the
+preregistration digest, F11 execution-packet digest, parent-seed provenance on
+every edge, candidate re-entry, per-round `Y_r`/`D_r`/`X_r`/`U_r`/`m_r`,
+marginal-yield decomposition, and stop-state evidence. The key result is the
+measured round ledger under the frozen snowball protocol, not an edge count.
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
