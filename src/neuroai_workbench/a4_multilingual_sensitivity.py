@@ -421,3 +421,317 @@ def validate_a4_multilingual_sensitivity_preregistration(prereg: Mapping[str, An
         and "post-hoc" not in str(prereg["predeclaration_rule"]).lower()
     ):
         raise ProductDiscoveryError("predeclaration_rule must forbid post-hoc/fruitful language selection")
+
+
+A4_STUDY_RESOURCE = "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY.v1.0.json"
+A4_STUDY_PACKET_ID = "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY_v1.0"
+A4_STUDY_PACKET_SHA256 = "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed"
+
+A4_STUDY_BOUNDARY = (
+    "Repository-safe A4 multilingual coverage sensitivity study under the frozen "
+    "A4 preregistration and EN_PLUS_PRIORITY_NATIVE_v1 strata. ΔN_multilingual "
+    "counts only exact canonical PRODUCT offering IDs. No identity allocation by "
+    "implication. No post-hoc language selection. No global completeness, market "
+    "share, effectiveness, unseen-population size, S2 publication authority, or "
+    "v4.2 assessment effect. Does not execute A5+."
+)
+
+SOURCE_PACKET_SHA256 = {
+    "F1": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85",
+    "F2": "d66590970362ac82b880e5fe4b9d7c66a913b6dc91618d31fbf67fa39a31c39b",
+    "F3": "584ab1dae1fcf0885a51ec527bea953a2ee4ad5452c10b7bb6985ca652edb82b",
+    "F4": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3",
+    "F5": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5",
+    "F6": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c",
+    "F8": "07e79f2ba1501379315850d3756cb4758f632b5f337e47a140fe50c861e2043f",
+}
+
+KNOWN_OFFERING_IDS = (
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE",
+)
+
+STRATUM_LANGUAGE_CODES = {
+    "LL-ES-ES": "es",
+    "LL-DE-DE-AT": "de",
+    "LL-FR-FR": "fr",
+    "LL-ZH-CN": "zh",
+    "LL-JA-JP": "ja",
+    "LL-HE-IL": "he",
+    "LL-SV-SE": "sv",
+}
+
+
+def load_default_a4_multilingual_sensitivity_study() -> dict[str, Any]:
+    """Load the frozen A4 multilingual coverage sensitivity study packet."""
+
+    packet = _load_resource(A4_STUDY_RESOURCE)
+    validate_a4_multilingual_sensitivity_study(packet)
+    if packet["packet_sha256"] != A4_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("Loaded A4 study digest drifted from frozen A4_STUDY_PACKET_SHA256")
+    return packet
+
+
+def validate_a4_multilingual_sensitivity_study(packet: Mapping[str, Any]) -> None:
+    """Validate the executed A4 sensitivity study against the frozen preregistration."""
+
+    required = (
+        "packet_id",
+        "packet_sha256",
+        "status",
+        "assembled_on",
+        "study_id",
+        "preregistration_id",
+        "preregistration_sha256",
+        "analysis_universe_id",
+        "world_time_cutoff",
+        "knowledge_time_cutoff",
+        "a2_checkpoint_id",
+        "a2_checkpoint_sha256",
+        "round_start_known_identity_set_sha256",
+        "final_known_identity_ids",
+        "final_known_identity_set_sha256",
+        "language_scope_id",
+        "language_jurisdiction_strata_id",
+        "language_jurisdiction_strata_sha256",
+        "matched_protocol_set_id",
+        "f8_query_universe_id",
+        "f8_query_universe_sha256",
+        "f8_round_protocol_id",
+        "f8_round_protocol_sha256",
+        "a3_study_id",
+        "a3_study_sha256",
+        "evidence_substrate_bindings",
+        "n_english",
+        "n_english_plus_native",
+        "delta_n_multilingual",
+        "unique_product_gain",
+        "capability_gain",
+        "english_offering_ids",
+        "english_plus_native_offering_ids",
+        "unique_native_offering_ids",
+        "capability_gain_offering_ids",
+        "english_offering_set_sha256",
+        "english_plus_native_offering_set_sha256",
+        "native_arm_rates",
+        "source_class_gain",
+        "stratification",
+        "new_canonical_allocations",
+        "authority_controls",
+        "key_result",
+        "substantive_conclusion_change",
+        "next_required_state",
+        "boundary",
+    )
+    missing = [field for field in required if field not in packet]
+    if missing:
+        raise ProductDiscoveryError("A4 study packet missing fields: " + ", ".join(missing))
+
+    if packet["packet_id"] != A4_STUDY_PACKET_ID:
+        raise ProductDiscoveryError(f"packet_id must be {A4_STUDY_PACKET_ID}")
+    if packet["status"] != "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE":
+        raise ProductDiscoveryError("status must be CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE")
+    if packet["study_id"] != A4_STUDY_ID:
+        raise ProductDiscoveryError(f"study_id must be {A4_STUDY_ID}")
+    if content_digest(packet, exclude="packet_sha256") != packet["packet_sha256"]:
+        raise ProductDiscoveryError("packet_sha256 does not match content digest")
+    if packet["preregistration_id"] != A4_PREREG_ID:
+        raise ProductDiscoveryError("preregistration_id must equal frozen A4 preregistration")
+    if packet["preregistration_sha256"] != A4_PREREG_SHA256:
+        raise ProductDiscoveryError("preregistration_sha256 must equal frozen A4 preregistration digest")
+    if packet["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id must equal the frozen A2 analysis universe")
+    if packet["world_time_cutoff"] != A2_WORLD_TIME_CUTOFF:
+        raise ProductDiscoveryError("world_time_cutoff must equal the frozen A2 world cutoff")
+    if packet["knowledge_time_cutoff"] != A2_KNOWLEDGE_TIME_CUTOFF:
+        raise ProductDiscoveryError("knowledge_time_cutoff must equal the frozen A2 knowledge cutoff")
+    if packet["a2_checkpoint_id"] != CHECKPOINT_ID:
+        raise ProductDiscoveryError("a2_checkpoint_id must equal the frozen A2 checkpoint")
+    if packet["a2_checkpoint_sha256"] != CHECKPOINT_SHA256:
+        raise ProductDiscoveryError("a2_checkpoint_sha256 must equal the frozen A2 checkpoint")
+    if packet["round_start_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("round_start_known_identity_set_sha256 must equal the A1 known-identity digest")
+    if packet["language_scope_id"] != LANGUAGE_SCOPE_ID:
+        raise ProductDiscoveryError("language_scope_id must be EN_PLUS_PRIORITY_NATIVE_v1")
+    if packet["language_jurisdiction_strata_id"] != LANGUAGE_STRATA_ID:
+        raise ProductDiscoveryError("language_jurisdiction_strata_id must equal the frozen language strata")
+    if packet["language_jurisdiction_strata_sha256"] != LANGUAGE_STRATA_SHA256:
+        raise ProductDiscoveryError("language_jurisdiction_strata_sha256 must equal frozen strata digest 25010299…")
+    if packet["matched_protocol_set_id"] != MATCHED_PROTOCOL_SET_ID:
+        raise ProductDiscoveryError("matched_protocol_set_id mismatch")
+    if packet["f8_query_universe_id"] != F8_UNIVERSE_ID:
+        raise ProductDiscoveryError("f8_query_universe_id must equal the frozen F8 universe")
+    if packet["f8_query_universe_sha256"] != F8_UNIVERSE_SHA256:
+        raise ProductDiscoveryError("f8_query_universe_sha256 must equal the frozen F8 universe digest")
+    if packet["f8_round_protocol_id"] != F8_PROTOCOL_ID:
+        raise ProductDiscoveryError("f8_round_protocol_id must equal the frozen F8 protocol")
+    if packet["f8_round_protocol_sha256"] != F8_PROTOCOL_SHA256:
+        raise ProductDiscoveryError("f8_round_protocol_sha256 must equal the frozen F8 protocol digest")
+    if packet["a3_study_id"] != A3_STUDY_ID:
+        raise ProductDiscoveryError("a3_study_id must equal frozen A3 study")
+    if packet["a3_study_sha256"] != A3_STUDY_PACKET_SHA256:
+        raise ProductDiscoveryError("a3_study_sha256 must equal frozen A3 study digest")
+    if packet["boundary"] != A4_STUDY_BOUNDARY:
+        raise ProductDiscoveryError("boundary text drift")
+
+    final_ids = [str(item) for item in _require_list(packet["final_known_identity_ids"], "final_known_identity_ids")]
+    if tuple(sorted(final_ids)) != KNOWN_OFFERING_IDS:
+        raise ProductDiscoveryError("final_known_identity_ids must equal the frozen A1 six offering set")
+    if packet["final_known_identity_set_sha256"] != A1_INITIAL_KNOWN_IDENTITY_SHA256:
+        raise ProductDiscoveryError("final_known_identity_set_sha256 must equal the A1 known-identity digest")
+
+    english_ids = [str(item) for item in _require_list(packet["english_offering_ids"], "english_offering_ids")]
+    plus_ids = [
+        str(item)
+        for item in _require_list(packet["english_plus_native_offering_ids"], "english_plus_native_offering_ids")
+    ]
+    unique_ids = [
+        str(item) for item in _require_list(packet["unique_native_offering_ids"], "unique_native_offering_ids")
+    ]
+    capability_ids = [
+        str(item) for item in _require_list(packet["capability_gain_offering_ids"], "capability_gain_offering_ids")
+    ]
+    computed = compute_delta_n_multilingual(
+        english_offering_ids=english_ids,
+        english_plus_native_offering_ids=plus_ids,
+    )
+    if int(packet["n_english"]) != computed["n_english"]:
+        raise ProductDiscoveryError("n_english does not match exact offering set")
+    if int(packet["n_english_plus_native"]) != computed["n_english_plus_native"]:
+        raise ProductDiscoveryError("n_english_plus_native does not match exact offering set")
+    if int(packet["delta_n_multilingual"]) != computed["delta_n_multilingual"]:
+        raise ProductDiscoveryError("delta_n_multilingual does not match exact offering increment")
+    if int(packet["unique_product_gain"]) != computed["unique_product_gain"]:
+        raise ProductDiscoveryError("unique_product_gain must equal delta_n_multilingual")
+    if unique_ids != computed["unique_native_offering_ids"]:
+        raise ProductDiscoveryError("unique_native_offering_ids drift from computed increment")
+    if int(packet["capability_gain"]) != len(capability_ids):
+        raise ProductDiscoveryError("capability_gain must equal capability_gain_offering_ids cardinality")
+    if not set(capability_ids).issubset(set(unique_ids)):
+        raise ProductDiscoveryError("capability_gain_offering_ids must be a subset of unique_native_offering_ids")
+    if packet["english_offering_set_sha256"] != id_set_digest(english_ids):
+        raise ProductDiscoveryError("english_offering_set_sha256 mismatch")
+    if packet["english_plus_native_offering_set_sha256"] != id_set_digest(plus_ids):
+        raise ProductDiscoveryError("english_plus_native_offering_set_sha256 mismatch")
+    if int(packet["new_canonical_allocations"]) != 0:
+        raise ProductDiscoveryError("new_canonical_allocations must be 0")
+
+    substrate = _require_mapping(packet["evidence_substrate_bindings"], "evidence_substrate_bindings")
+    if tuple(substrate.get("english_frame_ids", ())) != ENGLISH_FRAME_IDS:
+        raise ProductDiscoveryError("english_frame_ids must be F1-F6")
+    if tuple(substrate.get("native_frame_ids", ())) != NATIVE_FRAME_IDS:
+        raise ProductDiscoveryError("native_frame_ids must be F8 only")
+    if tuple(substrate.get("english_plus_native_frame_ids", ())) != ENGLISH_PLUS_NATIVE_FRAME_IDS:
+        raise ProductDiscoveryError("english_plus_native_frame_ids must be F1-F6+F8")
+    sources = _require_list(substrate.get("source_packets"), "source_packets")
+    if len(sources) != 7:
+        raise ProductDiscoveryError("source_packets must bind exactly F1-F6 and F8 packets")
+    seen_frames: list[str] = []
+    for row in sources:
+        mapping = _require_mapping(row, "source packet")
+        frame_id = _require_str(mapping.get("frame_id"), "source frame_id")
+        seen_frames.append(frame_id)
+        expected = SOURCE_PACKET_SHA256.get(frame_id)
+        if expected is None:
+            raise ProductDiscoveryError(f"unexpected source frame_id {frame_id}")
+        if mapping.get("packet_sha256") != expected:
+            raise ProductDiscoveryError(f"source packet digest drift for {frame_id}")
+    if tuple(seen_frames) != ENGLISH_PLUS_NATIVE_FRAME_IDS:
+        raise ProductDiscoveryError("source_packets must be ordered F1-F6 then F8")
+
+    rates = _require_mapping(packet["native_arm_rates"], "native_arm_rates")
+    if rates.get("frame_id") != "F8":
+        raise ProductDiscoveryError("native_arm_rates.frame_id must be F8")
+    computed_rates = compute_companion_rates(
+        raw_candidates=int(rates["raw_candidates"]),
+        exclude_count=int(rates["exclude_count"]),
+        unresolved_count=int(rates["unresolved_count"]),
+        known_identity_duplicate_count=int(rates["known_identity_duplicate_count"]),
+        within_round_duplicate_count=int(rates["within_round_duplicate_count"]),
+    )
+    for key, value in computed_rates.items():
+        if float(rates[key]) != value:
+            raise ProductDiscoveryError(f"{key} does not match native-arm accounting")
+
+    source_gains = _require_list(packet["source_class_gain"], "source_class_gain")
+    if len(source_gains) != len(NATIVE_SOURCE_CLASSES):
+        raise ProductDiscoveryError("source_class_gain must cover all frozen F8 source classes")
+    seen_classes: list[str] = []
+    for row in source_gains:
+        mapping = _require_mapping(row, "source_class_gain row")
+        source_class = _require_str(mapping.get("source_class"), "source_class")
+        seen_classes.append(source_class)
+        gain_ids = [str(item) for item in _require_list(mapping.get("unique_offering_ids"), "unique_offering_ids")]
+        if int(mapping["unique_offering_gain"]) != len(gain_ids):
+            raise ProductDiscoveryError("source_class unique_offering_gain must match unique_offering_ids cardinality")
+        if not set(gain_ids).issubset(set(unique_ids)):
+            raise ProductDiscoveryError("source_class unique offerings must be subset of unique_native_offering_ids")
+    if tuple(seen_classes) != NATIVE_SOURCE_CLASSES:
+        raise ProductDiscoveryError("source_class_gain must equal the frozen F8 source-class set in order")
+
+    stratification = _require_mapping(packet["stratification"], "stratification")
+    strata_rows = _require_list(stratification.get("by_frozen_language_stratum"), "by_frozen_language_stratum")
+    if len(strata_rows) != len(REQUIRED_STRATUM_IDS):
+        raise ProductDiscoveryError("by_frozen_language_stratum must cover all bound strata")
+    seen_strata: list[str] = []
+    for row in strata_rows:
+        mapping = _require_mapping(row, "stratum row")
+        stratum_id = _require_str(mapping.get("stratum_id"), "stratum_id")
+        seen_strata.append(stratum_id)
+        expected_lang = STRATUM_LANGUAGE_CODES.get(stratum_id)
+        if expected_lang is None:
+            raise ProductDiscoveryError(f"unexpected stratum_id {stratum_id}")
+        if mapping.get("language_code") != expected_lang:
+            raise ProductDiscoveryError(f"language_code drift for {stratum_id}")
+        if int(mapping["delta_j"]) != int(mapping["n_j_english_plus_native"]) - int(mapping["n_j_english"]):
+            raise ProductDiscoveryError(f"delta_j arithmetic drift for {stratum_id}")
+        if int(mapping["native_include_resolved"]) < 0:
+            raise ProductDiscoveryError("native_include_resolved cannot be negative")
+    if tuple(seen_strata) != REQUIRED_STRATUM_IDS:
+        raise ProductDiscoveryError("by_frozen_language_stratum must equal frozen stratum set in order")
+
+    controls = _require_mapping(packet["authority_controls"], "authority_controls")
+    for flag in (
+        "no_identity_allocation_by_implication",
+        "increments_only_on_exact_offering_ids",
+        "raw_search_hits_are_not_the_increment_unit",
+        "f7_f9_f11_estimator_excluded",
+        "f10_patent_leads_are_not_products",
+        "no_post_hoc_language_selection",
+        "languages_not_selected_for_yield",
+        "rau_not_mutated",
+        "post_hoc_stratum_edits_prohibited",
+    ):
+        if not _require_bool(controls.get(flag), flag):
+            raise ProductDiscoveryError(f"{flag} must be true")
+
+    key_result = _require_mapping(packet["key_result"], "key_result")
+    if key_result.get("headline") != "DELTA_N_MULTILINGUAL":
+        raise ProductDiscoveryError("key_result.headline must be DELTA_N_MULTILINGUAL")
+    if int(key_result["delta_n_multilingual"]) != int(packet["delta_n_multilingual"]):
+        raise ProductDiscoveryError("key_result.delta_n_multilingual mismatch")
+    if int(key_result["unique_product_gain"]) != int(packet["unique_product_gain"]):
+        raise ProductDiscoveryError("key_result.unique_product_gain mismatch")
+    if int(key_result["capability_gain"]) != int(packet["capability_gain"]):
+        raise ProductDiscoveryError("key_result.capability_gain mismatch")
+
+    conclusion = _require_mapping(packet["substantive_conclusion_change"], "substantive_conclusion_change")
+    changed = _require_bool(conclusion.get("any_substantive_conclusion_changed"), "any_substantive_conclusion_changed")
+    _require_str(conclusion.get("statement"), "substantive conclusion statement")
+    _require_list(conclusion.get("unchanged_conclusions"), "unchanged_conclusions")
+    changed_list = _require_list(conclusion.get("changed_conclusions"), "changed_conclusions")
+    if int(packet["delta_n_multilingual"]) == 0 and changed:
+        raise ProductDiscoveryError(
+            "any_substantive_conclusion_changed must be false when delta_n_multilingual is zero"
+        )
+    if int(packet["delta_n_multilingual"]) == 0 and changed_list:
+        raise ProductDiscoveryError("changed_conclusions must be empty when delta_n_multilingual is zero")
+
+    if "A5" not in str(packet["next_required_state"]):
+        raise ProductDiscoveryError("next_required_state must gate A5 next")
+    if "not A6" not in str(packet["next_required_state"]) and "not A6–A8" not in str(packet["next_required_state"]):
+        raise ProductDiscoveryError("next_required_state must keep A6+ out of scope")

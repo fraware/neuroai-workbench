@@ -1,0 +1,316 @@
+{
+  "packet_id": "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY_v1.0",
+  "packet_sha256": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-26",
+  "study_id": "RELEASE_A_A4_MULTILINGUAL_COVERAGE_SENSITIVITY_STUDY_v1.0",
+  "preregistration_id": "RELEASE_A_A4_MULTILINGUAL_SENSITIVITY_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "1ee891d1fc2641f2eadaa015c2d95a9983241696233da5a93fc401b5b56bba23",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "final_known_identity_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "final_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "language_jurisdiction_strata_id": "RELEASE_A_LANGUAGE_JURISDICTION_STRATA_v1.0",
+  "language_jurisdiction_strata_sha256": "250102995796c6feff792acf6d7616e3d28b8c8bbefc10f1b15af5cbeafc24f4",
+  "matched_protocol_set_id": "A4_MATCHED_EN_VS_EN_PLUS_NATIVE_v1",
+  "f8_query_universe_id": "RELEASE_A_F8_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "f8_query_universe_sha256": "0e9ef6155520225ef9826ffb6fdfe89b85df3c706be47e1a5c8a4edea7486fe2",
+  "f8_round_protocol_id": "RELEASE_A_F8_ROUND_PROTOCOL_v1.0",
+  "f8_round_protocol_sha256": "fb4893f9512471919dcdd5a1d91456805ce0c62d23804e4ac0a1dc57dc8a787e",
+  "a3_study_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "a3_study_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+  "evidence_substrate_bindings": {
+    "english_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "native_frame_ids": [
+      "F8"
+    ],
+    "english_plus_native_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F8"
+    ],
+    "source_packets": [
+      {
+        "frame_id": "F1",
+        "packet_id": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85",
+        "resource": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [
+          "PRD-EMOTIV-EPOC-X",
+          "PRD-FLOW-FL-100",
+          "PRD-MODIUS-SPERO",
+          "PRD-MUSE-S-ATHENA",
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 6
+      },
+      {
+        "frame_id": "F2",
+        "packet_id": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2_v1.0",
+        "packet_sha256": "d66590970362ac82b880e5fe4b9d7c66a913b6dc91618d31fbf67fa39a31c39b",
+        "resource": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [],
+        "include_resolved_count": 0
+      },
+      {
+        "frame_id": "F3",
+        "packet_id": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3_v1.0",
+        "packet_sha256": "584ab1dae1fcf0885a51ec527bea953a2ee4ad5452c10b7bb6985ca652edb82b",
+        "resource": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [],
+        "include_resolved_count": 0
+      },
+      {
+        "frame_id": "F4",
+        "packet_id": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3",
+        "resource": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [
+          "PRD-EMOTIV-EPOC-X",
+          "PRD-FLOW-FL-100",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 3
+      },
+      {
+        "frame_id": "F5",
+        "packet_id": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5",
+        "resource": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [
+          "PRD-MUSE-S-ATHENA",
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 3
+      },
+      {
+        "frame_id": "F6",
+        "packet_id": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c",
+        "resource": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "arm": "S_ENGLISH",
+        "include_resolved_offering_ids": [
+          "PRD-NEXTSENSE-SMARTBUDS",
+          "PRD-SYNCHRON-STENTRODE"
+        ],
+        "include_resolved_count": 2
+      },
+      {
+        "frame_id": "F8",
+        "packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+        "packet_sha256": "07e79f2ba1501379315850d3756cb4758f632b5f337e47a140fe50c861e2043f",
+        "resource": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+        "arm": "S_NATIVE_F8",
+        "include_resolved_offering_ids": [],
+        "include_resolved_count": 0
+      }
+    ]
+  },
+  "n_english": 6,
+  "n_english_plus_native": 6,
+  "delta_n_multilingual": 0,
+  "unique_product_gain": 0,
+  "capability_gain": 0,
+  "english_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "english_plus_native_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-FLOW-FL-100",
+    "PRD-MODIUS-SPERO",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "unique_native_offering_ids": [],
+  "capability_gain_offering_ids": [],
+  "english_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "english_plus_native_offering_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "native_arm_rates": {
+    "frame_id": "F8",
+    "raw_candidates": 63,
+    "exclude_count": 0,
+    "unresolved_count": 12,
+    "known_identity_duplicate_count": 0,
+    "within_round_duplicate_count": 0,
+    "false_positive_rate": 0.0,
+    "unresolved_rate": 0.19047619047619047,
+    "duplicate_rate": 0.0,
+    "rate_basis": "Aggregated F8 R1-R3 round_summaries and captures under frozen F8 open-world packet; rates are companion diagnostics to ΔN_multilingual, not identity increments."
+  },
+  "source_class_gain": [
+    {
+      "source_class": "LOCAL_LANGUAGE_PUBLIC",
+      "unique_offering_gain": 0,
+      "unique_offering_ids": []
+    },
+    {
+      "source_class": "LOCAL_REGULATORY_OR_INSTITUTIONAL",
+      "unique_offering_gain": 0,
+      "unique_offering_ids": []
+    },
+    {
+      "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+      "unique_offering_gain": 0,
+      "unique_offering_ids": []
+    }
+  ],
+  "stratification": {
+    "by_frozen_language_stratum": [
+      {
+        "stratum_id": "LL-ES-ES",
+        "language_code": "es",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 10,
+        "native_include_resolved": 0,
+        "note": "F8 es/ES captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to ES under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-DE-DE-AT",
+        "language_code": "de",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 10,
+        "native_include_resolved": 0,
+        "note": "F8 de/DE-AT captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to DE/AT under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-FR-FR",
+        "language_code": "fr",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 10,
+        "native_include_resolved": 0,
+        "note": "F8 fr/FR captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to FR under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-ZH-CN",
+        "language_code": "zh",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 8,
+        "native_include_resolved": 0,
+        "note": "F8 zh/CN captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to CN under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-JA-JP",
+        "language_code": "ja",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 9,
+        "native_include_resolved": 0,
+        "note": "F8 ja/JP captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to JP under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-HE-IL",
+        "language_code": "he",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 8,
+        "native_include_resolved": 0,
+        "note": "F8 he/IL captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to IL under fail-closed rules."
+      },
+      {
+        "stratum_id": "LL-SV-SE",
+        "language_code": "sv",
+        "defensible": false,
+        "reason": "NOT_DEFENSIBLE",
+        "n_j_english": 0,
+        "n_j_english_plus_native": 0,
+        "delta_j": 0,
+        "native_raw_candidates": 8,
+        "native_include_resolved": 0,
+        "note": "F8 sv/SE captures produced 0 INCLUDE_RESOLVED exact offerings; English-arm captures remain GLOBAL and are not jurisdiction-attributed to SE under fail-closed rules."
+      }
+    ]
+  },
+  "new_canonical_allocations": 0,
+  "authority_controls": {
+    "no_identity_allocation_by_implication": true,
+    "increments_only_on_exact_offering_ids": true,
+    "raw_search_hits_are_not_the_increment_unit": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "f10_patent_leads_are_not_products": true,
+    "no_post_hoc_language_selection": true,
+    "languages_not_selected_for_yield": true,
+    "rau_not_mutated": true,
+    "post_hoc_stratum_edits_prohibited": true
+  },
+  "key_result": {
+    "headline": "DELTA_N_MULTILINGUAL",
+    "delta_n_multilingual": 0,
+    "unique_product_gain": 0,
+    "capability_gain": 0,
+    "source_class_gain_total": 0,
+    "false_positive_rate": 0.0,
+    "unresolved_rate": 0.19047619047619047,
+    "duplicate_rate": 0.0,
+    "interpretation": "Under the frozen A4 preregistration and F1–F6+F8 evidence substrate, native-language discovery (F8) recovered no INCLUDE_RESOLVED exact offering IDs beyond the matched English arm (F1–F6). Measured unique-product gain is 0; capability gain is 0; source-class gain is 0 for all F8 source classes. Companion F8 rates: false-positive 0.0, unresolved ≈0.1905, duplicate 0.0. Multilingual coverage was measured, not merely advertised."
+  },
+  "substantive_conclusion_change": {
+    "any_substantive_conclusion_changed": false,
+    "statement": "No substantive conclusion changed once native-language discovery was added. The observed exact-offering set remains the six A1 known identities; A3 ΔN_capability=0 is unchanged; no new canonical PRODUCT offerings enter the registry from F8; geographic concentration inferences are not revised because F8 produced zero INCLUDE_RESOLVED exact offerings under fail-closed accounting.",
+    "unchanged_conclusions": [
+      "Observed exact-offering population remains the six A1 known identities (digest 21034ece…).",
+      "A3 capability-first unique-product gain remains 0.",
+      "No F8-attributable unique exact offering was recovered under EN_PLUS_PRIORITY_NATIVE_v1 strata."
+    ],
+    "changed_conclusions": []
+  },
+  "next_required_state": "A4 multilingual coverage sensitivity study complete under frozen preregistration. Next gated step is A5 (snowball discovery) — not A6–A8 or A-G without separate gate.",
+  "boundary": "Repository-safe A4 multilingual coverage sensitivity study under the frozen A4 preregistration and EN_PLUS_PRIORITY_NATIVE_v1 strata. ΔN_multilingual counts only exact canonical PRODUCT offering IDs. No identity allocation by implication. No post-hoc language selection. No global completeness, market share, effectiveness, unseen-population size, S2 publication authority, or v4.2 assessment effect. Does not execute A5+."
+}
