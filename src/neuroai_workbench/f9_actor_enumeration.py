@@ -313,6 +313,42 @@ def f9_actor_completion_ledger_digest(ledger: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def f9_sole_product_detail_catalogue_risk(record: Mapping[str, Any]) -> str | None:
+    """Return a risk code when COMPLETE relies on a product-detail page as the only catalogue surface.
+
+    Protocol completeness is relative to inspected surfaces. Treating one convenient
+    PRODUCT_DETAIL_SURFACE as the sole first-party catalogue/technology surface is the
+    under-enumeration path the F9 execution plan rejects for broad-catalogue actors.
+    This detector is advisory for residual-risk audit; it does not rewrite historical
+    completion ledgers.
+    """
+
+    if record.get("completion_state") != "ACTOR_ENUMERATION_COMPLETE_UNDER_PROTOCOL":
+        return None
+    surfaces = record.get("inspection_surfaces")
+    if not isinstance(surfaces, list):
+        return None
+    catalogue_surfaces: list[Mapping[str, Any]] = []
+    for surface in surfaces:
+        if not isinstance(surface, Mapping):
+            continue
+        roles = surface.get("roles")
+        if not isinstance(roles, list):
+            continue
+        if "PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE" in roles and surface.get("retrieval_outcome") == "RETRIEVED":
+            catalogue_surfaces.append(surface)
+    if not catalogue_surfaces:
+        return None
+    non_detail = [
+        surface
+        for surface in catalogue_surfaces
+        if "PRODUCT_DETAIL_SURFACE" not in cast(list[str], surface.get("roles"))
+    ]
+    if non_detail:
+        return None
+    return "SOLE_PRODUCT_DETAIL_CATALOGUE_SURFACE"
+
+
 def validate_f9_actor_completion_ledger(
     ledger: Mapping[str, Any],
     *,
@@ -330,9 +366,12 @@ def validate_f9_actor_completion_ledger(
         raise ProductDiscoveryError("F9 actor completion ledger does not bind the frozen procedure ID")
     if ledger.get("procedure_sha256") != bound_procedure["procedure_sha256"]:
         raise ProductDiscoveryError("F9 actor completion ledger does not bind the frozen procedure digest")
+    if ledger.get("analysis_universe_id") != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("F9 actor completion ledger does not bind the frozen analysis universe")
+    if ledger.get("analysis_universe_id") != bound_procedure["analysis_universe_id"]:
+        raise ProductDiscoveryError("F9 actor completion ledger analysis universe drifts from procedure")
     if ledger.get("boundary") != F9_ENUMERATION_BOUNDARY:
         raise ProductDiscoveryError("F9 actor completion ledger boundary drift")
-
     sequence = ledger.get("ledger_sequence")
     if not isinstance(sequence, int) or sequence < 1:
         raise ProductDiscoveryError("F9 actor completion ledger_sequence must be a positive integer")

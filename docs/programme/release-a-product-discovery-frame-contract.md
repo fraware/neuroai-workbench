@@ -116,6 +116,14 @@ Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics
 
+For F9 curated-actor execution, engineers follow the frozen procedure
+`RELEASE_A_F9_ACTOR_ENUMERATION_PROCEDURE.v1.0.json`, append-only
+`RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_NNN.v1.0.json` successor files, and
+immutable historical packets with successor protocol packets when earlier
+tranches omit candidates. One convenient product-detail page is not actor
+exhaustion for catalogue actors; boundary objects stay in the candidate
+manifest. F9 remains diagnostic-only for primary estimation.
+
 A frame can stop only with one of:
 
 ```text

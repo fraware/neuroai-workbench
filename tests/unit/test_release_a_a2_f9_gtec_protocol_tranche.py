@@ -8,6 +8,7 @@ from typing import Any, cast
 from neuroai_workbench.f9_actor_enumeration import (
     F9_ACTOR_ENUMERATION_PROCEDURE_SHA256,
     f9_bounded_exhaustion_state,
+    f9_sole_product_detail_catalogue_risk,
     validate_f9_actor_completion_ledger,
     validate_f9_actor_completion_record,
 )
@@ -62,6 +63,7 @@ def test_gtec_protocol_tranche_and_ledger() -> None:
     for record in packet["actor_completion_records"]:
         validate_f9_actor_completion_record(record)
         assert record["actor_organization_id"] == "ORG-0020"
+        assert f9_sole_product_detail_catalogue_risk(record) is None
     assert ledger["ledger_sha256"] == LEDGER_SHA256 == _sha(ledger, "ledger_sha256")
     assert ledger["completion_record_count"] == 25
     validate_f9_actor_completion_ledger(ledger, predecessor=predecessor)

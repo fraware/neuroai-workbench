@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 from copy import deepcopy
-from typing import Any
+from importlib.resources import files
+from typing import Any, cast
 
 import pytest
 
@@ -14,12 +16,19 @@ from neuroai_workbench.f9_actor_enumeration import (
     f9_actor_completion_record_id,
     f9_bounded_exhaustion_state,
     f9_enumeration_procedure_digest,
+    f9_sole_product_detail_catalogue_risk,
     load_default_f9_actor_enumeration_procedure,
     validate_f9_actor_completion_ledger,
     validate_f9_actor_completion_record,
     validate_f9_actor_enumeration_procedure,
 )
-from neuroai_workbench.product_discovery_frames import ProductDiscoveryError, load_f9_actor_seed_register
+from neuroai_workbench.product_discovery_frames import (
+    ProductDiscoveryError,
+    load_default_analysis_universe,
+    load_default_frame_register,
+    load_f9_actor_seed_register,
+    validate_capture_against_frame,
+)
 
 
 def _reseal_procedure(procedure: dict[str, Any]) -> dict[str, Any]:
@@ -452,3 +461,97 @@ def test_f9_completion_ledger_fail_closes_on_shrink_duplicate_and_capture_reuse(
     reused["ledger_sha256"] = f9_actor_completion_ledger_digest(reused)
     with pytest.raises(ProductDiscoveryError, match="reused across actor"):
         validate_f9_actor_completion_ledger(reused)
+
+
+def test_f9_completion_ledger_rejects_universe_drift_and_mutated_predecessor_records() -> None:
+    first = _ledger([_completion("ORG-0001")])
+    drifted = deepcopy(first)
+    drifted["analysis_universe_id"] = "RAU-not-the-frozen-universe"
+    drifted["ledger_sha256"] = f9_actor_completion_ledger_digest(drifted)
+    with pytest.raises(ProductDiscoveryError, match="analysis universe"):
+        validate_f9_actor_completion_ledger(drifted)
+
+    second = _ledger([_completion("ORG-0001"), _completion("ORG-0002")], sequence=2, predecessor=first)
+    mutated = deepcopy(second)
+    mutated["completion_records"][0]["completion_reason"] = "Silently rewritten historical record."
+    mutated["completion_records"][0] = _reseal_record(mutated["completion_records"][0])
+    mutated["ledger_sha256"] = f9_actor_completion_ledger_digest(mutated)
+    with pytest.raises(ProductDiscoveryError, match="mutated predecessor completion record"):
+        validate_f9_actor_completion_ledger(mutated, predecessor=first)
+
+
+def test_sole_product_detail_catalogue_is_flagged_as_underenumeration_risk() -> None:
+    safe = _completion("ORG-0001")
+    assert f9_sole_product_detail_catalogue_risk(safe) is None
+
+    convenient = _completion("ORG-0001")
+    convenient["inspection_surfaces"] = [
+        {
+            "locator": _actor("ORG-0001")["official_url"],
+            "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+            "retrieval_outcome": "RETRIEVED",
+            "roles": ["FROZEN_OFFICIAL_LOCATOR"],
+        },
+        {
+            "locator": "https://example.invalid/one-convenient-product",
+            "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+            "retrieval_outcome": "RETRIEVED",
+            "roles": ["PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE", "PRODUCT_DETAIL_SURFACE"],
+        },
+    ]
+    _reseal_record(convenient)
+    validate_f9_actor_completion_record(convenient)
+    assert f9_sole_product_detail_catalogue_risk(convenient) == "SOLE_PRODUCT_DETAIL_CATALOGUE_SURFACE"
+
+    with_catalogue_index = deepcopy(convenient)
+    with_catalogue_index["inspection_surfaces"].append(
+        {
+            "locator": "https://example.invalid/product-catalogue",
+            "source_class": "MANUFACTURER_VENDOR_OFFICIAL",
+            "retrieval_outcome": "RETRIEVED",
+            "roles": ["PRODUCT_CATALOGUE_OR_TECHNOLOGY_SURFACE"],
+        }
+    )
+    _reseal_record(with_catalogue_index)
+    assert f9_sole_product_detail_catalogue_risk(with_catalogue_index) is None
+
+
+def test_frozen_ledger_008_marks_medtronic_sole_detail_catalogue_residual_risk() -> None:
+    ledger = json.loads(
+        files("neuroai_workbench.resources.discovery")
+        .joinpath("RELEASE_A_F9_ACTOR_COMPLETION_LEDGER_008.v1.0.json")
+        .read_text(encoding="utf-8")
+    )
+    by_actor = {record["actor_organization_id"]: record for record in ledger["completion_records"]}
+    assert f9_sole_product_detail_catalogue_risk(by_actor["ORG-0020"]) is None  # G.TEC
+    assert f9_sole_product_detail_catalogue_risk(by_actor["ORG-0017"]) is None  # OpenBCI
+    assert f9_sole_product_detail_catalogue_risk(by_actor["ORG-0003"]) is None  # Bitbrain
+    assert f9_sole_product_detail_catalogue_risk(by_actor["ORG-0007"]) is None  # Emotiv
+    assert f9_sole_product_detail_catalogue_risk(by_actor["ORG-0036"]) == "SOLE_PRODUCT_DETAIL_CATALOGUE_SURFACE"
+
+
+def test_f9_capture_cannot_enter_primary_estimator_or_silently_allocate_identity() -> None:
+    from neuroai_workbench.product_discovery_frames import product_capture_id
+
+    f9 = next(frame for frame in load_default_frame_register()["frames"] if frame["frame_id"] == "F9")
+    universe = load_default_analysis_universe()
+    assert f9["capture_estimation_eligible"] is False
+    assert "F9" in universe["diagnostic_only_frame_ids"]
+
+    packet = json.loads(
+        files("neuroai_workbench.resources.discovery")
+        .joinpath("RELEASE_A_A2_F9_BITBRAIN_PROTOCOL_TRANCHE_5.v1.0.json")
+        .read_text(encoding="utf-8")
+    )
+    capture = deepcopy(cast(dict[str, Any], packet["captures"][0]))
+    assert capture["canonical_offering_id"] is None
+    assert capture["capture_estimation_eligible"] is False
+    validate_capture_against_frame(capture, f9)
+
+    capture["capture_estimation_eligible"] = True
+    capture["capture_id"] = product_capture_id(capture)
+    with pytest.raises(ProductDiscoveryError, match="estimation-eligible|Only resolved"):
+        validate_capture_against_frame(capture, f9)
+
+    # F9 protocol packets must not allocate identity; seeded Bitbrain captures stay null.
+    assert all(item["canonical_offering_id"] is None for item in packet["captures"])

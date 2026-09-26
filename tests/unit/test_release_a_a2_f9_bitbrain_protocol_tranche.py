@@ -8,6 +8,7 @@ from typing import Any, cast
 from neuroai_workbench.f9_actor_enumeration import (
     F9_ACTOR_ENUMERATION_PROCEDURE_SHA256,
     f9_bounded_exhaustion_state,
+    f9_sole_product_detail_catalogue_risk,
     validate_f9_actor_completion_record,
 )
 from neuroai_workbench.product_discovery_frames import (
@@ -141,6 +142,7 @@ def test_bitbrain_protocol_tranche_run_summary_and_completion_reproduce() -> Non
     validate_run_against_analysis_universe(run, universe)
     validate_run_against_captures(run, captures, f9_frame)
     validate_f9_actor_completion_record(completion)
+    assert f9_sole_product_detail_catalogue_risk(completion) is None
 
     assert run["round_id"] == "R5"
     assert run["capture_count"] == 16
