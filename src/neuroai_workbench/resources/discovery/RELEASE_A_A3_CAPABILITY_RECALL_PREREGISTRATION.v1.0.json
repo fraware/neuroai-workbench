@@ -1,0 +1,234 @@
+{
+  "preregistration_id": "RELEASE_A_A3_CAPABILITY_RECALL_PREREGISTRATION_v1.0",
+  "preregistration_sha256": "96feb85999f66c80f82ecafb0592db8cb5a00b957668bb01da63e8ccdd069a76",
+  "status": "FROZEN_v1.0",
+  "study_id": "RELEASE_A_A3_CAPABILITY_FIRST_RECALL_STUDY_v1.0",
+  "census_registered_at": "2026-09-26T13:00:00Z",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "a2_checkpoint_id": "RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT_v1.0",
+  "a2_checkpoint_sha256": "452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32",
+  "round_start_known_identity_set_sha256": "21034ecec898f81f27ad143282967354315b5b31f9eaf430334ca172186c26c0",
+  "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
+  "frame_register_version": "PRODUCT_DISCOVERY_FRAME_REGISTER_v1.0",
+  "frame_register_blob_sha": "bb3d95226dc0ed528e5eed8e6de707430399b9ae",
+  "f6_query_universe_id": "RELEASE_A_F6_OPEN_WORLD_QUERY_UNIVERSE_v1.0",
+  "f6_query_universe_sha256": "65ff66464b7cba60e0347c061069a59b59f6102041b7a3b24a723a7d09cbdfbc",
+  "predeclaration_rule": "Conventional terminology and capability-expanded search families, plus the metrics contract, are frozen before any A3 yield difference is computed or interpreted. Post-hoc addition, deletion, or relabelling of families after seeing ΔN_capability is prohibited.",
+  "conventional_search_family_set_id": "A3_CONVENTIONAL_TERMINOLOGY_v1",
+  "capability_search_family_set_id": "A3_CAPABILITY_EXPANDED_v1",
+  "conventional_search_families": [
+    {
+      "family_id": "CONVENTIONAL_BCI_CATEGORY",
+      "label": "Brain-computer interface category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "brain-computer interface",
+        "BCI",
+        "brain-machine interface",
+        "BMI"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_NEUROTECHNOLOGY_CATEGORY",
+      "label": "Neurotechnology / neurotech category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "neurotechnology",
+        "neurotech",
+        "neural technology product"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_EEG_NEURAL_SENSING_CATEGORY",
+      "label": "EEG / neural-sensing device category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "EEG headset",
+        "consumer EEG",
+        "neural sensing device",
+        "brain sensing wearable"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_NEURAL_INTERFACE_CATEGORY",
+      "label": "Neural interface / implant category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "neural interface",
+        "brain implant",
+        "neuroprosthetic",
+        "invasive BCI"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_NEUROSTIMULATION_CATEGORY",
+      "label": "Neurostimulation / neuromodulation category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "neurostimulation",
+        "neuromodulation",
+        "tDCS",
+        "TMS device"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_NEUROFEEDBACK_CATEGORY",
+      "label": "Neurofeedback product category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "neurofeedback system",
+        "neurofeedback device",
+        "EEG neurofeedback product"
+      ],
+      "notes": "Category-branded retrieval; contrasts with capability-family NEUROFEEDBACK_TRAINING function wording."
+    },
+    {
+      "family_id": "CONVENTIONAL_CONSUMER_CLINICAL_NEURODEVICE",
+      "label": "Consumer or clinical neurodevice category terminology",
+      "terminology_class": "CATEGORY_BRANDED",
+      "example_terms": [
+        "consumer brain wearable",
+        "clinical neurodevice",
+        "medical EEG system"
+      ],
+      "notes": "Category-branded retrieval; not capability-function wording."
+    }
+  ],
+  "capability_search_families": [
+    {
+      "family_id": "ATTENTION_VIGILANCE",
+      "label": "Attention and vigilance estimation",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "ATTENTION_VIGILANCE",
+      "notes": "Preserved A3 capability domain; binds to frozen F6 family ATTENTION_VIGILANCE."
+    },
+    {
+      "family_id": "FATIGUE_DROWSINESS",
+      "label": "Fatigue or drowsiness detection",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "FATIGUE_DROWSINESS",
+      "notes": "Preserved A3 capability domain; binds to frozen F6 family FATIGUE_DROWSINESS."
+    },
+    {
+      "family_id": "COGNITIVE_LOAD_WORKLOAD",
+      "label": "Cognitive load and workload estimation",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "COGNITIVE_AFFECTIVE_STATE",
+      "notes": "Preserved A3 capability domain. F6 merged cognitive/affective into COGNITIVE_AFFECTIVE_STATE; A3 retains separate family IDs for reporting while binding execution substrate to that frozen F6 family."
+    },
+    {
+      "family_id": "AFFECTIVE_STRESS_STATE",
+      "label": "Affective or stress-state inference",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "COGNITIVE_AFFECTIVE_STATE",
+      "notes": "Preserved A3 capability domain. Shares F6 COGNITIVE_AFFECTIVE_STATE execution substrate with COGNITIVE_LOAD_WORKLOAD; family IDs remain distinct for stratified reporting."
+    },
+    {
+      "family_id": "ADAPTIVE_INTERFACE",
+      "label": "Adaptive interfaces",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "ADAPTIVE_INTERFACE",
+      "notes": "Preserved A3 capability domain; binds to frozen F6 family ADAPTIVE_INTERFACE."
+    },
+    {
+      "family_id": "NEUROFEEDBACK_TRAINING",
+      "label": "Neurofeedback and cognitive training",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "NEUROFEEDBACK_TRAINING",
+      "notes": "Preserved A3 capability domain; binds to frozen F6 family NEUROFEEDBACK_TRAINING."
+    },
+    {
+      "family_id": "BEHAVIORAL_PERSONALIZATION",
+      "label": "Behavioral personalization using brain/body-state signals",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "COGNITIVE_AFFECTIVE_STATE",
+      "notes": "Preserved A3 capability domain. No dedicated F6 family existed at F6 freeze; attributable personalization recoveries bind to F6 COGNITIVE_AFFECTIVE_STATE / ADAPTIVE_INTERFACE substrates without inventing a post-hoc F6 family."
+    },
+    {
+      "family_id": "NEURAL_DECODING_CONTROL",
+      "label": "Neural decoding and device control",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "NEURAL_DECODING_CONTROL",
+      "notes": "Preserved A3 capability domain; binds to frozen F6 family NEURAL_DECODING_CONTROL."
+    },
+    {
+      "family_id": "NONTRADITIONAL_FORM_FACTOR",
+      "label": "Neural sensing embedded in ordinary form factors",
+      "terminology_class": "CAPABILITY_FUNCTION",
+      "f6_query_family_binding": "NONTRADITIONAL_FORM_FACTOR",
+      "notes": "Preserved A3 capability domain (earbuds, headphones, eyewear, headbands, and similar ordinary form factors); binds to frozen F6 family NONTRADITIONAL_FORM_FACTOR."
+    }
+  ],
+  "evidence_substrate": {
+    "conventional_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5"
+    ],
+    "conventional_frame_set_alignment": "CONVENTIONAL_SOURCE_CORE",
+    "capability_frame_ids": [
+      "F6"
+    ],
+    "all_discovery_frame_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "f6_is_controlled_capability_frame": true,
+    "f7_f9_f11_estimator_excluded": true,
+    "f10_patent_leads_are_not_products": true,
+    "f8_reserved_for_a4": true,
+    "identity_unit": "CANONICAL_PRODUCT_OFFERING",
+    "increment_requires_exact_offering_id": true,
+    "no_identity_allocation_by_implication": true
+  },
+  "metrics_contract": {
+    "primary_estimand_id": "DELTA_N_CAPABILITY",
+    "formula": "DELTA_N_CAPABILITY = N_ALL_DISCOVERY - N_CONVENTIONAL_TERMINOLOGY",
+    "n_conventional_terminology_definition": "Cardinality of the set of distinct canonical PRODUCT offering IDs with at least one INCLUDE_RESOLVED capture under conventional_frame_ids (F1-F5), after exact-product deduplication, under the frozen analysis universe and cutoffs.",
+    "n_all_discovery_definition": "Cardinality of the set of distinct canonical PRODUCT offering IDs with at least one INCLUDE_RESOLVED capture under all_discovery_frame_ids (F1-F6), after exact-product deduplication, under the same universe and cutoffs.",
+    "delta_n_capability_definition": "N_ALL_DISCOVERY minus N_CONVENTIONAL_TERMINOLOGY. Equals the count of exact offering IDs recovered in the capability-expanded arm (F6) that are absent from the conventional terminology arm (F1-F5). Never raw search-hit counts.",
+    "required_companion_rates": [
+      "FALSE_POSITIVE_RATE",
+      "UNRESOLVED_RATE",
+      "DUPLICATE_RATE",
+      "UNIQUE_PRODUCT_GAIN"
+    ],
+    "false_positive_rate_definition": "Among raw candidates in the capability arm (F6), the share with outcome EXCLUDE (false-positive relative to the frozen product boundary). Reported separately from BORDERLINE/ABSTAIN.",
+    "unresolved_rate_definition": "Among raw candidates in the capability arm (F6), the share with outcome UNRESOLVED_IDENTITY.",
+    "duplicate_rate_definition": "Among raw candidates in the capability arm (F6), the share that are known-identity duplicates or within-round duplicates (not new exact offerings).",
+    "unique_product_gain_definition": "Identical to DELTA_N_CAPABILITY: unique exact-offering gain attributable to adding capability-expanded search to conventional terminology search.",
+    "stratification_policy": {
+      "by_product_class": "Report DELTA_N_CAPABILITY and companion rates by enumeration role (INTEGRATED_SYSTEM, COMPONENT_OR_SUBSYSTEM, STANDALONE_SOFTWARE_OR_SERVICE) when each stratum has at least one INCLUDE_RESOLVED offering in N_ALL_DISCOVERY; otherwise mark stratum NOT_DEFENSIBLE and do not invent counts.",
+      "by_jurisdiction": "Report DELTA_N_CAPABILITY by capture jurisdiction when each stratum has at least one INCLUDE_RESOLVED offering in N_ALL_DISCOVERY; otherwise mark stratum NOT_DEFENSIBLE.",
+      "no_post_hoc_stratum_invention": true
+    },
+    "denominator_rules": {
+      "raw_search_hits_are_not_the_increment_unit": true,
+      "only_include_resolved_exact_offering_ids_enter_n_counts": true,
+      "unresolved_borderline_abstain_exclude_do_not_inflate_delta_n": true,
+      "known_a1_overlaps_are_duplicates_not_unique_gain": true
+    }
+  },
+  "execution_gate": {
+    "requires_frozen_preregistration_before_yield": true,
+    "freeze_alone_does_not_compute_delta_n": true,
+    "does_not_start_a4_or_later": true,
+    "does_not_mutate_rau": true,
+    "does_not_allocate_canonical_identity": true,
+    "post_hoc_family_edits_prohibited": true
+  },
+  "boundary": "A3 capability-first recall preregistration freezes conventional terminology versus capability-expanded search families and the ΔN_capability metrics contract under the A2 analysis universe before yield interpretation. It does not establish global completeness, market share, effectiveness, unseen-population size, commercialization, S2 publication authority, or v4.2 assessment effect. Freeze alone does not compute ΔN_capability or allocate canonical PRODUCT identity."
+}
