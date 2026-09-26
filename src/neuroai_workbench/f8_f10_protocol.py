@@ -83,9 +83,7 @@ def content_digest(material: Mapping[str, Any], *, exclude: str) -> str:
 def id_set_digest(ids: Iterable[str]) -> str:
     """Return SHA-256 over the sorted unique ID list."""
 
-    encoded = json.dumps(sorted({str(item) for item in ids}), ensure_ascii=False, separators=(",", ":")).encode(
-        "utf-8"
-    )
+    encoded = json.dumps(sorted({str(item) for item in ids}), ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
