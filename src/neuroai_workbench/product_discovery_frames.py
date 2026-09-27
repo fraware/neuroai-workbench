@@ -147,8 +147,6 @@ def validate_analysis_universe(universe: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("Analysis-universe schema validation failed: " + "; ".join(errors))
     if universe["analysis_universe_id"] != analysis_universe_id(universe):
         raise ProductDiscoveryError("analysis_universe_id does not match the deterministic frozen universe")
-    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
-        raise ProductDiscoveryError("analysis_universe_id is not the exact frozen Release-A A2 universe")
     if universe["manifest_version"] != ANALYSIS_UNIVERSE_VERSION:
         raise ProductDiscoveryError(f"manifest_version must be {ANALYSIS_UNIVERSE_VERSION}")
     if universe["status"] != "FROZEN_v1.0":
@@ -834,13 +832,21 @@ def evaluate_frame_stop(
     return "CONTINUE"
 
 
+def _validate_exact_release_a_analysis_universe(universe: Mapping[str, Any]) -> None:
+    """Require the one frozen Release-A A2 universe used by authoritative successor records."""
+
+    validate_analysis_universe(universe)
+    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id is not the exact frozen Release-A A2 universe")
+
+
 def _validate_registry_rows_against_analysis_universe(
     registry_rows: Sequence[Mapping[str, Any]],
     universe: Mapping[str, Any],
 ) -> None:
     """Require every supplied Product Registry row to belong to the exact A2 universe."""
 
-    validate_analysis_universe(universe)
+    _validate_exact_release_a_analysis_universe(universe)
     for row in registry_rows:
         try:
             validate_product_registry_row(row)
@@ -886,6 +892,7 @@ def derive_capture_estimation_eligibility(
     """Derive estimator eligibility from frame, exact universe and target-view state."""
 
     validate_capture_against_frame(capture, frame)
+    _validate_exact_release_a_analysis_universe(universe)
     validate_capture_against_analysis_universe(capture, universe)
     if capture["outcome"] != "INCLUDE_RESOLVED":
         return False
@@ -961,6 +968,7 @@ def validate_run_known_identity_baseline(
 ) -> frozenset[str]:
     """Bind a run to the canonical OFFERING set in its governed round-start snapshot."""
 
+    _validate_exact_release_a_analysis_universe(universe)
     validate_run_against_analysis_universe(run, universe)
     known = derive_round_start_known_identity_ids(round_start_registry_rows, universe)
     expected = identity_set_digest(known)
@@ -1023,6 +1031,7 @@ def validate_authoritative_stop_evidence(
 ) -> None:
     """Validate typed, digest-bound execution evidence used for stop derivation."""
 
+    _validate_exact_release_a_analysis_universe(universe)
     validate_run_against_analysis_universe(run, universe)
     validate_discovery_frame(frame)
     required = {
@@ -1143,6 +1152,7 @@ def validate_authoritative_discovery_run(
 ) -> dict[str, Any]:
     """Validate one authoritative A2 run across universe, identity, eligibility and stop semantics."""
 
+    _validate_exact_release_a_analysis_universe(analysis_universe)
     validate_run_against_analysis_universe(run, analysis_universe)
     validate_run_against_captures(run, captures, frame)
 
