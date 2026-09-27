@@ -64,6 +64,14 @@ def test_default_execution_unit_routing_reconstructs_exactly() -> None:
     }
 
 
+def test_route_table_preserves_frozen_r1_4_worklist_order() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    worklist = routing.load_decision_resolution_worklist()
+    assert [item["work_item_id"] for item in checkpoint["route_table"]] == [
+        item["work_item_id"] for item in worklist["work_items"]
+    ]
+
+
 def test_default_routes_preserve_empirical_unit_semantics() -> None:
     checkpoint = routing.load_execution_unit_routing()
 
