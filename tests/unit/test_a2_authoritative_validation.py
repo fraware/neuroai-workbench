@@ -6,7 +6,6 @@ from neuroai_workbench import product_discovery_frames as pdf
 from neuroai_workbench import product_registry as pr
 
 
-
 INITIAL_IDS = {
     "PRD-MUSE-S-ATHENA",
     "PRD-NEXTSENSE-SMARTBUDS",
@@ -81,7 +80,7 @@ def _capture(
         "observed_at": "2026-09-24T12:00:00Z",
         "registry_projection_version": pr.REGISTRY_PROJECTION_VERSION,
         "frame_register_version": pdf.FRAME_REGISTER_VERSION,
-        "pdf.analysis_universe_id": analysis_universe_id_value,
+        "analysis_universe_id": analysis_universe_id_value,
         "population_view_id": population_view_id,
         "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
@@ -107,7 +106,7 @@ def _registry_row(
     configuration_coverage_state: str = "NOT_APPLICABLE",
 ) -> dict[str, object]:
     row: dict[str, object] = {
-        "pr.registry_row_id": "",
+        "registry_row_id": "",
         "registry_projection_version": pr.REGISTRY_PROJECTION_VERSION,
         "boundary_contract_id": pr.BOUNDARY_CONTRACT_ID,
         "boundary_contract_semantic_blob": pr.BOUNDARY_CONTRACT_SEMANTIC_BLOB,
@@ -153,7 +152,7 @@ def _registry_row(
         "technical_equivalence_evidence_refs": [],
         "boundary": pr.REGISTRY_BOUNDARY,
     }
-    row["pr.registry_row_id"] = pr.registry_row_id(row)
+    row["registry_row_id"] = pr.registry_row_id(row)
     return row
 
 
@@ -176,7 +175,7 @@ def _run(
         "frame_id": frame_id,
         "frame_version": pdf.FRAME_VERSION,
         "frame_register_version": pdf.FRAME_REGISTER_VERSION,
-        "pdf.analysis_universe_id": analysis_universe_id_value,
+        "analysis_universe_id": analysis_universe_id_value,
         "round_id": round_id,
         "query_or_seed_ids": [f"Q-{frame_id}"],
         "languages": ["en"],
@@ -217,7 +216,7 @@ def _stop_evidence(
     evidence: dict[str, object] = {
         "evidence_id": "",
         "evidence_version": pdf.AUTHORITATIVE_STOP_EVIDENCE_VERSION,
-        "pdf.analysis_universe_id": run["pdf.analysis_universe_id"],
+        "analysis_universe_id": run["analysis_universe_id"],
         "frame_id": run["frame_id"],
         "through_round_id": run["round_id"],
         "completed_round_ids": [str(summary["round_id"]) for summary in summaries],
@@ -264,7 +263,7 @@ def test_capture_eligibility_rejects_registry_universe_and_identity_mismatch() -
 def test_exact_frozen_analysis_universe_identity_is_required() -> None:
     fake_universe = dict(_universe())
     fake_universe["boundary"] = str(fake_universe["boundary"]) + " altered"
-    fake_universe["pdf.analysis_universe_id"] = pdf.analysis_universe_id(fake_universe)
+    fake_universe["analysis_universe_id"] = pdf.analysis_universe_id(fake_universe)
 
     with pytest.raises(pdf.ProductDiscoveryError, match="exact frozen Release-A A2 universe"):
         pdf.derive_capture_estimation_eligibility(
@@ -314,7 +313,7 @@ def test_capture_eligibility_allows_legitimate_multiple_compatible_projections()
         configuration_system_id="SYS-NEXTSENSE-CONFIG-A",
         configuration_coverage_state="RESOLVED",
     )
-    assert primary["pr.registry_row_id"] != configured["pr.registry_row_id"]
+    assert primary["registry_row_id"] != configured["registry_row_id"]
 
     assert (
         pdf.validate_authoritative_capture_estimation_eligibility(
