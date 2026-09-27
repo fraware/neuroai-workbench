@@ -154,25 +154,16 @@ def evaluate_round_identifiability(
 
     m_lower = Y_r / C_r
     finite_upper_bound_available = (
-        cardinality_unproven_cluster_count == 0
-        and unbounded_source_or_abstention_barrier_cluster_count == 0
+        cardinality_unproven_cluster_count == 0 and unbounded_source_or_abstention_barrier_cluster_count == 0
     )
-    m_upper = (
-        (Y_r + one_object_upper_bound_cluster_count) / C_r
-        if finite_upper_bound_available
-        else None
-    )
+    m_upper = (Y_r + one_object_upper_bound_cluster_count) / C_r if finite_upper_bound_available else None
 
     exhaustive_resolution = (
         one_object_upper_bound_cluster_count == 0
         and cardinality_unproven_cluster_count == 0
         and unbounded_source_or_abstention_barrier_cluster_count == 0
     )
-    worst_case_bound = (
-        finite_upper_bound_available
-        and m_upper is not None
-        and m_upper <= threshold
-    )
+    worst_case_bound = finite_upper_bound_available and m_upper is not None and m_upper <= threshold
     reviewed_statistical = (
         statistical_design_preregistered
         and statistical_upper_bound is not None
@@ -204,9 +195,7 @@ def evaluate_round_identifiability(
         "finite_upper_bound_available": finite_upper_bound_available,
         "one_object_upper_bound_cluster_count": one_object_upper_bound_cluster_count,
         "cardinality_unproven_cluster_count": cardinality_unproven_cluster_count,
-        "unbounded_source_or_abstention_barrier_cluster_count": (
-            unbounded_source_or_abstention_barrier_cluster_count
-        ),
+        "unbounded_source_or_abstention_barrier_cluster_count": (unbounded_source_or_abstention_barrier_cluster_count),
         "identifiability_state": state,
         "identifiability_path": path,
     }
@@ -278,12 +267,8 @@ def _derive_increment_checkpoint(
 ) -> dict[str, Any]:
     relevant = [cluster for cluster in clusters if bool(cluster[flag_field])]
     one_object = sum(cluster["uncertainty_cardinality_class"] == ONE_OBJECT for cluster in relevant)
-    cardinality_unproven = sum(
-        cluster["uncertainty_cardinality_class"] == CARDINALITY_UNPROVEN for cluster in relevant
-    )
-    unbounded = sum(
-        cluster["uncertainty_cardinality_class"] == UNBOUNDED_BARRIER for cluster in relevant
-    )
+    cardinality_unproven = sum(cluster["uncertainty_cardinality_class"] == CARDINALITY_UNPROVEN for cluster in relevant)
+    unbounded = sum(cluster["uncertainty_cardinality_class"] == UNBOUNDED_BARRIER for cluster in relevant)
     resolved_increment = int(packet[historical_delta_field])
     finite_upper = cardinality_unproven == 0 and unbounded == 0
     increment_upper = resolved_increment + one_object if finite_upper else None
@@ -299,15 +284,9 @@ def _derive_increment_checkpoint(
         "increment_upper_bound": increment_upper,
         "finite_upper_bound_available": finite_upper,
         "disposition_coverage_state": (
-            "COMPLETE_OR_FINITE_BOUNDED"
-            if finite_upper
-            else "INCOMPLETE_CARDINALITY_UNPROVEN_AND_UNBOUNDED"
+            "COMPLETE_OR_FINITE_BOUNDED" if finite_upper else "INCOMPLETE_CARDINALITY_UNPROVEN_AND_UNBOUNDED"
         ),
-        "successor_interpretation_state": (
-            "INCREMENT_IDENTIFIED"
-            if finite_upper
-            else "INCREMENT_RESOLUTION_CENSORED"
-        ),
+        "successor_interpretation_state": ("INCREMENT_IDENTIFIED" if finite_upper else "INCREMENT_RESOLUTION_CENSORED"),
     }
 
 
@@ -423,9 +402,7 @@ def derive_resolution_completeness_checkpoint() -> dict[str, Any]:
             "unresolved_clusters_capable_of_changing_marginal_yield_stop": (
                 accounting["unresolved_clusters_capable_of_changing_marginal_yield_stop"]
             ),
-            "cardinality_bounded_unresolved_cluster_count": accounting[
-                "cardinality_bounded_unresolved_cluster_count"
-            ],
+            "cardinality_bounded_unresolved_cluster_count": accounting["cardinality_bounded_unresolved_cluster_count"],
             "cardinality_unproven_unresolved_cluster_count": accounting[
                 "cardinality_unproven_unresolved_cluster_count"
             ],
