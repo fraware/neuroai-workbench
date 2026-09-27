@@ -103,9 +103,7 @@ def test_default_rule_and_worklist_reconstruct_exactly() -> None:
         "predecessor_one_object_upper_bound_count": 0,
     }
 
-    candidate_items = [
-        item for item in worklist["work_items"] if item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW"
-    ]
+    candidate_items = [item for item in worklist["work_items"] if item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW"]
     assert len(candidate_items) == 268
     assert len({item["candidate_cluster_id"] for item in candidate_items}) == 268
     assert all(item["capture_ids"] for item in candidate_items)
@@ -152,26 +150,82 @@ def test_rule_rejects_selection_and_authority_drift(monkeypatch: pytest.MonkeyPa
     rule = dr.load_decision_resolution_rule()
 
     mutations = [
-        ("marginal-yield frame selection drift", lambda x: x["selection_contract"].update({"marginal_yield_frames": ["F1"]})),
-        ("marginal-yield round selection drift", lambda x: x["selection_contract"].update({"marginal_yield_rounds": ["R3"]})),
-        ("decision-relevant selection predicate drift", lambda x: x["selection_contract"].update({"include_if_any": ["A3_CAPABILITY_INCREMENT"]})),
-        ("temporal-review offering set drift", lambda x: x["selection_contract"].update({"temporal_state_reviews": ["PRD-FLOW-FL-100"]})),
-        ("preserve exact cross-frame", lambda x: x["selection_contract"].update({"preserve_exact_cross_frame_cluster_identity": False})),
-        ("cannot substitute probability sampling", lambda x: x["selection_contract"].update({"probability_sampling_substitution_permitted": True})),
+        (
+            "marginal-yield frame selection drift",
+            lambda x: x["selection_contract"].update({"marginal_yield_frames": ["F1"]}),
+        ),
+        (
+            "marginal-yield round selection drift",
+            lambda x: x["selection_contract"].update({"marginal_yield_rounds": ["R3"]}),
+        ),
+        (
+            "decision-relevant selection predicate drift",
+            lambda x: x["selection_contract"].update({"include_if_any": ["A3_CAPABILITY_INCREMENT"]}),
+        ),
+        (
+            "temporal-review offering set drift",
+            lambda x: x["selection_contract"].update({"temporal_state_reviews": ["PRD-FLOW-FL-100"]}),
+        ),
+        (
+            "preserve exact cross-frame",
+            lambda x: x["selection_contract"].update({"preserve_exact_cross_frame_cluster_identity": False}),
+        ),
+        (
+            "cannot substitute probability sampling",
+            lambda x: x["selection_contract"].update({"probability_sampling_substitution_permitted": True}),
+        ),
         ("adjudication disposition set drift", lambda x: x.update({"adjudication_dispositions": ["TERMINAL_EXCLUDE"]})),
         ("adjudicator-state set drift", lambda x: x.update({"adjudicator_states": ["HUMAN_REVIEWED"]})),
         ("evidence-role set drift", lambda x: x.update({"evidence_roles": ["DIRECT_PRE_CUTOFF_STATE"]})),
         ("supported-proposition set drift", lambda x: x.update({"supported_propositions": ["SCOPE"]})),
-        ("must not allocate canonical", lambda x: x["identity_authority"].update({"worklist_may_allocate_canonical_product_identity": True})),
-        ("must require separate identity authority", lambda x: x["identity_authority"].update({"new_identity_disposition_requires_separate_identity_authority_successor": False})),
-        ("must require cardinality evidence", lambda x: x["cardinality_rule"].update({"one_object_upper_bound_requires_cardinality_specific_evidence": False})),
-        ("contribution must equal one", lambda x: x["cardinality_rule"].update({"one_object_upper_bound_max_incremental_offering_contribution": 0})),
-        ("source barriers must fail closed", lambda x: x["cardinality_rule"].update({"source_or_abstention_barrier_remains_unbounded_without_source_specific_finite_bound": False})),
-        ("temporal-state target set drift", lambda x: x["temporal_state_rule"].update({"target_offerings": ["PRD-FLOW-FL-100"]})),
-        ("qualifying currentness state drift", lambda x: x["temporal_state_rule"].update({"qualifying_currentness_state": "UNRESOLVED"})),
-        ("qualifying lifecycle-state set drift", lambda x: x["temporal_state_rule"].update({"qualifying_lifecycle_states": ["RELEASED"]})),
-        ("must fail closed on missing support", lambda x: x["temporal_state_rule"].update({"preserve_nonqualification_without_admissible_currentness_and_lifecycle_support": False})),
-        ("checkpoint-only", lambda x: x["finality"].update({"checkpoint_only_until_knowledge_window_disposition": False})),
+        (
+            "must not allocate canonical",
+            lambda x: x["identity_authority"].update({"worklist_may_allocate_canonical_product_identity": True}),
+        ),
+        (
+            "must require separate identity authority",
+            lambda x: x["identity_authority"].update(
+                {"new_identity_disposition_requires_separate_identity_authority_successor": False}
+            ),
+        ),
+        (
+            "must require cardinality evidence",
+            lambda x: x["cardinality_rule"].update(
+                {"one_object_upper_bound_requires_cardinality_specific_evidence": False}
+            ),
+        ),
+        (
+            "contribution must equal one",
+            lambda x: x["cardinality_rule"].update({"one_object_upper_bound_max_incremental_offering_contribution": 0}),
+        ),
+        (
+            "source barriers must fail closed",
+            lambda x: x["cardinality_rule"].update(
+                {"source_or_abstention_barrier_remains_unbounded_without_source_specific_finite_bound": False}
+            ),
+        ),
+        (
+            "temporal-state target set drift",
+            lambda x: x["temporal_state_rule"].update({"target_offerings": ["PRD-FLOW-FL-100"]}),
+        ),
+        (
+            "qualifying currentness state drift",
+            lambda x: x["temporal_state_rule"].update({"qualifying_currentness_state": "UNRESOLVED"}),
+        ),
+        (
+            "qualifying lifecycle-state set drift",
+            lambda x: x["temporal_state_rule"].update({"qualifying_lifecycle_states": ["RELEASED"]}),
+        ),
+        (
+            "must fail closed on missing support",
+            lambda x: x["temporal_state_rule"].update(
+                {"preserve_nonqualification_without_admissible_currentness_and_lifecycle_support": False}
+            ),
+        ),
+        (
+            "checkpoint-only",
+            lambda x: x["finality"].update({"checkpoint_only_until_knowledge_window_disposition": False}),
+        ),
         ("final R1.3 rebind", lambda x: x["finality"].update({"final_r1_3_rebind_required": False})),
         ("forbidden authority enabled", lambda x: x["finality"].update({"release_a_r1_passed": True})),
     ]
