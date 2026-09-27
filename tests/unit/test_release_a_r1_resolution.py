@@ -75,6 +75,14 @@ def test_default_r1_resolution_state_reconstructs() -> None:
         "unresolved_clusters_capable_of_changing_a3_increment": 52,
         "unresolved_clusters_capable_of_changing_a4_increment": 63,
         "unresolved_clusters_capable_of_changing_marginal_yield_stop": 334,
+        "cardinality_bounded_unresolved_cluster_count": 591,
+        "unbounded_source_or_abstention_barrier_cluster_count": 470,
+        "cardinality_bounded_clusters_capable_of_changing_marginal_yield_stop": 109,
+        "unbounded_barrier_clusters_capable_of_changing_marginal_yield_stop": 225,
+        "cardinality_bounded_clusters_capable_of_changing_a3_increment": 13,
+        "unbounded_barrier_clusters_capable_of_changing_a3_increment": 39,
+        "cardinality_bounded_clusters_capable_of_changing_a4_increment": 12,
+        "unbounded_barrier_clusters_capable_of_changing_a4_increment": 51,
     }
 
 
@@ -165,6 +173,21 @@ def test_source_record_derivation_is_conservative_for_unresolved_rows() -> None:
     assert unresolved["could_change_a_p1_membership"] is True
     assert unresolved["could_change_a3_increment"] is True
     assert unresolved["could_change_marginal_yield_stop"] is True
+    assert unresolved["cardinality_bounded_candidate_object"] is True
+    assert unresolved["source_or_abstention_barrier"] is False
+    assert unresolved["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND"
+
+    barrier = r1.derive_r1_source_record(
+        _synthetic_capture(
+            capture_id="PDC-BARRIER",
+            candidate_key="Vendor::Catalogue Surface",
+            outcome="FAILED_INACCESSIBLE",
+            frame_id="F6",
+        )
+    )
+    assert barrier["cardinality_bounded_candidate_object"] is False
+    assert barrier["source_or_abstention_barrier"] is True
+    assert barrier["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
 
     excluded = r1.derive_r1_source_record(
         _synthetic_capture(capture_id="PDC-X", candidate_key="Vendor::Excluded", outcome="EXCLUDE")
@@ -195,6 +218,7 @@ def test_cluster_builder_keeps_noncanonical_uncertainty_and_terminal_exclusions_
     terminal = by_state["TERMINAL_EXCLUDED"]
     assert terminal["identity_resolution_state"] == "NOT_REQUIRED_EXCLUDED"
     assert terminal["could_change_a_p1_membership"] is False
+    assert terminal["uncertainty_cardinality_class"] == "TERMINAL"
 
 
 def test_manifest_binds_all_22_source_packets_and_every_capture_exactly_once() -> None:
@@ -249,3 +273,11 @@ def test_cluster_artifact_is_frozen_and_noncanonical_clusters_do_not_allocate_id
     assert all(cluster["canonical_offering_id"] for cluster in canonical)
     assert all(cluster["canonical_offering_id"] is None for cluster in noncanonical)
     assert sum(bool(cluster["could_change_a_p1_membership"]) for cluster in clusters) == 1061
+    assert sum(cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND" for cluster in clusters) == 591
+    assert (
+        sum(
+            cluster["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
+            for cluster in clusters
+        )
+        == 470
+    )
