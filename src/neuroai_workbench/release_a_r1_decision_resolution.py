@@ -30,7 +30,11 @@ from neuroai_workbench.release_a_r1_resolution import (
 )
 from neuroai_workbench.release_a_r1_resolution_completeness import (
     CHECKPOINT_SHA256 as R1_3_CHECKPOINT_SHA256,
+)
+from neuroai_workbench.release_a_r1_resolution_completeness import (
     RULE_SHA256 as R1_3_RULE_SHA256,
+)
+from neuroai_workbench.release_a_r1_resolution_completeness import (
     load_resolution_completeness_checkpoint,
 )
 
