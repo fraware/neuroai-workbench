@@ -1,64 +1,96 @@
-# Release A completion status
+# Release A status
 
 **Plan binding:** [Product Population → Industrial Observatory deployment plan](product-population-industrial-observatory-deployment-plan.md) Release A / `A-G`  
-**Status:** `A-G PASSED` (controlled research packet; repository-safe)  
+**Current programme status:** `CORRECTIVE_REVIEW_R1_OPEN`  
+**Historical reconstruction gate:** `A-G PASSED` in immutable packet `33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92`  
+**Corrective tracker:** #410  
 **Does not authorize:** Release B, Release C, Release D, S2 publication authority, or v4.2 assessment effect
 
-This document is the durable programme pointer to the immutable Release A gate artifacts. Mutable issue/PR chatter is not the gate record. Stronger claims than the frozen packages are prohibited.
+This file is the mutable programme-status pointer. The historical A8 and A-G packet bytes remain immutable. A post-completion adversarial review found scientific-integrity gaps that were outside the reconstruction gate, so the historical `PASSED` outcome is retained as a reconstruction result while the scientific Release-A disposition is under successor review.
 
-## Gate disposition
+## Corrective-review notice
+
+Release-A/R1 is required before the current A8 package is consumed as a final denominator by downstream Release B/C/D work.
+
+The post-completion audit found:
+
+- issues #342, #343 and #344 remain open and govern authoritative per-capture estimator eligibility, exact round-start known-identity binding, and derived stop-state validation;
+- the executed open-world/local-language/patent/snowball packets contain 240 `UNRESOLVED_IDENTITY` capture rows after the bounded-frame checkpoint, representing 168 globally distinct `candidate_key` values before governed identity deduplication;
+- the current A8 unresolved register contains the 416 checkpoint candidates from F3/F9 only and is therefore not the complete unresolved register for the full Release-A execution;
+- `delta_n_capability=0` and `delta_n_multilingual=0` are counts of additional **resolved canonical offering IDs** under the executed pipeline; their substantive recall interpretation remains under corrective review because material unresolved/abstain mass remains in F6/F8;
+- A7 correctly failed closed with `N_estimated=null`; a successor A7 compile is required after authoritative eligibility, candidate-resolution and stop-state corrections.
+
+See [Release A corrective review R1](release-a-corrective-review-r1.md) and issue #410.
+
+## Historical reconstruction gate disposition
 
 | Field | Value |
 | --- | --- |
-| Gate | `A-G` |
-| Outcome | `PASSED` |
-| Next required state | `RELEASE_A_COMPLETE_AG_PASSED_NO_BCD_AUTHORIZATION` |
+| Historical gate | `A-G` |
+| Historical packet outcome | `PASSED` |
+| Current scientific disposition | `CORRECTIVE_REVIEW_R1_OPEN` |
+| Next required state | `RELEASE_A_R1_SUCCESSOR_AG_DISPOSITION` |
 | A8 package | `src/neuroai_workbench/resources/discovery/RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE.v1.0.json` |
 | A8 package SHA-256 | `71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190` |
 | A-G packet | `src/neuroai_workbench/resources/discovery/RELEASE_A_AG_RECONSTRUCTION_PACKET.v1.0.json` |
 | A-G packet SHA-256 | `33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92` |
 | A-G protocol SHA-256 | `5fba335b37459d0b474f9b868d14275f8bf62372332aba2d6cb1a9b565aebb76` |
 | A2 bounded-frame checkpoint SHA-256 | `452c8c504990c05edd6ac7c29b542a49ffa4fd81ccdece2bd7ca8e9e0921ca32` |
-| Tip SHA at A-G merge | `abf53c8882eef1c4501a2a14f16ead37ad5bd7ca` (`#408`) |
+| Tip SHA at historical A-G merge | `abf53c8882eef1c4501a2a14f16ead37ad5bd7ca` (`#408`) |
 
-Reconstruction checks walk the A8 package to upstream digests and source packets for each required headline. Outcome is `PASSED` only when every required field resolves from immutable artifacts.
+The historical reconstruction checks walk A8 to upstream digests and source packets for each required headline. That result remains reproducible. It does not independently establish the scientific sufficiency of candidate-resolution coverage, estimator eligibility derivation, round-start identity accounting, or stop-state justification.
 
-## Headline counts (denominators required)
+## Historical headline values under review
 
-All headline values below are taken from the frozen A8 package / A-G packet under population view `A-P1` unless noted. Do not restate them without the denominator.
+These values are preserved exactly as reported by the immutable A8/A-G artifacts. They must be described as historical Release-A v1.0 outputs until the R1 successor disposition completes.
 
-| Headline | Value | Denominator / view |
+| Headline | Historical value | Current interpretation |
 | --- | --- | --- |
-| `N_observed` | `6` | Distinct resolved in-scope canonical `PRODUCT`/`OFFERING` identities under `A-P1` |
-| `N_estimated` | `null` | Same `A-P1` target population; A7 fail-closed — no headline unseen-population estimate admitted |
-| `delta_n_capability` | `0` | Exact offering IDs in the capability-expanded arm absent from the conventional arm under `A-P1` |
-| `delta_n_multilingual` | `0` | Exact offering IDs in the English+native arm absent from the English arm under `A-P1` |
-| D4 working `INCLUDE` | `49` / `60` | D4 working-reference boundary cases (`TOTAL=60`) |
-| Unresolved candidates retained | `416` | A2 checkpoint unresolved candidates (candidates, not products) |
+| `N_observed` | `6` | Six resolved in-scope canonical PRODUCT/OFFERING identities under A-P1 in the frozen v1.0 pipeline; not a global product count |
+| `N_estimated` | `null` | A7 fail-closed; no defensible unseen-population estimate admitted |
+| `delta_n_capability` | `0` | Zero additional resolved canonical IDs; substantive recall increment under corrective review |
+| `delta_n_multilingual` | `0` | Zero additional resolved canonical IDs; substantive multilingual increment under corrective review |
+| D4 working `INCLUDE` | `49 / 60` | Working-reference boundary cases, not the separate PRE-G2/G2 held-out human benchmark |
+| A8 unresolved register | `416` | Bounded-checkpoint F3/F9 unresolved candidates only; not the complete Release-A unresolved set |
 
-A7 estimation outcome: `FAIL_CLOSED` — `NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA`. `N_observed` is reported separately from any estimate.
+A7's fail-closed outcome remains an important conservative result:
+`NO_DEFENSIBLE_UNSEEN_POPULATION_ESTIMATE_UNDER_PREREGISTERED_ACCEPTANCE_CRITERIA`.
 
-## Work packages A2–A8
+## Immutable historical artifacts
 
-A2 through A8 execution artifacts are frozen under `src/neuroai_workbench/resources/discovery/`. The A8 package binds exact A1–A7 upstream digests, the Product Registry, D4 working-summary binding, Frame Register, A3/A4/A6/A7 reports, analytical figure tables, source/coverage/uncertainty register, and the unresolved-candidate register.
+Do not rewrite:
 
-A2 multi-frame discovery is recorded in the bounded-frame checkpoint (`RELEASE_A_A2_BOUNDED_FRAME_CHECKPOINT.v1.0.json`). That checkpoint covers bounded-frame exhaustion under frozen protocols; it is not a claim that every relevant product worldwide was found.
+- `RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE.v1.0.json`;
+- `RELEASE_A_AG_RECONSTRUCTION_PACKET.v1.0.json`;
+- prior A1–A7 source packets and run records.
 
-## Frame semantics preserved
+Corrective work must use append-only/successor artifacts and exact predecessor digest bindings.
 
-- **F9 / F2 / F3:** bounded exhaustion under frozen actor/provider/query universes. Exhaustion of a declared bounded input set is not global completeness.
-- **F1 / F4 / F5 / F6 / F8 / F11 (open-world):** protocol saturation under declared round protocols and stop rules. Open-world saturation is not a census.
-- **Estimator exclusions:** F7, F9, and F11 remain excluded from the primary v1.0 capture estimator. They may still contribute observed identities and coverage diagnostics.
+## Required successor path
+
+The R1 successor must:
+
+1. implement #342/#343/#344 and back-validate authoritative A2 records;
+2. compile a complete cross-frame candidate-resolution ledger;
+3. freeze a rule preventing unresolved adjudication backlog from manufacturing a low resolved-identity yield stop;
+4. issue successor discovery accounting / stop-state results;
+5. recompute A3/A4 with resolution uncertainty represented correctly;
+6. rebuild the unresolved register across all executed F1–F11 packets;
+7. recompile A7 and rerun its fail-closed/model gate;
+8. emit successor A8 and A-G artifacts;
+9. advance this status pointer only after the successor disposition is supported.
 
 ## Authority boundary
 
-From the A-G packet `authority_controls` and `boundary`:
+During corrective review:
 
-- A-G does **not** authorize Release B/C/D.
-- A-G does **not** establish S2 publication authority.
-- A-G does **not** create a v4.2 assessment effect.
-- A7 fail-closed (`N_observed=6`, `N_estimated=null`) is preserved.
-- F9 exhaustion is not global completeness; open-world saturation is not a census.
-- The A8 package status remains `CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE`.
+- do not use the current A8 package as a final Release-B market denominator;
+- do not use the current A8 package as a complete Release-C product evidence denominator;
+- do not start integrated Release-D quantitative conclusions from the current A8 denominator;
+- do not infer global completeness from bounded exhaustion or protocol saturation;
+- do not infer that capability-first or multilingual discovery adds no products from the current point-zero resolved-ID increments;
+- do not infer S2 publication authority or v4.2 assessment effect.
+
+Historical exact-head CI/security results remain valid engineering evidence. R1 concerns scientific measurement validity and interpretation, not an assertion that those builds were technically ungreen.
 
 Related contracts: [Release-A Product Discovery Frame Contract](release-a-product-discovery-frame-contract.md), [Release A Analysis Preregistration](release-a-analysis-preregistration.md).
