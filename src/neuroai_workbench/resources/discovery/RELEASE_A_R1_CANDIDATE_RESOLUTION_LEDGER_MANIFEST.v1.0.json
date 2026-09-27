@@ -1,6 +1,6 @@
 {
   "ledger_manifest_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_LEDGER_MANIFEST_v1.0",
-  "ledger_manifest_sha256": "535e289253696671a7713a5c9feb4550ec278d2086d3c81ea98c9f6de448735e",
+  "ledger_manifest_sha256": "53615e2315649e2569df34f25bbf6e6db0bfd4fdc03acd08c254e3bef7043ac6",
   "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
   "assembled_on": "2026-09-27",
   "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
@@ -146,77 +146,77 @@
       "frame_id": "F1",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F1.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F1_v1.0",
-      "ledger_shard_sha256": "ce1cfb9993d1c1b5e76a793adafb28a1ed6314a1e5107a9a7cbba14ccc3b8975",
+      "ledger_shard_sha256": "5e6a62cff7552a6414fac559d94f5b44f4d9d81e14c720e2fddb0200bf2b9a2d",
       "source_record_count": 82
     },
     {
       "frame_id": "F10",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F10.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F10_v1.0",
-      "ledger_shard_sha256": "3efde98dda20304521283c492f89c5263522ce035a0fc10d90e944a2b8b11510",
+      "ledger_shard_sha256": "24255d67aec4b112e3be08a5d902c51f901a3c5cc11f459ef2df5321b6ffc2a1",
       "source_record_count": 145
     },
     {
       "frame_id": "F11",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F11.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F11_v1.0",
-      "ledger_shard_sha256": "59e3bfdc14622f28eed6e026c3ebbf7ccbe128b412b70f00b26345cdb8f0b900",
+      "ledger_shard_sha256": "df3ae91c0cad47476377a51e78a48a899d20e3574a7d843099a784d8360caa5d",
       "source_record_count": 120
     },
     {
       "frame_id": "F2",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F2.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F2_v1.0",
-      "ledger_shard_sha256": "a37a794cce4b913a4d81fdc8b0ebe52f7513999b755d0d215eba103ba190659f",
+      "ledger_shard_sha256": "e46b69b65d8f0739e4eaf30eb36fb922c7ae6926c0faaa0cd8b143c5f0d59760",
       "source_record_count": 124
     },
     {
       "frame_id": "F3",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F3.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F3_v1.0",
-      "ledger_shard_sha256": "d29721652a130d81a7aafef0817ea427e42ac1807e019a1f82b96fe2c7eab8d9",
+      "ledger_shard_sha256": "d93488470dfd6acba038fd78abb3553d7f7fa907518f39ac10f977c0e22c47fb",
       "source_record_count": 330
     },
     {
       "frame_id": "F4",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F4.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F4_v1.0",
-      "ledger_shard_sha256": "f1985d5fbc392d67730157c403d85b2c519f781854ae2322bb06d13cfd0c2260",
+      "ledger_shard_sha256": "49574041a6d6b2c7658f0e5e18a8e3994655384ca4ae2caf0ebb7a9300cf4a20",
       "source_record_count": 78
     },
     {
       "frame_id": "F5",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F5.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F5_v1.0",
-      "ledger_shard_sha256": "a5693c33ce89f3a2c7edf718f77a8db3de77e660a8f4fae186d500afcfbaf35a",
+      "ledger_shard_sha256": "73657d899904d2cd7fd2ef1af5c76aea4a8d44e1b3a9aaebcdc4c007b652c241",
       "source_record_count": 80
     },
     {
       "frame_id": "F6",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6_v1.0",
-      "ledger_shard_sha256": "e83fb375273f8224d79f1667dda628afd1ef3564291dcd6e705fa3cffd2e30d9",
+      "ledger_shard_sha256": "a43c8d1cafd6e9b7ca0038504ba64f8f45b95353e2e4e2bf9ee3b730700aa6ab",
       "source_record_count": 99
     },
     {
       "frame_id": "F8",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F8.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F8_v1.0",
-      "ledger_shard_sha256": "cb185a27e71797cdd0f1a67bfcfc7993e1d44770068d603c27e8e311c84ddb4b",
+      "ledger_shard_sha256": "2a1292f4b0eced1f514dc3b9a61775961171ed4416a4ef55a8e6355ef59cdc60",
       "source_record_count": 63
     },
     {
       "frame_id": "F9",
       "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F9.v1.0.json",
       "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F9_v1.0",
-      "ledger_shard_sha256": "672c8908576382ecfb92bce686195f738ec649bc459f50b6b65f8132f4ab4270",
+      "ledger_shard_sha256": "0242f6c90d91eb85ab459681a59d9df3b1d106b1e8abae3ba8f43fc9320a9f0e",
       "source_record_count": 214
     }
   ],
   "cluster_ledger_binding": {
     "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS.v1.0.json",
     "cluster_ledger_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS_v1.0",
-    "cluster_ledger_sha256": "3c3495cc66281ebe0a5a43422b17aa1b5f627008432b092023bf85d75dff0876",
+    "cluster_ledger_sha256": "f08dee313941fb868744340319e5fb36c401b9ca4d76fbc4171a450d397cf71e",
     "candidate_cluster_count": 1105
   },
   "accounting": {
@@ -233,7 +233,15 @@
     "unresolved_clusters_capable_of_changing_a_p1_membership": 1061,
     "unresolved_clusters_capable_of_changing_a3_increment": 52,
     "unresolved_clusters_capable_of_changing_a4_increment": 63,
-    "unresolved_clusters_capable_of_changing_marginal_yield_stop": 334
+    "unresolved_clusters_capable_of_changing_marginal_yield_stop": 334,
+    "cardinality_bounded_unresolved_cluster_count": 591,
+    "unbounded_source_or_abstention_barrier_cluster_count": 470,
+    "cardinality_bounded_clusters_capable_of_changing_marginal_yield_stop": 109,
+    "unbounded_barrier_clusters_capable_of_changing_marginal_yield_stop": 225,
+    "cardinality_bounded_clusters_capable_of_changing_a3_increment": 13,
+    "unbounded_barrier_clusters_capable_of_changing_a3_increment": 39,
+    "cardinality_bounded_clusters_capable_of_changing_a4_increment": 12,
+    "unbounded_barrier_clusters_capable_of_changing_a4_increment": 51
   },
   "historical_a8_416_interpretation": "BOUNDED_CHECKPOINT_F3_F9_ONLY_NOT_FULL_RELEASE_A_UNRESOLVED_REGISTER",
   "source_record_uniqueness_rule": "Every immutable A2 capture_id in the bound 22 source packets appears exactly once across the frame-sharded source ledger.",
@@ -245,5 +253,6 @@
     "no_release_b_c_d_denominator_authority": true,
     "historical_packet_bytes_unchanged": true
   },
-  "boundary": "R1 candidate-resolution ledger provides complete source-row accounting and conservative noncanonical clustering across the frozen 22-packet A2 execution. It does not allocate canonical identity, establish global completeness, authorize B/C/D denominators, produce an unseen-population estimate, or pass Release-A R1."
+  "boundary": "R1 candidate-resolution ledger provides complete source-row accounting and conservative noncanonical clustering across the frozen 22-packet A2 execution. It does not allocate canonical identity, establish global completeness, authorize B/C/D denominators, produce an unseen-population estimate, or pass Release-A R1.",
+  "uncertainty_cardinality_policy": "UNRESOLVED_IDENTITY/BORDERLINE clusters without ABSTAIN/FAILED_INACCESSIBLE are one-object upper-bound candidates. Any cluster containing ABSTAIN or FAILED_INACCESSIBLE is an unbounded source/abstention barrier unless a separately governed source-specific cardinality bound exists."
 }
