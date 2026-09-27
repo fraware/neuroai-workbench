@@ -359,9 +359,7 @@ def test_cluster_builder_covers_borderline_failed_and_canonical_states() -> None
 
     assert clusters["RESOLVED_CANONICAL"]["canonical_offering_id"] == "PRD-KNOWN"
     assert clusters["RESOLVED_CANONICAL"]["noncanonical_cluster"] is False
-    assert clusters["UNRESOLVED_SCOPE_BOUNDARY"]["uncertainty_cardinality_class"] == (
-        "UNRESOLVED_CARDINALITY_UNPROVEN"
-    )
+    assert clusters["UNRESOLVED_SCOPE_BOUNDARY"]["uncertainty_cardinality_class"] == ("UNRESOLVED_CARDINALITY_UNPROVEN")
     assert clusters["FAILED_INACCESSIBLE"]["uncertainty_cardinality_class"] == (
         "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
     )
