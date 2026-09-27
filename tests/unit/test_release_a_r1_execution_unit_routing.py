@@ -744,7 +744,7 @@ def test_parse_knowledge_time_rejects_invalid_values(value: object, message: str
 def test_route_evidence_rejects_unsupported_route() -> None:
     with pytest.raises(routing.ProductDiscoveryError, match="only defined for source/record routes"):
         routing._validate_route_execution_evidence(
-            [],
+            [{}],
             route=routing.EMPIRICAL_CANDIDATE_ADJUDICATION,
             covered_capture_ids=["PDC-X"],
             source_records_by_capture_id={},
