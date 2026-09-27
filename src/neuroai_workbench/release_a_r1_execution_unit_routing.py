@@ -761,8 +761,31 @@ def validate_execution_unit_routing(routing: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("R1.6 frozen routing digest drift")
 
     materialized = {key: value for key, value in routing.items() if key != "routing_sha256"}
-    if materialized != derive_execution_unit_routing():
-        raise ProductDiscoveryError("R1.6 routing checkpoint does not reproduce from frozen inputs")
+    derived = derive_execution_unit_routing()
+    if materialized != derived:
+        differing_keys = sorted(
+            key for key in set(materialized) | set(derived) if materialized.get(key) != derived.get(key)
+        )
+        detail = ",".join(differing_keys)
+        if differing_keys == ["route_table"]:
+            actual_rows = cast(Sequence[Mapping[str, Any]], materialized["route_table"])
+            derived_rows = cast(Sequence[Mapping[str, Any]], derived["route_table"])
+            first_difference = next(
+                (
+                    index
+                    for index, (actual, expected) in enumerate(zip(actual_rows, derived_rows, strict=False))
+                    if actual != expected
+                ),
+                min(len(actual_rows), len(derived_rows)),
+            )
+            detail += f";first_route_index={first_difference}"
+            if first_difference < len(actual_rows):
+                detail += f";materialized={actual_rows[first_difference]}"
+            if first_difference < len(derived_rows):
+                detail += f";derived={derived_rows[first_difference]}"
+        raise ProductDiscoveryError(
+            "R1.6 routing checkpoint does not reproduce from frozen inputs: " + detail
+        )
 
     route_table = cast(Sequence[Mapping[str, Any]], routing["route_table"])
     for item in route_table:
