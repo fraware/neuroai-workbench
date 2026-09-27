@@ -337,6 +337,8 @@ def _validate_route_execution_evidence(
         raise ProductDiscoveryError("R1.6 every covered capture requires attributable route-execution evidence")
 
     return evidence_by_ref, propositions_by_capture
+
+
 def _validate_extracted_leads(
     work_item_id: str,
     leads: Sequence[Mapping[str, Any]],
@@ -354,11 +356,7 @@ def _validate_extracted_leads(
         "evidence_ref",
         "canonical_offering_id",
     }
-    required_proposition = (
-        "SOURCE_QUERY_WITH_LEADS"
-        if route == SOURCE_SURFACE_RESOLUTION
-        else "RECORD_WITH_OFFERING_LEADS"
-    )
+    required_proposition = "SOURCE_QUERY_WITH_LEADS" if route == SOURCE_SURFACE_RESOLUTION else "RECORD_WITH_OFFERING_LEADS"
 
     for lead in leads:
         if set(lead) != allowed_fields:
@@ -525,10 +523,7 @@ def validate_route_execution_record(
                 {"SOURCE_QUERY_ZERO_LEADS", "SOURCE_QUERY_WITH_LEADS"},
                 message="R1.6 source completion with leads leaves a covered capture unaccounted",
             )
-            if not any(
-                "SOURCE_QUERY_WITH_LEADS" in propositions
-                for propositions in propositions_by_capture.values()
-            ):
+            if not any("SOURCE_QUERY_WITH_LEADS" in propositions for propositions in propositions_by_capture.values()):
                 raise ProductDiscoveryError("R1.6 source completion with leads lacks extracted-lead evidence")
         elif completion_state == "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED":
             if finite_bound is None:
@@ -556,8 +551,7 @@ def validate_route_execution_record(
                 message="R1.6 unresolved source completion leaves a covered capture unaccounted",
             )
             if not any(
-                "SOURCE_BARRIER_UNRESOLVED" in propositions
-                for propositions in propositions_by_capture.values()
+                "SOURCE_BARRIER_UNRESOLVED" in propositions for propositions in propositions_by_capture.values()
             ):
                 raise ProductDiscoveryError("R1.6 unresolved source completion lacks barrier evidence")
 
@@ -566,8 +560,7 @@ def validate_route_execution_record(
         ):
             raise ProductDiscoveryError("R1.6 source exhaustion claim lacks source-scope exhaustion evidence")
         if finite_bound is not None and not any(
-            "SOURCE_FINITE_CARDINALITY_ESTABLISHED" in propositions
-            for propositions in propositions_by_capture.values()
+            "SOURCE_FINITE_CARDINALITY_ESTABLISHED" in propositions for propositions in propositions_by_capture.values()
         ):
             raise ProductDiscoveryError("R1.6 finite cardinality claim lacks cardinality-specific evidence")
         if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
@@ -592,8 +585,7 @@ def validate_route_execution_record(
                 message="R1.6 record extraction with leads leaves a covered capture unaccounted",
             )
             if not any(
-                "RECORD_WITH_OFFERING_LEADS" in propositions
-                for propositions in propositions_by_capture.values()
+                "RECORD_WITH_OFFERING_LEADS" in propositions for propositions in propositions_by_capture.values()
             ):
                 raise ProductDiscoveryError("R1.6 record extraction with leads lacks lead-bearing extraction evidence")
         else:
@@ -606,8 +598,7 @@ def validate_route_execution_record(
                 message="R1.6 unresolved record extraction leaves a covered capture unaccounted",
             )
             if not any(
-                "RECORD_EXTRACTION_UNRESOLVED" in propositions
-                for propositions in propositions_by_capture.values()
+                "RECORD_EXTRACTION_UNRESOLVED" in propositions for propositions in propositions_by_capture.values()
             ):
                 raise ProductDiscoveryError("R1.6 unresolved record completion lacks unresolved-extraction evidence")
 
