@@ -50,8 +50,8 @@ ROUTING_RESOURCE = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT.v1.0.json"
 
 RULE_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0"
 ROUTING_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT_v1.0"
-RULE_SHA256 = "e0bf7698872d12944fd67b12970e8f47b0b1e1893e581c9427d44cb1c0a5a9cf"
-ROUTING_SHA256 = "25547f04edfa5a4563d77cd2a595e0788ca73d8241847d05e385406fcd7dc9ab"
+RULE_SHA256 = "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68"
+ROUTING_SHA256 = "5b37f3e4aaa3d4cced9864aa6dcc6e5d547726e277bbbce0551005bf12a3465e"
 
 SOURCE_WORKBENCH_MAIN_COMMIT = "f735259557bf867281f3ca0d7cb38af2d90fa640"
 WORLD_TIME_CUTOFF = "2026-09-24"
@@ -211,6 +211,8 @@ def validate_execution_unit_routing_rule(rule: Mapping[str, Any]) -> None:
         "evidence_query_or_seed_id_must_match_frozen_capture": True,
         "every_covered_capture_requires_supported_proposition": True,
         "extracted_lead_requires_lead_bearing_evidence_proposition": True,
+        "source_scope_exhaustion_claim_requires_support_for_every_covered_capture": True,
+        "finite_cardinality_claim_requires_support_for_every_covered_capture": True,
     }
     if dict(evidence_contract) != expected_evidence_contract:
         raise ProductDiscoveryError("R1.6 route-execution evidence contract drift")
@@ -590,14 +592,19 @@ def validate_route_execution_record(
             ):
                 raise ProductDiscoveryError("R1.6 unresolved source completion lacks barrier evidence")
 
-        if source_scope_exhausted and not any(
-            "SOURCE_SCOPE_EXHAUSTED" in propositions for propositions in propositions_by_capture.values()
+        if source_scope_exhausted and any(
+            "SOURCE_SCOPE_EXHAUSTED" not in propositions for propositions in propositions_by_capture.values()
         ):
-            raise ProductDiscoveryError("R1.6 source exhaustion claim lacks source-scope exhaustion evidence")
-        if finite_bound is not None and not any(
-            "SOURCE_FINITE_CARDINALITY_ESTABLISHED" in propositions for propositions in propositions_by_capture.values()
+            raise ProductDiscoveryError(
+                "R1.6 source exhaustion claim lacks per-capture source-scope exhaustion evidence"
+            )
+        if finite_bound is not None and any(
+            "SOURCE_FINITE_CARDINALITY_ESTABLISHED" not in propositions
+            for propositions in propositions_by_capture.values()
         ):
-            raise ProductDiscoveryError("R1.6 finite cardinality claim lacks cardinality-specific evidence")
+            raise ProductDiscoveryError(
+                "R1.6 finite cardinality claim lacks per-capture cardinality-specific evidence"
+            )
         if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
             raise ProductDiscoveryError("R1.6 source exhaustion or finite cardinality requires human review")
     else:
