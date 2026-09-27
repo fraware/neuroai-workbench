@@ -449,8 +449,7 @@ def test_bounded_source_exhaustion_requires_typed_digest_bound_evidence() -> Non
     evidence = _stop_evidence(run, [summary], condition="SOURCE_EXHAUSTED")
 
     assert (
-        pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe)
-        == "BOUNDED_FRAME_EXHAUSTED"
+        pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe) == "BOUNDED_FRAME_EXHAUSTED"
     )
 
     evidence["supporting_artifacts"] = []
