@@ -327,8 +327,7 @@ def validate_route_execution_record(
 
     active_routing = load_execution_unit_routing() if routing_checkpoint is None else routing_checkpoint
     item_by_work_item = {
-        str(item["work_item_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], active_routing["route_table"])
+        str(item["work_item_id"]): item for item in cast(Sequence[Mapping[str, Any]], active_routing["route_table"])
     }
     work_item_id = str(record["work_item_id"])
     routed_item = item_by_work_item.get(work_item_id)
