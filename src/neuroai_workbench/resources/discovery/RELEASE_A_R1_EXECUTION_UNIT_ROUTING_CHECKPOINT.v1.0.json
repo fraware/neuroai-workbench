@@ -8,7 +8,7 @@
   "world_time_cutoff": "2026-09-24",
   "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
   "rule_id": "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0",
-  "rule_sha256": "e0bf7698872d12944fd67b12970e8f47b0b1e1893e581c9427d44cb1c0a5a9cf",
+  "rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
   "r1_4_worklist_sha256": "ce030bfa76383c8abd50da9167323893fe2ab9d607879ab83d05a0be320d4e4a",
   "r1_5_candidate_unit_rule_sha256": "9249c958ca66a07b326cb3f237da280a28965372f12f3623405a049adc8ad0d6",
   "r1_5_candidate_unit_checkpoint_sha256": "c229667ae50ef71396837c1e34b5edf016c3ed224c771ae15cab20377bda384a",
@@ -6572,5 +6572,5 @@
     "publication_authority": false
   },
   "boundary": "This checkpoint routes the exact frozen R1.4 work population into empirical candidate adjudication, source-surface resolution, literature-record extraction and temporal review. It does not itself resolve any item or change the historical A2/R1.4/R1.5 evidence.",
-  "routing_sha256": "25547f04edfa5a4563d77cd2a595e0788ca73d8241847d05e385406fcd7dc9ab"
+  "routing_sha256": "5b37f3e4aaa3d4cced9864aa6dcc6e5d547726e277bbbce0551005bf12a3465e"
 }
