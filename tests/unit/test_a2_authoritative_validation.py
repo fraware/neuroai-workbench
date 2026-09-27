@@ -326,12 +326,15 @@ def test_capture_eligibility_preserves_frame_exclusion_and_a_p6_access_rule() ->
         access="NOT_EXTERNALLY_OFFERED",
         deployment="NOT_APPLICABLE",
     )
-    assert derive_capture_estimation_eligibility(
-        a_p6_capture,
-        _frame(),
-        [announced_without_access],
-        universe,
-    ) is False
+    assert (
+        derive_capture_estimation_eligibility(
+            a_p6_capture,
+            _frame(),
+            [announced_without_access],
+            universe,
+        )
+        is False
+    )
 
 
 def test_capture_eligibility_allows_legitimate_multiple_compatible_projections() -> None:
