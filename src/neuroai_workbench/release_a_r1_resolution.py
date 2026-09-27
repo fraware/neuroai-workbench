@@ -96,9 +96,7 @@ def validate_r1_product_registry(registry: Mapping[str, Any]) -> None:
     seed = _load(REGISTRY_RESOURCE_PACKAGE, SEED_PRODUCT_REGISTRY_RESOURCE)
     validate_product_registry(seed)
     seed_ids = sorted(str(row["canonical_entity_id"]) for row in cast(list[Mapping[str, Any]], seed["rows"]))
-    successor_ids = sorted(
-        str(row["canonical_entity_id"]) for row in cast(list[Mapping[str, Any]], registry["rows"])
-    )
+    successor_ids = sorted(str(row["canonical_entity_id"]) for row in cast(list[Mapping[str, Any]], registry["rows"]))
     if successor_ids != seed_ids:
         raise ProductDiscoveryError("R1 analytical Product Registry must not allocate or remove canonical identity")
 
@@ -354,9 +352,7 @@ def build_r1_candidate_clusters(records: Sequence[Mapping[str, Any]]) -> list[di
                 "could_change_a_p1_membership": unresolved,
                 "could_change_a3_increment": any(bool(row["could_change_a3_increment"]) for row in rows),
                 "could_change_a4_increment": any(bool(row["could_change_a4_increment"]) for row in rows),
-                "could_change_marginal_yield_stop": any(
-                    bool(row["could_change_marginal_yield_stop"]) for row in rows
-                ),
+                "could_change_marginal_yield_stop": any(bool(row["could_change_marginal_yield_stop"]) for row in rows),
             }
         )
 
@@ -410,11 +406,11 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
             raise ProductDiscoveryError(f"R1 source-ledger shard record count drift: {frame_id}")
         materialized_records.extend(cast(list[dict[str, Any]], records))
 
-    materialized_records.sort(
-        key=lambda row: (str(row["frame_id"]), str(row["round_id"]), str(row["capture_id"]))
-    )
+    materialized_records.sort(key=lambda row: (str(row["frame_id"]), str(row["round_id"]), str(row["capture_id"])))
     if materialized_records != derived_records:
-        raise ProductDiscoveryError("R1 materialized source ledger does not exactly reproduce from immutable A2 packets")
+        raise ProductDiscoveryError(
+            "R1 materialized source ledger does not exactly reproduce from immutable A2 packets"
+        )
 
     cluster_binding = manifest.get("cluster_ledger_binding")
     if not isinstance(cluster_binding, Mapping):
