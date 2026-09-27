@@ -1,0 +1,279 @@
+{
+  "ledger_manifest_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_LEDGER_MANIFEST_v1.0",
+  "ledger_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-27",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "population_view_id": "A-P1",
+  "source_packet_bindings": [
+    {
+      "source_packet_id": "RELEASE_A_A2_BOUNDED_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_BOUNDED_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "0f5c6e9f83ca1e212d235dac82724ac146d63ed6db3b4abe6f8bd9f681595777",
+      "capture_count": 8
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F10_PATENT_CROSSOVER_EXHAUSTION_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F10_PATENT_CROSSOVER_EXHAUSTION_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "2fb9cfddb9c49c97114127fb8fc5f14a0dcbb724195c6f7cd95b5ae7599b862c",
+      "capture_count": 145
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F11_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F11_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "e6da0402653a89bb1c55e61b630864271f80daa7d0a1f11cc38d451917d3e88a",
+      "capture_count": 120
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F1_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85",
+      "capture_count": 82
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F2_EXHAUSTION_F3_FORMAL_RETRY_TRANCHE_2.v1.0.json",
+      "source_packet_sha256": "d66590970362ac82b880e5fe4b9d7c66a913b6dc91618d31fbf67fa39a31c39b",
+      "capture_count": 122
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F3_INTERVENTION_DEVICE_EXHAUSTION_TRANCHE_3.v1.0.json",
+      "source_packet_sha256": "584ab1dae1fcf0885a51ec527bea953a2ee4ad5452c10b7bb6985ca652edb82b",
+      "capture_count": 324
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F4_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3",
+      "capture_count": 78
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F5_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5",
+      "capture_count": 80
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F6_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c",
+      "capture_count": 99
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "07e79f2ba1501379315850d3756cb4758f632b5f337e47a140fe50c861e2043f",
+      "capture_count": 63
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_BITBRAIN_PROTOCOL_TRANCHE_5_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_BITBRAIN_PROTOCOL_TRANCHE_5.v1.0.json",
+      "source_packet_sha256": "8295c6cdeb48655938c7bdb08bdfd1af66677ca4861e879ef9372b798f482ba4",
+      "capture_count": 16
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_CLINICAL_PRODUCT_TRANCHE_4_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_CLINICAL_PRODUCT_TRANCHE_4.v1.0.json",
+      "source_packet_sha256": "102dad6f17c8c9a7d8f856513e81e786f359f604a48a5917a568aa323c21e5ca",
+      "capture_count": 8
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_GTEC_PROTOCOL_TRANCHE_10_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_GTEC_PROTOCOL_TRANCHE_10.v1.0.json",
+      "source_packet_sha256": "35deb97589c863d21ae789c7ba445692977f862922a91d5bc51fe5e2fe0e4387",
+      "capture_count": 16
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_KNOWN_OVERLAP_TRANCHE_1_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_KNOWN_OVERLAP_TRANCHE_1.v1.0.json",
+      "source_packet_sha256": "f36ee027d4f3c5474cef8ea89a63f867f5ba6e77772d885c6c5d4f2fd21ba62f",
+      "capture_count": 6
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_OPENBCI_PROTOCOL_TRANCHE_11_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_OPENBCI_PROTOCOL_TRANCHE_11.v1.0.json",
+      "source_packet_sha256": "c17567c3ec47875a4e0305bfcb46d4b3b6e15adc3fd5e2128ed0a73226ae5350",
+      "capture_count": 24
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_R1_PROTOCOL_BACKAUDIT_TRANCHE_6_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_R1_PROTOCOL_BACKAUDIT_TRANCHE_6.v1.0.json",
+      "source_packet_sha256": "3212f66519f4af3ed645f4ada416c5da8d0782b04e4242da6a67f63b284ed5cf",
+      "capture_count": 25
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_R2_PROTOCOL_BACKAUDIT_TRANCHE_7_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_R2_PROTOCOL_BACKAUDIT_TRANCHE_7.v1.0.json",
+      "source_packet_sha256": "375d28b1e8f4af1df8910310de420427151bd904196da2893e8791d2915833f9",
+      "capture_count": 19
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_R3_PROTOCOL_BACKAUDIT_TRANCHE_8_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_R3_PROTOCOL_BACKAUDIT_TRANCHE_8.v1.0.json",
+      "source_packet_sha256": "723f18e3defdcc5b262dd1eac5ee9cfffb83af24ae3fa5067a7d16b4ab1cb4c5",
+      "capture_count": 19
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_R4_PROTOCOL_BACKAUDIT_TRANCHE_9_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_R4_PROTOCOL_BACKAUDIT_TRANCHE_9.v1.0.json",
+      "source_packet_sha256": "b7298c9928937ccf16ee3996c5beab3dbf82a249853e22af85e35242bd1b2560",
+      "capture_count": 20
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_REMAINING_ACTORS_PROTOCOL_TRANCHE_12_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_REMAINING_ACTORS_PROTOCOL_TRANCHE_12.v1.0.json",
+      "source_packet_sha256": "ec36291d58685e30e19903a04ec83b9ba03a8cf3931f311881438eea4b3c8407",
+      "capture_count": 44
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_RESEARCH_BOUNDARY_TRANCHE_3_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_RESEARCH_BOUNDARY_TRANCHE_3.v1.0.json",
+      "source_packet_sha256": "a828b0af143fb5b0dc273c3fc9a99f525308b9677b30cf58186495e19fed327f",
+      "capture_count": 9
+    },
+    {
+      "source_packet_id": "RELEASE_A_A2_F9_UNALLOCATED_CANDIDATE_TRANCHE_2_v1.0",
+      "source_packet_resource": "RELEASE_A_A2_F9_UNALLOCATED_CANDIDATE_TRANCHE_2.v1.0.json",
+      "source_packet_sha256": "c1259a991171104fb692b054ad43a033f98f0af9d25b51544b8340c8a2e82270",
+      "capture_count": 8
+    }
+  ],
+  "source_ledger_shards": [
+    {
+      "frame_id": "F1",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F1.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F1_v1.0",
+      "ledger_shard_sha256": "37fd27e67f72df21b321768c6313a9bf5b4f34b2698cc4db92163cf7924c6f9e",
+      "source_record_count": 82
+    },
+    {
+      "frame_id": "F10",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F10.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F10_v1.0",
+      "ledger_shard_sha256": "07f17667060268d8330f7197041aa31fa91cf518c84b92340bc084effc9ed2f3",
+      "source_record_count": 145
+    },
+    {
+      "frame_id": "F11",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F11.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F11_v1.0",
+      "ledger_shard_sha256": "2f6f123f7631bba92974bed3692fc7753b6e9fc3b235368155c149057d167681",
+      "source_record_count": 120
+    },
+    {
+      "frame_id": "F2",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F2.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F2_v1.0",
+      "ledger_shard_sha256": "e46b69b65d8f0739e4eaf30eb36fb922c7ae6926c0faaa0cd8b143c5f0d59760",
+      "source_record_count": 124
+    },
+    {
+      "frame_id": "F3",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F3.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F3_v1.0",
+      "ledger_shard_sha256": "e857d26e77e0e694bc4966232e5e6f69f3427441ae9e929a5350bc9a404ac704",
+      "source_record_count": 330
+    },
+    {
+      "frame_id": "F4",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F4.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F4_v1.0",
+      "ledger_shard_sha256": "bd12bcf1ce003f50235a45fdc1879a50d30885abc161be77d664b828066c8ae8",
+      "source_record_count": 78
+    },
+    {
+      "frame_id": "F5",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F5.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F5_v1.0",
+      "ledger_shard_sha256": "2e545ba64b53b34bd6cc6a48c1bf50cdf5dd237498e9e8451af485453070c4f7",
+      "source_record_count": 80
+    },
+    {
+      "frame_id": "F6",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6_v1.0",
+      "ledger_shard_sha256": "d5870785826a8c575b44f8b5d0d76ad0e3a7c3f40234b8a1b438210ef42bd6fb",
+      "source_record_count": 99
+    },
+    {
+      "frame_id": "F8",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F8.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F8_v1.0",
+      "ledger_shard_sha256": "b8fbc55e1711b4b6250cb0bec70763b3718bb12c4351146ec0568ae4d4582f3e",
+      "source_record_count": 63
+    },
+    {
+      "frame_id": "F9",
+      "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F9.v1.0.json",
+      "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F9_v1.0",
+      "ledger_shard_sha256": "d4fd24538c8b8da915841f3fb155b73d67ae9de1679ee96634fba7a62c4c770c",
+      "source_record_count": 214
+    }
+  ],
+  "cluster_ledger_binding": {
+    "resource": "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS.v1.0.json",
+    "cluster_ledger_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS_v1.0",
+    "cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
+    "candidate_cluster_count": 1105
+  },
+  "accounting": {
+    "raw_capture_row_count": 1335,
+    "unique_raw_candidate_key_count": 1119,
+    "governed_candidate_cluster_count": 1105,
+    "unresolved_identity_capture_row_count": 691,
+    "unresolved_scope_boundary_capture_row_count": 15,
+    "abstain_capture_row_count": 445,
+    "borderline_capture_row_count": 15,
+    "failed_inaccessible_capture_row_count": 71,
+    "include_resolved_capture_row_count": 75,
+    "exclude_capture_row_count": 38,
+    "unresolved_clusters_capable_of_changing_a_p1_membership": 1061,
+    "unresolved_clusters_capable_of_changing_a3_increment": 52,
+    "unresolved_clusters_capable_of_changing_a4_increment": 63,
+    "unresolved_clusters_capable_of_changing_marginal_yield_stop": 334,
+    "cardinality_bounded_unresolved_cluster_count": 0,
+    "unbounded_source_or_abstention_barrier_cluster_count": 470,
+    "cardinality_bounded_clusters_capable_of_changing_marginal_yield_stop": 0,
+    "unbounded_barrier_clusters_capable_of_changing_marginal_yield_stop": 225,
+    "cardinality_bounded_clusters_capable_of_changing_a3_increment": 0,
+    "unbounded_barrier_clusters_capable_of_changing_a3_increment": 39,
+    "cardinality_bounded_clusters_capable_of_changing_a4_increment": 0,
+    "unbounded_barrier_clusters_capable_of_changing_a4_increment": 51,
+    "cardinality_unproven_unresolved_cluster_count": 591,
+    "cardinality_unproven_clusters_capable_of_changing_marginal_yield_stop": 109,
+    "cardinality_unproven_clusters_capable_of_changing_a3_increment": 13,
+    "cardinality_unproven_clusters_capable_of_changing_a4_increment": 12
+  },
+  "historical_a8_416_interpretation": "BOUNDED_CHECKPOINT_F3_F9_ONLY_NOT_FULL_RELEASE_A_UNRESOLVED_REGISTER",
+  "source_record_uniqueness_rule": "Every immutable A2 capture_id in the bound 22 source packets appears exactly once across the frame-sharded source ledger.",
+  "clustering_is_noncanonical": true,
+  "authority_controls": {
+    "no_identity_allocation": true,
+    "no_fuzzy_identity_merge": true,
+    "no_global_completeness_claim": true,
+    "no_release_b_c_d_denominator_authority": true,
+    "historical_packet_bytes_unchanged": true
+  },
+  "boundary": "R1 candidate-resolution ledger provides complete source-row accounting and conservative noncanonical clustering across the frozen 22-packet A2 execution. It does not allocate canonical identity, establish global completeness, authorize B/C/D denominators, produce an unseen-population estimate, or pass Release-A R1.",
+  "uncertainty_cardinality_policy": "Historical A2 captures do not prove latent-product cardinality. UNRESOLVED_IDENTITY/BORDERLINE clusters default to UNRESOLVED_CARDINALITY_UNPROVEN; ABSTAIN/FAILED_INACCESSIBLE clusters are UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER; only a separately governed successor cardinality adjudication may promote a cluster to ONE_OBJECT_UPPER_BOUND.",
+  "frame_capture_row_counts": {
+    "F1": 82,
+    "F2": 124,
+    "F3": 330,
+    "F4": 78,
+    "F5": 80,
+    "F6": 99,
+    "F7": 0,
+    "F8": 63,
+    "F9": 214,
+    "F10": 145,
+    "F11": 120
+  },
+  "frames_with_no_capture_rows": [
+    "F7"
+  ],
+  "frame_coverage_rule": "All frozen F1-F11 discovery frames are explicitly accounted; a zero count means no immutable A2 capture packet emitted rows for that frame."
+}
