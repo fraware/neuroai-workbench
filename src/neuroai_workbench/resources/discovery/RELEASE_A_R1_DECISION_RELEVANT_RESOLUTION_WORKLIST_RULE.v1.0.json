@@ -1,0 +1,106 @@
+{
+  "rule_id": "RELEASE_A_R1_DECISION_RELEVANT_RESOLUTION_WORKLIST_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN",
+  "frozen_on": "2026-09-27",
+  "source_workbench_main_commit": "a81dbcc84a31eaa9f959a1f87cdc57e23ccee4bf",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "population_view_id": "A-P1",
+  "r1_2_candidate_resolution_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
+  "r1_2_candidate_cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
+  "r1_3_resolution_completeness_rule_sha256": "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1",
+  "r1_3_resolution_completeness_checkpoint_sha256": "500bcd90ad59b4320a1f2a9eec857f81ce83b45e501f1d38853e8ae8ea37485d",
+  "selection_contract": {
+    "marginal_yield_frames": [
+      "F1",
+      "F4",
+      "F5",
+      "F6",
+      "F8",
+      "F11"
+    ],
+    "marginal_yield_rounds": [
+      "R2",
+      "R3"
+    ],
+    "include_if_any": [
+      "MARGINAL_YIELD_R2_R3",
+      "A3_CAPABILITY_INCREMENT",
+      "A4_MULTILINGUAL_INCREMENT"
+    ],
+    "temporal_state_reviews": [
+      "PRD-FLOW-FL-100",
+      "PRD-MODIUS-SPERO"
+    ],
+    "preserve_exact_cross_frame_cluster_identity": true,
+    "probability_sampling_substitution_permitted": false
+  },
+  "adjudication_dispositions": [
+    "TERMINAL_INCLUDE_EXISTING_CANONICAL",
+    "TERMINAL_INCLUDE_NEW_CANONICAL_PENDING_IDENTITY_AUTHORITY",
+    "TERMINAL_EXCLUDE",
+    "ONE_OBJECT_UPPER_BOUND_UNRESOLVED",
+    "UNRESOLVED_CARDINALITY_UNPROVEN",
+    "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
+  ],
+  "adjudicator_states": [
+    "HUMAN_REVIEWED",
+    "MACHINE_PROVISIONAL"
+  ],
+  "evidence_roles": [
+    "DIRECT_PRE_CUTOFF_STATE",
+    "RETROSPECTIVE_EXPLICIT_HISTORICAL_STATE",
+    "POST_CUTOFF_CURRENT_STATE_ONLY",
+    "CARDINALITY_SPECIFIC",
+    "SOURCE_ENUMERATION_SPECIFIC"
+  ],
+  "supported_propositions": [
+    "IDENTITY",
+    "SCOPE",
+    "CURRENTNESS",
+    "LIFECYCLE",
+    "CARDINALITY",
+    "SOURCE_ENUMERATION"
+  ],
+  "temporal_admissibility": {
+    "later_evidence_may_support_historical_state_only_if_explicit": true,
+    "post_cutoff_current_state_must_not_be_back_projected": true,
+    "knowledge_observed_at_must_not_exceed_knowledge_time_cutoff": true
+  },
+  "identity_authority": {
+    "worklist_may_allocate_canonical_product_identity": false,
+    "new_identity_disposition_requires_separate_identity_authority_successor": true
+  },
+  "cardinality_rule": {
+    "one_object_upper_bound_requires_cardinality_specific_evidence": true,
+    "one_object_upper_bound_max_incremental_offering_contribution": 1,
+    "source_or_abstention_barrier_remains_unbounded_without_source_specific_finite_bound": true
+  },
+  "temporal_state_rule": {
+    "target_offerings": [
+      "PRD-FLOW-FL-100",
+      "PRD-MODIUS-SPERO"
+    ],
+    "qualifying_currentness_state": "CURRENT",
+    "qualifying_lifecycle_states": [
+      "ANNOUNCED",
+      "IN_DEVELOPMENT",
+      "MANUFACTURING_PRE_DELIVERY",
+      "RELEASED"
+    ],
+    "preserve_nonqualification_without_admissible_currentness_and_lifecycle_support": true
+  },
+  "finality": {
+    "checkpoint_only_until_knowledge_window_disposition": true,
+    "final_r1_3_rebind_required": true,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "publication_authority": false,
+    "population_generalization_authority": false
+  },
+  "boundary": "This rule freezes selection and admissible adjudication semantics for decision-relevant R1 resolution. It creates no canonical identity, final denominator, saturation conclusion, population estimate, downstream release authority, or publication authority.",
+  "rule_sha256": "0e4ea20af846b18e59cabfb338e59ab2cff4b9566e7ea1a3b18f8cc7f825f771"
+}
