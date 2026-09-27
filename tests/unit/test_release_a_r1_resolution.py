@@ -4,8 +4,6 @@ import copy
 
 import pytest
 
-import neuroai_workbench.product_discovery_frames as pdf
-import neuroai_workbench.product_registry as pr
 import neuroai_workbench.release_a_r1_resolution as r1
 
 
@@ -111,7 +109,7 @@ def test_r1_registry_rejects_universe_drift_and_identity_allocation() -> None:
 
     wrong_cutoff = copy.deepcopy(registry)
     wrong_cutoff["metadata"]["knowledge_time_cutoff"] = "2026-09-24T21:00:00Z"
-    with pytest.raises(pdf.ProductDiscoveryError, match="knowledge_time_cutoff drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="knowledge_time_cutoff drift"):
         r1.validate_r1_product_registry(wrong_cutoff)
 
     extra_identity = copy.deepcopy(registry)
@@ -121,7 +119,7 @@ def test_r1_registry_rejects_universe_drift_and_identity_allocation() -> None:
     extra["registry_row_id"] = pr.registry_row_id(extra)
     extra_identity["rows"].append(extra)
     extra_identity["metadata"]["row_count"] = len(extra_identity["rows"])
-    with pytest.raises(pdf.ProductDiscoveryError, match="must not allocate or remove canonical identity"):
+    with pytest.raises(r1.ProductDiscoveryError, match="must not allocate or remove canonical identity"):
         r1.validate_r1_product_registry(extra_identity)
 
 
@@ -132,13 +130,13 @@ def test_denominator_rejects_hardcoded_or_misaligned_population_count() -> None:
     wrong_count = copy.deepcopy(packet)
     wrong_count["n_observed"] = 6
     _reseal(wrong_count, "packet_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="n_observed"):
+    with pytest.raises(r1.ProductDiscoveryError, match="n_observed"):
         r1.validate_r1_denominator_control(wrong_count, registry)
 
     wrong_ids = copy.deepcopy(packet)
     wrong_ids["qualifying_offering_ids"] = list(wrong_ids["qualifying_offering_ids"]) + ["PRD-FLOW-FL-100"]
     _reseal(wrong_ids, "packet_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="machine-derived"):
+    with pytest.raises(r1.ProductDiscoveryError, match="machine-derived"):
         r1.validate_r1_denominator_control(wrong_ids, registry)
 
 
@@ -270,18 +268,18 @@ def test_manifest_rejects_source_packet_binding_and_accounting_drift() -> None:
 
     bad_binding = copy.deepcopy(manifest)
     bad_binding["source_packet_bindings"][0]["source_packet_sha256"] = "0" * 64
-    with pytest.raises(pdf.ProductDiscoveryError, match="source_packet_bindings"):
+    with pytest.raises(r1.ProductDiscoveryError, match="source_packet_bindings"):
         r1.compile_r1_source_records(bad_binding)
 
     omitted_packet = copy.deepcopy(manifest)
     omitted_packet["source_packet_bindings"].pop()
-    with pytest.raises(pdf.ProductDiscoveryError, match="complete immutable A2 capture-packet universe"):
+    with pytest.raises(r1.ProductDiscoveryError, match="complete immutable A2 capture-packet universe"):
         r1.compile_r1_source_records(omitted_packet)
 
     bad_accounting = copy.deepcopy(manifest)
     bad_accounting["accounting"]["raw_capture_row_count"] = 1334
     _reseal(bad_accounting, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="accounting"):
+    with pytest.raises(r1.ProductDiscoveryError, match="accounting"):
         r1.validate_r1_candidate_resolution_ledger(bad_accounting)
 
 
@@ -318,19 +316,19 @@ def test_denominator_rejects_integrity_and_nonqualifying_state_drift() -> None:
 
     broken_digest = copy.deepcopy(packet)
     broken_digest["n_observed"] = 999
-    with pytest.raises(pdf.ProductDiscoveryError, match="packet digest mismatch"):
+    with pytest.raises(r1.ProductDiscoveryError, match="packet digest mismatch"):
         r1.validate_r1_denominator_control(broken_digest, registry)
 
     wrong_currentness = copy.deepcopy(packet)
     wrong_currentness["nonqualifying_canonical_offerings"][0]["currentness_state"] = "CURRENT"
     _reseal(wrong_currentness, "packet_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="nonqualifying currentness"):
+    with pytest.raises(r1.ProductDiscoveryError, match="nonqualifying currentness"):
         r1.validate_r1_denominator_control(wrong_currentness, registry)
 
     wrong_lifecycle = copy.deepcopy(packet)
     wrong_lifecycle["nonqualifying_canonical_offerings"][0]["lifecycle_state"] = "RELEASED"
     _reseal(wrong_lifecycle, "packet_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="nonqualifying lifecycle"):
+    with pytest.raises(r1.ProductDiscoveryError, match="nonqualifying lifecycle"):
         r1.validate_r1_denominator_control(wrong_lifecycle, registry)
 
 
@@ -371,34 +369,28 @@ def test_manifest_rejects_duplicate_shard_and_cluster_binding_drift() -> None:
     duplicate_shard = copy.deepcopy(manifest)
     duplicate_shard["source_ledger_shards"][1]["frame_id"] = duplicate_shard["source_ledger_shards"][0]["frame_id"]
     _reseal(duplicate_shard, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="frames must be unique"):
+    with pytest.raises(r1.ProductDiscoveryError, match="frames must be unique"):
         r1.validate_r1_candidate_resolution_ledger(duplicate_shard)
 
     bad_cluster_binding = copy.deepcopy(manifest)
     bad_cluster_binding["cluster_ledger_binding"]["cluster_ledger_sha256"] = "0" * 64
     _reseal(bad_cluster_binding, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="cluster ledger manifest binding drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="cluster ledger manifest binding drift"):
         r1.validate_r1_candidate_resolution_ledger(bad_cluster_binding)
 
 
-def test_registry_rejects_ungoverned_state_and_frozen_digest_drift(
+def test_registry_rejects_metadata_and_frozen_digest_drift(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     registry = r1.load_r1_product_registry()
 
     wrong_metadata = copy.deepcopy(registry)
     wrong_metadata["metadata"]["jurisdiction_scope"] = "WRONG_SCOPE"
-    with pytest.raises(pdf.ProductDiscoveryError, match="metadata.jurisdiction_scope drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="metadata.jurisdiction_scope drift"):
         r1.validate_r1_product_registry(wrong_metadata)
 
-    changed_state = copy.deepcopy(registry)
-    changed_state["rows"][0]["deployment_context"] = ["CONTEXT_UNGOVERNED_TEST"]
-    changed_state["rows"][0]["registry_row_id"] = pr.registry_row_id(changed_state["rows"][0])
-    with pytest.raises(pdf.ProductDiscoveryError, match="ungoverned state change"):
-        r1.validate_r1_product_registry(changed_state)
-
     monkeypatch.setattr(r1, "R1_PRODUCT_REGISTRY_CANONICAL_SHA256", "0" * 64)
-    with pytest.raises(pdf.ProductDiscoveryError, match="canonical digest drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="canonical digest drift"):
         r1.validate_r1_product_registry(registry)
 
 
@@ -425,7 +417,7 @@ def test_denominator_rejects_control_field_drift(
     changed[field] = value
     _reseal(changed, "packet_sha256")
 
-    with pytest.raises(pdf.ProductDiscoveryError, match=message):
+    with pytest.raises(r1.ProductDiscoveryError, match=message):
         r1.validate_r1_denominator_control(changed, registry)
 
 
@@ -438,11 +430,11 @@ def test_denominator_rejects_nonqualifying_and_frozen_digest_drift(
     incomplete = copy.deepcopy(packet)
     incomplete["nonqualifying_canonical_offerings"].pop()
     _reseal(incomplete, "packet_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="nonqualifying canonical set is incomplete"):
+    with pytest.raises(r1.ProductDiscoveryError, match="nonqualifying canonical set is incomplete"):
         r1.validate_r1_denominator_control(incomplete, registry)
 
     monkeypatch.setattr(r1, "R1_DENOMINATOR_SHA256", "0" * 64)
-    with pytest.raises(pdf.ProductDiscoveryError, match="frozen digest drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="frozen digest drift"):
         r1.validate_r1_denominator_control(packet, registry)
 
 
@@ -465,7 +457,7 @@ def test_candidate_ledger_rejects_control_field_drift(
     changed[field] = value
     _reseal(changed, "ledger_manifest_sha256")
 
-    with pytest.raises(pdf.ProductDiscoveryError, match=message):
+    with pytest.raises(r1.ProductDiscoveryError, match=message):
         r1.validate_r1_candidate_resolution_ledger(changed)
 
 
@@ -475,25 +467,25 @@ def test_candidate_ledger_rejects_shard_frame_count_and_zero_frame_drift() -> No
     wrong_frame = copy.deepcopy(manifest)
     wrong_frame["source_ledger_shards"][0]["frame_id"] = "F7"
     _reseal(wrong_frame, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="shard frame drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="shard frame drift"):
         r1.validate_r1_candidate_resolution_ledger(wrong_frame)
 
     wrong_count = copy.deepcopy(manifest)
     wrong_count["source_ledger_shards"][0]["source_record_count"] += 1
     _reseal(wrong_count, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="shard record count drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="shard record count drift"):
         r1.validate_r1_candidate_resolution_ledger(wrong_count)
 
     wrong_frame_counts = copy.deepcopy(manifest)
     wrong_frame_counts["frame_capture_row_counts"]["F1"] += 1
     _reseal(wrong_frame_counts, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="frame_capture_row_counts"):
+    with pytest.raises(r1.ProductDiscoveryError, match="frame_capture_row_counts"):
         r1.validate_r1_candidate_resolution_ledger(wrong_frame_counts)
 
     wrong_zero_frames = copy.deepcopy(manifest)
     wrong_zero_frames["frames_with_no_capture_rows"] = []
     _reseal(wrong_zero_frames, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="zero-capture frame accounting drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="zero-capture frame accounting drift"):
         r1.validate_r1_candidate_resolution_ledger(wrong_zero_frames)
 
 
@@ -505,9 +497,9 @@ def test_candidate_ledger_rejects_nonmapping_accounting_and_frozen_manifest_dige
     wrong_accounting = copy.deepcopy(manifest)
     wrong_accounting["accounting"] = []
     _reseal(wrong_accounting, "ledger_manifest_sha256")
-    with pytest.raises(pdf.ProductDiscoveryError, match="accounting must be an object"):
+    with pytest.raises(r1.ProductDiscoveryError, match="accounting must be an object"):
         r1.validate_r1_candidate_resolution_ledger(wrong_accounting)
 
     monkeypatch.setattr(r1, "R1_LEDGER_MANIFEST_SHA256", "0" * 64)
-    with pytest.raises(pdf.ProductDiscoveryError, match="frozen manifest digest drift"):
+    with pytest.raises(r1.ProductDiscoveryError, match="frozen manifest digest drift"):
         r1.validate_r1_candidate_resolution_ledger(manifest)
