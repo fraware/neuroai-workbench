@@ -4,9 +4,15 @@ import copy
 
 import pytest
 
-from neuroai_workbench import product_discovery_frames as pdf
-from neuroai_workbench import product_registry as pr
-from neuroai_workbench import release_a_r1_resolution as r1
+from neuroai_workbench import (
+    product_discovery_frames as pdf,
+)
+from neuroai_workbench import (
+    product_registry as pr,
+)
+from neuroai_workbench import (
+    release_a_r1_resolution as r1,
+)
 
 
 EXPECTED_A_P1_IDS = [
