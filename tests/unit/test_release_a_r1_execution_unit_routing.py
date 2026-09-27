@@ -529,3 +529,70 @@ def test_route_execution_record_id_is_content_bound() -> None:
 
     with pytest.raises(routing.ProductDiscoveryError, match="execution_record_id does not match"):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_noncanonical_evidence_order() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    evidence = [
+        {
+            "evidence_ref": "EVIDENCE-2",
+            "source_locator": "https://example.invalid/source-2",
+            "knowledge_observed_at": "2026-09-27T00:00:00Z",
+            "sha256": "2" * 64,
+        },
+        {
+            "evidence_ref": "EVIDENCE-1",
+            "source_locator": "https://example.invalid/source-1",
+            "knowledge_observed_at": "2026-09-27T00:00:00Z",
+            "sha256": "1" * 64,
+        },
+    ]
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="canonical evidence_ref order"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_noncanonical_lead_order() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    work_item_id = str(item["work_item_id"])
+    leads = [
+        _lead(work_item_id, candidate_key="Example::Candidate A"),
+        _lead(work_item_id, candidate_key="Example::Candidate B"),
+    ]
+    leads.sort(key=lambda item: str(item["lead_id"]), reverse=True)
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+        item=item,
+        extracted_leads=leads,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="canonical lead_id order"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_noncanonical_capture_order() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
+    )
+    covered = list(reversed([str(capture_id) for capture_id in item["capture_ids"]]))
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
+        covered_capture_ids=covered,
+        work_item_completion_claimed=False,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="preserve frozen capture order"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
