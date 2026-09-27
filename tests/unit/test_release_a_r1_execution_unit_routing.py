@@ -188,6 +188,17 @@ def test_rule_rejects_execution_authority_relaxation(monkeypatch: pytest.MonkeyP
         routing.validate_execution_unit_routing_rule(changed)
 
 
+def test_rule_rejects_evidence_contract_relaxation(monkeypatch: pytest.MonkeyPatch) -> None:
+    rule = routing.load_execution_unit_routing_rule()
+    changed = copy.deepcopy(rule)
+    changed["route_execution_evidence_contract"]["evidence_query_or_seed_id_must_match_frozen_capture"] = False
+    _reseal(changed, "rule_sha256")
+    monkeypatch.setattr(routing, "RULE_SHA256", changed["rule_sha256"])
+
+    with pytest.raises(routing.ProductDiscoveryError, match="evidence contract drift"):
+        routing.validate_execution_unit_routing_rule(changed)
+
+
 def test_rule_and_checkpoint_digest_guards(monkeypatch: pytest.MonkeyPatch) -> None:
     rule = routing.load_execution_unit_routing_rule()
     broken_rule = copy.deepcopy(rule)
