@@ -356,7 +356,9 @@ def _validate_extracted_leads(
         "evidence_ref",
         "canonical_offering_id",
     }
-    required_proposition = "SOURCE_QUERY_WITH_LEADS" if route == SOURCE_SURFACE_RESOLUTION else "RECORD_WITH_OFFERING_LEADS"
+    required_proposition = (
+        "SOURCE_QUERY_WITH_LEADS" if route == SOURCE_SURFACE_RESOLUTION else "RECORD_WITH_OFFERING_LEADS"
+    )
 
     for lead in leads:
         if set(lead) != allowed_fields:
@@ -391,6 +393,8 @@ def _validate_extracted_leads(
 
     if lead_ids_in_order != sorted(lead_ids_in_order):
         raise ProductDiscoveryError("R1.6 extracted leads must use canonical lead_id order")
+
+
 def validate_route_execution_record(
     record: Mapping[str, Any],
     *,
