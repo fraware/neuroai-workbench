@@ -726,3 +726,191 @@ def test_route_execution_rejects_noncanonical_capture_order() -> None:
 
     with pytest.raises(routing.ProductDiscoveryError, match="preserve frozen capture order"):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+@pytest.mark.parametrize(
+    ("value", "message"),
+    [
+        (None, "requires knowledge_observed_at"),
+        ("not-a-time", "invalid knowledge_observed_at"),
+        ("2026-09-27T00:00:00", "timestamp must be timezone-aware"),
+    ],
+)
+def test_parse_knowledge_time_rejects_invalid_values(value: object, message: str) -> None:
+    with pytest.raises(routing.ProductDiscoveryError, match=message):
+        routing._parse_knowledge_time(value)
+
+
+def test_route_evidence_rejects_unsupported_route() -> None:
+    with pytest.raises(routing.ProductDiscoveryError, match="only defined for source/record routes"):
+        routing._validate_route_execution_evidence(
+            [],
+            route=routing.EMPIRICAL_CANDIDATE_ADJUDICATION,
+            covered_capture_ids=["PDC-X"],
+            source_records_by_capture_id={},
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("missing_field", "fields drift"),
+        ("empty_ref", "evidence_ref is required"),
+        ("duplicate_ref", "evidence_ref values must be unique"),
+        ("outside_capture", "must bind one covered capture ID"),
+        ("unknown_capture", "unknown frozen capture"),
+        ("empty_locator", "source_locator is required"),
+        ("invalid_sha", "requires SHA-256"),
+        ("wrong_role", "role does not match"),
+        ("empty_props", "requires supported propositions"),
+        ("duplicate_props", "must be unique and canonical"),
+        ("wrong_prop", "proposition does not match"),
+    ],
+)
+def test_route_evidence_rejects_malformed_claims(mutation: str, message: str) -> None:
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    capture_id = str(item["capture_ids"][0])
+    source_records = _source_records_by_capture_id()
+    evidence = _evidence_for_item(
+        item,
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        [capture_id],
+        has_leads=False,
+        source_scope_exhausted=False,
+    )
+
+    if mutation == "missing_field":
+        evidence[0].pop("sha256")
+    elif mutation == "empty_ref":
+        evidence[0]["evidence_ref"] = ""
+    elif mutation == "duplicate_ref":
+        duplicate = copy.deepcopy(evidence[0])
+        evidence.append(duplicate)
+    elif mutation == "outside_capture":
+        evidence[0]["capture_id"] = "PDC-" + "f" * 64
+    elif mutation == "unknown_capture":
+        source_records = {}
+    elif mutation == "empty_locator":
+        evidence[0]["source_locator"] = ""
+    elif mutation == "invalid_sha":
+        evidence[0]["sha256"] = "bad"
+    elif mutation == "wrong_role":
+        evidence[0]["evidence_role"] = "RECORD_EXTRACTION"
+    elif mutation == "empty_props":
+        evidence[0]["supported_propositions"] = []
+    elif mutation == "duplicate_props":
+        evidence[0]["supported_propositions"] = ["SOURCE_QUERY_ZERO_LEADS", "SOURCE_QUERY_ZERO_LEADS"]
+    else:
+        evidence[0]["supported_propositions"] = ["RECORD_ZERO_OFFERING_LEADS"]
+
+    with pytest.raises(routing.ProductDiscoveryError, match=message):
+        routing._validate_route_execution_evidence(
+            evidence,
+            route=routing.SOURCE_SURFACE_RESOLUTION,
+            covered_capture_ids=[capture_id],
+            source_records_by_capture_id=source_records,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("fields", "fields drift"),
+        ("candidate", "requires candidate_key"),
+        ("observation", "requires source_observation_ref"),
+        ("evidence", "must bind route-execution evidence"),
+        ("id", "ID does not match deterministic content"),
+    ],
+)
+def test_extracted_lead_rejects_malformed_values(mutation: str, message: str) -> None:
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    work_item_id = str(item["work_item_id"])
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+        item=item,
+        extracted_leads=[_lead(work_item_id)],
+    )
+    lead = copy.deepcopy(record["extracted_leads"][0])
+    evidence_by_ref = {str(entry["evidence_ref"]): entry for entry in record["evidence"]}
+
+    if mutation == "fields":
+        lead["unexpected"] = True
+    elif mutation == "candidate":
+        lead["candidate_key"] = ""
+    elif mutation == "observation":
+        lead["source_observation_ref"] = ""
+    elif mutation == "evidence":
+        lead["evidence_ref"] = "UNKNOWN"
+    else:
+        lead["lead_id"] = "R1LEAD-" + "0" * 64
+
+    with pytest.raises(routing.ProductDiscoveryError, match=message):
+        routing._validate_extracted_leads(
+            work_item_id,
+            [lead],
+            evidence_by_ref,
+            route=routing.SOURCE_SURFACE_RESOLUTION,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("fields", "record fields drift"),
+        ("duplicate_capture", "covered_capture_ids must be unique"),
+        ("completion_type", "work_item_completion_claimed must be boolean"),
+        ("review_state", "review state is not frozen"),
+        ("machine_reviewer", "must keep reviewer_id null"),
+        ("human_no_reviewer", "requires reviewer_id"),
+        ("flags_type", "exhaustion flags must be boolean"),
+        ("finite_type", "finite cardinality upper bound"),
+        ("invalid_state", "completion state is not frozen"),
+    ],
+)
+def test_route_execution_record_rejects_contract_drift(mutation: str, message: str) -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+
+    if mutation == "fields":
+        record["unexpected"] = True
+    elif mutation == "duplicate_capture":
+        record["covered_capture_ids"] = [record["covered_capture_ids"][0], record["covered_capture_ids"][0]]
+    elif mutation == "completion_type":
+        record["work_item_completion_claimed"] = "yes"
+    elif mutation == "review_state":
+        record["review_state"] = "UNKNOWN"
+    elif mutation == "machine_reviewer":
+        record["reviewer_id"] = "reviewer-1"
+    elif mutation == "human_no_reviewer":
+        record["review_state"] = "HUMAN_REVIEWED"
+        record["reviewer_id"] = None
+    elif mutation == "flags_type":
+        record["source_scope_exhausted"] = "false"
+    elif mutation == "finite_type":
+        record["finite_cardinality_upper_bound"] = -1
+    else:
+        record["completion_state"] = "UNKNOWN"
+
+    _reseal_execution_record(record)
+    with pytest.raises(routing.ProductDiscoveryError, match=message):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_unresolved_source_and_record_routes_validate_with_explicit_barrier_evidence() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    source = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_BARRIER_UNRESOLVED",
+    )
+    routing.validate_route_execution_record(source, routing_checkpoint=checkpoint)
+
+    record = _route_execution_record(
+        routing.LITERATURE_RECORD_EXTRACTION,
+        "RECORD_EXTRACTION_UNRESOLVED",
+    )
+    routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
