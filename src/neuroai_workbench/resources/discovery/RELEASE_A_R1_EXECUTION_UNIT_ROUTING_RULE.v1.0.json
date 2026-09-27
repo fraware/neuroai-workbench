@@ -55,7 +55,7 @@
     "publication_authority": false
   },
   "boundary": "This rule routes the frozen R1.4 worklist by empirical unit so source/query surfaces and literature records cannot be executed as product candidates. It preserves all upstream artifacts and creates no product adjudication, canonical identity, final denominator, completeness claim, downstream release authority or publication authority.",
-  "rule_sha256": "e0bf7698872d12944fd67b12970e8f47b0b1e1893e581c9427d44cb1c0a5a9cf",
+  "rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
   "route_execution_evidence_contract": {
     "source_surface_allowed_evidence_roles": [
       "SOURCE_QUERY_EXECUTION",
@@ -81,6 +81,8 @@
     "evidence_must_bind_exact_covered_capture_id": true,
     "evidence_query_or_seed_id_must_match_frozen_capture": true,
     "every_covered_capture_requires_supported_proposition": true,
-    "extracted_lead_requires_lead_bearing_evidence_proposition": true
+    "extracted_lead_requires_lead_bearing_evidence_proposition": true,
+    "source_scope_exhaustion_claim_requires_support_for_every_covered_capture": true,
+    "finite_cardinality_claim_requires_support_for_every_covered_capture": true
   }
 }
