@@ -297,6 +297,8 @@ def _evidence_for_item(
             }
         )
     return evidence
+
+
 def _lead(work_item_id: str, *, candidate_key: str = "Example::Candidate") -> dict[str, object]:
     source_observation_ref = "OBS-R1-TEST-1"
     return {
@@ -676,6 +678,7 @@ def test_extracted_lead_requires_lead_bearing_evidence() -> None:
 
     with pytest.raises(routing.ProductDiscoveryError, match="does not support an extracted-lead proposition"):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
 
 def test_route_execution_rejects_noncanonical_lead_order() -> None:
     checkpoint = routing.load_execution_unit_routing()
