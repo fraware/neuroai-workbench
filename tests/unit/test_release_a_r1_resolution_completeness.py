@@ -268,33 +268,42 @@ def test_tail_round_selector_requires_frozen_mechanical_conditions() -> None:
         minimum_raw_candidates_per_round=20,
     ) == ["R2", "R3"]
 
-    assert rc._tail_round_ids(
-        round_summaries=summaries[:2],
-        minimum_completed_rounds=3,
-        consecutive_low_yield_rounds=2,
-        threshold=0.05,
-        minimum_raw_candidates_per_round=20,
-    ) == []
+    assert (
+        rc._tail_round_ids(
+            round_summaries=summaries[:2],
+            minimum_completed_rounds=3,
+            consecutive_low_yield_rounds=2,
+            threshold=0.05,
+            minimum_raw_candidates_per_round=20,
+        )
+        == []
+    )
 
     too_small = copy.deepcopy(summaries)
     too_small[-1]["raw_candidates"] = 19
-    assert rc._tail_round_ids(
-        round_summaries=too_small,
-        minimum_completed_rounds=3,
-        consecutive_low_yield_rounds=2,
-        threshold=0.05,
-        minimum_raw_candidates_per_round=20,
-    ) == []
+    assert (
+        rc._tail_round_ids(
+            round_summaries=too_small,
+            minimum_completed_rounds=3,
+            consecutive_low_yield_rounds=2,
+            threshold=0.05,
+            minimum_raw_candidates_per_round=20,
+        )
+        == []
+    )
 
     high_yield = copy.deepcopy(summaries)
     high_yield[-1]["marginal_new_identity_yield"] = 0.06
-    assert rc._tail_round_ids(
-        round_summaries=high_yield,
-        minimum_completed_rounds=3,
-        consecutive_low_yield_rounds=2,
-        threshold=0.05,
-        minimum_raw_candidates_per_round=20,
-    ) == []
+    assert (
+        rc._tail_round_ids(
+            round_summaries=high_yield,
+            minimum_completed_rounds=3,
+            consecutive_low_yield_rounds=2,
+            threshold=0.05,
+            minimum_raw_candidates_per_round=20,
+        )
+        == []
+    )
 
 
 def test_rule_validation_rejects_integrity_and_contract_drift(
