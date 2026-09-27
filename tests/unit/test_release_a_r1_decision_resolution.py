@@ -522,7 +522,7 @@ def test_one_object_upper_bound_requires_cardinality_and_source_specific_evidenc
     missing_cardinality = copy.deepcopy(bounded)
     missing_cardinality["evidence"] = [_historical_evidence(propositions=["IDENTITY"])]
     missing_cardinality["adjudication_id"] = dr.adjudication_record_id(missing_cardinality)
-    with pytest.raises(dr.ProductDiscoveryError, match="requires historical cardinality support"):
+    with pytest.raises(dr.ProductDiscoveryError, match="requires historical cardinality-specific evidence"):
         dr.validate_resolution_adjudication(missing_cardinality, worklist=worklist)
 
     barrier = _candidate_item(worklist, source_barrier=True)
@@ -543,11 +543,23 @@ def test_one_object_upper_bound_requires_cardinality_and_source_specific_evidenc
     with pytest.raises(dr.ProductDiscoveryError, match="source-specific finite-bound evidence"):
         dr.validate_resolution_adjudication(barrier_record, worklist=worklist)
 
+    nonspecific = copy.deepcopy(bounded)
+    nonspecific["evidence"] = [_historical_evidence(propositions=["CARDINALITY"])]
+    nonspecific["adjudication_id"] = dr.adjudication_record_id(nonspecific)
+    with pytest.raises(dr.ProductDiscoveryError, match="cardinality-specific evidence"):
+        dr.validate_resolution_adjudication(nonspecific, worklist=worklist)
+
     barrier_record["evidence"] = [
         _historical_evidence(
+            evidence_ref="EV-CARDINALITY",
+            role="CARDINALITY_SPECIFIC",
+            propositions=["CARDINALITY"],
+        ),
+        _historical_evidence(
+            evidence_ref="EV-SOURCE-BOUND",
             role="SOURCE_ENUMERATION_SPECIFIC",
             propositions=["CARDINALITY", "SOURCE_ENUMERATION"],
-        )
+        ),
     ]
     barrier_record["adjudication_id"] = dr.adjudication_record_id(barrier_record)
     dr.validate_resolution_adjudication(barrier_record, worklist=worklist)
