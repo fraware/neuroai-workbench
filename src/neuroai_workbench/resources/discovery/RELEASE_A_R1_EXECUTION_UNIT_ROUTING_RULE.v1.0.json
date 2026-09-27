@@ -1,0 +1,88 @@
+{
+  "rule_id": "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN",
+  "frozen_on": "2026-09-27",
+  "source_workbench_main_commit": "f735259557bf867281f3ca0d7cb38af2d90fa640",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "r1_4_worklist_sha256": "ce030bfa76383c8abd50da9167323893fe2ab9d607879ab83d05a0be320d4e4a",
+  "r1_5_candidate_unit_rule_sha256": "9249c958ca66a07b326cb3f237da280a28965372f12f3623405a049adc8ad0d6",
+  "r1_5_candidate_unit_checkpoint_sha256": "c229667ae50ef71396837c1e34b5edf016c3ed224c771ae15cab20377bda384a",
+  "candidate_unit_to_execution_route": {
+    "UNRESOLVED_EMPIRICAL_UNIT": "EMPIRICAL_CANDIDATE_ADJUDICATION",
+    "SOURCE_OR_QUERY_PROBE": "SOURCE_SURFACE_RESOLUTION",
+    "LITERATURE_OR_RECORD_PROBE": "LITERATURE_RECORD_EXTRACTION",
+    "OFFERING_CANDIDATE_OBJECT": "MIXED_OR_UNRESOLVED_UNIT_REVIEW"
+  },
+  "mixed_or_multiple_unit_classes_route": "MIXED_OR_UNRESOLVED_UNIT_REVIEW",
+  "temporal_work_item_route": "A_P1_TEMPORAL_STATE_REVIEW",
+  "source_surface_completion_states": [
+    "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+    "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+    "SOURCE_BARRIER_UNRESOLVED"
+  ],
+  "literature_record_completion_states": [
+    "RECORD_EXTRACTED_ZERO_OFFERING_LEADS",
+    "RECORD_EXTRACTED_WITH_OFFERING_LEADS",
+    "RECORD_EXTRACTION_UNRESOLVED"
+  ],
+  "execution_controls": {
+    "source_surface_itself_may_receive_product_include_exclude": false,
+    "literature_record_itself_may_be_counted_as_product_candidate": false,
+    "zero_extracted_leads_implies_global_source_exhaustion": false,
+    "extracted_candidate_leads_require_append_only_successor": true,
+    "extracted_candidate_leads_may_mutate_frozen_r1_4_worklist": false,
+    "extracted_candidate_leads_may_allocate_canonical_identity": false,
+    "empirical_candidate_terminal_or_finite_bound_dispositions_require_r1_4_human_review": true,
+    "temporal_reviews_retain_r1_4_temporal_contract": true,
+    "source_exhaustion_or_finite_cardinality_requires_human_review": true,
+    "route_execution_record_leads_must_be_unique": true,
+    "route_execution_record_evidence_must_precede_knowledge_cutoff": true,
+    "route_execution_record_requires_explicit_capture_coverage": true,
+    "work_item_completion_claim_requires_full_capture_coverage": true,
+    "route_execution_record_collections_require_canonical_order": true
+  },
+  "finality": {
+    "checkpoint_only_until_knowledge_window_disposition": true,
+    "final_rebind_after_knowledge_window_disposition_required": true,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This rule routes the frozen R1.4 worklist by empirical unit so source/query surfaces and literature records cannot be executed as product candidates. It preserves all upstream artifacts and creates no product adjudication, canonical identity, final denominator, completeness claim, downstream release authority or publication authority.",
+  "rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
+  "route_execution_evidence_contract": {
+    "source_surface_allowed_evidence_roles": [
+      "SOURCE_QUERY_EXECUTION",
+      "SOURCE_ENUMERATION",
+      "SOURCE_ACCESS_BARRIER"
+    ],
+    "literature_record_allowed_evidence_roles": [
+      "RECORD_EXTRACTION",
+      "RECORD_ACCESS_BARRIER"
+    ],
+    "source_surface_allowed_supported_propositions": [
+      "SOURCE_QUERY_ZERO_LEADS",
+      "SOURCE_QUERY_WITH_LEADS",
+      "SOURCE_SCOPE_EXHAUSTED",
+      "SOURCE_FINITE_CARDINALITY_ESTABLISHED",
+      "SOURCE_BARRIER_UNRESOLVED"
+    ],
+    "literature_record_allowed_supported_propositions": [
+      "RECORD_ZERO_OFFERING_LEADS",
+      "RECORD_WITH_OFFERING_LEADS",
+      "RECORD_EXTRACTION_UNRESOLVED"
+    ],
+    "evidence_must_bind_exact_covered_capture_id": true,
+    "evidence_query_or_seed_id_must_match_frozen_capture": true,
+    "every_covered_capture_requires_supported_proposition": true,
+    "extracted_lead_requires_lead_bearing_evidence_proposition": true,
+    "source_scope_exhaustion_claim_requires_support_for_every_covered_capture": true,
+    "finite_cardinality_claim_requires_support_for_every_covered_capture": true
+  }
+}
