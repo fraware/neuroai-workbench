@@ -245,11 +245,14 @@ def test_capture_eligibility_rejects_universe_and_identity_mismatch() -> None:
 def test_capture_eligibility_preserves_frame_exclusion_and_a_p6_access_rule() -> None:
     excluded_frame = _frame("F7", "EXPERT_NOMINATION", capture_eligible=False)
     excluded_capture = _capture("PRD-A", frame_id="F7", estimation_eligible=False)
-    assert derive_capture_estimation_eligibility(
-        excluded_capture,
-        excluded_frame,
-        [_registry_row()],
-    ) is False
+    assert (
+        derive_capture_estimation_eligibility(
+            excluded_capture,
+            excluded_frame,
+            [_registry_row()],
+        )
+        is False
+    )
 
     a_p6_capture = _capture(population_view_id="A-P6", estimation_eligible=False)
     announced_without_access = _registry_row(
@@ -266,11 +269,14 @@ def test_capture_eligibility_allows_multiple_compatible_projections_for_same_off
     secondary = _registry_row(access="RESEARCH_USE_SOLD_OR_LICENSED")
     assert primary["registry_row_id"] != secondary["registry_row_id"]
 
-    assert validate_authoritative_capture_estimation_eligibility(
-        capture,
-        _frame(),
-        [primary, secondary],
-    ) is True
+    assert (
+        validate_authoritative_capture_estimation_eligibility(
+            capture,
+            _frame(),
+            [primary, secondary],
+        )
+        is True
+    )
 
 
 def test_run_known_identity_digest_is_recomputed_including_empty_set() -> None:
