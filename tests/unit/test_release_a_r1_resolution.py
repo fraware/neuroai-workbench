@@ -281,8 +281,7 @@ def test_cluster_artifact_is_frozen_and_noncanonical_clusters_do_not_allocate_id
     assert sum(cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND" for cluster in clusters) == 591
     assert (
         sum(
-            cluster["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
-            for cluster in clusters
+            cluster["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER" for cluster in clusters
         )
         == 470
     )
