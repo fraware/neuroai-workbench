@@ -235,24 +235,74 @@ def _route_item(execution_route: str) -> dict[str, object]:
     return next(item for item in checkpoint["route_table"] if item["execution_route"] == execution_route)
 
 
-def _evidence() -> list[dict[str, object]]:
-    return [
-        {
-            "evidence_ref": "EVIDENCE-1",
-            "source_locator": "https://example.invalid/source",
-            "knowledge_observed_at": "2026-09-27T00:00:00Z",
-            "sha256": "1" * 64,
-        }
-    ]
+def _source_records_by_capture_id() -> dict[str, dict[str, object]]:
+    manifest = routing.load_r1_candidate_resolution_manifest()
+    records = routing.compile_r1_source_records(manifest)
+    return {str(item["capture_id"]): item for item in records}
 
 
+def _evidence_for_item(
+    item: dict[str, object],
+    execution_route: str,
+    completion_state: str,
+    covered_capture_ids: list[str],
+    *,
+    has_leads: bool,
+    source_scope_exhausted: bool,
+) -> list[dict[str, object]]:
+    if execution_route == routing.SOURCE_SURFACE_RESOLUTION:
+        if completion_state == "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS":
+            role = "SOURCE_QUERY_EXECUTION"
+            propositions = {"SOURCE_QUERY_ZERO_LEADS"}
+        elif completion_state == "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS":
+            role = "SOURCE_QUERY_EXECUTION"
+            propositions = {"SOURCE_QUERY_WITH_LEADS"}
+        elif completion_state == "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED":
+            role = "SOURCE_ENUMERATION"
+            propositions = {"SOURCE_FINITE_CARDINALITY_ESTABLISHED"}
+            if has_leads:
+                propositions.add("SOURCE_QUERY_WITH_LEADS")
+        else:
+            role = "SOURCE_ACCESS_BARRIER"
+            propositions = {"SOURCE_BARRIER_UNRESOLVED"}
+            if has_leads:
+                propositions.add("SOURCE_QUERY_WITH_LEADS")
+        if source_scope_exhausted:
+            propositions.add("SOURCE_SCOPE_EXHAUSTED")
+    else:
+        role = "RECORD_EXTRACTION"
+        if completion_state == "RECORD_EXTRACTED_ZERO_OFFERING_LEADS":
+            propositions = {"RECORD_ZERO_OFFERING_LEADS"}
+        elif completion_state == "RECORD_EXTRACTED_WITH_OFFERING_LEADS":
+            propositions = {"RECORD_WITH_OFFERING_LEADS"}
+        else:
+            role = "RECORD_ACCESS_BARRIER"
+            propositions = {"RECORD_EXTRACTION_UNRESOLVED"}
+
+    source_records = _source_records_by_capture_id()
+    evidence: list[dict[str, object]] = []
+    for index, capture_id in enumerate(covered_capture_ids, start=1):
+        source_record = source_records[capture_id]
+        evidence.append(
+            {
+                "evidence_ref": f"EVIDENCE-{index:04d}",
+                "capture_id": capture_id,
+                "query_or_seed_id": source_record["query_or_seed_id"],
+                "source_locator": f"https://example.invalid/source/{index}",
+                "knowledge_observed_at": "2026-09-27T00:00:00Z",
+                "sha256": f"{index:064x}",
+                "evidence_role": role,
+                "supported_propositions": sorted(propositions),
+            }
+        )
+    return evidence
 def _lead(work_item_id: str, *, candidate_key: str = "Example::Candidate") -> dict[str, object]:
     source_observation_ref = "OBS-R1-TEST-1"
     return {
         "lead_id": routing.extracted_lead_id(work_item_id, candidate_key, source_observation_ref),
         "candidate_key": candidate_key,
         "source_observation_ref": source_observation_ref,
-        "evidence_ref": "EVIDENCE-1",
+        "evidence_ref": "EVIDENCE-0001",
         "canonical_offering_id": None,
     }
 
@@ -271,6 +321,8 @@ def _route_execution_record(
     work_item_completion_claimed: bool = True,
 ) -> dict[str, object]:
     item = _route_item(execution_route) if item is None else item
+    covered = list(item["capture_ids"]) if covered_capture_ids is None else covered_capture_ids
+    leads = extracted_leads or []
     record: dict[str, object] = {
         "execution_record_id": "",
         "work_item_id": item["work_item_id"],
@@ -278,12 +330,19 @@ def _route_execution_record(
         "completion_state": completion_state,
         "review_state": review_state,
         "reviewer_id": reviewer_id,
-        "evidence": _evidence(),
-        "extracted_leads": extracted_leads or [],
+        "evidence": _evidence_for_item(
+            item,
+            execution_route,
+            completion_state,
+            covered,
+            has_leads=bool(leads),
+            source_scope_exhausted=source_scope_exhausted,
+        ),
+        "extracted_leads": leads,
         "source_scope_exhausted": source_scope_exhausted,
         "finite_cardinality_upper_bound": finite_cardinality_upper_bound,
         "global_source_exhaustion_claimed": False,
-        "covered_capture_ids": (list(item["capture_ids"]) if covered_capture_ids is None else covered_capture_ids),
+        "covered_capture_ids": covered,
         "work_item_completion_claimed": work_item_completion_claimed,
     }
     record["execution_record_id"] = routing.route_execution_record_id(record)
@@ -545,7 +604,7 @@ def test_route_execution_rejects_noncanonical_evidence_order() -> None:
             "sha256": "2" * 64,
         },
         {
-            "evidence_ref": "EVIDENCE-1",
+            "evidence_ref": "EVIDENCE-0001",
             "source_locator": "https://example.invalid/source-1",
             "knowledge_observed_at": "2026-09-27T00:00:00Z",
             "sha256": "1" * 64,
