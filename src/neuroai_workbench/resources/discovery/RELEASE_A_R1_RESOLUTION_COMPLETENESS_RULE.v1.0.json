@@ -1,0 +1,65 @@
+{
+  "rule_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_RULE_v1.0",
+  "rule_sha256": "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1",
+  "version": "1.0",
+  "status": "FROZEN",
+  "frozen_on": "2026-09-27",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "population_view_id": "A-P1",
+  "candidate_resolution_ledger_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
+  "candidate_resolution_cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
+  "marginal_yield_frames": [
+    "F1",
+    "F4",
+    "F5",
+    "F6",
+    "F8",
+    "F11"
+  ],
+  "mechanical_rule": {
+    "mode": "MARGINAL_YIELD",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20
+  },
+  "uncertainty_cardinality_classes": {
+    "ONE_OBJECT_UPPER_BOUND": "Separately governed evidence establishes one candidate object with maximum incremental contribution of one.",
+    "UNRESOLVED_CARDINALITY_UNPROVEN": "Candidate-like unresolved material exists but retained evidence does not establish a one-product upper bound.",
+    "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER": "Source, catalogue, channel, abstention, inaccessible surface, or equivalent barrier lacks a finite latent-product upper bound.",
+    "TERMINAL": "Governed resolved inclusion or exclusion for current accounting."
+  },
+  "low_yield_identifiability_paths": {
+    "exhaustive_resolution": {
+      "admissible_when": "Every yield-relevant unresolved candidate cluster in the round has a governed terminal disposition."
+    },
+    "worst_case_bound": {
+      "admissible_when": "No cardinality-unproven or unbounded barrier remains and m_r_upper is at or below the frozen threshold.",
+      "definitions": {
+        "C_r": "Frozen raw candidate denominator used by the historical stopping rule.",
+        "Y_r": "New resolved canonical offering identities in the round.",
+        "U_r_star": "Unique ONE_OBJECT_UPPER_BOUND unresolved candidate clusters that could still resolve to a new in-scope offering.",
+        "m_r_lower": "Y_r / C_r",
+        "m_r_upper": "(Y_r + U_r_star) / C_r"
+      }
+    },
+    "reviewed_statistical": {
+      "admissible_when": "A separate probability-sampling/adjudication design, estimand, uncertainty method, and interpretation rule were preregistered before inspecting the result and yield a one-sided upper bound below the frozen threshold.",
+      "current_checkpoint_state": "NO_SEPARATELY_PREREGISTERED_STATISTICAL_PATH_BOUND"
+    }
+  },
+  "scientific_states": {
+    "SATURATION_IDENTIFIED_UNDER_R1": "Historical mechanical saturation and every required tail-round identifiability gate pass.",
+    "CONTINUE_RESOLUTION_CENSORED": "Historical mechanical saturation may remain immutable, but unresolved cardinality or source barriers prevent scientific low-yield identification.",
+    "CONTINUE_MECHANICAL": "The historical mechanical stopping rule does not reach saturation."
+  },
+  "historical_immutability_rule": "Historical PRODUCT_DISCOVERY_RUN and packet bytes remain unchanged. R1 scientific interpretation is a successor record.",
+  "temporal_finality_rule": "A checkpoint produced before the frozen A2 knowledge-time cutoff may exercise this rule but cannot support final Release-A R1 passage. The rule must be rebound to the final #413 ledger successor after temporal disposition.",
+  "authority_controls": {
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This rule evaluates whether resolved-identity marginal yield is scientifically interpretable under retained resolution uncertainty. It does not allocate canonical identities, establish global completeness, estimate the unseen population, or authorize downstream releases."
+}
