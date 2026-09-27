@@ -448,7 +448,10 @@ def test_bounded_source_exhaustion_requires_typed_digest_bound_evidence() -> Non
     summary = pdf.summarize_discovery_round([capture], known_identity_ids_before=set())
     evidence = _stop_evidence(run, [summary], condition="SOURCE_EXHAUSTED")
 
-    assert pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe) == "BOUNDED_FRAME_EXHAUSTED"
+    assert (
+        pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe)
+        == "BOUNDED_FRAME_EXHAUSTED"
+    )
 
     evidence["supporting_artifacts"] = []
     evidence["evidence_id"] = pdf.authoritative_stop_evidence_id(evidence)
