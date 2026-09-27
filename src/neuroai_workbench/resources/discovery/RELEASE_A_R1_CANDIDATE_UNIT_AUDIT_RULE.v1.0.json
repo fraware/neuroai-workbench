@@ -1,0 +1,102 @@
+{
+  "rule_id": "RELEASE_A_R1_CANDIDATE_UNIT_AUDIT_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN",
+  "frozen_on": "2026-09-27",
+  "source_workbench_main_commit": "73689e59960677460b5130022a7321b37d2c51cc",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "population_view_id": "A-P1",
+  "r1_2_candidate_resolution_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
+  "r1_2_candidate_cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
+  "r1_3_resolution_completeness_rule_sha256": "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1",
+  "r1_3_resolution_completeness_checkpoint_sha256": "500bcd90ad59b4320a1f2a9eec857f81ce83b45e501f1d38853e8ae8ea37485d",
+  "r1_4_worklist_rule_sha256": "0e4ea20af846b18e59cabfb338e59ab2cff4b9566e7ea1a3b18f8cc7f825f771",
+  "r1_4_worklist_sha256": "ce030bfa76383c8abd50da9167323893fe2ab9d607879ab83d05a0be320d4e4a",
+  "audited_frames": [
+    "F1",
+    "F4",
+    "F5",
+    "F6",
+    "F8",
+    "F11"
+  ],
+  "audited_rounds": [
+    "R2",
+    "R3"
+  ],
+  "historical_mechanical_contract": {
+    "C_capture_definition": "len(captures) in summarize_discovery_round",
+    "marginal_yield_definition": "new_resolved_include_identities / C_capture",
+    "minimum_completed_rounds": 3,
+    "consecutive_low_yield_rounds": 2,
+    "maximum_marginal_new_identity_yield": 0.05,
+    "minimum_raw_candidates_per_round": 20,
+    "historical_packets_and_stop_states_immutable": true
+  },
+  "empirical_unit_taxonomy": {
+    "OFFERING_CANDIDATE_OBJECT": "Capture row is governed as one product/offering candidate object. Current checkpoint admits only historical INCLUDE_RESOLVED rows bound to a canonical offering identity.",
+    "SOURCE_OR_QUERY_PROBE": "Capture row denotes a source/query/search/relationship surface or locator, not a product/offering candidate object.",
+    "LITERATURE_OR_RECORD_PROBE": "Capture row denotes a literature/document record or an empty literature-result sentinel, not a product/offering candidate object without separate extraction evidence.",
+    "UNRESOLVED_EMPIRICAL_UNIT": "Current frozen evidence does not establish whether the capture row denotes one product/offering candidate object."
+  },
+  "classification_contract": {
+    "include_resolved_with_canonical_offering_is_candidate_object": true,
+    "source_probe_exact_normalized_labels": [
+      "seed-locator",
+      "page-surface",
+      "capability-surface",
+      "organization-edge",
+      "product_to_distributor-surface",
+      "organization_to_product-surface",
+      "product_to_capability_query-surface",
+      "product_to_related_product-surface",
+      "trial-publication-surface",
+      "portfolio surface",
+      "directory surface",
+      "docs-index"
+    ],
+    "source_probe_normalized_label_suffixes": [
+      "::product_to_related_product",
+      "::organization_to_product",
+      "::product_to_distributor",
+      "::product_to_capability_query",
+      "::trial-publication-edge",
+      " channel"
+    ],
+    "literature_probe_normalized_label_patterns": [
+      "^lit-[0-9]+$",
+      "^empty-europepmc",
+      "^empty-trial-lit"
+    ],
+    "all_other_nonterminal_rows_default_to": "UNRESOLVED_EMPIRICAL_UNIT",
+    "inference_from_product_looking_name_alone_prohibited": true
+  },
+  "candidate_unit_accounting": {
+    "candidate_object_dedup_key": "canonical_offering_id for OFFERING_CANDIDATE_OBJECT rows in this pre-adjudication checkpoint",
+    "C_candidate_definition": "number of unique governed OFFERING_CANDIDATE_OBJECT dedup keys in the round",
+    "candidate_denominator_identified_only_if_unresolved_empirical_unit_count_is_zero": true,
+    "candidate_yield_reported_only_if_denominator_identified_and_C_candidate_positive": true,
+    "historical_numeric_floor_sensitivity": 20,
+    "numeric_floor_is_successor_construct_validity_diagnostic_not_retroactive_protocol_rewrite": true
+  },
+  "scientific_states": [
+    "MECHANICAL_CAPTURE_ROW_SATURATION_ONLY",
+    "CANDIDATE_UNIT_SATURATION_IDENTIFIED",
+    "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT",
+    "CANDIDATE_UNIT_RESOLUTION_CENSORED"
+  ],
+  "finality": {
+    "pre_r1_4_adjudication_checkpoint": true,
+    "final_rebind_after_r1_4_adjudication_required": true,
+    "final_rebind_after_knowledge_window_disposition_required": true,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "publication_authority": false,
+    "population_generalization_authority": false
+  },
+  "boundary": "This rule audits the empirical unit of the historical marginal-yield denominator without mutating historical A2 packets, yields or stop states. It creates no final denominator, global-completeness claim, unseen-population estimate, downstream release authority or publication authority.",
+  "rule_sha256": "9249c958ca66a07b326cb3f237da280a28965372f12f3623405a049adc8ad0d6"
+}
