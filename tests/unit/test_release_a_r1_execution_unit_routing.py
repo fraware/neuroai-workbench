@@ -261,13 +261,16 @@ def _route_execution_record(
     execution_route: str,
     completion_state: str,
     *,
+    item: dict[str, object] | None = None,
     extracted_leads: list[dict[str, object]] | None = None,
     source_scope_exhausted: bool = False,
     finite_cardinality_upper_bound: int | None = None,
     review_state: str = "MACHINE_PROVISIONAL",
     reviewer_id: str | None = None,
+    covered_capture_ids: list[str] | None = None,
+    work_item_completion_claimed: bool = True,
 ) -> dict[str, object]:
-    item = _route_item(execution_route)
+    item = _route_item(execution_route) if item is None else item
     record: dict[str, object] = {
         "execution_record_id": "",
         "work_item_id": item["work_item_id"],
@@ -280,6 +283,10 @@ def _route_execution_record(
         "source_scope_exhausted": source_scope_exhausted,
         "finite_cardinality_upper_bound": finite_cardinality_upper_bound,
         "global_source_exhaustion_claimed": False,
+        "covered_capture_ids": (
+            list(item["capture_ids"]) if covered_capture_ids is None else covered_capture_ids
+        ),
+        "work_item_completion_claimed": work_item_completion_claimed,
     }
     record["execution_record_id"] = routing.route_execution_record_id(record)
     return record
@@ -453,9 +460,65 @@ def test_candidate_work_item_cannot_use_route_execution_contract() -> None:
     )
     record["work_item_id"] = item["work_item_id"]
     record["execution_route"] = routing.EMPIRICAL_CANDIDATE_ADJUDICATION
+    record["covered_capture_ids"] = list(item["capture_ids"])
+    record["work_item_completion_claimed"] = True
     _reseal_execution_record(record)
 
     with pytest.raises(routing.ProductDiscoveryError, match="existing governed contracts"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_work_item_completion_requires_full_capture_coverage() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION
+        and len(candidate["capture_ids"]) > 1
+    )
+    first_capture = [str(item["capture_ids"][0])]
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
+        covered_capture_ids=first_capture,
+        work_item_completion_claimed=True,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="requires full frozen capture coverage"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+    partial = copy.deepcopy(record)
+    partial["work_item_completion_claimed"] = False
+    _reseal_execution_record(partial)
+    routing.validate_route_execution_record(partial, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_capture_outside_work_item() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
+        covered_capture_ids=["PDC-" + "0" * 64],
+        work_item_completion_claimed=False,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="outside the frozen work item"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_requires_nonempty_capture_coverage() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        covered_capture_ids=[],
+        work_item_completion_claimed=False,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="requires explicit covered_capture_ids"):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
 
 
