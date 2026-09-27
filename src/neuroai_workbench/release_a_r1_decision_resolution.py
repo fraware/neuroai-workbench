@@ -315,7 +315,7 @@ def _derive_temporal_work_items() -> list[dict[str, Any]]:
 
 
 def derive_decision_resolution_worklist() -> dict[str, Any]:
-    rule = load_decision_resolution_rule()
+    load_decision_resolution_rule()
     checkpoint = load_resolution_completeness_checkpoint()
     if checkpoint["packet_sha256"] != R1_3_CHECKPOINT_SHA256:
         raise ProductDiscoveryError("R1.4 derivation does not bind the exact R1.3 checkpoint")
@@ -327,7 +327,12 @@ def derive_decision_resolution_worklist() -> dict[str, Any]:
     candidate_items = _derive_candidate_work_items(records, clusters)
     temporal_items = _derive_temporal_work_items()
     work_items = candidate_items + temporal_items
-    work_items.sort(key=lambda item: str(item["work_item_id"]))
+    work_items.sort(
+        key=lambda item: (
+            item["work_item_type"] != "CANDIDATE_CLUSTER_REVIEW",
+            str(item["work_item_id"]),
+        )
+    )
 
     selected_clusters = [cluster for cluster in clusters if _candidate_selection_reasons(cluster)]
     accounting = {
