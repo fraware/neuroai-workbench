@@ -106,13 +106,9 @@ def validate_r1_product_registry(registry: Mapping[str, Any]) -> None:
     if successor_metadata != seed_metadata:
         raise ProductDiscoveryError("R1 Product Registry metadata may change only title and knowledge-time cutoff")
 
-    seed_rows = {
-        str(row["canonical_entity_id"]): dict(row)
-        for row in cast(list[Mapping[str, Any]], seed["rows"])
-    }
+    seed_rows = {str(row["canonical_entity_id"]): dict(row) for row in cast(list[Mapping[str, Any]], seed["rows"])}
     successor_rows = {
-        str(row["canonical_entity_id"]): dict(row)
-        for row in cast(list[Mapping[str, Any]], registry["rows"])
+        str(row["canonical_entity_id"]): dict(row) for row in cast(list[Mapping[str, Any]], registry["rows"])
     }
     for canonical_id in seed_ids:
         predecessor = seed_rows[canonical_id]
@@ -146,8 +142,6 @@ def validate_r1_denominator_control(packet: Mapping[str, Any], registry: Mapping
         raise ProductDiscoveryError("R1 denominator packet_id drift")
     if artifact_sha256(packet, digest_field="packet_sha256") != packet.get("packet_sha256"):
         raise ProductDiscoveryError("R1 denominator packet digest mismatch")
-    if packet.get("packet_sha256") != R1_DENOMINATOR_SHA256:
-        raise ProductDiscoveryError("R1 denominator frozen digest drift")
     if packet.get("analysis_universe_id") != DEFAULT_ANALYSIS_UNIVERSE_ID:
         raise ProductDiscoveryError("R1 denominator analysis universe drift")
     if packet.get("world_time_cutoff") != A2_WORLD_TIME_CUTOFF:
@@ -182,6 +176,8 @@ def validate_r1_denominator_control(packet: Mapping[str, Any], registry: Mapping
             raise ProductDiscoveryError("R1 denominator nonqualifying currentness state drift")
         if item.get("lifecycle_state") != row.get("lifecycle_state"):
             raise ProductDiscoveryError("R1 denominator nonqualifying lifecycle state drift")
+    if packet.get("packet_sha256") != R1_DENOMINATOR_SHA256:
+        raise ProductDiscoveryError("R1 denominator frozen digest drift")
 
 
 def normalize_candidate_key(value: str) -> str:
@@ -378,9 +374,7 @@ def build_r1_candidate_clusters(records: Sequence[Mapping[str, Any]]) -> list[di
         canonical_ids = sorted({str(row["canonical_offering_id"]) for row in rows if row.get("canonical_offering_id")})
         unresolved = any(outcome in UNRESOLVED_OUTCOMES for outcome in outcomes)
         source_barrier = "ABSTAIN" in outcomes or "FAILED_INACCESSIBLE" in outcomes
-        cardinality_unproven = not source_barrier and (
-            "UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes
-        )
+        cardinality_unproven = not source_barrier and ("UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes)
         uncertainty_cardinality_class = (
             "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
             if source_barrier
@@ -459,8 +453,6 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
         raise ProductDiscoveryError("R1 candidate ledger manifest ID drift")
     if artifact_sha256(manifest, digest_field="ledger_manifest_sha256") != manifest.get("ledger_manifest_sha256"):
         raise ProductDiscoveryError("R1 candidate ledger manifest digest mismatch")
-    if manifest.get("ledger_manifest_sha256") != R1_LEDGER_MANIFEST_SHA256:
-        raise ProductDiscoveryError("R1 candidate ledger frozen manifest digest drift")
     if manifest.get("analysis_universe_id") != DEFAULT_ANALYSIS_UNIVERSE_ID:
         raise ProductDiscoveryError("R1 candidate ledger analysis universe drift")
     if manifest.get("world_time_cutoff") != A2_WORLD_TIME_CUTOFF:
@@ -616,6 +608,8 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
     }
     if dict(accounting) != expected_accounting:
         raise ProductDiscoveryError("R1 candidate ledger accounting does not reproduce from source rows/clusters")
+    if manifest.get("ledger_manifest_sha256") != R1_LEDGER_MANIFEST_SHA256:
+        raise ProductDiscoveryError("R1 candidate ledger frozen manifest digest drift")
 
 
 def validate_default_r1_resolution_state() -> dict[str, Any]:
