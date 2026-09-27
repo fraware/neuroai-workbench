@@ -252,6 +252,9 @@ def _validate_route_execution_evidence(evidence: Sequence[Mapping[str, Any]]) ->
         if not isinstance(sha, str) or SHA256_RE.fullmatch(sha) is None:
             raise ProductDiscoveryError("R1.6 route execution evidence requires SHA-256")
 
+    if [str(item["evidence_ref"]) for item in evidence] != sorted(evidence_refs):
+        raise ProductDiscoveryError("R1.6 route execution evidence must use canonical evidence_ref order")
+
     return evidence_refs
 
 
@@ -261,6 +264,7 @@ def _validate_extracted_leads(
     evidence_refs: set[str],
 ) -> None:
     seen_lead_ids: set[str] = set()
+    lead_ids_in_order: list[str] = []
     seen_signatures: set[tuple[str, str]] = set()
     allowed_fields = {
         "lead_id",
@@ -290,11 +294,15 @@ def _validate_extracted_leads(
         if expected_lead_id in seen_lead_ids:
             raise ProductDiscoveryError("R1.6 extracted lead IDs must be unique")
         seen_lead_ids.add(expected_lead_id)
+        lead_ids_in_order.append(expected_lead_id)
 
         signature = (normalize_candidate_key(candidate_key), source_observation_ref)
         if signature in seen_signatures:
             raise ProductDiscoveryError("R1.6 duplicate extracted candidate lead")
         seen_signatures.add(signature)
+
+    if lead_ids_in_order != sorted(lead_ids_in_order):
+        raise ProductDiscoveryError("R1.6 extracted leads must use canonical lead_id order")
 
 
 def validate_route_execution_record(
@@ -337,7 +345,8 @@ def validate_route_execution_record(
     if route != str(routed_item["execution_route"]):
         raise ProductDiscoveryError("R1.6 route execution does not match the frozen execution route")
 
-    routed_capture_ids = {str(item) for item in cast(Sequence[str], routed_item["capture_ids"])}
+    routed_capture_sequence = [str(item) for item in cast(Sequence[str], routed_item["capture_ids"])]
+    routed_capture_ids = set(routed_capture_sequence)
     covered_capture_ids_raw = record["covered_capture_ids"]
     if not isinstance(covered_capture_ids_raw, list) or not covered_capture_ids_raw:
         raise ProductDiscoveryError("R1.6 route execution requires explicit covered_capture_ids")
@@ -347,6 +356,9 @@ def validate_route_execution_record(
     covered_capture_set = set(covered_capture_ids)
     if not covered_capture_set.issubset(routed_capture_ids):
         raise ProductDiscoveryError("R1.6 route execution covers capture IDs outside the frozen work item")
+    canonical_covered_order = [item for item in routed_capture_sequence if item in covered_capture_set]
+    if covered_capture_ids != canonical_covered_order:
+        raise ProductDiscoveryError("R1.6 covered_capture_ids must preserve frozen capture order")
 
     completion_claimed = record["work_item_completion_claimed"]
     if not isinstance(completion_claimed, bool):
