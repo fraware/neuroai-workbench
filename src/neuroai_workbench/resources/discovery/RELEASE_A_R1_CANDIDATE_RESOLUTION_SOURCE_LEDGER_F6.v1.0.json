@@ -1,6 +1,6 @@
 {
   "ledger_shard_id": "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6_v1.0",
-  "ledger_shard_sha256": "a43c8d1cafd6e9b7ca0038504ba64f8f45b95353e2e4e2bf9ee3b730700aa6ab",
+  "ledger_shard_sha256": "d5870785826a8c575b44f8b5d0d76ad0e3a7c3f40234b8a1b438210ef42bd6fb",
   "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
   "assembled_on": "2026-09-27",
   "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
@@ -225,9 +225,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-2c56c6b789a047b5a4296f0420f55ccdebcd98d12ca5db61b8b367a02719f133",
@@ -299,9 +299,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-39fb9884ec74495bfef8cb6af45b57337e14b9d5db2e880614e83824fe20fc50",
@@ -336,9 +336,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-3d699470c9e5e3b9d59fd4d4cf6da5919e31a614f4d09d9e0d5c79c21159bd09",
@@ -373,9 +373,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-3d704aefbaded04efdd958c59733dfe37c8d804f7cdfe5f708bc40abd645ff99",
@@ -410,9 +410,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-4031d27c8136996c4ae5426a7c4afe3411ba7778630eafadb28f95740f462695",
@@ -447,9 +447,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-4e2410ea116d1c4439d35634dd890ac1e10fcb07719127bf360a7ff64210ac9e",
@@ -484,9 +484,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-517c6501243bdbd41cdb9e8c744d082e07b0b04af6e561205d3bafcbaad5e734",
@@ -521,9 +521,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-6a36656d42fbb7ac32afd3725ecff8c6abb365f60a7bb213f7c1c0e383b50c52",
@@ -632,9 +632,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-99a39069ec4004205bacff1d39a6f946b30530a863164b052165be4fd6e3cd22",
@@ -669,9 +669,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-9f897205579a08b65080a88955a309edb02a6a70bfb53b84b03b24a272933a2c",
@@ -780,9 +780,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-b0e7bd2d9b5960febf329409bd854012976fe284873bd990c348033a9aba02fe",
@@ -817,9 +817,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-b478d8a7dc37815dcbb5d66959d5532095371374bfcca5dae475054fd0e9aefb",
@@ -965,9 +965,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-cb0e7d2bfbbe9cd3f45fd3945228181ad66191e851685fa222d2c71526440e75",
@@ -1002,9 +1002,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-cb90cff6a0342091bdd774e95438583c73d7e54b109a24e33efd559ae4c61f60",
@@ -1039,9 +1039,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-d388d4cac8eb3189d4f7f3f7872d75f568b55c7a3b71b6e9cd0bbafb445a5abf",
@@ -1076,9 +1076,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-dd794b081f9f9d20ca88ef4d733eed17f661f1f2665cba93b21fa7f41423e49c",
@@ -1113,9 +1113,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-e16d73598b00a21ac4b6c57deb38a0155840b7f66589bfb8e3993fa28158d5bb",
@@ -1187,9 +1187,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-e42ce06d825eab1ec4b1921a667cbd85a4b1645b98d4c9f30f85bb44d56074c3",
@@ -1261,9 +1261,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-0f643f57452bc4a883e3febc6a3adf5f1c9940b9ffc151fcc947e89498a150e7",
@@ -1335,9 +1335,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-157c2a0ca3ed47904b5f7678446b63558364f80d2cb58d7068c0366f3db9089a",
@@ -1409,9 +1409,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-337fdc3fd7ab468fb10a740e87e3eb2713bd0c6b5cbacdaac52b34137cdeb611",
@@ -1446,9 +1446,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-33f7afeb90404b5e17eb6bf09432dad70040f69912b92721c3b3a016b71c11c3",
@@ -1520,9 +1520,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-41e5c0ed570dcae33cef13865016ee2a1f1cccd21f0b75402978b1290fec6cce",
@@ -1557,9 +1557,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-4c75aff416d4c6aa71ec6652fa172c131977af2d491674e8e968dcc740bac2f5",
@@ -1705,9 +1705,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-7b62d495f1ea163d98a924334a94901cbf58103a525dfba7918b5a71e785dc6a",
@@ -1779,9 +1779,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-89361b45fa03ee2aa18c389a9dc13dff175400f06e79a2ac7487277b540593ae",
@@ -1853,9 +1853,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-926d41ed7af85bc43196c2119888bcdbbcbc73ce4f1466208ffe86d12613e62d",
@@ -1890,9 +1890,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-a25c30b8eaeaf17031f4098e3c5936c8eece57d9beef7f7745446675a7493f98",
@@ -1964,9 +1964,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-a77b7b67f28cbc96c87afcde9eb1492cb61e6afe3e36973d3338fd51de4cc20d",
@@ -2001,9 +2001,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-aaa22a27864b089c33fb0b8e0e34321c5eb4a4941332e55510644091b6eb764c",
@@ -2038,9 +2038,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-aae99dbd128e1d0991ef23dc01dc613c0c255189cc2c4f628aea07978dff599f",
@@ -2075,9 +2075,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-bad2c9b18fbd06091661838d30ab1573d46e9725073e787f5611809432d83634",
@@ -2149,9 +2149,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-c06bf5f4a9e85a552cc9694ca976a59521f2de3c268efa4e763e588e9b2b3def",
@@ -2334,9 +2334,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-fa57c911a1cdea6d9df3d8b4bd9705995c47f5ec60775f6c284659b4d8fb7929",
@@ -2371,9 +2371,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-fd9672b5c874cbf765ad5fcfa5f79f53304ce2ce2d80f3b71bd80b48be9f2fb8",
@@ -2445,9 +2445,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-08aebf04e002e0bea9eb80ec23b43b4265685b545a38a6c63cae8078af90ad01",
@@ -2593,9 +2593,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-26bce3664b01e3ab2363b4cb79a71268be36e7f248267686124a7de1919c484f",
@@ -2630,9 +2630,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-38562c3276555e12c6ce64840d893a9d170af54cd7a3d51b15830fc5891e7ab2",
@@ -2741,9 +2741,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-6a334c3be9a654fc06529819901491c0fbd30bc53d201dffeba1109539c3649a",
@@ -2815,9 +2815,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-6cfd4a98591572404502a45e6c753421589428ca5bdb9f343a2ac4eaaa8ee39f",
@@ -2852,9 +2852,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-707d7e6c5c5e1da55fb373d9a8c960d7c1c95b0c2983fd8de23395ccaf98a56e",
@@ -3000,9 +3000,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-7e4d08e15929ca413ba8ca565bf050ef67f4888f49c1c2ce544777fc4b16d08f",
@@ -3185,9 +3185,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-9ba9e5dd80f8cfa5e90ec9d2c3b6c028e154ab0fdb24dcdfd9fbde4c4802a429",
@@ -3222,9 +3222,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-a5f5bdf07aa2f3e16ccc671a4e82a871ff384be87bf604438adca01a2c47899d",
@@ -3259,9 +3259,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-a9dafa3d3a44ff4b230720bab531f74ba733bbf814184b54ef0fdad4310748ba",
@@ -3296,9 +3296,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-ca6061e928b3f1c2a8dbc64a5cdb42b2d0dad861e17442570f673ddeb8ead49b",
@@ -3333,9 +3333,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-d39dcd153ede5c6116156fc4960605bf5de2176c306d6531460d45fb153afffa",
@@ -3407,9 +3407,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-efc685c9258a3e53f9742e57d7b4af735f4f6115f51f5ecf0142537329b17b8f",
@@ -3444,9 +3444,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-f2b0e716bad92de661e5bbec7f05123af8f4dcb912226694c8d6c7daaf3cb09d",
@@ -3481,9 +3481,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-f4b9c2351fff0cf476f2ab03e6352e42a4ba6b1f156c5ffabd2dcfebecf866b2",
@@ -3518,9 +3518,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-f66ec31d6a430bbc04522d47be3504d85fe0bba2599e773b46aa153c6bd70b74",
@@ -3555,9 +3555,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-f9d79c5e12b0ba846ed0eb2ddff41995c9967507deac5f5db6f918edaa5cb149",
@@ -3592,9 +3592,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     },
     {
       "source_record_id": "PDC-faa2b465b90ba66c17bcebbf8ba75e719664fac36c926705c42606c727c55e0b",
@@ -3666,9 +3666,9 @@
       "could_change_a3_increment": true,
       "could_change_a4_increment": false,
       "could_change_marginal_yield_stop": true,
-      "cardinality_bounded_candidate_object": true,
+      "cardinality_bounded_candidate_object": false,
       "source_or_abstention_barrier": false,
-      "uncertainty_cardinality_class": "ONE_OBJECT_UPPER_BOUND"
+      "uncertainty_cardinality_class": "UNRESOLVED_CARDINALITY_UNPROVEN"
     }
   ],
   "boundary": "R1 source-ledger shard preserves one provenance-bearing record per immutable A2 capture and derived non-authoritative resolution-accounting fields. Candidate clustering is a review aid and does not create canonical identity or product inclusion."
