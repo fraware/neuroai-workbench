@@ -50,8 +50,8 @@ ROUTING_RESOURCE = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT.v1.0.json"
 
 RULE_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0"
 ROUTING_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT_v1.0"
-RULE_SHA256 = "d974e1d616d4b7cee6b4eff1272d0e92213553fb66a02933cbdd2e4be6c8e079"
-ROUTING_SHA256 = "b8dd476045056d9ec114e460a6920a3177a731603dde2d53d6b5820e9dd594f2"
+RULE_SHA256 = "e0bf7698872d12944fd67b12970e8f47b0b1e1893e581c9427d44cb1c0a5a9cf"
+ROUTING_SHA256 = "25547f04edfa5a4563d77cd2a595e0788ca73d8241847d05e385406fcd7dc9ab"
 
 SOURCE_WORKBENCH_MAIN_COMMIT = "f735259557bf867281f3ca0d7cb38af2d90fa640"
 WORLD_TIME_CUTOFF = "2026-09-24"
@@ -183,6 +183,37 @@ def validate_execution_unit_routing_rule(rule: Mapping[str, Any]) -> None:
     }
     if dict(controls) != expected_controls:
         raise ProductDiscoveryError("R1.6 execution controls drift")
+
+    evidence_contract = cast(Mapping[str, Any], rule["route_execution_evidence_contract"])
+    expected_evidence_contract = {
+        "source_surface_allowed_evidence_roles": [
+            "SOURCE_QUERY_EXECUTION",
+            "SOURCE_ENUMERATION",
+            "SOURCE_ACCESS_BARRIER",
+        ],
+        "literature_record_allowed_evidence_roles": [
+            "RECORD_EXTRACTION",
+            "RECORD_ACCESS_BARRIER",
+        ],
+        "source_surface_allowed_supported_propositions": [
+            "SOURCE_QUERY_ZERO_LEADS",
+            "SOURCE_QUERY_WITH_LEADS",
+            "SOURCE_SCOPE_EXHAUSTED",
+            "SOURCE_FINITE_CARDINALITY_ESTABLISHED",
+            "SOURCE_BARRIER_UNRESOLVED",
+        ],
+        "literature_record_allowed_supported_propositions": [
+            "RECORD_ZERO_OFFERING_LEADS",
+            "RECORD_WITH_OFFERING_LEADS",
+            "RECORD_EXTRACTION_UNRESOLVED",
+        ],
+        "evidence_must_bind_exact_covered_capture_id": True,
+        "evidence_query_or_seed_id_must_match_frozen_capture": True,
+        "every_covered_capture_requires_supported_proposition": True,
+        "extracted_lead_requires_lead_bearing_evidence_proposition": True,
+    }
+    if dict(evidence_contract) != expected_evidence_contract:
+        raise ProductDiscoveryError("R1.6 route-execution evidence contract drift")
 
     finality = cast(Mapping[str, Any], rule["finality"])
     if not (
