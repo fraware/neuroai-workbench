@@ -702,10 +702,14 @@ def derive_execution_unit_routing() -> dict[str, Any]:
         else:
             raise ProductDiscoveryError(f"R1.6 unsupported R1.4 work item type: {item_type}")
 
-    route_table.sort(key=lambda item: str(item["work_item_id"]))
     work_item_ids = [str(item["work_item_id"]) for item in route_table]
     if len(work_item_ids) != len(set(work_item_ids)):
         raise ProductDiscoveryError("R1.6 route table contains duplicate work item IDs")
+    frozen_work_item_ids = [
+        str(item["work_item_id"]) for item in cast(Sequence[Mapping[str, Any]], worklist["work_items"])
+    ]
+    if work_item_ids != frozen_work_item_ids:
+        raise ProductDiscoveryError("R1.6 route table must preserve the frozen R1.4 worklist order")
 
     route_counter = Counter(str(item["execution_route"]) for item in route_table)
     route_counts = {route: route_counter[route] for route in EXECUTION_ROUTES}
@@ -778,14 +782,18 @@ def validate_execution_unit_routing(routing: Mapping[str, Any]) -> None:
                 ),
                 min(len(actual_rows), len(derived_rows)),
             )
-            detail += f";first_route_index={first_difference}"
-            if first_difference < len(actual_rows):
-                detail += f";materialized={actual_rows[first_difference]}"
-            if first_difference < len(derived_rows):
-                detail += f";derived={derived_rows[first_difference]}"
-        raise ProductDiscoveryError(
-            "R1.6 routing checkpoint does not reproduce from frozen inputs: " + detail
-        )
+            actual_id = (
+                str(actual_rows[first_difference]["work_item_id"])
+                if first_difference < len(actual_rows)
+                else "<missing>"
+            )
+            derived_id = (
+                str(derived_rows[first_difference]["work_item_id"])
+                if first_difference < len(derived_rows)
+                else "<missing>"
+            )
+            detail += f";first_route_index={first_difference};materialized_id={actual_id};derived_id={derived_id}"
+        raise ProductDiscoveryError("R1.6 routing checkpoint does not reproduce from frozen inputs: " + detail)
 
     route_table = cast(Sequence[Mapping[str, Any]], routing["route_table"])
     for item in route_table:
