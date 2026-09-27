@@ -560,7 +560,9 @@ def validate_resolution_adjudication(
     elif disposition == "TERMINAL_EXCLUDE":
         if work_item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW":
             if existing_canonical is not None:
-                raise ProductDiscoveryError("Excluded candidate cluster must not allocate an existing canonical identity")
+                raise ProductDiscoveryError(
+                    "Excluded candidate cluster must not allocate an existing canonical identity"
+                )
             if "SCOPE" not in historical_props:
                 raise ProductDiscoveryError("Candidate-cluster terminal exclusion requires historical scope support")
         if one_object or max_contribution is not None:
@@ -577,9 +579,7 @@ def validate_resolution_adjudication(
             for item in evidence
         )
         if not cardinality_specific:
-            raise ProductDiscoveryError(
-                "One-object unresolved bound requires historical cardinality-specific evidence"
-            )
+            raise ProductDiscoveryError("One-object unresolved bound requires historical cardinality-specific evidence")
         if bool(work_item.get("source_or_abstention_barrier")):
             source_bound = any(
                 item["evidence_role"] == "SOURCE_ENUMERATION_SPECIFIC"
