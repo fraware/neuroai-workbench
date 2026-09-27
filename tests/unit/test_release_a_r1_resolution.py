@@ -381,7 +381,6 @@ def test_manifest_rejects_duplicate_shard_and_cluster_binding_drift() -> None:
         r1.validate_r1_candidate_resolution_ledger(bad_cluster_binding)
 
 
-
 def test_registry_rejects_ungoverned_state_and_frozen_digest_drift(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
