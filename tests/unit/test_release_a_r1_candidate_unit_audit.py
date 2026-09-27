@@ -81,10 +81,7 @@ def test_default_candidate_unit_audit_reconstructs_exactly() -> None:
         "NO_HISTORICAL_MARGINAL_YIELD_FRAME_CURRENTLY_SUPPORTS_CANDIDATE_UNIT_SATURATION"
     )
 
-    frame_states = {
-        item["frame_id"]: item["candidate_unit_scientific_state"]
-        for item in audit["frame_results"]
-    }
+    frame_states = {item["frame_id"]: item["candidate_unit_scientific_state"] for item in audit["frame_results"]}
     assert frame_states == {
         "F1": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
         "F4": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
@@ -94,18 +91,13 @@ def test_default_candidate_unit_audit_reconstructs_exactly() -> None:
         "F11": "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT",
     }
     assert all(
-        item["historical_final_stop_state"] == "SATURATION_UNDER_DECLARED_PROTOCOL"
-        for item in audit["frame_results"]
+        item["historical_final_stop_state"] == "SATURATION_UNDER_DECLARED_PROTOCOL" for item in audit["frame_results"]
     )
 
 
 def test_f8_r2_exposes_capture_row_denominator_failure() -> None:
     audit = cu.load_candidate_unit_audit()
-    result = next(
-        item
-        for item in audit["round_results"]
-        if item["frame_id"] == "F8" and item["round_id"] == "R2"
-    )
+    result = next(item for item in audit["round_results"] if item["frame_id"] == "F8" and item["round_id"] == "R2")
 
     assert result["C_capture"] == 21
     assert result["C_candidate"] == 0
@@ -121,11 +113,7 @@ def test_f8_r2_exposes_capture_row_denominator_failure() -> None:
 
 def test_f11_tail_deduplicates_known_offering_objects() -> None:
     audit = cu.load_candidate_unit_audit()
-    tail = [
-        item
-        for item in audit["round_results"]
-        if item["frame_id"] == "F11"
-    ]
+    tail = [item for item in audit["round_results"] if item["frame_id"] == "F11"]
 
     assert [item["round_id"] for item in tail] == ["R2", "R3"]
     assert all(item["C_capture"] == 40 for item in tail)
@@ -227,10 +215,7 @@ def test_round_result_denominator_insufficient_with_zero_candidates() -> None:
 
 
 def test_round_result_candidate_unit_saturation_path() -> None:
-    rows = [
-        _classification("OFFERING_CANDIDATE_OBJECT", key=f"PRD-{index}")
-        for index in range(20)
-    ]
+    rows = [_classification("OFFERING_CANDIDATE_OBJECT", key=f"PRD-{index}") for index in range(20)]
     result = cu._round_result(
         frame_id="F1",
         round_id="R2",
