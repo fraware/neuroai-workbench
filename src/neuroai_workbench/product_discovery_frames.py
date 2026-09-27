@@ -9,6 +9,12 @@ from typing import Any, cast
 
 from jsonschema import Draft202012Validator
 
+from neuroai_workbench.product_registry import (
+    ProductRegistryError,
+    population_view_identity_ids,
+    validate_product_registry_row,
+)
+
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
@@ -824,3 +830,270 @@ def evaluate_frame_stop(
     if all(float(summary["marginal_new_identity_yield"]) <= threshold for summary in tail):
         return "SATURATION_UNDER_DECLARED_PROTOCOL"
     return "CONTINUE"
+
+
+def _compatible_registry_rows_for_capture(
+    capture: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+) -> list[Mapping[str, Any]]:
+    """Return validated registry rows in the capture's exact analytical universe.
+
+    Compatibility is deliberately exact. A registry row from a different
+    projection, jurisdiction scope, world-time cutoff, or knowledge-time cutoff
+    cannot justify estimator eligibility for the capture.
+    """
+
+    compatible: list[Mapping[str, Any]] = []
+    for row in registry_rows:
+        try:
+            validate_product_registry_row(row)
+        except ProductRegistryError as exc:
+            raise ProductDiscoveryError(f"Invalid Product Registry row supplied to A2 authority check: {exc}") from exc
+
+        if (
+            row.get("registry_projection_version") == capture.get("registry_projection_version")
+            and row.get("jurisdiction_scope") == capture.get("analysis_jurisdiction_scope")
+            and row.get("world_time_cutoff") == capture.get("world_time_cutoff")
+            and row.get("knowledge_time_cutoff") == capture.get("knowledge_time_cutoff")
+        ):
+            compatible.append(row)
+    return compatible
+
+
+def derive_capture_estimation_eligibility(
+    capture: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+) -> bool:
+    """Derive one capture's estimator eligibility from frame and target-view state.
+
+    A resolved capture must have an exact compatible PRODUCT/OFFERING
+    projection row even when its frame is excluded from estimation. This keeps
+    exact identity resolution distinct from estimator membership and fails
+    closed on universe drift.
+    """
+
+    validate_capture_against_frame(capture, frame)
+    if capture["outcome"] != "INCLUDE_RESOLVED":
+        return False
+
+    offering_id = str(capture["canonical_offering_id"])
+    compatible_rows = _compatible_registry_rows_for_capture(capture, registry_rows)
+    matching_offering_rows = [
+        row
+        for row in compatible_rows
+        if row.get("canonical_entity_type") == "PRODUCT"
+        and row.get("identity_level") == "OFFERING"
+        and str(row.get("canonical_entity_id")) == offering_id
+    ]
+    if not matching_offering_rows:
+        raise ProductDiscoveryError(
+            "INCLUDE_RESOLVED capture lacks a compatible exact-universe PRODUCT/OFFERING registry projection"
+        )
+
+    try:
+        target_view_ids = population_view_identity_ids(
+            compatible_rows,
+            str(capture["population_view_id"]),
+        )
+    except ProductRegistryError as exc:
+        raise ProductDiscoveryError(f"Target-view Product Registry qualification failed: {exc}") from exc
+
+    return bool(frame["capture_estimation_eligible"]) and offering_id in target_view_ids
+
+
+def validate_authoritative_capture_estimation_eligibility(
+    capture: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+) -> bool:
+    """Require stored capture eligibility to equal the machine-derived value."""
+
+    derived = derive_capture_estimation_eligibility(capture, frame, registry_rows)
+    stored = capture.get("capture_estimation_eligible")
+    if stored is not derived:
+        raise ProductDiscoveryError(
+            "capture_estimation_eligible does not match frame and target-view Product Registry qualification"
+        )
+    return derived
+
+
+def validate_run_known_identity_baseline(
+    run: Mapping[str, Any],
+    known_identity_ids_before: Iterable[str],
+) -> frozenset[str]:
+    """Bind a run to the exact canonical OFFERING identity set known at round start."""
+
+    validate_discovery_run(run)
+    known = frozenset(str(identity_id) for identity_id in known_identity_ids_before)
+    expected = identity_set_digest(known)
+    if run["known_identity_set_sha256"] != expected:
+        raise ProductDiscoveryError(
+            "known_identity_set_sha256 does not match the exact round-start canonical identity set"
+        )
+    return known
+
+
+def _validate_ordered_round_summaries(
+    run: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    expected_completed_round_ids: Sequence[str] | None,
+) -> None:
+    """Validate the complete ordered summary sequence used for stop evaluation."""
+
+    for summary in round_summaries:
+        if summary.get("frame_id") != frame["frame_id"]:
+            raise ProductDiscoveryError("Stop-evidence round summary frame_id does not match discovery frame")
+
+    mode = cast(Mapping[str, Any], frame["stopping_rule"])["mode"]
+    if mode != "MARGINAL_YIELD":
+        return
+
+    if expected_completed_round_ids is None:
+        raise ProductDiscoveryError(
+            "MARGINAL_YIELD authoritative stop evaluation requires the complete expected round-id sequence"
+        )
+
+    expected = [str(round_id) for round_id in expected_completed_round_ids]
+    actual = [str(summary.get("round_id")) for summary in round_summaries]
+    if actual != expected:
+        raise ProductDiscoveryError(
+            "Ordered round summaries do not match the complete expected round-id sequence"
+        )
+    if len(set(expected)) != len(expected):
+        raise ProductDiscoveryError("Expected completed round IDs must be unique")
+    if not actual or actual[-1] != str(run["round_id"]):
+        raise ProductDiscoveryError("Stop-evidence round summaries must terminate at the authoritative run round_id")
+
+
+def derive_authoritative_run_stop_state(
+    run: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    *,
+    expected_completed_round_ids: Sequence[str] | None = None,
+    source_exhausted: bool = False,
+    source_exhaustion_evidence_ref: str | None = None,
+    budget_limit_reached: bool = False,
+    budget_limit_evidence_ref: str | None = None,
+    unresolved_source_barrier: bool = False,
+    unresolved_source_barrier_evidence_ref: str | None = None,
+    stop_evidence_ref: str | None = None,
+) -> str:
+    """Derive a run stop state from the frozen rule and explicit execution evidence."""
+
+    validate_discovery_run(run)
+    validate_discovery_frame(frame)
+    if run["frame_id"] != frame["frame_id"] or run["frame_version"] != frame["frame_version"]:
+        raise ProductDiscoveryError("Discovery run does not match its frame definition")
+
+    active_evidence = sum((source_exhausted, budget_limit_reached, unresolved_source_barrier))
+    if active_evidence > 1:
+        raise ProductDiscoveryError("Authoritative stop evidence cannot assert multiple terminal causes")
+
+    evidence_pairs = (
+        (source_exhausted, source_exhaustion_evidence_ref, "source exhaustion"),
+        (budget_limit_reached, budget_limit_evidence_ref, "budget termination"),
+        (unresolved_source_barrier, unresolved_source_barrier_evidence_ref, "unresolved source barrier"),
+    )
+    for asserted, evidence_ref, label in evidence_pairs:
+        if asserted and not str(evidence_ref or "").strip():
+            raise ProductDiscoveryError(f"Authoritative {label} requires an explicit evidence binding")
+        if not asserted and evidence_ref is not None:
+            raise ProductDiscoveryError(f"{label} evidence binding supplied without its corresponding condition")
+
+    _validate_ordered_round_summaries(
+        run,
+        frame,
+        round_summaries,
+        expected_completed_round_ids,
+    )
+
+    derived = evaluate_frame_stop(
+        frame,
+        round_summaries,
+        source_exhausted=source_exhausted,
+        budget_limit_reached=budget_limit_reached,
+        unresolved_source_barrier=unresolved_source_barrier,
+    )
+    if derived != "CONTINUE":
+        terminal_ref = (
+            stop_evidence_ref
+            or source_exhaustion_evidence_ref
+            or budget_limit_evidence_ref
+            or unresolved_source_barrier_evidence_ref
+        )
+        if not str(terminal_ref or "").strip():
+            raise ProductDiscoveryError("Terminal authoritative stop state requires an explicit stop-evidence binding")
+    return derived
+
+
+def validate_authoritative_discovery_run(
+    run: Mapping[str, Any],
+    captures: Sequence[Mapping[str, Any]],
+    frame: Mapping[str, Any],
+    *,
+    registry_rows: Sequence[Mapping[str, Any]],
+    known_identity_ids_before: Iterable[str],
+    declared_round_summary: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    expected_completed_round_ids: Sequence[str] | None = None,
+    source_exhausted: bool = False,
+    source_exhaustion_evidence_ref: str | None = None,
+    budget_limit_reached: bool = False,
+    budget_limit_evidence_ref: str | None = None,
+    unresolved_source_barrier: bool = False,
+    unresolved_source_barrier_evidence_ref: str | None = None,
+    stop_evidence_ref: str | None = None,
+) -> dict[str, Any]:
+    """Validate one authoritative A2 run across identity, eligibility and stop semantics.
+
+    This is the strict assembly boundary required for authoritative A2
+    successor records. The existing structural validators remain useful for
+    lower-level records, but do not by themselves establish estimator
+    membership, the round-start known set, or stop-state justification.
+    """
+
+    validate_run_against_captures(run, captures, frame)
+
+    for capture in captures:
+        validate_authoritative_capture_estimation_eligibility(capture, frame, registry_rows)
+
+    known = validate_run_known_identity_baseline(run, known_identity_ids_before)
+    derived_summary = summarize_discovery_round(
+        captures,
+        known_identity_ids_before=known,
+    )
+    if dict(declared_round_summary) != derived_summary:
+        raise ProductDiscoveryError(
+            "Declared round summary does not match accounting derived from the exact round-start identity set"
+        )
+
+    if round_summaries:
+        if dict(round_summaries[-1]) != derived_summary:
+            raise ProductDiscoveryError(
+                "Stop-evidence round-summary tail does not match the authoritative current-round summary"
+            )
+
+    derived_stop = derive_authoritative_run_stop_state(
+        run,
+        frame,
+        round_summaries,
+        expected_completed_round_ids=expected_completed_round_ids,
+        source_exhausted=source_exhausted,
+        source_exhaustion_evidence_ref=source_exhaustion_evidence_ref,
+        budget_limit_reached=budget_limit_reached,
+        budget_limit_evidence_ref=budget_limit_evidence_ref,
+        unresolved_source_barrier=unresolved_source_barrier,
+        unresolved_source_barrier_evidence_ref=unresolved_source_barrier_evidence_ref,
+        stop_evidence_ref=stop_evidence_ref,
+    )
+    if run["stop_state"] != derived_stop:
+        raise ProductDiscoveryError(
+            "Stored discovery-run stop_state does not match the state derived from frozen stopping-rule evidence"
+        )
+    if not str(run.get("stop_reason", "")).strip():
+        raise ProductDiscoveryError("Authoritative discovery run requires a non-empty stop_reason")
+
+    return derived_summary
