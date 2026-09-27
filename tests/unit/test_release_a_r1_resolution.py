@@ -4,6 +4,7 @@ import copy
 
 import pytest
 
+from neuroai_workbench import product_registry as pr
 from neuroai_workbench import release_a_r1_resolution as r1
 from neuroai_workbench.product_discovery_frames import ProductDiscoveryError
 
@@ -117,10 +118,10 @@ def test_r1_registry_rejects_universe_drift_and_identity_allocation() -> None:
     extra = copy.deepcopy(extra_identity["rows"][0])
     extra["canonical_entity_id"] = "PRD-UNAUTHORIZED-NEW"
     extra["product_offering_id"] = "PRD-UNAUTHORIZED-NEW"
-    extra["registry_row_id"] = "PRR-" + "0" * 64
+    extra["registry_row_id"] = pr.registry_row_id(extra)
     extra_identity["rows"].append(extra)
     extra_identity["metadata"]["row_count"] = len(extra_identity["rows"])
-    with pytest.raises(ProductDiscoveryError):
+    with pytest.raises(ProductDiscoveryError, match="must not allocate or remove canonical identity"):
         r1.validate_r1_product_registry(extra_identity)
 
 
@@ -309,3 +310,74 @@ def test_cluster_artifact_is_frozen_and_noncanonical_clusters_do_not_allocate_id
         )
         == 470
     )
+
+
+def test_denominator_rejects_integrity_and_nonqualifying_state_drift() -> None:
+    registry = r1.load_r1_product_registry()
+    packet = r1.load_r1_denominator_control()
+
+    broken_digest = copy.deepcopy(packet)
+    broken_digest["n_observed"] = 999
+    with pytest.raises(ProductDiscoveryError, match="packet digest mismatch"):
+        r1.validate_r1_denominator_control(broken_digest, registry)
+
+    wrong_currentness = copy.deepcopy(packet)
+    wrong_currentness["nonqualifying_canonical_offerings"][0]["currentness_state"] = "CURRENT"
+    _reseal(wrong_currentness, "packet_sha256")
+    with pytest.raises(ProductDiscoveryError, match="nonqualifying currentness"):
+        r1.validate_r1_denominator_control(wrong_currentness, registry)
+
+    wrong_lifecycle = copy.deepcopy(packet)
+    wrong_lifecycle["nonqualifying_canonical_offerings"][0]["lifecycle_state"] = "RELEASED"
+    _reseal(wrong_lifecycle, "packet_sha256")
+    with pytest.raises(ProductDiscoveryError, match="nonqualifying lifecycle"):
+        r1.validate_r1_denominator_control(wrong_lifecycle, registry)
+
+
+def test_cluster_builder_covers_borderline_failed_and_canonical_states() -> None:
+    records = [
+        r1.derive_r1_source_record(
+            _synthetic_capture(
+                capture_id="PDC-CAN",
+                candidate_key="Vendor::Known",
+                outcome="INCLUDE_RESOLVED",
+                canonical_offering_id="PRD-KNOWN",
+            )
+        ),
+        r1.derive_r1_source_record(
+            _synthetic_capture(capture_id="PDC-BORD", candidate_key="Vendor::Border", outcome="BORDERLINE")
+        ),
+        r1.derive_r1_source_record(
+            _synthetic_capture(
+                capture_id="PDC-FAIL",
+                candidate_key="Vendor::Unavailable Catalogue",
+                outcome="FAILED_INACCESSIBLE",
+            )
+        ),
+    ]
+    clusters = {cluster["cluster_state"]: cluster for cluster in r1.build_r1_candidate_clusters(records)}
+
+    assert clusters["RESOLVED_CANONICAL"]["canonical_offering_id"] == "PRD-KNOWN"
+    assert clusters["RESOLVED_CANONICAL"]["noncanonical_cluster"] is False
+    assert clusters["UNRESOLVED_SCOPE_BOUNDARY"]["uncertainty_cardinality_class"] == (
+        "UNRESOLVED_CARDINALITY_UNPROVEN"
+    )
+    assert clusters["FAILED_INACCESSIBLE"]["uncertainty_cardinality_class"] == (
+        "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
+    )
+
+
+def test_manifest_rejects_duplicate_shard_and_cluster_binding_drift() -> None:
+    manifest = r1.load_r1_candidate_resolution_manifest()
+
+    duplicate_shard = copy.deepcopy(manifest)
+    duplicate_shard["source_ledger_shards"][1]["frame_id"] = duplicate_shard["source_ledger_shards"][0]["frame_id"]
+    _reseal(duplicate_shard, "ledger_manifest_sha256")
+    with pytest.raises(ProductDiscoveryError, match="frames must be unique"):
+        r1.validate_r1_candidate_resolution_ledger(duplicate_shard)
+
+    bad_cluster_binding = copy.deepcopy(manifest)
+    bad_cluster_binding["cluster_ledger_binding"]["cluster_ledger_sha256"] = "0" * 64
+    _reseal(bad_cluster_binding, "ledger_manifest_sha256")
+    with pytest.raises(ProductDiscoveryError, match="cluster ledger manifest binding drift"):
+        r1.validate_r1_candidate_resolution_ledger(bad_cluster_binding)
