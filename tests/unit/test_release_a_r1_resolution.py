@@ -45,7 +45,9 @@ def _synthetic_capture(
         "observed_at": "2026-09-24T12:00:00Z",
         "analysis_universe_id": r1.DEFAULT_ANALYSIS_UNIVERSE_ID,
         "population_view_id": "A-P1",
-        "world_time_alignment": "UNRESOLVED" if canonical_offering_id is None else "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
+        "world_time_alignment": "UNRESOLVED"
+        if canonical_offering_id is None
+        else "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
         "world_time_support_ref": None,
     }
 
