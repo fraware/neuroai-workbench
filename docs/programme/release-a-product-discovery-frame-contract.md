@@ -247,6 +247,15 @@ package to upstream digests and source packets for each required headline. The
 packet emits an explicit `PASSED` or `UNPASSED` outcome with an evidence table.
 A-G does not authorize Release B/C/D.
 
+Under the current repository-safe execution, A8 package digest
+`71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190` and A-G
+packet digest `33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92`
+record outcome `PASSED` with `N_observed=6` (`A-P1`), `N_estimated=null`
+(A7 fail-closed), `ΔN_capability=0`, and `ΔN_multilingual=0`. Estimator
+exclusions F7/F9/F11, F9/F2/F3 bounded exhaustion (not global completeness),
+and open-world protocol saturation (not a census) remain intact. Programme
+pointer: [Release A completion status](release-a-completion-status.md).
+
 Incremental yield is always computed after exact-product deduplication.
 
 ## Stopping semantics

@@ -576,6 +576,8 @@ Permitted headline figures may include products by:
 
 only with the applicable observed or estimated denominator stated.
 
+Machine-readable package: `RELEASE_A_A8_PRODUCT_POPULATION_RELEASE_PACKAGE.v1.0.json` (SHA-256 `71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190`). Headline counts name denominators and population views. Under the executed package, `N_observed=6` (`A-P1`), `N_estimated=null` (A7 fail-closed), `ΔN_capability=0`, and `ΔN_multilingual=0`. F9 exhaustion is not global completeness; open-world saturation is not a census. The package does not start A-G by itself and does not authorize Release B/C/D.
+
 ### A gate — `A-G`
 
 Release A passes only when a reviewer can reconstruct:
@@ -590,6 +592,8 @@ Release A passes only when a reviewer can reconstruct:
 8. what assumptions drive the unseen-population estimate;
 9. what uncertainty remains;
 10. which stronger global-completeness claims remain prohibited.
+
+Gate disposition is recorded in the immutable reconstruction packet `RELEASE_A_AG_RECONSTRUCTION_PACKET.v1.0.json` (SHA-256 `33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92`): outcome `PASSED`, binding the A8 package digest above. Programme pointer: [Release A completion status](release-a-completion-status.md). A-G does not authorize Release B/C/D, establish S2 publication authority, or create a v4.2 assessment effect.
 
 ## 7. Release B — Commercial Measurement Layer
 
@@ -1039,23 +1043,28 @@ Events are evidence-bound and temporally explicit.
 Where evidence supports them, estimate distributions such as:
 
 [
-T_{patent ightarrow product}
+T_{patent 
+ightarrow product}
 ]
 
 [
-T_{product ightarrow independent evidence}
+T_{product 
+ightarrow independent evidence}
 ]
 
 [
-T_{product ightarrow regulatory}
+T_{product 
+ightarrow regulatory}
 ]
 
 [
-T_{product ightarrow deployment}
+T_{product 
+ightarrow deployment}
 ]
 
 [
-T_{funding ightarrow product}
+T_{funding 
+ightarrow product}
 ]
 
 Analyze transition distributions by product class, capability, jurisdiction, and regulatory context only where source coverage is comparable.
@@ -1134,11 +1143,14 @@ Apply the mechanism-based chain:
 Observed capability
 +
 Deployment context
-ightarrow
+
+ightarrow
 Mechanism
-ightarrow
+
+ightarrow
 Governance concern
-ightarrow
+
+ightarrow
 Relevant policy instrument
 ]
 
@@ -1346,7 +1358,9 @@ Do not silently repurpose an existing work-package ID for a materially different
 
 ## 13. Immediate execution order
 
-The programme's immediate critical path is:
+Release A through `A-G` is complete under the immutable artifacts bound in [Release A completion status](release-a-completion-status.md) (`A-G PASSED`; A8 digest `71ff7a91…`; A-G packet digest `33dc5776…`). That disposition does not authorize Release B/C/D.
+
+The historical Release A critical path was:
 
 ```text
 P0.1 Product Measurement Contract
@@ -1369,10 +1383,10 @@ A5/A6 snowball + saturation
   ->
 A7 population estimation
   ->
-A8 / A-G Product Population Observatory release
+A8 / A-G Product Population Observatory release  [COMPLETE: A-G PASSED]
 ```
 
-After the relevant Release-A identities and classifications stabilize, Releases B and C may proceed in parallel:
+After the relevant Release-A identities and classifications stabilize, Releases B and C may proceed in parallel only under separate programme authorization; `A-G PASSED` alone does not open B/C/D:
 
 ```text
 A
