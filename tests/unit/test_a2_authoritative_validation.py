@@ -2,40 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from neuroai_workbench.product_discovery_frames import (
-    AUTHORITATIVE_STOP_EVIDENCE_VERSION,
-    DEFAULT_ANALYSIS_UNIVERSE_ID,
-    DISCOVERY_BOUNDARY,
-    FRAME_REGISTER_VERSION,
-    FRAME_VERSION,
-    ProductDiscoveryError,
-    analysis_universe_id,
-    authoritative_stop_evidence_id,
-    derive_authoritative_run_stop_state,
-    derive_capture_estimation_eligibility,
-    derive_round_start_known_identity_ids,
-    identity_set_digest,
-    load_default_analysis_universe,
-    product_capture_id,
-    product_discovery_run_id,
-    round_summary_sequence_sha256,
-    summarize_discovery_round,
-    validate_authoritative_capture_estimation_eligibility,
-    validate_authoritative_discovery_run,
-    validate_run_known_identity_baseline,
-)
-from neuroai_workbench.product_registry import (
-    BOUNDARY_CONTRACT_ID,
-    BOUNDARY_CONTRACT_SEMANTIC_BLOB,
-    CURRENTNESS_POLICY_ID,
-    POPULATION_VIEW_POLICY_ID,
-    REFERENCE_STANDARD_ID,
-    REFERENCE_STANDARD_VALIDATION_STATE,
-    REFERENCE_STANDARD_VERSION,
-    REGISTRY_BOUNDARY,
-    REGISTRY_PROJECTION_VERSION,
-    registry_row_id,
-)
+from neuroai_workbench import product_discovery_frames as pdf
+from neuroai_workbench import product_registry as pr
+
 
 
 INITIAL_IDS = {
@@ -49,7 +18,7 @@ INITIAL_IDS = {
 
 
 def _universe() -> dict[str, object]:
-    return load_default_analysis_universe()
+    return pdf.load_default_analysis_universe()
 
 
 def _frame(
@@ -61,7 +30,7 @@ def _frame(
 ) -> dict[str, object]:
     return {
         "frame_id": frame_id,
-        "frame_version": FRAME_VERSION,
+        "frame_version": pdf.FRAME_VERSION,
         "label": f"Synthetic {frame_id}",
         "frame_class": frame_class,
         "purpose": "Synthetic authoritative-A2 validation frame.",
@@ -80,7 +49,7 @@ def _frame(
             "minimum_raw_candidates_per_round": 20 if mode == "MARGINAL_YIELD" else None,
         },
         "status": "ACTIVE",
-        "boundary": DISCOVERY_BOUNDARY,
+        "boundary": pdf.DISCOVERY_BOUNDARY,
     }
 
 
@@ -92,12 +61,12 @@ def _capture(
     population_view_id: str = "A-P1",
     outcome: str = "INCLUDE_RESOLVED",
     estimation_eligible: bool = True,
-    analysis_universe_id_value: str = DEFAULT_ANALYSIS_UNIVERSE_ID,
+    analysis_universe_id_value: str = pdf.DEFAULT_ANALYSIS_UNIVERSE_ID,
 ) -> dict[str, object]:
     capture: dict[str, object] = {
         "capture_id": "",
         "frame_id": frame_id,
-        "frame_version": FRAME_VERSION,
+        "frame_version": pdf.FRAME_VERSION,
         "round_id": round_id,
         "query_or_seed_id": f"Q-{frame_id}",
         "query_family": "Q1",
@@ -110,9 +79,9 @@ def _capture(
         "outcome": outcome,
         "capture_estimation_eligible": estimation_eligible,
         "observed_at": "2026-09-24T12:00:00Z",
-        "registry_projection_version": REGISTRY_PROJECTION_VERSION,
-        "frame_register_version": FRAME_REGISTER_VERSION,
-        "analysis_universe_id": analysis_universe_id_value,
+        "registry_projection_version": pr.REGISTRY_PROJECTION_VERSION,
+        "frame_register_version": pdf.FRAME_REGISTER_VERSION,
+        "pdf.analysis_universe_id": analysis_universe_id_value,
         "population_view_id": population_view_id,
         "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
@@ -120,9 +89,9 @@ def _capture(
         "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "world_time_alignment": "EVIDENCE_SUPPORTS_AT_OR_BEFORE_CUTOFF",
         "world_time_support_ref": None,
-        "boundary": DISCOVERY_BOUNDARY,
+        "boundary": pdf.DISCOVERY_BOUNDARY,
     }
-    capture["capture_id"] = product_capture_id(capture)
+    capture["capture_id"] = pdf.product_capture_id(capture)
     return capture
 
 
@@ -138,15 +107,15 @@ def _registry_row(
     configuration_coverage_state: str = "NOT_APPLICABLE",
 ) -> dict[str, object]:
     row: dict[str, object] = {
-        "registry_row_id": "",
-        "registry_projection_version": REGISTRY_PROJECTION_VERSION,
-        "boundary_contract_id": BOUNDARY_CONTRACT_ID,
-        "boundary_contract_semantic_blob": BOUNDARY_CONTRACT_SEMANTIC_BLOB,
-        "reference_standard_id": REFERENCE_STANDARD_ID,
-        "reference_standard_version": REFERENCE_STANDARD_VERSION,
-        "reference_standard_validation_state": REFERENCE_STANDARD_VALIDATION_STATE,
-        "population_view_policy_id": POPULATION_VIEW_POLICY_ID,
-        "currentness_policy_id": CURRENTNESS_POLICY_ID,
+        "pr.registry_row_id": "",
+        "registry_projection_version": pr.REGISTRY_PROJECTION_VERSION,
+        "boundary_contract_id": pr.BOUNDARY_CONTRACT_ID,
+        "boundary_contract_semantic_blob": pr.BOUNDARY_CONTRACT_SEMANTIC_BLOB,
+        "reference_standard_id": pr.REFERENCE_STANDARD_ID,
+        "reference_standard_version": pr.REFERENCE_STANDARD_VERSION,
+        "reference_standard_validation_state": pr.REFERENCE_STANDARD_VALIDATION_STATE,
+        "population_view_policy_id": pr.POPULATION_VIEW_POLICY_ID,
+        "currentness_policy_id": pr.CURRENTNESS_POLICY_ID,
         "canonical_entity_id": offering_id,
         "canonical_entity_type": "PRODUCT",
         "identity_level": "OFFERING",
@@ -182,9 +151,9 @@ def _registry_row(
         "target_population": ["GENERAL_ADULT"],
         "technical_equivalence_cluster_id": None,
         "technical_equivalence_evidence_refs": [],
-        "boundary": REGISTRY_BOUNDARY,
+        "boundary": pr.REGISTRY_BOUNDARY,
     }
-    row["registry_row_id"] = registry_row_id(row)
+    row["pr.registry_row_id"] = pr.registry_row_id(row)
     return row
 
 
@@ -200,32 +169,32 @@ def _run(
     stop_state: str = "CONTINUE",
     stop_reason: str = "Further declared rounds remain.",
     frame_id: str = "F1",
-    analysis_universe_id_value: str = DEFAULT_ANALYSIS_UNIVERSE_ID,
+    analysis_universe_id_value: str = pdf.DEFAULT_ANALYSIS_UNIVERSE_ID,
 ) -> dict[str, object]:
     run: dict[str, object] = {
         "run_id": "",
         "frame_id": frame_id,
-        "frame_version": FRAME_VERSION,
-        "frame_register_version": FRAME_REGISTER_VERSION,
-        "analysis_universe_id": analysis_universe_id_value,
+        "frame_version": pdf.FRAME_VERSION,
+        "frame_register_version": pdf.FRAME_REGISTER_VERSION,
+        "pdf.analysis_universe_id": analysis_universe_id_value,
         "round_id": round_id,
         "query_or_seed_ids": [f"Q-{frame_id}"],
         "languages": ["en"],
         "jurisdictions": ["GLOBAL"],
         "analysis_jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
         "language_scope_id": "EN_PLUS_PRIORITY_NATIVE_v1",
-        "registry_projection_version": REGISTRY_PROJECTION_VERSION,
+        "registry_projection_version": pr.REGISTRY_PROJECTION_VERSION,
         "population_view_id": "A-P1",
         "world_time_cutoff": "2026-09-24",
         "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
-        "known_identity_set_sha256": identity_set_digest(known_ids or set()),
+        "known_identity_set_sha256": pdf.identity_set_digest(known_ids or set()),
         "capture_count": len(captures),
         "capture_ids": [str(capture["capture_id"]) for capture in captures],
         "stop_state": stop_state,
         "stop_reason": stop_reason,
-        "boundary": DISCOVERY_BOUNDARY,
+        "boundary": pdf.DISCOVERY_BOUNDARY,
     }
-    run["run_id"] = product_discovery_run_id(run)
+    run["run_id"] = pdf.product_discovery_run_id(run)
     return run
 
 
@@ -247,16 +216,16 @@ def _stop_evidence(
 ) -> dict[str, object]:
     evidence: dict[str, object] = {
         "evidence_id": "",
-        "evidence_version": AUTHORITATIVE_STOP_EVIDENCE_VERSION,
-        "analysis_universe_id": run["analysis_universe_id"],
+        "evidence_version": pdf.AUTHORITATIVE_STOP_EVIDENCE_VERSION,
+        "pdf.analysis_universe_id": run["pdf.analysis_universe_id"],
         "frame_id": run["frame_id"],
         "through_round_id": run["round_id"],
         "completed_round_ids": [str(summary["round_id"]) for summary in summaries],
-        "round_summaries_sha256": round_summary_sequence_sha256(summaries),
+        "round_summaries_sha256": pdf.round_summary_sequence_sha256(summaries),
         "terminal_condition": condition,
         "supporting_artifacts": [{"ref": "PACKET:TEST", "sha256": artifact_sha256}],
     }
-    evidence["evidence_id"] = authoritative_stop_evidence_id(evidence)
+    evidence["evidence_id"] = pdf.authoritative_stop_evidence_id(evidence)
     return evidence
 
 
@@ -266,16 +235,16 @@ def test_capture_eligibility_is_derived_from_exact_universe_and_target_view() ->
     capture = _capture()
     row = _registry_row()
 
-    assert derive_capture_estimation_eligibility(capture, frame, [row], universe) is True
-    assert validate_authoritative_capture_estimation_eligibility(capture, frame, [row], universe) is True
+    assert pdf.derive_capture_estimation_eligibility(capture, frame, [row], universe) is True
+    assert pdf.validate_authoritative_capture_estimation_eligibility(capture, frame, [row], universe) is True
 
     unresolved_row = _registry_row(currentness="UNRESOLVED", lifecycle="UNRESOLVED")
     outside_view = _capture(estimation_eligible=False)
-    assert derive_capture_estimation_eligibility(outside_view, frame, [unresolved_row], universe) is False
+    assert pdf.derive_capture_estimation_eligibility(outside_view, frame, [unresolved_row], universe) is False
 
     false_positive = _capture(estimation_eligible=True)
-    with pytest.raises(ProductDiscoveryError, match="does not match frame and target-view"):
-        validate_authoritative_capture_estimation_eligibility(false_positive, frame, [unresolved_row], universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="does not match frame and target-view"):
+        pdf.validate_authoritative_capture_estimation_eligibility(false_positive, frame, [unresolved_row], universe)
 
 
 def test_capture_eligibility_rejects_registry_universe_and_identity_mismatch() -> None:
@@ -284,21 +253,21 @@ def test_capture_eligibility_rejects_registry_universe_and_identity_mismatch() -
     capture = _capture()
 
     wrong_cutoff = _registry_row(knowledge_time_cutoff="2026-09-24T21:00:00Z")
-    with pytest.raises(ProductDiscoveryError, match="exact frozen A2 analysis universe"):
-        derive_capture_estimation_eligibility(capture, frame, [wrong_cutoff], universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="exact frozen A2 analysis universe"):
+        pdf.derive_capture_estimation_eligibility(capture, frame, [wrong_cutoff], universe)
 
     wrong_identity = _registry_row("PRD-B")
-    with pytest.raises(ProductDiscoveryError, match="lacks a compatible exact-universe"):
-        derive_capture_estimation_eligibility(capture, frame, [wrong_identity], universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="lacks a compatible exact-universe"):
+        pdf.derive_capture_estimation_eligibility(capture, frame, [wrong_identity], universe)
 
 
 def test_exact_frozen_analysis_universe_identity_is_required() -> None:
     fake_universe = dict(_universe())
     fake_universe["boundary"] = str(fake_universe["boundary"]) + " altered"
-    fake_universe["analysis_universe_id"] = analysis_universe_id(fake_universe)
+    fake_universe["pdf.analysis_universe_id"] = pdf.analysis_universe_id(fake_universe)
 
-    with pytest.raises(ProductDiscoveryError, match="exact frozen Release-A A2 universe"):
-        derive_capture_estimation_eligibility(
+    with pytest.raises(pdf.ProductDiscoveryError, match="exact frozen Release-A A2 universe"):
+        pdf.derive_capture_estimation_eligibility(
             _capture(),
             _frame(),
             [_registry_row()],
@@ -311,7 +280,7 @@ def test_capture_eligibility_preserves_frame_exclusion_and_a_p6_access_rule() ->
     excluded_frame = _frame("F7", "EXPERT_NOMINATION", capture_eligible=False)
     excluded_capture = _capture("PRD-NEXTSENSE-SMARTBUDS", frame_id="F7", estimation_eligible=False)
     assert (
-        derive_capture_estimation_eligibility(
+        pdf.derive_capture_estimation_eligibility(
             excluded_capture,
             excluded_frame,
             [_registry_row()],
@@ -327,7 +296,7 @@ def test_capture_eligibility_preserves_frame_exclusion_and_a_p6_access_rule() ->
         deployment="NOT_APPLICABLE",
     )
     assert (
-        derive_capture_estimation_eligibility(
+        pdf.derive_capture_estimation_eligibility(
             a_p6_capture,
             _frame(),
             [announced_without_access],
@@ -345,10 +314,10 @@ def test_capture_eligibility_allows_legitimate_multiple_compatible_projections()
         configuration_system_id="SYS-NEXTSENSE-CONFIG-A",
         configuration_coverage_state="RESOLVED",
     )
-    assert primary["registry_row_id"] != configured["registry_row_id"]
+    assert primary["pr.registry_row_id"] != configured["pr.registry_row_id"]
 
     assert (
-        validate_authoritative_capture_estimation_eligibility(
+        pdf.validate_authoritative_capture_estimation_eligibility(
             capture,
             _frame(),
             [primary, configured],
@@ -361,20 +330,20 @@ def test_capture_eligibility_allows_legitimate_multiple_compatible_projections()
 def test_round_start_known_identity_digest_is_derived_from_registry_snapshot() -> None:
     universe = _universe()
     rows = _initial_registry_rows()
-    assert derive_round_start_known_identity_ids(rows, universe) == frozenset(INITIAL_IDS)
+    assert pdf.derive_round_start_known_identity_ids(rows, universe) == frozenset(INITIAL_IDS)
 
     run = _run([_capture()], known_ids=INITIAL_IDS)
-    assert validate_run_known_identity_baseline(run, rows, universe) == frozenset(INITIAL_IDS)
+    assert pdf.validate_run_known_identity_baseline(run, rows, universe) == frozenset(INITIAL_IDS)
 
     incomplete_rows = rows[:-1]
-    with pytest.raises(ProductDiscoveryError, match="initial known-identity authority"):
-        validate_run_known_identity_baseline(run, incomplete_rows, universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="initial known-identity authority"):
+        pdf.validate_run_known_identity_baseline(run, incomplete_rows, universe)
 
 
 def test_round_start_known_identity_empty_set_is_deterministic_for_later_round() -> None:
     universe = _universe()
     run = _run([_capture(round_id="R2")], round_id="R2", known_ids=set())
-    assert validate_run_known_identity_baseline(run, [], universe) == frozenset()
+    assert pdf.validate_run_known_identity_baseline(run, [], universe) == frozenset()
 
 
 def test_authoritative_run_rejects_round_summary_from_different_known_set() -> None:
@@ -382,11 +351,11 @@ def test_authoritative_run_rejects_round_summary_from_different_known_set() -> N
     rows = _initial_registry_rows()
     capture = _capture()
     run = _run([capture], known_ids=INITIAL_IDS)
-    wrong_summary = summarize_discovery_round([capture], known_identity_ids_before=set())
+    wrong_summary = pdf.summarize_discovery_round([capture], known_identity_ids_before=set())
     evidence = _stop_evidence(run, [wrong_summary])
 
-    with pytest.raises(ProductDiscoveryError, match="Declared round summary"):
-        validate_authoritative_discovery_run(
+    with pytest.raises(pdf.ProductDiscoveryError, match="Declared round summary"):
+        pdf.validate_authoritative_discovery_run(
             run,
             [capture],
             _frame(),
@@ -404,11 +373,11 @@ def test_authoritative_run_happy_path_binds_all_four_control_layers() -> None:
     rows = _initial_registry_rows()
     capture = _capture()
     run = _run([capture], known_ids=INITIAL_IDS)
-    summary = summarize_discovery_round([capture], known_identity_ids_before=INITIAL_IDS)
+    summary = pdf.summarize_discovery_round([capture], known_identity_ids_before=INITIAL_IDS)
     evidence = _stop_evidence(run, [summary])
 
     assert (
-        validate_authoritative_discovery_run(
+        pdf.validate_authoritative_discovery_run(
             run,
             [capture],
             _frame(),
@@ -434,14 +403,14 @@ def test_stop_state_requires_complete_contiguous_digest_bound_round_evidence() -
     ]
     evidence = _stop_evidence(run, summaries)
 
-    assert derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe) == (
+    assert pdf.derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe) == (
         "SATURATION_UNDER_DECLARED_PROTOCOL"
     )
 
     omitted = [summaries[0], summaries[2]]
     omitted_evidence = _stop_evidence(run, omitted)
-    with pytest.raises(ProductDiscoveryError, match="complete contiguous R1..Rn"):
-        derive_authoritative_run_stop_state(run, frame, omitted, omitted_evidence, universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="complete contiguous R1..Rn"):
+        pdf.derive_authoritative_run_stop_state(run, frame, omitted, omitted_evidence, universe)
 
 
 def test_stop_evidence_rejects_wrong_frame_digest_and_artifact_digest() -> None:
@@ -452,18 +421,18 @@ def test_stop_evidence_rejects_wrong_frame_digest_and_artifact_digest() -> None:
 
     wrong_frame = [_summary("R1", raw=30, marginal=0.20, frame_id="F4")]
     evidence = _stop_evidence(run, wrong_frame)
-    with pytest.raises(ProductDiscoveryError, match="frame_id does not match"):
-        derive_authoritative_run_stop_state(run, frame, wrong_frame, evidence, universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="frame_id does not match"):
+        pdf.derive_authoritative_run_stop_state(run, frame, wrong_frame, evidence, universe)
 
     evidence = _stop_evidence(run, summaries)
     evidence["round_summaries_sha256"] = "b" * 64
-    evidence["evidence_id"] = authoritative_stop_evidence_id(evidence)
-    with pytest.raises(ProductDiscoveryError, match="round-summary digest mismatch"):
-        derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe)
+    evidence["evidence_id"] = pdf.authoritative_stop_evidence_id(evidence)
+    with pytest.raises(pdf.ProductDiscoveryError, match="round-summary digest mismatch"):
+        pdf.derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe)
 
     evidence = _stop_evidence(run, summaries, artifact_sha256="NOT-A-DIGEST")
-    with pytest.raises(ProductDiscoveryError, match="64 lowercase hex chars"):
-        derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="64 lowercase hex chars"):
+        pdf.derive_authoritative_run_stop_state(run, frame, summaries, evidence, universe)
 
 
 def test_bounded_source_exhaustion_requires_typed_digest_bound_evidence() -> None:
@@ -477,15 +446,15 @@ def test_bounded_source_exhaustion_requires_typed_digest_bound_evidence() -> Non
         stop_state="BOUNDED_FRAME_EXHAUSTED",
         stop_reason="Declared provider universe exhausted.",
     )
-    summary = summarize_discovery_round([capture], known_identity_ids_before=set())
+    summary = pdf.summarize_discovery_round([capture], known_identity_ids_before=set())
     evidence = _stop_evidence(run, [summary], condition="SOURCE_EXHAUSTED")
 
-    assert derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe) == "BOUNDED_FRAME_EXHAUSTED"
+    assert pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe) == "BOUNDED_FRAME_EXHAUSTED"
 
     evidence["supporting_artifacts"] = []
-    evidence["evidence_id"] = authoritative_stop_evidence_id(evidence)
-    with pytest.raises(ProductDiscoveryError, match="digest-bound supporting_artifacts"):
-        derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe)
+    evidence["evidence_id"] = pdf.authoritative_stop_evidence_id(evidence)
+    with pytest.raises(pdf.ProductDiscoveryError, match="digest-bound supporting_artifacts"):
+        pdf.derive_authoritative_run_stop_state(run, frame, [summary], evidence, universe)
 
 
 def test_stop_evidence_rejects_terminal_condition_incompatible_with_frame_mode() -> None:
@@ -494,8 +463,8 @@ def test_stop_evidence_rejects_terminal_condition_incompatible_with_frame_mode()
     summaries = [_summary("R1", raw=30, marginal=0.20)]
     evidence = _stop_evidence(run, summaries, condition="SOURCE_EXHAUSTED")
 
-    with pytest.raises(ProductDiscoveryError, match="bounded-source frame"):
-        derive_authoritative_run_stop_state(run, _frame(), summaries, evidence, universe)
+    with pytest.raises(pdf.ProductDiscoveryError, match="bounded-source frame"):
+        pdf.derive_authoritative_run_stop_state(run, _frame(), summaries, evidence, universe)
 
 
 def test_authoritative_run_rejects_stored_stop_state_different_from_derived_state() -> None:
@@ -509,7 +478,7 @@ def test_authoritative_run_rejects_stored_stop_state_different_from_derived_stat
         stop_state="SATURATION_UNDER_DECLARED_PROTOCOL",
         stop_reason="Claimed saturation.",
     )
-    current_summary = summarize_discovery_round(captures, known_identity_ids_before=INITIAL_IDS)
+    current_summary = pdf.summarize_discovery_round(captures, known_identity_ids_before=INITIAL_IDS)
     prior = [
         {
             **current_summary,
@@ -527,8 +496,8 @@ def test_authoritative_run_rejects_stored_stop_state_different_from_derived_stat
     all_summaries = prior + [current_summary]
     evidence = _stop_evidence(run, all_summaries)
 
-    with pytest.raises(ProductDiscoveryError, match="stop_state does not match"):
-        validate_authoritative_discovery_run(
+    with pytest.raises(pdf.ProductDiscoveryError, match="stop_state does not match"):
+        pdf.validate_authoritative_discovery_run(
             run,
             captures,
             _frame(),
