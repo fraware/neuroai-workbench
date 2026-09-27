@@ -55,5 +55,32 @@
     "publication_authority": false
   },
   "boundary": "This rule routes the frozen R1.4 worklist by empirical unit so source/query surfaces and literature records cannot be executed as product candidates. It preserves all upstream artifacts and creates no product adjudication, canonical identity, final denominator, completeness claim, downstream release authority or publication authority.",
-  "rule_sha256": "d974e1d616d4b7cee6b4eff1272d0e92213553fb66a02933cbdd2e4be6c8e079"
+  "rule_sha256": "e0bf7698872d12944fd67b12970e8f47b0b1e1893e581c9427d44cb1c0a5a9cf",
+  "route_execution_evidence_contract": {
+    "source_surface_allowed_evidence_roles": [
+      "SOURCE_QUERY_EXECUTION",
+      "SOURCE_ENUMERATION",
+      "SOURCE_ACCESS_BARRIER"
+    ],
+    "literature_record_allowed_evidence_roles": [
+      "RECORD_EXTRACTION",
+      "RECORD_ACCESS_BARRIER"
+    ],
+    "source_surface_allowed_supported_propositions": [
+      "SOURCE_QUERY_ZERO_LEADS",
+      "SOURCE_QUERY_WITH_LEADS",
+      "SOURCE_SCOPE_EXHAUSTED",
+      "SOURCE_FINITE_CARDINALITY_ESTABLISHED",
+      "SOURCE_BARRIER_UNRESOLVED"
+    ],
+    "literature_record_allowed_supported_propositions": [
+      "RECORD_ZERO_OFFERING_LEADS",
+      "RECORD_WITH_OFFERING_LEADS",
+      "RECORD_EXTRACTION_UNRESOLVED"
+    ],
+    "evidence_must_bind_exact_covered_capture_id": true,
+    "evidence_query_or_seed_id_must_match_frozen_capture": true,
+    "every_covered_capture_requires_supported_proposition": true,
+    "extracted_lead_requires_lead_bearing_evidence_proposition": true
+  }
 }
