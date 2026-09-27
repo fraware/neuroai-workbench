@@ -602,9 +602,7 @@ def validate_route_execution_record(
             "SOURCE_FINITE_CARDINALITY_ESTABLISHED" not in propositions
             for propositions in propositions_by_capture.values()
         ):
-            raise ProductDiscoveryError(
-                "R1.6 finite cardinality claim lacks per-capture cardinality-specific evidence"
-            )
+            raise ProductDiscoveryError("R1.6 finite cardinality claim lacks per-capture cardinality-specific evidence")
         if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
             raise ProductDiscoveryError("R1.6 source exhaustion or finite cardinality requires human review")
     else:
