@@ -31,6 +31,25 @@ The audit confirmed:
 
 Issue #342 remains open. The generic capture validator checks that an estimator-eligible capture is `INCLUDE_RESOLVED` and belongs to an estimator-eligible frame, but does not derive the stored flag from exact target-view Product Registry qualification under the same frozen universe.
 
+### R1-1b — historical A-P1 observed denominator is inconsistent with the frozen machine predicate
+
+The A1 seed Product Registry contains six canonical OFFERING rows, but the frozen A-P1 predicate requires `currentness_state == CURRENT` and a current lifecycle state.
+
+Under that predicate:
+
+- NextSense Smartbuds qualifies;
+- Muse S Athena qualifies;
+- EMOTIV EPOC X qualifies;
+- Synchron Stentrode qualifies;
+- Flow FL-100 does not qualify (`currentness_state=UNRESOLVED`, `lifecycle_state=UNRESOLVED`);
+- Modius Spero does not qualify (`currentness_state=UNRESOLVED`, `lifecycle_state=UNRESOLVED`).
+
+The frozen seed projection therefore yields four A-P1 identities. Historical A7/A8 instead fix `N_observed=6` to the six A1 identity IDs.
+
+The audit also found stored `capture_estimation_eligible=true` rows for Flow and/or Modius in F2, F1 and F4, demonstrating that #342 affects current results.
+
+In addition, the seed registry rows bind knowledge cutoff `2026-09-24T21:00:00Z`, whereas the A2 analysis universe binds `2026-10-24T23:59:59Z`. A successor Product Registry projection at the exact A2 universe/cutoffs is required before authoritative target-view eligibility and the corrected A-P1 observed denominator are frozen.
+
 ### R1-2 — round-start identity baseline is not generically proven
 
 Issue #343 remains open. `known_identity_set_sha256` is included in deterministic run identity, but the generic authoritative run validator does not receive the actual round-start canonical OFFERING set, recompute the digest and derive the round summary from the same set.
@@ -98,16 +117,17 @@ A successor gate must make scientific blockers explicit and fail closed if any r
 ## Corrective execution order
 
 1. Implement #342, #343 and #344.
-2. Back-validate all existing authoritative A2 captures/runs without mutating historical packet bytes.
-3. Build a cross-frame candidate-resolution ledger for every unresolved/borderline/abstain object capable of changing product-population accounting.
-4. Freeze an adjudication-completeness / unresolved-mass rule for marginal-yield interpretation.
-5. Execute governed candidate resolution and emit successor round/stop-state evidence.
-6. Recompute A3 and A4 under the successor resolved/unresolved state.
-7. Rebuild the complete unresolved register.
-8. Recompile A7 and rerun the frozen/predeclared model-admissibility logic through a successor specification if the input universe materially changes.
-9. Emit successor A8.
-10. Run a successor A-G gate that tests both reconstruction and the R1 scientific-integrity obligations.
-11. Advance `release-a-completion-status.md` only from that successor evidence.
+2. Materialize a successor Product Registry projection at the exact A2 analysis universe/cutoffs and derive the target A-P1 identity set through the frozen machine predicate.
+3. Back-validate all existing authoritative A2 captures/runs without mutating historical packet bytes.
+4. Build a cross-frame candidate-resolution ledger for every unresolved/borderline/abstain object capable of changing product-population accounting.
+5. Freeze an adjudication-completeness / unresolved-mass rule for marginal-yield interpretation.
+6. Execute governed candidate resolution and emit successor round/stop-state evidence.
+7. Recompute A3 and A4 under the successor resolved/unresolved state.
+8. Rebuild the complete unresolved register.
+9. Recompile A7 and rerun the frozen/predeclared model-admissibility logic through a successor specification if the input universe materially changes.
+10. Emit successor A8.
+11. Run a successor A-G gate that tests both reconstruction and the R1 scientific-integrity obligations.
+12. Advance `release-a-completion-status.md` only from that successor evidence.
 
 ## Preservation rules
 
