@@ -964,6 +964,10 @@ def validate_run_known_identity_baseline(
     validate_run_against_analysis_universe(run, universe)
     known = derive_round_start_known_identity_ids(round_start_registry_rows, universe)
     expected = identity_set_digest(known)
+    if str(run["round_id"]) == "R1" and expected != universe["initial_known_identity_set_sha256"]:
+        raise ProductDiscoveryError(
+            "R1 round-start registry snapshot does not reproduce the frozen initial known-identity authority"
+        )
     if run["known_identity_set_sha256"] != expected:
         raise ProductDiscoveryError(
             "known_identity_set_sha256 does not match the governed round-start canonical OFFERING registry snapshot"
@@ -1058,6 +1062,14 @@ def validate_authoritative_stop_evidence(
         )
     if not actual_round_ids or actual_round_ids[-1] != str(run["round_id"]):
         raise ProductDiscoveryError("Authoritative round-summary evidence must terminate at the current run round_id")
+    through_round_id = str(run["round_id"])
+    if not through_round_id.startswith("R") or not through_round_id[1:].isdigit() or int(through_round_id[1:]) < 1:
+        raise ProductDiscoveryError("Authoritative A2 run round_id must use the contiguous R1..Rn convention")
+    expected_round_ids = [f"R{index}" for index in range(1, int(through_round_id[1:]) + 1)]
+    if actual_round_ids != expected_round_ids:
+        raise ProductDiscoveryError(
+            "Authoritative stop evidence must contain the complete contiguous R1..Rn execution history"
+        )
     if evidence["round_summaries_sha256"] != round_summary_sequence_sha256(round_summaries):
         raise ProductDiscoveryError("Authoritative stop evidence round-summary digest mismatch")
 
