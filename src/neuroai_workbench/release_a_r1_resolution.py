@@ -350,9 +350,7 @@ def build_r1_candidate_clusters(records: Sequence[Mapping[str, Any]]) -> list[di
         canonical_ids = sorted({str(row["canonical_offering_id"]) for row in rows if row.get("canonical_offering_id")})
         unresolved = any(outcome in UNRESOLVED_OUTCOMES for outcome in outcomes)
         source_barrier = "ABSTAIN" in outcomes or "FAILED_INACCESSIBLE" in outcomes
-        cardinality_bounded = (
-            not source_barrier and ("UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes)
-        )
+        cardinality_bounded = not source_barrier and ("UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes)
         uncertainty_cardinality_class = (
             "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
             if source_barrier
