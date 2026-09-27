@@ -558,10 +558,11 @@ def validate_resolution_adjudication(
         if one_object or max_contribution is not None:
             raise ProductDiscoveryError("Pending new identity cannot also declare an unresolved one-object bound")
     elif disposition == "TERMINAL_EXCLUDE":
-        if work_item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW" and existing_canonical is not None:
-            raise ProductDiscoveryError("Excluded candidate cluster must not allocate an existing canonical identity")
-        if "SCOPE" not in historical_props:
-            raise ProductDiscoveryError("Terminal exclusion requires historical scope support")
+        if work_item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW":
+            if existing_canonical is not None:
+                raise ProductDiscoveryError("Excluded candidate cluster must not allocate an existing canonical identity")
+            if "SCOPE" not in historical_props:
+                raise ProductDiscoveryError("Candidate-cluster terminal exclusion requires historical scope support")
         if one_object or max_contribution is not None:
             raise ProductDiscoveryError("Terminal exclusion cannot also declare an unresolved one-object bound")
     elif disposition == "ONE_OBJECT_UPPER_BOUND_UNRESOLVED":
@@ -569,8 +570,16 @@ def validate_resolution_adjudication(
             raise ProductDiscoveryError("One-object unresolved bound cannot allocate canonical identity")
         if not one_object or max_contribution != 1:
             raise ProductDiscoveryError("One-object unresolved bound requires an exact maximum contribution of one")
-        if "CARDINALITY" not in historical_props:
-            raise ProductDiscoveryError("One-object unresolved bound requires historical cardinality support")
+        cardinality_specific = any(
+            item["evidence_role"] == "CARDINALITY_SPECIFIC"
+            and _historical_evidence(item)
+            and "CARDINALITY" in item["supported_propositions"]
+            for item in evidence
+        )
+        if not cardinality_specific:
+            raise ProductDiscoveryError(
+                "One-object unresolved bound requires historical cardinality-specific evidence"
+            )
         if bool(work_item.get("source_or_abstention_barrier")):
             source_bound = any(
                 item["evidence_role"] == "SOURCE_ENUMERATION_SPECIFIC"
