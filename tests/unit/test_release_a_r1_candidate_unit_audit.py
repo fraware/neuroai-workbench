@@ -229,10 +229,7 @@ def test_round_result_candidate_unit_saturation_path() -> None:
 
 
 def test_round_result_detects_capture_candidate_disagreement() -> None:
-    rows = [
-        _classification("OFFERING_CANDIDATE_OBJECT", key=f"PRD-{index}")
-        for index in range(20)
-    ]
+    rows = [_classification("OFFERING_CANDIDATE_OBJECT", key=f"PRD-{index}") for index in range(20)]
     result = cu._round_result(
         frame_id="F1",
         round_id="R2",
