@@ -50,8 +50,8 @@ ROUTING_RESOURCE = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT.v1.0.json"
 
 RULE_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0"
 ROUTING_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT_v1.0"
-RULE_SHA256 = "1e02d8fcdf7897dd209e53fa793d5da8de52209a12bc7fabe0605a3af1a00ebb"
-ROUTING_SHA256 = "171fc0823f77142a561096ec26eb2e2c202bd542b75570df7345689bdd83e7c8"
+RULE_SHA256 = "d974e1d616d4b7cee6b4eff1272d0e92213553fb66a02933cbdd2e4be6c8e079"
+ROUTING_SHA256 = "b8dd476045056d9ec114e460a6920a3177a731603dde2d53d6b5820e9dd594f2"
 
 SOURCE_WORKBENCH_MAIN_COMMIT = "f735259557bf867281f3ca0d7cb38af2d90fa640"
 WORLD_TIME_CUTOFF = "2026-09-24"
@@ -161,6 +161,7 @@ def validate_execution_unit_routing_rule(rule: Mapping[str, Any]) -> None:
         "route_execution_record_evidence_must_precede_knowledge_cutoff": True,
         "route_execution_record_requires_explicit_capture_coverage": True,
         "work_item_completion_claim_requires_full_capture_coverage": True,
+        "route_execution_record_collections_require_canonical_order": True,
     }
     if dict(controls) != expected_controls:
         raise ProductDiscoveryError("R1.6 execution controls drift")
