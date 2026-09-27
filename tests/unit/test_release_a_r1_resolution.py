@@ -225,6 +225,20 @@ def test_manifest_binds_all_22_source_packets_and_every_capture_exactly_once() -
     manifest = r1.load_r1_candidate_resolution_manifest()
     assert len(manifest["source_packet_bindings"]) == 22
     assert len(manifest["source_ledger_shards"]) == 10
+    assert manifest["frame_capture_row_counts"] == {
+        "F1": 82,
+        "F2": 124,
+        "F3": 330,
+        "F4": 78,
+        "F5": 80,
+        "F6": 99,
+        "F7": 0,
+        "F8": 63,
+        "F9": 214,
+        "F10": 145,
+        "F11": 120,
+    }
+    assert manifest["frames_with_no_capture_rows"] == ["F7"]
 
     records = r1.compile_r1_source_records(manifest)
     capture_ids = [record["capture_id"] for record in records]
