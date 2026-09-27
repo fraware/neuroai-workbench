@@ -23,6 +23,7 @@ from neuroai_workbench.product_discovery_frames import (
     A2_KNOWLEDGE_TIME_CUTOFF,
     A2_WORLD_TIME_CUTOFF,
     DEFAULT_ANALYSIS_UNIVERSE_ID,
+    FRAME_IDS,
     ProductDiscoveryError,
     identity_set_digest,
 )
@@ -43,7 +44,7 @@ R1_CLUSTER_LEDGER_RESOURCE = "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS.v1.0.js
 
 R1_PRODUCT_REGISTRY_CANONICAL_SHA256 = "d829de5785254a65e06f12d07059eb8e2b092d43a8ffb4c6a11a34febf1865cf"
 R1_DENOMINATOR_SHA256 = "d6b495ce4957e909f29696fb8ea4db44f7b3f346aa673538ad219ee995fcc514"
-R1_LEDGER_MANIFEST_SHA256 = "53615e2315649e2569df34f25bbf6e6db0bfd4fdc03acd08c254e3bef7043ac6"
+R1_LEDGER_MANIFEST_SHA256 = "40dbf7038c9ae6457124952c2dc12f27c8edf30953ae1262b6502e066b0ad88e"
 R1_CLUSTER_LEDGER_SHA256 = "f08dee313941fb868744340319e5fb36c401b9ca4d76fbc4171a450d397cf71e"
 
 R1_CLUSTERING_POLICY_ID = "R1_EXACT_NORMALIZED_KEY_NONCANONICAL_CLUSTERING_v1.0"
@@ -490,6 +491,15 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
         raise ProductDiscoveryError("R1 cluster ledger does not reproduce from source records")
     if cluster_artifact.get("candidate_cluster_count") != len(derived_clusters):
         raise ProductDiscoveryError("R1 cluster ledger count drift")
+
+    frame_counts = {frame_id: 0 for frame_id in sorted(FRAME_IDS)}
+    for row in derived_records:
+        frame_counts[str(row["frame_id"])] += 1
+    if manifest.get("frame_capture_row_counts") != frame_counts:
+        raise ProductDiscoveryError("R1 candidate ledger frame_capture_row_counts do not reproduce from source rows")
+    zero_frames = [frame_id for frame_id, count in frame_counts.items() if count == 0]
+    if manifest.get("frames_with_no_capture_rows") != zero_frames:
+        raise ProductDiscoveryError("R1 candidate ledger zero-capture frame accounting drift")
 
     outcomes = Counter(str(row["outcome"]) for row in derived_records)
     accounting = manifest.get("accounting")
