@@ -1,0 +1,58 @@
+{
+  "packet_id": "RELEASE_A_R1_PRODUCT_DENOMINATOR_v1.0",
+  "packet_sha256": "d6b495ce4957e909f29696fb8ea4db44f7b3f346aa673538ad219ee995fcc514",
+  "status": "CONTROLLED_RESEARCH_PACKET_REPOSITORY_SAFE",
+  "assembled_on": "2026-09-27",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "registry_projection_version": "PRODUCT_REGISTRY_v1.0",
+  "product_registry_resource": "RELEASE_A_R1_PRODUCT_REGISTRY.v1.1.json",
+  "product_registry_canonical_sha256": "d829de5785254a65e06f12d07059eb8e2b092d43a8ffb4c6a11a34febf1865cf",
+  "population_view_id": "A-P1",
+  "jurisdiction_scope": "GLOBAL_PROTOCOL_SCOPE",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "qualifying_offering_ids": [
+    "PRD-EMOTIV-EPOC-X",
+    "PRD-MUSE-S-ATHENA",
+    "PRD-NEXTSENSE-SMARTBUDS",
+    "PRD-SYNCHRON-STENTRODE"
+  ],
+  "a_p1_identity_set_sha256": "b82e0d09711b349fb1f2c2fba154d04a2ff6695476d287f62b6aa18635cccc06",
+  "n_observed": 4,
+  "nonqualifying_canonical_offerings": [
+    {
+      "canonical_entity_id": "PRD-FLOW-FL-100",
+      "currentness_state": "UNRESOLVED",
+      "lifecycle_state": "UNRESOLVED",
+      "access_commercial_state": "UNRESOLVED",
+      "source_observation_refs": [
+        "OBS-A1-c728ee8be8c2a6f704406d00"
+      ],
+      "disposition": "PRESERVE_NONQUALIFYING_UNRESOLVED",
+      "rationale_code": "CURRENTNESS_AND_LIFECYCLE_UNRESOLVED_AT_WORLD_CUTOFF",
+      "note": "Existing regulatory/identity evidence does not by itself establish CURRENT plus a qualifying current lifecycle state at the 2026-09-24 world-time cutoff."
+    },
+    {
+      "canonical_entity_id": "PRD-MODIUS-SPERO",
+      "currentness_state": "UNRESOLVED",
+      "lifecycle_state": "UNRESOLVED",
+      "access_commercial_state": "UNRESOLVED",
+      "source_observation_refs": [
+        "OBS-A1-b4cd2e58122bce7bd8b233c5"
+      ],
+      "disposition": "PRESERVE_NONQUALIFYING_UNRESOLVED",
+      "rationale_code": "CURRENTNESS_AND_LIFECYCLE_UNRESOLVED_AT_WORLD_CUTOFF",
+      "note": "Existing regulatory/identity evidence does not by itself establish CURRENT plus a qualifying current lifecycle state at the 2026-09-24 world-time cutoff."
+    }
+  ],
+  "derivation_rule": "population_view_identity_ids(successor_rows, \"A-P1\")",
+  "flow_modius_adjudication_policy": "Preserve non-qualification unless repository-admissible evidence explicitly establishes CURRENT plus an allowed current lifecycle state at or before the world-time cutoff; regulatory authorization alone is insufficient.",
+  "authority_controls": {
+    "no_identity_allocation": true,
+    "no_global_completeness_claim": true,
+    "no_release_b_c_d_denominator_authority": true,
+    "no_population_generalization_authority": true,
+    "historical_a1_a2_a8_ag_bytes_unchanged": true
+  },
+  "boundary": "R1 denominator control binds the exact-A2 Product Registry successor and machine-derived A-P1 identity set. It does not establish global completeness, unseen-population size, market share, comparative effectiveness, S2 publication authority, v4.2 assessment effect, or Release-A R1 passage."
+}
