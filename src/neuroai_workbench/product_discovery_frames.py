@@ -1055,6 +1055,9 @@ def validate_authoritative_stop_evidence(
         raise ProductDiscoveryError("Authoritative stop evidence completed_round_ids must be non-empty strings")
     if len(set(completed)) != len(completed):
         raise ProductDiscoveryError("Authoritative stop evidence completed_round_ids must be unique")
+    for summary in round_summaries:
+        if summary.get("frame_id") != frame["frame_id"]:
+            raise ProductDiscoveryError("Authoritative stop-evidence round summary frame_id does not match discovery frame")
     actual_round_ids = [str(summary.get("round_id")) for summary in round_summaries]
     if list(completed) != actual_round_ids:
         raise ProductDiscoveryError(
