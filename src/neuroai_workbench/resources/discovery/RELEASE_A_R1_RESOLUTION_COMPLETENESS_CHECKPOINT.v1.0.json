@@ -1,6 +1,6 @@
 {
   "packet_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_CHECKPOINT_v1.0",
-  "packet_sha256": "c952a3d74c6d8f81dac8f6ac480b2645c029c9d533e50c5c8d7d153d015a22ca",
+  "packet_sha256": "500bcd90ad59b4320a1f2a9eec857f81ce83b45e501f1d38853e8ae8ea37485d",
   "status": "CHECKPOINT_PENDING_KNOWLEDGE_WINDOW_CLOSE",
   "assembled_on": "2026-09-27",
   "source_workbench_main_commit": "2ef774f4b8ec0df255c11908a5847e2edd11dbd8",
@@ -9,7 +9,7 @@
   "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
   "population_view_id": "A-P1",
   "rule_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_RULE_v1.0",
-  "rule_sha256": "7075e7b7759bfbf3bcfa17bbc8eff6feae3793d483596ad37d2160ad345c884c",
+  "rule_sha256": "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1",
   "candidate_resolution_ledger_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
   "candidate_resolution_cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
   "global_resolution_context": {
