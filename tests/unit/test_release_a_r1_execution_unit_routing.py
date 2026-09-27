@@ -282,12 +282,13 @@ def _evidence_for_item(
     source_records = _source_records_by_capture_id()
     evidence: list[dict[str, object]] = []
     for index, capture_id in enumerate(covered_capture_ids, start=1):
-        source_record = source_records[capture_id]
+        source_record = source_records.get(capture_id)
+        query_or_seed_id = source_record["query_or_seed_id"] if source_record is not None else "UNKNOWN"
         evidence.append(
             {
                 "evidence_ref": f"EVIDENCE-{index:04d}",
                 "capture_id": capture_id,
-                "query_or_seed_id": source_record["query_or_seed_id"],
+                "query_or_seed_id": query_or_seed_id,
                 "source_locator": f"https://example.invalid/source/{index}",
                 "knowledge_observed_at": "2026-09-27T00:00:00Z",
                 "sha256": f"{index:064x}",
@@ -592,30 +593,89 @@ def test_route_execution_record_id_is_content_bound() -> None:
 
 def test_route_execution_rejects_noncanonical_evidence_order() -> None:
     checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
+    )
     record = _route_execution_record(
         routing.SOURCE_SURFACE_RESOLUTION,
         "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
     )
-    evidence = [
-        {
-            "evidence_ref": "EVIDENCE-2",
-            "source_locator": "https://example.invalid/source-2",
-            "knowledge_observed_at": "2026-09-27T00:00:00Z",
-            "sha256": "2" * 64,
-        },
-        {
-            "evidence_ref": "EVIDENCE-0001",
-            "source_locator": "https://example.invalid/source-1",
-            "knowledge_observed_at": "2026-09-27T00:00:00Z",
-            "sha256": "1" * 64,
-        },
-    ]
-    record["evidence"] = evidence
+    record["evidence"] = list(reversed(record["evidence"]))
     _reseal_execution_record(record)
 
     with pytest.raises(routing.ProductDiscoveryError, match="canonical evidence_ref order"):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
 
+
+def test_route_execution_requires_evidence_for_every_covered_capture() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
+    )
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
+    )
+    record["evidence"] = list(record["evidence"][:-1])
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="every covered capture requires"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_query_seed_provenance_drift() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[0]["query_or_seed_id"] = "WRONG-QUERY"
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="query_or_seed_id drift"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_source_completion_rejects_incompatible_evidence_proposition() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[0]["supported_propositions"] = ["SOURCE_QUERY_WITH_LEADS"]
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="per-capture zero-lead evidence"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_extracted_lead_requires_lead_bearing_evidence() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    lead = _lead(str(item["work_item_id"]))
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+        item=item,
+        extracted_leads=[lead],
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[0]["supported_propositions"] = ["SOURCE_QUERY_ZERO_LEADS"]
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="does not support an extracted-lead proposition"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
 
 def test_route_execution_rejects_noncanonical_lead_order() -> None:
     checkpoint = routing.load_execution_unit_routing()
