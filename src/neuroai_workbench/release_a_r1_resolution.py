@@ -266,6 +266,39 @@ def derive_r1_source_record(row: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def discover_a2_capture_packet_bindings() -> list[dict[str, Any]]:
+    """Discover the complete immutable A2 capture-packet universe in package resources."""
+
+    bindings: list[dict[str, Any]] = []
+    package = files(DISCOVERY_RESOURCE_PACKAGE)
+    for entry in sorted(package.iterdir(), key=lambda item: item.name):
+        name = entry.name
+        if not name.startswith("RELEASE_A_A2") or not name.endswith(".json"):
+            continue
+        packet = cast(dict[str, Any], json.loads(entry.read_text(encoding="utf-8")))
+        captures = packet.get("captures")
+        if not isinstance(captures, list) or not captures:
+            continue
+        packet_id = packet.get("packet_id")
+        packet_sha = packet.get("packet_sha256")
+        if not isinstance(packet_id, str) or not packet_id:
+            raise ProductDiscoveryError(f"A2 capture packet missing packet_id: {name}")
+        if not isinstance(packet_sha, str) or not packet_sha:
+            raise ProductDiscoveryError(f"A2 capture packet missing packet_sha256: {name}")
+        if _packet_content_sha256(packet) != packet_sha:
+            raise ProductDiscoveryError(f"A2 source packet digest drift during universe discovery: {name}")
+        bindings.append(
+            {
+                "source_packet_id": packet_id,
+                "source_packet_resource": name,
+                "source_packet_sha256": packet_sha,
+                "capture_count": len(captures),
+            }
+        )
+    bindings.sort(key=lambda item: str(item["source_packet_id"]))
+    return bindings
+
+
 def _load_packet_rows(binding: Mapping[str, Any]) -> list[dict[str, Any]]:
     resource = str(binding["source_packet_resource"])
     packet = _load(DISCOVERY_RESOURCE_PACKAGE, resource)
@@ -289,6 +322,11 @@ def compile_r1_source_records(manifest: Mapping[str, Any]) -> list[dict[str, Any
     bindings = manifest.get("source_packet_bindings")
     if not isinstance(bindings, list) or not bindings:
         raise ProductDiscoveryError("R1 ledger manifest requires source_packet_bindings")
+    expected_bindings = discover_a2_capture_packet_bindings()
+    if bindings != expected_bindings:
+        raise ProductDiscoveryError(
+            "R1 ledger source_packet_bindings do not equal the complete immutable A2 capture-packet universe"
+        )
     for binding in bindings:
         if not isinstance(binding, Mapping):
             raise ProductDiscoveryError("R1 ledger source packet binding must be an object")
