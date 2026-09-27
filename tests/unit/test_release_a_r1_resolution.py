@@ -5,7 +5,7 @@ import copy
 import pytest
 
 import neuroai_workbench.release_a_r1_resolution as r1
-
+from neuroai_workbench.product_registry import registry_row_id
 
 EXPECTED_A_P1_IDS = [
     "PRD-EMOTIV-EPOC-X",
@@ -116,7 +116,7 @@ def test_r1_registry_rejects_universe_drift_and_identity_allocation() -> None:
     extra = copy.deepcopy(extra_identity["rows"][0])
     extra["canonical_entity_id"] = "PRD-UNAUTHORIZED-NEW"
     extra["product_offering_id"] = "PRD-UNAUTHORIZED-NEW"
-    extra["registry_row_id"] = pr.registry_row_id(extra)
+    extra["registry_row_id"] = registry_row_id(extra)
     extra_identity["rows"].append(extra)
     extra_identity["metadata"]["row_count"] = len(extra_identity["rows"])
     with pytest.raises(r1.ProductDiscoveryError, match="must not allocate or remove canonical identity"):
