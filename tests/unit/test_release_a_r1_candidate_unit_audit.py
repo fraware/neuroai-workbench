@@ -87,7 +87,7 @@ def test_default_candidate_unit_audit_reconstructs_exactly() -> None:
         "F4": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
         "F5": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
         "F6": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
-        "F8": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
+        "F8": "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT",
         "F11": "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT",
     }
     assert all(
