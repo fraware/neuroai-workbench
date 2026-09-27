@@ -5,7 +5,6 @@ import pytest
 from neuroai_workbench import product_discovery_frames as pdf
 from neuroai_workbench import product_registry as pr
 
-
 INITIAL_IDS = {
     "PRD-MUSE-S-ATHENA",
     "PRD-NEXTSENSE-SMARTBUDS",
