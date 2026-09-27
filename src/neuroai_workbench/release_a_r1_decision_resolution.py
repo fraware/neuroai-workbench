@@ -81,9 +81,7 @@ EVIDENCE_ROLES = frozenset(
 SUPPORTED_PROPOSITIONS = frozenset(
     {"IDENTITY", "SCOPE", "CURRENTNESS", "LIFECYCLE", "CARDINALITY", "SOURCE_ENUMERATION"}
 )
-QUALIFYING_LIFECYCLE_STATES = frozenset(
-    {"ANNOUNCED", "IN_DEVELOPMENT", "MANUFACTURING_PRE_DELIVERY", "RELEASED"}
-)
+QUALIFYING_LIFECYCLE_STATES = frozenset({"ANNOUNCED", "IN_DEVELOPMENT", "MANUFACTURING_PRE_DELIVERY", "RELEASED"})
 ADJUDICATOR_STATES = frozenset({"HUMAN_REVIEWED", "MACHINE_PROVISIONAL"})
 
 
@@ -184,7 +182,10 @@ def validate_decision_resolution_rule(rule: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("R1.4 one-object bound must require cardinality evidence")
     if cardinality.get("one_object_upper_bound_max_incremental_offering_contribution") != 1:
         raise ProductDiscoveryError("R1.4 one-object bound contribution must equal one")
-    if cardinality.get("source_or_abstention_barrier_remains_unbounded_without_source_specific_finite_bound") is not True:
+    if (
+        cardinality.get("source_or_abstention_barrier_remains_unbounded_without_source_specific_finite_bound")
+        is not True
+    ):
         raise ProductDiscoveryError("R1.4 source barriers must fail closed without source-specific finite bounds")
 
     temporal = cast(Mapping[str, Any], rule["temporal_state_rule"])
@@ -289,10 +290,7 @@ def _derive_candidate_work_items(
 
 def _derive_temporal_work_items() -> list[dict[str, Any]]:
     registry = load_r1_product_registry()
-    rows = {
-        str(row["canonical_entity_id"]): row
-        for row in cast(Sequence[Mapping[str, Any]], registry["rows"])
-    }
+    rows = {str(row["canonical_entity_id"]): row for row in cast(Sequence[Mapping[str, Any]], registry["rows"])}
     result: list[dict[str, Any]] = []
     for canonical_id in TEMPORAL_REVIEW_OFFERINGS:
         row = rows[canonical_id]
@@ -327,11 +325,7 @@ def derive_decision_resolution_worklist() -> dict[str, Any]:
     work_items = candidate_items + temporal_items
     work_items.sort(key=lambda item: str(item["work_item_id"]))
 
-    selected_clusters = [
-        cluster
-        for cluster in clusters
-        if _candidate_selection_reasons(cluster)
-    ]
+    selected_clusters = [cluster for cluster in clusters if _candidate_selection_reasons(cluster)]
     accounting = {
         "candidate_cluster_work_item_count": len(candidate_items),
         "temporal_state_work_item_count": len(temporal_items),
@@ -360,8 +354,7 @@ def derive_decision_resolution_worklist() -> dict[str, Any]:
             for cluster in selected_clusters
         ),
         "predecessor_one_object_upper_bound_count": sum(
-            cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND"
-            for cluster in selected_clusters
+            cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND" for cluster in selected_clusters
         ),
     }
     return {
@@ -412,9 +405,7 @@ def validate_decision_resolution_worklist(worklist: Mapping[str, Any]) -> None:
     if len(item_ids) != len(set(item_ids)):
         raise ProductDiscoveryError("R1.4 worklist contains duplicate work_item_id values")
     cluster_ids = [
-        str(item["candidate_cluster_id"])
-        for item in work_items
-        if item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW"
+        str(item["candidate_cluster_id"]) for item in work_items if item["work_item_type"] == "CANDIDATE_CLUSTER_REVIEW"
     ]
     if len(cluster_ids) != len(set(cluster_ids)):
         raise ProductDiscoveryError("R1.4 worklist duplicates a governed candidate cluster")
@@ -483,8 +474,7 @@ def validate_resolution_adjudication(
     active_worklist = load_decision_resolution_worklist() if worklist is None else worklist
     validate_decision_resolution_worklist(active_worklist)
     work_items = {
-        str(item["work_item_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], active_worklist["work_items"])
+        str(item["work_item_id"]): item for item in cast(Sequence[Mapping[str, Any]], active_worklist["work_items"])
     }
     work_item_id = str(record["work_item_id"])
     if work_item_id not in work_items:
@@ -542,10 +532,7 @@ def validate_resolution_adjudication(
         if not isinstance(existing_canonical, str) or not existing_canonical:
             raise ProductDiscoveryError("Existing-canonical inclusion requires an existing canonical offering ID")
         registry = load_r1_product_registry()
-        known_ids = {
-            str(row["canonical_entity_id"])
-            for row in cast(Sequence[Mapping[str, Any]], registry["rows"])
-        }
+        known_ids = {str(row["canonical_entity_id"]) for row in cast(Sequence[Mapping[str, Any]], registry["rows"])}
         if existing_canonical not in known_ids:
             raise ProductDiscoveryError("R1.4 cannot invent an existing canonical offering identity")
         if not {"IDENTITY", "SCOPE"} <= historical_props:
@@ -554,7 +541,9 @@ def validate_resolution_adjudication(
             raise ProductDiscoveryError("Terminal inclusion cannot also declare an unresolved one-object bound")
     elif disposition == "TERMINAL_INCLUDE_NEW_CANONICAL_PENDING_IDENTITY_AUTHORITY":
         if existing_canonical is not None:
-            raise ProductDiscoveryError("Pending new canonical identity must not populate existing_canonical_offering_id")
+            raise ProductDiscoveryError(
+                "Pending new canonical identity must not populate existing_canonical_offering_id"
+            )
         if not {"IDENTITY", "SCOPE"} <= historical_props:
             raise ProductDiscoveryError("Pending new identity requires historical identity and scope support")
         if one_object or max_contribution is not None:
