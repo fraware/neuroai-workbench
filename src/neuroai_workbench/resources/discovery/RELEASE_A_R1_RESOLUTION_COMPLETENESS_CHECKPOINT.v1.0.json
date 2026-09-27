@@ -1,0 +1,413 @@
+{
+  "packet_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_CHECKPOINT_v1.0",
+  "packet_sha256": "9aad2dc06c6012a97a50b4051213ffd3b3b38e7e54f9d3e5cf2a8b74d751a90d",
+  "status": "CHECKPOINT_PENDING_KNOWLEDGE_WINDOW_CLOSE",
+  "assembled_on": "2026-09-27",
+  "source_workbench_main_commit": "2ef774f4b8ec0df255c11908a5847e2edd11dbd8",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "population_view_id": "A-P1",
+  "rule_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_RULE_v1.0",
+  "rule_sha256": "7075e7b7759bfbf3bcfa17bbc8eff6feae3793d483596ad37d2160ad345c884c",
+  "candidate_resolution_ledger_manifest_sha256": "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd",
+  "candidate_resolution_cluster_ledger_sha256": "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b",
+  "global_resolution_context": {
+    "raw_capture_row_count": 1335,
+    "governed_candidate_cluster_count": 1105,
+    "unresolved_clusters_capable_of_changing_a_p1_membership": 1061,
+    "unresolved_clusters_capable_of_changing_marginal_yield_stop": 334,
+    "cardinality_bounded_unresolved_cluster_count": 0,
+    "cardinality_unproven_unresolved_cluster_count": 591,
+    "unbounded_source_or_abstention_barrier_cluster_count": 470
+  },
+  "frame_results": [
+    {
+      "frame_id": "F1",
+      "historical_source_packet_sha256": "4d4f8fdf655882315a6f53499f4932e91d1596c29c1a873c86dde243cd9c4c85",
+      "r1_source_ledger_shard_sha256": "37fd27e67f72df21b321768c6313a9bf5b4f34b2698cc4db92163cf7924c6f9e",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 37,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 20,
+          "unbounded_source_or_abstention_barrier_cluster_count": 17,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 22,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 3,
+          "unbounded_source_or_abstention_barrier_cluster_count": 13,
+          "terminal_cluster_count": 6,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 23,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 2,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    },
+    {
+      "frame_id": "F4",
+      "historical_source_packet_sha256": "abaff10977ad1f7f84b3311b6619d403184da4d94d805714913851c7d87ebfc3",
+      "r1_source_ledger_shard_sha256": "bd12bcf1ce003f50235a45fdc1879a50d30885abc161be77d664b828066c8ae8",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 24,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 2,
+          "unbounded_source_or_abstention_barrier_cluster_count": 19,
+          "terminal_cluster_count": 1,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 29,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 24,
+          "unbounded_source_or_abstention_barrier_cluster_count": 2,
+          "terminal_cluster_count": 3,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 25,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 16,
+          "unbounded_source_or_abstention_barrier_cluster_count": 9,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    },
+    {
+      "frame_id": "F5",
+      "historical_source_packet_sha256": "0ce4e51a4f968ef452a1031d651e30119498fd4969563f91cadbccdeb2eaf3f5",
+      "r1_source_ledger_shard_sha256": "2e545ba64b53b34bd6cc6a48c1bf50cdf5dd237498e9e8451af485453070c4f7",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 25,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 10,
+          "unbounded_source_or_abstention_barrier_cluster_count": 11,
+          "terminal_cluster_count": 2,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 30,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 16,
+          "unbounded_source_or_abstention_barrier_cluster_count": 11,
+          "terminal_cluster_count": 3,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 25,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 14,
+          "unbounded_source_or_abstention_barrier_cluster_count": 9,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    },
+    {
+      "frame_id": "F6",
+      "historical_source_packet_sha256": "95e13cc7dc896a0bad3f2d3862fda7475ff5e35291341f6bdbe5b9a0372e2e4c",
+      "r1_source_ledger_shard_sha256": "d5870785826a8c575b44f8b5d0d76ad0e3a7c3f40234b8a1b438210ef42bd6fb",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 33,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 13,
+          "unbounded_source_or_abstention_barrier_cluster_count": 13,
+          "terminal_cluster_count": 2,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 33,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 13,
+          "unbounded_source_or_abstention_barrier_cluster_count": 13,
+          "terminal_cluster_count": 2,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 33,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 13,
+          "unbounded_source_or_abstention_barrier_cluster_count": 13,
+          "terminal_cluster_count": 2,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    },
+    {
+      "frame_id": "F8",
+      "historical_source_packet_sha256": "07e79f2ba1501379315850d3756cb4758f632b5f337e47a140fe50c861e2043f",
+      "r1_source_ledger_shard_sha256": "b8fbc55e1711b4b6250cb0bec70763b3718bb12c4351146ec0568ae4d4582f3e",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 21,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 0,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 21,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 0,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 21,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 12,
+          "unbounded_source_or_abstention_barrier_cluster_count": 9,
+          "terminal_cluster_count": 0,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    },
+    {
+      "frame_id": "F11",
+      "historical_source_packet_sha256": "e6da0402653a89bb1c55e61b630864271f80daa7d0a1f11cc38d451917d3e88a",
+      "r1_source_ledger_shard_sha256": "2f6f123f7631bba92974bed3692fc7753b6e9fc3b235368155c149057d167681",
+      "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL",
+      "qualifying_tail_round_ids": [
+        "R2",
+        "R3"
+      ],
+      "round_results": [
+        {
+          "round_id": "R1",
+          "C_r": 40,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 4,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 5,
+          "identifiability_required_for_terminal_decision": false,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R2",
+          "C_r": 40,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 4,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 5,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        },
+        {
+          "round_id": "R3",
+          "C_r": 40,
+          "Y_r": 0,
+          "U_r_star": 0,
+          "m_r_lower": 0,
+          "m_r_upper": null,
+          "finite_upper_bound_available": false,
+          "one_object_upper_bound_cluster_count": 0,
+          "cardinality_unproven_cluster_count": 4,
+          "unbounded_source_or_abstention_barrier_cluster_count": 21,
+          "terminal_cluster_count": 5,
+          "identifiability_required_for_terminal_decision": true,
+          "identifiability_state": "RESOLUTION_SOURCE_BARRIER_CENSORED"
+        }
+      ],
+      "scientific_interpretation_state": "CONTINUE_RESOLUTION_CENSORED"
+    }
+  ],
+  "a3_capability_increment_checkpoint": {
+    "historical_packet_sha256": "b7a6cd6b509f1fa3b8481fbd821589b8f7c1eaf40cec8c14df992e38360285d8",
+    "historical_delta_n_capability": 0,
+    "resolved_incremental_offering_count": 0,
+    "unresolved_expanded_arm_clusters_capable_of_changing_increment": 52,
+    "one_object_upper_bound_cluster_count": 0,
+    "cardinality_unproven_cluster_count": 13,
+    "unbounded_source_or_abstention_barrier_cluster_count": 39,
+    "increment_lower_bound": 0,
+    "increment_upper_bound": null,
+    "finite_upper_bound_available": false,
+    "disposition_coverage_state": "INCOMPLETE_CARDINALITY_UNPROVEN_AND_UNBOUNDED",
+    "successor_interpretation_state": "INCREMENT_RESOLUTION_CENSORED"
+  },
+  "a4_multilingual_increment_checkpoint": {
+    "historical_packet_sha256": "a82fc5081630fc0af2d8843e6ad6009a9cbcb544509ce31f2a7b1fc94d8236ed",
+    "historical_delta_n_multilingual": 0,
+    "resolved_incremental_offering_count": 0,
+    "unresolved_expanded_arm_clusters_capable_of_changing_increment": 63,
+    "one_object_upper_bound_cluster_count": 0,
+    "cardinality_unproven_cluster_count": 12,
+    "unbounded_source_or_abstention_barrier_cluster_count": 51,
+    "increment_lower_bound": 0,
+    "increment_upper_bound": null,
+    "finite_upper_bound_available": false,
+    "disposition_coverage_state": "INCOMPLETE_CARDINALITY_UNPROVEN_AND_UNBOUNDED",
+    "successor_interpretation_state": "INCREMENT_RESOLUTION_CENSORED"
+  },
+  "aggregate_scientific_disposition": "ALL_HISTORICAL_MARGINAL_YIELD_SATURATION_INTERPRETATIONS_RESOLUTION_CENSORED",
+  "temporal_finality": "CHECKPOINT_PENDING_KNOWLEDGE_WINDOW_CLOSE",
+  "rerun_requirement": "Rebind and regenerate this checkpoint against the final #413 ledger successor after the frozen knowledge-time window is explicitly dispositioned.",
+  "authority_controls": {
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This checkpoint preserves historical mechanical stop states while recording that current resolution and source barriers prevent scientific low-yield identification. It is not a final Release-A denominator, completeness claim, unseen-population estimate, or downstream authorization."
+}
