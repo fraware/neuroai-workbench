@@ -15,6 +15,8 @@ Release-A/R1 is required before the current A8 package is consumed as a final de
 The post-completion audit found:
 
 - issues #342, #343 and #344 remain open and govern authoritative per-capture estimator eligibility, exact round-start known-identity binding, and derived stop-state validation;
+- the frozen A1 seed Product Registry yields **4**, not 6, identities under the existing A-P1 machine predicate: Flow FL-100 and Modius Spero have `UNRESOLVED` currentness/lifecycle and do not qualify; historical A7/A8 nevertheless hardcode `N_observed=6`;
+- the A1 seed Product Registry knowledge cutoff (`2026-09-24T21:00:00Z`) does not match the A2 analysis-universe knowledge cutoff (`2026-10-24T23:59:59Z`), so a successor exact-universe registry projection is required before estimator eligibility can be derived under #342;
 - the executed open-world/local-language/patent/snowball packets contain 240 `UNRESOLVED_IDENTITY` capture rows after the bounded-frame checkpoint, representing 168 globally distinct `candidate_key` values before governed identity deduplication;
 - the current A8 unresolved register contains the 416 checkpoint candidates from F3/F9 only and is therefore not the complete unresolved register for the full Release-A execution;
 - `delta_n_capability=0` and `delta_n_multilingual=0` are counts of additional **resolved canonical offering IDs** under the executed pipeline; their substantive recall interpretation remains under corrective review because material unresolved/abstain mass remains in F6/F8;
@@ -46,7 +48,7 @@ These values are preserved exactly as reported by the immutable A8/A-G artifacts
 
 | Headline | Historical value | Current interpretation |
 | --- | --- | --- |
-| `N_observed` | `6` | Six resolved in-scope canonical PRODUCT/OFFERING identities under A-P1 in the frozen v1.0 pipeline; not a global product count |
+| `N_observed` | `6` | Historical A7/A8 value. The frozen A1 seed registry machine predicate currently yields 4 A-P1 identities; successor registry/eligibility derivation is required before a corrected observed count is stated |
 | `N_estimated` | `null` | A7 fail-closed; no defensible unseen-population estimate admitted |
 | `delta_n_capability` | `0` | Zero additional resolved canonical IDs; substantive recall increment under corrective review |
 | `delta_n_multilingual` | `0` | Zero additional resolved canonical IDs; substantive multilingual increment under corrective review |
@@ -71,14 +73,15 @@ Corrective work must use append-only/successor artifacts and exact predecessor d
 The R1 successor must:
 
 1. implement #342/#343/#344 and back-validate authoritative A2 records;
-2. compile a complete cross-frame candidate-resolution ledger;
-3. freeze a rule preventing unresolved adjudication backlog from manufacturing a low resolved-identity yield stop;
-4. issue successor discovery accounting / stop-state results;
-5. recompute A3/A4 with resolution uncertainty represented correctly;
-6. rebuild the unresolved register across all executed F1–F11 packets;
-7. recompile A7 and rerun its fail-closed/model gate;
-8. emit successor A8 and A-G artifacts;
-9. advance this status pointer only after the successor disposition is supported.
+2. materialize a successor Product Registry projection bound to the exact A2 universe/cutoffs and derive the A-P1 observed set through `population_view_identity_ids`;
+3. compile a complete cross-frame candidate-resolution ledger;
+4. freeze a rule preventing unresolved adjudication backlog from manufacturing a low resolved-identity yield stop;
+5. issue successor discovery accounting / stop-state results;
+6. recompute A3/A4 with resolution uncertainty represented correctly;
+7. rebuild the unresolved register across all executed F1–F11 packets;
+8. recompile A7 and rerun its fail-closed/model gate;
+9. emit successor A8 and A-G artifacts;
+10. advance this status pointer only after the successor disposition is supported.
 
 ## Authority boundary
 
