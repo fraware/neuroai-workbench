@@ -91,15 +91,42 @@ def validate_r1_product_registry(registry: Mapping[str, Any]) -> None:
         if metadata.get(field) != expected:
             raise ProductDiscoveryError(f"R1 Product Registry metadata.{field} drift")
 
-    if canonical_sha256(registry) != R1_PRODUCT_REGISTRY_CANONICAL_SHA256:
-        raise ProductDiscoveryError("R1 Product Registry canonical digest drift")
-
     seed = _load(REGISTRY_RESOURCE_PACKAGE, SEED_PRODUCT_REGISTRY_RESOURCE)
     validate_product_registry(seed)
     seed_ids = sorted(str(row["canonical_entity_id"]) for row in cast(list[Mapping[str, Any]], seed["rows"]))
     successor_ids = sorted(str(row["canonical_entity_id"]) for row in cast(list[Mapping[str, Any]], registry["rows"]))
     if successor_ids != seed_ids:
         raise ProductDiscoveryError("R1 analytical Product Registry must not allocate or remove canonical identity")
+
+    seed_metadata = dict(cast(Mapping[str, Any], seed["metadata"]))
+    successor_metadata = dict(metadata)
+    for allowed_field in ("title", "knowledge_time_cutoff"):
+        seed_metadata.pop(allowed_field, None)
+        successor_metadata.pop(allowed_field, None)
+    if successor_metadata != seed_metadata:
+        raise ProductDiscoveryError("R1 Product Registry metadata may change only title and knowledge-time cutoff")
+
+    seed_rows = {
+        str(row["canonical_entity_id"]): dict(row)
+        for row in cast(list[Mapping[str, Any]], seed["rows"])
+    }
+    successor_rows = {
+        str(row["canonical_entity_id"]): dict(row)
+        for row in cast(list[Mapping[str, Any]], registry["rows"])
+    }
+    for canonical_id in seed_ids:
+        predecessor = seed_rows[canonical_id]
+        successor = successor_rows[canonical_id]
+        for allowed_field in ("registry_row_id", "knowledge_time_cutoff"):
+            predecessor.pop(allowed_field, None)
+            successor.pop(allowed_field, None)
+        if successor != predecessor:
+            raise ProductDiscoveryError(
+                f"R1 Product Registry row {canonical_id} contains an ungoverned state change beyond cutoff rebinding"
+            )
+
+    if canonical_sha256(registry) != R1_PRODUCT_REGISTRY_CANONICAL_SHA256:
+        raise ProductDiscoveryError("R1 Product Registry canonical digest drift")
 
 
 def derive_r1_a_p1_identity_ids(registry: Mapping[str, Any]) -> list[str]:
