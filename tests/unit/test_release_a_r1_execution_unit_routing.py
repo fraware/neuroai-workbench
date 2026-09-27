@@ -283,9 +283,7 @@ def _route_execution_record(
         "source_scope_exhausted": source_scope_exhausted,
         "finite_cardinality_upper_bound": finite_cardinality_upper_bound,
         "global_source_exhaustion_claimed": False,
-        "covered_capture_ids": (
-            list(item["capture_ids"]) if covered_capture_ids is None else covered_capture_ids
-        ),
+        "covered_capture_ids": (list(item["capture_ids"]) if covered_capture_ids is None else covered_capture_ids),
         "work_item_completion_claimed": work_item_completion_claimed,
     }
     record["execution_record_id"] = routing.route_execution_record_id(record)
@@ -473,8 +471,7 @@ def test_work_item_completion_requires_full_capture_coverage() -> None:
     item = next(
         candidate
         for candidate in checkpoint["route_table"]
-        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION
-        and len(candidate["capture_ids"]) > 1
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
     )
     first_capture = [str(item["capture_ids"][0])]
     record = _route_execution_record(
