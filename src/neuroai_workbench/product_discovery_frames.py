@@ -9,6 +9,12 @@ from typing import Any, cast
 
 from jsonschema import Draft202012Validator
 
+from neuroai_workbench.product_registry import (
+    ProductRegistryError,
+    population_view_identity_ids,
+    validate_product_registry_row,
+)
+
 RESOURCE_PACKAGE = "neuroai_workbench.resources.discovery"
 FRAME_SCHEMA = "PRODUCT_DISCOVERY_FRAME.schema.json"
 CAPTURE_SCHEMA = "PRODUCT_DISCOVERY_CAPTURE.schema.json"
@@ -824,3 +830,372 @@ def evaluate_frame_stop(
     if all(float(summary["marginal_new_identity_yield"]) <= threshold for summary in tail):
         return "SATURATION_UNDER_DECLARED_PROTOCOL"
     return "CONTINUE"
+
+
+def _validate_exact_release_a_analysis_universe(universe: Mapping[str, Any]) -> None:
+    """Require the one frozen Release-A A2 universe used by authoritative successor records."""
+
+    validate_analysis_universe(universe)
+    if universe["analysis_universe_id"] != DEFAULT_ANALYSIS_UNIVERSE_ID:
+        raise ProductDiscoveryError("analysis_universe_id is not the exact frozen Release-A A2 universe")
+
+
+def _validate_registry_rows_against_analysis_universe(
+    registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> None:
+    """Require every supplied Product Registry row to belong to the exact A2 universe."""
+
+    _validate_exact_release_a_analysis_universe(universe)
+    for row in registry_rows:
+        try:
+            validate_product_registry_row(row)
+        except ProductRegistryError as exc:
+            raise ProductDiscoveryError(f"Invalid Product Registry row supplied to A2 authority check: {exc}") from exc
+        for row_field, universe_field in (
+            ("registry_projection_version", "registry_projection_version"),
+            ("jurisdiction_scope", "analysis_jurisdiction_scope"),
+            ("world_time_cutoff", "world_time_cutoff"),
+            ("knowledge_time_cutoff", "knowledge_time_cutoff"),
+        ):
+            if row.get(row_field) != universe.get(universe_field):
+                raise ProductDiscoveryError(
+                    f"Product Registry row {row_field} does not match the exact frozen A2 analysis universe"
+                )
+
+
+def _compatible_registry_rows_for_capture(
+    capture: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> list[Mapping[str, Any]]:
+    """Return validated registry rows in the capture's exact analytical universe."""
+
+    validate_capture_against_analysis_universe(capture, universe)
+    _validate_registry_rows_against_analysis_universe(registry_rows, universe)
+    return [
+        row
+        for row in registry_rows
+        if row.get("registry_projection_version") == capture.get("registry_projection_version")
+        and row.get("jurisdiction_scope") == capture.get("analysis_jurisdiction_scope")
+        and row.get("world_time_cutoff") == capture.get("world_time_cutoff")
+        and row.get("knowledge_time_cutoff") == capture.get("knowledge_time_cutoff")
+    ]
+
+
+def derive_capture_estimation_eligibility(
+    capture: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> bool:
+    """Derive estimator eligibility from frame, exact universe and target-view state."""
+
+    validate_capture_against_frame(capture, frame)
+    _validate_exact_release_a_analysis_universe(universe)
+    validate_capture_against_analysis_universe(capture, universe)
+    if capture["outcome"] != "INCLUDE_RESOLVED":
+        return False
+
+    offering_id = str(capture["canonical_offering_id"])
+    compatible_rows = _compatible_registry_rows_for_capture(capture, registry_rows, universe)
+    matching_offering_rows = [
+        row
+        for row in compatible_rows
+        if row.get("canonical_entity_type") == "PRODUCT"
+        and row.get("identity_level") == "OFFERING"
+        and str(row.get("canonical_entity_id")) == offering_id
+    ]
+    if not matching_offering_rows:
+        raise ProductDiscoveryError(
+            "INCLUDE_RESOLVED capture lacks a compatible exact-universe PRODUCT/OFFERING registry projection"
+        )
+
+    try:
+        target_view_ids = population_view_identity_ids(
+            compatible_rows,
+            str(capture["population_view_id"]),
+        )
+    except ProductRegistryError as exc:
+        raise ProductDiscoveryError(f"Target-view Product Registry qualification failed: {exc}") from exc
+
+    frame_eligible = bool(frame["capture_estimation_eligible"])
+    return frame_eligible and offering_id in target_view_ids
+
+
+def validate_authoritative_capture_estimation_eligibility(
+    capture: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> bool:
+    """Require stored capture eligibility to equal the machine-derived value."""
+
+    derived: bool = derive_capture_estimation_eligibility(capture, frame, registry_rows, universe)
+    stored = capture.get("capture_estimation_eligible")
+    if not isinstance(stored, bool) or stored != derived:
+        raise ProductDiscoveryError(
+            "capture_estimation_eligible does not match frame and target-view Product Registry qualification"
+        )
+    return derived
+
+
+def derive_round_start_known_identity_ids(
+    registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> frozenset[str]:
+    """Derive the canonical PRODUCT/OFFERING discovery baseline from a registry snapshot.
+
+    The snapshot is an identity-discovery baseline, not a target-population
+    denominator: currentness, lifecycle and A-P1 qualification are deliberately
+    not used here.
+    """
+
+    _validate_registry_rows_against_analysis_universe(registry_rows, universe)
+    return frozenset(
+        str(row["canonical_entity_id"])
+        for row in registry_rows
+        if row.get("canonical_entity_type") == "PRODUCT"
+        and row.get("identity_level") == "OFFERING"
+        and row.get("identity_state") == "RESOLVED"
+    )
+
+
+def validate_run_known_identity_baseline(
+    run: Mapping[str, Any],
+    round_start_registry_rows: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> frozenset[str]:
+    """Bind a run to the canonical OFFERING set in its governed round-start snapshot."""
+
+    _validate_exact_release_a_analysis_universe(universe)
+    validate_run_against_analysis_universe(run, universe)
+    known = derive_round_start_known_identity_ids(round_start_registry_rows, universe)
+    expected = identity_set_digest(known)
+    if str(run["round_id"]) == "R1" and expected != universe["initial_known_identity_set_sha256"]:
+        raise ProductDiscoveryError(
+            "R1 round-start registry snapshot does not reproduce the frozen initial known-identity authority"
+        )
+    if run["known_identity_set_sha256"] != expected:
+        raise ProductDiscoveryError(
+            "known_identity_set_sha256 does not match the governed round-start canonical OFFERING registry snapshot"
+        )
+    return known
+
+
+def round_summary_sequence_sha256(round_summaries: Sequence[Mapping[str, Any]]) -> str:
+    """Digest the exact ordered round-summary evidence sequence."""
+
+    encoded = json.dumps(
+        [dict(summary) for summary in round_summaries],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+AUTHORITATIVE_STOP_EVIDENCE_VERSION = "A2_AUTHORITATIVE_STOP_EVIDENCE_v1.0"
+AUTHORITATIVE_STOP_CONDITIONS = frozenset(
+    {
+        "CONTINUE",
+        "MARGINAL_YIELD_SEQUENCE",
+        "SOURCE_EXHAUSTED",
+        "BUDGET_LIMIT_REACHED",
+        "UNRESOLVED_SOURCE_BARRIER",
+    }
+)
+
+
+def authoritative_stop_evidence_id(evidence: Mapping[str, Any]) -> str:
+    """Return the deterministic identity of a typed A2 stop-evidence record."""
+
+    material = {key: value for key, value in evidence.items() if key != "evidence_id"}
+    encoded = json.dumps(
+        material,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return "ASE-" + hashlib.sha256(encoded).hexdigest()
+
+
+def validate_authoritative_stop_evidence(
+    evidence: Mapping[str, Any],
+    run: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    universe: Mapping[str, Any],
+) -> None:
+    """Validate typed, digest-bound execution evidence used for stop derivation."""
+
+    _validate_exact_release_a_analysis_universe(universe)
+    validate_run_against_analysis_universe(run, universe)
+    validate_discovery_frame(frame)
+    required = {
+        "evidence_id",
+        "evidence_version",
+        "analysis_universe_id",
+        "frame_id",
+        "through_round_id",
+        "completed_round_ids",
+        "round_summaries_sha256",
+        "terminal_condition",
+        "supporting_artifacts",
+    }
+    missing = sorted(required - set(evidence))
+    if missing:
+        raise ProductDiscoveryError(f"Authoritative stop evidence missing fields: {missing!r}")
+    if evidence["evidence_version"] != AUTHORITATIVE_STOP_EVIDENCE_VERSION:
+        raise ProductDiscoveryError("Authoritative stop evidence version does not match the frozen v1.0 contract")
+    if evidence["evidence_id"] != authoritative_stop_evidence_id(evidence):
+        raise ProductDiscoveryError("Authoritative stop evidence_id does not match its deterministic content")
+    if evidence["analysis_universe_id"] != universe["analysis_universe_id"]:
+        raise ProductDiscoveryError("Authoritative stop evidence does not bind the exact A2 analysis universe")
+    if evidence["frame_id"] != run["frame_id"] or evidence["frame_id"] != frame["frame_id"]:
+        raise ProductDiscoveryError("Authoritative stop evidence frame_id does not match the run/frame")
+    if evidence["through_round_id"] != run["round_id"]:
+        raise ProductDiscoveryError("Authoritative stop evidence through_round_id does not match the run")
+
+    completed = evidence["completed_round_ids"]
+    if not isinstance(completed, list) or any(not isinstance(value, str) or not value for value in completed):
+        raise ProductDiscoveryError("Authoritative stop evidence completed_round_ids must be non-empty strings")
+    if len(set(completed)) != len(completed):
+        raise ProductDiscoveryError("Authoritative stop evidence completed_round_ids must be unique")
+    for summary in round_summaries:
+        if summary.get("frame_id") != frame["frame_id"]:
+            raise ProductDiscoveryError(
+                "Authoritative stop-evidence round summary frame_id does not match discovery frame"
+            )
+    actual_round_ids = [str(summary.get("round_id")) for summary in round_summaries]
+    if list(completed) != actual_round_ids:
+        raise ProductDiscoveryError(
+            "Ordered round summaries do not match the digest-bound authoritative completed-round sequence"
+        )
+    if not actual_round_ids or actual_round_ids[-1] != str(run["round_id"]):
+        raise ProductDiscoveryError("Authoritative round-summary evidence must terminate at the current run round_id")
+    through_round_id = str(run["round_id"])
+    if not through_round_id.startswith("R") or not through_round_id[1:].isdigit() or int(through_round_id[1:]) < 1:
+        raise ProductDiscoveryError("Authoritative A2 run round_id must use the contiguous R1..Rn convention")
+    expected_round_ids = [f"R{index}" for index in range(1, int(through_round_id[1:]) + 1)]
+    if actual_round_ids != expected_round_ids:
+        raise ProductDiscoveryError(
+            "Authoritative stop evidence must contain the complete contiguous R1..Rn execution history"
+        )
+    if evidence["round_summaries_sha256"] != round_summary_sequence_sha256(round_summaries):
+        raise ProductDiscoveryError("Authoritative stop evidence round-summary digest mismatch")
+
+    condition = evidence["terminal_condition"]
+    if condition not in AUTHORITATIVE_STOP_CONDITIONS:
+        raise ProductDiscoveryError("Unknown authoritative stop-evidence terminal_condition")
+
+    artifacts = evidence["supporting_artifacts"]
+    if not isinstance(artifacts, list) or not artifacts:
+        raise ProductDiscoveryError("Authoritative stop evidence requires digest-bound supporting_artifacts")
+    seen_refs: set[str] = set()
+    for artifact in artifacts:
+        if not isinstance(artifact, Mapping):
+            raise ProductDiscoveryError("Authoritative stop supporting artifacts must be objects")
+        ref = str(artifact.get("ref", "")).strip()
+        digest = str(artifact.get("sha256", "")).strip()
+        if not ref or ref in seen_refs:
+            raise ProductDiscoveryError("Authoritative stop supporting artifacts require unique non-empty refs")
+        seen_refs.add(ref)
+        if len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest):
+            raise ProductDiscoveryError("Authoritative stop supporting artifact sha256 must be 64 lowercase hex chars")
+
+    mode = cast(Mapping[str, Any], frame["stopping_rule"])["mode"]
+    if condition == "SOURCE_EXHAUSTED" and mode != "BOUNDED_SOURCE_EXHAUSTION":
+        raise ProductDiscoveryError("SOURCE_EXHAUSTED evidence is valid only for a bounded-source frame")
+    if condition == "MARGINAL_YIELD_SEQUENCE" and mode != "MARGINAL_YIELD":
+        raise ProductDiscoveryError("MARGINAL_YIELD_SEQUENCE evidence is valid only for a marginal-yield frame")
+
+
+def derive_authoritative_run_stop_state(
+    run: Mapping[str, Any],
+    frame: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    stop_evidence: Mapping[str, Any],
+    universe: Mapping[str, Any],
+) -> str:
+    """Derive a run stop state from the frozen rule and typed execution evidence."""
+
+    validate_authoritative_stop_evidence(stop_evidence, run, frame, round_summaries, universe)
+    condition = str(stop_evidence["terminal_condition"])
+    derived = evaluate_frame_stop(
+        frame,
+        round_summaries,
+        source_exhausted=condition == "SOURCE_EXHAUSTED",
+        budget_limit_reached=condition == "BUDGET_LIMIT_REACHED",
+        unresolved_source_barrier=condition == "UNRESOLVED_SOURCE_BARRIER",
+    )
+    if derived == "SATURATION_UNDER_DECLARED_PROTOCOL" and condition != "MARGINAL_YIELD_SEQUENCE":
+        raise ProductDiscoveryError(
+            "Marginal-yield saturation requires MARGINAL_YIELD_SEQUENCE authoritative stop evidence"
+        )
+    return derived
+
+
+def validate_authoritative_discovery_run(
+    run: Mapping[str, Any],
+    captures: Sequence[Mapping[str, Any]],
+    frame: Mapping[str, Any],
+    *,
+    analysis_universe: Mapping[str, Any],
+    registry_rows: Sequence[Mapping[str, Any]],
+    round_start_registry_rows: Sequence[Mapping[str, Any]],
+    declared_round_summary: Mapping[str, Any],
+    round_summaries: Sequence[Mapping[str, Any]],
+    stop_evidence: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Validate one authoritative A2 run across universe, identity, eligibility and stop semantics."""
+
+    _validate_exact_release_a_analysis_universe(analysis_universe)
+    validate_run_against_analysis_universe(run, analysis_universe)
+    validate_run_against_captures(run, captures, frame)
+
+    for capture in captures:
+        validate_capture_against_analysis_universe(capture, analysis_universe)
+        validate_authoritative_capture_estimation_eligibility(
+            capture,
+            frame,
+            registry_rows,
+            analysis_universe,
+        )
+
+    known = validate_run_known_identity_baseline(
+        run,
+        round_start_registry_rows,
+        analysis_universe,
+    )
+    derived_summary = summarize_discovery_round(
+        captures,
+        known_identity_ids_before=known,
+    )
+    if dict(declared_round_summary) != derived_summary:
+        raise ProductDiscoveryError(
+            "Declared round summary does not match accounting derived from the governed round-start identity snapshot"
+        )
+
+    if not round_summaries or dict(round_summaries[-1]) != derived_summary:
+        raise ProductDiscoveryError(
+            "Stop-evidence round-summary tail does not match the authoritative current-round summary"
+        )
+
+    derived_stop = derive_authoritative_run_stop_state(
+        run,
+        frame,
+        round_summaries,
+        stop_evidence,
+        analysis_universe,
+    )
+    if run["stop_state"] != derived_stop:
+        raise ProductDiscoveryError(
+            "Stored discovery-run stop_state does not match the state derived from frozen stopping-rule evidence"
+        )
+    if not str(run.get("stop_reason", "")).strip():
+        raise ProductDiscoveryError("Authoritative discovery run requires a non-empty stop_reason")
+
+    return derived_summary
