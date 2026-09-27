@@ -249,8 +249,13 @@ def test_manifest_rejects_source_packet_binding_and_accounting_drift() -> None:
 
     bad_binding = copy.deepcopy(manifest)
     bad_binding["source_packet_bindings"][0]["source_packet_sha256"] = "0" * 64
-    with pytest.raises(ProductDiscoveryError, match="source packet"):
+    with pytest.raises(ProductDiscoveryError, match="source_packet_bindings"):
         r1.compile_r1_source_records(bad_binding)
+
+    omitted_packet = copy.deepcopy(manifest)
+    omitted_packet["source_packet_bindings"].pop()
+    with pytest.raises(ProductDiscoveryError, match="complete immutable A2 capture-packet universe"):
+        r1.compile_r1_source_records(omitted_packet)
 
     bad_accounting = copy.deepcopy(manifest)
     bad_accounting["accounting"]["raw_capture_row_count"] = 1334
