@@ -247,7 +247,7 @@ def _decision_role_counts(route_table: Sequence[Mapping[str, Any]]) -> dict[str,
 
 
 def derive_execution_unit_routing() -> dict[str, Any]:
-    rule = load_execution_unit_routing_rule()
+    load_execution_unit_routing_rule()
     worklist = load_decision_resolution_worklist()
     if worklist["worklist_sha256"] != R1_4_WORKLIST_SHA256:
         raise ProductDiscoveryError("R1.6 does not bind the exact R1.4 worklist")
