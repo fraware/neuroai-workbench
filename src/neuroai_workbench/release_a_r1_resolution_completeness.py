@@ -299,14 +299,14 @@ def derive_resolution_completeness_checkpoint() -> dict[str, Any]:
 
     frame_register = _load(FRAME_REGISTER_RESOURCE)
     frame_by_id = {
-        str(frame["frame_id"]): cast(Mapping[str, Any], frame)
+        str(frame["frame_id"]): frame
         for frame in cast(list[Mapping[str, Any]], frame_register["frames"])
     }
     mechanical = cast(Mapping[str, Any], rule["mechanical_rule"])
     threshold = float(mechanical["maximum_marginal_new_identity_yield"])
 
     shard_by_frame = {
-        str(binding["frame_id"]): cast(Mapping[str, Any], binding)
+        str(binding["frame_id"]): binding
         for binding in cast(list[Mapping[str, Any]], manifest["source_ledger_shards"])
     }
 
