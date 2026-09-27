@@ -17,7 +17,7 @@ from importlib.resources import files
 from typing import Any, cast
 
 from neuroai_workbench.a2_bounded_frame_checkpoint import _packet_content_sha256
-from neuroai_workbench.a7_population_estimation import CAPTURE_PROJECTION_FIELDS, project_capture_record
+from neuroai_workbench.a7_population_estimation import project_capture_record
 from neuroai_workbench.product_discovery_frames import (
     A2_JURISDICTION_SCOPE,
     A2_KNOWLEDGE_TIME_CUTOFF,
