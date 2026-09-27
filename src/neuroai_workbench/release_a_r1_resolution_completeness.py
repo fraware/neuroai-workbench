@@ -31,8 +31,8 @@ FRAME_REGISTER_RESOURCE = "PRODUCT_DISCOVERY_FRAME_REGISTER.v1.0.json"
 
 RULE_ID = "RELEASE_A_R1_RESOLUTION_COMPLETENESS_RULE_v1.0"
 CHECKPOINT_ID = "RELEASE_A_R1_RESOLUTION_COMPLETENESS_CHECKPOINT_v1.0"
-RULE_SHA256 = "7075e7b7759bfbf3bcfa17bbc8eff6feae3793d483596ad37d2160ad345c884c"
-CHECKPOINT_SHA256 = "c952a3d74c6d8f81dac8f6ac480b2645c029c9d533e50c5c8d7d153d015a22ca"
+RULE_SHA256 = "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1"
+CHECKPOINT_SHA256 = "500bcd90ad59b4320a1f2a9eec857f81ce83b45e501f1d38853e8ae8ea37485d"
 SOURCE_WORKBENCH_MAIN_COMMIT = "2ef774f4b8ec0df255c11908a5847e2edd11dbd8"
 WORLD_TIME_CUTOFF = "2026-09-24"
 KNOWLEDGE_TIME_CUTOFF = "2026-10-24T23:59:59Z"
@@ -104,6 +104,7 @@ def validate_resolution_completeness_rule(rule: Mapping[str, Any]) -> None:
 
     mechanical = rule.get("mechanical_rule")
     expected_mechanical = {
+        "mode": "MARGINAL_YIELD",
         "minimum_completed_rounds": 3,
         "consecutive_low_yield_rounds": 2,
         "maximum_marginal_new_identity_yield": 0.05,
