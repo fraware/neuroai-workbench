@@ -218,7 +218,8 @@ def test_cluster_builder_keeps_noncanonical_uncertainty_and_terminal_exclusions_
     assert unresolved["noncanonical_cluster"] is True
     assert unresolved["outcomes"] == ["ABSTAIN", "UNRESOLVED_IDENTITY"]
     assert unresolved["could_change_a_p1_membership"] is True
-    assert unresolved["uncertainty_cardinality_class"] == "UNRESOLVED_CARDINALITY_UNPROVEN"
+    assert unresolved["source_or_abstention_barrier"] is True
+    assert unresolved["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
 
     terminal = by_state["TERMINAL_EXCLUDED"]
     assert terminal["identity_resolution_state"] == "NOT_REQUIRED_EXCLUDED"
