@@ -958,9 +958,7 @@ def _validate_ordered_round_summaries(
     expected = [str(round_id) for round_id in expected_completed_round_ids]
     actual = [str(summary.get("round_id")) for summary in round_summaries]
     if actual != expected:
-        raise ProductDiscoveryError(
-            "Ordered round summaries do not match the complete expected round-id sequence"
-        )
+        raise ProductDiscoveryError("Ordered round summaries do not match the complete expected round-id sequence")
     if len(set(expected)) != len(expected):
         raise ProductDiscoveryError("Expected completed round IDs must be unique")
     if not actual or actual[-1] != str(run["round_id"]):
