@@ -350,7 +350,10 @@ def test_source_completion_rejects_duplicate_extracted_leads() -> None:
         extracted_leads=[lead, copy.deepcopy(lead)],
     )
 
-    with pytest.raises(routing.ProductDiscoveryError, match="lead IDs must be unique|duplicate extracted candidate lead"):
+    with pytest.raises(
+        routing.ProductDiscoveryError,
+        match="lead IDs must be unique|duplicate extracted candidate lead",
+    ):
         routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
 
 
