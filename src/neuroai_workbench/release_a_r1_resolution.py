@@ -44,8 +44,8 @@ R1_CLUSTER_LEDGER_RESOURCE = "RELEASE_A_R1_CANDIDATE_RESOLUTION_CLUSTERS.v1.0.js
 
 R1_PRODUCT_REGISTRY_CANONICAL_SHA256 = "d829de5785254a65e06f12d07059eb8e2b092d43a8ffb4c6a11a34febf1865cf"
 R1_DENOMINATOR_SHA256 = "d6b495ce4957e909f29696fb8ea4db44f7b3f346aa673538ad219ee995fcc514"
-R1_LEDGER_MANIFEST_SHA256 = "40dbf7038c9ae6457124952c2dc12f27c8edf30953ae1262b6502e066b0ad88e"
-R1_CLUSTER_LEDGER_SHA256 = "f08dee313941fb868744340319e5fb36c401b9ca4d76fbc4171a450d397cf71e"
+R1_LEDGER_MANIFEST_SHA256 = "1b2c5a893794473a444822b2ccb4052b05baddfa79968ff94fe4a9793f17f6bd"
+R1_CLUSTER_LEDGER_SHA256 = "2f7e874a71d3146df559671b76bfb2f4d364e40f19a73be609b076c7b2db325b"
 
 R1_CLUSTERING_POLICY_ID = "R1_EXACT_NORMALIZED_KEY_NONCANONICAL_CLUSTERING_v1.0"
 UNRESOLVED_OUTCOMES = frozenset({"UNRESOLVED_IDENTITY", "BORDERLINE", "ABSTAIN", "FAILED_INACCESSIBLE"})
@@ -195,12 +195,12 @@ def candidate_cluster_id(row: Mapping[str, Any]) -> str:
 def derive_r1_source_record(row: Mapping[str, Any]) -> dict[str, Any]:
     outcome = str(row["outcome"])
     unresolved = outcome in UNRESOLVED_OUTCOMES
-    cardinality_bounded = outcome in {"UNRESOLVED_IDENTITY", "BORDERLINE"}
+    cardinality_unproven = outcome in {"UNRESOLVED_IDENTITY", "BORDERLINE"}
     source_barrier = outcome in {"ABSTAIN", "FAILED_INACCESSIBLE"}
     uncertainty_cardinality_class = (
-        "ONE_OBJECT_UPPER_BOUND"
-        if cardinality_bounded
-        else ("UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER" if source_barrier else "TERMINAL")
+        "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
+        if source_barrier
+        else ("UNRESOLVED_CARDINALITY_UNPROVEN" if cardinality_unproven else "TERMINAL")
     )
     canonical_id = row.get("canonical_offering_id")
     identity_state = "RESOLVED_CANONICAL" if canonical_id else "UNRESOLVED"
@@ -261,7 +261,7 @@ def derive_r1_source_record(row: Mapping[str, Any]) -> dict[str, Any]:
         "could_change_a3_increment": unresolved and row["frame_id"] == "F6",
         "could_change_a4_increment": unresolved and row["frame_id"] == "F8",
         "could_change_marginal_yield_stop": unresolved and row["frame_id"] in MARGINAL_YIELD_FRAMES,
-        "cardinality_bounded_candidate_object": cardinality_bounded,
+        "cardinality_bounded_candidate_object": False,
         "source_or_abstention_barrier": source_barrier,
         "uncertainty_cardinality_class": uncertainty_cardinality_class,
     }
@@ -351,11 +351,13 @@ def build_r1_candidate_clusters(records: Sequence[Mapping[str, Any]]) -> list[di
         canonical_ids = sorted({str(row["canonical_offering_id"]) for row in rows if row.get("canonical_offering_id")})
         unresolved = any(outcome in UNRESOLVED_OUTCOMES for outcome in outcomes)
         source_barrier = "ABSTAIN" in outcomes or "FAILED_INACCESSIBLE" in outcomes
-        cardinality_bounded = not source_barrier and ("UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes)
+        cardinality_unproven = not source_barrier and (
+            "UNRESOLVED_IDENTITY" in outcomes or "BORDERLINE" in outcomes
+        )
         uncertainty_cardinality_class = (
             "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
             if source_barrier
-            else ("ONE_OBJECT_UPPER_BOUND" if cardinality_bounded else "TERMINAL")
+            else ("UNRESOLVED_CARDINALITY_UNPROVEN" if cardinality_unproven else "TERMINAL")
         )
 
         if canonical_ids:
@@ -409,7 +411,7 @@ def build_r1_candidate_clusters(records: Sequence[Mapping[str, Any]]) -> list[di
                 "could_change_a3_increment": any(bool(row["could_change_a3_increment"]) for row in rows),
                 "could_change_a4_increment": any(bool(row["could_change_a4_increment"]) for row in rows),
                 "could_change_marginal_yield_stop": any(bool(row["could_change_marginal_yield_stop"]) for row in rows),
-                "cardinality_bounded_candidate_object": cardinality_bounded,
+                "cardinality_bounded_candidate_object": False,
                 "source_or_abstention_barrier": source_barrier,
                 "uncertainty_cardinality_class": uncertainty_cardinality_class,
             }
@@ -531,12 +533,21 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
         "cardinality_bounded_unresolved_cluster_count": sum(
             cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND" for cluster in derived_clusters
         ),
+        "cardinality_unproven_unresolved_cluster_count": sum(
+            cluster["uncertainty_cardinality_class"] == "UNRESOLVED_CARDINALITY_UNPROVEN"
+            for cluster in derived_clusters
+        ),
         "unbounded_source_or_abstention_barrier_cluster_count": sum(
             cluster["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
             for cluster in derived_clusters
         ),
         "cardinality_bounded_clusters_capable_of_changing_marginal_yield_stop": sum(
             cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND"
+            and bool(cluster["could_change_marginal_yield_stop"])
+            for cluster in derived_clusters
+        ),
+        "cardinality_unproven_clusters_capable_of_changing_marginal_yield_stop": sum(
+            cluster["uncertainty_cardinality_class"] == "UNRESOLVED_CARDINALITY_UNPROVEN"
             and bool(cluster["could_change_marginal_yield_stop"])
             for cluster in derived_clusters
         ),
@@ -550,6 +561,11 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
             and bool(cluster["could_change_a3_increment"])
             for cluster in derived_clusters
         ),
+        "cardinality_unproven_clusters_capable_of_changing_a3_increment": sum(
+            cluster["uncertainty_cardinality_class"] == "UNRESOLVED_CARDINALITY_UNPROVEN"
+            and bool(cluster["could_change_a3_increment"])
+            for cluster in derived_clusters
+        ),
         "unbounded_barrier_clusters_capable_of_changing_a3_increment": sum(
             cluster["uncertainty_cardinality_class"] == "UNBOUNDED_SOURCE_OR_ABSTENTION_BARRIER"
             and bool(cluster["could_change_a3_increment"])
@@ -557,6 +573,11 @@ def validate_r1_candidate_resolution_ledger(manifest: Mapping[str, Any]) -> None
         ),
         "cardinality_bounded_clusters_capable_of_changing_a4_increment": sum(
             cluster["uncertainty_cardinality_class"] == "ONE_OBJECT_UPPER_BOUND"
+            and bool(cluster["could_change_a4_increment"])
+            for cluster in derived_clusters
+        ),
+        "cardinality_unproven_clusters_capable_of_changing_a4_increment": sum(
+            cluster["uncertainty_cardinality_class"] == "UNRESOLVED_CARDINALITY_UNPROVEN"
             and bool(cluster["could_change_a4_increment"])
             for cluster in derived_clusters
         ),
