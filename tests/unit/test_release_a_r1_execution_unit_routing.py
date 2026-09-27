@@ -228,3 +228,241 @@ def test_derive_rejects_missing_capture_record(monkeypatch: pytest.MonkeyPatch) 
 def test_checkpoint_contains_no_mixed_route_in_current_state() -> None:
     checkpoint = routing.load_execution_unit_routing()
     assert checkpoint["route_counts"][routing.MIXED_OR_UNRESOLVED_UNIT_REVIEW] == 0
+
+
+def _route_item(execution_route: str) -> dict[str, object]:
+    checkpoint = routing.load_execution_unit_routing()
+    return next(item for item in checkpoint["route_table"] if item["execution_route"] == execution_route)
+
+
+def _evidence() -> list[dict[str, object]]:
+    return [
+        {
+            "evidence_ref": "EVIDENCE-1",
+            "source_locator": "https://example.invalid/source",
+            "knowledge_observed_at": "2026-09-27T00:00:00Z",
+            "sha256": "1" * 64,
+        }
+    ]
+
+
+def _lead(work_item_id: str, *, candidate_key: str = "Example::Candidate") -> dict[str, object]:
+    source_observation_ref = "OBS-R1-TEST-1"
+    return {
+        "lead_id": routing.extracted_lead_id(work_item_id, candidate_key, source_observation_ref),
+        "candidate_key": candidate_key,
+        "source_observation_ref": source_observation_ref,
+        "evidence_ref": "EVIDENCE-1",
+        "canonical_offering_id": None,
+    }
+
+
+def _route_execution_record(
+    execution_route: str,
+    completion_state: str,
+    *,
+    extracted_leads: list[dict[str, object]] | None = None,
+    source_scope_exhausted: bool = False,
+    finite_cardinality_upper_bound: int | None = None,
+    review_state: str = "MACHINE_PROVISIONAL",
+    reviewer_id: str | None = None,
+) -> dict[str, object]:
+    item = _route_item(execution_route)
+    record: dict[str, object] = {
+        "execution_record_id": "",
+        "work_item_id": item["work_item_id"],
+        "execution_route": execution_route,
+        "completion_state": completion_state,
+        "review_state": review_state,
+        "reviewer_id": reviewer_id,
+        "evidence": _evidence(),
+        "extracted_leads": extracted_leads or [],
+        "source_scope_exhausted": source_scope_exhausted,
+        "finite_cardinality_upper_bound": finite_cardinality_upper_bound,
+        "global_source_exhaustion_claimed": False,
+    }
+    record["execution_record_id"] = routing.route_execution_record_id(record)
+    return record
+
+
+def _reseal_execution_record(record: dict[str, object]) -> None:
+    record["execution_record_id"] = routing.route_execution_record_id(record)
+
+
+def test_source_zero_lead_query_does_not_imply_exhaustion() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+
+    routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+    assert record["source_scope_exhausted"] is False
+    assert record["global_source_exhaustion_claimed"] is False
+
+
+def test_source_exhaustion_requires_human_review() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        source_scope_exhausted=True,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="requires human review"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+    reviewed = copy.deepcopy(record)
+    reviewed["review_state"] = "HUMAN_REVIEWED"
+    reviewed["reviewer_id"] = "reviewer-1"
+    _reseal_execution_record(reviewed)
+    routing.validate_route_execution_record(reviewed, routing_checkpoint=checkpoint)
+
+
+def test_source_specific_finite_cardinality_requires_human_review() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    lead = _lead(str(item["work_item_id"]))
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+        extracted_leads=[lead],
+        finite_cardinality_upper_bound=1,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="requires human review"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+    reviewed = copy.deepcopy(record)
+    reviewed["review_state"] = "HUMAN_REVIEWED"
+    reviewed["reviewer_id"] = "reviewer-1"
+    _reseal_execution_record(reviewed)
+    routing.validate_route_execution_record(reviewed, routing_checkpoint=checkpoint)
+
+
+def test_source_completion_rejects_duplicate_extracted_leads() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    lead = _lead(str(item["work_item_id"]))
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+        extracted_leads=[lead, copy.deepcopy(lead)],
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="lead IDs must be unique|duplicate extracted candidate lead"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_extracted_lead_cannot_allocate_canonical_identity() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.SOURCE_SURFACE_RESOLUTION)
+    lead = _lead(str(item["work_item_id"]))
+    lead["canonical_offering_id"] = "PRD-FORBIDDEN"
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+        extracted_leads=[lead],
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="cannot allocate canonical identity"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_literature_record_requires_extraction_before_product_lead() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.LITERATURE_RECORD_EXTRACTION)
+    lead = _lead(str(item["work_item_id"]), candidate_key="Article-derived::Offering")
+    record = _route_execution_record(
+        routing.LITERATURE_RECORD_EXTRACTION,
+        "RECORD_EXTRACTED_WITH_OFFERING_LEADS",
+        extracted_leads=[lead],
+    )
+    routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+    invalid = copy.deepcopy(record)
+    invalid["extracted_leads"] = []
+    _reseal_execution_record(invalid)
+    with pytest.raises(routing.ProductDiscoveryError, match="requires at least one extracted lead"):
+        routing.validate_route_execution_record(invalid, routing_checkpoint=checkpoint)
+
+
+def test_literature_record_cannot_assert_source_exhaustion_or_cardinality() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.LITERATURE_RECORD_EXTRACTION,
+        "RECORD_EXTRACTED_ZERO_OFFERING_LEADS",
+        source_scope_exhausted=True,
+    )
+
+    with pytest.raises(routing.ProductDiscoveryError, match="cannot assert source exhaustion or cardinality"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_global_exhaustion_claim() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    record["global_source_exhaustion_claimed"] = True
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="cannot claim global source exhaustion"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_rejects_post_knowledge_cutoff_evidence() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[0]["knowledge_observed_at"] = "2026-10-25T00:00:00Z"
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="exceeds the frozen knowledge-time cutoff"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_must_match_frozen_route() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    record["execution_route"] = routing.LITERATURE_RECORD_EXTRACTION
+    record["completion_state"] = "RECORD_EXTRACTED_ZERO_OFFERING_LEADS"
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="does not match the frozen execution route"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_candidate_work_item_cannot_use_route_execution_contract() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = _route_item(routing.EMPIRICAL_CANDIDATE_ADJUDICATION)
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    record["work_item_id"] = item["work_item_id"]
+    record["execution_route"] = routing.EMPIRICAL_CANDIDATE_ADJUDICATION
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="existing governed contracts"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_route_execution_record_id_is_content_bound() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )
+    record["notes"] = "changed without resealing"
+
+    with pytest.raises(routing.ProductDiscoveryError, match="execution_record_id does not match"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
