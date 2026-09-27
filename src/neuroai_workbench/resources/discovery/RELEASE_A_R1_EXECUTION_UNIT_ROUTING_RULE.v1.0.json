@@ -42,7 +42,8 @@
     "route_execution_record_leads_must_be_unique": true,
     "route_execution_record_evidence_must_precede_knowledge_cutoff": true,
     "route_execution_record_requires_explicit_capture_coverage": true,
-    "work_item_completion_claim_requires_full_capture_coverage": true
+    "work_item_completion_claim_requires_full_capture_coverage": true,
+    "route_execution_record_collections_require_canonical_order": true
   },
   "finality": {
     "checkpoint_only_until_knowledge_window_disposition": true,
@@ -54,5 +55,5 @@
     "publication_authority": false
   },
   "boundary": "This rule routes the frozen R1.4 worklist by empirical unit so source/query surfaces and literature records cannot be executed as product candidates. It preserves all upstream artifacts and creates no product adjudication, canonical identity, final denominator, completeness claim, downstream release authority or publication authority.",
-  "rule_sha256": "1e02d8fcdf7897dd209e53fa793d5da8de52209a12bc7fabe0605a3af1a00ebb"
+  "rule_sha256": "d974e1d616d4b7cee6b4eff1272d0e92213553fb66a02933cbdd2e4be6c8e079"
 }
