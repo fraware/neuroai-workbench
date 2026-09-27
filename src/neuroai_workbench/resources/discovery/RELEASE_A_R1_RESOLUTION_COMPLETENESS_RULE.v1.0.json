@@ -1,6 +1,6 @@
 {
   "rule_id": "RELEASE_A_R1_RESOLUTION_COMPLETENESS_RULE_v1.0",
-  "rule_sha256": "7075e7b7759bfbf3bcfa17bbc8eff6feae3793d483596ad37d2160ad345c884c",
+  "rule_sha256": "8ef1b0700e67a5d3737ae56f22e530cd239cb8ed9bdaacf3c1b2dc4ba5255cb1",
   "version": "1.0",
   "status": "FROZEN",
   "frozen_on": "2026-09-27",
@@ -17,6 +17,7 @@
     "F11"
   ],
   "mechanical_rule": {
+    "mode": "MARGINAL_YIELD",
     "minimum_completed_rounds": 3,
     "consecutive_low_yield_rounds": 2,
     "maximum_marginal_new_identity_yield": 0.05,
