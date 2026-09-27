@@ -925,3 +925,51 @@ def test_unresolved_source_and_record_routes_validate_with_explicit_barrier_evid
         "RECORD_EXTRACTION_UNRESOLVED",
     )
     routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_source_exhaustion_requires_support_for_every_covered_capture() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
+    )
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+        item=item,
+        source_scope_exhausted=True,
+        review_state="HUMAN_REVIEWED",
+        reviewer_id="reviewer-1",
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[-1]["supported_propositions"] = ["SOURCE_QUERY_ZERO_LEADS"]
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="per-capture source-scope exhaustion evidence"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
+
+
+def test_finite_cardinality_requires_support_for_every_covered_capture() -> None:
+    checkpoint = routing.load_execution_unit_routing()
+    item = next(
+        candidate
+        for candidate in checkpoint["route_table"]
+        if candidate["execution_route"] == routing.SOURCE_SURFACE_RESOLUTION and len(candidate["capture_ids"]) > 1
+    )
+    record = _route_execution_record(
+        routing.SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+        item=item,
+        finite_cardinality_upper_bound=0,
+        review_state="HUMAN_REVIEWED",
+        reviewer_id="reviewer-1",
+    )
+    evidence = copy.deepcopy(record["evidence"])
+    evidence[-1]["supported_propositions"] = ["SOURCE_QUERY_ZERO_LEADS"]
+    record["evidence"] = evidence
+    _reseal_execution_record(record)
+
+    with pytest.raises(routing.ProductDiscoveryError, match="per-capture cardinality-specific evidence"):
+        routing.validate_route_execution_record(record, routing_checkpoint=checkpoint)
