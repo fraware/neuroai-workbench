@@ -359,7 +359,9 @@ def validate_route_execution_record(
         raise ProductDiscoveryError("R1.6 bounded route execution cannot claim global source exhaustion")
 
     finite_bound = record["finite_cardinality_upper_bound"]
-    if finite_bound is not None and (not isinstance(finite_bound, int) or isinstance(finite_bound, bool) or finite_bound < 0):
+    if finite_bound is not None and (
+        not isinstance(finite_bound, int) or isinstance(finite_bound, bool) or finite_bound < 0
+    ):
         raise ProductDiscoveryError("R1.6 finite cardinality upper bound must be a non-negative integer or null")
     if finite_bound is not None and len(leads) > finite_bound:
         raise ProductDiscoveryError("R1.6 extracted leads exceed the claimed finite cardinality upper bound")
@@ -383,7 +385,9 @@ def validate_route_execution_record(
                 raise ProductDiscoveryError("R1.6 finite-cardinality completion requires an explicit upper bound")
         else:
             if source_scope_exhausted or finite_bound is not None:
-                raise ProductDiscoveryError("R1.6 unresolved source barrier cannot assert exhaustion or finite cardinality")
+                raise ProductDiscoveryError(
+                    "R1.6 unresolved source barrier cannot assert exhaustion or finite cardinality"
+                )
 
         if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
             raise ProductDiscoveryError("R1.6 source exhaustion or finite cardinality requires human review")
