@@ -83,6 +83,24 @@ LITERATURE_RECORD_COMPLETION_STATES = (
     "RECORD_EXTRACTION_UNRESOLVED",
 )
 ROUTE_EXECUTION_REVIEW_STATES = frozenset({"HUMAN_REVIEWED", "MACHINE_PROVISIONAL"})
+SOURCE_EVIDENCE_ROLES = frozenset({"SOURCE_QUERY_EXECUTION", "SOURCE_ENUMERATION", "SOURCE_ACCESS_BARRIER"})
+LITERATURE_EVIDENCE_ROLES = frozenset({"RECORD_EXTRACTION", "RECORD_ACCESS_BARRIER"})
+SOURCE_EVIDENCE_PROPOSITIONS = frozenset(
+    {
+        "SOURCE_QUERY_ZERO_LEADS",
+        "SOURCE_QUERY_WITH_LEADS",
+        "SOURCE_SCOPE_EXHAUSTED",
+        "SOURCE_FINITE_CARDINALITY_ESTABLISHED",
+        "SOURCE_BARRIER_UNRESOLVED",
+    }
+)
+LITERATURE_EVIDENCE_PROPOSITIONS = frozenset(
+    {
+        "RECORD_ZERO_OFFERING_LEADS",
+        "RECORD_WITH_OFFERING_LEADS",
+        "RECORD_EXTRACTION_UNRESOLVED",
+    }
+)
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 UNIT_CLASS_TO_ROUTE = {
@@ -228,41 +246,103 @@ def _parse_knowledge_time(value: object) -> datetime:
     return parsed
 
 
-def _validate_route_execution_evidence(evidence: Sequence[Mapping[str, Any]]) -> set[str]:
+def _validate_route_execution_evidence(
+    evidence: Sequence[Mapping[str, Any]],
+    *,
+    route: str,
+    covered_capture_ids: Sequence[str],
+    source_records_by_capture_id: Mapping[str, Mapping[str, Any]],
+) -> tuple[dict[str, Mapping[str, Any]], dict[str, set[str]]]:
+    """Validate evidence and bind every claimed capture to its frozen query/seed provenance."""
+
     if not evidence:
         raise ProductDiscoveryError("R1.6 route execution requires attributable evidence")
 
+    if route == SOURCE_SURFACE_RESOLUTION:
+        allowed_roles = SOURCE_EVIDENCE_ROLES
+        allowed_propositions = SOURCE_EVIDENCE_PROPOSITIONS
+    elif route == LITERATURE_RECORD_EXTRACTION:
+        allowed_roles = LITERATURE_EVIDENCE_ROLES
+        allowed_propositions = LITERATURE_EVIDENCE_PROPOSITIONS
+    else:
+        raise ProductDiscoveryError("R1.6 route execution evidence is only defined for source/record routes")
+
     cutoff = _parse_knowledge_time(KNOWLEDGE_TIME_CUTOFF)
-    evidence_refs: set[str] = set()
-    allowed_fields = {"evidence_ref", "source_locator", "knowledge_observed_at", "sha256"}
+    covered_set = set(covered_capture_ids)
+    evidence_by_ref: dict[str, Mapping[str, Any]] = {}
+    propositions_by_capture: dict[str, set[str]] = {capture_id: set() for capture_id in covered_capture_ids}
+    allowed_fields = {
+        "evidence_ref",
+        "capture_id",
+        "query_or_seed_id",
+        "source_locator",
+        "knowledge_observed_at",
+        "sha256",
+        "evidence_role",
+        "supported_propositions",
+    }
+    evidence_refs_in_order: list[str] = []
+
     for item in evidence:
         if set(item) != allowed_fields:
             raise ProductDiscoveryError("R1.6 route execution evidence fields drift")
+
         evidence_ref = item.get("evidence_ref")
-        source_locator = item.get("source_locator")
         if not isinstance(evidence_ref, str) or not evidence_ref:
             raise ProductDiscoveryError("R1.6 route execution evidence_ref is required")
-        if evidence_ref in evidence_refs:
+        if evidence_ref in evidence_by_ref:
             raise ProductDiscoveryError("R1.6 route execution evidence_ref values must be unique")
-        evidence_refs.add(evidence_ref)
+        evidence_refs_in_order.append(evidence_ref)
+
+        capture_id = item.get("capture_id")
+        if not isinstance(capture_id, str) or capture_id not in covered_set:
+            raise ProductDiscoveryError("R1.6 route execution evidence must bind one covered capture ID")
+        source_record = source_records_by_capture_id.get(capture_id)
+        if source_record is None:
+            raise ProductDiscoveryError("R1.6 route execution evidence references an unknown frozen capture")
+
+        query_or_seed_id = item.get("query_or_seed_id")
+        if query_or_seed_id != source_record.get("query_or_seed_id"):
+            raise ProductDiscoveryError("R1.6 route execution evidence query_or_seed_id drift")
+
+        source_locator = item.get("source_locator")
         if not isinstance(source_locator, str) or not source_locator:
             raise ProductDiscoveryError("R1.6 route execution source_locator is required")
         if _parse_knowledge_time(item.get("knowledge_observed_at")) > cutoff:
             raise ProductDiscoveryError("R1.6 route execution evidence exceeds the frozen knowledge-time cutoff")
+
         sha = item.get("sha256")
         if not isinstance(sha, str) or SHA256_RE.fullmatch(sha) is None:
             raise ProductDiscoveryError("R1.6 route execution evidence requires SHA-256")
 
-    if [str(item["evidence_ref"]) for item in evidence] != sorted(evidence_refs):
+        evidence_role = item.get("evidence_role")
+        if evidence_role not in allowed_roles:
+            raise ProductDiscoveryError("R1.6 route execution evidence role does not match the frozen route")
+
+        propositions_raw = item.get("supported_propositions")
+        if not isinstance(propositions_raw, list) or not propositions_raw:
+            raise ProductDiscoveryError("R1.6 route execution evidence requires supported propositions")
+        propositions = [str(value) for value in propositions_raw]
+        if len(propositions) != len(set(propositions)) or propositions != sorted(propositions):
+            raise ProductDiscoveryError("R1.6 route execution evidence propositions must be unique and canonical")
+        if not set(propositions).issubset(allowed_propositions):
+            raise ProductDiscoveryError("R1.6 route execution evidence proposition does not match the frozen route")
+
+        evidence_by_ref[evidence_ref] = item
+        propositions_by_capture[capture_id].update(propositions)
+
+    if evidence_refs_in_order != sorted(evidence_refs_in_order):
         raise ProductDiscoveryError("R1.6 route execution evidence must use canonical evidence_ref order")
+    if any(not propositions_by_capture[capture_id] for capture_id in covered_capture_ids):
+        raise ProductDiscoveryError("R1.6 every covered capture requires attributable route-execution evidence")
 
-    return evidence_refs
-
-
+    return evidence_by_ref, propositions_by_capture
 def _validate_extracted_leads(
     work_item_id: str,
     leads: Sequence[Mapping[str, Any]],
-    evidence_refs: set[str],
+    evidence_by_ref: Mapping[str, Mapping[str, Any]],
+    *,
+    route: str,
 ) -> None:
     seen_lead_ids: set[str] = set()
     lead_ids_in_order: list[str] = []
@@ -274,6 +354,12 @@ def _validate_extracted_leads(
         "evidence_ref",
         "canonical_offering_id",
     }
+    required_proposition = (
+        "SOURCE_QUERY_WITH_LEADS"
+        if route == SOURCE_SURFACE_RESOLUTION
+        else "RECORD_WITH_OFFERING_LEADS"
+    )
+
     for lead in leads:
         if set(lead) != allowed_fields:
             raise ProductDiscoveryError("R1.6 extracted-lead fields drift")
@@ -284,8 +370,11 @@ def _validate_extracted_leads(
             raise ProductDiscoveryError("R1.6 extracted lead requires candidate_key")
         if not isinstance(source_observation_ref, str) or not source_observation_ref:
             raise ProductDiscoveryError("R1.6 extracted lead requires source_observation_ref")
-        if not isinstance(evidence_ref, str) or evidence_ref not in evidence_refs:
+        if not isinstance(evidence_ref, str) or evidence_ref not in evidence_by_ref:
             raise ProductDiscoveryError("R1.6 extracted lead must bind route-execution evidence")
+        evidence_item = evidence_by_ref[evidence_ref]
+        if required_proposition not in set(cast(Sequence[str], evidence_item["supported_propositions"])):
+            raise ProductDiscoveryError("R1.6 extracted lead evidence does not support an extracted-lead proposition")
         if lead.get("canonical_offering_id") is not None:
             raise ProductDiscoveryError("R1.6 extracted lead cannot allocate canonical identity")
 
@@ -304,8 +393,6 @@ def _validate_extracted_leads(
 
     if lead_ids_in_order != sorted(lead_ids_in_order):
         raise ProductDiscoveryError("R1.6 extracted leads must use canonical lead_id order")
-
-
 def validate_route_execution_record(
     record: Mapping[str, Any],
     *,
@@ -379,10 +466,21 @@ def validate_route_execution_record(
     elif reviewer_id is not None:
         raise ProductDiscoveryError("Machine-provisional R1.6 route execution must keep reviewer_id null")
 
+    manifest = load_r1_candidate_resolution_manifest()
+    source_records = compile_r1_source_records(manifest)
+    source_records_by_capture_id = {str(item["capture_id"]): item for item in source_records}
+    if len(source_records_by_capture_id) != len(source_records):
+        raise ProductDiscoveryError("R1.6 frozen source records contain duplicate capture IDs")
+
     evidence = cast(Sequence[Mapping[str, Any]], record["evidence"])
-    evidence_refs = _validate_route_execution_evidence(evidence)
+    evidence_by_ref, propositions_by_capture = _validate_route_execution_evidence(
+        evidence,
+        route=route,
+        covered_capture_ids=covered_capture_ids,
+        source_records_by_capture_id=source_records_by_capture_id,
+    )
     leads = cast(Sequence[Mapping[str, Any]], record["extracted_leads"])
-    _validate_extracted_leads(work_item_id, leads, evidence_refs)
+    _validate_extracted_leads(work_item_id, leads, evidence_by_ref, route=route)
 
     source_scope_exhausted = record["source_scope_exhausted"]
     global_source_exhaustion_claimed = record["global_source_exhaustion_claimed"]
@@ -400,6 +498,12 @@ def validate_route_execution_record(
         raise ProductDiscoveryError("R1.6 extracted leads exceed the claimed finite cardinality upper bound")
 
     completion_state = str(record["completion_state"])
+
+    def require_capture_state(allowed: set[str], *, message: str) -> None:
+        for capture_id in covered_capture_ids:
+            if not (propositions_by_capture[capture_id] & allowed):
+                raise ProductDiscoveryError(message)
+
     if route == SOURCE_SURFACE_RESOLUTION:
         if completion_state not in SOURCE_SURFACE_COMPLETION_STATES:
             raise ProductDiscoveryError("R1.6 source-surface completion state is not frozen")
@@ -408,20 +512,64 @@ def validate_route_execution_record(
                 raise ProductDiscoveryError("R1.6 zero-lead source completion cannot contain extracted leads")
             if finite_bound is not None:
                 raise ProductDiscoveryError("R1.6 zero-lead query completion cannot silently assert finite cardinality")
+            require_capture_state(
+                {"SOURCE_QUERY_ZERO_LEADS"},
+                message="R1.6 zero-lead source completion lacks per-capture zero-lead evidence",
+            )
         elif completion_state == "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS":
             if not leads:
                 raise ProductDiscoveryError("R1.6 source completion with leads requires at least one extracted lead")
             if finite_bound is not None:
                 raise ProductDiscoveryError("R1.6 extracted-lead completion cannot silently assert finite cardinality")
+            require_capture_state(
+                {"SOURCE_QUERY_ZERO_LEADS", "SOURCE_QUERY_WITH_LEADS"},
+                message="R1.6 source completion with leads leaves a covered capture unaccounted",
+            )
+            if not any(
+                "SOURCE_QUERY_WITH_LEADS" in propositions
+                for propositions in propositions_by_capture.values()
+            ):
+                raise ProductDiscoveryError("R1.6 source completion with leads lacks extracted-lead evidence")
         elif completion_state == "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED":
             if finite_bound is None:
                 raise ProductDiscoveryError("R1.6 finite-cardinality completion requires an explicit upper bound")
+            require_capture_state(
+                {
+                    "SOURCE_QUERY_ZERO_LEADS",
+                    "SOURCE_QUERY_WITH_LEADS",
+                    "SOURCE_FINITE_CARDINALITY_ESTABLISHED",
+                },
+                message="R1.6 finite-cardinality completion leaves a covered capture unaccounted",
+            )
+            if not any(
+                "SOURCE_FINITE_CARDINALITY_ESTABLISHED" in propositions
+                for propositions in propositions_by_capture.values()
+            ):
+                raise ProductDiscoveryError("R1.6 finite-cardinality completion lacks cardinality-specific evidence")
         else:
             if source_scope_exhausted or finite_bound is not None:
                 raise ProductDiscoveryError(
                     "R1.6 unresolved source barrier cannot assert exhaustion or finite cardinality"
                 )
+            require_capture_state(
+                {"SOURCE_QUERY_ZERO_LEADS", "SOURCE_QUERY_WITH_LEADS", "SOURCE_BARRIER_UNRESOLVED"},
+                message="R1.6 unresolved source completion leaves a covered capture unaccounted",
+            )
+            if not any(
+                "SOURCE_BARRIER_UNRESOLVED" in propositions
+                for propositions in propositions_by_capture.values()
+            ):
+                raise ProductDiscoveryError("R1.6 unresolved source completion lacks barrier evidence")
 
+        if source_scope_exhausted and not any(
+            "SOURCE_SCOPE_EXHAUSTED" in propositions for propositions in propositions_by_capture.values()
+        ):
+            raise ProductDiscoveryError("R1.6 source exhaustion claim lacks source-scope exhaustion evidence")
+        if finite_bound is not None and not any(
+            "SOURCE_FINITE_CARDINALITY_ESTABLISHED" in propositions
+            for propositions in propositions_by_capture.values()
+        ):
+            raise ProductDiscoveryError("R1.6 finite cardinality claim lacks cardinality-specific evidence")
         if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
             raise ProductDiscoveryError("R1.6 source exhaustion or finite cardinality requires human review")
     else:
@@ -429,10 +577,39 @@ def validate_route_execution_record(
             raise ProductDiscoveryError("R1.6 literature-record completion state is not frozen")
         if source_scope_exhausted or finite_bound is not None:
             raise ProductDiscoveryError("R1.6 literature extraction cannot assert source exhaustion or cardinality")
-        if completion_state == "RECORD_EXTRACTED_ZERO_OFFERING_LEADS" and leads:
-            raise ProductDiscoveryError("R1.6 zero-lead record extraction cannot contain extracted leads")
-        if completion_state == "RECORD_EXTRACTED_WITH_OFFERING_LEADS" and not leads:
-            raise ProductDiscoveryError("R1.6 record extraction with leads requires at least one extracted lead")
+        if completion_state == "RECORD_EXTRACTED_ZERO_OFFERING_LEADS":
+            if leads:
+                raise ProductDiscoveryError("R1.6 zero-lead record extraction cannot contain extracted leads")
+            require_capture_state(
+                {"RECORD_ZERO_OFFERING_LEADS"},
+                message="R1.6 zero-lead record completion lacks per-capture extraction evidence",
+            )
+        elif completion_state == "RECORD_EXTRACTED_WITH_OFFERING_LEADS":
+            if not leads:
+                raise ProductDiscoveryError("R1.6 record extraction with leads requires at least one extracted lead")
+            require_capture_state(
+                {"RECORD_ZERO_OFFERING_LEADS", "RECORD_WITH_OFFERING_LEADS"},
+                message="R1.6 record extraction with leads leaves a covered capture unaccounted",
+            )
+            if not any(
+                "RECORD_WITH_OFFERING_LEADS" in propositions
+                for propositions in propositions_by_capture.values()
+            ):
+                raise ProductDiscoveryError("R1.6 record extraction with leads lacks lead-bearing extraction evidence")
+        else:
+            require_capture_state(
+                {
+                    "RECORD_ZERO_OFFERING_LEADS",
+                    "RECORD_WITH_OFFERING_LEADS",
+                    "RECORD_EXTRACTION_UNRESOLVED",
+                },
+                message="R1.6 unresolved record extraction leaves a covered capture unaccounted",
+            )
+            if not any(
+                "RECORD_EXTRACTION_UNRESOLVED" in propositions
+                for propositions in propositions_by_capture.values()
+            ):
+                raise ProductDiscoveryError("R1.6 unresolved record completion lacks unresolved-extraction evidence")
 
 
 def _candidate_route_entry(
