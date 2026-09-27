@@ -287,21 +287,26 @@ def test_capture_eligibility_preserves_frame_exclusion_and_a_p6_access_rule() ->
         is False
     )
 
+    # The frozen Release-A A2 universe targets A-P1, so an A-P6 capture is
+    # universe-incompatible and must fail closed rather than being evaluated
+    # under a different target view inside this authoritative path.
     a_p6_capture = _capture(population_view_id="A-P6", estimation_eligible=False)
     announced_without_access = _registry_row(
         lifecycle="ANNOUNCED",
         access="NOT_EXTERNALLY_OFFERED",
         deployment="NOT_APPLICABLE",
     )
-    assert (
+    with pytest.raises(pdf.ProductDiscoveryError, match="population_view_id does not match"):
         pdf.derive_capture_estimation_eligibility(
             a_p6_capture,
             _frame(),
             [announced_without_access],
             universe,
         )
-        is False
-    )
+
+    # Preserve the #342 target-view regression itself at the Product Registry
+    # predicate layer: pre-delivery/no-access does not qualify for A-P6.
+    assert pr.population_view_identity_ids([announced_without_access], "A-P6") == set()
 
 
 def test_capture_eligibility_allows_legitimate_multiple_compatible_projections() -> None:
