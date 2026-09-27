@@ -6425,7 +6425,7 @@
         "R2",
         "R3"
       ],
-      "candidate_unit_scientific_state": "CANDIDATE_UNIT_RESOLUTION_CENSORED",
+      "candidate_unit_scientific_state": "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT",
       "historical_final_stop_state": "SATURATION_UNDER_DECLARED_PROTOCOL"
     },
     {
@@ -6449,5 +6449,5 @@
     "publication_authority": false
   },
   "boundary": "This checkpoint preserves historical C_capture, yields and mechanical stop states while auditing whether those rows represent candidate product/offering units. It is pre-adjudication checkpoint evidence, not a final Release-A denominator or completeness claim.",
-  "audit_sha256": "498d283f2b1cced3fed6d53b61214743e4352c53d110598eb18638798373b07e"
+  "audit_sha256": "c229667ae50ef71396837c1e34b5edf016c3ed224c771ae15cab20377bda384a"
 }
