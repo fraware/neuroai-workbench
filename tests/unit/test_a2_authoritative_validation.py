@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from copy import deepcopy
-
 import pytest
 
 from neuroai_workbench.product_discovery_frames import (
