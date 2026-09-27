@@ -35,7 +35,7 @@ AUDIT_RESOURCE = "RELEASE_A_R1_CANDIDATE_UNIT_AUDIT_CHECKPOINT.v1.0.json"
 RULE_ID = "RELEASE_A_R1_CANDIDATE_UNIT_AUDIT_RULE_v1.0"
 AUDIT_ID = "RELEASE_A_R1_CANDIDATE_UNIT_AUDIT_CHECKPOINT_v1.0"
 RULE_SHA256 = "9249c958ca66a07b326cb3f237da280a28965372f12f3623405a049adc8ad0d6"
-AUDIT_SHA256 = "498d283f2b1cced3fed6d53b61214743e4352c53d110598eb18638798373b07e"
+AUDIT_SHA256 = "c229667ae50ef71396837c1e34b5edf016c3ed224c771ae15cab20377bda384a"
 SOURCE_WORKBENCH_MAIN_COMMIT = "73689e59960677460b5130022a7321b37d2c51cc"
 WORLD_TIME_CUTOFF = "2026-09-24"
 KNOWLEDGE_TIME_CUTOFF = "2026-10-24T23:59:59Z"
@@ -320,10 +320,14 @@ def derive_candidate_unit_audit() -> dict[str, Any]:
         if historical_stop != "SATURATION_UNDER_DECLARED_PROTOCOL":
             raise ProductDiscoveryError(f"R1.5 historical tail does not bind mechanical saturation: {frame_id}")
 
-        if any(int(item["unresolved_empirical_unit_count"]) > 0 for item in tail):
-            state = "CANDIDATE_UNIT_RESOLUTION_CENSORED"
-        elif any(item["candidate_object_count_meets_historical_numeric_floor"] is not True for item in tail):
+        if any(
+            item["candidate_denominator_identified"] is True
+            and item["candidate_object_count_meets_historical_numeric_floor"] is not True
+            for item in tail
+        ):
             state = "CANDIDATE_UNIT_DENOMINATOR_INSUFFICIENT"
+        elif any(int(item["unresolved_empirical_unit_count"]) > 0 for item in tail):
+            state = "CANDIDATE_UNIT_RESOLUTION_CENSORED"
         elif all(item["m_candidate"] is not None and float(item["m_candidate"]) <= 0.05 for item in tail):
             state = "CANDIDATE_UNIT_SATURATION_IDENTIFIED"
         else:
