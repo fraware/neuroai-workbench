@@ -11,7 +11,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections import Counter
+from datetime import datetime
 from collections.abc import Mapping, Sequence
 from importlib.resources import files
 from typing import Any, cast
@@ -40,6 +42,7 @@ from neuroai_workbench.release_a_r1_resolution import (
     DISCOVERY_RESOURCE_PACKAGE,
     compile_r1_source_records,
     load_r1_candidate_resolution_manifest,
+    normalize_candidate_key,
 )
 
 RULE_RESOURCE = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE.v1.0.json"
@@ -47,8 +50,8 @@ ROUTING_RESOURCE = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT.v1.0.json"
 
 RULE_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_RULE_v1.0"
 ROUTING_ID = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_CHECKPOINT_v1.0"
-RULE_SHA256 = "98ece7715e8bd36c4e332db654366bd5d38931fac6fa44f97ac5b4a936068422"
-ROUTING_SHA256 = "d55aa834ff482c7536c1f5b35c1c1eaadc9c1e4479c2ba5ca8b0113f6a32a06f"
+RULE_SHA256 = "d6e79b140a3b9c19676e3440b15d34b351def091d07dfddd4a76aa9c1b1afdea"
+ROUTING_SHA256 = "1b4fb25567f81a689965311b181a7f6cb4c124d3164afd830cc71dfaa254a343"
 
 SOURCE_WORKBENCH_MAIN_COMMIT = "f735259557bf867281f3ca0d7cb38af2d90fa640"
 WORLD_TIME_CUTOFF = "2026-09-24"
@@ -67,6 +70,20 @@ EXECUTION_ROUTES = (
     MIXED_OR_UNRESOLVED_UNIT_REVIEW,
     A_P1_TEMPORAL_STATE_REVIEW,
 )
+
+SOURCE_SURFACE_COMPLETION_STATES = (
+    "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+    "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+    "SOURCE_BARRIER_UNRESOLVED",
+)
+LITERATURE_RECORD_COMPLETION_STATES = (
+    "RECORD_EXTRACTED_ZERO_OFFERING_LEADS",
+    "RECORD_EXTRACTED_WITH_OFFERING_LEADS",
+    "RECORD_EXTRACTION_UNRESOLVED",
+)
+ROUTE_EXECUTION_REVIEW_STATES = frozenset({"HUMAN_REVIEWED", "MACHINE_PROVISIONAL"})
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 UNIT_CLASS_TO_ROUTE = {
     "UNRESOLVED_EMPIRICAL_UNIT": EMPIRICAL_CANDIDATE_ADJUDICATION,
@@ -123,19 +140,10 @@ def validate_execution_unit_routing_rule(rule: Mapping[str, Any]) -> None:
         if rule.get(field) != value:
             raise ProductDiscoveryError(f"R1.6 execution-unit routing {field} drift")
 
-    if list(rule.get("source_surface_completion_states", [])) != [
-        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
-        "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
-        "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
-        "SOURCE_BARRIER_UNRESOLVED",
-    ]:
+    if tuple(rule.get("source_surface_completion_states", [])) != SOURCE_SURFACE_COMPLETION_STATES:
         raise ProductDiscoveryError("R1.6 source-surface completion-state contract drift")
 
-    if list(rule.get("literature_record_completion_states", [])) != [
-        "RECORD_EXTRACTED_ZERO_OFFERING_LEADS",
-        "RECORD_EXTRACTED_WITH_OFFERING_LEADS",
-        "RECORD_EXTRACTION_UNRESOLVED",
-    ]:
+    if tuple(rule.get("literature_record_completion_states", [])) != LITERATURE_RECORD_COMPLETION_STATES:
         raise ProductDiscoveryError("R1.6 literature-record completion-state contract drift")
 
     controls = cast(Mapping[str, Any], rule["execution_controls"])
@@ -148,6 +156,9 @@ def validate_execution_unit_routing_rule(rule: Mapping[str, Any]) -> None:
         "extracted_candidate_leads_may_allocate_canonical_identity": False,
         "empirical_candidate_terminal_or_finite_bound_dispositions_require_r1_4_human_review": True,
         "temporal_reviews_retain_r1_4_temporal_contract": True,
+        "source_exhaustion_or_finite_cardinality_requires_human_review": True,
+        "route_execution_record_leads_must_be_unique": True,
+        "route_execution_record_evidence_must_precede_knowledge_cutoff": True,
     }
     if dict(controls) != expected_controls:
         raise ProductDiscoveryError("R1.6 execution controls drift")
@@ -178,6 +189,213 @@ def route_for_unit_classes(unit_classes: Sequence[str]) -> str:
     if len(unique) != 1:
         return MIXED_OR_UNRESOLVED_UNIT_REVIEW
     return UNIT_CLASS_TO_ROUTE.get(unique[0], MIXED_OR_UNRESOLVED_UNIT_REVIEW)
+
+
+def extracted_lead_id(
+    work_item_id: str,
+    candidate_key: str,
+    source_observation_ref: str,
+) -> str:
+    """Return a deterministic non-canonical ID for one extracted candidate lead."""
+
+    material = {
+        "work_item_id": work_item_id,
+        "normalized_candidate_key": normalize_candidate_key(candidate_key),
+        "source_observation_ref": source_observation_ref,
+    }
+    return "R1LEAD-" + canonical_sha256(material)
+
+
+def route_execution_record_id(record: Mapping[str, Any]) -> str:
+    """Bind a route-execution record to its complete content."""
+
+    material = {key: value for key, value in record.items() if key != "execution_record_id"}
+    return "R1ROUTE-" + canonical_sha256(material)
+
+
+def _parse_knowledge_time(value: object) -> datetime:
+    if not isinstance(value, str) or not value:
+        raise ProductDiscoveryError("R1.6 route execution evidence requires knowledge_observed_at")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ProductDiscoveryError("R1.6 route execution evidence has invalid knowledge_observed_at") from exc
+    if parsed.tzinfo is None:
+        raise ProductDiscoveryError("R1.6 route execution evidence timestamp must be timezone-aware")
+    return parsed
+
+
+def _validate_route_execution_evidence(evidence: Sequence[Mapping[str, Any]]) -> set[str]:
+    if not evidence:
+        raise ProductDiscoveryError("R1.6 route execution requires attributable evidence")
+
+    cutoff = _parse_knowledge_time(KNOWLEDGE_TIME_CUTOFF)
+    evidence_refs: set[str] = set()
+    allowed_fields = {"evidence_ref", "source_locator", "knowledge_observed_at", "sha256"}
+    for item in evidence:
+        if set(item) != allowed_fields:
+            raise ProductDiscoveryError("R1.6 route execution evidence fields drift")
+        evidence_ref = item.get("evidence_ref")
+        source_locator = item.get("source_locator")
+        if not isinstance(evidence_ref, str) or not evidence_ref:
+            raise ProductDiscoveryError("R1.6 route execution evidence_ref is required")
+        if evidence_ref in evidence_refs:
+            raise ProductDiscoveryError("R1.6 route execution evidence_ref values must be unique")
+        evidence_refs.add(evidence_ref)
+        if not isinstance(source_locator, str) or not source_locator:
+            raise ProductDiscoveryError("R1.6 route execution source_locator is required")
+        if _parse_knowledge_time(item.get("knowledge_observed_at")) > cutoff:
+            raise ProductDiscoveryError("R1.6 route execution evidence exceeds the frozen knowledge-time cutoff")
+        sha = item.get("sha256")
+        if not isinstance(sha, str) or SHA256_RE.fullmatch(sha) is None:
+            raise ProductDiscoveryError("R1.6 route execution evidence requires SHA-256")
+
+    return evidence_refs
+
+
+def _validate_extracted_leads(
+    work_item_id: str,
+    leads: Sequence[Mapping[str, Any]],
+    evidence_refs: set[str],
+) -> None:
+    seen_lead_ids: set[str] = set()
+    seen_signatures: set[tuple[str, str]] = set()
+    allowed_fields = {
+        "lead_id",
+        "candidate_key",
+        "source_observation_ref",
+        "evidence_ref",
+        "canonical_offering_id",
+    }
+    for lead in leads:
+        if set(lead) != allowed_fields:
+            raise ProductDiscoveryError("R1.6 extracted-lead fields drift")
+        candidate_key = lead.get("candidate_key")
+        source_observation_ref = lead.get("source_observation_ref")
+        evidence_ref = lead.get("evidence_ref")
+        if not isinstance(candidate_key, str) or not candidate_key.strip():
+            raise ProductDiscoveryError("R1.6 extracted lead requires candidate_key")
+        if not isinstance(source_observation_ref, str) or not source_observation_ref:
+            raise ProductDiscoveryError("R1.6 extracted lead requires source_observation_ref")
+        if not isinstance(evidence_ref, str) or evidence_ref not in evidence_refs:
+            raise ProductDiscoveryError("R1.6 extracted lead must bind route-execution evidence")
+        if lead.get("canonical_offering_id") is not None:
+            raise ProductDiscoveryError("R1.6 extracted lead cannot allocate canonical identity")
+
+        expected_lead_id = extracted_lead_id(work_item_id, candidate_key, source_observation_ref)
+        if lead.get("lead_id") != expected_lead_id:
+            raise ProductDiscoveryError("R1.6 extracted lead ID does not match deterministic content")
+        if expected_lead_id in seen_lead_ids:
+            raise ProductDiscoveryError("R1.6 extracted lead IDs must be unique")
+        seen_lead_ids.add(expected_lead_id)
+
+        signature = (normalize_candidate_key(candidate_key), source_observation_ref)
+        if signature in seen_signatures:
+            raise ProductDiscoveryError("R1.6 duplicate extracted candidate lead")
+        seen_signatures.add(signature)
+
+
+def validate_route_execution_record(
+    record: Mapping[str, Any],
+    *,
+    routing_checkpoint: Mapping[str, Any] | None = None,
+) -> None:
+    """Validate source/record execution without converting the retrieval unit into a product."""
+
+    required_fields = {
+        "execution_record_id",
+        "work_item_id",
+        "execution_route",
+        "completion_state",
+        "review_state",
+        "reviewer_id",
+        "evidence",
+        "extracted_leads",
+        "source_scope_exhausted",
+        "finite_cardinality_upper_bound",
+        "global_source_exhaustion_claimed",
+    }
+    allowed_fields = required_fields | {"notes"}
+    if not required_fields.issubset(record) or not set(record).issubset(allowed_fields):
+        raise ProductDiscoveryError("R1.6 route execution record fields drift")
+    if record["execution_record_id"] != route_execution_record_id(record):
+        raise ProductDiscoveryError("R1.6 execution_record_id does not match deterministic content")
+
+    active_routing = load_execution_unit_routing() if routing_checkpoint is None else routing_checkpoint
+    route_by_work_item = {
+        str(item["work_item_id"]): str(item["execution_route"])
+        for item in cast(Sequence[Mapping[str, Any]], active_routing["route_table"])
+    }
+    work_item_id = str(record["work_item_id"])
+    expected_route = route_by_work_item.get(work_item_id)
+    if expected_route is None:
+        raise ProductDiscoveryError("R1.6 route execution references an item outside the frozen routing checkpoint")
+    route = str(record["execution_route"])
+    if route != expected_route:
+        raise ProductDiscoveryError("R1.6 route execution does not match the frozen execution route")
+    if route not in {SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION}:
+        raise ProductDiscoveryError("R1.6 candidate and temporal work must use their existing governed contracts")
+
+    review_state = str(record["review_state"])
+    reviewer_id = record.get("reviewer_id")
+    if review_state not in ROUTE_EXECUTION_REVIEW_STATES:
+        raise ProductDiscoveryError("R1.6 route execution review state is not frozen")
+    if review_state == "HUMAN_REVIEWED":
+        if not isinstance(reviewer_id, str) or not reviewer_id.strip():
+            raise ProductDiscoveryError("Human-reviewed R1.6 route execution requires reviewer_id")
+    elif reviewer_id is not None:
+        raise ProductDiscoveryError("Machine-provisional R1.6 route execution must keep reviewer_id null")
+
+    evidence = cast(Sequence[Mapping[str, Any]], record["evidence"])
+    evidence_refs = _validate_route_execution_evidence(evidence)
+    leads = cast(Sequence[Mapping[str, Any]], record["extracted_leads"])
+    _validate_extracted_leads(work_item_id, leads, evidence_refs)
+
+    source_scope_exhausted = record["source_scope_exhausted"]
+    global_source_exhaustion_claimed = record["global_source_exhaustion_claimed"]
+    if not isinstance(source_scope_exhausted, bool) or not isinstance(global_source_exhaustion_claimed, bool):
+        raise ProductDiscoveryError("R1.6 route execution exhaustion flags must be boolean")
+    if global_source_exhaustion_claimed:
+        raise ProductDiscoveryError("R1.6 bounded route execution cannot claim global source exhaustion")
+
+    finite_bound = record["finite_cardinality_upper_bound"]
+    if finite_bound is not None and (not isinstance(finite_bound, int) or isinstance(finite_bound, bool) or finite_bound < 0):
+        raise ProductDiscoveryError("R1.6 finite cardinality upper bound must be a non-negative integer or null")
+    if finite_bound is not None and len(leads) > finite_bound:
+        raise ProductDiscoveryError("R1.6 extracted leads exceed the claimed finite cardinality upper bound")
+
+    completion_state = str(record["completion_state"])
+    if route == SOURCE_SURFACE_RESOLUTION:
+        if completion_state not in SOURCE_SURFACE_COMPLETION_STATES:
+            raise ProductDiscoveryError("R1.6 source-surface completion state is not frozen")
+        if completion_state == "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS":
+            if leads:
+                raise ProductDiscoveryError("R1.6 zero-lead source completion cannot contain extracted leads")
+            if finite_bound is not None:
+                raise ProductDiscoveryError("R1.6 zero-lead query completion cannot silently assert finite cardinality")
+        elif completion_state == "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS":
+            if not leads:
+                raise ProductDiscoveryError("R1.6 source completion with leads requires at least one extracted lead")
+            if finite_bound is not None:
+                raise ProductDiscoveryError("R1.6 extracted-lead completion cannot silently assert finite cardinality")
+        elif completion_state == "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED":
+            if finite_bound is None:
+                raise ProductDiscoveryError("R1.6 finite-cardinality completion requires an explicit upper bound")
+        else:
+            if source_scope_exhausted or finite_bound is not None:
+                raise ProductDiscoveryError("R1.6 unresolved source barrier cannot assert exhaustion or finite cardinality")
+
+        if (source_scope_exhausted or finite_bound is not None) and review_state != "HUMAN_REVIEWED":
+            raise ProductDiscoveryError("R1.6 source exhaustion or finite cardinality requires human review")
+    else:
+        if completion_state not in LITERATURE_RECORD_COMPLETION_STATES:
+            raise ProductDiscoveryError("R1.6 literature-record completion state is not frozen")
+        if source_scope_exhausted or finite_bound is not None:
+            raise ProductDiscoveryError("R1.6 literature extraction cannot assert source exhaustion or cardinality")
+        if completion_state == "RECORD_EXTRACTED_ZERO_OFFERING_LEADS" and leads:
+            raise ProductDiscoveryError("R1.6 zero-lead record extraction cannot contain extracted leads")
+        if completion_state == "RECORD_EXTRACTED_WITH_OFFERING_LEADS" and not leads:
+            raise ProductDiscoveryError("R1.6 record extraction with leads requires at least one extracted lead")
 
 
 def _candidate_route_entry(
