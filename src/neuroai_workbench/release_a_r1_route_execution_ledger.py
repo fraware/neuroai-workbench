@@ -38,7 +38,7 @@ from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "3da55f31c6f5a9072b63a5f50f8aadde6359045cff905c41e150c10c60731c36"
+RULE_SHA256 = "fea065822e892056ebeab9eb576b672440532b89ed730ef247a6e201ba22fc89"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -175,6 +175,32 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
     }
     if dict(completion) != expected_completion:
         raise ProductDiscoveryError("R1.7 completion contract drift")
+
+    evidence_archive = cast(Mapping[str, Any], rule["evidence_archive_contract"])
+    expected_evidence_archive = {
+        "evidence_sha256_semantics": "SHA256_OF_EXACT_IMMUTABLE_ARCHIVED_EVIDENCE_ARTIFACT_BYTES",
+        "source_locator_is_origin_not_evidence_identity": True,
+        "archived_artifact_required_for_completion_claim": True,
+        "archive_must_preserve_retrieval_request_and_response_context": True,
+        "archive_must_preserve_content_type_and_encoding": True,
+        "archive_must_be_replayable_for_supported_proposition_review": True,
+        "unarchivable_or_nonreplayable_source_remains_unresolved": True,
+        "evidence_observed_at_is_knowledge_time_not_world_time": True,
+    }
+    if dict(evidence_archive) != expected_evidence_archive:
+        raise ProductDiscoveryError("R1.7 evidence-archive contract drift")
+
+    temporal = cast(Mapping[str, Any], rule["temporal_interpretation_contract"])
+    expected_temporal = {
+        "post_world_cutoff_retrieval_may_supply_knowledge_about_pre_cutoff_world_state": True,
+        "route_execution_result_itself_does_not_establish_world_time_product_eligibility": True,
+        "extracted_lead_requires_separate_world_time_product_adjudication": True,
+        "zero_lead_result_is_bounded_to_declared_source_query_at_knowledge_observation_time": True,
+        "zero_lead_result_does_not_establish_historical_product_absence": True,
+        "source_exhaustion_does_not_establish_global_population_completeness": True,
+    }
+    if dict(temporal) != expected_temporal:
+        raise ProductDiscoveryError("R1.7 temporal-interpretation contract drift")
 
     finality = cast(Mapping[str, Any], rule["finality"])
     if not (
