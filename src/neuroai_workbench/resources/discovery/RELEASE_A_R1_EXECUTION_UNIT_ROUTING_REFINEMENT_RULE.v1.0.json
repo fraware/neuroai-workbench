@@ -1,0 +1,84 @@
+{
+  "rule_id": "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_REFINEMENT_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN_PRE_R1_7_EXECUTION",
+  "frozen_on": "2026-09-28",
+  "source_workbench_main_commit": "b00fa51af314277ef154af787cb850151cfaf1f8",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "r1_6_rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
+  "r1_6_routing_sha256": "5b37f3e4aaa3d4cced9864aa6dcc6e5d547726e277bbbce0551005bf12a3465e",
+  "refinement_contract": {
+    "predecessor_route_to_refine": "LITERATURE_RECORD_EXTRACTION",
+    "actual_literature_record_label_pattern": "^lit-[0-9]+$",
+    "empty_literature_query_label_pattern": "^empty-europepmc",
+    "empty_trial_publication_query_label_pattern": "^empty-trial-lit",
+    "actual_literature_record_subtype": "ACTUAL_LITERATURE_RECORD",
+    "empty_literature_query_subtype": "EMPTY_LITERATURE_QUERY_SENTINEL",
+    "empty_trial_publication_query_subtype": "EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL",
+    "unresolved_or_mixed_subtype": "UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE",
+    "actual_literature_record_route": "LITERATURE_RECORD_EXTRACTION",
+    "empty_query_sentinel_route": "SOURCE_SURFACE_RESOLUTION",
+    "unresolved_or_mixed_route": "MIXED_OR_UNRESOLVED_UNIT_REVIEW",
+    "non_literature_r1_6_routes_preserved": true,
+    "product_objecthood_inference_from_label_prohibited": true,
+    "refinement_distinguishes_record_locator_from_explicit_zero_result_sentinel_only": true
+  },
+  "expected_work_item_counts_by_route": {
+    "EMPIRICAL_CANDIDATE_ADJUDICATION": 76,
+    "SOURCE_SURFACE_RESOLUTION": 171,
+    "LITERATURE_RECORD_EXTRACTION": 21,
+    "MIXED_OR_UNRESOLVED_UNIT_REVIEW": 0,
+    "A_P1_TEMPORAL_STATE_REVIEW": 2
+  },
+  "expected_capture_counts_by_route": {
+    "EMPIRICAL_CANDIDATE_ADJUDICATION": 142,
+    "SOURCE_SURFACE_RESOLUTION": 226,
+    "LITERATURE_RECORD_EXTRACTION": 21,
+    "MIXED_OR_UNRESOLVED_UNIT_REVIEW": 0,
+    "A_P1_TEMPORAL_STATE_REVIEW": 0
+  },
+  "expected_refined_predecessor_subtype_counts": {
+    "ACTUAL_LITERATURE_RECORD": {
+      "work_items": 21,
+      "captures": 21
+    },
+    "EMPTY_LITERATURE_QUERY_SENTINEL": {
+      "work_items": 11,
+      "captures": 11
+    },
+    "EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL": {
+      "work_items": 2,
+      "captures": 6
+    },
+    "UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE": {
+      "work_items": 0,
+      "captures": 0
+    }
+  },
+  "execution_semantics": {
+    "empty_query_sentinel_is_document_record": false,
+    "empty_query_sentinel_is_historical_zero_result_observation": true,
+    "empty_query_sentinel_reexecution_uses_source_query_semantics": true,
+    "zero_result_reexecution_implies_historical_absence": false,
+    "zero_result_reexecution_implies_source_exhaustion": false,
+    "actual_literature_record_requires_record_extraction": true,
+    "source_exhaustion_or_finite_cardinality_requires_human_review": true,
+    "canonical_identity_allocation": false
+  },
+  "finality": {
+    "checkpoint_only": true,
+    "substantive_route_execution_performed": false,
+    "empirical_candidate_adjudication_performed": false,
+    "temporal_state_review_performed": false,
+    "canonical_identity_allocated": false,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This successor refines only execution semantics for the frozen R1.6 literature-or-record route by separating actual record locators from explicit empty-query sentinels. It preserves R1.4/R1.5/R1.6 history and executes no query, extraction, product adjudication, identity allocation, final denominator, completeness claim, downstream denominator authority, population generalization or publication authority.",
+  "rule_sha256": "60c89f6eae236c35228c64b5997e8175b1bbbda649c1e5b1b63b930d40ad2d94"
+}
