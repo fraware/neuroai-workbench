@@ -76,15 +76,9 @@ def test_frozen_refinement_reconstructs_exactly() -> None:
 def test_only_empty_query_sentinels_change_r1_6_route() -> None:
     predecessor = load_execution_unit_routing()
     checkpoint = refinement.load_routing_refinement()
-    predecessor_by_id = {
-        str(item["work_item_id"]): item for item in predecessor["route_table"]
-    }
+    predecessor_by_id = {str(item["work_item_id"]): item for item in predecessor["route_table"]}
 
-    changed = [
-        item
-        for item in checkpoint["route_table"]
-        if item["execution_route"] != item["r1_6_execution_route"]
-    ]
+    changed = [item for item in checkpoint["route_table"] if item["execution_route"] != item["r1_6_execution_route"]]
     assert len(changed) == 13
     assert sum(len(item["capture_ids"]) for item in changed) == 17
 
@@ -218,9 +212,7 @@ def test_rule_rejects_refinement_semantic_relaxation(
 ) -> None:
     rule = refinement.load_routing_refinement_rule()
     changed = copy.deepcopy(rule)
-    changed["refinement_contract"][
-        "empty_query_sentinel_route"
-    ] = LITERATURE_RECORD_EXTRACTION
+    changed["refinement_contract"]["empty_query_sentinel_route"] = LITERATURE_RECORD_EXTRACTION
     _reseal(changed, "rule_sha256")
     monkeypatch.setattr(refinement, "RULE_SHA256", changed["rule_sha256"])
 
@@ -257,14 +249,10 @@ def test_derive_rejects_missing_refined_capture(
     records = compile_r1_source_records(manifest)
     predecessor = load_execution_unit_routing()
     literature_item = next(
-        item
-        for item in predecessor["route_table"]
-        if item["execution_route"] == LITERATURE_RECORD_EXTRACTION
+        item for item in predecessor["route_table"] if item["execution_route"] == LITERATURE_RECORD_EXTRACTION
     )
     missing_capture = str(literature_item["capture_ids"][0])
-    reduced = [
-        record for record in records if str(record["capture_id"]) != missing_capture
-    ]
+    reduced = [record for record in records if str(record["capture_id"]) != missing_capture]
     monkeypatch.setattr(
         refinement,
         "compile_r1_source_records",
@@ -280,8 +268,7 @@ def test_empty_trial_sentinel_preserves_three_round_capture_identity() -> None:
     rows = [
         item
         for item in checkpoint["route_table"]
-        if item["execution_subtype"]
-        == refinement.EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL
+        if item["execution_subtype"] == refinement.EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL
     ]
 
     assert len(rows) == 2
@@ -296,8 +283,7 @@ def test_refined_sentinel_accepts_source_query_execution_contract() -> None:
     item = next(
         row
         for row in checkpoint["route_table"]
-        if row["execution_subtype"]
-        == refinement.EMPTY_LITERATURE_QUERY_SENTINEL
+        if row["execution_subtype"] == refinement.EMPTY_LITERATURE_QUERY_SENTINEL
     )
     source_records = _source_records_by_capture_id()
 
