@@ -48,11 +48,18 @@ def _artifact_from_evidence(evidence: dict[str, object]) -> dict[str, object]:
         "retrieval_request": {
             "method": "GET",
             "locator": evidence["source_locator"],
+            "request_context": {
+                "query_or_seed_id": evidence["query_or_seed_id"],
+            },
         },
         "response_context": {
             "retrieval_status": "RETRIEVED",
             "content_type": "text/plain",
             "encoding": "utf-8",
+            "final_locator": evidence["source_locator"],
+            "response_metadata": {
+                "status_code": 200,
+            },
         },
         "content_representation": "UTF8_TEXT",
         "content": f"fixture evidence content for {evidence['evidence_ref']}",
@@ -568,34 +575,80 @@ def test_duplicate_entry_and_execution_record_ids_fail_closed() -> None:
         _derive([first, second])
 
 
-def test_same_lead_id_with_conflicting_payload_fails_closed() -> None:
+def test_same_lead_identity_preserves_multiple_support_records_and_raw_keys() -> None:
     item = _item(SOURCE_SURFACE_RESOLUTION)
-    lead1 = _lead(item)
+    first_lead = _lead(item, candidate_key="Example::Offering")
     first = _entry(
         _record(
             item,
             SOURCE_SURFACE_RESOLUTION,
             "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
-            extracted_leads=[lead1],
+            extracted_leads=[first_lead],
             work_item_completion_claimed=False,
         )
     )
 
-    lead2 = copy.deepcopy(lead1)
-    lead2["evidence_ref"] = _evidence_ref(item, 1, "-X")
+    second_lead = _lead(
+        item,
+        candidate_key="  Example::Offering  ",
+        evidence_ref=_evidence_ref(item, 1, "-X"),
+    )
+    assert second_lead["lead_id"] == first_lead["lead_id"]
     second = _entry(
         _record(
             item,
             SOURCE_SURFACE_RESOLUTION,
             "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
-            extracted_leads=[lead2],
+            extracted_leads=[second_lead],
             evidence_suffix="-X",
             work_item_completion_claimed=False,
         )
     )
-    with pytest.raises(ledger.ProductDiscoveryError, match="identical lead_id has conflicting payload"):
-        _derive([first, second])
 
+    state = _derive([first, second])
+    lead = state["extracted_lead_ledger"][0]
+    assert state["extracted_lead_count"] == 1
+    assert lead["normalized_candidate_key"] == "example::offering"
+    assert lead["raw_candidate_keys"] == ["  Example::Offering  ", "Example::Offering"]
+    assert len(lead["supporting_ledger_entry_ids"]) == 2
+    assert len(lead["support_provenance"]) == 2
+    assert all(support["work_item_id"] == item["work_item_id"] for support in lead["support_provenance"])
+    assert all(support["capture_id"] in item["capture_ids"] for support in lead["support_provenance"])
+    assert lead["decision_sensitivity"]["could_change_a_p1_membership"] is True
+
+
+def test_same_lead_id_with_conflicting_identity_material_fails_closed() -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    first_lead = _lead(item)
+    first = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+            extracted_leads=[first_lead],
+            work_item_completion_claimed=False,
+        )
+    )
+    second_lead = copy.deepcopy(first_lead)
+    second_lead["source_observation_ref"] = "OBS-CONFLICT"
+    second = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+            extracted_leads=[second_lead],
+            work_item_completion_claimed=False,
+        )
+    )
+    population = ledger.derive_execution_population()
+    population_by_id = {str(entry["work_item_id"]): entry for entry in population}
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="conflicting identity material"):
+        ledger._derive_lead_state(
+            [first, second],
+            active_entry_ids={str(first["ledger_entry_id"]), str(second["ledger_entry_id"])},
+            population_by_id=population_by_id,
+        )
 
 def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatch) -> None:
     checkpoint = load_execution_unit_routing()
@@ -667,3 +720,127 @@ def test_cross_route_supersession_fails_closed_even_under_adversarial_validator_
     monkeypatch.setattr(ledger, "validate_ledger_entry", lambda *args, **kwargs: None)
     with pytest.raises(ledger.ProductDiscoveryError, match="cannot cross execution route"):
         _derive([first, second])
+
+
+def test_machine_provisional_entry_cannot_supersede_human_reviewed_evidence() -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    reviewed = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+            finite_cardinality_upper_bound=0,
+            review_state="HUMAN_REVIEWED",
+            reviewer_id="reviewer-1",
+            work_item_completion_claimed=False,
+        )
+    )
+    machine = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+            evidence_suffix="-machine",
+            work_item_completion_claimed=False,
+        ),
+        supersedes=[str(reviewed["ledger_entry_id"])],
+    )
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="cannot supersede human-reviewed"):
+        _derive([reviewed, machine])
+
+
+def test_overlapping_active_finite_bounds_must_agree() -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    first = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+            finite_cardinality_upper_bound=0,
+            review_state="HUMAN_REVIEWED",
+            reviewer_id="reviewer-1",
+            work_item_completion_claimed=False,
+        )
+    )
+    second = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+            finite_cardinality_upper_bound=1,
+            review_state="HUMAN_REVIEWED",
+            reviewer_id="reviewer-2",
+            evidence_suffix="-2",
+            work_item_completion_claimed=False,
+        )
+    )
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="finite-cardinality bounds disagree"):
+        _derive([first, second])
+
+
+def test_active_leads_cannot_exceed_applicable_finite_bound() -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    bound = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_SPECIFIC_FINITE_CARDINALITY_ESTABLISHED",
+            finite_cardinality_upper_bound=0,
+            review_state="HUMAN_REVIEWED",
+            reviewer_id="reviewer-1",
+            work_item_completion_claimed=False,
+        )
+    )
+    lead = _lead(item, evidence_ref=_evidence_ref(item, 1, "-lead"))
+    discovery = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_WITH_EXTRACTED_LEADS",
+            extracted_leads=[lead],
+            evidence_suffix="-lead",
+            work_item_completion_claimed=False,
+        )
+    )
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="exceed an applicable finite-cardinality bound"):
+        _derive([bound, discovery])
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("request_fields", "retrieval_request fields drift"),
+        ("request_context", "request_context must be an object"),
+        ("response_fields", "response_context fields drift"),
+        ("final_locator", "response_context requires final_locator"),
+        ("response_metadata", "response_metadata must be an object"),
+    ],
+)
+def test_evidence_artifact_requires_replayable_request_response_context(
+    mutation: str,
+    message: str,
+) -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    evidence = _evidence(
+        item,
+        SOURCE_SURFACE_RESOLUTION,
+        "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+    )[0]
+    artifact = _artifact_from_evidence(evidence)
+
+    if mutation == "request_fields":
+        artifact["retrieval_request"]["extra"] = True
+    elif mutation == "request_context":
+        artifact["retrieval_request"]["request_context"] = "bad"
+    elif mutation == "response_fields":
+        artifact["response_context"]["extra"] = True
+    elif mutation == "final_locator":
+        artifact["response_context"]["final_locator"] = ""
+    else:
+        artifact["response_context"]["response_metadata"] = "bad"
+
+    with pytest.raises(ledger.ProductDiscoveryError, match=message):
+        ledger._validate_evidence_artifact(evidence, artifact)
