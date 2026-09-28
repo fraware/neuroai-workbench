@@ -223,7 +223,7 @@ def derive_execution_population(
 
     if len(rows) != EXPECTED_WORK_ITEM_COUNT:
         raise ProductDiscoveryError("R1.7 execution population work-item count drift")
-    capture_count = sum(len(item["capture_ids"]) for item in rows)
+    capture_count = sum(len(cast(Sequence[str], item["capture_ids"])) for item in rows)
     if capture_count != EXPECTED_CAPTURE_COUNT:
         raise ProductDiscoveryError("R1.7 execution population capture count drift")
     return rows
