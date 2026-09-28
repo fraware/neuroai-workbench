@@ -40,7 +40,7 @@ from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "09b2356546c49326c439f4dacd201ac84dc47ef8381701fefe00e48b82e9a2c3"
+RULE_SHA256 = "9a5ffe52bd512aa31f797251e7566b21f128def238fcc42bf7b237fa28364af3"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -224,6 +224,7 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "request_context_must_be_structured_mapping": True,
         "response_metadata_must_be_structured_mapping": True,
         "digest_is_canonical_artifact_json_not_raw_transport_bytes": True,
+        "request_context_must_bind_query_or_seed_id": True,
     }
     if dict(evidence_archive) != expected_evidence_archive:
         raise ProductDiscoveryError("R1.7 evidence-archive contract drift")
@@ -377,8 +378,11 @@ def _validate_evidence_artifact(
         raise ProductDiscoveryError("R1.7 evidence artifact retrieval_request requires method")
     if request.get("locator") != evidence.get("source_locator"):
         raise ProductDiscoveryError("R1.7 evidence artifact retrieval locator drift")
-    if not isinstance(request.get("request_context"), Mapping):
+    request_context = request.get("request_context")
+    if not isinstance(request_context, Mapping):
         raise ProductDiscoveryError("R1.7 evidence artifact request_context must be an object")
+    if request_context.get("query_or_seed_id") != evidence.get("query_or_seed_id"):
+        raise ProductDiscoveryError("R1.7 evidence artifact request_context query_or_seed_id drift")
 
     response = artifact.get("response_context")
     if not isinstance(response, Mapping) or not response:
@@ -595,6 +599,11 @@ def _derive_lead_state(
                     "query_or_seed_id": str(evidence["query_or_seed_id"]),
                     "source_locator": str(evidence["source_locator"]),
                     "evidence_sha256": str(evidence["sha256"]),
+                    "knowledge_observed_at": str(evidence["knowledge_observed_at"]),
+                    "evidence_role": str(evidence["evidence_role"]),
+                    "supported_propositions": [
+                        str(value) for value in cast(Sequence[str], evidence["supported_propositions"])
+                    ],
                     "source_observation_ref": str(lead["source_observation_ref"]),
                     "raw_candidate_key": raw_candidate_key,
                     "active_support": entry_id in active_entry_ids,
@@ -641,6 +650,7 @@ def _derive_lead_state(
             }
         )
     return result
+
 
 def derive_ledger_state(
     entries: Sequence[Mapping[str, Any]],
