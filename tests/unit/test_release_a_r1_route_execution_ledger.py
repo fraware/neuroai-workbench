@@ -117,11 +117,7 @@ def _record(
     reviewer_id: str | None = None,
     covered_capture_ids: list[str] | None = None,
 ) -> dict[str, object]:
-    covered = (
-        [str(value) for value in item["capture_ids"]]
-        if covered_capture_ids is None
-        else covered_capture_ids
-    )
+    covered = [str(value) for value in item["capture_ids"]] if covered_capture_ids is None else covered_capture_ids
     full_evidence = _evidence(
         item,
         route,
@@ -563,9 +559,7 @@ def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatc
 
     changed = copy.deepcopy(checkpoint)
     changed["route_table"] = [
-        item
-        for item in changed["route_table"]
-        if item["execution_route"] != LITERATURE_RECORD_EXTRACTION
+        item for item in changed["route_table"] if item["execution_route"] != LITERATURE_RECORD_EXTRACTION
     ]
     with pytest.raises(ledger.ProductDiscoveryError, match="work-item count drift"):
         ledger.derive_execution_population(changed)
