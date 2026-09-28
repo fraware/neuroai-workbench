@@ -22,13 +22,17 @@ from neuroai_workbench.product_discovery_frames import (
 from neuroai_workbench.release_a_r1_execution_unit_routing import (
     KNOWLEDGE_TIME_CUTOFF,
     LITERATURE_RECORD_EXTRACTION,
-    ROUTING_SHA256 as R1_6_ROUTING_SHA256,
-    RULE_SHA256 as R1_6_RULE_SHA256,
     SOURCE_SURFACE_RESOLUTION,
     WORLD_TIME_CUTOFF,
     load_execution_unit_routing,
     validate_execution_unit_routing,
     validate_route_execution_record,
+)
+from neuroai_workbench.release_a_r1_execution_unit_routing import (
+    ROUTING_SHA256 as R1_6_ROUTING_SHA256,
+)
+from neuroai_workbench.release_a_r1_execution_unit_routing import (
+    RULE_SHA256 as R1_6_RULE_SHA256,
 )
 from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
