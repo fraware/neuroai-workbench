@@ -8,6 +8,8 @@ is committed.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
 from collections import Counter, defaultdict
@@ -38,7 +40,7 @@ from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "fea065822e892056ebeab9eb576b672440532b89ed730ef247a6e201ba22fc89"
+RULE_SHA256 = "7702ff4c082e8835d2055ffbebb1ef12dcd9d8253f006a890e78d0b1518262ac"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -178,14 +180,30 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
 
     evidence_archive = cast(Mapping[str, Any], rule["evidence_archive_contract"])
     expected_evidence_archive = {
-        "evidence_sha256_semantics": "SHA256_OF_EXACT_IMMUTABLE_ARCHIVED_EVIDENCE_ARTIFACT_BYTES",
+        "evidence_sha256_semantics": "SHA256_OF_CANONICAL_EVIDENCE_ARTIFACT_JSON",
+        "evidence_artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
+        "evidence_artifact_required_fields": [
+            "artifact_schema_id",
+            "evidence_ref",
+            "capture_id",
+            "query_or_seed_id",
+            "source_locator",
+            "knowledge_observed_at",
+            "retrieval_request",
+            "response_context",
+            "content_representation",
+            "content",
+        ],
+        "allowed_content_representations": ["UTF8_TEXT", "BASE64_BYTES", "STRUCTURED_JSON"],
         "source_locator_is_origin_not_evidence_identity": True,
+        "archived_artifact_required_for_every_evidence_ref": True,
         "archived_artifact_required_for_completion_claim": True,
         "archive_must_preserve_retrieval_request_and_response_context": True,
-        "archive_must_preserve_content_type_and_encoding": True,
+        "archive_must_preserve_content_type_and_encoding_in_response_context": True,
         "archive_must_be_replayable_for_supported_proposition_review": True,
         "unarchivable_or_nonreplayable_source_remains_unresolved": True,
         "evidence_observed_at_is_knowledge_time_not_world_time": True,
+        "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": True,
     }
     if dict(evidence_archive) != expected_evidence_archive:
         raise ProductDiscoveryError("R1.7 evidence-archive contract drift")
@@ -294,6 +312,117 @@ def validate_ledger_entry(
         raise ProductDiscoveryError("R1.7 supersedes_ledger_entry_ids must be unique and canonical")
 
 
+EVIDENCE_ARTIFACT_SCHEMA_ID = "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0"
+EVIDENCE_ARTIFACT_FIELDS = {
+    "artifact_schema_id",
+    "evidence_ref",
+    "capture_id",
+    "query_or_seed_id",
+    "source_locator",
+    "knowledge_observed_at",
+    "retrieval_request",
+    "response_context",
+    "content_representation",
+    "content",
+}
+ALLOWED_CONTENT_REPRESENTATIONS = {"UTF8_TEXT", "BASE64_BYTES", "STRUCTURED_JSON"}
+
+
+def _validate_evidence_artifact(
+    evidence: Mapping[str, Any],
+    artifact: Mapping[str, Any],
+) -> None:
+    if set(artifact) != EVIDENCE_ARTIFACT_FIELDS:
+        raise ProductDiscoveryError("R1.7 evidence artifact fields drift")
+    if artifact.get("artifact_schema_id") != EVIDENCE_ARTIFACT_SCHEMA_ID:
+        raise ProductDiscoveryError("R1.7 evidence artifact schema ID drift")
+
+    for field in (
+        "evidence_ref",
+        "capture_id",
+        "query_or_seed_id",
+        "source_locator",
+        "knowledge_observed_at",
+    ):
+        if artifact.get(field) != evidence.get(field):
+            raise ProductDiscoveryError(f"R1.7 evidence artifact {field} binding drift")
+
+    request = artifact.get("retrieval_request")
+    if not isinstance(request, Mapping) or not request:
+        raise ProductDiscoveryError("R1.7 evidence artifact requires retrieval_request")
+    if not isinstance(request.get("method"), str) or not str(request["method"]).strip():
+        raise ProductDiscoveryError("R1.7 evidence artifact retrieval_request requires method")
+    if request.get("locator") != evidence.get("source_locator"):
+        raise ProductDiscoveryError("R1.7 evidence artifact retrieval locator drift")
+
+    response = artifact.get("response_context")
+    if not isinstance(response, Mapping) or not response:
+        raise ProductDiscoveryError("R1.7 evidence artifact requires response_context")
+    for field in ("retrieval_status", "content_type", "encoding"):
+        if not isinstance(response.get(field), str) or not str(response[field]).strip():
+            raise ProductDiscoveryError(f"R1.7 evidence artifact response_context requires {field}")
+
+    representation = artifact.get("content_representation")
+    if representation not in ALLOWED_CONTENT_REPRESENTATIONS:
+        raise ProductDiscoveryError("R1.7 evidence artifact content representation is not frozen")
+    content = artifact.get("content")
+    if representation == "UTF8_TEXT" and not isinstance(content, str):
+        raise ProductDiscoveryError("R1.7 UTF8_TEXT evidence artifact content must be text")
+    if representation == "BASE64_BYTES":
+        if not isinstance(content, str):
+            raise ProductDiscoveryError("R1.7 BASE64_BYTES evidence artifact content must be text")
+        try:
+            base64.b64decode(content, validate=True)
+        except (binascii.Error, ValueError) as exc:
+            raise ProductDiscoveryError("R1.7 BASE64_BYTES evidence artifact content is invalid") from exc
+    if representation == "STRUCTURED_JSON" and content is None:
+        raise ProductDiscoveryError("R1.7 STRUCTURED_JSON evidence artifact content cannot be null")
+
+    expected_sha = evidence.get("sha256")
+    if expected_sha != canonical_sha256(artifact):
+        raise ProductDiscoveryError("R1.7 evidence artifact digest does not match route evidence")
+
+
+def validate_evidence_archive(
+    entries: Sequence[Mapping[str, Any]],
+    evidence_archive: Mapping[str, Mapping[str, Any]],
+) -> None:
+    """Require an exact, content-bound evidence artifact for every ledger evidence reference."""
+
+    evidence_by_ref: dict[str, Mapping[str, Any]] = {}
+    for entry in entries:
+        record = _entry_record(entry)
+        for evidence in cast(Sequence[Mapping[str, Any]], record["evidence"]):
+            evidence_ref = str(evidence["evidence_ref"])
+            previous = evidence_by_ref.get(evidence_ref)
+            if previous is not None:
+                binding_fields = (
+                    "capture_id",
+                    "query_or_seed_id",
+                    "source_locator",
+                    "knowledge_observed_at",
+                    "sha256",
+                )
+                if any(previous.get(field) != evidence.get(field) for field in binding_fields):
+                    raise ProductDiscoveryError("R1.7 repeated evidence_ref has conflicting immutable binding")
+            evidence_by_ref[evidence_ref] = evidence
+
+    expected_refs = set(evidence_by_ref)
+    archive_refs = set(evidence_archive)
+    if archive_refs != expected_refs:
+        missing = sorted(expected_refs - archive_refs)
+        extra = sorted(archive_refs - expected_refs)
+        raise ProductDiscoveryError(
+            f"R1.7 evidence archive reference set drift; missing={missing}; unreferenced={extra}"
+        )
+
+    for evidence_ref in sorted(expected_refs):
+        artifact = evidence_archive[evidence_ref]
+        if not isinstance(artifact, Mapping):
+            raise ProductDiscoveryError("R1.7 evidence archive artifacts must be objects")
+        _validate_evidence_artifact(evidence_by_ref[evidence_ref], artifact)
+
+
 def _propositions_by_capture(record: Mapping[str, Any]) -> dict[str, set[str]]:
     result: dict[str, set[str]] = defaultdict(set)
     for evidence in cast(Sequence[Mapping[str, Any]], record["evidence"]):
@@ -363,6 +492,7 @@ def derive_ledger_state(
     entries: Sequence[Mapping[str, Any]],
     *,
     routing_checkpoint: Mapping[str, Any] | None = None,
+    evidence_archive: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     routing = load_execution_unit_routing() if routing_checkpoint is None else routing_checkpoint
     population = derive_execution_population(routing)
@@ -405,6 +535,9 @@ def derive_ledger_state(
             superseded_ids.add(str(superseded_id))
 
         entry_by_id[entry_id] = entry
+
+    archive = {} if evidence_archive is None else evidence_archive
+    validate_evidence_archive(entries, archive)
 
     active_entries = [entry for entry_id, entry in entry_by_id.items() if entry_id not in superseded_ids]
     _assert_no_active_conflicts(active_entries)
