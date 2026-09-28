@@ -256,6 +256,8 @@ def test_rule_rejects_digest_schema_aggregation_lead_and_finality_drift(
         ("aggregation_contract", "aggregation contract drift"),
         ("extracted_lead_contract", "extracted-lead contract drift"),
         ("completion_contract", "completion contract drift"),
+        ("evidence_archive_contract", "evidence-archive contract drift"),
+        ("temporal_interpretation_contract", "temporal-interpretation contract drift"),
         ("finality", "finality boundary drift"),
     ]:
         changed = copy.deepcopy(rule)
