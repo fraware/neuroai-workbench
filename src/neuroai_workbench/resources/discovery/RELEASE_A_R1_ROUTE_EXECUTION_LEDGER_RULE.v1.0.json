@@ -25,7 +25,8 @@
     "ledger_entry_id_content_bound": true,
     "supersedes_ledger_entry_ids_must_reference_prior_entries": true,
     "supersession_must_preserve_work_item_and_route": true,
-    "supersession_requires_capture_overlap": true
+    "supersession_requires_capture_overlap": true,
+    "supersession_must_cover_all_superseded_captures": true
   },
   "aggregation_contract": {
     "last_write_wins": false,
@@ -105,5 +106,5 @@
     "publication_authority": false
   },
   "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
-  "rule_sha256": "f47f6922bf6c174890b778b993606a2a79a8f0060167cb0b991ed1d2e774692d"
+  "rule_sha256": "3da55f31c6f5a9072b63a5f50f8aadde6359045cff905c41e150c10c60731c36"
 }
