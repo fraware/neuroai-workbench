@@ -33,6 +33,32 @@ def _item(route: str, *, multi: bool = False) -> dict[str, object]:
     )
 
 
+def _evidence_ref(item: dict[str, object], index: int, suffix: str = "") -> str:
+    return f"EVIDENCE-{str(item['work_item_id'])[-12:]}-{index:04d}{suffix}"
+
+
+def _artifact_from_evidence(evidence: dict[str, object]) -> dict[str, object]:
+    return {
+        "artifact_schema_id": ledger.EVIDENCE_ARTIFACT_SCHEMA_ID,
+        "evidence_ref": evidence["evidence_ref"],
+        "capture_id": evidence["capture_id"],
+        "query_or_seed_id": evidence["query_or_seed_id"],
+        "source_locator": evidence["source_locator"],
+        "knowledge_observed_at": evidence["knowledge_observed_at"],
+        "retrieval_request": {
+            "method": "GET",
+            "locator": evidence["source_locator"],
+        },
+        "response_context": {
+            "retrieval_status": "RETRIEVED",
+            "content_type": "text/plain",
+            "encoding": "utf-8",
+        },
+        "content_representation": "UTF8_TEXT",
+        "content": f"fixture evidence content for {evidence['evidence_ref']}",
+    }
+
+
 def _evidence(
     item: dict[str, object],
     route: str,
@@ -71,18 +97,18 @@ def _evidence(
     for index, capture_id_raw in enumerate(item["capture_ids"], start=1):
         capture_id = str(capture_id_raw)
         source = source_records[capture_id]
-        result.append(
-            {
-                "evidence_ref": f"EVIDENCE-{index:04d}{evidence_suffix}",
-                "capture_id": capture_id,
-                "query_or_seed_id": source["query_or_seed_id"],
-                "source_locator": f"https://example.invalid/{index}{evidence_suffix}",
-                "knowledge_observed_at": "2026-09-28T00:00:00Z",
-                "sha256": f"{index:064x}",
-                "evidence_role": role,
-                "supported_propositions": sorted(propositions),
-            }
-        )
+        evidence: dict[str, object] = {
+            "evidence_ref": _evidence_ref(item, index, evidence_suffix),
+            "capture_id": capture_id,
+            "query_or_seed_id": source["query_or_seed_id"],
+            "source_locator": f"https://example.invalid/{index}{evidence_suffix}",
+            "knowledge_observed_at": "2026-09-28T00:00:00Z",
+            "sha256": "",
+            "evidence_role": role,
+            "supported_propositions": sorted(propositions),
+        }
+        evidence["sha256"] = ledger.canonical_sha256(_artifact_from_evidence(evidence))
+        result.append(evidence)
     return result
 
 
@@ -90,7 +116,7 @@ def _lead(
     item: dict[str, object],
     *,
     candidate_key: str = "Example::Offering",
-    evidence_ref: str = "EVIDENCE-0001",
+    evidence_ref: str | None = None,
 ) -> dict[str, object]:
     work_item_id = str(item["work_item_id"])
     source_observation_ref = "OBS-R1-LEDGER-TEST"
@@ -98,7 +124,7 @@ def _lead(
         "lead_id": extracted_lead_id(work_item_id, candidate_key, source_observation_ref),
         "candidate_key": candidate_key,
         "source_observation_ref": source_observation_ref,
-        "evidence_ref": evidence_ref,
+        "evidence_ref": _evidence_ref(item, 1) if evidence_ref is None else evidence_ref,
         "canonical_offering_id": None,
     }
 
@@ -169,6 +195,22 @@ def _reseal_entry(entry: dict[str, object]) -> None:
     entry["ledger_entry_id"] = ledger.ledger_entry_id(entry)
 
 
+def _archive(entries: list[dict[str, object]]) -> dict[str, dict[str, object]]:
+    result: dict[str, dict[str, object]] = {}
+    for entry in entries:
+        record = entry["route_execution_record"]
+        assert isinstance(record, dict)
+        for evidence in record["evidence"]:
+            assert isinstance(evidence, dict)
+            artifact = _artifact_from_evidence(evidence)
+            result[str(evidence["evidence_ref"])] = artifact
+    return result
+
+
+def _derive(entries: list[dict[str, object]]) -> dict[str, object]:
+    return ledger.derive_ledger_state(entries, evidence_archive=_archive(entries))
+
+
 def test_frozen_rule_and_execution_population_are_exact() -> None:
     rule = ledger.load_route_execution_ledger_rule()
     population = ledger.derive_execution_population()
@@ -180,7 +222,7 @@ def test_frozen_rule_and_execution_population_are_exact() -> None:
 
 
 def test_empty_ledger_state_is_nonfinal_and_fully_pending() -> None:
-    state = ledger.derive_ledger_state([])
+    state = _derive([])
     assert state["frozen_work_item_count"] == 192
     assert state["frozen_capture_count"] == 247
     assert state["ledger_entry_count"] == 0
@@ -207,7 +249,7 @@ def test_valid_source_and_record_completion_aggregate() -> None:
         )
     )
 
-    state = ledger.derive_ledger_state([source_entry, record_entry])
+    state = _derive([source_entry, record_entry])
     assert state["active_ledger_entry_count"] == 2
     assert state["completed_work_item_count"] == 2
     assert state["active_entry_count_by_route"] == {
@@ -333,7 +375,7 @@ def test_partial_multi_capture_record_cannot_claim_completion() -> None:
     )
     entry = _entry(record)
     with pytest.raises(ledger.ProductDiscoveryError, match="completion requires full frozen capture coverage"):
-        ledger.derive_ledger_state([entry])
+        _derive([entry])
 
 
 def test_explicit_supersession_replaces_active_support_without_erasing_history() -> None:
@@ -357,7 +399,7 @@ def test_explicit_supersession_replaces_active_support_without_erasing_history()
         supersedes=[str(first["ledger_entry_id"])],
     )
 
-    state = ledger.derive_ledger_state([first, second])
+    state = _derive([first, second])
     assert state["ledger_entry_count"] == 2
     assert state["active_ledger_entry_count"] == 1
     assert state["superseded_ledger_entry_count"] == 1
@@ -389,7 +431,7 @@ def test_conflicting_active_records_fail_closed_without_supersession() -> None:
     )
 
     with pytest.raises(ledger.ProductDiscoveryError, match="conflicting active propositions"):
-        ledger.derive_ledger_state([zero, with_lead])
+        _derive([zero, with_lead])
 
 
 def test_compatible_overlapping_active_records_are_retained() -> None:
@@ -411,7 +453,7 @@ def test_compatible_overlapping_active_records_are_retained() -> None:
             work_item_completion_claimed=True,
         )
     )
-    state = ledger.derive_ledger_state([first, second])
+    state = _derive([first, second])
     assert state["active_ledger_entry_count"] == 2
     assert state["completed_work_item_count"] == 1
 
@@ -434,7 +476,7 @@ def test_multiple_active_completion_records_fail_closed() -> None:
         )
     )
     with pytest.raises(ledger.ProductDiscoveryError, match="multiple active completion records"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
 
 @pytest.mark.parametrize(
@@ -495,7 +537,7 @@ def test_supersession_is_strictly_scoped(kind: str, message: str) -> None:
         second = _entry(second_record, supersedes=[str(first["ledger_entry_id"])])
 
     with pytest.raises(ledger.ProductDiscoveryError, match=message):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
 
 def test_duplicate_entry_and_execution_record_ids_fail_closed() -> None:
@@ -510,20 +552,20 @@ def test_duplicate_entry_and_execution_record_ids_fail_closed() -> None:
     )
 
     with pytest.raises(ledger.ProductDiscoveryError, match="duplicate ledger_entry_id"):
-        ledger.derive_ledger_state([first, copy.deepcopy(first)])
+        _derive([first, copy.deepcopy(first)])
 
     second = copy.deepcopy(first)
     second["supersedes_ledger_entry_ids"] = []
     second["ledger_entry_id"] = "R1LEDGER-" + "1" * 64
     with pytest.raises(ledger.ProductDiscoveryError, match="does not match deterministic content"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
     second = _entry(
         copy.deepcopy(first["route_execution_record"]),
         supersedes=[str(first["ledger_entry_id"])],
     )
     with pytest.raises(ledger.ProductDiscoveryError, match="duplicate execution_record_id"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
 
 def test_same_lead_id_with_conflicting_payload_fails_closed() -> None:
@@ -552,7 +594,7 @@ def test_same_lead_id_with_conflicting_payload_fails_closed() -> None:
         )
     )
     with pytest.raises(ledger.ProductDiscoveryError, match="identical lead_id has conflicting payload"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
 
 def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -602,7 +644,7 @@ def test_supersession_cannot_drop_uncorrected_capture_claims() -> None:
     )
 
     with pytest.raises(ledger.ProductDiscoveryError, match="cover every capture"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
 
 
 def test_cross_route_supersession_fails_closed_even_under_adversarial_validator_bypass(
@@ -624,4 +666,4 @@ def test_cross_route_supersession_fails_closed_even_under_adversarial_validator_
 
     monkeypatch.setattr(ledger, "validate_ledger_entry", lambda *args, **kwargs: None)
     with pytest.raises(ledger.ProductDiscoveryError, match="cannot cross execution route"):
-        ledger.derive_ledger_state([first, second])
+        _derive([first, second])
