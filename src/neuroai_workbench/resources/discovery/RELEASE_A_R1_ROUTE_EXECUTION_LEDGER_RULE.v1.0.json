@@ -26,7 +26,8 @@
     "supersedes_ledger_entry_ids_must_reference_prior_entries": true,
     "supersession_must_preserve_work_item_and_route": true,
     "supersession_requires_capture_overlap": true,
-    "supersession_must_cover_all_superseded_captures": true
+    "supersession_must_cover_all_superseded_captures": true,
+    "machine_provisional_entry_may_supersede_human_reviewed_entry": false
   },
   "aggregation_contract": {
     "last_write_wins": false,
@@ -37,7 +38,9 @@
     "conflicting_active_records_fail_closed": true,
     "explicit_supersession_required_to_resolve_conflict": true,
     "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
-    "historical_entries_remain_append_only": true
+    "historical_entries_remain_append_only": true,
+    "overlapping_active_finite_bounds_must_agree": true,
+    "active_leads_must_respect_applicable_finite_bounds": true
   },
   "incompatible_proposition_sets": {
     "SOURCE_SURFACE_RESOLUTION": [
@@ -83,8 +86,13 @@
     "historical_lead_provenance_append_only": true,
     "active_lead_ledger_deduplicates_by_lead_id": true,
     "repeated_leads_from_distinct_source_provenance_remain_distinct": true,
-    "conflicting_payload_for_same_lead_id_fails_closed": true,
-    "lead_support_status_derived_from_active_entries": true
+    "lead_support_status_derived_from_active_entries": true,
+    "conflicting_identity_material_for_same_lead_id_fails_closed": true,
+    "support_specific_evidence_ref_is_not_lead_identity_material": true,
+    "equivalent_raw_candidate_keys_may_share_lead_identity": true,
+    "derived_lead_ledger_preserves_normalized_candidate_key": true,
+    "derived_lead_support_preserves_work_item_route_capture_query_and_evidence_provenance": true,
+    "derived_lead_support_preserves_decision_sensitivity_flags": true
   },
   "completion_contract": {
     "source_scope_exhaustion_requires_human_review": true,
@@ -106,7 +114,7 @@
     "publication_authority": false
   },
   "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
-  "rule_sha256": "7702ff4c082e8835d2055ffbebb1ef12dcd9d8253f006a890e78d0b1518262ac",
+  "rule_sha256": "09b2356546c49326c439f4dacd201ac84dc47ef8381701fefe00e48b82e9a2c3",
   "evidence_archive_contract": {
     "evidence_sha256_semantics": "SHA256_OF_CANONICAL_EVIDENCE_ARTIFACT_JSON",
     "evidence_artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
@@ -135,7 +143,22 @@
     "archive_must_be_replayable_for_supported_proposition_review": true,
     "unarchivable_or_nonreplayable_source_remains_unresolved": true,
     "evidence_observed_at_is_knowledge_time_not_world_time": true,
-    "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": true
+    "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": true,
+    "retrieval_request_required_fields": [
+      "method",
+      "locator",
+      "request_context"
+    ],
+    "response_context_required_fields": [
+      "retrieval_status",
+      "content_type",
+      "encoding",
+      "final_locator",
+      "response_metadata"
+    ],
+    "request_context_must_be_structured_mapping": true,
+    "response_metadata_must_be_structured_mapping": true,
+    "digest_is_canonical_artifact_json_not_raw_transport_bytes": true
   },
   "temporal_interpretation_contract": {
     "post_world_cutoff_retrieval_may_supply_knowledge_about_pre_cutoff_world_state": true,
