@@ -259,6 +259,7 @@ def test_rule_rejects_digest_schema_aggregation_lead_and_finality_drift(
         ("ledger_entry_schema", "ledger-entry schema drift"),
         ("aggregation_contract", "aggregation contract drift"),
         ("extracted_lead_contract", "extracted-lead contract drift"),
+        ("completion_contract", "completion contract drift"),
         ("finality", "finality boundary drift"),
     ]:
         changed = copy.deepcopy(rule)
@@ -443,7 +444,6 @@ def test_multiple_active_completion_records_fail_closed() -> None:
     [
         ("future", "prior ledger entry"),
         ("cross_work_item", "cannot cross work-item identity"),
-        ("cross_route", "cannot cross execution route"),
         ("disjoint", "requires overlapping capture coverage"),
     ],
 )
@@ -485,11 +485,6 @@ def test_supersession_is_strictly_scoped(kind: str, message: str) -> None:
             ),
             supersedes=[str(first["ledger_entry_id"])],
         )
-    elif kind == "cross_route":
-        changed_record = copy.deepcopy(first_record)
-        changed_record["execution_route"] = LITERATURE_RECORD_EXTRACTION
-        _reseal_record(changed_record)
-        second = _entry(changed_record, supersedes=[str(first["ledger_entry_id"])])
     else:
         second_record = _record(
             item,
@@ -525,8 +520,10 @@ def test_duplicate_entry_and_execution_record_ids_fail_closed() -> None:
     with pytest.raises(ledger.ProductDiscoveryError, match="does not match deterministic content"):
         ledger.derive_ledger_state([first, second])
 
-    second = _entry(copy.deepcopy(first["route_execution_record"]))
-    second["ledger_entry_id"] = ledger.ledger_entry_id(second)
+    second = _entry(
+        copy.deepcopy(first["route_execution_record"]),
+        supersedes=[str(first["ledger_entry_id"])],
+    )
     with pytest.raises(ledger.ProductDiscoveryError, match="duplicate execution_record_id"):
         ledger.derive_ledger_state([first, second])
 
@@ -562,6 +559,8 @@ def test_same_lead_id_with_conflicting_payload_fails_closed() -> None:
 
 def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatch) -> None:
     checkpoint = load_execution_unit_routing()
+    monkeypatch.setattr(ledger, "validate_execution_unit_routing", lambda _: None)
+
     changed = copy.deepcopy(checkpoint)
     changed["route_table"] = [
         item
@@ -571,6 +570,62 @@ def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatc
     with pytest.raises(ledger.ProductDiscoveryError, match="work-item count drift"):
         ledger.derive_execution_population(changed)
 
-    monkeypatch.setattr(ledger, "EXPECTED_CAPTURE_COUNT", 246)
+    changed = copy.deepcopy(checkpoint)
+    target = next(
+        item
+        for item in changed["route_table"]
+        if item["execution_route"] == SOURCE_SURFACE_RESOLUTION and len(item["capture_ids"]) > 1
+    )
+    target["capture_ids"] = list(target["capture_ids"][:-1])
     with pytest.raises(ledger.ProductDiscoveryError, match="capture count drift"):
-        ledger.derive_execution_population(checkpoint)
+        ledger.derive_execution_population(changed)
+
+
+def test_supersession_cannot_drop_uncorrected_capture_claims() -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION, multi=True)
+    prior_captures = [str(value) for value in item["capture_ids"][:2]]
+    first = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+            covered_capture_ids=prior_captures,
+            work_item_completion_claimed=False,
+        )
+    )
+    second = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+            covered_capture_ids=[prior_captures[0]],
+            evidence_suffix="-2",
+            work_item_completion_claimed=False,
+        ),
+        supersedes=[str(first["ledger_entry_id"])],
+    )
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="cover every capture"):
+        ledger.derive_ledger_state([first, second])
+
+
+def test_cross_route_supersession_fails_closed_even_under_adversarial_validator_bypass(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    item = _item(SOURCE_SURFACE_RESOLUTION)
+    first = _entry(
+        _record(
+            item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_QUERY_INTERROGATED_ZERO_EXTRACTED_LEADS",
+            work_item_completion_claimed=False,
+        )
+    )
+    second_record = copy.deepcopy(first["route_execution_record"])
+    second_record["execution_route"] = LITERATURE_RECORD_EXTRACTION
+    _reseal_record(second_record)
+    second = _entry(second_record, supersedes=[str(first["ledger_entry_id"])])
+
+    monkeypatch.setattr(ledger, "validate_ledger_entry", lambda *args, **kwargs: None)
+    with pytest.raises(ledger.ProductDiscoveryError, match="cannot cross execution route"):
+        ledger.derive_ledger_state([first, second])
