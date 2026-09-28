@@ -40,7 +40,7 @@ from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "9a5ffe52bd512aa31f797251e7566b21f128def238fcc42bf7b237fa28364af3"
+RULE_SHA256 = "04d8db5f44aa568ed2df216e7a6182e3f45e8359c885cd02c1f0131354d3dcb2"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -140,6 +140,8 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "historical_entries_remain_append_only": True,
         "overlapping_active_finite_bounds_must_agree": True,
         "active_leads_must_respect_applicable_finite_bounds": True,
+        "unresolved_barrier_record_may_establish_work_item_completion": False,
+        "derived_state_reports_unresolved_barrier_work_items": True,
     }
     if dict(aggregation) != expected_aggregation:
         raise ProductDiscoveryError("R1.7 aggregation contract drift")
@@ -709,12 +711,21 @@ def derive_ledger_state(
     _assert_no_active_conflicts(active_entries)
     _assert_active_bound_consistency(active_entries)
 
+    unresolved_completion_states = {"SOURCE_BARRIER_UNRESOLVED", "RECORD_EXTRACTION_UNRESOLVED"}
+    unresolved_barrier_work_item_ids: set[str] = set()
+    for entry in active_entries:
+        record = _entry_record(entry)
+        if str(record["completion_state"]) in unresolved_completion_states:
+            unresolved_barrier_work_item_ids.add(str(record["work_item_id"]))
+
     completion_by_work_item: dict[str, str] = {}
     for entry in active_entries:
         record = _entry_record(entry)
         if record["work_item_completion_claimed"] is not True:
             continue
         work_item_id = str(record["work_item_id"])
+        if str(record["completion_state"]) in unresolved_completion_states:
+            raise ProductDiscoveryError("R1.7 unresolved barrier record cannot establish work-item completion")
         if work_item_id in completion_by_work_item:
             raise ProductDiscoveryError("R1.7 work item has multiple active completion records")
         expected_captures = list(cast(Sequence[str], population_by_id[work_item_id]["capture_ids"]))
@@ -737,6 +748,8 @@ def derive_ledger_state(
         "superseded_ledger_entry_count": len(superseded_ids),
         "completed_work_item_count": len(completion_by_work_item),
         "pending_work_item_count": len(population) - len(completion_by_work_item),
+        "unresolved_barrier_work_item_count": len(unresolved_barrier_work_item_ids),
+        "unresolved_barrier_work_item_ids": sorted(unresolved_barrier_work_item_ids),
         "active_entry_count_by_route": {route: route_counts[route] for route in GOVERNED_ROUTES},
         "completion_entry_by_work_item": dict(sorted(completion_by_work_item.items())),
         "extracted_lead_count": len(lead_ledger),
