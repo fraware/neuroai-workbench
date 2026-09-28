@@ -650,6 +650,7 @@ def test_same_lead_id_with_conflicting_identity_material_fails_closed() -> None:
             population_by_id=population_by_id,
         )
 
+
 def test_execution_population_rejects_count_drift(monkeypatch: pytest.MonkeyPatch) -> None:
     checkpoint = load_execution_unit_routing()
     monkeypatch.setattr(ledger, "validate_execution_unit_routing", lambda _: None)
@@ -814,6 +815,7 @@ def test_active_leads_cannot_exceed_applicable_finite_bound() -> None:
     [
         ("request_fields", "retrieval_request fields drift"),
         ("request_context", "request_context must be an object"),
+        ("request_query", "request_context query_or_seed_id drift"),
         ("response_fields", "response_context fields drift"),
         ("final_locator", "response_context requires final_locator"),
         ("response_metadata", "response_metadata must be an object"),
@@ -835,6 +837,8 @@ def test_evidence_artifact_requires_replayable_request_response_context(
         artifact["retrieval_request"]["extra"] = True
     elif mutation == "request_context":
         artifact["retrieval_request"]["request_context"] = "bad"
+    elif mutation == "request_query":
+        artifact["retrieval_request"]["request_context"]["query_or_seed_id"] = "WRONG"
     elif mutation == "response_fields":
         artifact["response_context"]["extra"] = True
     elif mutation == "final_locator":
