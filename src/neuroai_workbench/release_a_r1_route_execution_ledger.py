@@ -137,11 +137,12 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
 
     declared_conflicts = cast(Mapping[str, Any], rule["incompatible_proposition_sets"])
     expected_conflicts = {
-        route: [sorted(pair) for pair in INCOMPATIBLE_PROPOSITION_SETS[route]]
-        for route in GOVERNED_ROUTES
+        route: [sorted(pair) for pair in INCOMPATIBLE_PROPOSITION_SETS[route]] for route in GOVERNED_ROUTES
     }
     normalized_declared = {
-        route: [sorted(str(value) for value in pair) for pair in cast(Sequence[Sequence[str]], declared_conflicts[route])]
+        route: [
+            sorted(str(value) for value in pair) for pair in cast(Sequence[Sequence[str]], declared_conflicts[route])
+        ]
         for route in GOVERNED_ROUTES
     }
     if normalized_declared != expected_conflicts:
@@ -288,8 +289,7 @@ def _assert_no_active_conflicts(active_entries: Sequence[Mapping[str, Any]]) -> 
         for incompatible in INCOMPATIBLE_PROPOSITION_SETS[route]:
             if incompatible.issubset(values):
                 raise ProductDiscoveryError(
-                    "R1.7 conflicting active propositions require explicit supersession: "
-                    f"{work_item_id}/{capture_id}"
+                    f"R1.7 conflicting active propositions require explicit supersession: {work_item_id}/{capture_id}"
                 )
 
 
@@ -371,9 +371,7 @@ def derive_ledger_state(
             if prior_captures.isdisjoint(current_captures):
                 raise ProductDiscoveryError("R1.7 supersession requires overlapping capture coverage")
             if not prior_captures.issubset(current_captures):
-                raise ProductDiscoveryError(
-                    "R1.7 supersession must cover every capture in the superseded entry"
-                )
+                raise ProductDiscoveryError("R1.7 supersession must cover every capture in the superseded entry")
             superseded_ids.add(str(superseded_id))
 
         entry_by_id[entry_id] = entry
@@ -395,7 +393,9 @@ def derive_ledger_state(
         completion_by_work_item[work_item_id] = str(entry["ledger_entry_id"])
 
     route_counts = Counter(str(_entry_record(entry)["execution_route"]) for entry in active_entries)
-    lead_ledger = _derive_lead_state(entries, active_entry_ids={str(entry["ledger_entry_id"]) for entry in active_entries})
+    lead_ledger = _derive_lead_state(
+        entries, active_entry_ids={str(entry["ledger_entry_id"]) for entry in active_entries}
+    )
 
     return {
         "frozen_work_item_count": len(population),
