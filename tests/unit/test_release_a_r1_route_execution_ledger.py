@@ -235,7 +235,62 @@ def test_empty_ledger_state_is_nonfinal_and_fully_pending() -> None:
     assert state["ledger_entry_count"] == 0
     assert state["completed_work_item_count"] == 0
     assert state["pending_work_item_count"] == 192
+    assert state["unresolved_barrier_work_item_count"] == 0
+    assert state["unresolved_barrier_work_item_ids"] == []
     assert state["extracted_lead_count"] == 0
+
+
+def test_unresolved_barriers_remain_pending_and_are_reported() -> None:
+    source_item = _item(SOURCE_SURFACE_RESOLUTION)
+    record_item = _item(LITERATURE_RECORD_EXTRACTION)
+    source_entry = _entry(
+        _record(
+            source_item,
+            SOURCE_SURFACE_RESOLUTION,
+            "SOURCE_BARRIER_UNRESOLVED",
+            work_item_completion_claimed=False,
+        )
+    )
+    record_entry = _entry(
+        _record(
+            record_item,
+            LITERATURE_RECORD_EXTRACTION,
+            "RECORD_EXTRACTION_UNRESOLVED",
+            work_item_completion_claimed=False,
+        )
+    )
+
+    state = _derive([source_entry, record_entry])
+    assert state["completed_work_item_count"] == 0
+    assert state["unresolved_barrier_work_item_count"] == 2
+    assert state["unresolved_barrier_work_item_ids"] == sorted(
+        [str(source_item["work_item_id"]), str(record_item["work_item_id"])]
+    )
+
+
+@pytest.mark.parametrize(
+    ("route", "completion_state"),
+    [
+        (SOURCE_SURFACE_RESOLUTION, "SOURCE_BARRIER_UNRESOLVED"),
+        (LITERATURE_RECORD_EXTRACTION, "RECORD_EXTRACTION_UNRESOLVED"),
+    ],
+)
+def test_unresolved_barrier_cannot_establish_work_item_completion(
+    route: str,
+    completion_state: str,
+) -> None:
+    item = _item(route)
+    entry = _entry(
+        _record(
+            item,
+            route,
+            completion_state,
+            work_item_completion_claimed=True,
+        )
+    )
+
+    with pytest.raises(ledger.ProductDiscoveryError, match="unresolved barrier record cannot establish"):
+        _derive([entry])
 
 
 def test_valid_source_and_record_completion_aggregate() -> None:
