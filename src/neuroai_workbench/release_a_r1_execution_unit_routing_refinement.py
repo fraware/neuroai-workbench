@@ -52,9 +52,7 @@ SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 ACTUAL_LITERATURE_RECORD = "ACTUAL_LITERATURE_RECORD"
 EMPTY_LITERATURE_QUERY_SENTINEL = "EMPTY_LITERATURE_QUERY_SENTINEL"
 EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL = "EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL"
-UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE = (
-    "UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE"
-)
+UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE = "UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE"
 UNCHANGED_FROM_R1_6 = "UNCHANGED_FROM_R1_6"
 
 EXECUTION_ROUTES = (
@@ -99,19 +97,13 @@ def canonical_sha256(value: Any) -> str:
 
 
 def artifact_sha256(value: Mapping[str, Any], *, digest_field: str) -> str:
-    return canonical_sha256(
-        {key: item for key, item in value.items() if key != digest_field}
-    )
+    return canonical_sha256({key: item for key, item in value.items() if key != digest_field})
 
 
 def _load(resource: str) -> dict[str, Any]:
     return cast(
         dict[str, Any],
-        json.loads(
-            files(DISCOVERY_RESOURCE_PACKAGE)
-            .joinpath(resource)
-            .read_text(encoding="utf-8")
-        ),
+        json.loads(files(DISCOVERY_RESOURCE_PACKAGE).joinpath(resource).read_text(encoding="utf-8")),
     )
 
 
@@ -147,9 +139,7 @@ def validate_routing_refinement_rule(rule: Mapping[str, Any]) -> None:
         "empty_trial_publication_query_label_pattern": r"^empty-trial-lit",
         "actual_literature_record_subtype": ACTUAL_LITERATURE_RECORD,
         "empty_literature_query_subtype": EMPTY_LITERATURE_QUERY_SENTINEL,
-        "empty_trial_publication_query_subtype": (
-            EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL
-        ),
+        "empty_trial_publication_query_subtype": (EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL),
         "unresolved_or_mixed_subtype": UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE,
         "actual_literature_record_route": LITERATURE_RECORD_EXTRACTION,
         "empty_query_sentinel_route": SOURCE_SURFACE_RESOLUTION,
@@ -242,9 +232,7 @@ def derive_routing_refinement() -> dict[str, Any]:
 
     manifest = load_r1_candidate_resolution_manifest()
     source_records = compile_r1_source_records(manifest)
-    records_by_capture_id = {
-        str(record["capture_id"]): record for record in source_records
-    }
+    records_by_capture_id = {str(record["capture_id"]): record for record in source_records}
     if len(records_by_capture_id) != len(source_records):
         raise ProductDiscoveryError("R1.6.1 source records contain duplicate capture IDs")
 
@@ -262,17 +250,12 @@ def derive_routing_refinement() -> dict[str, Any]:
             route_table.append(item)
             continue
 
-        capture_ids = [
-            str(value)
-            for value in cast(Sequence[str], predecessor_item["capture_ids"])
-        ]
+        capture_ids = [str(value) for value in cast(Sequence[str], predecessor_item["capture_ids"])]
         subtypes: list[str] = []
         for capture_id in capture_ids:
             source_record = records_by_capture_id.get(capture_id)
             if source_record is None:
-                raise ProductDiscoveryError(
-                    f"R1.6.1 predecessor references unknown capture ID: {capture_id}"
-                )
+                raise ProductDiscoveryError(f"R1.6.1 predecessor references unknown capture ID: {capture_id}")
             subtypes.append(
                 _literature_probe_subtype(
                     str(source_record["normalized_candidate_label"]),
@@ -282,39 +265,30 @@ def derive_routing_refinement() -> dict[str, Any]:
 
         unique_subtypes = sorted(set(subtypes))
         item["execution_subtype"] = (
-            unique_subtypes[0]
-            if len(unique_subtypes) == 1
-            else UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE
+            unique_subtypes[0] if len(unique_subtypes) == 1 else UNRESOLVED_OR_MIXED_LITERATURE_PROBE_SUBTYPE
         )
         item["execution_route"] = _refined_route_for_subtypes(unique_subtypes)
         route_table.append(item)
 
     predecessor_ids = [
-        str(item["work_item_id"])
-        for item in cast(Sequence[Mapping[str, Any]], predecessor["route_table"])
+        str(item["work_item_id"]) for item in cast(Sequence[Mapping[str, Any]], predecessor["route_table"])
     ]
     refined_ids = [str(item["work_item_id"]) for item in route_table]
     if refined_ids != predecessor_ids:
         raise ProductDiscoveryError("R1.6.1 must preserve exact R1.6 work-item order")
 
     route_counts = Counter(str(item["execution_route"]) for item in route_table)
-    work_item_counts_by_route = {
-        route: route_counts[route] for route in EXECUTION_ROUTES
-    }
+    work_item_counts_by_route = {route: route_counts[route] for route in EXECUTION_ROUTES}
     capture_counts_by_route = {
         route: sum(
-            len(cast(Sequence[str], item["capture_ids"]))
-            for item in route_table
-            if item["execution_route"] == route
+            len(cast(Sequence[str], item["capture_ids"])) for item in route_table if item["execution_route"] == route
         )
         for route in EXECUTION_ROUTES
     }
 
     subtype_counts = {
         subtype: {
-            "work_items": sum(
-                item["execution_subtype"] == subtype for item in route_table
-            ),
+            "work_items": sum(item["execution_subtype"] == subtype for item in route_table),
             "captures": sum(
                 len(cast(Sequence[str], item["capture_ids"]))
                 for item in route_table
@@ -324,11 +298,7 @@ def derive_routing_refinement() -> dict[str, Any]:
         for subtype in EXPECTED_REFINED_SUBTYPE_COUNTS
     }
 
-    changed_items = [
-        item
-        for item in route_table
-        if item["execution_route"] != item["r1_6_execution_route"]
-    ]
+    changed_items = [item for item in route_table if item["execution_route"] != item["r1_6_execution_route"]]
 
     return {
         "checkpoint_id": CHECKPOINT_ID,
@@ -344,20 +314,14 @@ def derive_routing_refinement() -> dict[str, Any]:
         "r1_6_rule_sha256": R1_6_RULE_SHA256,
         "r1_6_routing_sha256": R1_6_ROUTING_SHA256,
         "work_item_count": len(route_table),
-        "capture_count": sum(
-            len(cast(Sequence[str], item["capture_ids"])) for item in route_table
-        ),
+        "capture_count": sum(len(cast(Sequence[str], item["capture_ids"])) for item in route_table),
         "work_item_counts_by_route": work_item_counts_by_route,
         "capture_counts_by_route": capture_counts_by_route,
         "refined_predecessor_subtype_counts": subtype_counts,
         "changed_work_item_count": len(changed_items),
-        "changed_capture_count": sum(
-            len(cast(Sequence[str], item["capture_ids"])) for item in changed_items
-        ),
+        "changed_capture_count": sum(len(cast(Sequence[str], item["capture_ids"])) for item in changed_items),
         "route_table": route_table,
-        "aggregate_disposition": (
-            "R1_6_EXECUTION_ROUTING_REFINED_FOR_RECORD_VS_EMPTY_QUERY_SENTINEL"
-        ),
+        "aggregate_disposition": ("R1_6_EXECUTION_ROUTING_REFINED_FOR_RECORD_VS_EMPTY_QUERY_SENTINEL"),
         "authority_controls": {
             "substantive_route_execution_performed": False,
             "canonical_identity_allocated": False,
@@ -378,32 +342,20 @@ def derive_routing_refinement() -> dict[str, Any]:
 def validate_routing_refinement(checkpoint: Mapping[str, Any]) -> None:
     if checkpoint.get("checkpoint_id") != CHECKPOINT_ID:
         raise ProductDiscoveryError("R1.6.1 checkpoint ID drift")
-    if (
-        artifact_sha256(checkpoint, digest_field="checkpoint_sha256")
-        != checkpoint.get("checkpoint_sha256")
-    ):
+    if artifact_sha256(checkpoint, digest_field="checkpoint_sha256") != checkpoint.get("checkpoint_sha256"):
         raise ProductDiscoveryError("R1.6.1 checkpoint digest mismatch")
     if checkpoint.get("checkpoint_sha256") != CHECKPOINT_SHA256:
         raise ProductDiscoveryError("R1.6.1 frozen checkpoint digest drift")
 
-    materialized = {
-        key: value
-        for key, value in checkpoint.items()
-        if key != "checkpoint_sha256"
-    }
+    materialized = {key: value for key, value in checkpoint.items() if key != "checkpoint_sha256"}
     if materialized != derive_routing_refinement():
-        raise ProductDiscoveryError(
-            "R1.6.1 checkpoint does not reproduce from frozen inputs"
-        )
+        raise ProductDiscoveryError("R1.6.1 checkpoint does not reproduce from frozen inputs")
 
     if checkpoint["work_item_counts_by_route"] != EXPECTED_WORK_ITEM_COUNTS_BY_ROUTE:
         raise ProductDiscoveryError("R1.6.1 refined work-item route counts drift")
     if checkpoint["capture_counts_by_route"] != EXPECTED_CAPTURE_COUNTS_BY_ROUTE:
         raise ProductDiscoveryError("R1.6.1 refined capture route counts drift")
-    if (
-        checkpoint["refined_predecessor_subtype_counts"]
-        != EXPECTED_REFINED_SUBTYPE_COUNTS
-    ):
+    if checkpoint["refined_predecessor_subtype_counts"] != EXPECTED_REFINED_SUBTYPE_COUNTS:
         raise ProductDiscoveryError("R1.6.1 refined subtype counts drift")
     if checkpoint.get("changed_work_item_count") != 13:
         raise ProductDiscoveryError("R1.6.1 changed work-item count drift")
@@ -412,8 +364,7 @@ def validate_routing_refinement(checkpoint: Mapping[str, Any]) -> None:
 
     predecessor = load_execution_unit_routing()
     predecessor_by_id = {
-        str(item["work_item_id"]): item
-        for item in cast(Sequence[Mapping[str, Any]], predecessor["route_table"])
+        str(item["work_item_id"]): item for item in cast(Sequence[Mapping[str, Any]], predecessor["route_table"])
     }
     for item in cast(Sequence[Mapping[str, Any]], checkpoint["route_table"]):
         work_item_id = str(item["work_item_id"])
@@ -429,29 +380,21 @@ def validate_routing_refinement(checkpoint: Mapping[str, Any]) -> None:
 
         if predecessor_route != LITERATURE_RECORD_EXTRACTION:
             if refined_route != predecessor_route or subtype != UNCHANGED_FROM_R1_6:
-                raise ProductDiscoveryError(
-                    "R1.6.1 changed an out-of-scope predecessor route"
-                )
+                raise ProductDiscoveryError("R1.6.1 changed an out-of-scope predecessor route")
             continue
 
         if subtype == ACTUAL_LITERATURE_RECORD:
             if refined_route != LITERATURE_RECORD_EXTRACTION:
-                raise ProductDiscoveryError(
-                    "R1.6.1 actual literature record route drift"
-                )
+                raise ProductDiscoveryError("R1.6.1 actual literature record route drift")
         elif subtype in {
             EMPTY_LITERATURE_QUERY_SENTINEL,
             EMPTY_TRIAL_PUBLICATION_QUERY_SENTINEL,
         }:
             if refined_route != SOURCE_SURFACE_RESOLUTION:
-                raise ProductDiscoveryError(
-                    "R1.6.1 empty-query sentinel route drift"
-                )
+                raise ProductDiscoveryError("R1.6.1 empty-query sentinel route drift")
         else:
             if refined_route != MIXED_OR_UNRESOLVED_UNIT_REVIEW:
-                raise ProductDiscoveryError(
-                    "R1.6.1 unresolved literature subtype must fail closed"
-                )
+                raise ProductDiscoveryError("R1.6.1 unresolved literature subtype must fail closed")
 
 
 def load_routing_refinement() -> dict[str, Any]:
