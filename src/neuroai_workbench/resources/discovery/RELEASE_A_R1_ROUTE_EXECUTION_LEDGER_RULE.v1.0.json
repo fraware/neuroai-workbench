@@ -40,7 +40,9 @@
     "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
     "historical_entries_remain_append_only": true,
     "overlapping_active_finite_bounds_must_agree": true,
-    "active_leads_must_respect_applicable_finite_bounds": true
+    "active_leads_must_respect_applicable_finite_bounds": true,
+    "unresolved_barrier_record_may_establish_work_item_completion": false,
+    "derived_state_reports_unresolved_barrier_work_items": true
   },
   "incompatible_proposition_sets": {
     "SOURCE_SURFACE_RESOLUTION": [
@@ -114,7 +116,7 @@
     "publication_authority": false
   },
   "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
-  "rule_sha256": "9a5ffe52bd512aa31f797251e7566b21f128def238fcc42bf7b237fa28364af3",
+  "rule_sha256": "04d8db5f44aa568ed2df216e7a6182e3f45e8359c885cd02c1f0131354d3dcb2",
   "evidence_archive_contract": {
     "evidence_sha256_semantics": "SHA256_OF_CANONICAL_EVIDENCE_ARTIFACT_JSON",
     "evidence_artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
