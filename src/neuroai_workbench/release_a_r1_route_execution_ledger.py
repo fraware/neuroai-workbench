@@ -609,9 +609,7 @@ def _derive_lead_state(
                     "source_observation_ref": str(lead["source_observation_ref"]),
                     "raw_candidate_key": raw_candidate_key,
                     "active_support": entry_id in active_entry_ids,
-                    "could_change_marginal_yield_stop": bool(
-                        population_item["could_change_marginal_yield_stop"]
-                    ),
+                    "could_change_marginal_yield_stop": bool(population_item["could_change_marginal_yield_stop"]),
                     "could_change_a3_increment": bool(population_item["could_change_a3_increment"]),
                     "could_change_a4_increment": bool(population_item["could_change_a4_increment"]),
                     "could_change_a_p1_membership": bool(population_item["could_change_a_p1_membership"]),
