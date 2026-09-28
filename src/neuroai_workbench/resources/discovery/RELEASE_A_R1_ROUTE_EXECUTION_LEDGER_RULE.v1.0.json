@@ -1,0 +1,109 @@
+{
+  "rule_id": "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN_PRE_EXECUTION",
+  "frozen_on": "2026-09-28",
+  "source_workbench_main_commit": "b00fa51af314277ef154af787cb850151cfaf1f8",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "r1_6_rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
+  "r1_6_routing_sha256": "5b37f3e4aaa3d4cced9864aa6dcc6e5d547726e277bbbce0551005bf12a3465e",
+  "governed_execution_routes": [
+    "SOURCE_SURFACE_RESOLUTION",
+    "LITERATURE_RECORD_EXTRACTION"
+  ],
+  "expected_work_item_count": 192,
+  "expected_capture_count": 247,
+  "ledger_entry_schema": {
+    "required_fields": [
+      "ledger_entry_id",
+      "route_execution_record",
+      "supersedes_ledger_entry_ids"
+    ],
+    "additional_fields_allowed": false,
+    "ledger_entry_id_content_bound": true,
+    "supersedes_ledger_entry_ids_must_reference_prior_entries": true,
+    "supersession_must_preserve_work_item_and_route": true,
+    "supersession_requires_capture_overlap": true
+  },
+  "aggregation_contract": {
+    "last_write_wins": false,
+    "partial_records_may_establish_work_item_completion": false,
+    "full_coverage_completion_record_required": true,
+    "at_most_one_active_completion_record_per_work_item": true,
+    "overlapping_active_records_must_be_proposition_compatible": true,
+    "conflicting_active_records_fail_closed": true,
+    "explicit_supersession_required_to_resolve_conflict": true,
+    "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
+    "historical_entries_remain_append_only": true
+  },
+  "incompatible_proposition_sets": {
+    "SOURCE_SURFACE_RESOLUTION": [
+      [
+        "SOURCE_QUERY_ZERO_LEADS",
+        "SOURCE_QUERY_WITH_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_QUERY_ZERO_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_QUERY_WITH_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_SCOPE_EXHAUSTED"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_FINITE_CARDINALITY_ESTABLISHED"
+      ]
+    ],
+    "LITERATURE_RECORD_EXTRACTION": [
+      [
+        "RECORD_ZERO_OFFERING_LEADS",
+        "RECORD_WITH_OFFERING_LEADS"
+      ],
+      [
+        "RECORD_EXTRACTION_UNRESOLVED",
+        "RECORD_ZERO_OFFERING_LEADS"
+      ],
+      [
+        "RECORD_EXTRACTION_UNRESOLVED",
+        "RECORD_WITH_OFFERING_LEADS"
+      ]
+    ]
+  },
+  "extracted_lead_contract": {
+    "canonical_identity_allocation": false,
+    "frozen_r1_4_worklist_mutation": false,
+    "historical_lead_provenance_append_only": true,
+    "active_lead_ledger_deduplicates_by_lead_id": true,
+    "repeated_leads_from_distinct_source_provenance_remain_distinct": true,
+    "conflicting_payload_for_same_lead_id_fails_closed": true,
+    "lead_support_status_derived_from_active_entries": true
+  },
+  "completion_contract": {
+    "source_scope_exhaustion_requires_human_review": true,
+    "finite_cardinality_requires_human_review": true,
+    "source_scope_exhaustion_requires_per_capture_support": true,
+    "finite_cardinality_requires_per_capture_support": true,
+    "zero_lead_never_implies_global_completeness": true,
+    "unresolved_barriers_remain_explicit": true
+  },
+  "finality": {
+    "substantive_route_execution_performed": false,
+    "empirical_candidate_adjudication_performed": false,
+    "temporal_state_review_performed": false,
+    "canonical_identity_allocated": false,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
+  "rule_sha256": "f47f6922bf6c174890b778b993606a2a79a8f0060167cb0b991ed1d2e774692d"
+}
