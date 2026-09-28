@@ -36,11 +36,11 @@ from neuroai_workbench.release_a_r1_execution_unit_routing import (
 from neuroai_workbench.release_a_r1_execution_unit_routing import (
     RULE_SHA256 as R1_6_RULE_SHA256,
 )
-from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
+from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE, normalize_candidate_key
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "7702ff4c082e8835d2055ffbebb1ef12dcd9d8253f006a890e78d0b1518262ac"
+RULE_SHA256 = "09b2356546c49326c439f4dacd201ac84dc47ef8381701fefe00e48b82e9a2c3"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -122,6 +122,7 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "supersession_must_preserve_work_item_and_route": True,
         "supersession_requires_capture_overlap": True,
         "supersession_must_cover_all_superseded_captures": True,
+        "machine_provisional_entry_may_supersede_human_reviewed_entry": False,
     }
     if dict(schema) != expected_schema:
         raise ProductDiscoveryError("R1.7 ledger-entry schema drift")
@@ -137,6 +138,8 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "explicit_supersession_required_to_resolve_conflict": True,
         "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
         "historical_entries_remain_append_only": True,
+        "overlapping_active_finite_bounds_must_agree": True,
+        "active_leads_must_respect_applicable_finite_bounds": True,
     }
     if dict(aggregation) != expected_aggregation:
         raise ProductDiscoveryError("R1.7 aggregation contract drift")
@@ -155,15 +158,21 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         raise ProductDiscoveryError("R1.7 proposition-conflict contract drift")
 
     lead_contract = cast(Mapping[str, Any], rule["extracted_lead_contract"])
-    if not (
-        lead_contract.get("canonical_identity_allocation") is False
-        and lead_contract.get("frozen_r1_4_worklist_mutation") is False
-        and lead_contract.get("historical_lead_provenance_append_only") is True
-        and lead_contract.get("active_lead_ledger_deduplicates_by_lead_id") is True
-        and lead_contract.get("repeated_leads_from_distinct_source_provenance_remain_distinct") is True
-        and lead_contract.get("conflicting_payload_for_same_lead_id_fails_closed") is True
-        and lead_contract.get("lead_support_status_derived_from_active_entries") is True
-    ):
+    expected_lead_contract = {
+        "canonical_identity_allocation": False,
+        "frozen_r1_4_worklist_mutation": False,
+        "historical_lead_provenance_append_only": True,
+        "active_lead_ledger_deduplicates_by_lead_id": True,
+        "repeated_leads_from_distinct_source_provenance_remain_distinct": True,
+        "lead_support_status_derived_from_active_entries": True,
+        "conflicting_identity_material_for_same_lead_id_fails_closed": True,
+        "support_specific_evidence_ref_is_not_lead_identity_material": True,
+        "equivalent_raw_candidate_keys_may_share_lead_identity": True,
+        "derived_lead_ledger_preserves_normalized_candidate_key": True,
+        "derived_lead_support_preserves_work_item_route_capture_query_and_evidence_provenance": True,
+        "derived_lead_support_preserves_decision_sensitivity_flags": True,
+    }
+    if dict(lead_contract) != expected_lead_contract:
         raise ProductDiscoveryError("R1.7 extracted-lead contract drift")
 
     completion = cast(Mapping[str, Any], rule["completion_contract"])
@@ -204,6 +213,17 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "unarchivable_or_nonreplayable_source_remains_unresolved": True,
         "evidence_observed_at_is_knowledge_time_not_world_time": True,
         "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": True,
+        "retrieval_request_required_fields": ["method", "locator", "request_context"],
+        "response_context_required_fields": [
+            "retrieval_status",
+            "content_type",
+            "encoding",
+            "final_locator",
+            "response_metadata",
+        ],
+        "request_context_must_be_structured_mapping": True,
+        "response_metadata_must_be_structured_mapping": True,
+        "digest_is_canonical_artifact_json_not_raw_transport_bytes": True,
     }
     if dict(evidence_archive) != expected_evidence_archive:
         raise ProductDiscoveryError("R1.7 evidence-archive contract drift")
