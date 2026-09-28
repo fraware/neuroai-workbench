@@ -418,7 +418,7 @@ def test_conflicting_active_records_fail_closed_without_supersession() -> None:
             work_item_completion_claimed=False,
         )
     )
-    lead = _lead(item, evidence_ref="EVIDENCE-0001-X")
+    lead = _lead(item, evidence_ref=_evidence_ref(item, 1, "-X"))
     with_lead = _entry(
         _record(
             item,
@@ -582,7 +582,7 @@ def test_same_lead_id_with_conflicting_payload_fails_closed() -> None:
     )
 
     lead2 = copy.deepcopy(lead1)
-    lead2["evidence_ref"] = "EVIDENCE-0001-X"
+    lead2["evidence_ref"] = _evidence_ref(item, 1, "-X")
     second = _entry(
         _record(
             item,
