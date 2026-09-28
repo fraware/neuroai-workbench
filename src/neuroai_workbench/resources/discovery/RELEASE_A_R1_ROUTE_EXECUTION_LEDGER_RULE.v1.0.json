@@ -106,16 +106,36 @@
     "publication_authority": false
   },
   "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
-  "rule_sha256": "fea065822e892056ebeab9eb576b672440532b89ed730ef247a6e201ba22fc89",
+  "rule_sha256": "7702ff4c082e8835d2055ffbebb1ef12dcd9d8253f006a890e78d0b1518262ac",
   "evidence_archive_contract": {
-    "evidence_sha256_semantics": "SHA256_OF_EXACT_IMMUTABLE_ARCHIVED_EVIDENCE_ARTIFACT_BYTES",
+    "evidence_sha256_semantics": "SHA256_OF_CANONICAL_EVIDENCE_ARTIFACT_JSON",
+    "evidence_artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
+    "evidence_artifact_required_fields": [
+      "artifact_schema_id",
+      "evidence_ref",
+      "capture_id",
+      "query_or_seed_id",
+      "source_locator",
+      "knowledge_observed_at",
+      "retrieval_request",
+      "response_context",
+      "content_representation",
+      "content"
+    ],
+    "allowed_content_representations": [
+      "UTF8_TEXT",
+      "BASE64_BYTES",
+      "STRUCTURED_JSON"
+    ],
     "source_locator_is_origin_not_evidence_identity": true,
+    "archived_artifact_required_for_every_evidence_ref": true,
     "archived_artifact_required_for_completion_claim": true,
     "archive_must_preserve_retrieval_request_and_response_context": true,
-    "archive_must_preserve_content_type_and_encoding": true,
+    "archive_must_preserve_content_type_and_encoding_in_response_context": true,
     "archive_must_be_replayable_for_supported_proposition_review": true,
     "unarchivable_or_nonreplayable_source_remains_unresolved": true,
-    "evidence_observed_at_is_knowledge_time_not_world_time": true
+    "evidence_observed_at_is_knowledge_time_not_world_time": true,
+    "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": true
   },
   "temporal_interpretation_contract": {
     "post_world_cutoff_retrieval_may_supply_knowledge_about_pre_cutoff_world_state": true,
