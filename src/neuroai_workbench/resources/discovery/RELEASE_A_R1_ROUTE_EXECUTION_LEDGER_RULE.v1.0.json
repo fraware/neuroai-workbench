@@ -106,5 +106,23 @@
     "publication_authority": false
   },
   "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
-  "rule_sha256": "3da55f31c6f5a9072b63a5f50f8aadde6359045cff905c41e150c10c60731c36"
+  "rule_sha256": "fea065822e892056ebeab9eb576b672440532b89ed730ef247a6e201ba22fc89",
+  "evidence_archive_contract": {
+    "evidence_sha256_semantics": "SHA256_OF_EXACT_IMMUTABLE_ARCHIVED_EVIDENCE_ARTIFACT_BYTES",
+    "source_locator_is_origin_not_evidence_identity": true,
+    "archived_artifact_required_for_completion_claim": true,
+    "archive_must_preserve_retrieval_request_and_response_context": true,
+    "archive_must_preserve_content_type_and_encoding": true,
+    "archive_must_be_replayable_for_supported_proposition_review": true,
+    "unarchivable_or_nonreplayable_source_remains_unresolved": true,
+    "evidence_observed_at_is_knowledge_time_not_world_time": true
+  },
+  "temporal_interpretation_contract": {
+    "post_world_cutoff_retrieval_may_supply_knowledge_about_pre_cutoff_world_state": true,
+    "route_execution_result_itself_does_not_establish_world_time_product_eligibility": true,
+    "extracted_lead_requires_separate_world_time_product_adjudication": true,
+    "zero_lead_result_is_bounded_to_declared_source_query_at_knowledge_observation_time": true,
+    "zero_lead_result_does_not_establish_historical_product_absence": true,
+    "source_exhaustion_does_not_establish_global_population_completeness": true
+  }
 }
