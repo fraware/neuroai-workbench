@@ -370,17 +370,33 @@ def _validate_evidence_artifact(
     request = artifact.get("retrieval_request")
     if not isinstance(request, Mapping) or not request:
         raise ProductDiscoveryError("R1.7 evidence artifact requires retrieval_request")
+    expected_request_fields = {"method", "locator", "request_context"}
+    if set(request) != expected_request_fields:
+        raise ProductDiscoveryError("R1.7 evidence artifact retrieval_request fields drift")
     if not isinstance(request.get("method"), str) or not str(request["method"]).strip():
         raise ProductDiscoveryError("R1.7 evidence artifact retrieval_request requires method")
     if request.get("locator") != evidence.get("source_locator"):
         raise ProductDiscoveryError("R1.7 evidence artifact retrieval locator drift")
+    if not isinstance(request.get("request_context"), Mapping):
+        raise ProductDiscoveryError("R1.7 evidence artifact request_context must be an object")
 
     response = artifact.get("response_context")
     if not isinstance(response, Mapping) or not response:
         raise ProductDiscoveryError("R1.7 evidence artifact requires response_context")
-    for field in ("retrieval_status", "content_type", "encoding"):
+    expected_response_fields = {
+        "retrieval_status",
+        "content_type",
+        "encoding",
+        "final_locator",
+        "response_metadata",
+    }
+    if set(response) != expected_response_fields:
+        raise ProductDiscoveryError("R1.7 evidence artifact response_context fields drift")
+    for field in ("retrieval_status", "content_type", "encoding", "final_locator"):
         if not isinstance(response.get(field), str) or not str(response[field]).strip():
             raise ProductDiscoveryError(f"R1.7 evidence artifact response_context requires {field}")
+    if not isinstance(response.get("response_metadata"), Mapping):
+        raise ProductDiscoveryError("R1.7 evidence artifact response_metadata must be an object")
 
     representation = artifact.get("content_representation")
     if representation not in ALLOWED_CONTENT_REPRESENTATIONS:
@@ -472,41 +488,159 @@ def _assert_no_active_conflicts(active_entries: Sequence[Mapping[str, Any]]) -> 
                 )
 
 
+def _lead_capture_id(record: Mapping[str, Any], lead: Mapping[str, Any]) -> str:
+    evidence_ref = str(lead["evidence_ref"])
+    matches = [
+        str(evidence["capture_id"])
+        for evidence in cast(Sequence[Mapping[str, Any]], record["evidence"])
+        if str(evidence["evidence_ref"]) == evidence_ref
+    ]
+    if len(matches) != 1:
+        raise ProductDiscoveryError("R1.7 extracted lead must resolve to exactly one record evidence capture")
+    return matches[0]
+
+
+def _assert_active_bound_consistency(active_entries: Sequence[Mapping[str, Any]]) -> None:
+    bound_claims: dict[str, list[tuple[set[str], int, str]]] = defaultdict(list)
+    active_leads_by_capture: dict[tuple[str, str], set[str]] = defaultdict(set)
+
+    for entry in active_entries:
+        entry_id = str(entry["ledger_entry_id"])
+        record = _entry_record(entry)
+        if str(record["execution_route"]) != SOURCE_SURFACE_RESOLUTION:
+            continue
+        work_item_id = str(record["work_item_id"])
+        finite_bound = record.get("finite_cardinality_upper_bound")
+        if finite_bound is not None:
+            bound_claims[work_item_id].append(
+                (
+                    set(str(value) for value in cast(Sequence[str], record["covered_capture_ids"])),
+                    int(finite_bound),
+                    entry_id,
+                )
+            )
+        for lead in cast(Sequence[Mapping[str, Any]], record["extracted_leads"]):
+            capture_id = _lead_capture_id(record, lead)
+            active_leads_by_capture[(work_item_id, capture_id)].add(str(lead["lead_id"]))
+
+    for work_item_id, claims in bound_claims.items():
+        for index, (captures, bound, entry_id) in enumerate(claims):
+            for other_captures, other_bound, other_entry_id in claims[index + 1 :]:
+                if captures & other_captures and bound != other_bound:
+                    raise ProductDiscoveryError(
+                        "R1.7 overlapping active finite-cardinality bounds disagree: "
+                        f"{work_item_id}/{entry_id}/{other_entry_id}"
+                    )
+            active_lead_ids: set[str] = set()
+            for capture_id in captures:
+                active_lead_ids.update(active_leads_by_capture[(work_item_id, capture_id)])
+            if len(active_lead_ids) > bound:
+                raise ProductDiscoveryError(
+                    "R1.7 active extracted leads exceed an applicable finite-cardinality bound: "
+                    f"{work_item_id}/{entry_id}"
+                )
+
+
 def _derive_lead_state(
     entries: Sequence[Mapping[str, Any]],
     *,
     active_entry_ids: set[str],
+    population_by_id: Mapping[str, Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
-    by_lead_id: dict[str, dict[str, Any]] = {}
-    support_entries: dict[str, set[str]] = defaultdict(set)
-    active_support_entries: dict[str, set[str]] = defaultdict(set)
+    identity_by_lead_id: dict[str, dict[str, Any]] = {}
+    raw_keys_by_lead_id: dict[str, set[str]] = defaultdict(set)
+    supports_by_lead_id: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     for entry in entries:
         entry_id = str(entry["ledger_entry_id"])
         record = _entry_record(entry)
+        work_item_id = str(record["work_item_id"])
+        route = str(record["execution_route"])
+        population_item = population_by_id[work_item_id]
+        evidence_by_ref = {
+            str(evidence["evidence_ref"]): evidence
+            for evidence in cast(Sequence[Mapping[str, Any]], record["evidence"])
+        }
+
         for lead in cast(Sequence[Mapping[str, Any]], record["extracted_leads"]):
             lead_id = str(lead["lead_id"])
-            payload = dict(lead)
-            previous = by_lead_id.get(lead_id)
-            if previous is not None and previous != payload:
-                raise ProductDiscoveryError("R1.7 identical lead_id has conflicting payload")
-            by_lead_id[lead_id] = payload
-            support_entries[lead_id].add(entry_id)
-            if entry_id in active_entry_ids:
-                active_support_entries[lead_id].add(entry_id)
+            raw_candidate_key = str(lead["candidate_key"])
+            normalized_candidate_key = normalize_candidate_key(raw_candidate_key)
+            identity = {
+                "lead_id": lead_id,
+                "work_item_id": work_item_id,
+                "execution_route": route,
+                "normalized_candidate_key": normalized_candidate_key,
+                "source_observation_ref": str(lead["source_observation_ref"]),
+                "canonical_offering_id": lead.get("canonical_offering_id"),
+            }
+            previous = identity_by_lead_id.get(lead_id)
+            if previous is not None and previous != identity:
+                raise ProductDiscoveryError("R1.7 identical lead_id has conflicting identity material")
+            identity_by_lead_id[lead_id] = identity
+            raw_keys_by_lead_id[lead_id].add(raw_candidate_key)
 
-    result = []
-    for lead_id in sorted(by_lead_id):
+            evidence_ref = str(lead["evidence_ref"])
+            evidence = evidence_by_ref.get(evidence_ref)
+            if evidence is None:
+                raise ProductDiscoveryError("R1.7 extracted lead support references missing record evidence")
+            supports_by_lead_id[lead_id].append(
+                {
+                    "ledger_entry_id": entry_id,
+                    "execution_record_id": str(record["execution_record_id"]),
+                    "work_item_id": work_item_id,
+                    "execution_route": route,
+                    "evidence_ref": evidence_ref,
+                    "capture_id": str(evidence["capture_id"]),
+                    "query_or_seed_id": str(evidence["query_or_seed_id"]),
+                    "source_locator": str(evidence["source_locator"]),
+                    "evidence_sha256": str(evidence["sha256"]),
+                    "source_observation_ref": str(lead["source_observation_ref"]),
+                    "raw_candidate_key": raw_candidate_key,
+                    "active_support": entry_id in active_entry_ids,
+                    "could_change_marginal_yield_stop": bool(
+                        population_item["could_change_marginal_yield_stop"]
+                    ),
+                    "could_change_a3_increment": bool(population_item["could_change_a3_increment"]),
+                    "could_change_a4_increment": bool(population_item["could_change_a4_increment"]),
+                    "could_change_a_p1_membership": bool(population_item["could_change_a_p1_membership"]),
+                }
+            )
+
+    result: list[dict[str, Any]] = []
+    for lead_id in sorted(identity_by_lead_id):
+        supports = sorted(
+            supports_by_lead_id[lead_id],
+            key=lambda item: (
+                str(item["ledger_entry_id"]),
+                str(item["evidence_ref"]),
+                str(item["capture_id"]),
+            ),
+        )
+        supporting_entry_ids = sorted({str(item["ledger_entry_id"]) for item in supports})
+        active_supporting_entry_ids = sorted(
+            {str(item["ledger_entry_id"]) for item in supports if item["active_support"]}
+        )
+        decision_sensitivity = {
+            "could_change_marginal_yield_stop": any(
+                bool(item["could_change_marginal_yield_stop"]) for item in supports
+            ),
+            "could_change_a3_increment": any(bool(item["could_change_a3_increment"]) for item in supports),
+            "could_change_a4_increment": any(bool(item["could_change_a4_increment"]) for item in supports),
+            "could_change_a_p1_membership": any(bool(item["could_change_a_p1_membership"]) for item in supports),
+        }
         result.append(
             {
-                **by_lead_id[lead_id],
-                "supporting_ledger_entry_ids": sorted(support_entries[lead_id]),
-                "active_supporting_ledger_entry_ids": sorted(active_support_entries[lead_id]),
-                "active_support": bool(active_support_entries[lead_id]),
+                **identity_by_lead_id[lead_id],
+                "raw_candidate_keys": sorted(raw_keys_by_lead_id[lead_id]),
+                "supporting_ledger_entry_ids": supporting_entry_ids,
+                "active_supporting_ledger_entry_ids": active_supporting_entry_ids,
+                "active_support": bool(active_supporting_entry_ids),
+                "decision_sensitivity": decision_sensitivity,
+                "support_provenance": supports,
             }
         )
     return result
-
 
 def derive_ledger_state(
     entries: Sequence[Mapping[str, Any]],
@@ -552,6 +686,8 @@ def derive_ledger_state(
                 raise ProductDiscoveryError("R1.7 supersession requires overlapping capture coverage")
             if not prior_captures.issubset(current_captures):
                 raise ProductDiscoveryError("R1.7 supersession must cover every capture in the superseded entry")
+            if prior_record.get("review_state") == "HUMAN_REVIEWED" and record.get("review_state") != "HUMAN_REVIEWED":
+                raise ProductDiscoveryError("R1.7 machine-provisional entry cannot supersede human-reviewed evidence")
             superseded_ids.add(str(superseded_id))
 
         entry_by_id[entry_id] = entry
@@ -561,6 +697,7 @@ def derive_ledger_state(
 
     active_entries = [entry for entry_id, entry in entry_by_id.items() if entry_id not in superseded_ids]
     _assert_no_active_conflicts(active_entries)
+    _assert_active_bound_consistency(active_entries)
 
     completion_by_work_item: dict[str, str] = {}
     for entry in active_entries:
@@ -577,7 +714,9 @@ def derive_ledger_state(
 
     route_counts = Counter(str(_entry_record(entry)["execution_route"]) for entry in active_entries)
     lead_ledger = _derive_lead_state(
-        entries, active_entry_ids={str(entry["ledger_entry_id"]) for entry in active_entries}
+        entries,
+        active_entry_ids={str(entry["ledger_entry_id"]) for entry in active_entries},
+        population_by_id=population_by_id,
     )
 
     return {
