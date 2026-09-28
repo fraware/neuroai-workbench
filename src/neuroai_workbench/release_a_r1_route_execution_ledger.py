@@ -27,13 +27,14 @@ from neuroai_workbench.release_a_r1_execution_unit_routing import (
     SOURCE_SURFACE_RESOLUTION,
     WORLD_TIME_CUTOFF,
     load_execution_unit_routing,
+    validate_execution_unit_routing,
     validate_route_execution_record,
 )
 from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE
 
 RULE_RESOURCE = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE.v1.0.json"
 RULE_ID = "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0"
-RULE_SHA256 = "f47f6922bf6c174890b778b993606a2a79a8f0060167cb0b991ed1d2e774692d"
+RULE_SHA256 = "3da55f31c6f5a9072b63a5f50f8aadde6359045cff905c41e150c10c60731c36"
 SOURCE_WORKBENCH_MAIN_COMMIT = "b00fa51af314277ef154af787cb850151cfaf1f8"
 
 GOVERNED_ROUTES = (SOURCE_SURFACE_RESOLUTION, LITERATURE_RECORD_EXTRACTION)
@@ -114,21 +115,24 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         "supersedes_ledger_entry_ids_must_reference_prior_entries": True,
         "supersession_must_preserve_work_item_and_route": True,
         "supersession_requires_capture_overlap": True,
+        "supersession_must_cover_all_superseded_captures": True,
     }
     if dict(schema) != expected_schema:
         raise ProductDiscoveryError("R1.7 ledger-entry schema drift")
 
     aggregation = cast(Mapping[str, Any], rule["aggregation_contract"])
-    if not (
-        aggregation.get("last_write_wins") is False
-        and aggregation.get("partial_records_may_establish_work_item_completion") is False
-        and aggregation.get("full_coverage_completion_record_required") is True
-        and aggregation.get("at_most_one_active_completion_record_per_work_item") is True
-        and aggregation.get("overlapping_active_records_must_be_proposition_compatible") is True
-        and aggregation.get("conflicting_active_records_fail_closed") is True
-        and aggregation.get("explicit_supersession_required_to_resolve_conflict") is True
-        and aggregation.get("historical_entries_remain_append_only") is True
-    ):
+    expected_aggregation = {
+        "last_write_wins": False,
+        "partial_records_may_establish_work_item_completion": False,
+        "full_coverage_completion_record_required": True,
+        "at_most_one_active_completion_record_per_work_item": True,
+        "overlapping_active_records_must_be_proposition_compatible": True,
+        "conflicting_active_records_fail_closed": True,
+        "explicit_supersession_required_to_resolve_conflict": True,
+        "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
+        "historical_entries_remain_append_only": True,
+    }
+    if dict(aggregation) != expected_aggregation:
         raise ProductDiscoveryError("R1.7 aggregation contract drift")
 
     declared_conflicts = cast(Mapping[str, Any], rule["incompatible_proposition_sets"])
@@ -154,6 +158,18 @@ def validate_route_execution_ledger_rule(rule: Mapping[str, Any]) -> None:
         and lead_contract.get("lead_support_status_derived_from_active_entries") is True
     ):
         raise ProductDiscoveryError("R1.7 extracted-lead contract drift")
+
+    completion = cast(Mapping[str, Any], rule["completion_contract"])
+    expected_completion = {
+        "source_scope_exhaustion_requires_human_review": True,
+        "finite_cardinality_requires_human_review": True,
+        "source_scope_exhaustion_requires_per_capture_support": True,
+        "finite_cardinality_requires_per_capture_support": True,
+        "zero_lead_never_implies_global_completeness": True,
+        "unresolved_barriers_remain_explicit": True,
+    }
+    if dict(completion) != expected_completion:
+        raise ProductDiscoveryError("R1.7 completion contract drift")
 
     finality = cast(Mapping[str, Any], rule["finality"])
     if not (
@@ -181,6 +197,8 @@ def derive_execution_population(
 ) -> list[dict[str, Any]]:
     load_route_execution_ledger_rule()
     routing = load_execution_unit_routing() if routing_checkpoint is None else routing_checkpoint
+    if routing_checkpoint is not None:
+        validate_execution_unit_routing(routing)
     rows = []
     for item in cast(Sequence[Mapping[str, Any]], routing["route_table"]):
         route = str(item["execution_route"])
@@ -233,6 +251,8 @@ def validate_ledger_entry(
     route = str(record.get("execution_route"))
     if route not in GOVERNED_ROUTES:
         raise ProductDiscoveryError("R1.7 ledger entry route is outside the governed source/record population")
+    if routing_checkpoint is not None:
+        validate_execution_unit_routing(routing_checkpoint)
     validate_route_execution_record(record, routing_checkpoint=routing_checkpoint)
 
     supersedes = entry.get("supersedes_ledger_entry_ids")
@@ -350,6 +370,10 @@ def derive_ledger_state(
             current_captures = set(cast(Sequence[str], record["covered_capture_ids"]))
             if prior_captures.isdisjoint(current_captures):
                 raise ProductDiscoveryError("R1.7 supersession requires overlapping capture coverage")
+            if not prior_captures.issubset(current_captures):
+                raise ProductDiscoveryError(
+                    "R1.7 supersession must cover every capture in the superseded entry"
+                )
             superseded_ids.add(str(superseded_id))
 
         entry_by_id[entry_id] = entry
