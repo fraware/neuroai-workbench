@@ -37,6 +37,8 @@ All notable changes are recorded here. Release integrity does not establish subs
 
 ### Changed
 
+- **Security and compatibility (draft #440):** Regenerated the development dependency lock with patched `certifi`, `urllib3`, and Pillow, and proposed raising the `0.3.0.dev0` minimum Python version to 3.11. Pillow 13.0.0 does not support Python 3.10. This compatibility change remains subject to hosted required-check migration, exact-head CI/security verification, and maintainer review; prior published tags are unchanged.
+
 - Package identity on `main` is unreleased `0.3.0.dev0`; published stabilization remains `v0.2.1`.
 - Container and compose defaults bind loopback without `NEUROAI_ALLOW_NETWORK`; network exposure requires `compose.network.yaml`.
 - Evidence index verification fails closed on malformed `objects` (`INDEX_SCHEMA_INVALID` and related codes).
