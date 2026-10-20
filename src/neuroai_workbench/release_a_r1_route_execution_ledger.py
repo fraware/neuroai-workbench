@@ -318,11 +318,7 @@ def derive_execution_population(
     if {route: work_item_counts[route] for route in GOVERNED_ROUTES} != EXPECTED_WORK_ITEM_COUNTS_BY_ROUTE:
         raise ProductDiscoveryError("R1.7 execution population route work-item count drift")
     capture_counts = {
-        route: sum(
-            len(cast(Sequence[str], item["capture_ids"]))
-            for item in rows
-            if item["execution_route"] == route
-        )
+        route: sum(len(cast(Sequence[str], item["capture_ids"])) for item in rows if item["execution_route"] == route)
         for route in GOVERNED_ROUTES
     }
     if capture_counts != EXPECTED_CAPTURE_COUNTS_BY_ROUTE:
