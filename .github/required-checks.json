@@ -44,7 +44,7 @@
           "matrix_key": "python-version",
           "matrix_values": ["3.11", "3.12", "3.13", "3.14"],
           "required_contexts": [
-                    "CI / tests-python-3.11",
+            "CI / tests-python-3.11",
             "CI / tests-python-3.12",
             "CI / tests-python-3.13",
             "CI / tests-python-3.14"
