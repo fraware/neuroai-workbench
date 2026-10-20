@@ -14,15 +14,26 @@ Release-A/R1 is required before the current A8 package is consumed as a final de
 
 The post-completion audit found:
 
-- issues #342, #343 and #344 remain open and govern authoritative per-capture estimator eligibility, exact round-start known-identity binding, and derived stop-state validation;
+- issues #342, #343, and #344 are **closed** following merged PR #415, which implements the authoritative A2 validation controls for estimator eligibility, round-start identity binding, and stopping-rule evidence. This does not retroactively make historical packets scientifically sufficient;
 - the frozen A1 seed Product Registry yields **4**, not 6, identities under the existing A-P1 machine predicate: Flow FL-100 and Modius Spero have `UNRESOLVED` currentness/lifecycle and do not qualify; historical A7/A8 nevertheless hardcode `N_observed=6`;
-- the A1 seed Product Registry knowledge cutoff (`2026-09-24T21:00:00Z`) does not match the A2 analysis-universe knowledge cutoff (`2026-10-24T23:59:59Z`), so a successor exact-universe registry projection is required before estimator eligibility can be derived under #342;
+- the historical A1 seed Product Registry knowledge cutoff (`2026-09-24T21:00:00Z`) differs from the frozen A2 analysis-universe cutoff (`2026-10-24T23:59:59Z`). R1.2 has since materialized an exact-A2 successor Product Registry and candidate-resolution checkpoint; this checkpoint remains non-final until the frozen knowledge-time window is dispositioned;
 - the executed open-world/local-language/patent/snowball packets contain 240 `UNRESOLVED_IDENTITY` capture rows after the bounded-frame checkpoint, representing 168 globally distinct `candidate_key` values before governed identity deduplication;
-- the current A8 unresolved register contains the 416 checkpoint candidates from F3/F9 only and is therefore not the complete unresolved register for the full Release-A execution;
+- the historical A8 unresolved register contains the 416 checkpoint candidates from F3/F9 only and is therefore not the complete unresolved register for the full Release-A execution;
 - `delta_n_capability=0` and `delta_n_multilingual=0` are counts of additional **resolved canonical offering IDs** under the executed pipeline; their substantive recall interpretation remains under corrective review because material unresolved/abstain mass remains in F6/F8;
 - A7 correctly failed closed with `N_estimated=null`; a successor A7 compile is required after authoritative eligibility, candidate-resolution and stop-state corrections.
 
 See [Release A corrective review R1](release-a-corrective-review-r1.md) and issue #410.
+
+## Current corrective execution checkpoint (20 October 2026)
+
+This is a dated engineering snapshot. The [corrective tracker](https://github.com/fraware/neuroai-workbench/issues/410), [R1.7 execution tracker](https://github.com/fraware/neuroai-workbench/issues/424), and S2 `curation/CURRENT_EXECUTION_CONTROL.json` must be rechecked for mutable operational and programme status.
+
+- **R1.1:** PR #415 merged and closed #342/#343/#344 with authoritative A2 validation controls.
+- **R1.2/R1.3:** Exact-universe Product Registry, cross-frame resolution ledger, and a resolution-completeness checkpoint exist. A-P1 `N_observed=4` and historical capability/multilingual zero increments are **checkpoint interpretations**, not final product-population findings. The latter remain resolution-censored.
+- **R1.4–R1.6.1:** Frozen worklist and empirical-unit routing refinements have been implemented. R1.6.1 routes 171 source/query items, 21 actual literature-record items, 76 empirical-candidate adjudications, and two A-P1 temporal reviews. Routing is not evidence of substantive execution.
+- **R1.7:** The 192 source/record work items (247 capture rows) still require evidence-bound execution. As of this snapshot, PR #436 is an **open pre-execution ledger contract**, and issue #424 governs substantive execution.
+- **Temporal gate:** The frozen A2 knowledge-time close is `2026-10-24T23:59:59Z`. Issue #413's administrative closure does not supply a final denominator before prescribed evidence-window disposition; issue #414's scientific saturation review remains open.
+- **Authority:** Historical A-G remains reconstruction-pass evidence only. These documentation updates do not advance the Release-A scientific gate, Observatory G0/G2/G3/G5, S2 publication, or B/C/D denominator authority.
 
 ## Historical reconstruction gate disposition
 
