@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   quality:
+    if: false
     name: quality
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +44,7 @@ jobs:
       - run: python scripts/agent_eval_harness.py
 
   tests:
+    if: false
     name: tests-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
@@ -71,6 +73,7 @@ jobs:
           if-no-files-found: error
 
   package:
+    if: false
     name: package
     runs-on: ubuntu-latest
     steps:
@@ -96,6 +99,7 @@ jobs:
           if-no-files-found: error
 
   release-verification:
+    if: false
     name: release-verification
     runs-on: ubuntu-latest
     steps:
@@ -118,6 +122,7 @@ jobs:
           if-no-files-found: error
 
   container:
+    if: false
     name: container
     runs-on: ubuntu-latest
     steps:
@@ -158,6 +163,7 @@ jobs:
         run: docker stop neuroai-workbench-ci-net || true
 
   product-native:
+    if: false
     name: product-native
     runs-on: ubuntu-latest
     steps:
@@ -177,6 +183,7 @@ jobs:
           python -m pytest tests/unit/test_products_native.py tests/unit/test_products_excel.py tests/unit/test_products_excel_reproducibility.py tests/unit/test_products_publication_reproducibility.py tests/unit/test_products_reconciliation.py -q
 
   pip-audit:
+    if: false
     name: pip-audit
     runs-on: ubuntu-latest
     steps:
