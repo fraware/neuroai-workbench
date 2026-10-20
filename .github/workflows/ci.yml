@@ -202,7 +202,7 @@ jobs:
           python-version: "3.13"
       - run: python -m pip install --upgrade pip
       - run: python -m pip install "pip-tools>=7,<8"
-      - run: python -m piptools compile --allow-unsafe --generate-hashes --output-file=requirements/constraints.txt requirements/constraints.in
+      - run: python -m piptools compile --upgrade --allow-unsafe --generate-hashes --output-file=requirements/constraints.txt requirements/constraints.in
       - run: python -m pip install --require-hashes -r requirements/constraints.txt
       - run: python -m pip_audit -r requirements/constraints.txt
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
