@@ -1,0 +1,184 @@
+{
+  "rule_id": "RELEASE_A_R1_ROUTE_EXECUTION_LEDGER_RULE_v1.0",
+  "version": "1.0",
+  "status": "FROZEN_PRE_EXECUTION",
+  "frozen_on": "2026-10-20",
+  "source_workbench_main_commit": "452be1f30c6691d0add7e5327d896e62f002446c",
+  "analysis_universe_id": "RAU-feb22ac8e7bc2f9ee644ecc2682e974eb73a40bfc5dccfc2ce2f3ee37abd774e",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "r1_6_rule_sha256": "e92a46c80b841f51d4646e02f9c91e0c7e9ce8a80cce419221d58d5524c7dd68",
+  "r1_6_routing_sha256": "5b37f3e4aaa3d4cced9864aa6dcc6e5d547726e277bbbce0551005bf12a3465e",
+  "governed_execution_routes": [
+    "SOURCE_SURFACE_RESOLUTION",
+    "LITERATURE_RECORD_EXTRACTION"
+  ],
+  "expected_work_item_count": 192,
+  "expected_capture_count": 247,
+  "ledger_entry_schema": {
+    "required_fields": [
+      "ledger_entry_id",
+      "route_execution_record",
+      "supersedes_ledger_entry_ids"
+    ],
+    "additional_fields_allowed": false,
+    "ledger_entry_id_content_bound": true,
+    "supersedes_ledger_entry_ids_must_reference_prior_entries": true,
+    "supersession_must_preserve_work_item_and_route": true,
+    "supersession_requires_capture_overlap": true,
+    "supersession_must_cover_all_superseded_captures": true,
+    "machine_provisional_entry_may_supersede_human_reviewed_entry": false
+  },
+  "aggregation_contract": {
+    "last_write_wins": false,
+    "partial_records_may_establish_work_item_completion": false,
+    "full_coverage_completion_record_required": true,
+    "at_most_one_active_completion_record_per_work_item": true,
+    "overlapping_active_records_must_be_proposition_compatible": true,
+    "conflicting_active_records_fail_closed": true,
+    "explicit_supersession_required_to_resolve_conflict": true,
+    "active_entry_definition": "ENTRY_NOT_SUPERSEDED_BY_ANY_LATER_VALID_ENTRY",
+    "historical_entries_remain_append_only": true,
+    "overlapping_active_finite_bounds_must_agree": true,
+    "active_leads_must_respect_applicable_finite_bounds": true,
+    "unresolved_barrier_record_may_establish_work_item_completion": false,
+    "derived_state_reports_unresolved_barrier_work_items": true
+  },
+  "incompatible_proposition_sets": {
+    "SOURCE_SURFACE_RESOLUTION": [
+      [
+        "SOURCE_QUERY_ZERO_LEADS",
+        "SOURCE_QUERY_WITH_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_QUERY_ZERO_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_QUERY_WITH_LEADS"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_SCOPE_EXHAUSTED"
+      ],
+      [
+        "SOURCE_BARRIER_UNRESOLVED",
+        "SOURCE_FINITE_CARDINALITY_ESTABLISHED"
+      ]
+    ],
+    "LITERATURE_RECORD_EXTRACTION": [
+      [
+        "RECORD_ZERO_OFFERING_LEADS",
+        "RECORD_WITH_OFFERING_LEADS"
+      ],
+      [
+        "RECORD_EXTRACTION_UNRESOLVED",
+        "RECORD_ZERO_OFFERING_LEADS"
+      ],
+      [
+        "RECORD_EXTRACTION_UNRESOLVED",
+        "RECORD_WITH_OFFERING_LEADS"
+      ]
+    ]
+  },
+  "extracted_lead_contract": {
+    "canonical_identity_allocation": false,
+    "frozen_r1_4_worklist_mutation": false,
+    "historical_lead_provenance_append_only": true,
+    "active_lead_ledger_deduplicates_by_lead_id": true,
+    "repeated_leads_from_distinct_source_provenance_remain_distinct": true,
+    "lead_support_status_derived_from_active_entries": true,
+    "conflicting_identity_material_for_same_lead_id_fails_closed": true,
+    "support_specific_evidence_ref_is_not_lead_identity_material": true,
+    "equivalent_raw_candidate_keys_may_share_lead_identity": true,
+    "derived_lead_ledger_preserves_normalized_candidate_key": true,
+    "derived_lead_support_preserves_work_item_route_capture_query_and_evidence_provenance": true,
+    "derived_lead_support_preserves_decision_sensitivity_flags": true
+  },
+  "completion_contract": {
+    "source_scope_exhaustion_requires_human_review": true,
+    "finite_cardinality_requires_human_review": true,
+    "source_scope_exhaustion_requires_per_capture_support": true,
+    "finite_cardinality_requires_per_capture_support": true,
+    "zero_lead_never_implies_global_completeness": true,
+    "unresolved_barriers_remain_explicit": true
+  },
+  "finality": {
+    "substantive_route_execution_performed": false,
+    "empirical_candidate_adjudication_performed": false,
+    "temporal_state_review_performed": false,
+    "canonical_identity_allocated": false,
+    "release_a_r1_passed": false,
+    "release_a_final_denominator_authorized": false,
+    "release_b_c_d_denominator_consumption_authorized": false,
+    "population_generalization_authority": false,
+    "publication_authority": false
+  },
+  "boundary": "This rule freezes append-only ledger, supersession, conflict, completion and lead-aggregation semantics for R1.7 against the merged R1.6.1 refined execution routing before substantive source/record execution. It creates no route result, product adjudication, canonical identity, final denominator, completeness claim, downstream denominator authority or publication authority.",
+  "rule_sha256": "e8f5ed4f3a368ebe84ed6e5ed6570bf8ea49f28510d8000ff08c3f616476d1e5",
+  "evidence_archive_contract": {
+    "evidence_sha256_semantics": "SHA256_OF_CANONICAL_EVIDENCE_ARTIFACT_JSON",
+    "evidence_artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
+    "evidence_artifact_required_fields": [
+      "artifact_schema_id",
+      "evidence_ref",
+      "capture_id",
+      "query_or_seed_id",
+      "source_locator",
+      "knowledge_observed_at",
+      "retrieval_request",
+      "response_context",
+      "content_representation",
+      "content"
+    ],
+    "allowed_content_representations": [
+      "UTF8_TEXT",
+      "BASE64_BYTES",
+      "STRUCTURED_JSON"
+    ],
+    "source_locator_is_origin_not_evidence_identity": true,
+    "archived_artifact_required_for_every_evidence_ref": true,
+    "archived_artifact_required_for_completion_claim": true,
+    "archive_must_preserve_retrieval_request_and_response_context": true,
+    "archive_must_preserve_content_type_and_encoding_in_response_context": true,
+    "archive_must_be_replayable_for_supported_proposition_review": true,
+    "unarchivable_or_nonreplayable_source_remains_unresolved": true,
+    "evidence_observed_at_is_knowledge_time_not_world_time": true,
+    "ledger_state_rejects_missing_or_unreferenced_archive_artifacts": true,
+    "retrieval_request_required_fields": [
+      "method",
+      "locator",
+      "request_context"
+    ],
+    "response_context_required_fields": [
+      "retrieval_status",
+      "content_type",
+      "encoding",
+      "final_locator",
+      "response_metadata"
+    ],
+    "request_context_must_be_structured_mapping": true,
+    "response_metadata_must_be_structured_mapping": true,
+    "digest_is_canonical_artifact_json_not_raw_transport_bytes": true,
+    "request_context_must_bind_query_or_seed_id": true
+  },
+  "temporal_interpretation_contract": {
+    "post_world_cutoff_retrieval_may_supply_knowledge_about_pre_cutoff_world_state": true,
+    "route_execution_result_itself_does_not_establish_world_time_product_eligibility": true,
+    "extracted_lead_requires_separate_world_time_product_adjudication": true,
+    "zero_lead_result_is_bounded_to_declared_source_query_at_knowledge_observation_time": true,
+    "zero_lead_result_does_not_establish_historical_product_absence": true,
+    "source_exhaustion_does_not_establish_global_population_completeness": true
+  },
+  "r1_6_1_rule_sha256": "60c89f6eae236c35228c64b5997e8175b1bbbda649c1e5b1b63b930d40ad2d94",
+  "r1_6_1_checkpoint_sha256": "b12482468cf73f0e9c086f7b87d31caf482d67cb0f9ae4e75082cb1992edf3af",
+  "expected_work_item_counts_by_route": {
+    "SOURCE_SURFACE_RESOLUTION": 171,
+    "LITERATURE_RECORD_EXTRACTION": 21
+  },
+  "expected_capture_counts_by_route": {
+    "SOURCE_SURFACE_RESOLUTION": 226,
+    "LITERATURE_RECORD_EXTRACTION": 21
+  }
+}
