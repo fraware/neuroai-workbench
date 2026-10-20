@@ -232,19 +232,11 @@ def test_frozen_rule_and_execution_population_are_exact() -> None:
     assert sum(item["execution_route"] == SOURCE_SURFACE_RESOLUTION for item in population) == 171
     assert sum(item["execution_route"] == LITERATURE_RECORD_EXTRACTION for item in population) == 21
     assert (
-        sum(
-            len(item["capture_ids"])
-            for item in population
-            if item["execution_route"] == SOURCE_SURFACE_RESOLUTION
-        )
+        sum(len(item["capture_ids"]) for item in population if item["execution_route"] == SOURCE_SURFACE_RESOLUTION)
         == 226
     )
     assert (
-        sum(
-            len(item["capture_ids"])
-            for item in population
-            if item["execution_route"] == LITERATURE_RECORD_EXTRACTION
-        )
+        sum(len(item["capture_ids"]) for item in population if item["execution_route"] == LITERATURE_RECORD_EXTRACTION)
         == 21
     )
 
@@ -254,9 +246,7 @@ def test_execution_population_respects_r1_6_1_record_sentinel_refinement() -> No
     governed_ids = {str(item["work_item_id"]) for item in ledger.derive_execution_population(checkpoint)}
 
     actual_records = [
-        item
-        for item in checkpoint["route_table"]
-        if item["execution_subtype"] == ACTUAL_LITERATURE_RECORD
+        item for item in checkpoint["route_table"] if item["execution_subtype"] == ACTUAL_LITERATURE_RECORD
     ]
     empty_sentinels = [
         item
