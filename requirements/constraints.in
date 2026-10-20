@@ -1,7 +1,7 @@
 # Hashed third-party constraints for CI/reproducible installs.
 # Does not include the local neuroai-workbench package; install that with --no-deps -e .
 # Pin Linux/Windows/older-Python transitive backends so Windows-compiled hashes still
-# install across the CI matrix (3.10-3.14).
+# install across the CI matrix (3.11-3.14).
 # Product extras (openpyxl / python-docx / reportlab) stay optional for end users via
 # [project.optional-dependencies] products; CI pins them here so native XLSX/DOCX/PDF
 # paths are exercised under hashed installs.
