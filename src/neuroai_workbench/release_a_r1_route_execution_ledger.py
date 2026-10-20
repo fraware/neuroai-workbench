@@ -1,8 +1,8 @@
 """Release-A R1.7 append-only route-execution ledger contract.
 
 R1.6.1 refines the frozen R1.4 work population into source/query and actual
-literature-record routes. This module freezes how their execution records are appended,
-superseded, conflict-checked, and aggregated before substantive R1.7 execution
+literature-record routes. This module freezes how their execution records are
+appended, superseded, conflict-checked, and aggregated before substantive R1.7 execution
 is committed.
 """
 
@@ -28,6 +28,12 @@ from neuroai_workbench.release_a_r1_execution_unit_routing import (
     WORLD_TIME_CUTOFF,
     validate_route_execution_record,
 )
+from neuroai_workbench.release_a_r1_execution_unit_routing import (
+    ROUTING_SHA256 as R1_6_ROUTING_SHA256,
+)
+from neuroai_workbench.release_a_r1_execution_unit_routing import (
+    RULE_SHA256 as R1_6_RULE_SHA256,
+)
 from neuroai_workbench.release_a_r1_execution_unit_routing_refinement import (
     CHECKPOINT_SHA256 as R1_6_1_CHECKPOINT_SHA256,
 )
@@ -37,12 +43,6 @@ from neuroai_workbench.release_a_r1_execution_unit_routing_refinement import (
 from neuroai_workbench.release_a_r1_execution_unit_routing_refinement import (
     load_routing_refinement,
     validate_routing_refinement,
-)
-from neuroai_workbench.release_a_r1_execution_unit_routing import (
-    ROUTING_SHA256 as R1_6_ROUTING_SHA256,
-)
-from neuroai_workbench.release_a_r1_execution_unit_routing import (
-    RULE_SHA256 as R1_6_RULE_SHA256,
 )
 from neuroai_workbench.release_a_r1_resolution import DISCOVERY_RESOURCE_PACKAGE, normalize_candidate_key
 
