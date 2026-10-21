@@ -1,0 +1,49 @@
+name: R1.7 bounded temporal source capture
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r1-7-temporal-source-capture.yml"
+      - "scripts/r1_7_capture_temporal_sources.py"
+
+permissions:
+  contents: read
+
+jobs:
+  capture-public-temporal-sources:
+    if: github.event.pull_request.number == 452
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Acquire public sources with explicit target allowlist
+        id: acquisition
+        continue-on-error: true
+        run: |
+          python -m scripts.r1_7_capture_temporal_sources \
+            --output-dir "$RUNNER_TEMP/r1-7-temporal-sources" \
+            --allow-network
+      - name: Print per-source result
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/r1-7-temporal-sources/capture-report.json" ]; then
+            cat "$RUNNER_TEMP/r1-7-temporal-sources/capture-report.json"
+          else
+            echo "No capture report generated"
+          fi
+      - name: Retain public raw bytes and source metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r1-7-temporal-public-response-bytes
+          path: ${{ runner.temp }}/r1-7-temporal-sources/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Signal incomplete capture
+        if: steps.acquisition.outcome != 'success'
+        run: |
+          echo "Source acquisition incomplete; consult per-source archive and errors"
+          exit 1
