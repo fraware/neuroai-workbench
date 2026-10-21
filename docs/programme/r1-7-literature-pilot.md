@@ -19,6 +19,36 @@ It is **not** an R1.7 evidence archive. No article HTTP response bytes were
 captured by this document; no offering was included, excluded or resolved.
 No zero-lead conclusion follows from the paper title or abstract.
 
+## Preliminary mentions for evidence-backed follow-up
+
+The following names were found during public scholarly-source screening.
+They are **leads to verify**, not accepted new product identities, distinct
+offering counts, current-market claims, or complete article extractions:
+
+- **PMID 42505450:** the wearable EEG review names **Muse** systems,
+  **Emotiv Insight**, **OpenBCI Galea**, **OpenBCI Ultracortex**, and
+  **Unicorn Hybrid Black**. See
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC13406779/ and
+  https://www.mdpi.com/2079-6374/16/7/374.
+  Precise model identity, availability at the 2026-09-24 world-time cutoff,
+  duplicates against the existing registry and device/developer attribution
+  remain to be checked before any ledger lead is asserted.
+- **PMID 41939223:** the study describes its use of a **12-channel
+  Bitbrain dry-sensor EEG headset**. See
+  https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2026.1737723/full.
+  The exact commercial offering variant and registry overlap remain open.
+- **PMID 42022893:** the robotics paper introduces **ROS4HC** and discusses
+  **OpenViBE** and **ROS Neuro** as research-software frameworks. See
+  https://www.frontiersin.org/journals/robotics-and-ai/articles/10.3389/frobt.2026.1745197/full.
+  A cited research framework is not automatically an eligible product.
+- **PMID 42645991:** **ASCRIBE-XR** is described as an immersive scientific
+  visualization platform. See https://pubmed.ncbi.nlm.nih.gov/42645991/.
+  Direct relevance to the NeuroAI product population is unresolved.
+
+These preliminary observations identify productive next retrieval and
+extraction targets. All R1.7 source bytes, explicit offering claims and
+per-capture extraction conclusions remain to be supplied and validated.
+
 ## Work with the repository's existing frozen population
 
 ```bash
