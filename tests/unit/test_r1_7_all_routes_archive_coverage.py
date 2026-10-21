@@ -1,4 +1,5 @@
 """Tests for complete, nonterminal R1.7 source/record archive coverage."""
+
 from __future__ import annotations
 
 import json
@@ -49,19 +50,15 @@ def test_all_frozen_source_record_routes_accounted_without_completion() -> None:
 
 def test_source_byte_coverage_differs_from_article_reference_reuse() -> None:
     report = build_report()
-    first = [
-        row for row in report["work_items"]
-        if "DIRECT_SAVED_ARTICLE_XML_UNADJUDICATED" in row["archive_states"]
-    ]
+    first = [row for row in report["work_items"] if "DIRECT_SAVED_ARTICLE_XML_UNADJUDICATED" in row["archive_states"]]
     reused = [
-        row for row in report["work_items"]
+        row
+        for row in report["work_items"]
         if "REUSED_SAVED_ARTICLE_XML_NOT_DIRECT_ROUTE_ACQUISITION" in row["archive_states"]
     ]
     assert len(first) == 4
     assert len(reused) == 17
-    assert not {row["work_item_id"] for row in first} & {
-        row["work_item_id"] for row in reused
-    }
+    assert not {row["work_item_id"] for row in first} & {row["work_item_id"] for row in reused}
 
 
 def test_report_is_byte_stable_and_does_not_modify_inputs(tmp_path: Path) -> None:
