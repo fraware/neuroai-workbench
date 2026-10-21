@@ -27,9 +27,7 @@ def _synthetic(*, count: int = 6, header: str = "Device") -> bytes:
     return (
         f'<article><front><article-meta><article-id pub-id-type="pmid">{PMID}</article-id>'
         f'<article-id pub-id-type="pmcid">{PMCID}</article-id>'
-        "</article-meta></front><body>"
-        + "".join(tables)
-        + "</body></article>"
+        "</article-meta></front><body>" + "".join(tables) + "</body></article>"
     ).encode()
 
 
