@@ -54,7 +54,7 @@ def _verified_xml(data: bytes, pmid: str, pmcid: str) -> None:
         item.attrib.get("pub-id-type"): (item.text or "").strip()
         for item in root.iter("article-id")
     }
-    if ids.get("pmid") != pmid or ids.get("pmc") not in {pmcid, pmcid.removeprefix("PMC")}:
+    if ids.get("pmid") != pmid or ids.get("pmcid") != pmcid:
         raise ValueError(f"PMC article identifiers do not match the frozen PMID/PMCID; observed={ids}")
 
 
