@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections import Counter
 from pathlib import Path
 
@@ -44,8 +45,6 @@ def test_queue_is_stable_and_does_not_claim_results() -> None:
 
 
 def test_worklist_rejects_modified_frozen_route_population(tmp_path: Path) -> None:
-    import json
-
     for filename in [ROUTING, F6, F8]:
         (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
     path = tmp_path / ROUTING
@@ -54,3 +53,33 @@ def test_worklist_rejects_modified_frozen_route_population(tmp_path: Path) -> No
     path.write_text(json.dumps(doc), encoding="utf-8")
     with pytest.raises(ValueError, match="270-item"):
         build_queue(tmp_path)
+
+def test_five_inaccessible_recovery_locators_keep_exact_frozen_identity() -> None:
+    # Resolve the external source triage from the repository checkout.
+    source = Path(__file__).resolve().parents[2] / "docs/programme/r1-7-five-inaccessible-f8-recovery-candidates.json"
+    data = json.loads(source.read_text(encoding="utf-8"))
+    assert data["item_count"] == 5
+    assert data["evidence_records_accepted"] == 0
+    assert data["terminal_extractions_claimed"] == 0
+    assert len(data["items"]) == 5
+    by_capture = {
+        capture["capture_id"]: capture
+        for work in build_queue()["items"]
+        for capture in work["captures"]
+    }
+    assert len({row["capture_id"] for row in data["items"]}) == 5
+    for row in data["items"]:
+        old = by_capture[row["capture_id"]]
+        assert old["source_outcome_at_frozen_capture"] == "FAILED_INACCESSIBLE"
+        assert old["query_or_seed_id"] == row["query_or_seed_id"]
+        assert old["language"] == row["language"]
+        assert old["jurisdiction"] == row["jurisdiction"]
+        assert row["source_retrieval_status"] == "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED"
+        assert row["source_decision"] == "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION"
+        assert row["new_product_identity_established"] is False
+        assert len(row["locators"]) == 2
+        assert all(link["url"].startswith("https://") for link in row["locators"])
+        assert all(
+            link["document_date"] is None or link["document_date"] <= "2026-10-24"
+            for link in row["locators"]
+        )

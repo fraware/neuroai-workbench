@@ -29,3 +29,33 @@ Priority within this queue should begin with high-impact F6 capabilities
 and F8 local-language primary sources, retaining exact provenance and the
 2026-09-24 world-time cutoff. Evaluate outcomes only when the
 2026-10-24T23:59:59Z knowledge-time window closes.
+
+## Five historical F8 inaccessible-source recoveries
+
+The five frozen `FAILED_INACCESSIBLE` items are now linked to **ten
+verified alternative official source/portal entry points** in the
+read-only file `r1-7-five-inaccessible-f8-recovery-candidates.json`.
+These entries do **not** claim that the original 2026-09-26 retrieval
+attempts succeeded, or that any primary-source response bytes have been
+captured, archived, or independently hashed.
+
+| F8 query | Source category | Alternative research target | Remaining gap |
+| --- | --- | --- | --- |
+| `F8-R2-CAP-ZH-2` | Chinese-language capability surface | 2025 MIIT multi-ministry BCI policy; NMPA UDI portal | An attributable product and exact original page |
+| `F8-R3-LOC-BITBRAIN-ES` | Spanish manufacturer | Bitbrain Diadem 12-channel page and 2024 Spanish technical article | Original source URL and model/world-time status |
+| `F8-R3-LOC-NMPA-ZH` | Chinese regulator | NMPA government device-registration portal and UDI database | Specific registration record and registration date |
+| `F8-R3-LOC-MOH-IL` | Israeli regulator | Health Ministry's medical-device registry index and AMR notices | A specific medical-device registry entry |
+| `F8-R3-LOC-NEUROELECTRICS-ES` | Spanish manufacturer | Neuroelectrics Enobio model page and historical Enobio/Starstim article | Spanish original source and model-specific status |
+
+Most of these are **source discovery**, not direct evidence of a specific
+qualifying NeuroAI product. The English Neuroelectrics pages are explicitly
+identified as a *language mismatch* for the Spanish frozen query. The NMPA
+and Israeli Ministry records identify **official registries**, not any
+positive or negative registration result. The dated Bitbrain article is
+a historical manufacturer representation rather than a conclusion about
+2026-09-24 commercial availability.
+
+Prioritize acquiring the exact alternative source response bytes with
+timestamp, final URL, response status, content hash and historical publication
+evidence. Decisions should be bound to the matching frozen query/capture ID,
+while keeping original failed captures separate from new retrievals.
