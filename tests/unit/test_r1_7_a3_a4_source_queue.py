@@ -156,8 +156,7 @@ def test_queue_rejects_blank_original_query(tmp_path: Path) -> None:
 def test_saved_source_archive_inventory_joins_frozen_routes_without_completion() -> None:
     """Archive receipts are evidence context, never completed R1.7 decisions."""
     inventory_path = (
-        Path(__file__).resolve().parents[2]
-        / "docs/programme/r1-7-saved-source-archive-coverage-2026-10-21.json"
+        Path(__file__).resolve().parents[2] / "docs/programme/r1-7-saved-source-archive-coverage-2026-10-21.json"
     )
     inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     routing = json.loads((RESOURCE_DIR / ROUTING).read_text(encoding="utf-8"))
@@ -177,11 +176,7 @@ def test_saved_source_archive_inventory_joins_frozen_routes_without_completion()
     assert inventory["confirmed_new_eligible_offerings"] == 0
     artifacts = {item["artifact_id"] for item in inventory["archive_inputs"]}
     assert artifacts == {12320317652, 12325963314}
-    index = {
-        capture: route
-        for route in routing["route_table"]
-        for capture in route["capture_ids"]
-    }
+    index = {capture: route for route in routing["route_table"] for capture in route["capture_ids"]}
     assert len(index) == 389
     rows = inventory["known_archive_contexts"]
     assert len(rows) == len({row["capture_id"] for row in rows}) == 9
