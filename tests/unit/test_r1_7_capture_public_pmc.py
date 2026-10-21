@@ -56,7 +56,8 @@ def test_xml_identity_validation_rejects_wrong_article(wrong: bytes) -> None:
 
 
 def test_capture_command_explicitly_refuses_implicit_network(
-    capsys: pytest.CaptureFixture[str], tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
 ) -> None:
     with pytest.raises(SystemExit, match="2"):
         main(["--output-dir", str(tmp_path)])
@@ -75,7 +76,11 @@ def test_no_redirect_policy_blocks_unexpected_target() -> None:
 def test_cli_help_has_no_network_side_effects(tmp_path: Path) -> None:
     result = subprocess.run(
         [sys.executable, "-m", "scripts.r1_7_capture_public_pmc", "--help"],
-        cwd=ROOT, check=True, capture_output=True, text=True, timeout=15,
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=15,
     )
     assert "--allow-network" in result.stdout
     assert not list(tmp_path.iterdir())
