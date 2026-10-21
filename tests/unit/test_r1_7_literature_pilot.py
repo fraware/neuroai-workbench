@@ -163,6 +163,18 @@ def test_offline_import_rejects_unsubstantiated_or_mismatched_claims() -> None:
         import_snapshot(b"", decision)
     with pytest.raises(ProductDiscoveryError, match="raw_sha256"):
         import_snapshot(snapshot + b"tamper", decision)
+    bad_response = _decision(item, snapshot, completion=ZERO)
+    bad_response["response_context"] = {
+        "retrieval_status": "HTTP_ERROR",
+        "content_type": "text/html",
+        "encoding": "utf-8",
+        "final_locator": item["suggested_public_locator"],
+        "response_metadata": {"status_code": 404, "raw_sha256": hashlib.sha256(snapshot).hexdigest()},
+    }
+    with pytest.raises(ProductDiscoveryError, match="successful recorded HTTP response"):
+        import_snapshot(snapshot, bad_response)
+    bad_response["completion_state"] = UNRESOLVED
+    assert import_snapshot(snapshot, bad_response)["derived_state"]["completed_work_item_count"] == 0
     with pytest.raises(ProductDiscoveryError, match="frozen query"):
         bad = _decision(item, snapshot)
         bad["retrieval_request"] = {
