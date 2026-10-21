@@ -107,9 +107,7 @@ def test_explicit_zero_lead_decision_does_not_create_product_identity() -> None:
 def test_explicit_lead_state_uses_noncanonical_identity() -> None:
     item = select_distinct_pilots(1)[0]
     snapshot = b"SYNTHETIC RECORD: device name Example EEG Headset."
-    bundle = import_snapshot(
-        snapshot, _decision(item, snapshot, completion=WITH_LEADS, keys=["Example EEG Headset"])
-    )
+    bundle = import_snapshot(snapshot, _decision(item, snapshot, completion=WITH_LEADS, keys=["Example EEG Headset"]))
     record = bundle["ledger_entry"]["route_execution_record"]
     assert record["work_item_completion_claimed"] is True
     assert len(record["extracted_leads"]) == 1
@@ -168,7 +166,8 @@ def test_offline_import_rejects_unsubstantiated_or_mismatched_claims() -> None:
     with pytest.raises(ProductDiscoveryError, match="frozen query"):
         bad = _decision(item, snapshot)
         bad["retrieval_request"] = {
-            "method": "GET", "locator": item["suggested_public_locator"],
+            "method": "GET",
+            "locator": item["suggested_public_locator"],
             "request_context": {"query_or_seed_id": "wrong"},
         }
         import_snapshot(snapshot, bad)
@@ -177,12 +176,20 @@ def test_offline_import_rejects_unsubstantiated_or_mismatched_claims() -> None:
 def test_cli_catalog_and_synthetic_ingest(tmp_path: Path) -> None:
     catalog = subprocess.run(
         [sys.executable, "-m", "scripts.r1_7_literature_pilot", "catalog"],
-        cwd=ROOT, capture_output=True, text=True, check=True, timeout=30,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
     )
     assert json.loads(catalog.stdout)["work_item_count"] == 21
     pilot = subprocess.run(
         [sys.executable, "-m", "scripts.r1_7_literature_pilot", "pilot", "--count", "3"],
-        cwd=ROOT, capture_output=True, text=True, check=True, timeout=30,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
     )
     assert json.loads(pilot.stdout)["selected_distinct_papers"] == 3
     item = select_distinct_pilots(1)[0]
@@ -192,9 +199,21 @@ def test_cli_catalog_and_synthetic_ingest(tmp_path: Path) -> None:
     decision = tmp_path / "decision.json"
     decision.write_text(json.dumps(_decision(item, data)), encoding="utf-8")
     created = subprocess.run(
-        [sys.executable, "-m", "scripts.r1_7_literature_pilot", "ingest", "--decision",
-         str(decision), "--snapshot", str(snapshot)],
-        cwd=ROOT, capture_output=True, text=True, check=True, timeout=30,
+        [
+            sys.executable,
+            "-m",
+            "scripts.r1_7_literature_pilot",
+            "ingest",
+            "--decision",
+            str(decision),
+            "--snapshot",
+            str(snapshot),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
     )
     bundle = json.loads(created.stdout)
     assert bundle["derived_state"]["pending_work_item_count"] == 192
@@ -202,6 +221,10 @@ def test_cli_catalog_and_synthetic_ingest(tmp_path: Path) -> None:
     bundle_path.write_text(created.stdout, encoding="utf-8")
     combined = subprocess.run(
         [sys.executable, "-m", "scripts.r1_7_literature_pilot", "combine", str(bundle_path)],
-        cwd=ROOT, capture_output=True, text=True, check=True, timeout=30,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
     )
     assert json.loads(combined.stdout)["derived_state"]["active_ledger_entry_count"] == 1
