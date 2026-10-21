@@ -151,3 +151,50 @@ def test_queue_rejects_blank_original_query(tmp_path: Path) -> None:
     f8path.write_text(json.dumps(universe), encoding="utf-8")
     with pytest.raises(ValueError, match="Frozen source/query expression missing"):
         build_queue(tmp_path)
+
+
+def test_saved_source_archive_inventory_joins_frozen_routes_without_completion() -> None:
+    """Archive receipts are evidence context, never completed R1.7 decisions."""
+    inventory_path = (
+        Path(__file__).resolve().parents[2]
+        / "docs/programme/r1-7-saved-source-archive-coverage-2026-10-21.json"
+    )
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    routing = json.loads((RESOURCE_DIR / ROUTING).read_text(encoding="utf-8"))
+    assert inventory["analysis_universe_id"] == routing["analysis_universe_id"]
+    assert inventory["world_time_cutoff"] == routing["world_time_cutoff"]
+    assert inventory["knowledge_time_cutoff"] == routing["knowledge_time_cutoff"]
+    assert inventory["frozen_route_population"] == {
+        "total_work_items": 270,
+        "total_captures": 389,
+        "source_record_items": 192,
+        "source_record_captures": 247,
+    }
+    assert inventory["matched_frozen_context_count"] == 9
+    assert inventory["contexts_with_any_saved_new_raw_bytes"] == 8
+    assert inventory["contexts_with_access_failures_only"] == 1
+    assert inventory["terminal_r1_7_completion_records_verified"] == 0
+    assert inventory["confirmed_new_eligible_offerings"] == 0
+    artifacts = {item["artifact_id"] for item in inventory["archive_inputs"]}
+    assert artifacts == {12320317652, 12325963314}
+    index = {
+        capture: route
+        for route in routing["route_table"]
+        for capture in route["capture_ids"]
+    }
+    assert len(index) == 389
+    rows = inventory["known_archive_contexts"]
+    assert len(rows) == len({row["capture_id"] for row in rows}) == 9
+    routes = Counter()
+    for row in rows:
+        route = index[row["capture_id"]]
+        assert route["work_item_id"] == row["work_item_id"]
+        assert route["execution_route"] == row["execution_route"]
+        assert len(route["capture_ids"]) == 1
+        assert row["terminal_work_item_completion"] is False
+        assert row["canonical_identity_allocated"] is False
+        assert row["artifact_id"] in artifacts
+        routes[row["execution_route"]] += 1
+        if row["execution_route"] == "SOURCE_SURFACE_RESOLUTION":
+            assert row["historical_original_capture_outcome"] == "FAILED_INACCESSIBLE"
+    assert routes == {"LITERATURE_RECORD_EXTRACTION": 4, "SOURCE_SURFACE_RESOLUTION": 5}
