@@ -7,6 +7,7 @@ completed extraction. It preserves the frozen route and capture provenance.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import Counter
 from pathlib import Path
@@ -16,22 +17,57 @@ RESOURCE_DIR = Path(__file__).resolve().parents[1] / "src/neuroai_workbench/reso
 ROUTING = "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_REFINEMENT_CHECKPOINT.v1.0.json"
 F6 = "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F6.v1.0.json"
 F8 = "RELEASE_A_R1_CANDIDATE_RESOLUTION_SOURCE_LEDGER_F8.v1.0.json"
+UNIVERSES = {
+    "F6": "RELEASE_A_F6_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json",
+    "F8": "RELEASE_A_F8_OPEN_WORLD_QUERY_UNIVERSE.v1.0.json",
+}
+
+
+def _load_frozen(path: Path) -> tuple[dict[str, Any], str]:
+    """Read exactly one frozen JSON object and record its raw-byte digest."""
+    data = path.read_bytes()
+    document = json.loads(data)
+    if not isinstance(document, dict):
+        raise ValueError(f"Frozen resource must be a JSON object: {path.name}")
+    return document, hashlib.sha256(data).hexdigest()
 
 
 def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
-    checkpoint = json.loads((resource_dir / ROUTING).read_text(encoding="utf-8"))
+    checkpoint, route_sha256 = _load_frozen(resource_dir / ROUTING)
     if checkpoint.get("work_item_count") != 270:
         raise ValueError("Frozen 270-item routing population changed")
+    if checkpoint.get("work_item_counts_by_route", {}).get("SOURCE_SURFACE_RESOLUTION") != 171:
+        raise ValueError("Frozen source work-item denominator changed")
+    if checkpoint.get("capture_counts_by_route", {}).get("SOURCE_SURFACE_RESOLUTION") != 226:
+        raise ValueError("Frozen source capture denominator changed")
+    hashes = {ROUTING: route_sha256}
     source_records: dict[str, dict[str, Any]] = {}
+    query_seeds: dict[str, dict[str, Any]] = {}
     for name, frame in [(F6, "F6"), (F8, "F8")]:
-        shard = json.loads((resource_dir / name).read_text(encoding="utf-8"))
-        if shard.get("frame_id") != frame:
-            raise ValueError("Source-shard frame identity changed")
+        shard, shard_sha256 = _load_frozen(resource_dir / name)
+        universe_name = UNIVERSES[frame]
+        universe, universe_sha256 = _load_frozen(resource_dir / universe_name)
+        hashes[name] = shard_sha256
+        hashes[universe_name] = universe_sha256
+        if shard.get("frame_id") != frame or universe.get("frame_id") != frame:
+            raise ValueError("Frozen source/query universe frame identity changed")
+        if (
+            shard.get("analysis_universe_id") != checkpoint.get("analysis_universe_id")
+            or universe.get("analysis_universe_id") != checkpoint.get("analysis_universe_id")
+            or universe.get("world_time_cutoff") != checkpoint.get("world_time_cutoff")
+            or universe.get("knowledge_time_cutoff") != checkpoint.get("knowledge_time_cutoff")
+        ):
+            raise ValueError("Frozen analysis universe or temporal contract mismatch")
         for source in shard["source_records"]:
             capture = source["capture_id"]
             if capture in source_records:
                 raise ValueError("Duplicate frozen capture identity")
             source_records[capture] = source
+        for seed in universe["query_seeds"]:
+            query_id = seed["query_or_seed_id"]
+            if query_id in query_seeds:
+                raise ValueError("Duplicate frozen query seed identity")
+            query_seeds[query_id] = seed
     queue: list[dict[str, Any]] = []
     for item in checkpoint["route_table"]:
         if item["execution_route"] != "SOURCE_SURFACE_RESOLUTION":
@@ -52,12 +88,21 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
                 raise ValueError("Priority capture cluster identity mismatch")
             if source["could_change_a3_increment"] != a3 or source["could_change_a4_increment"] != a4:
                 raise ValueError("Priority capture analytical flag mismatch")
+            seed = query_seeds.get(source["query_or_seed_id"])
+            if seed is None:
+                raise ValueError("Priority capture lacks original frozen query")
+            for field in ("round_id", "query_family", "source_class", "language", "jurisdiction"):
+                if source[field] != seed[field]:
+                    raise ValueError(f"Frozen source/query {field} contract mismatch")
+            if not isinstance(seed.get("query_expression"), str) or not seed["query_expression"].strip():
+                raise ValueError("Frozen source/query expression missing")
             captures.append(
                 {
                     "capture_id": capture_id,
                     "source_observation_ref": source["source_observation_ref"],
                     "source_packet_id": source["source_packet_id"],
                     "query_or_seed_id": source["query_or_seed_id"],
+                    "query_expression": seed["query_expression"],
                     "query_family": source["query_family"],
                     "frame_id": source["frame_id"],
                     "round_id": source["round_id"],
@@ -65,6 +110,7 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
                     "jurisdiction": source["jurisdiction"],
                     "source_class": source["source_class"],
                     "source_outcome_at_frozen_capture": source["outcome"],
+                    "raw_candidate_key_at_frozen_capture": source["raw_candidate_key"],
                     "frozen_observed_at": source["observed_at"],
                     "world_time_alignment": source["world_time_alignment"],
                 }
@@ -89,9 +135,33 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
         raise ValueError("Frozen A3/A4 source-route population drift")
     if len({item["work_item_id"] for item in queue}) != 69:
         raise ValueError("Priority work item duplicated")
+    captures = [cap for item in queue for cap in item["captures"]]
+    if len(captures) != 69 or len({cap["capture_id"] for cap in captures}) != 69:
+        raise ValueError("Priority one-capture-per-work-item contract changed")
+    if len({cap["query_or_seed_id"] for cap in captures}) != 69:
+        raise ValueError("Priority original query identity repeated")
+    a3_families = Counter(
+        cap["query_family"] for item in queue if item["priority_analysis"] == "A3_CAPABILITY"
+        for cap in item["captures"]
+    )
+    if len(a3_families) != 6 or set(a3_families.values()) != {3}:
+        raise ValueError("Frozen A3 capability-family/round contract changed")
+    a4_families = Counter(
+        cap["query_family"] for item in queue if item["priority_analysis"] == "A4_MULTILINGUAL"
+        for cap in item["captures"]
+    )
+    if a4_families != {
+        "NATIVE_LANGUAGE_CATEGORY": 21,
+        "NATIVE_LANGUAGE_CAPABILITY": 21,
+        "LOCAL_PRODUCT_SOURCE": 9,
+    }:
+        raise ValueError("Frozen A4 multilingual-query family contract changed")
     return {
         "report_id": "R1_7_A3_A4_SOURCE_SURFACE_QUEUE_v0.1",
         "frozen_route_checkpoint_id": checkpoint["checkpoint_id"],
+        "frozen_input_sha256": dict(sorted(hashes.items())),
+        "a3_capability_family_counts": dict(sorted(a3_families.items())),
+        "a4_query_family_counts": dict(sorted(a4_families.items())),
         "world_time_cutoff": checkpoint["world_time_cutoff"],
         "knowledge_time_cutoff": checkpoint["knowledge_time_cutoff"],
         "source_surface_total_work_items": 171,
@@ -101,9 +171,9 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
         "completed_work_items": 0,
         "items": queue,
         "boundary": (
-            "Frozen ABSTAIN source capture provenance only. No new external sources "
-            "were retrieved, no evidence or terminal decisions were accepted, "
-            "and no product or analytical increment was inferred."
+            "This queue only projects historical captures and query seeds; it performs "
+            "no network retrieval, accepts no terminal evidence or product identity, "
+            "and does not incorporate separate October source-capture results."
         ),
     }
 
