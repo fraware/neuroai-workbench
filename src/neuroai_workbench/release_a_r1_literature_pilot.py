@@ -139,8 +139,7 @@ def import_snapshot(snapshot: bytes, decision: Mapping[str, Any]) -> dict[str, A
     if state not in {ZERO, WITH_LEADS, UNRESOLVED}:
         raise ProductDiscoveryError("Offline literature decision has no explicit allowed completion state")
     if state != UNRESOLVED and (
-        response.get("retrieval_status") != "RETRIEVED"
-        or response_metadata.get("status_code") != 200
+        response.get("retrieval_status") != "RETRIEVED" or response_metadata.get("status_code") != 200
     ):
         raise ProductDiscoveryError("Terminal literature extraction requires a successful recorded HTTP response")
     keys = decision["extracted_candidate_keys"]
