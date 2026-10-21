@@ -37,7 +37,12 @@ def main(argv: list[str] | None = None) -> int:
     result: dict[str, Any]
     if args.command == "catalog":
         rows = literature_worklist()
-        result = {"status": "FROZEN_PENDING_EXECUTION", "work_item_count": len(rows), "unique_pmids": len({r["pmid"] for r in rows}), "work_items": rows}
+        result = {
+            "status": "FROZEN_PENDING_EXECUTION",
+            "work_item_count": len(rows),
+            "unique_pmids": len({r["pmid"] for r in rows}),
+            "work_items": rows,
+        }
     elif args.command == "pilot":
         rows = select_distinct_pilots(args.count)
         result = {"status": "PENDING_NEW_SOURCE_EVIDENCE", "selected_distinct_papers": len(rows), "work_items": rows}
