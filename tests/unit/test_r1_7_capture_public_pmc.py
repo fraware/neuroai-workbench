@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def _sample(pmid: str, pmcid: str) -> bytes:
     return (
         f'<article><front><article-meta><article-id pub-id-type="pmid">{pmid}</article-id>'
-        f'<article-id pub-id-type="pmc">{pmcid.removeprefix("PMC")}</article-id>'
+        f'<article-id pub-id-type="pmcid">{pmcid}</article-id>'
         "</article-meta></front><body><p>Synthetic source; no actual publication.</p></body></article>"
     ).encode("utf-8")
 
