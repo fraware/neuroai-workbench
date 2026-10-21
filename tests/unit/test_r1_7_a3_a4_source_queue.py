@@ -240,3 +240,30 @@ def test_queue_rejects_corrupted_a3_round_structure(tmp_path: Path) -> None:
     seed_path.write_text(json.dumps(universe), encoding="utf-8")
     with pytest.raises(ValueError, match="Frozen A3 rounds"):
         build_queue(tmp_path)
+
+
+def test_bounded_manufacturer_triage_has_exact_query_bindings_no_scientific_credit() -> None:
+    """Three manufacturer pages are source leads, not execution or product decisions."""
+    packet = Path(__file__).resolve().parents[2] / "docs/programme/r1-7-public-manufacturer-triage-2026-10-21.json"
+    obj = json.loads(packet.read_text(encoding="utf-8"))
+    assert obj["scope"] == "MANUFACTURER_PAGE_PUBLIC_TEXT_RESEARCH_AND_FROZEN_QUERY_RELEVANCE_MAP_ONLY"
+    assert len(obj["records"]) == 3
+    assert obj["original_world_time_cutoff"] == "2026-09-24"
+    assert obj["original_knowledge_time_cutoff"] == "2026-10-24T23:59:59Z"
+    assert all(value == 0 for value in obj["no_credit"].values())
+    by_seed = {
+        cap["query_or_seed_id"]: (item, cap)
+        for item in build_queue()["items"]
+        for cap in item["captures"]
+    }
+    bindings = []
+    for lead in obj["records"]:
+        assert lead["source_url"].startswith("https://")
+        assert lead["unresolved"]
+        for related in lead["related_frozen_obligations"]:
+            bindings.append(related["frozen_query_or_seed_id"])
+            item, capture = by_seed[related["frozen_query_or_seed_id"]]
+            assert item["work_item_id"] == related["frozen_work_item_id"]
+            assert capture["capture_id"] == related["frozen_capture_id"]
+            assert item["terminal_r1_7_decision"] is None
+    assert len(bindings) == len(set(bindings)) == 5
