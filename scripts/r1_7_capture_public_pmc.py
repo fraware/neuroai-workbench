@@ -55,7 +55,7 @@ def _verified_xml(data: bytes, pmid: str, pmcid: str) -> None:
         for item in root.iter("article-id")
     }
     if ids.get("pmid") != pmid or ids.get("pmc") not in {pmcid, pmcid.removeprefix("PMC")}:
-        raise ValueError("PMC article identifiers do not match the frozen PMID/PMCID")
+        raise ValueError(f"PMC article identifiers do not match the frozen PMID/PMCID; observed={ids}")
 
 
 def capture_one(row: dict[str, str], output: Path) -> dict[str, Any]:
