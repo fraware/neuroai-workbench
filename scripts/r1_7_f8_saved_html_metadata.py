@@ -3,6 +3,7 @@
 Requires the original artifact 12325963314 ZIP, stored outside public Git.
 No HTTP requests, source adjudications, historical rewrites or product credits.
 """
+
 from __future__ import annotations
 
 import argparse
