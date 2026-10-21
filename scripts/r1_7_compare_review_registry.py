@@ -89,10 +89,10 @@ def classify_designation(name: str, registry_ids: set[str]) -> dict[str, Any]:
 
 
 def make_crosswalk(raw_xml: bytes, registry: dict[str, Any], registry_sha256: str) -> dict[str, Any]:
-    publication = extract_table_rows(raw_xml)
     ids = {row["canonical_entity_id"] for row in registry["rows"]}
     if ids != EXPECTED_ENTITY_IDS:
         raise ValueError("Frozen registry identity set changed")
+    publication = extract_table_rows(raw_xml)
     records: list[dict[str, Any]] = []
     seen: set[tuple[int, int]] = set()
     designations: set[str] = set()
