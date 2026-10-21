@@ -6,6 +6,7 @@ sources nor writes to an execution ledger or Product Registry. Saved bytes,
 reused publication text, and a completed substantive extraction are three
 different states.
 """
+
 from __future__ import annotations
 
 import argparse
