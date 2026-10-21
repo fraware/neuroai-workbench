@@ -1,0 +1,55 @@
+{
+  "record_type": "R1_7_NEU_EXACT_MODEL_DISCONTINUATION_SOURCE_ASSERTION_v0.1",
+  "status": "NONTERMINAL_SAVED_PRIMARY_SOURCE_EXTRACTION_UNADJUDICATED",
+  "source": "https://neu-brains.co.jp/information/press/2025/06/04/4258.html",
+  "source_document_date": "2025-06-04",
+  "source_date_basis": "Date displayed in NeU manufacturer announcement",
+  "archived_source": {
+    "artifact_id": 12323904364,
+    "github_actions_run_id": 39553726368,
+    "source_file": "neu-2025-discontinuation.html",
+    "raw_sha256": "f02c9da3d76d8ca3951365c2af879d369d1b3821a3f26e7dcccf6130e4b506cb",
+    "observed_at_utc": "2026-10-21T06:09:53Z"
+  },
+  "source_claim_type": "ANNOUNCEMENT_OF_SALES_DISCONTINUATION_FOR_NAMED_MODELS",
+  "named_models": [
+    {
+      "literal_model_identifier": "HOT-2000-BIOSIGNALS",
+      "manufacturer_description": "Biological multimodal measurement system"
+    },
+    {
+      "literal_model_identifier": "NX Ver.1.0",
+      "manufacturer_description": "Brain-activity measurement integration tool (research use)"
+    },
+    {
+      "literal_model_identifier": "SP-POST01",
+      "manufacturer_description": "Stimulus-presentation system"
+    },
+    {
+      "literal_model_identifier": "WOT-VC1",
+      "manufacturer_description": "WOT dedicated video-capture system"
+    }
+  ],
+  "stated_repairs_and_maintenance_end": "2026-06-30",
+  "sales_cessation_effective_date": null,
+  "exclusion_boundary": "The notice does not list the base portable HOT-2000 product as discontinued; do not generalize named-model discontinuation to the entire HOT-2000 family or unrelated NeU products.",
+  "frozen_research_context": {
+    "query_id": "F8-R3-LOC-NEU-JP",
+    "capture_id": "PDC-57923a179a924a0e8f91cb3ec683e905f77b9ab6ff3439c8bc751aec1e3aea86",
+    "work_item_id": "R1WI-56f3789c252e5e70d0a80b35726e7cff5abb59d6a06101bf6cb69e9d510c7f4d",
+    "execution_route": "EMPIRICAL_CANDIDATE_ADJUDICATION",
+    "original_capture_outcome": "UNRESOLVED_IDENTITY"
+  },
+  "no_scientific_credit": {
+    "new_canonical_product_ids": 0,
+    "terminal_candidate_decisions": 0,
+    "commercial_currentness_at_world_cutoff_verified": 0,
+    "release_a_population_increments": 0
+  },
+  "limits": [
+    "The manufacturer notice contains a sales-discontinuation announcement, not independent evidence establishing each exact cessation day.",
+    "Named software/instrument items still require the frozen NeuroAI eligibility rule and product/service identity review.",
+    "The original Sep 2026 capture outcome is preserved; the Oct acquisition cannot retroactively rewrite it.",
+    "No review authorization or S2 publication follows from this packet."
+  ]
+}
