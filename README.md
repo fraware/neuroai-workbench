@@ -93,7 +93,7 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
-Runtime dependency is `jsonschema` only. The `[dev]` extra adds lint, type-check, test, and optional publication-product tooling.
+Core runtime dependencies are `jsonschema` and `urllib3` (see `pyproject.toml`). The `[products]` extra provides native XLSX/DOCX/PDF output dependencies; `[dev]` includes testing, type-checking, linting, and publication-tooling dependencies.
 
 Entry points after install:
 
