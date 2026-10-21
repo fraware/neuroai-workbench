@@ -28,14 +28,14 @@ TERMS = {
     "ASCRIBE-XR": "PLATFORM_MENTION",
 }
 PATTERN = re.compile(
-    r"(?<!\\w)(" + "|".join(re.escape(term) for term in sorted(TERMS, key=len, reverse=True)) + r")(?!\\w)",
+    r"(?<!\w)(" + "|".join(re.escape(term) for term in sorted(TERMS, key=len, reverse=True)) + r")(?!\w)",
     re.IGNORECASE,
 )
 MAX_MATCHES = 500
 
 
 def screen_saved_article(path: Path) -> dict[str, Any]:
-    match = re.fullmatch(r"pmid-([0-9]+)-fulltext\\.xml", path.name)
+    match = re.fullmatch(r"pmid-([0-9]+)-fulltext\.xml", path.name)
     if match is None:
         raise ValueError("Saved XML filename must preserve its PMID")
     payload = path.read_bytes()
