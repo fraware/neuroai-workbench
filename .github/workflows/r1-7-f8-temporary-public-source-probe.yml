@@ -1,0 +1,116 @@
+name: R1.7 F8 bounded public source acquisition probe
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r1-7-f8-temporary-public-source-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  collect-f8-alternative-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Retrieve allowlisted official webpages as raw bytes
+        env:
+          DEST: ${{ runner.temp }}/r1-7-f8-source-probe
+        run: |
+          python - <<'PY'
+          import datetime
+          import hashlib
+          import json
+          import os
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          root = Path(os.environ["DEST"])
+          root.mkdir(parents=True, exist_ok=True)
+          data = json.loads(Path("docs/programme/r1-7-five-inaccessible-f8-recovery-candidates.json").read_text())
+          assert data["item_count"] == 5 and data["terminal_extractions_claimed"] == 0
+          hosts = {
+              "www.miit.gov.cn", "udi.nmpa.gov.cn", "www.bitbrain.com",
+              "www.nmpa.gov.cn", "www.gov.il", "www.neuroelectrics.com",
+          }
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, request, fp, code, msg, headers, newurl):
+                  raise ValueError(f"Redirect refused: HTTP {code} to {newurl[:180]}")
+          opener = urllib.request.build_opener(NoRedirect)
+          records = []
+          for item in data["items"]:
+              for index, locator in enumerate(item["locators"], start=1):
+                  url = locator["url"]
+                  parsed = urllib.parse.urlsplit(url)
+                  assert parsed.scheme == "https" and parsed.hostname in hosts
+                  assert parsed.username is None and parsed.password is None
+                  destination = root / f'{item["query_or_seed_id"]}-{index}.response'
+                  entry = {
+                      "capture_id": item["capture_id"],
+                      "frozen_query_id": item["query_or_seed_id"],
+                      "original_frozen_outcome": "FAILED_INACCESSIBLE",
+                      "attempted_alternative_locator": url,
+                      "source_locator_type": locator["kind"],
+                      "content_authenticity_verified": False,
+                      "historical_product_claim_adjudicated": False,
+                      "r1_7_terminal_extraction": None,
+                      "attempted_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  }
+                  try:
+                      request = urllib.request.Request(
+                          url,
+                          method="GET",
+                          headers={
+                              "User-Agent": "NeuroAI-F8-Research-Source-Check/0.1",
+                              "Accept-Encoding": "identity",
+                          },
+                      )
+                      with opener.open(request, timeout=15) as response:
+                          raw = response.read(3 * 1024 * 1024 + 1)
+                          if len(raw) > 3 * 1024 * 1024:
+                              raise ValueError("Response exceeds 3MiB ceiling")
+                          status = response.status
+                          if status != 200 or response.geturl() != url:
+                              raise ValueError("Non-200 or redirected response")
+                          destination.write_bytes(raw)
+                          entry.update({
+                              "acquisition_status": "HTTP_200_BYTES_SAVED_CONTENT_NOT_ADJUDICATED",
+                              "http_status": status,
+                              "content_type": response.headers.get("Content-Type"),
+                              "raw_sha256": hashlib.sha256(raw).hexdigest(),
+                              "raw_bytes": len(raw),
+                              "saved_file": destination.name,
+                          })
+                  except (OSError, ValueError, urllib.error.URLError) as error:
+                      entry["acquisition_status"] = "ACQUISITION_FAILED_OR_REJECTED"
+                      entry["failure_type"] = type(error).__name__
+                      entry["failure_detail"] = str(error)[:300]
+                  records.append(entry)
+                  print(item["query_or_seed_id"], index, entry["acquisition_status"])
+          summary = {
+              "attempts": len(records),
+              "original_frozen_captures": 5,
+              "http_200_bytes_saved": sum(r["acquisition_status"].startswith("HTTP_200") for r in records),
+              "unresolved_failures": sum(r["acquisition_status"] == "ACQUISITION_FAILED_OR_REJECTED" for r in records),
+              "accepted_r1_7_extractions": 0,
+              "report_boundary": "Alternative sites only; no device, historical eligibility or terminal-source claims",
+              "items": records,
+          }
+          assert summary["attempts"] == 10
+          (root / "attempt-report.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
+          print(json.dumps({k:v for k,v in summary.items() if k != "items"}, sort_keys=True))
+          PY
+      - name: Upload exact response bytes and failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r1-7-f8-five-inaccessible-public-source-probe
+          path: ${{ runner.temp }}/r1-7-f8-source-probe/
+          if-no-files-found: error
+          retention-days: 30
