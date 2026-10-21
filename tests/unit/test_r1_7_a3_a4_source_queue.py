@@ -121,8 +121,12 @@ def test_queue_rejects_query_contract_mismatch(tmp_path: Path) -> None:
         (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
     f6path = tmp_path / UNIVERSES["F6"]
     universe = json.loads(f6path.read_text(encoding="utf-8"))
-    assert universe["query_seeds"]
-    universe["query_seeds"][0]["language"] = "tampered-language"
+    selected = next(
+        cap["query_or_seed_id"]
+        for item in build_queue()["items"] if item["priority_analysis"] == "A3_CAPABILITY"
+        for cap in item["captures"]
+    )
+    next(seed for seed in universe["query_seeds"] if seed["query_or_seed_id"] == selected)["language"] = "tampered-language"
     f6path.write_text(json.dumps(universe), encoding="utf-8")
     with pytest.raises(ValueError, match="Frozen source/query language contract mismatch"):
         build_queue(tmp_path)
@@ -134,7 +138,12 @@ def test_queue_rejects_blank_original_query(tmp_path: Path) -> None:
         (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
     f8path = tmp_path / UNIVERSES["F8"]
     universe = json.loads(f8path.read_text(encoding="utf-8"))
-    universe["query_seeds"][0]["query_expression"] = "   "
+    selected = next(
+        cap["query_or_seed_id"]
+        for item in build_queue()["items"] if item["priority_analysis"] == "A4_MULTILINGUAL"
+        for cap in item["captures"]
+    )
+    next(seed for seed in universe["query_seeds"] if seed["query_or_seed_id"] == selected)["query_expression"] = "   "
     f8path.write_text(json.dumps(universe), encoding="utf-8")
     with pytest.raises(ValueError, match="Frozen source/query expression missing"):
         build_queue(tmp_path)
