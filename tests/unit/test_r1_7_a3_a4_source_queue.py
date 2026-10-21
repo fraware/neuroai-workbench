@@ -193,3 +193,50 @@ def test_saved_source_archive_inventory_joins_frozen_routes_without_completion()
         if row["execution_route"] == "SOURCE_SURFACE_RESOLUTION":
             assert row["historical_original_capture_outcome"] == "FAILED_INACCESSIBLE"
     assert routes == {"LITERATURE_RECORD_EXTRACTION": 21, "SOURCE_SURFACE_RESOLUTION": 5}
+
+
+def test_stacked_worklist_round_and_original_observation_contract() -> None:
+    """Cross-check nonredundant invariants from stacked PR #451."""
+    queue = build_queue()
+    assert queue["historical_priority_capture_outcomes"] == {
+        "ABSTAIN": 64,
+        "FAILED_INACCESSIBLE": 5,
+    }
+    by_frame = Counter()
+    family_rounds = {}
+    for item in queue["items"]:
+        for capture in item["captures"]:
+            by_frame[capture["frame_id"]] += 1
+            assert capture["normalized_candidate_label_at_frozen_capture"]
+            assert capture["raw_candidate_key_at_frozen_capture"]
+            assert capture["source_observation_ref"].startswith("OBS-")
+            assert capture["source_packet_id"]
+            if item["priority_analysis"] == "A3_CAPABILITY":
+                family_rounds.setdefault(capture["query_family"], set()).add(capture["round_id"])
+    assert by_frame == {"F6": 18, "F8": 51}
+    assert len(family_rounds) == 6
+    assert all(rounds == {"R1", "R2", "R3"} for rounds in family_rounds.values())
+
+
+def test_queue_rejects_corrupted_a3_round_structure(tmp_path: Path) -> None:
+    """Corrupt matching seed/source rounds without violating pairwise joins."""
+    for filename in [ROUTING, F6, F8, *UNIVERSES.values()]:
+        (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
+    selected = next(
+        capture
+        for item in build_queue()["items"]
+        if item["priority_analysis"] == "A3_CAPABILITY"
+        for capture in item["captures"]
+    )
+    shard = tmp_path / F6
+    doc = json.loads(shard.read_text(encoding="utf-8"))
+    next(row for row in doc["source_records"] if row["capture_id"] == selected["capture_id"])["round_id"] = "R4"
+    shard.write_text(json.dumps(doc), encoding="utf-8")
+    seed_path = tmp_path / UNIVERSES["F6"]
+    universe = json.loads(seed_path.read_text(encoding="utf-8"))
+    next(
+        row for row in universe["query_seeds"] if row["query_or_seed_id"] == selected["query_or_seed_id"]
+    )["round_id"] = "R4"
+    seed_path.write_text(json.dumps(universe), encoding="utf-8")
+    with pytest.raises(ValueError, match="Frozen A3 rounds"):
+        build_queue(tmp_path)
