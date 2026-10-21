@@ -35,6 +35,4 @@ def test_unapproved_target_is_rejected_before_network(tmp_path: Path) -> None:
 def test_cross_domain_redirect_is_refused() -> None:
     request = urllib.request.Request(SOURCE_TARGETS[0][1])
     with pytest.raises(ValueError, match="redirect refused"):
-        SameOriginRedirect().redirect_request(
-            request, None, 301, "Moved", {}, "https://unrelated.example.org/unsafe"
-        )
+        SameOriginRedirect().redirect_request(request, None, 301, "Moved", {}, "https://unrelated.example.org/unsafe")

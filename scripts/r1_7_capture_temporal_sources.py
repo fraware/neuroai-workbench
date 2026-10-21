@@ -130,9 +130,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             report["captured"].append(capture_target(slug, locator, marker, args.output_dir))
         except (OSError, ValueError, urllib.error.URLError) as exc:
-            report["failures"].append(
-                {"slug": slug, "error_type": type(exc).__name__, "error": str(exc)[:240]}
-            )
+            report["failures"].append({"slug": slug, "error_type": type(exc).__name__, "error": str(exc)[:240]})
     report["status"] = "COMPLETE_CAPTURE" if not report["failures"] else "PARTIAL_CAPTURE"
     args.output_dir.joinpath("capture-report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
