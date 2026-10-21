@@ -100,8 +100,10 @@ def main(argv: list[str] | None = None) -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
     for record in records:
-        print(f"PMID {record['pmid']}: {record['mention_count']} literal body mentions; "
-              f"raw SHA256 {record['source_raw_sha256']}")
+        print(
+            f"PMID {record['pmid']}: {record['mention_count']} literal body mentions; "
+            f"raw SHA256 {record['source_raw_sha256']}"
+        )
     return 0
 
 

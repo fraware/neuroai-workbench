@@ -53,7 +53,7 @@ jobs:
           name: r1-7-public-literature-snapshots
           path: ${{ runner.temp }}/r1-7-public-pmc/
           if-no-files-found: warn
-          retention-days: 2
+          retention-days: 30
       - name: Fail when source capture is incomplete
         if: steps.capture.outcome != 'success'
         run: |

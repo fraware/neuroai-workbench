@@ -49,6 +49,34 @@ These preliminary observations identify productive next retrieval and
 extraction targets. All R1.7 source bytes, explicit offering claims and
 per-capture extraction conclusions remain to be supplied and validated.
 
+## Actual bounded public acquisition, 21 October 2026 UTC
+
+[Exact source acquisition and screening run 39543302737](https://github.com/fraware/neuroai-workbench/actions/runs/39543302737)
+captured all four distinct full-text JATS XML documents directly from public
+Europe PMC. The acquisition checked both `pmid` and `pmcid` XML identifiers,
+validated all four response bodies against their requested identities, and
+saved exact raw bytes and cryptographic digests in an Actions artifact:
+
+| PMID | Saved bytes | Raw SHA-256 | Literal selected-term body mentions |
+| --- | ---: | --- | ---: |
+| 42505450 | 489079 | `9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f` | 24 |
+| 42645991 | 181304 | `58bc3c81c941b2e2cb221b92182fb8858d4be05bdd6ebf4f6a448a6477aa7645` | 48 |
+| 42022893 | 155798 | `02ae44fbb57de40e47bc844e7b773001c12c6d9e9644ed76d59539bd713fa4ef` | 58 |
+| 41939223 | 201584 | `d699d36303fbe3af4937cd5121b91e85f56a76638d6ddf3ca9d5e09f59c70522` | 8 |
+
+The capture report, saved XML, raw-hash-bound unresolved evidence bundles,
+and nonterminal body-mention screening report are in GitHub Actions artifact
+`12320317652`. This is an ephemeral workflow artifact, not a permanent
+scientific repository. Move a copy to durable research storage before expiry.
+
+**Every imported extraction state remains `RECORD_EXTRACTION_UNRESOLVED`.**
+The screening counts exact matches to a fixed term list, including repeated
+mentions; they are not unique offering or canonical-identity counts, evidence
+of publication-wide exhaustive device extraction, or product qualification.
+Only four of the frozen 21 distinct capture IDs were used for these four
+nonterminal evidence bundles; the other frozen work-item identities remain
+pending. A separately attributable extraction decision is still necessary.
+
 ## Work with the repository's existing frozen population
 
 ```bash

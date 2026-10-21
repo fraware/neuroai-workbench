@@ -13,9 +13,9 @@ from scripts.r1_7_screen_saved_pmc import screen_saved_article, main
 def _article(pmid: str, body: str) -> bytes:
     return (
         f'<article><front><article-meta><article-id pub-id-type="pmid">{pmid}</article-id>'
-        '</article-meta></front><body><sec><title>Methods</title>'
-        f'<p>{body}</p></sec></body><back><ref-list><ref><mixed-citation>'
-        'Emotiv Insight in bibliography only</mixed-citation></ref></ref-list></back></article>'
+        "</article-meta></front><body><sec><title>Methods</title>"
+        f"<p>{body}</p></sec></body><back><ref-list><ref><mixed-citation>"
+        "Emotiv Insight in bibliography only</mixed-citation></ref></ref-list></back></article>"
     ).encode("utf-8")
 
 
