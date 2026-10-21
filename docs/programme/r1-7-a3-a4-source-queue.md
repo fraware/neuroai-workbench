@@ -16,7 +16,12 @@ The JSON includes the work-item and candidate-cluster IDs, original capture
 and observation references, query family, language/jurisdiction, source packet,
 frozen original response state (64 `ABSTAIN` and five
 `FAILED_INACCESSIBLE` capture outcomes), and the analytical reason for selection.
-Ordering is deterministic. The script makes **no network requests**.
+Ordering is deterministic. The script makes **no network requests**. The
+queue also binds every priority capture to its **full frozen query expression**,
+confirms query round/family/source class/language/jurisdiction, and reports
+raw-byte SHA-256 hashes for the routing checkpoint, F6/F8 source shards,
+and their two frozen query universes. These checks protect reproducibility;
+they do not establish retrieval or review completion.
 
 This is a **pending execution queue**: it assigns no new source locator, real
 retrieval timestamp, offering, product status, completion decision or A3/A4
@@ -35,9 +40,14 @@ and F8 local-language primary sources, retaining exact provenance and the
 The five frozen `FAILED_INACCESSIBLE` items are now linked to **ten
 verified alternative official source/portal entry points** in the
 read-only file `r1-7-five-inaccessible-f8-recovery-candidates.json`.
-These entries do **not** claim that the original 2026-09-26 retrieval
-attempts succeeded, or that any primary-source response bytes have been
-captured, archived, or independently hashed.
+These entries are a **pre-acquisition candidate list**. They do **not** claim
+that the original 2026-09-26 retrieval attempts succeeded. A later, separately
+archived 2026-10-21 acquisition is documented in
+[`r1-7-f8-five-alternative-source-probe-2026-10-21.md`](r1-7-f8-five-alternative-source-probe-2026-10-21.md).
+That later probe attempted ten alternative URLs, archived eight HTTP 200
+responses, recorded two 403 failures, and independently rehashed the reported
+archive. It does not retroactively change the original capture outcomes,
+validate a specific product or record, or establish terminal R1.7 decisions.
 
 | F8 query | Source category | Alternative research target | Remaining gap |
 | --- | --- | --- | --- |
@@ -55,7 +65,10 @@ positive or negative registration result. The dated Bitbrain article is
 a historical manufacturer representation rather than a conclusion about
 2026-09-24 commercial availability.
 
-Prioritize acquiring the exact alternative source response bytes with
-timestamp, final URL, response status, content hash and historical publication
-evidence. Decisions should be bound to the matching frozen query/capture ID,
-while keeping original failed captures separate from new retrievals.
+For the eight archived responses, the next step is primary content-level
+extraction and historically valid source assessment. For the two inaccessible
+Israeli responses, the access barrier remains unresolved. Any subsequent
+source-execution decision must bind the exact frozen capture/query ID and
+new evidence identity while keeping historical failed captures unchanged.
+The main priority queue is an unresolved-work projection and does not ingest
+this later probe as successful original September execution.
