@@ -1,12 +1,6 @@
 name: R1.7 public literature snapshot pilot
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/r1-7-public-literature-snapshot.yml"
-      - "scripts/r1_7_capture_public_pmc.py"
-      - "scripts/r1_7_screen_saved_pmc.py"
-      - "src/neuroai_workbench/release_a_r1_literature_pilot.py"
   workflow_dispatch:
 
 permissions:
@@ -14,7 +8,6 @@ permissions:
 
 jobs:
   capture-public-pmc:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 449
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:

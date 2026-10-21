@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -25,7 +24,7 @@ def _sample(pmid: str, pmcid: str) -> bytes:
         f'<article><front><article-meta><article-id pub-id-type="pmid">{pmid}</article-id>'
         f'<article-id pub-id-type="pmcid">{pmcid}</article-id>'
         "</article-meta></front><body><p>Synthetic source; no actual publication.</p></body></article>"
-    ).encode("utf-8")
+    ).encode()
 
 
 def test_four_frozen_public_identifiers_are_exact() -> None:

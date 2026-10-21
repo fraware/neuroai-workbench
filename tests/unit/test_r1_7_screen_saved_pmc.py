@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.r1_7_screen_saved_pmc import screen_saved_article, main
+from scripts.r1_7_screen_saved_pmc import main, screen_saved_article
 
 
 def _article(pmid: str, body: str) -> bytes:
@@ -16,7 +16,7 @@ def _article(pmid: str, body: str) -> bytes:
         "</article-meta></front><body><sec><title>Methods</title>"
         f"<p>{body}</p></sec></body><back><ref-list><ref><mixed-citation>"
         "Emotiv Insight in bibliography only</mixed-citation></ref></ref-list></back></article>"
-    ).encode("utf-8")
+    ).encode()
 
 
 def test_literal_mentions_are_source_bound_and_nonterminal(tmp_path: Path) -> None:
