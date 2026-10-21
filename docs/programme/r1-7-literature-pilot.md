@@ -60,8 +60,11 @@ The metadata above is **a template**, not a report that a request occurred.
 In particular, replace status 200 with the actually observed response status.
 Use `RECORD_EXTRACTED_ZERO_OFFERING_LEADS` only after examining enough of the
 source to support that exact claim. Use `RECORD_EXTRACTED_WITH_OFFERING_LEADS`
-only with explicit nonempty candidate keys. The unresolved state preserves
-the work item as pending.
+only with explicit nonempty candidate keys. Terminal extraction also requires
+operator metadata recording a successful HTTP 200 retrieval; a 404, 403,
+rate-limit page or inaccessible source must remain unresolved. HTTP 200 alone
+does not establish that the source body is the intended article. The unresolved
+state preserves the work item as pending.
 
 ```bash
 python -m scripts.r1_7_literature_pilot ingest --decision /tmp/decision.json --snapshot /tmp/raw-response.html > /tmp/record-bundle.json
