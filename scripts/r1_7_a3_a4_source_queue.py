@@ -111,6 +111,7 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
                     "source_class": source["source_class"],
                     "source_outcome_at_frozen_capture": source["outcome"],
                     "raw_candidate_key_at_frozen_capture": source["raw_candidate_key"],
+                    "normalized_candidate_label_at_frozen_capture": source["normalized_candidate_label"],
                     "frozen_observed_at": source["observed_at"],
                     "world_time_alignment": source["world_time_alignment"],
                 }
@@ -148,6 +149,16 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
     )
     if len(a3_families) != 6 or set(a3_families.values()) != {3}:
         raise ValueError("Frozen A3 capability-family/round contract changed")
+    for family in a3_families:
+        rounds = {
+            cap["round_id"]
+            for item in queue
+            if item["priority_analysis"] == "A3_CAPABILITY"
+            for cap in item["captures"]
+            if cap["query_family"] == family
+        }
+        if rounds != {"R1", "R2", "R3"}:
+            raise ValueError("Frozen A3 rounds per capability family changed")
     a4_families = Counter(
         cap["query_family"]
         for item in queue
@@ -160,12 +171,23 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
         "LOCAL_PRODUCT_SOURCE": 9,
     }:
         raise ValueError("Frozen A4 multilingual-query family contract changed")
+    outcomes = Counter(cap["source_outcome_at_frozen_capture"] for cap in captures)
+    if outcomes != {"ABSTAIN": 64, "FAILED_INACCESSIBLE": 5}:
+        raise ValueError("Frozen priority source acquisition outcome counts changed")
+    if any(
+        cap["source_outcome_at_frozen_capture"] != "ABSTAIN"
+        for item in queue
+        if item["priority_analysis"] == "A3_CAPABILITY"
+        for cap in item["captures"]
+    ):
+        raise ValueError("Frozen A3 source acquisition outcome changed")
     return {
         "report_id": "R1_7_A3_A4_SOURCE_SURFACE_QUEUE_v0.1",
         "frozen_route_checkpoint_id": checkpoint["checkpoint_id"],
         "frozen_input_sha256": dict(sorted(hashes.items())),
         "a3_capability_family_counts": dict(sorted(a3_families.items())),
         "a4_query_family_counts": dict(sorted(a4_families.items())),
+        "historical_priority_capture_outcomes": dict(sorted(outcomes.items())),
         "world_time_cutoff": checkpoint["world_time_cutoff"],
         "knowledge_time_cutoff": checkpoint["knowledge_time_cutoff"],
         "source_surface_total_work_items": 171,
