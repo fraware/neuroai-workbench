@@ -50,10 +50,7 @@ def _verified_xml(data: bytes, pmid: str, pmcid: str) -> None:
     root = ET.fromstring(data)
     if root.tag != "article":
         raise ValueError("PMC response is not an article XML document")
-    ids = {
-        item.attrib.get("pub-id-type"): (item.text or "").strip()
-        for item in root.iter("article-id")
-    }
+    ids = {item.attrib.get("pub-id-type"): (item.text or "").strip() for item in root.iter("article-id")}
     if ids.get("pmid") != pmid or ids.get("pmcid") != pmcid:
         raise ValueError(f"PMC article identifiers do not match the frozen PMID/PMCID; observed={ids}")
 
