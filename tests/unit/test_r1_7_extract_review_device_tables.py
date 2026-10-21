@@ -8,8 +8,8 @@ import pytest
 
 from scripts.r1_7_extract_review_device_tables import (
     FORM_FACTORS,
-    PMID,
     PMCID,
+    PMID,
     RAW_SOURCE_SHA256,
     extract_table_rows,
 )
