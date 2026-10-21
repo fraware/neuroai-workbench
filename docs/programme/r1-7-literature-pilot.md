@@ -77,6 +77,36 @@ Only four of the frozen 21 distinct capture IDs were used for these four
 nonterminal evidence bundles; the other frozen work-item identities remain
 pending. A separately attributable extraction decision is still necessary.
 
+### Device-comparison tables in PMID 42505450
+
+Independent inspection of the archived article JATS XML identified **57 raw
+device-designation rows** across the article's first six comparative tables:
+
+| Source table | Device form factor | Raw rows |
+| --- | --- | ---: |
+| 1 | Rigid / semi-rigid head-mounted | 13 |
+| 2 | Headband-based | 15 |
+| 3 | Cap-based | 10 |
+| 4 | EEG patches | 6 |
+| 5 | In-ear / headphones | 8 |
+| 6 | Glasses-integrated | 5 |
+
+To reproduce these rows from the **exact** previously captured source bytes:
+
+```bash
+python -m scripts.r1_7_extract_review_device_tables \
+  --input /path/to/pmid-42505450-fulltext.xml \
+  --output /path/to/r1-7-device-table-rows.json
+```
+
+The extractor refuses source-byte drift and verifies publication identifiers,
+table order, column structure, expected historical row counts and raw-row
+content digests. It preserves each original seven-column publication row
+as a **noncanonical, unresolved mention**. Slashed model designations, repeated
+offerings and potential research prototypes are not split or converted into
+eligible or commercially available offering counts. The separate candidate
+resolution and 2026-09-24 world-time checks remain open.
+
 ## Work with the repository's existing frozen population
 
 ```bash

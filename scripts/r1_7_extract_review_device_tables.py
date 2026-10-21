@@ -68,7 +68,7 @@ def extract_table_rows(raw: bytes, *, frozen_source: bool = True) -> dict[str, A
             cells = [_visible_text(cell) for cell in row if cell.tag in {"td", "th"}]
             if len(cells) != 7 or not cells[0]:
                 raise ValueError("Device table row has a missing or nonconforming cell")
-            canonical = json.dumps(cells, sort_keys=False, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            canonical = json.dumps(cells, sort_keys=False, ensure_ascii=False, separators=(",", ":")).encode()
             results.append(
                 {
                     "source_pmid": PMID,
