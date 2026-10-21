@@ -22,7 +22,10 @@ def test_full_queue_exact_population_and_capture_provenance() -> None:
         assert item["capture_count"] == len(item["captures"]) > 0
         assert item["evidence_artifact_refs"] == []
         assert item["terminal_r1_7_decision"] is None
-        assert all(source["source_outcome_at_frozen_capture"] == "ABSTAIN" for source in item["captures"])
+        assert all(
+            source["source_outcome_at_frozen_capture"] in {"ABSTAIN", "FAILED_INACCESSIBLE"}
+            for source in item["captures"]
+        )
         if item["priority_analysis"] == "A3_CAPABILITY":
             assert all(source["frame_id"] == "F6" for source in item["captures"])
         else:
@@ -35,6 +38,8 @@ def test_queue_is_stable_and_does_not_claim_results() -> None:
     counts = Counter(item["priority_analysis"] for item in report["items"])
     assert counts == {"A3_CAPABILITY": 18, "A4_MULTILINGUAL": 51}
     assert report["completed_work_items"] == 0
+    outcomes = Counter(c["source_outcome_at_frozen_capture"] for item in report["items"] for c in item["captures"])
+    assert outcomes == {"ABSTAIN": 64, "FAILED_INACCESSIBLE": 5}
     assert all(not item["product_identities_established"] for item in report["items"])
 
 

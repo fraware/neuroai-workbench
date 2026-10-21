@@ -14,12 +14,13 @@ python -m scripts.r1_7_a3_a4_source_queue \
 
 The JSON includes the work-item and candidate-cluster IDs, original capture
 and observation references, query family, language/jurisdiction, source packet,
-frozen original response state, and the analytical reason for selection.
+frozen original response state (64 `ABSTAIN` and five
+`FAILED_INACCESSIBLE` capture outcomes), and the analytical reason for selection.
 Ordering is deterministic. The script makes **no network requests**.
 
 This is a **pending execution queue**: it assigns no new source locator, real
 retrieval timestamp, offering, product status, completion decision or A3/A4
-increment. A source/query abstention from a frozen capture is not proof of
+increment. A source/query abstention or inaccessible-response failure is not proof of
 source absence or zero eligible products. Primary-source verification and
 separate exact-capture evidence decisions must still be performed before
 substantive counts change.
