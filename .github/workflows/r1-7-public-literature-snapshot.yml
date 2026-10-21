@@ -1,0 +1,54 @@
+name: R1.7 public literature snapshot pilot
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r1-7-public-literature-snapshot.yml"
+      - "scripts/r1_7_capture_public_pmc.py"
+      - "src/neuroai_workbench/release_a_r1_literature_pilot.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture-public-pmc:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 449
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install local Workbench
+        run: python -m pip install -e .
+      - name: Opt-in bounded public PMC snapshot
+        id: capture
+        continue-on-error: true
+        run: |
+          python -m scripts.r1_7_capture_public_pmc \
+            --count 3 \
+            --allow-network \
+            --output-dir "$RUNNER_TEMP/r1-7-public-pmc"
+      - name: Report source acquisition state
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/r1-7-public-pmc/acquisition-report.json" ]; then
+            cat "$RUNNER_TEMP/r1-7-public-pmc/acquisition-report.json"
+          else
+            echo "No source archive was generated; source retrieval remains incomplete"
+          fi
+      - name: Upload captured public source bytes and nonterminal evidence bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r1-7-public-literature-snapshots
+          path: ${{ runner.temp }}/r1-7-public-pmc/
+          if-no-files-found: warn
+          retention-days: 2
+      - name: Fail when source capture is incomplete
+        if: steps.capture.outcome != 'success'
+        run: |
+          echo "R1.7 source capture incomplete. See acquisition report and artifact."
+          exit 1
