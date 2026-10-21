@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/r1-7-public-literature-snapshot.yml"
       - "scripts/r1_7_capture_public_pmc.py"
+      - "scripts/r1_7_screen_saved_pmc.py"
       - "src/neuroai_workbench/release_a_r1_literature_pilot.py"
   workflow_dispatch:
 
@@ -28,7 +29,7 @@ jobs:
         continue-on-error: true
         run: |
           python -m scripts.r1_7_capture_public_pmc \
-            --count 3 \
+            --count 4 \
             --allow-network \
             --output-dir "$RUNNER_TEMP/r1-7-public-pmc"
       - name: Report source acquisition state
@@ -39,6 +40,12 @@ jobs:
           else
             echo "No source archive was generated; source retrieval remains incomplete"
           fi
+      - name: Screen saved JATS body for nonterminal candidate mentions
+        if: steps.capture.outcome == 'success'
+        run: |
+          python -m scripts.r1_7_screen_saved_pmc \
+            --input-dir "$RUNNER_TEMP/r1-7-public-pmc" \
+            --output "$RUNNER_TEMP/r1-7-public-pmc/nonterminal-mentions.json"
       - name: Upload captured public source bytes and nonterminal evidence bundles
         if: always()
         uses: actions/upload-artifact@v4
