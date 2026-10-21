@@ -169,7 +169,7 @@ def test_saved_source_archive_inventory_joins_frozen_routes_without_completion()
         "source_record_items": 192,
         "source_record_captures": 247,
     }
-    assert inventory["matched_frozen_context_count"] == 9
+    assert inventory["matched_frozen_context_count"] == 26
     assert inventory["contexts_with_any_saved_new_raw_bytes"] == 8
     assert inventory["contexts_with_access_failures_only"] == 1
     assert inventory["terminal_r1_7_completion_records_verified"] == 0
@@ -179,7 +179,7 @@ def test_saved_source_archive_inventory_joins_frozen_routes_without_completion()
     index = {capture: route for route in routing["route_table"] for capture in route["capture_ids"]}
     assert len(index) == 389
     rows = inventory["known_archive_contexts"]
-    assert len(rows) == len({row["capture_id"] for row in rows}) == 9
+    assert len(rows) == len({row["capture_id"] for row in rows}) == 26
     routes = Counter()
     for row in rows:
         route = index[row["capture_id"]]
@@ -192,4 +192,4 @@ def test_saved_source_archive_inventory_joins_frozen_routes_without_completion()
         routes[row["execution_route"]] += 1
         if row["execution_route"] == "SOURCE_SURFACE_RESOLUTION":
             assert row["historical_original_capture_outcome"] == "FAILED_INACCESSIBLE"
-    assert routes == {"LITERATURE_RECORD_EXTRACTION": 4, "SOURCE_SURFACE_RESOLUTION": 5}
+    assert routes == {"LITERATURE_RECORD_EXTRACTION": 21, "SOURCE_SURFACE_RESOLUTION": 5}
