@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.r1_7_a3_a4_source_queue import F6, F8, ROUTING, RESOURCE_DIR, build_queue
+from scripts.r1_7_a3_a4_source_queue import F6, F8, RESOURCE_DIR, ROUTING, build_queue
 
 
 def test_full_queue_exact_population_and_capture_provenance() -> None:
