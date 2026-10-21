@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.r1_7_a3_a4_source_queue import F6, F8, RESOURCE_DIR, ROUTING, build_queue
+from scripts.r1_7_a3_a4_source_queue import F6, F8, RESOURCE_DIR, ROUTING, UNIVERSES, build_queue
 
 
 def test_full_queue_exact_population_and_capture_provenance() -> None:
@@ -77,3 +77,64 @@ def test_five_inaccessible_recovery_locators_keep_exact_frozen_identity() -> Non
         assert len(row["locators"]) == 2
         assert all(link["url"].startswith("https://") for link in row["locators"])
         assert all(link["document_date"] is None or link["document_date"] <= "2026-10-24" for link in row["locators"])
+
+
+def test_exact_query_seed_provenance_and_input_digests() -> None:
+    """Every priority capture must retain its original full query and frozen bytes."""
+    import hashlib
+
+    report = build_queue()
+    sources = report["frozen_input_sha256"]
+    expected = [ROUTING, F6, F8, *UNIVERSES.values()]
+    assert set(sources) == set(expected)
+    for filename in expected:
+        assert sources[filename] == hashlib.sha256((RESOURCE_DIR / filename).read_bytes()).hexdigest()
+    assert report["a4_query_family_counts"] == {
+        "LOCAL_PRODUCT_SOURCE": 9,
+        "NATIVE_LANGUAGE_CAPABILITY": 21,
+        "NATIVE_LANGUAGE_CATEGORY": 21,
+    }
+    assert len(report["a3_capability_family_counts"]) == 6
+    assert set(report["a3_capability_family_counts"].values()) == {3}
+
+    seed_by_id = {}
+    for filename in UNIVERSES.values():
+        universe = json.loads((RESOURCE_DIR / filename).read_text(encoding="utf-8"))
+        for seed in universe["query_seeds"]:
+            assert seed["query_or_seed_id"] not in seed_by_id
+            seed_by_id[seed["query_or_seed_id"]] = seed
+
+    captures = [cap for row in report["items"] for cap in row["captures"]]
+    assert len(captures) == len({cap["capture_id"] for cap in captures}) == 69
+    assert len({cap["query_or_seed_id"] for cap in captures}) == 69
+    for capture in captures:
+        seed = seed_by_id[capture["query_or_seed_id"]]
+        assert capture["query_expression"] == seed["query_expression"]
+        assert capture["query_expression"].strip()
+        for field in ("round_id", "query_family", "source_class", "language", "jurisdiction"):
+            assert capture[field] == seed[field]
+
+
+def test_queue_rejects_query_contract_mismatch(tmp_path: Path) -> None:
+    """A mislabeled seed must fail closed instead of rewriting historic provenance."""
+    for filename in [ROUTING, F6, F8, *UNIVERSES.values()]:
+        (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
+    f6path = tmp_path / UNIVERSES["F6"]
+    universe = json.loads(f6path.read_text(encoding="utf-8"))
+    assert universe["query_seeds"]
+    universe["query_seeds"][0]["language"] = "tampered-language"
+    f6path.write_text(json.dumps(universe), encoding="utf-8")
+    with pytest.raises(ValueError, match="Frozen source/query language contract mismatch"):
+        build_queue(tmp_path)
+
+
+def test_queue_rejects_blank_original_query(tmp_path: Path) -> None:
+    """Query text is essential to reproducible source execution."""
+    for filename in [ROUTING, F6, F8, *UNIVERSES.values()]:
+        (tmp_path / filename).write_bytes((RESOURCE_DIR / filename).read_bytes())
+    f8path = tmp_path / UNIVERSES["F8"]
+    universe = json.loads(f8path.read_text(encoding="utf-8"))
+    universe["query_seeds"][0]["query_expression"] = "   "
+    f8path.write_text(json.dumps(universe), encoding="utf-8")
+    with pytest.raises(ValueError, match="Frozen source/query expression missing"):
+        build_queue(tmp_path)
