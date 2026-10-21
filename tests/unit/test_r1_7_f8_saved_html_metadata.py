@@ -1,4 +1,5 @@
 """Synthetic network-free verification of saved F8 metadata extraction."""
+
 from __future__ import annotations
 
 import hashlib
