@@ -141,13 +141,17 @@ def build_queue(resource_dir: Path = RESOURCE_DIR) -> dict[str, Any]:
     if len({cap["query_or_seed_id"] for cap in captures}) != 69:
         raise ValueError("Priority original query identity repeated")
     a3_families = Counter(
-        cap["query_family"] for item in queue if item["priority_analysis"] == "A3_CAPABILITY"
+        cap["query_family"]
+        for item in queue
+        if item["priority_analysis"] == "A3_CAPABILITY"
         for cap in item["captures"]
     )
     if len(a3_families) != 6 or set(a3_families.values()) != {3}:
         raise ValueError("Frozen A3 capability-family/round contract changed")
     a4_families = Counter(
-        cap["query_family"] for item in queue if item["priority_analysis"] == "A4_MULTILINGUAL"
+        cap["query_family"]
+        for item in queue
+        if item["priority_analysis"] == "A4_MULTILINGUAL"
         for cap in item["captures"]
     )
     if a4_families != {
