@@ -156,7 +156,12 @@ def import_snapshot(snapshot: bytes, decision: Mapping[str, Any]) -> dict[str, A
         "content": base64.b64encode(snapshot).decode("ascii"),
     }
     artifact["evidence_ref"] = "R1EVID-" + canonical_sha256(
-        {"capture_id": capture_id, "source_locator": locator, "observed_at": decision["knowledge_observed_at"], "raw_sha256": content_sha256}
+        {
+            "capture_id": capture_id,
+            "source_locator": locator,
+            "observed_at": decision["knowledge_observed_at"],
+            "raw_sha256": content_sha256,
+        }
     )
     evidence_ref = str(artifact["evidence_ref"])
     proposition = {
