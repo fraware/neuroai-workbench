@@ -1,0 +1,57 @@
+name: R1.7 archived review table extraction
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r1-7-archived-review-tables.yml"
+      - "scripts/r1_7_extract_review_device_tables.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  reproduce-57-rows:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Retrieve exact immutable source artifact from prior successful pilot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 39543302737 \
+            --repo fraware/neuroai-workbench \
+            --name r1-7-public-literature-snapshots \
+            --dir "$RUNNER_TEMP/r1-7-source"
+      - name: Run frozen JATS device table extraction
+        run: |
+          python -m scripts.r1_7_extract_review_device_tables \
+            --input "$RUNNER_TEMP/r1-7-source/pmid-42505450-fulltext.xml" \
+            --output "$RUNNER_TEMP/r1-7-extracted-device-table-rows.json"
+      - name: Verify noncanonical table-row and source accounting
+        env:
+          RESULT_FILE: ${{ runner.temp }}/r1-7-extracted-device-table-rows.json
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          data = json.loads(Path(os.environ["RESULT_FILE"]).read_text(encoding="utf-8"))
+          assert data["raw_row_count"] == 57
+          assert data["table_counts"] == {"1": 13, "2": 15, "3": 10, "4": 6, "5": 8, "6": 5}
+          assert all(item["candidate_status"] == "UNRESOLVED_TABLE_ROW_MENTION" for item in data["rows"])
+          assert all(item["canonical_offering_id"] is None for item in data["rows"])
+          print("Verified 57 raw rows against archived source bytes; no product identities allocated")
+          PY
+      - name: Upload source-bound nonterminal table rows
+        uses: actions/upload-artifact@v4
+        with:
+          name: r1-7-review-57-raw-device-rows
+          path: ${{ runner.temp }}/r1-7-extracted-device-table-rows.json
+          retention-days: 30
