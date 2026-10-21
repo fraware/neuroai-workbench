@@ -166,7 +166,7 @@ Authority exclusions (always stated): no UNESCO endorsement; no regulatory, clin
 - Accepted candidates require explicit human change class, materiality, reopening effect, and rationale.
 - Adjudications and refresh packages are immutable and content-addressed.
 - The monitoring core satisfies its dedicated module coverage floor.
-- Ruff, mypy, Python 3.10–3.14 tests, package verification, release verification, container checks, CodeQL, and dependency controls pass.
+- Ruff, mypy, Python 3.11–3.14 tests, package verification, release verification, container checks, CodeQL, and dependency controls pass.
 
 ### Substantive gates
 

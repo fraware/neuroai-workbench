@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/fraware/neuroai-workbench/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fraware/neuroai-workbench/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 
 **Offline-first tooling for exact NeuroAI assessments and controlled observatory evidence records.**
 
@@ -78,7 +78,7 @@ Assessments and observatory state stay coupled by explicit dependencies and reop
 
 ## Install
 
-Requires **Python 3.10+**.
+Requires **Python 3.11+**. Python 3.10 reached upstream end-of-life in October 2026; the upcoming development-line security dependency refresh targets Python 3.11–3.14. Published prior tags retain their historical compatibility claims.
 
 ```bash
 git clone https://github.com/fraware/neuroai-workbench.git
