@@ -58,10 +58,12 @@ def test_capture_command_explicitly_refuses_implicit_network(
     capsys: pytest.CaptureFixture[str],
     tmp_path: Path,
 ) -> None:
+    output = tmp_path / "must-not-be-created"
+    assert not output.exists()
     with pytest.raises(SystemExit, match="2"):
-        main(["--output-dir", str(tmp_path)])
+        main(["--output-dir", str(output)])
     assert "pass --allow-network explicitly" in capsys.readouterr().err
-    assert not tmp_path.exists()
+    assert not output.exists()
 
 
 def test_no_redirect_policy_blocks_unexpected_target() -> None:
