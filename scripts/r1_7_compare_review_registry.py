@@ -155,10 +155,7 @@ def main(argv: list[str] | None = None) -> int:
     report = make_crosswalk(args.source_xml.read_bytes(), registry, registry_sha256)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(
-        f"{report['raw_table_row_count']} publication rows; "
-        f"{report['comparison_counts']}; 0 identities allocated"
-    )
+    print(f"{report['raw_table_row_count']} publication rows; {report['comparison_counts']}; 0 identities allocated")
     return 0
 
 
