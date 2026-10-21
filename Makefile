@@ -34,14 +34,19 @@ audit:
 	$(PYTHON) -m pip_audit
 
 demo:
-	rm -rf $(WORKSPACE)
-	neuroai-workbench init $(WORKSPACE) --name "NeuroAI demo workspace"
-	neuroai-workbench case-import $(WORKSPACE) examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json
+	@# Existing workspaces may contain controlled evidence; never reset one implicitly.
+	@if [ -z "$(WORKSPACE)" ] || [ -e "$(WORKSPACE)" ] || [ -L "$(WORKSPACE)" ]; then \
+		echo "Refusing to overwrite existing or empty demo workspace: $(WORKSPACE)" >&2; \
+		exit 2; \
+	fi
+	neuroai-workbench init "$(WORKSPACE)" --name "NeuroAI demo workspace"
+	neuroai-workbench case-import "$(WORKSPACE)" examples/assessments/PILOT-02_FDA_Adaptive_DBS_v4.2.json
 
 serve:
 	neuroai-workbench serve $(WORKSPACE)
 
 clean:
-	rm -rf artifacts build dist .coverage .pytest_cache htmlcov src/*.egg-info workspaces
-	find . -type d -name __pycache__ -prune -exec rm -rf {} +
-	find . -type f -name '*.py[co]' -delete
+	@# Preserve user-controlled workspaces and generated research artifacts.
+	rm -rf -- build dist .coverage .pytest_cache htmlcov src/*.egg-info
+	find src scripts tests -type d -name __pycache__ -prune -exec rm -rf -- {} +
+	find src scripts tests -type f -name '*.py[co]' -delete

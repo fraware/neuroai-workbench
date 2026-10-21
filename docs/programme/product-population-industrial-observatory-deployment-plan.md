@@ -1358,7 +1358,7 @@ Do not silently repurpose an existing work-package ID for a materially different
 
 ## 13. Immediate execution order
 
-Release A through `A-G` is complete under the immutable artifacts bound in [Release A completion status](release-a-completion-status.md) (`A-G PASSED`; A8 digest `71ff7a91…`; A-G packet digest `33dc5776…`). That disposition does not authorize Release B/C/D.
+The **historical** Release-A `A-G PASSED` packet establishes reconstruction integrity for immutable A8 inputs, **not current scientific completion**. Subsequent adversarial review opened `CORRECTIVE_REVIEW_R1_OPEN` under [Release A completion status](release-a-completion-status.md) and [corrective tracker #410](https://github.com/fraware/neuroai-workbench/issues/410). Until a valid successor A-G scientific disposition passes, the historical A8 package supplies no final population denominator for Release B/C/D. Consult the linked mutable status page and S2 execution-control pointer for current checkpoints; this durable deployment plan preserves the work-package sequence.
 
 The historical Release A critical path was:
 
@@ -1383,7 +1383,7 @@ A5/A6 snowball + saturation
   ->
 A7 population estimation
   ->
-A8 / A-G Product Population Observatory release  [COMPLETE: A-G PASSED]
+A8 / A-G Product Population Observatory release  [HISTORICAL RECONSTRUCTION PASS; CORRECTIVE SCIENTIFIC REVIEW]
 ```
 
 After the relevant Release-A identities and classifications stabilize, Releases B and C may proceed in parallel only under separate programme authorization; `A-G PASSED` alone does not open B/C/D:

@@ -4,6 +4,7 @@ import hashlib
 import json
 from collections.abc import Iterable, Mapping, Sequence
 from datetime import date, datetime, timezone
+from functools import lru_cache
 from importlib.resources import files
 from typing import Any, cast
 
@@ -96,8 +97,14 @@ def _schema(name: str) -> dict[str, Any]:
     )
 
 
+@lru_cache(maxsize=8)
+def _compiled_schema_validator(schema_name: str) -> Draft202012Validator:
+    """Reuse validators for immutable, package-bundled discovery schemas."""
+    return Draft202012Validator(_schema(schema_name))
+
+
 def _schema_errors(value: Any, schema_name: str) -> list[str]:
-    validator = Draft202012Validator(_schema(schema_name))
+    validator = _compiled_schema_validator(schema_name)
     return [
         f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
         for error in sorted(validator.iter_errors(value), key=lambda item: list(item.absolute_path))
