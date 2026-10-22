@@ -102,9 +102,7 @@ def test_two_temporal_review_packets_separate_dated_claims_from_release_decision
     assert next(x for x in modius if x["source_id"] == "MODIUS-BIOWORLD-JUL02")["document_date"] == "2026-07-02"
     assert next(x for x in modius if x["source_id"] == "MODIUS-TV-SEP09")["document_date"] == "2026-09-09"
     assert next(x for x in modius if x["source_id"] == "MODIUS-MFR-VA-CURRENT")["document_date"] is None
-    assert next(x for x in modius if x["source_id"] == "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER")[
-        "document_date"
-    ] is None
+    assert next(x for x in modius if x["source_id"] == "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER")["document_date"] is None
     routing_path = (
         root
         / "src/neuroai_workbench/resources/discovery"
@@ -118,7 +116,5 @@ def test_two_temporal_review_packets_separate_dated_claims_from_release_decision
         assert route["execution_route"] == "A_P1_TEMPORAL_STATE_REVIEW"
         assert route["canonical_offering_id"] == link["preexisting_offering_id"]
         assert link["route_still_requires_human_adjudication"] is True
-    assert report["frozen_temporal_route_checkpoint_commit"] == (
-        "d74285e39fc23e43d8204563fda8051bbf16340f"
-    )
+    assert report["frozen_temporal_route_checkpoint_commit"] == ("d74285e39fc23e43d8204563fda8051bbf16340f")
     assert report["observed_disagreement"]["logic"]
