@@ -34,11 +34,13 @@ class FakeResponse:
         return self.body[:size] if size >= 0 else self.body
 
 
-def test_three_original_source_hosts_are_explicit_and_https() -> None:
+def test_five_original_source_hosts_are_explicit_and_https() -> None:
     assert {s["source_id"] for s in receipt.PUBLIC_SOURCES} == {
         "NEO-NMPA-20260313",
         "NEO-SHANGHAI-20260313",
         "NEO-NHSA-20260322",
+        "NEO-SHANGHAI-CLINICAL-AUG2026",
+        "NEO-SHANGHAI-JULY-IMPLANT",
     }
     assert all(s["url"].startswith("https://") for s in receipt.PUBLIC_SOURCES)
 
