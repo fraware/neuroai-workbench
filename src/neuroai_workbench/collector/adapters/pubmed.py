@@ -28,7 +28,6 @@ EUTILS_SUMMARY = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 CROSSREF_WORKS = "https://api.crossref.org/works"
 
 _PMID_RE = re.compile(r"\bPMID[:\s-]*([0-9]{5,9})\b", re.I)
-_PMID_BARE_RE = re.compile(r"\b([0-9]{7,8})\b")
 _PMCID_RE = re.compile(r"\bPMC\d+\b", re.I)
 _DOI_RE = re.compile(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", re.I)
 
