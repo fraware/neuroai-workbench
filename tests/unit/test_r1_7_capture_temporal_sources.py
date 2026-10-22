@@ -105,4 +105,20 @@ def test_two_temporal_review_packets_separate_dated_claims_from_release_decision
     assert next(x for x in modius if x["source_id"] == "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER")[
         "document_date"
     ] is None
+    routing_path = (
+        root
+        / "src/neuroai_workbench/resources/discovery"
+        / "RELEASE_A_R1_EXECUTION_UNIT_ROUTING_REFINEMENT_CHECKPOINT.v1.0.json"
+    )
+    routing = json.loads(routing_path.read_text(encoding="utf-8"))
+    frozen = {row["work_item_id"]: row for row in routing["route_table"]}
+    for case in by_key.values():
+        link = case["frozen_temporal_route"]
+        route = frozen[link["work_item_id"]]
+        assert route["execution_route"] == "A_P1_TEMPORAL_STATE_REVIEW"
+        assert route["canonical_offering_id"] == link["preexisting_offering_id"]
+        assert link["route_still_requires_human_adjudication"] is True
+    assert report["frozen_temporal_route_checkpoint_commit"] == (
+        "d74285e39fc23e43d8204563fda8051bbf16340f"
+    )
     assert report["observed_disagreement"]["logic"]
