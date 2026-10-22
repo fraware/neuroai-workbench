@@ -5,6 +5,7 @@ immutable original source records, and a strictly BOUNDED saved-archive
 inventory. A missing receipt in the two named archives is NOT evidence of
 a missing source, an empty search, or an absent eligible product.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -32,9 +33,7 @@ def build_unlinked_source_queue() -> dict[str, Any]:
         raise ValueError("Two-archive nonmatching source capture count drift")
     priority = build_queue()
     by_priority_capture = {
-        cap["capture_id"]: (work["work_item_id"], cap)
-        for work in priority["items"]
-        for cap in work["captures"]
+        cap["capture_id"]: (work["work_item_id"], cap) for work in priority["items"] for cap in work["captures"]
     }
     if len(by_priority_capture) != 69:
         raise ValueError("Original A3/A4 query-seed population drift")
