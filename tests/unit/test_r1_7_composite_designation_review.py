@@ -112,3 +112,23 @@ def test_vendor_model_reference_conflict_does_not_rewrite_published_identity() -
     assert record["no_published_row_mutation"] is True
     assert record["canonical_offerings_allocated"] == 0
     assert record["r1_7_terminal_extractions_credited"] == 0
+
+
+def test_starstim_mention_discrepancy_remains_a_nonterminal_source_correction() -> None:
+    root = Path(__file__).resolve().parents[2]
+    doc = root / "docs/programme/r1-7-review-neuroelectrics-startsim-starstim-2026-10-22.json"
+    case = json.loads(doc.read_text(encoding="utf-8"))
+    assert case["source_xml_sha256"] == RAW_SOURCE_SHA256
+    row = case["published_table"]
+    assert row["table_number"] == 3
+    assert row["row_number_1_based"] == 10
+    assert row["literal_device_name"] == "Neuro-electrics Startsim"
+    assert row["raw_row_sha256"] == "86fb714714006fd70b756376cb7095e292e16a4f224e39cc6cecf5928b02b285"
+    assert row["citation_number"] == case["bibliography"]["citation_number"] == 150
+    assert case["same_publication_body"]["model_literal"] == "Starstim"
+    assert case["bibliography"]["url"] == "https://www.neuroelectrics.com/products/research/starstim"
+    assert case["original_source_row_rewritten"] is False
+    assert case["distinct_product_identified"] is False
+    assert case["exact_model_variant_adjudicated"] is False
+    assert case["canonical_product_increment"] == 0
+    assert case["r1_7_terminal_source_execution_credit"] == 0
