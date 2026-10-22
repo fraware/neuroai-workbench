@@ -14,6 +14,17 @@ The bounded archive projection identifies:
 - 1 F8 source context with two recorded 403 access failures;
 - **221 source-surface captures** with **no receipt in these two archives**.
 
+
+The output is ordered by immutable decision-relevance flags for efficient
+nonhuman source work before the knowledge cutoff: **18 A3 capability**
+captures, then **46 A4 multilingual** captures, then **157 other source**
+captures. The original A3/A4 priority population was 69 captures; five
+original F8 capture contexts already have separately archived alternative
+retrieval attempts and are therefore not duplicated in this *two-archive*
+unlinked queue. This ordering is workflow triage, not a protocol sampling
+rule, denominator change, completeness assertion, or permission to mark a
+retrieval as successful.
+
 These five categories sum to 247. The 221 figure does not demonstrate that
 a source is absent, no other evidence exists, or no product was returned.
 
