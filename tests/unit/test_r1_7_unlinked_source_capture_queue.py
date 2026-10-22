@@ -18,10 +18,18 @@ def test_all_original_unlinked_source_captures_are_attributable() -> None:
     assert report["unlinked_capture_count"] == 221
     assert sum(report["frame_counts"].values()) == 221
     assert sum(report["historical_outcome_counts"].values()) == 221
+    assert report["execution_priority_class_counts"] == {
+        "A3_FROZEN_CAPABILITY_SENSITIVITY": 18,
+        "A4_FROZEN_MULTILINGUAL_SENSITIVITY": 46,
+        "OTHER_FROZEN_SOURCE_ROUTE": 157,
+    }
     assert report["terminal_source_completions"] == 0
     assert report["new_canonical_entities"] == 0
     rows = report["records"]
     assert len(rows) == len({r["capture_id"] for r in rows}) == 221
+    assert all(row["execution_priority_class"] == "A3_FROZEN_CAPABILITY_SENSITIVITY" for row in rows[:18])
+    assert all(row["execution_priority_class"] == "A4_FROZEN_MULTILINGUAL_SENSITIVITY" for row in rows[18:64])
+    assert all(row["execution_priority_class"] == "OTHER_FROZEN_SOURCE_ROUTE" for row in rows[64:])
     assert all(row["execution_route"] == "SOURCE_SURFACE_RESOLUTION" for row in rows)
     assert all(row["matched_saved_evidence_receipt_in_two_archives"] is False for row in rows)
     assert all(row["attributable_new_source_retrieval_performed_by_queue"] is False for row in rows)
