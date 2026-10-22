@@ -43,13 +43,33 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+class _SameOriginRedirect(urllib.request.HTTPRedirectHandler):
+    """Reject cross-host/scheme HTTP redirection before following it."""
+
+    def __init__(self, allowed_hostname: str) -> None:
+        self.allowed_hostname = allowed_hostname
+
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        if urlsplit(newurl).scheme != "https" or urlsplit(newurl).hostname != self.allowed_hostname:
+            raise urllib.error.URLError("Redirect outside approved HTTPS origin")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def inspect_source(source: dict[str, str], *, opener: Any = None) -> dict[str, Any]:
     """Read exactly one fixed HTTPS public source, returning metadata only."""
     url = source["url"]
     allowed_host = source["allowed_hostname"]
     if urlsplit(url).scheme != "https" or urlsplit(url).hostname != allowed_host:
         raise ValueError("Source host mismatch before HTTP request")
-    opener = urllib.request.urlopen if opener is None else opener
+    opener = urllib.request.build_opener(_SameOriginRedirect(allowed_host)).open if opener is None else opener
     receipt: dict[str, Any] = {
         "source_id": source["source_id"],
         "requested_url": url,
