@@ -106,7 +106,7 @@ def test_vendor_model_reference_conflict_does_not_rewrite_published_identity() -
     assert original["original_row_content_sha256"] == "1dd400a0a26d2b5003432b2bd52fbecd1d9bacdf39a66f406522936e87ade2d2"
     assert original["original_citation_numbers"] == [66, 67]
     assert [x["citation_number"] for x in record["reference_links"]] == [66, 67]
-    assert all("bitbrain.com/" in x["url"] for x in record["reference_links"])
+    assert all(x["url"].startswith("https://www.bitbrain.com/") for x in record["reference_links"])
     assert record["separate_vendor_identity"]["distinct_vendor_identity_is_not_auto_resolution"] is True
     assert record["original_label_rewritten"] is False
     assert record["no_published_row_mutation"] is True
