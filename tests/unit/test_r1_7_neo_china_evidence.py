@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 RECORD = ROOT / "docs/programme/r1-7-neo-china-multilingual-regulatory-and-clinical-evidence-2026-10-22.json"
 SNAPSHOT = ROOT / "docs/programme/r1-7-unlinked-source-capture-snapshot-2026-10-22.json"
