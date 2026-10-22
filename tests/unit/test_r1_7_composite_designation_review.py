@@ -1,4 +1,5 @@
 """Fail-closed source-lineage checks for composite review hints."""
+
 from __future__ import annotations
 
 from copy import deepcopy
