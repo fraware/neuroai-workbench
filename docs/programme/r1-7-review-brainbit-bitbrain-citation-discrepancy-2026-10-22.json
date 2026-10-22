@@ -46,5 +46,34 @@
   "canonical_offerings_allocated": 0,
   "r1_7_terminal_extractions_credited": 0,
   "no_published_row_mutation": true,
-  "source_response_raw_bytes_saved_for_this_new_investigation": false
+  "source_response_raw_bytes_saved_for_this_new_investigation": false,
+  "same_publication_body_paragraph": {
+    "paragraph_index_zero_based": 17,
+    "normalized_text_sha256": "21ced8b7e7c90b26d2eb1f1e04d18c47a578e3a28a1fd233670ed829f41e70de",
+    "body_assertion": "Original publication prose identifies Bitbrain Diadem (12 EEG channels) and Hero (9 EEG channels), citing original references 66 and 67.",
+    "source_kind": "ORIGINAL_SAVED_JATS_PARAGRAPH",
+    "source_distinct_from_manufacturer_sale_proof": true
+  },
+  "additional_independent_source_leads": [
+    {
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/hero",
+      "kind": "FIRST_PARTY_MANUFACTURER",
+      "observation": "Hero 9ch EEG page currently marks product discontinued without a reliably sourced original notice date",
+      "historical_world_time_status": "UNDETERMINED"
+    },
+    {
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/diadem",
+      "kind": "FIRST_PARTY_MANUFACTURER",
+      "observation": "Diadem 12ch EEG product description",
+      "historical_world_time_status": "UNDETERMINED_FROM_UNDATED_PAGE"
+    },
+    {
+      "url": "https://noldus.com/shared/resources/book/noldus-product-documentation/chapter/the-observer-xt/page/the-observer-xt-17-bitbrain-eeg-bitbrain-diadem-eeg-and-the-observer-xt",
+      "kind": "DATED_INDEPENDENT_PRODUCT_INTEGRATION_DOCUMENTATION",
+      "observed_page_last_updated": "2026-07-28",
+      "observation": "A third-party integration documentation page describes Bitbrain Diadem 12-channel EEG in use with Observer XT; separate evidence of pre-2026-09-24 integration documentation, not necessarily a sales transaction",
+      "historical_world_time_status": "PRODUCT_INTEGRATION_DOCUMENTED_NOT_COMPLETED_COMMERCIAL_TRANSACTION"
+    }
+  ],
+  "source_mismatch_strengthening": "Both the original JATS bibliography and the ORIGINAL PAPER BODY contradict the Table 1 compressed label. Candidate interpretation Bitbrain Hero/Diadem is strongly supported as source attribution; exact historical commercial/currentness eligibility remains undecided."
 }
