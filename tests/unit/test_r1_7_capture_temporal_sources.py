@@ -63,3 +63,45 @@ def test_neu_discontinuation_assertion_is_model_specific_and_noncanonical() -> N
     assert len(match) == 1
     assert match[0]["work_item_id"] == capture["work_item_id"]
     assert match[0]["execution_route"] == "EMPIRICAL_CANDIDATE_ADJUDICATION"
+
+
+def test_two_temporal_review_packets_separate_dated_claims_from_release_decisions() -> None:
+    """Dated manufacturer/media claims must not become terminal A-P1 classifications."""
+    root = Path(__file__).resolve().parents[2]
+    file = root / "docs/programme/r1-7-flow-modius-temporal-corroboration-2026-10-22.json"
+    report = json.loads(file.read_text(encoding="utf-8"))
+    assert report["status"] == "NONCANONICAL_SOURCE_CLAIMS_PENDING_INDEPENDENT_TEMPORAL_REVIEW"
+    assert report["analysis_dates"]["world_time_cutoff"] == "2026-09-24"
+    assert report["analysis_dates"]["knowledge_time_cutoff"] == "2026-10-24T23:59:59Z"
+    assert all(value == 0 for value in report["no_credit"].values())
+    assert len(report["cases"]) == 2
+    by_key = {item["product_key"]: item for item in report["cases"]}
+    assert set(by_key) == {"FLOW_FL_100", "MODIUS_SPERO"}
+    assert len(by_key["FLOW_FL_100"]["source_observations"]) == 4
+    assert len(by_key["MODIUS_SPERO"]["source_observations"]) == 6
+    all_sources = [s for case in report["cases"] for s in case["source_observations"]]
+    assert len(all_sources) == len({s["source_id"] for s in all_sources}) == 10
+    saved_sha = {
+        "FLOW-FDA-PMA-P230024": "398d6e3dd7bd1fee79460de54afa293d8578fbeb8920fa895ca850469138ea4d",
+        "FLOW-MFR-LAUNCH-SEP16": "2fdcf54c247b5c5a4232c6a5ea8beda8f38bcbc7c6197d18f44580e83193ff75",
+        "MODIUS-FDA-DEN250013": "d1f91d82897269ab1e17c93f4fc034152743a16792287c9e48706189587f80a4",
+    }
+    for source in all_sources:
+        assert source["url"].startswith("https://")
+        assert source["source_claim"] and source["evidence_axis"]
+        if source["collection_state"] == "RAW_PUBLIC_HTML_SAVED_PREVIOUSLY":
+            assert source["artifact_id"] == 12323904364
+            assert source["sha256"] == saved_sha[source["source_id"]]
+        else:
+            assert source["collection_state"] == "WEB_INSPECTED_NO_SAVED_RAW_BYTES"
+            assert source["sha256"] is None
+            assert source["artifact_id"] is None
+        if source["document_date"] is not None:
+            assert source["document_date"] <= report["analysis_dates"]["world_time_cutoff"]
+    modius = by_key["MODIUS_SPERO"]["source_observations"]
+    assert next(x for x in modius if x["source_id"] == "MODIUS-TV-SEP09")["document_date"] == "2026-09-09"
+    assert next(x for x in modius if x["source_id"] == "MODIUS-MFR-VA-CURRENT")["document_date"] is None
+    assert next(x for x in modius if x["source_id"] == "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER")[
+        "document_date"
+    ] is None
+    assert report["observed_disagreement"]["logic"]
