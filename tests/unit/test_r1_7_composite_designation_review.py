@@ -96,19 +96,14 @@ def test_spurious_product_credit_fails_closed() -> None:
 
 def test_vendor_model_reference_conflict_does_not_rewrite_published_identity() -> None:
     root = Path(__file__).resolve().parents[2]
-    record = json.loads(
-        (root / "docs/programme/r1-7-review-brainbit-bitbrain-citation-discrepancy-2026-10-22.json").read_text(
-            encoding="utf-8"
-        )
-    )
+    evidence = root / "docs/programme/r1-7-review-brainbit-bitbrain-citation-discrepancy-2026-10-22.json"
+    record = json.loads(evidence.read_text(encoding="utf-8"))
     original = record["publication"]
     assert original["source_xml_sha256"] == RAW_SOURCE_SHA256
     assert original["original_table"] == "Table 1"
     assert original["original_row_1_based"] == 9
     assert original["raw_designation"] == "BrainBit Hero/Diamond"
-    assert original["original_row_content_sha256"] == (
-        "1dd400a0a26d2b5003432b2bd52fbecd1d9bacdf39a66f406522936e87ade2d2"
-    )
+    assert original["original_row_content_sha256"] == "1dd400a0a26d2b5003432b2bd52fbecd1d9bacdf39a66f406522936e87ade2d2"
     assert original["original_citation_numbers"] == [66, 67]
     assert [x["citation_number"] for x in record["reference_links"]] == [66, 67]
     assert all("bitbrain.com/" in x["url"] for x in record["reference_links"])
