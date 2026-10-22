@@ -16,6 +16,7 @@ from scripts.r1_7_compare_review_registry import (
     load_frozen_registry,
     make_crosswalk,
 )
+from scripts.r1_7_extract_review_device_tables import RAW_SOURCE_SHA256
 
 
 def literal_parts(designation: str) -> list[str]:
@@ -36,8 +37,8 @@ def make_composite_review(crosswalk: dict[str, Any]) -> dict[str, Any]:
     if crosswalk.get("new_canonical_entities_created") != 0 or crosswalk.get("r1_7_terminal_extractions_credited") != 0:
         raise ValueError("Unreviewed publication must not assign product or execution credit")
     sha = crosswalk["source_primary_xml_sha256"]
-    if not isinstance(sha, str) or len(sha) != 64:
-        raise ValueError("Missing original source digest")
+    if sha != RAW_SOURCE_SHA256:
+        raise ValueError("Original frozen source digest mismatch")
     out: list[dict[str, Any]] = []
     seen: set[tuple[int, int]] = set()
     for row in crosswalk["rows"]:
