@@ -32,7 +32,10 @@ def make_composite_review(crosswalk: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Expected the original 57-row PMID 42505450 source")
     if crosswalk.get("comparison_counts") != EXPECTED_COMPARISON_COUNTS:
         raise ValueError("Textual registry baseline changed")
-    if crosswalk.get("new_canonical_entities_created") != 0 or crosswalk.get("r1_7_terminal_extractions_credited") != 0:
+    if (
+        crosswalk.get("new_canonical_entities_created") != 0
+        or crosswalk.get("r1_7_terminal_extractions_credited") != 0
+    ):
         raise ValueError("Unreviewed publication must not assign product or execution credit")
     sha = crosswalk["source_primary_xml_sha256"]
     if not isinstance(sha, str) or len(sha) != 64:
@@ -81,7 +84,10 @@ def make_composite_review(crosswalk: dict[str, Any]) -> dict[str, Any]:
         "new_product_identifiers": 0,
         "terminal_extractions": 0,
         "review_rows": out,
-        "caution": "A slash can abbreviate a shared vendor/model prefix; do not count literal segments as distinct offerings.",
+        "caution": (
+            "A slash can abbreviate a shared vendor/model prefix; do not "
+            "count literal segments as distinct offerings."
+        ),
     }
 
 
