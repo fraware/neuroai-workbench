@@ -7,7 +7,6 @@ from pathlib import Path
 
 from scripts.r1_7_neo_public_http_receipts import PUBLIC_SOURCES
 
-
 ROOT = Path(__file__).resolve().parents[2]
 REPORT = ROOT / "docs/programme/r1-7-neo-two-run-http-digest-reconciliation-2026-10-22.json"
 PROPOSAL = ROOT / "docs/programme/r1-7-neo-china-multilingual-regulatory-and-clinical-evidence-2026-10-22.json"
