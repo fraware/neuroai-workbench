@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 from typing import Any, Literal
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 from ..schemas import validate_or_raise
 from ..service import CollectionOutcome, HttpCollector, PriorCapture
@@ -100,9 +100,14 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
                 if isinstance(value, str) and value.isdigit():
                     return "PMID", value
 
-        for candidate in candidates:
-            if "pubmed.ncbi.nlm.nih.gov" in candidate.lower():
-                bare = _PMID_BARE_RE.search(candidate)
+        # A bare PMID can be inferred only from the path of an actual
+        # PubMed HTTPS URL. Substring matching accepts lookalike hosts
+        # and unrelated numeric tokens in query strings.
+        requested_url = request.get("requested_url")
+        if isinstance(requested_url, str):
+            parsed = urlsplit(requested_url)
+            if parsed.scheme == "https" and parsed.hostname == "pubmed.ncbi.nlm.nih.gov":
+                bare = re.fullmatch(r"/([0-9]{7,8})/?", parsed.path)
                 if bare:
                     return "PMID", bare.group(1)
         return None
