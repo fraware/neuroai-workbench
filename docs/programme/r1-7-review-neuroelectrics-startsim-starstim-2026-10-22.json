@@ -1,0 +1,38 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_PMID42505450_STARSTIM_TABLE_NAME_MISMATCH_v0.1",
+  "source_capture_date": "2026-10-21",
+  "analysis_date": "2026-10-22",
+  "source_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+  "published_table": {
+    "table_number": 3,
+    "row_number_1_based": 10,
+    "literal_device_name": "Neuro-electrics Startsim",
+    "raw_row_sha256": "86fb714714006fd70b756376cb7095e292e16a4f224e39cc6cecf5928b02b285",
+    "citation_number": 150
+  },
+  "same_publication_body": {
+    "paragraph_zero_based": 46,
+    "normalized_text_sha256": "21d8e4557162e9acaaf8475b5224525812fe57868f2224ca4ae90485f37e3ee3",
+    "model_literal": "Starstim",
+    "manufacturer_literal": "Neuroelectrics"
+  },
+  "bibliography": {
+    "citation_number": 150,
+    "reference_label": "Starstim tES, 8, 20, 32",
+    "url": "https://www.neuroelectrics.com/products/research/starstim",
+    "access_date_as_reported_by_publication": "2026-04-27"
+  },
+  "manufacturer_corrob": {
+    "url": "https://www.neuroelectrics.com/products/research/starstim",
+    "current_observed_label": "Starstim tES-EEG systems",
+    "historical_site_content_date_verified": false
+  },
+  "evidence_conclusion": "ORIGINAL_TABLE_STARTSIM_VS_SAME_PAPER_BODY_AND_BIBLIOGRAPHY_STARSTIM",
+  "interpretation": "Proposed transcription-error correction at publication-string level; no authority to silently rewrite original source row or introduce additional product identity.",
+  "original_source_row_rewritten": false,
+  "distinct_product_identified": false,
+  "exact_model_variant_adjudicated": false,
+  "commercial_status_by_2026_09_24": "UNDETERMINED_FROM_THIS_CHECK",
+  "canonical_product_increment": 0,
+  "r1_7_terminal_source_execution_credit": 0
+}
