@@ -28,7 +28,10 @@
     "distinct_from": {
       "entity": "Japanese NeU or any NeuroSky product",
       "status": "COMPANY_NAME_NOT_TO_BE_CONFLATED"
-    }
+    },
+    "issuer_product_model_label": "NEO-ONE SCI",
+    "issuer_model_source": "Official Shanghai Stock Exchange June 11 2026 IPO prospectus indexed document snippet; raw PDF 422 pages could not be fetched for independent page-level verification in this run.",
+    "distinct_applicant_and_issuer_legal_entities": "FDA/NMPA approval names 博睿康医疗科技（上海）有限公司; June 2026 IPO issuer uses 博睿康技术（上海）股份有限公司. Corporate relationship must be substantiated before merging company identities."
   },
   "sources": [
     {
@@ -85,6 +88,18 @@
       "observed": "Reports device registration number 国械注准20263120537",
       "valid_axis": "REGISTRATION_NUMBER_LEAD",
       "not_proof": "Authoritative direct registration-record verification"
+    },
+    {
+      "id": "NEO-SSE-IPO-20260611",
+      "url": "https://static.sse.com.cn/stock/disclosure/announcement/c/202606/002198_20260611_0RN0.pdf",
+      "published_on": "2026-06-11",
+      "source_class": "OFFICIAL_STOCK_EXCHANGE_ISSUER_DISCLOSURE_INDEX_ONLY",
+      "observed": "Public search index for Shanghai Stock Exchange first IPO draft prospectus identifies commercial NEO-ONE SCI as NEO platform's initial implantable hand motor compensation device and describes neural-signal decoding/online parameter-learning technology at issuer platform level.",
+      "valid_axis": "PRE_CUTOFF_ISSUER_PRODUCT_NAME_AND_TECHNICAL_PLATFORM_DISCLOSURE",
+      "not_proof": "Model-level audited AI algorithm implementation or independent external clinical algorithm validation; the original PDF could not be opened for page-level content verification.",
+      "direct_pdf_read_status": "WEB_FETCH_TIMEOUT_SEARCH_INDEX_SNIPPET_ONLY",
+      "original_file_sha256": null,
+      "page_specific_citation": null
     }
   ],
   "source_acquisition": {
@@ -100,7 +115,7 @@
     "FDA_or_CE_authorization": "NOT_ASSERTED",
     "china_regulatory_approval": "SUPPORTED_BY_NMPA_DATED_NOTICE",
     "clinical_commercial_distribution": "SUPPORTED_BY_DATED_PRESCRIPTION_AND_IMPLANT_REPORTS",
-    "ai_model_capability": "NOT_INDEPENDENTLY_ESTABLISHED_BY_DEVICE_LEVEL_TECHNICAL_REVIEW",
+    "ai_model_capability": "PRE_CUTOFF_ISSUER_IPO_DISCLOSES_NEURAL_DECODING_AND_ONLINE_LEARNING_PLATFORM_CAPABILITIES_BUT_EXACT_REGISTERED_MODEL_IMPLEMENTATION_AND_EXTERNAL_VALIDATION_STILL_UNVERIFIED",
     "market_eligibility_under_frozen_NEUROAI_protocol": "REQUIRES_GOVERNED_INCLUSION_AND_DEDUP_REVIEW",
     "terminal_r1_7_review": false,
     "new_canonical_product_identifiers": 0,
@@ -111,6 +126,7 @@
     "NMPA authority applies to exact registered device and Chinese indication, not unrelated worldwide commercialization.",
     "The original 2026-09-24 cutoff is maintained; the October research finding cannot rewrite the historical A2 ABSTAIN row.",
     "Full R1.7 source closure and global saturation remain unestablished.",
-    "Potential machine-learning brain decoding remains a separate technical capability question requiring direct evidence."
+    "Potential machine-learning brain decoding remains a separate technical capability question requiring direct evidence.",
+    "NEO-ONE SCI is identified by the June 2026 official-venue IPO disclosure; do not infer every NEO platform device has the same approved indication or algorithm."
   ]
 }
