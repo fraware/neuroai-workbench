@@ -8,6 +8,7 @@ import pytest
 
 from scripts.r1_7_composite_designation_review import literal_parts, make_composite_review
 from scripts.r1_7_compare_review_registry import EXPECTED_COMPARISON_COUNTS
+from scripts.r1_7_extract_review_device_tables import RAW_SOURCE_SHA256
 
 
 COMPOSITES = (
@@ -29,7 +30,7 @@ def fixture_crosswalk() -> dict:
                 "table_number": 1 + index // 13,
                 "row_number_1_based": index % 13 + 1,
                 "raw_row_content_sha256": f"{index:064x}",
-                "source_raw_xml_sha256": "a" * 64,
+                "source_raw_xml_sha256": RAW_SOURCE_SHA256,
                 "raw_device_designation": designation,
                 "form_factor": "synthetic_form_factor",
                 "composite_name_needs_splitting_review": "/" in designation,
@@ -41,7 +42,7 @@ def fixture_crosswalk() -> dict:
         "comparison_counts": dict(EXPECTED_COMPARISON_COUNTS),
         "new_canonical_entities_created": 0,
         "r1_7_terminal_extractions_credited": 0,
-        "source_primary_xml_sha256": "a" * 64,
+        "source_primary_xml_sha256": RAW_SOURCE_SHA256,
         "registry_file_sha256": "b" * 64,
         "rows": rows,
     }
@@ -71,6 +72,10 @@ def test_all_six_composites_keep_original_row_provenance() -> None:
 
 def test_composite_source_provenance_tampering_is_rejected() -> None:
     crosswalk = fixture_crosswalk()
+    bad_source = deepcopy(crosswalk)
+    bad_source["source_primary_xml_sha256"] = "f" * 64
+    with pytest.raises(ValueError, match="frozen source digest mismatch"):
+        make_composite_review(bad_source)
     bad = deepcopy(crosswalk)
     bad["rows"][0]["source_raw_xml_sha256"] = "f" * 64
     with pytest.raises(ValueError, match="source table-row lineage"):
