@@ -78,9 +78,9 @@ def test_two_temporal_review_packets_separate_dated_claims_from_release_decision
     by_key = {item["product_key"]: item for item in report["cases"]}
     assert set(by_key) == {"FLOW_FL_100", "MODIUS_SPERO"}
     assert len(by_key["FLOW_FL_100"]["source_observations"]) == 4
-    assert len(by_key["MODIUS_SPERO"]["source_observations"]) == 6
+    assert len(by_key["MODIUS_SPERO"]["source_observations"]) == 7
     all_sources = [s for case in report["cases"] for s in case["source_observations"]]
-    assert len(all_sources) == len({s["source_id"] for s in all_sources}) == 10
+    assert len(all_sources) == len({s["source_id"] for s in all_sources}) == 11
     saved_sha = {
         "FLOW-FDA-PMA-P230024": "398d6e3dd7bd1fee79460de54afa293d8578fbeb8920fa895ca850469138ea4d",
         "FLOW-MFR-LAUNCH-SEP16": "2fdcf54c247b5c5a4232c6a5ea8beda8f38bcbc7c6197d18f44580e83193ff75",
@@ -99,6 +99,7 @@ def test_two_temporal_review_packets_separate_dated_claims_from_release_decision
         if source["document_date"] is not None:
             assert source["document_date"] <= report["analysis_dates"]["world_time_cutoff"]
     modius = by_key["MODIUS_SPERO"]["source_observations"]
+    assert next(x for x in modius if x["source_id"] == "MODIUS-BIOWORLD-JUL02")["document_date"] == "2026-07-02"
     assert next(x for x in modius if x["source_id"] == "MODIUS-TV-SEP09")["document_date"] == "2026-09-09"
     assert next(x for x in modius if x["source_id"] == "MODIUS-MFR-VA-CURRENT")["document_date"] is None
     assert next(x for x in modius if x["source_id"] == "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER")[
