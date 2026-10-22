@@ -48,8 +48,10 @@ def test_five_original_source_hosts_are_explicit_and_https() -> None:
 def test_digest_receipt_has_exact_bytes_and_no_public_html_body() -> None:
     source = receipt.PUBLIC_SOURCES[0]
     body = b"<html><body>synthetic BCI response only</body></html>"
+
     def opener(_request: object, timeout: int) -> FakeResponse:
         return FakeResponse(url=source["url"], body=body)
+
     result = receipt.inspect_source(source, opener=opener)
     assert result["acquisition_state"] == "HTTP_200_DIGEST_ONLY_RAW_BYTES_NOT_RETAINED"
     assert result["response_sha256"] == hashlib.sha256(body).hexdigest()
@@ -61,8 +63,10 @@ def test_digest_receipt_has_exact_bytes_and_no_public_html_body() -> None:
 
 def test_different_final_origin_is_not_credited() -> None:
     source = receipt.PUBLIC_SOURCES[0]
+
     def opener(_request: object, timeout: int) -> FakeResponse:
         return FakeResponse(url="https://untrusted.example/redirect", body=b"bad")
+
     result = receipt.inspect_source(source, opener=opener)
     assert result["acquisition_state"] == "UNTRUSTED_ORIGIN_REDIRECT"
     assert "response_sha256" not in result
@@ -71,8 +75,10 @@ def test_different_final_origin_is_not_credited() -> None:
 def test_oversized_body_does_not_publish_truncated_hash(monkeypatch: pytest.MonkeyPatch) -> None:
     source = receipt.PUBLIC_SOURCES[0]
     monkeypatch.setattr(receipt, "MAX_BYTES", 64)
+
     def opener(_request: object, timeout: int) -> FakeResponse:
         return FakeResponse(url=source["url"], body=b"x" * 80)
+
     result = receipt.inspect_source(source, opener=opener)
     assert result["acquisition_state"] == "OVER_MAX_CAPTURE_BYTES"
     assert "response_sha256" not in result
