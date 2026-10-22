@@ -84,12 +84,8 @@ def test_http403_and_dns_failures_are_not_empty_source_claims() -> None:
     def offline(_request: object, timeout: int) -> None:
         raise urllib.error.URLError("unavailable")
 
-    assert receipt.inspect_source(source, opener=forbidden)["acquisition_state"] == (
-        "HTTP_ERROR_NOT_SOURCE_ABSENCE"
-    )
-    assert receipt.inspect_source(source, opener=offline)["acquisition_state"] == (
-        "NETWORK_FAILURE_NOT_SOURCE_ABSENCE"
-    )
+    assert receipt.inspect_source(source, opener=forbidden)["acquisition_state"] == ("HTTP_ERROR_NOT_SOURCE_ABSENCE")
+    assert receipt.inspect_source(source, opener=offline)["acquisition_state"] == ("NETWORK_FAILURE_NOT_SOURCE_ABSENCE")
 
 
 def test_unapproved_request_hostname_refused_before_fetch() -> None:
