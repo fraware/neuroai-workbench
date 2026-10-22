@@ -36,6 +36,16 @@ PUBLIC_SOURCES = (
         "url": "https://www.nhsa.gov.cn/art/2026/3/22/art_14_19989.html",
         "allowed_hostname": "www.nhsa.gov.cn",
     },
+    {
+        "source_id": "NEO-SHANGHAI-CLINICAL-AUG2026",
+        "url": "https://www.shanghai.gov.cn/zfkfmtbd/20260811/491d88b8b2454f47972e80154a02943b.html",
+        "allowed_hostname": "www.shanghai.gov.cn",
+    },
+    {
+        "source_id": "NEO-SHANGHAI-JULY-IMPLANT",
+        "url": "https://touch.shio.gov.cn/jsp/jjxw_detail.jsp?id=20260716193634365",
+        "allowed_hostname": "touch.shio.gov.cn",
+    },
 )
 
 
