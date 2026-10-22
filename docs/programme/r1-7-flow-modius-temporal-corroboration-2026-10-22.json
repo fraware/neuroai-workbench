@@ -63,7 +63,13 @@
         "Independent actual dispensing or clinician fulfillment on/before 2026-09-24",
         "Exact U.S. FL-100 configuration matched to FDA and registry identifiers",
         "Independent governed A-P1 human temporal review"
-      ]
+      ],
+      "frozen_temporal_route": {
+        "work_item_id": "R1WI-TEMPORAL-PRD-FLOW-FL-100",
+        "preexisting_offering_id": "PRD-FLOW-FL-100",
+        "execution_route": "A_P1_TEMPORAL_STATE_REVIEW",
+        "route_still_requires_human_adjudication": true
+      }
     },
     {
       "product_key": "MODIUS_SPERO",
@@ -156,7 +162,13 @@
         "Reconcile Sep 9 'nationwide with a prescription' report against VA-only manufacturer channel",
         "Pin source bytes/timestamps for the Sep 9 report and historical VA availability wording if permitted",
         "Independent governed A-P1 human temporal review"
-      ]
+      ],
+      "frozen_temporal_route": {
+        "work_item_id": "R1WI-TEMPORAL-PRD-MODIUS-SPERO",
+        "preexisting_offering_id": "PRD-MODIUS-SPERO",
+        "execution_route": "A_P1_TEMPORAL_STATE_REVIEW",
+        "route_still_requires_human_adjudication": true
+      }
     }
   ],
   "observed_disagreement": {
@@ -171,5 +183,6 @@
     "source_execution_terminal_completions": 0,
     "gate_passages": 0
   },
-  "authority_boundary": "Source triage and evidence proposal only. A historical published claim, a regulator decision and independently confirmed patient/device distribution are different evidence types. New web-inspected pages lack original response-byte custody; no scientific or human decision follows."
+  "authority_boundary": "Source triage and evidence proposal only. A historical published claim, a regulator decision and independently confirmed patient/device distribution are different evidence types. New web-inspected pages lack original response-byte custody; no scientific or human decision follows.",
+  "frozen_temporal_route_checkpoint_commit": "d74285e39fc23e43d8204563fda8051bbf16340f"
 }
