@@ -132,8 +132,7 @@ def capture_sources() -> dict[str, Any]:
         "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
         "source_count": len(PUBLIC_SOURCES),
         "http_200_digest_count": sum(
-            row["acquisition_state"] == "HTTP_200_DIGEST_ONLY_RAW_BYTES_NOT_RETAINED"
-            for row in receipts
+            row["acquisition_state"] == "HTTP_200_DIGEST_ONLY_RAW_BYTES_NOT_RETAINED" for row in receipts
         ),
         "receipts": receipts,
         "terminal_source_decisions": 0,
