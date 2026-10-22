@@ -19,8 +19,7 @@ def _fixture(path: Path, *, bad_statement: bool = False, false_adjudication: boo
             b"<html><body>FL-100 is available in the United States from September 1, 2026.</body></html>"
         ),
         "modius-fda-denovo.html": (
-            b"<html><body>De Novo Number DEN250013 Decision Date 05/08/2026 "
-            b"Decision granted (DENG)</body></html>"
+            b"<html><body>De Novo Number DEN250013 Decision Date 05/08/2026 Decision granted (DENG)</body></html>"
         ),
         "neu-2025-discontinuation.html": b"<html><body>Four named model designations</body></html>",
         "bitbrain-spanish-diadem.html": b"<html lang='es'><body>Diadem 12ch EEG</body></html>",
@@ -40,20 +39,26 @@ def _fixture(path: Path, *, bad_statement: bool = False, false_adjudication: boo
         for name, body in bodies.items():
             archive.writestr(name, body)
             source = replay.REQUIRED.get(name)
-            expected[name] = {
-                **source,
-                "expected_sha256": hashlib.sha256(body).hexdigest(),
-            } if source else None
-            manifest["captured"].append({
-                "raw_file_name": name,
-                "http_status": 200,
-                "raw_sha256": hashlib.sha256(body).hexdigest(),
-                "raw_bytes": len(body),
-                "final_url": source["expected_url"] if source else f"https://example.invalid/{name}",
-                "knowledge_observed_at": "2026-10-21T06:09:51Z",
-                "source_claims_adjudicated": false_adjudication if name == "modius-fda-denovo.html" else False,
-                "product_identity_or_currentness_resolved": False,
-            })
+            expected[name] = (
+                {
+                    **source,
+                    "expected_sha256": hashlib.sha256(body).hexdigest(),
+                }
+                if source
+                else None
+            )
+            manifest["captured"].append(
+                {
+                    "raw_file_name": name,
+                    "http_status": 200,
+                    "raw_sha256": hashlib.sha256(body).hexdigest(),
+                    "raw_bytes": len(body),
+                    "final_url": source["expected_url"] if source else f"https://example.invalid/{name}",
+                    "knowledge_observed_at": "2026-10-21T06:09:51Z",
+                    "source_claims_adjudicated": false_adjudication if name == "modius-fda-denovo.html" else False,
+                    "product_identity_or_currentness_resolved": False,
+                }
+            )
         archive.writestr("capture-report.json", json.dumps(manifest))
     return {key: value for key, value in expected.items() if value is not None}
 
