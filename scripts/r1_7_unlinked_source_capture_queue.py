@@ -17,6 +17,7 @@ from neuroai_workbench.release_a_r1_resolution import (
     compile_r1_source_records,
     load_r1_candidate_resolution_manifest,
 )
+from scripts.r1_7_a3_a4_source_queue import build_queue
 from scripts.r1_7_all_routes_archive_coverage import build_report
 
 UNLINKED = "NO_LINKED_ARCHIVE_EVIDENCE_IN_THIS_BOUNDED_INVENTORY"
@@ -29,6 +30,14 @@ def build_unlinked_source_queue() -> dict[str, Any]:
         raise ValueError("R1.7 complete frozen source/record denominator drift")
     if report["archive_state_counts_by_capture"].get(UNLINKED) != 221:
         raise ValueError("Two-archive nonmatching source capture count drift")
+    priority = build_queue()
+    by_priority_capture = {
+        cap["capture_id"]: (work["work_item_id"], cap)
+        for work in priority["items"]
+        for cap in work["captures"]
+    }
+    if len(by_priority_capture) != 69:
+        raise ValueError("Original A3/A4 query-seed population drift")
     source_rows = compile_r1_source_records(load_r1_candidate_resolution_manifest())
     by_capture = {row["capture_id"]: row for row in source_rows}
     if len(by_capture) != len(source_rows):
@@ -76,6 +85,21 @@ def build_unlinked_source_queue() -> dict[str, Any]:
                 raise ValueError("Immutable source capture lacks query or observation identity")
             if record["could_change_a3_increment"] and record["could_change_a4_increment"]:
                 raise ValueError("One capture cannot be in both frozen A3 and A4 discovery frames")
+            priority_binding = by_priority_capture.get(cap["capture_id"])
+            if record["could_change_a3_increment"] or record["could_change_a4_increment"]:
+                if priority_binding is None:
+                    raise ValueError("A3/A4 source task lacks original frozen query expression")
+                priority_work_item, priority_capture = priority_binding
+                if (
+                    priority_work_item != work["work_item_id"]
+                    or priority_capture["query_or_seed_id"] != record["frozen_query_or_seed_id"]
+                ):
+                    raise ValueError("A3/A4 source query does not match the original route")
+                record["registered_query_expression"] = priority_capture["query_expression"]
+            else:
+                if priority_binding is not None:
+                    raise ValueError("Non-priority task unexpectedly identified as A3/A4")
+                record["registered_query_expression"] = None
             record["execution_priority_class"] = (
                 "A3_FROZEN_CAPABILITY_SENSITIVITY"
                 if record["could_change_a3_increment"]
