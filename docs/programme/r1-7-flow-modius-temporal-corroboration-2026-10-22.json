@@ -93,6 +93,18 @@
           "artifact_id": null
         },
         {
+          "source_id": "MODIUS-BIOWORLD-JUL02",
+          "url": "https://www.bioworld.com/articles/732270-neurovalens-granted-fda-approval-for-ptsd-therapy-for-us-veterans?v=preview",
+          "source_kind": "DATED_INDEPENDENT_MEDTECH_TRADE_REPORT_PREVIEW",
+          "document_date": "2026-07-02",
+          "source_claim": "The independent medical-technology trade report says U.S. veterans now have access to Modius Spero through Department of Veterans Affairs use, following FDA De Novo authorization.",
+          "evidence_axis": "INDEPENDENT_PRE_CUTOFF_VA_ACCESS_REPORT",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null,
+          "evidence_limit": "Only the public search/indexed article preview was inspected; full subscriber content and primary VA procurement/dispensing records were not obtained."
+        },
+        {
           "source_id": "MODIUS-TV-SEP09",
           "url": "https://www.kplctv.com/2026/09/09/new-at-home-device-targets-ptsd-veterans/",
           "source_kind": "DATED_LOCAL_BROADCAST_REPORT",
@@ -138,10 +150,10 @@
           "artifact_id": null
         }
       ],
-      "evidence_assessment": "A dated Sep 9 independent media report moves the record beyond authorization and forward-looking launch plans, while current VA-only manufacturer messaging does not establish its historical date. Channel scope and actual fulfillment remain unresolved.",
+      "evidence_assessment": "A dated July 2 independent trade report asserts VA access, and a separate September 9 television article asserts nationwide prescription availability. Both predate the Sept 24 world cutoff. Source documents still do not independently establish the exact VA device fulfillment workflow or resolve journalist wording versus manufacturer VA-only channel scope.",
       "unresolved": [
+        "Obtain a VA-origin dated procurement, prescribing, distribution or fulfillment record for the exact Modius Spero configuration by 2026-09-24",
         "Reconcile Sep 9 'nationwide with a prescription' report against VA-only manufacturer channel",
-        "Obtain dated evidence of a completed VA prescription, shipment, or identifiable clinical access by the world cutoff",
         "Pin source bytes/timestamps for the Sep 9 report and historical VA availability wording if permitted",
         "Independent governed A-P1 human temporal review"
       ]
@@ -150,7 +162,7 @@
   "observed_disagreement": {
     "claim_a": "Sep 9 reporter says available nationwide with a prescription",
     "claim_b": "Manufacturer's undated current page describes VA-only availability",
-    "logic": "Could reflect nationwide VA coverage, journalistic overgeneralization, or changed channel scope. No automatic conflict resolution from the available sources."
+    "logic": "Nationwide prescription availability could mean geographically nationwide VA access, overgeneralized press coverage, or a broader channel. July 2 reporting specifically describes VA access; no source here proves general non-VA distribution."
   },
   "no_credit": {
     "temporal_dispositions_approved": 0,
