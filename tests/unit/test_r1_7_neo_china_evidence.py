@@ -32,7 +32,7 @@ def test_neo_candidate_joins_exact_original_f8_query_without_new_identity() -> N
 def test_regulatory_and_clinical_claims_remain_separate_evidence_axes() -> None:
     packet = json.loads(RECORD.read_text(encoding="utf-8"))
     sources = packet["sources"]
-    assert len(sources) == len({x["id"] for x in sources}) == 6
+    assert len(sources) == len({x["id"] for x in sources}) == 7
     assert all(x["url"].startswith("https://") and x["valid_axis"] and x["not_proof"] for x in sources)
     assert all(x["published_on"] <= "2026-09-24" for x in sources)
     assert next(x for x in sources if x["id"] == "NEO-NMPA-20260313")["source_class"] == ("PRIMARY_NATIONAL_REGULATOR")
@@ -40,9 +40,12 @@ def test_regulatory_and_clinical_claims_remain_separate_evidence_axes() -> None:
         "REPORTED_HISTORICAL_CLINICAL_DEPLOYMENT"
     )
     assert packet["candidate"]["registration_identifier_status"].startswith("IDENTIFIER_REPORTED_BY_DATED")
-    assert packet["adjudication"]["ai_model_capability"] == (
-        "NOT_INDEPENDENTLY_ESTABLISHED_BY_DEVICE_LEVEL_TECHNICAL_REVIEW"
-    )
+    assert packet["candidate"]["issuer_product_model_label"] == "NEO-ONE SCI"
+    assert packet["adjudication"]["ai_model_capability"].startswith("PRE_CUTOFF_ISSUER_IPO_DISCLOSES")
+    issuer = next(x for x in sources if x["id"] == "NEO-SSE-IPO-20260611")
+    assert issuer["direct_pdf_read_status"] == "WEB_FETCH_TIMEOUT_SEARCH_INDEX_SNIPPET_ONLY"
+    assert issuer["original_file_sha256"] is None
+    assert issuer["page_specific_citation"] is None
     assert packet["adjudication"]["terminal_r1_7_review"] is False
     assert packet["adjudication"]["new_canonical_product_identifiers"] == 0
     assert packet["adjudication"]["new_a4_increment"] == 0
