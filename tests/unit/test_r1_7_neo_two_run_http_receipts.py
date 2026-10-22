@@ -28,8 +28,14 @@ def test_exact_five_source_ids_counts_and_original_historical_context() -> None:
     assert len(successes) == report["distinct_successful_urls"] == 4
     assert sum(s["bytes"] for s in successes) == report["distinct_successful_response_bytes_total"] == 64109
     assert all(len(s["successful_digest"]) == 64 for s in successes)
-    assert all(value == 0 for key, value in report["source_credit"].items() if key != "original_frozen_A2_ABSTAIN_preserved" and key != "source_claims_temporally_accepted" and key != "global_saturation_creditted")
-    assert report["source_credit"]["source_claims_temporally_accepted"] is False
+    assert report["source_credit"] == {
+        "original_frozen_A2_ABSTAIN_preserved": True,
+        "source_claims_temporally_accepted": False,
+        "terminal_R1_7_work_items": 0,
+        "canonical_product_increments": 0,
+        "new_human_adjudications": 0,
+        "global_saturation_creditted": False,
+    }
 
 
 def test_access_barrier_and_followup_failure_cannot_be_interpreted_as_source_absence() -> None:
