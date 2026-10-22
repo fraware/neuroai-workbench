@@ -1,0 +1,163 @@
+{
+  "artifact_type": "RELEASE_A_A_P1_FLOW_MODIUS_TEMPORAL_CLAIM_TRIAGE_v0.2",
+  "status": "NONCANONICAL_SOURCE_CLAIMS_PENDING_INDEPENDENT_TEMPORAL_REVIEW",
+  "analysis_dates": {
+    "world_time_cutoff": "2026-09-24",
+    "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+    "source_inspection_calendar_date_utc": "2026-10-22"
+  },
+  "source_contract": "Original R1.7 primary-source byte-capture evidence is distinguished from independently browsed text; web-reviewed sources here have NO independently retained raw-byte hash.",
+  "cases": [
+    {
+      "product_key": "FLOW_FL_100",
+      "manufacturer": "Flow Neuroscience",
+      "commercialization_question": "Was the exact FDA-approved U.S. FL-100 prescription offering available on or before 2026-09-24?",
+      "source_observations": [
+        {
+          "source_id": "FLOW-FDA-PMA-P230024",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpma/pma.cfm?id=P230024",
+          "source_kind": "REGULATOR",
+          "document_date": "2025-12-08",
+          "source_claim": "PMA approval date of FL-100",
+          "evidence_axis": "REGULATORY_AUTHORIZATION_ONLY",
+          "collection_state": "RAW_PUBLIC_HTML_SAVED_PREVIOUSLY",
+          "sha256": "398d6e3dd7bd1fee79460de54afa293d8578fbeb8920fa895ca850469138ea4d",
+          "artifact_id": 12323904364
+        },
+        {
+          "source_id": "FLOW-MFR-LAUNCH-SEP16",
+          "url": "https://www.globenewswire.com/news-release/2026/09/16/3363570/0/en/flow-neuroscience-launches-fl-100-in-the-us-the-first-fda-approved-at-home-tdcs-treatment-for-depression.html",
+          "source_kind": "DATED_MANUFACTURER_DISTRIBUTED_RELEASE",
+          "document_date": "2026-09-16",
+          "source_claim": "Flow states that FL-100 is now available by prescription across the United States, from September 1, 2026.",
+          "evidence_axis": "MANUFACTURER_ASSERTED_DISTRIBUTION_BEFORE_WORLD_CUTOFF",
+          "collection_state": "RAW_PUBLIC_HTML_SAVED_PREVIOUSLY",
+          "sha256": "2fdcf54c247b5c5a4232c6a5ea8beda8f38bcbc7c6197d18f44580e83193ff75",
+          "artifact_id": 12323904364
+        },
+        {
+          "source_id": "FLOW-MEDIA-SEP08",
+          "url": "https://nitesh_mpo.rodpub.com/breaking-news/flow-neuroscience-introduces-brain-stimulation-headset-for-depression-treatment/",
+          "source_kind": "DATED_INDUSTRY_JOURNALISM",
+          "document_date": "2026-09-08",
+          "source_claim": "Trade journalist reports product introduction to the U.S. market and prescription-only treatment.",
+          "evidence_axis": "INDEPENDENT_MEDIA_LAUNCH_CORROBORATION",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        },
+        {
+          "source_id": "FLOW-PATIENT-PORTAL-CURRENT",
+          "url": "https://www.flowneuroscience.us/patient-sign-up",
+          "source_kind": "CURRENT_MANUFACTURER_PATIENT_PAGE",
+          "document_date": null,
+          "source_claim": "Portal provides September 1 launch date and US clinician-prescription access description.",
+          "evidence_axis": "UNDATED_CURRENT_MANUFACTURER_REPRESENTATION",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        }
+      ],
+      "evidence_assessment": "Dated manufacturer claim of actual Sept 1 U.S. prescription availability with pre-cutoff industry reportage. FDA authorization is a separate regulatory fact; patient-level dispensing and exact model/configuration remain unverified.",
+      "unresolved": [
+        "Independent actual dispensing or clinician fulfillment on/before 2026-09-24",
+        "Exact U.S. FL-100 configuration matched to FDA and registry identifiers",
+        "Independent governed A-P1 human temporal review"
+      ]
+    },
+    {
+      "product_key": "MODIUS_SPERO",
+      "manufacturer": "Neurovalens",
+      "commercialization_question": "Was the exact Modius Spero offering prescribed/distributed by 2026-09-24, and through what channel?",
+      "source_observations": [
+        {
+          "source_id": "MODIUS-FDA-DEN250013",
+          "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/denovo.cfm?id=DEN250013",
+          "source_kind": "REGULATOR",
+          "document_date": "2026-05-08",
+          "source_claim": "FDA De Novo grant DENG for Modius Spero, class II, product code SHX.",
+          "evidence_axis": "REGULATORY_AUTHORIZATION_ONLY",
+          "collection_state": "RAW_PUBLIC_HTML_SAVED_PREVIOUSLY",
+          "sha256": "d1f91d82897269ab1e17c93f4fc034152743a16792287c9e48706189587f80a4",
+          "artifact_id": 12323904364
+        },
+        {
+          "source_id": "MODIUS-MFR-MAY26",
+          "url": "https://neurovalens.com/nv_news/fda-grants-worlds-first-neuromodulation-device-to-treat-symptoms-of-ptsd/",
+          "source_kind": "DATED_MANUFACTURER_RELEASE",
+          "document_date": "2026-05-26",
+          "source_claim": "Manufacturer projects availability to veterans via U.S. VA from summer 2026 onward.",
+          "evidence_axis": "PRE_CUTOFF_DISTRIBUTION_FORECAST_NOT_COMPLETION",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        },
+        {
+          "source_id": "MODIUS-TV-SEP09",
+          "url": "https://www.kplctv.com/2026/09/09/new-at-home-device-targets-ptsd-veterans/",
+          "source_kind": "DATED_LOCAL_BROADCAST_REPORT",
+          "document_date": "2026-09-09",
+          "source_claim": "Independent dated article claims the device is now available nationwide with a prescription; includes manufacturer CEO interview.",
+          "evidence_axis": "INDEPENDENT_PRE_CUTOFF_REPORT_OF_AVAILABILITY",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        },
+        {
+          "source_id": "MODIUS-MFR-VA-CURRENT",
+          "url": "https://neurovalens.com/modiusspero/",
+          "source_kind": "UNDATED_MANUFACTURER_PRODUCT_PAGE",
+          "document_date": null,
+          "source_claim": "The current page describes Modius Spero as available through VA and restricted to prescription use.",
+          "evidence_axis": "CURRENT_VA_CHANNEL_REPRESENTATION_HISTORICAL_DATE_UNVERIFIED",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        },
+        {
+          "source_id": "MODIUS-MFR-WEBINARS",
+          "url": "https://neurovalens.com/ptsd-webinar-papers/",
+          "source_kind": "UNDATED_MANUFACTURER_RESOURCE_PAGE",
+          "document_date": null,
+          "source_claim": "Current page links July and August 2026 webinar replays and describes VA availability; wording's original posting date is not authenticated.",
+          "evidence_axis": "INFERENTIAL_EARLIER_WEBINAR_EXISTENCE_NOT_DISTRIBUTION_PROOF",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        },
+        {
+          "source_id": "MODIUS-PSYCHIATRIC-ASSOCIATION-SUMMER",
+          "url": "https://www.psychiatry.org/psychiatrists/practice/clinical-practice-updates/summer-2026-update",
+          "source_kind": "INDEPENDENT_PROFESSIONAL_ASSOCIATION",
+          "document_date": "2026-06-01",
+          "date_precision": "SUMMER_2026_NOT_DAY_VERIFIED",
+          "source_claim": "Professional association lists Modius Spero as a new FDA-authorized device; this supports authorization only.",
+          "evidence_axis": "REGULATORY_CORROBORATION_NOT_DISTRIBUTION",
+          "collection_state": "WEB_INSPECTED_NO_SAVED_RAW_BYTES",
+          "sha256": null,
+          "artifact_id": null
+        }
+      ],
+      "evidence_assessment": "A dated Sep 9 independent media report moves the record beyond authorization and forward-looking launch plans, while current VA-only manufacturer messaging does not establish its historical date. Channel scope and actual fulfillment remain unresolved.",
+      "unresolved": [
+        "Reconcile Sep 9 'nationwide with a prescription' report against VA-only manufacturer channel",
+        "Obtain dated evidence of a completed VA prescription, shipment, or identifiable clinical access by the world cutoff",
+        "Pin source bytes/timestamps for the Sep 9 report and historical VA availability wording if permitted",
+        "Independent governed A-P1 human temporal review"
+      ]
+    }
+  ],
+  "observed_disagreement": {
+    "claim_a": "Sep 9 reporter says available nationwide with a prescription",
+    "claim_b": "Manufacturer's undated current page describes VA-only availability",
+    "logic": "Could reflect nationwide VA coverage, journalistic overgeneralization, or changed channel scope. No automatic conflict resolution from the available sources."
+  },
+  "no_credit": {
+    "temporal_dispositions_approved": 0,
+    "canonical_product_identity_changes": 0,
+    "eligible_product_count_increment": 0,
+    "source_execution_terminal_completions": 0,
+    "gate_passages": 0
+  },
+  "authority_boundary": "Source triage and evidence proposal only. A historical published claim, a regulator decision and independently confirmed patient/device distribution are different evidence types. New web-inspected pages lack original response-byte custody; no scientific or human decision follows."
+}
