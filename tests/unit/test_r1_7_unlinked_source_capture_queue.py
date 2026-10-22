@@ -1,4 +1,5 @@
 """Read-only validation of all 221 non-archived source-capture task bindings."""
+
 from __future__ import annotations
 
 import json
@@ -85,8 +86,7 @@ def test_missing_immutable_source_capture_fails_closed(monkeypatch: pytest.Monke
 def test_pinned_source_snapshot_matches_generator_without_fabricated_results() -> None:
     """Cross-check all 221 stored source-work items against live read-only projection."""
     snapshot_path = (
-        Path(__file__).resolve().parents[2]
-        / "docs/programme/r1-7-unlinked-source-capture-snapshot-2026-10-22.json"
+        Path(__file__).resolve().parents[2] / "docs/programme/r1-7-unlinked-source-capture-snapshot-2026-10-22.json"
     )
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     computed = queue.build_unlinked_source_queue()
