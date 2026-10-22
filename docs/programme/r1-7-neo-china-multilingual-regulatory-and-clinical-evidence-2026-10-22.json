@@ -61,11 +61,12 @@
     {
       "id": "NEO-SHANGHAI-20260811",
       "url": "https://www.shanghai.gov.cn/zfkfmtbd/20260811/491d88b8b2454f47972e80154a02943b.html",
-      "published_on": "2026-08-11",
+      "published_on": "2026-08-07",
       "source_class": "DATED_LOCAL_GOVERNMENT_REPORT",
       "observed": "Shanghai source quotes BCI project manager saying first prescription July 13 and two formal clinical applications by report date",
       "valid_axis": "PRE_CUTOFF_DEPLOYMENT_CORROBORATION",
-      "not_proof": "Exact pricing or independent census of devices"
+      "not_proof": "Exact pricing or independent census of devices",
+      "publication_date_provenance": "Article heading states 2026-08-07, originally from 青年报; rehosting Shanghai URL path is 20260811"
     },
     {
       "id": "NEO-NHSA-20260322",
