@@ -6,8 +6,8 @@ from copy import deepcopy
 
 import pytest
 
-from scripts.r1_7_composite_designation_review import literal_parts, make_composite_review
 from scripts.r1_7_compare_review_registry import EXPECTED_COMPARISON_COUNTS
+from scripts.r1_7_composite_designation_review import literal_parts, make_composite_review
 from scripts.r1_7_extract_review_device_tables import RAW_SOURCE_SHA256
 
 
