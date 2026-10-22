@@ -6,6 +6,7 @@ original HTTP status and source attribution, then matches narrow source
 statements. It does not verify clinical outcomes, product availability,
 independent sales, temporal eligibility, or an A-P1 human review.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -93,7 +94,10 @@ def verify_saved_temporal_statements(archive_path: Path) -> dict[str, Any]:
         findings = []
         for filename, expected in REQUIRED.items():
             metadata = by_file[filename]
-            if metadata["raw_sha256"] != expected["expected_sha256"] or metadata["final_url"] != expected["expected_url"]:
+            if (
+                metadata["raw_sha256"] != expected["expected_sha256"]
+                or metadata["final_url"] != expected["expected_url"]
+            ):
                 raise ValueError(f"Required source identity/hash drift: {filename}")
             parser = _PlainText()
             parser.feed(archive.read(filename).decode("utf-8", errors="replace"))
