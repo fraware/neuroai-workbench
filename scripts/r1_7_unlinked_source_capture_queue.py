@@ -74,12 +74,43 @@ def build_unlinked_source_queue() -> dict[str, Any]:
             }
             if not record["frozen_query_or_seed_id"] or not record["source_observation_ref"]:
                 raise ValueError("Immutable source capture lacks query or observation identity")
+            if record["could_change_a3_increment"] and record["could_change_a4_increment"]:
+                raise ValueError("One capture cannot be in both frozen A3 and A4 discovery frames")
+            record["execution_priority_class"] = (
+                "A3_FROZEN_CAPABILITY_SENSITIVITY"
+                if record["could_change_a3_increment"]
+                else (
+                    "A4_FROZEN_MULTILINGUAL_SENSITIVITY"
+                    if record["could_change_a4_increment"]
+                    else "OTHER_FROZEN_SOURCE_ROUTE"
+                )
+            )
             pending.append(record)
             counts_by_frame[str(source["frame_id"])] += 1
             counts_by_historical_outcome[str(source["outcome"])] += 1
     if len(pending) != 221 or len({r["capture_id"] for r in pending}) != 221:
         raise ValueError("R1.7 unlinked source capture identity or count drift")
-    pending.sort(key=lambda r: (r["frame_id"], r["round_id"], r["work_item_id"], r["capture_id"]))
+    priority_counts = Counter(row["execution_priority_class"] for row in pending)
+    if priority_counts != {
+        "A3_FROZEN_CAPABILITY_SENSITIVITY": 18,
+        "A4_FROZEN_MULTILINGUAL_SENSITIVITY": 46,
+        "OTHER_FROZEN_SOURCE_ROUTE": 157,
+    }:
+        raise ValueError("Unlinked priority classification differs from the frozen 69-item A3/A4 universe")
+    priority_order = {
+        "A3_FROZEN_CAPABILITY_SENSITIVITY": 0,
+        "A4_FROZEN_MULTILINGUAL_SENSITIVITY": 1,
+        "OTHER_FROZEN_SOURCE_ROUTE": 2,
+    }
+    pending.sort(
+        key=lambda r: (
+            priority_order[r["execution_priority_class"]],
+            r["frame_id"],
+            r["round_id"],
+            r["work_item_id"],
+            r["capture_id"],
+        )
+    )
     return {
         "report_type": "RELEASE_A_R1_7_UNLINKED_FROZEN_SOURCE_CAPTURE_QUEUE_v0.1",
         "status": "PENDING_ATTRIBUTABLE_SOURCE_EXECUTION_NOT_SOURCE_ABSENCE",
@@ -90,6 +121,7 @@ def build_unlinked_source_queue() -> dict[str, Any]:
         "covered_frozen_capture_population": report["governed_capture_count"],
         "unlinked_capture_count": len(pending),
         "frame_counts": dict(sorted(counts_by_frame.items())),
+        "execution_priority_class_counts": dict(sorted(priority_counts.items())),
         "historical_outcome_counts": dict(sorted(counts_by_historical_outcome.items())),
         "records": pending,
         "terminal_source_completions": 0,
