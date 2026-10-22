@@ -1,0 +1,115 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_NEO_CHINESE_PRIMARY_SOURCES_NONCANONICAL_v0.1",
+  "prepared_date_utc": "2026-10-22",
+  "frozen_world_time_cutoff": "2026-09-24",
+  "frozen_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "discovery_method": "FROZEN_CHINESE_QUERY_TEXT_SEARCH_WITH_FOLLOWUP_SOURCE_VERIFICATION",
+  "query_attribution_limit": "The candidate was found during a seven-query multilingual batch; the standalone exact Chinese query was subsequently rerun. The returned per-query search trace does not by itself prove a specific result was on the original frozen search engine or at original A2 world time.",
+  "frozen_context": {
+    "work_item_id": "R1WI-584f3da044ad6f1a4d5308851f5f8e39652de813b95e5e810f1b0826824a0143",
+    "capture_id": "PDC-9ac8a0f56286289e4e0924b9160ea166957afc51fc66085dcee6a2d4634bf36a",
+    "query_id": "F8-R1-CAT-ZH-1",
+    "query_expression": "脑机接口 产品",
+    "language": "zh",
+    "jurisdiction": "CN",
+    "frame": "F8",
+    "original_frozen_capture_outcome": "ABSTAIN",
+    "original_source_observation_ref": "OBS-A2-F8-b45a8a882eca63da741f7be1"
+  },
+  "candidate": {
+    "research_label": "Neuracle Medical Technology (Shanghai) / NEO",
+    "manufacturer_chinese": "博睿康医疗科技（上海）有限公司",
+    "original_product_name_chinese": "植入式脑机接口手部运动功能代偿系统",
+    "commercial_short_name": "NEO",
+    "device_type": "Epidural implantable brain-computer interface with hand-grasp pneumatic glove, recording/decoding and medical management software",
+    "regulatory_registration_candidate": "国械注准20263120537",
+    "registration_identifier_status": "IDENTIFIER_REPORTED_BY_DATED_2026_APRIL_THIRD_PARTY_MEDICAL_AFFAIRS_PROVIDER_NOT_INDEPENDENTLY_RETRIEVED_FROM_DEVICE_LEVEL_NMPA_ROW",
+    "country": "China",
+    "distinct_from": {
+      "entity": "Japanese NeU or any NeuroSky product",
+      "status": "COMPANY_NAME_NOT_TO_BE_CONFLATED"
+    }
+  },
+  "sources": [
+    {
+      "id": "NEO-NMPA-20260313",
+      "url": "https://www.nmpa.gov.cn/directory/web/nmpa/zhuanti/zt2023/ypgzhlfzh/shypqxgg/ggjzcx/20260313134742156.html",
+      "published_on": "2026-03-13",
+      "source_class": "PRIMARY_NATIONAL_REGULATOR",
+      "observed": "NMPA approved the innovative implantable hand-motor-compensation BCI system from 博睿康医疗科技（上海）有限公司; specifies implant, electrodes, telemetry, pneumatic glove and EEG decoding software",
+      "valid_axis": "REGULATORY_APPROVAL_AND_CONFIGURED_SYSTEM",
+      "not_proof": "Independent patient dispensing or validated AI decoding performance"
+    },
+    {
+      "id": "NEO-SHANGHAI-20260313",
+      "url": "https://yjj.sh.gov.cn/sjdt/20260313/274e66190b4a4fb8996b4d62334b1a6d.html",
+      "published_on": "2026-03-13",
+      "source_class": "PRIMARY_SHANGHAI_REGULATOR",
+      "observed": "Municipal regulator independently publishes system approval, component list, intended patient cohort and clinical-trial claims",
+      "valid_axis": "REGULATORY_CORROBORATION",
+      "not_proof": "Independent clinical sale or AI feature validation"
+    },
+    {
+      "id": "NEO-HUASHAN-20260715",
+      "url": "https://m.thepaper.cn/newsDetail_forward_33588510",
+      "published_on": "2026-07-15",
+      "source_class": "DATED_NEWS_REPORT_DIRECTLY_ATTRIBUTING_HOSPITAL_INFORMATION",
+      "observed": "Reports hospital's first postregistration prescription and commercial implantation at Huashan Hospital on 2026-07-13",
+      "valid_axis": "REPORTED_HISTORICAL_CLINICAL_DEPLOYMENT",
+      "not_proof": "Routine scale of commercial uptake or all patients eligible"
+    },
+    {
+      "id": "NEO-SHANGHAI-20260811",
+      "url": "https://www.shanghai.gov.cn/zfkfmtbd/20260811/491d88b8b2454f47972e80154a02943b.html",
+      "published_on": "2026-08-11",
+      "source_class": "DATED_LOCAL_GOVERNMENT_REPORT",
+      "observed": "Shanghai source quotes BCI project manager saying first prescription July 13 and two formal clinical applications by report date",
+      "valid_axis": "PRE_CUTOFF_DEPLOYMENT_CORROBORATION",
+      "not_proof": "Exact pricing or independent census of devices"
+    },
+    {
+      "id": "NEO-NHSA-20260322",
+      "url": "https://www.nhsa.gov.cn/art/2026/3/22/art_14_19989.html",
+      "published_on": "2026-03-22",
+      "source_class": "PRIMARY_NATIONAL_HEALTHCARE_ADMINISTRATION",
+      "observed": "States national healthcare coding assigned to newly approved implantable BCI in mid March 2026",
+      "valid_axis": "POST_APPROVAL_HEALTHCARE_CODING",
+      "not_proof": "Actual reimbursement/payment by national insurance"
+    },
+    {
+      "id": "NEO-REGNO-THIRD-PARTY-20260416",
+      "url": "https://www.healtech.com.cn/news/info.html?id=472",
+      "published_on": "2026-04-16",
+      "source_class": "DATED_THIRD_PARTY_MEDICAL_AFFAIRS_PROVIDER",
+      "observed": "Reports device registration number 国械注准20263120537",
+      "valid_axis": "REGISTRATION_NUMBER_LEAD",
+      "not_proof": "Authoritative direct registration-record verification"
+    }
+  ],
+  "source_acquisition": {
+    "query_expressions_submitted_this_session": 1,
+    "followup_source_searches_performed": true,
+    "read_via": "PUBLIC_WEB_SEARCH_EXTRACTED_TEXT",
+    "raw_http_response_bytes_retained": false,
+    "independently_recomputed_source_response_sha256": false,
+    "source_urls_attached": true
+  },
+  "adjudication": {
+    "candidate_identity": "PROVISIONAL_SAME_SYSTEM_REFERENT_ACROSS_SOURCES",
+    "FDA_or_CE_authorization": "NOT_ASSERTED",
+    "china_regulatory_approval": "SUPPORTED_BY_NMPA_DATED_NOTICE",
+    "clinical_commercial_distribution": "SUPPORTED_BY_DATED_PRESCRIPTION_AND_IMPLANT_REPORTS",
+    "ai_model_capability": "NOT_INDEPENDENTLY_ESTABLISHED_BY_DEVICE_LEVEL_TECHNICAL_REVIEW",
+    "market_eligibility_under_frozen_NEUROAI_protocol": "REQUIRES_GOVERNED_INCLUSION_AND_DEDUP_REVIEW",
+    "terminal_r1_7_review": false,
+    "new_canonical_product_identifiers": 0,
+    "new_a4_increment": 0
+  },
+  "important_distinctions": [
+    "The 2026-03-13 approval and 2026-07-13 clinical prescription are different evidence axes.",
+    "NMPA authority applies to exact registered device and Chinese indication, not unrelated worldwide commercialization.",
+    "The original 2026-09-24 cutoff is maintained; the October research finding cannot rewrite the historical A2 ABSTAIN row.",
+    "Full R1.7 source closure and global saturation remain unestablished.",
+    "Potential machine-learning brain decoding remains a separate technical capability question requiring direct evidence."
+  ]
+}
