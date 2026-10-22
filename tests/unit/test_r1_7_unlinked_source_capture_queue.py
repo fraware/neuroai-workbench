@@ -80,3 +80,36 @@ def test_missing_immutable_source_capture_fails_closed(monkeypatch: pytest.Monke
     with pytest.raises(ValueError, match="No immutable first-party A2 capture"):
         queue.build_unlinked_source_queue()
     monkeypatch.setattr(queue, "compile_r1_source_records", original)
+
+
+def test_pinned_source_snapshot_matches_generator_without_fabricated_results() -> None:
+    """Cross-check all 221 stored source-work items against live read-only projection."""
+    snapshot_path = (
+        Path(__file__).resolve().parents[2]
+        / "docs/programme/r1-7-unlinked-source-capture-snapshot-2026-10-22.json"
+    )
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    computed = queue.build_unlinked_source_queue()
+    assert snapshot["unlinked_capture_count"] == computed["unlinked_capture_count"] == 221
+    assert snapshot["priority_counts"] == {"A3": 18, "A4": 46, "OTHER": 157}
+    assert len(snapshot["source_git_blobs"]) == 13
+    assert snapshot["world_time_cutoff"] == computed["world_time_cutoff"]
+    assert snapshot["knowledge_time_cutoff"] == computed["knowledge_time_cutoff"]
+    assert snapshot["release_product_increments"] == computed["new_canonical_entities"] == 0
+    saved = {row["capture_id"]: row for row in snapshot["records"]}
+    assert len(saved) == 221
+    for derived in computed["records"]:
+        original = saved[derived["capture_id"]]
+        assert original["work_item_id"] == derived["work_item_id"]
+        assert original["frame_id"] == derived["frame_id"]
+        assert original["round_id"] == derived["round_id"]
+        assert original["query_or_seed_id"] == derived["frozen_query_or_seed_id"]
+        assert original["query_family"] == derived["query_family"]
+        assert original["source_class"] == derived["source_class"]
+        assert original["language"] == derived["language"]
+        assert original["jurisdiction"] == derived["jurisdiction"]
+        assert original["query_expression"] == derived["registered_query_expression"]
+        assert original["original_outcome"] == derived["original_source_outcome"]
+        assert original["actual_new_search_executed"] is False
+        assert original["terminal_source_decision"] is False
+        assert original["canonical_product_increment"] == 0
