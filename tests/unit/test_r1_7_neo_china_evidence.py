@@ -36,15 +36,11 @@ def test_regulatory_and_clinical_claims_remain_separate_evidence_axes() -> None:
     assert len(sources) == len({x["id"] for x in sources}) == 6
     assert all(x["url"].startswith("https://") and x["valid_axis"] and x["not_proof"] for x in sources)
     assert all(x["published_on"] <= "2026-09-24" for x in sources)
-    assert next(x for x in sources if x["id"] == "NEO-NMPA-20260313")["source_class"] == (
-        "PRIMARY_NATIONAL_REGULATOR"
-    )
+    assert next(x for x in sources if x["id"] == "NEO-NMPA-20260313")["source_class"] == ("PRIMARY_NATIONAL_REGULATOR")
     assert next(x for x in sources if x["id"] == "NEO-HUASHAN-20260715")["valid_axis"] == (
         "REPORTED_HISTORICAL_CLINICAL_DEPLOYMENT"
     )
-    assert packet["candidate"]["registration_identifier_status"].startswith(
-        "IDENTIFIER_REPORTED_BY_DATED"
-    )
+    assert packet["candidate"]["registration_identifier_status"].startswith("IDENTIFIER_REPORTED_BY_DATED")
     assert packet["adjudication"]["ai_model_capability"] == (
         "NOT_INDEPENDENTLY_ESTABLISHED_BY_DEVICE_LEVEL_TECHNICAL_REVIEW"
     )
