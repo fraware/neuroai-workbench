@@ -35,6 +35,8 @@ def test_all_original_unlinked_source_captures_are_attributable() -> None:
     assert all(row["attributable_new_source_retrieval_performed_by_queue"] is False for row in rows)
     assert all(row["canonical_offering_identity"] is None for row in rows)
     assert all(row["source_packet_id"] and row["source_observation_ref"] for row in rows)
+    assert all(row["registered_query_expression"] for row in rows[:64])
+    assert all(row["registered_query_expression"] is None for row in rows[64:])
     assert all(row["query_family"] and row["source_class"] for row in rows)
     assert all(row["language"] and row["jurisdiction"] for row in rows)
     assert all(type(row["could_change_a3_increment"]) is bool for row in rows)
