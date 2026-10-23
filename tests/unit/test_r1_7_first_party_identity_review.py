@@ -78,3 +78,35 @@ def test_neurable_post_world_cutoff_control_is_excluded() -> None:
     assert sources["NEUR-LT-DELAY-2026"]["claimed_publication_date"] == "2026-02-04"
     assert sources["NEUR-ONE-POST"]["claimed_publication_date"] == "2026-10-01"
     assert all(c["new_canonical_product_id"] is None for c in packet["identity_cases"])
+
+
+def test_original_preexisting_vendor_archives_are_bound_and_nonterminal() -> None:
+    archive_packet_path = (
+        Path(__file__).resolve().parents[2]
+        / "docs/programme/r1-7-existing-archived-vendor-corroboration-2026-10-23.json"
+    )
+    packet = json.loads(archive_packet_path.read_text(encoding="utf-8"))
+    receipts = packet["archived_vendor_source_receipts"]
+    assert len(receipts) == 5
+    assert packet["newly_executed_http_requests_this_review"] == 0
+    assert packet["governed_r1_7_route_completed"] == 0
+    assert packet["canonical_product_count_added"] == 0
+    assert packet["original_source_bytes_manipulated"] is False
+    assert packet["original_archive_readback_checksum_verified"] is True
+    assert all(r["direct_raw_source_bytes_retained"] is True for r in receipts)
+    assert all(r["source_replay_context_complete_for_frozen_r1_7_contract"] is False for r in receipts)
+    assert all(r["r1_7_terminal_route_completed"] is False for r in receipts)
+
+    receipt_by_name = {r["member_name"]: r for r in receipts}
+    assert len(receipt_by_name) == 5
+    assert all(r["http_status"] == 200 for r in receipts)
+    assert receipt_by_name["F8-R3-LOC-BITBRAIN-ES-1.response"]["member_raw_sha256"] == (
+        receipt_by_name["bitbrain-spanish-diadem.html"]["member_raw_sha256"]
+    )
+    assert receipt_by_name["F8-R3-LOC-NEUROELECTRICS-ES-2.response"]["manufacturer_article_original_posted"] == (
+        "2024-02-06"
+    )
+    assert receipt_by_name["F8-R3-LOC-NEUROELECTRICS-ES-2.response"]["manufacturer_article_original_updated"] == (
+        "2025-02-12"
+    )
+    assert {r["archive_family"] for r in receipts} == {"F8", "TEMPORAL"}
