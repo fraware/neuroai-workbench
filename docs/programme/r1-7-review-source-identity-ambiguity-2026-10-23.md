@@ -18,3 +18,9 @@ Other nonterminal identity obstacles in the review include the unqualified `Smar
 **Action under #424:** independently acquire the cited first-party pages before the 2026-10-24T23:59:59Z knowledge cutoff if obtainable; retain response bytes/metadata and reviewer analysis under approved custody; record any source barrier explicitly. Re-run the existing frozen extraction/identity validator after independent adjudication. Preserve the original captured table unchanged.
 
 This note is a scientific defect/identity queue, **not** a corrected public version of the paper or a product-identity judgment.
+
+## Follow-up official-page evidence check (2026-10-23)
+
+Public web text retrieved on 2026-10-23 from the cited Bitbrain **Hero** page (`https://www.bitbrain.com/neurotechnology-products/dry-eeg/hero`) calls the device **Hero 9ch EEG** and displays a manufacturer discontinuation/no-longer-available notice. The cited **Diadem** manufacturer page (`https://www.bitbrain.com/neurotechnology-products/dry-eeg/diadem`) calls its device **Diadem 12ch EEG**. This reinforces the table/bibliography inconsistency and establishes **two separately named manufacturer models at observation time**. The pages do not establish a `BrainBit Diamond` device or equivalence to Diadem.
+
+**Critical temporal limitation:** The Hero discontinuation notice does not state its effective date. Its visibility on October 23, 2026 cannot establish whether Hero was discontinued by the frozen world cutoff September 24. These follow-up pages were read as public web-extracted text; no raw HTTP responses or canonical R1.7 evidence artifacts were saved in this action. Do not infer source-route completion, exact commercial availability or AI capability.
