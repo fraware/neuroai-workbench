@@ -104,8 +104,14 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
         # and unrelated numeric tokens in query strings.
         requested_url = request.get("requested_url")
         if isinstance(requested_url, str):
-            parsed = urlsplit(requested_url)
-            if parsed.scheme == "https" and parsed.hostname == "pubmed.ncbi.nlm.nih.gov":
+            try:
+                parsed = urlsplit(requested_url)
+                hostname = parsed.hostname
+            except ValueError:
+                # Malformed bracketed hosts or invalid netloc characters
+                # must fail closed instead of aborting source classification.
+                return None
+            if parsed.scheme == "https" and hostname == "pubmed.ncbi.nlm.nih.gov":
                 bare = re.fullmatch(r"/([0-9]{7,8})/?", parsed.path)
                 if bare:
                     return "PMID", bare.group(1)
