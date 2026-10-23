@@ -32,7 +32,7 @@ def test_neo_candidate_joins_exact_original_f8_query_without_new_identity() -> N
 def test_regulatory_and_clinical_claims_remain_separate_evidence_axes() -> None:
     packet = json.loads(RECORD.read_text(encoding="utf-8"))
     sources = packet["sources"]
-    assert len(sources) == len({x["id"] for x in sources}) == 7
+    assert len(sources) == len({x["id"] for x in sources}) == 8
     assert all(x["url"].startswith("https://") and x["valid_axis"] and x["not_proof"] for x in sources)
     assert all(x["published_on"] <= "2026-09-24" for x in sources)
     assert next(x for x in sources if x["id"] == "NEO-NMPA-20260313")["source_class"] == ("PRIMARY_NATIONAL_REGULATOR")
@@ -42,6 +42,10 @@ def test_regulatory_and_clinical_claims_remain_separate_evidence_axes() -> None:
     assert packet["candidate"]["registration_identifier_status"].startswith("IDENTIFIER_REPORTED_BY_DATED")
     assert packet["candidate"]["issuer_product_model_label"] == "NEO-ONE SCI"
     assert packet["adjudication"]["ai_model_capability"].startswith("PRE_CUTOFF_ISSUER_IPO_DISCLOSES")
+    gov_demo = next(x for x in sources if x["id"] == "NEO-SHANGHAI-PUDONG-20260616")
+    assert gov_demo["valid_axis"] == "PRE_CUTOFF_MANUFACTURER_TO_NEO_SHORT_NAME_PUBLIC_DEMONSTRATION_CORROBORATION"
+    assert gov_demo["raw_http_bytes_retained_for_this_source"] is False
+    assert "NEO-ONE SCI" in gov_demo["not_proof"]
     issuer = next(x for x in sources if x["id"] == "NEO-SSE-IPO-20260611")
     assert issuer["direct_pdf_read_status"] == "WEB_FETCH_TIMEOUT_SEARCH_INDEX_SNIPPET_ONLY"
     assert issuer["original_file_sha256"] is None
