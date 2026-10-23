@@ -16,7 +16,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from collections.abc import Callable
+from typing import Any
 from zipfile import BadZipFile, ZipFile
 
 from neuroai_workbench.release_a_r1_route_execution_ledger import (
