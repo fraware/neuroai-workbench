@@ -100,8 +100,9 @@ def test_original_preexisting_vendor_archives_are_bound_and_nonterminal() -> Non
     receipt_by_name = {r["member_name"]: r for r in receipts}
     assert len(receipt_by_name) == 5
     assert all(r["http_status"] == 200 for r in receipts)
-    assert receipt_by_name["F8-R3-LOC-BITBRAIN-ES-1.response"]["member_raw_sha256"] == (
-        receipt_by_name["bitbrain-spanish-diadem.html"]["member_raw_sha256"]
+    assert (
+        receipt_by_name["F8-R3-LOC-BITBRAIN-ES-1.response"]["member_raw_sha256"]
+        == (receipt_by_name["bitbrain-spanish-diadem.html"]["member_raw_sha256"])
     )
     assert receipt_by_name["F8-R3-LOC-NEUROELECTRICS-ES-2.response"]["manufacturer_article_original_posted"] == (
         "2024-02-06"
