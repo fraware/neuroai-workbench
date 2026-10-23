@@ -10,12 +10,12 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
+from neuroai_workbench.release_a_r1_route_execution_ledger import canonical_sha256
 from scripts.r1_7_replay_literature_archive import (
-    ArchivedLiteratureError,
     EXPECTED_PMIDS,
+    ArchivedLiteratureError,
     replay_archive,
 )
-from neuroai_workbench.release_a_r1_route_execution_ledger import canonical_sha256
 
 
 def _fixture(tmp_path: Path) -> tuple[Path, str]:
