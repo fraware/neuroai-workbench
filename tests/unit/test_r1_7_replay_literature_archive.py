@@ -33,24 +33,32 @@ def _fixture(tmp_path: Path) -> tuple[Path, str]:
         timestamp = "2026-10-21T04:19:31Z"
         request = {"method": "GET", "locator": url, "request_context": {"query_or_seed_id": query}}
         response = {
-            "retrieval_status": "RETRIEVED", "content_type": "application/xml",
-            "encoding": "utf-8", "final_locator": url,
+            "retrieval_status": "RETRIEVED",
+            "content_type": "application/xml",
+            "encoding": "utf-8",
+            "final_locator": url,
             "response_metadata": {"status_code": 200, "raw_sha256": raw_sha},
         }
         reference = f"SYNTHETIC-EVIDENCE-{n}"
         artifact = {
             "artifact_schema_id": "R1_ROUTE_EVIDENCE_ARTIFACT_v1.0",
-            "evidence_ref": reference, "capture_id": capture,
-            "query_or_seed_id": query, "source_locator": url,
-            "knowledge_observed_at": timestamp, "retrieval_request": request,
+            "evidence_ref": reference,
+            "capture_id": capture,
+            "query_or_seed_id": query,
+            "source_locator": url,
+            "knowledge_observed_at": timestamp,
+            "retrieval_request": request,
             "response_context": response,
             "content_representation": "BASE64_BYTES",
             "content": base64.b64encode(xml).decode("ascii"),
         }
         evidence = {
-            "evidence_ref": reference, "sha256": canonical_sha256(artifact),
-            "capture_id": capture, "query_or_seed_id": query,
-            "source_locator": url, "knowledge_observed_at": timestamp,
+            "evidence_ref": reference,
+            "sha256": canonical_sha256(artifact),
+            "capture_id": capture,
+            "query_or_seed_id": query,
+            "source_locator": url,
+            "knowledge_observed_at": timestamp,
             "evidence_role": "RECORD_EXTRACTION",
             "supported_propositions": ["RECORD_EXTRACTION_UNRESOLVED"],
         }
@@ -67,26 +75,48 @@ def _fixture(tmp_path: Path) -> tuple[Path, str]:
         record["execution_record_id"] = "R1ROUTE-" + canonical_sha256(record)
         entry = {"route_execution_record": record, "supersedes_ledger_entry_ids": []}
         entry["ledger_entry_id"] = "R1LEDGER-" + canonical_sha256(entry)
-        acquisitions.append({
-            "pmid": pmid, "capture_id": capture, "work_item_id": work,
-            "raw_sha256": raw_sha, "bytes": len(xml),
-        })
+        acquisitions.append(
+            {
+                "pmid": pmid,
+                "capture_id": capture,
+                "work_item_id": work,
+                "raw_sha256": raw_sha,
+                "bytes": len(xml),
+            }
+        )
         prefix = f"pmid-{pmid}"
         files[f"{prefix}-fulltext.xml"] = xml
-        files[f"{prefix}-decision.json"] = json.dumps({
-            "capture_id": capture, "completion_state": "RECORD_EXTRACTION_UNRESOLVED",
-            "extracted_candidate_keys": [], "knowledge_observed_at": timestamp,
-            "retrieval_request": request, "response_context": response,
-        }).encode()
-        files[f"{prefix}-evidence-bundle.json"] = json.dumps({
-            "pmid": pmid, "capture_id": capture, "raw_snapshot_sha256": raw_sha,
-            "ledger_entry": entry, "evidence_archive": {reference: artifact},
-            "derived_state": {"completed_work_item_count": 0, "pending_work_item_count": 192,
-                              "unresolved_barrier_work_item_count": 1},
-        }).encode()
-    files["acquisition-report.json"] = json.dumps({
-        "expected": 4, "failures": [], "results": acquisitions,
-    }).encode()
+        files[f"{prefix}-decision.json"] = json.dumps(
+            {
+                "capture_id": capture,
+                "completion_state": "RECORD_EXTRACTION_UNRESOLVED",
+                "extracted_candidate_keys": [],
+                "knowledge_observed_at": timestamp,
+                "retrieval_request": request,
+                "response_context": response,
+            }
+        ).encode()
+        files[f"{prefix}-evidence-bundle.json"] = json.dumps(
+            {
+                "pmid": pmid,
+                "capture_id": capture,
+                "raw_snapshot_sha256": raw_sha,
+                "ledger_entry": entry,
+                "evidence_archive": {reference: artifact},
+                "derived_state": {
+                    "completed_work_item_count": 0,
+                    "pending_work_item_count": 192,
+                    "unresolved_barrier_work_item_count": 1,
+                },
+            }
+        ).encode()
+    files["acquisition-report.json"] = json.dumps(
+        {
+            "expected": 4,
+            "failures": [],
+            "results": acquisitions,
+        }
+    ).encode()
     files["nonterminal-mentions.json"] = b'{"papers": []}'
     with ZipFile(path, "w", compression=ZIP_DEFLATED) as archive:
         for filename, data in sorted(files.items()):
@@ -138,15 +168,18 @@ def test_adversarial_archived_bundle_changes_fail_closed(tmp_path: Path, tamper:
         members[f"{prefix}-fulltext.xml"] += b"<unreported-change/>"
     elif tamper == "terminal":
         name = f"{prefix}-decision.json"
-        doc = json.loads(members[name]); doc["completion_state"] = "RECORD_EXTRACTED_ZERO_OFFERING_LEADS"
+        doc = json.loads(members[name])
+        doc["completion_state"] = "RECORD_EXTRACTED_ZERO_OFFERING_LEADS"
         members[name] = json.dumps(doc).encode()
     elif tamper == "scope":
         name = f"{prefix}-evidence-bundle.json"
-        doc = json.loads(members[name]);doc["ledger_entry"]["route_execution_record"]["execution_route"] = "SOURCE_SURFACE_RESOLUTION"
+        doc = json.loads(members[name])
+        doc["ledger_entry"]["route_execution_record"]["execution_route"] = "SOURCE_SURFACE_RESOLUTION"
         members[name] = json.dumps(doc).encode()
     else:
         name = f"{prefix}-evidence-bundle.json"
-        doc = json.loads(members[name]);artifact = next(iter(doc["evidence_archive"].values()))
+        doc = json.loads(members[name])
+        artifact = next(iter(doc["evidence_archive"].values()))
         artifact["retrieval_request"]["request_context"]["query_or_seed_id"] = "wrong-seed"
         members[name] = json.dumps(doc).encode()
     with ZipFile(path, "w", ZIP_DEFLATED) as archive:
@@ -159,9 +192,11 @@ def test_adversarial_archived_bundle_changes_fail_closed(tmp_path: Path, tamper:
 
 def test_forged_completion_state_from_semantic_replayer_fails_closed(tmp_path: Path) -> None:
     path, digest = _fixture(tmp_path)
+
     def invalid(entries: list, *, evidence_archive: dict) -> dict:
         result = _bounded_state(entries, evidence_archive=evidence_archive)
         result["completed_work_item_count"] = 1
         return result
+
     with pytest.raises(ArchivedLiteratureError, match="nonterminal"):
         replay_archive(path, expected_archive_sha256=digest, state_builder=invalid)
