@@ -72,6 +72,17 @@
       "publication_date_provenance": "Article heading states 2026-08-07, originally from 青年报; rehosting Shanghai URL path is 20260811"
     },
     {
+      "id": "NEO-SHANGHAI-PUDONG-20260616",
+      "url": "https://www.shanghai.gov.cn/nw15343/20260617/13602e6d1f094445aa9752adeb8be62c.html",
+      "published_on": "2026-06-16",
+      "source_class": "DATED_SHANGHAI_MUNICIPAL_GOVERNMENT_REPUBLICATION_OF_PUDONG_REPORT",
+      "observed": "Shanghai municipal website's pre-cutoff June 2026 trade-fair report identifies exhibitor 博睿康医疗 and its implantable hand-function brain-computer interface by the short name NEO.",
+      "valid_axis": "PRE_CUTOFF_MANUFACTURER_TO_NEO_SHORT_NAME_PUBLIC_DEMONSTRATION_CORROBORATION",
+      "not_proof": "Device registration number, NEO-ONE SCI model equivalence, clinical delivery, exact algorithm implementation or independent effectiveness.",
+      "publication_date_provenance": "Article heading dates the original Pudong report 2026-06-16; the Shanghai municipal URL path contains 20260617.",
+      "raw_http_bytes_retained_for_this_source": false
+    },
+    {
       "id": "NEO-NHSA-20260322",
       "url": "https://www.nhsa.gov.cn/art/2026/3/22/art_14_19989.html",
       "published_on": "2026-03-22",
@@ -127,6 +138,7 @@
     "The original 2026-09-24 cutoff is maintained; the October research finding cannot rewrite the historical A2 ABSTAIN row.",
     "Full R1.7 source closure and global saturation remain unestablished.",
     "Potential machine-learning brain decoding remains a separate technical capability question requiring direct evidence.",
-    "NEO-ONE SCI is identified by the June 2026 official-venue IPO disclosure; do not infer every NEO platform device has the same approved indication or algorithm."
+    "NEO-ONE SCI is identified by the June 2026 official-venue IPO disclosure; do not infer every NEO platform device has the same approved indication or algorithm.",
+    "The dated 2026-06-16 Shanghai municipal exhibition report corroborates the company's NEO short name before the world-time cutoff; it does not prove exact NEO-ONE SCI device identity or product-level AI capabilities."
   ]
 }
