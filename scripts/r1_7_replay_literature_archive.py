@@ -104,22 +104,29 @@ def replay_archive(
                 bundle = _decode_json(zf.read(f"{prefix}-evidence-bundle.json"), f"{prefix}-evidence-bundle.json")
                 acquisition = by_pmid[pmid]
                 raw_sha = hashlib.sha256(raw).hexdigest()
-                if (acquisition.get("raw_sha256") != raw_sha or acquisition.get("bytes") != len(raw)
-                    or bundle.get("raw_snapshot_sha256") != raw_sha):
+                if (
+                    acquisition.get("raw_sha256") != raw_sha
+                    or acquisition.get("bytes") != len(raw)
+                    or bundle.get("raw_snapshot_sha256") != raw_sha
+                ):
                     raise ArchivedLiteratureError(f"Raw source hash/size mismatch for PMID {pmid}")
                 if bundle.get("pmid") != pmid or bundle.get("capture_id") != acquisition.get("capture_id"):
                     raise ArchivedLiteratureError(f"Bundle PMID or capture binding mismatch for {pmid}")
                 if decision.get("capture_id") != acquisition.get("capture_id"):
                     raise ArchivedLiteratureError(f"Decision capture binding mismatch for {pmid}")
-                if (decision.get("completion_state") != UNRESOLVED_STATE
-                    or decision.get("extracted_candidate_keys") != []):
+                if (
+                    decision.get("completion_state") != UNRESOLVED_STATE
+                    or decision.get("extracted_candidate_keys") != []
+                ):
                     raise ArchivedLiteratureError(f"Unexpected terminal decision for {pmid}")
                 if not ("2026-09-24" <= str(decision.get("knowledge_observed_at", ""))[:10] <= "2026-10-24"):
                     raise ArchivedLiteratureError(f"Unexpected knowledge timestamp for {pmid}")
                 previous_state = bundle.get("derived_state", {})
-                if (previous_state.get("completed_work_item_count") != 0
+                if (
+                    previous_state.get("completed_work_item_count") != 0
                     or previous_state.get("pending_work_item_count") != 192
-                    or previous_state.get("unresolved_barrier_work_item_count") != 1):
+                    or previous_state.get("unresolved_barrier_work_item_count") != 1
+                ):
                     raise ArchivedLiteratureError(f"Prior per-paper ledger checkpoint is not unresolved for {pmid}")
                 entry = bundle.get("ledger_entry")
                 if not isinstance(entry, dict) or entry.get("ledger_entry_id") != ledger_entry_id(entry):
@@ -128,18 +135,19 @@ def replay_archive(
                 if not isinstance(record, dict):
                     raise ArchivedLiteratureError(f"Missing ledger execution record for {pmid}")
                 if record.get("execution_record_id") != (
-                    "R1ROUTE-" + canonical_sha256(
-                        {key: value for key, value in record.items() if key != "execution_record_id"}
-                    )
+                    "R1ROUTE-"
+                    + canonical_sha256({key: value for key, value in record.items() if key != "execution_record_id"})
                 ):
                     raise ArchivedLiteratureError(f"Execution record content digest mismatch for {pmid}")
-                if (record.get("execution_route") != EXPECTED_ROUTE
+                if (
+                    record.get("execution_route") != EXPECTED_ROUTE
                     or record.get("completion_state") != UNRESOLVED_STATE
                     or record.get("work_item_completion_claimed") is not False
                     or record.get("work_item_id") != acquisition.get("work_item_id")
                     or record.get("covered_capture_ids") != [acquisition.get("capture_id")]
                     or record.get("extracted_leads") != []
-                    or record.get("review_state") != "MACHINE_PROVISIONAL"):
+                    or record.get("review_state") != "MACHINE_PROVISIONAL"
+                ):
                     raise ArchivedLiteratureError(f"Unexpected route/completion semantics for {pmid}")
                 ev = record.get("evidence")
                 archives = bundle.get("evidence_archive")
@@ -150,13 +158,16 @@ def replay_archive(
                 if set(archives) != {ref}:
                     raise ArchivedLiteratureError(f"Evidence reference mismatch for {pmid}")
                 artifact = archives[ref]
-                if (artifact.get("capture_id") != acquisition.get("capture_id")
-                    or artifact.get("query_or_seed_id") != decision.get("retrieval_request", {}).get("request_context", {}).get("query_or_seed_id")
+                if (
+                    artifact.get("capture_id") != acquisition.get("capture_id")
+                    or artifact.get("query_or_seed_id")
+                    != decision.get("retrieval_request", {}).get("request_context", {}).get("query_or_seed_id")
                     or artifact.get("knowledge_observed_at") != decision.get("knowledge_observed_at")
                     or artifact.get("response_context") != decision.get("response_context")
                     or artifact.get("retrieval_request") != decision.get("retrieval_request")
                     or artifact.get("content_representation") != "BASE64_BYTES"
-                    or evidence.get("sha256") != canonical_sha256(artifact)):
+                    or evidence.get("sha256") != canonical_sha256(artifact)
+                ):
                     raise ArchivedLiteratureError(f"Evidence provenance/digest mismatch for {pmid}")
                 try:
                     restored = base64.b64decode(artifact["content"], validate=True)
@@ -168,17 +179,19 @@ def replay_archive(
                     raise ArchivedLiteratureError("Duplicate evidence reference across source bundles")
                 evidence_archive[ref] = artifact
                 entries.append(entry)
-                receipts.append({
-                    "pmid": pmid,
-                    "capture_id": acquisition["capture_id"],
-                    "work_item_id": record["work_item_id"],
-                    "source_xml_sha256": raw_sha,
-                    "source_xml_bytes": len(raw),
-                    "ledger_entry_id": entry["ledger_entry_id"],
-                    "evidence_ref": ref,
-                    "acquired_at": decision["knowledge_observed_at"],
-                    "completion_state": UNRESOLVED_STATE,
-                })
+                receipts.append(
+                    {
+                        "pmid": pmid,
+                        "capture_id": acquisition["capture_id"],
+                        "work_item_id": record["work_item_id"],
+                        "source_xml_sha256": raw_sha,
+                        "source_xml_bytes": len(raw),
+                        "ledger_entry_id": entry["ledger_entry_id"],
+                        "evidence_ref": ref,
+                        "acquired_at": decision["knowledge_observed_at"],
+                        "completion_state": UNRESOLVED_STATE,
+                    }
+                )
     except (BadZipFile, EOFError) as exc:
         raise ArchivedLiteratureError("Invalid archived ZIP structure") from exc
 
@@ -187,12 +200,14 @@ def replay_archive(
     if len({x["work_item_id"] for x in receipts}) != len(pmids):
         raise ArchivedLiteratureError("Duplicate work-item receipts")
     state = state_builder(entries, evidence_archive=evidence_archive)
-    if (state.get("frozen_work_item_count") != 192
+    if (
+        state.get("frozen_work_item_count") != 192
         or state.get("frozen_capture_count") != 247
         or state.get("ledger_entry_count") != len(pmids)
         or state.get("completed_work_item_count") != 0
         or state.get("unresolved_barrier_work_item_count") != len(pmids)
-        or state.get("active_extracted_lead_count") != 0):
+        or state.get("active_extracted_lead_count") != 0
+    ):
         raise ArchivedLiteratureError("Combined ledger state violates nonterminal archive scope")
     return {
         "artifact_type": "R1_7_FOUR_LITERATURE_BUNDLES_REPLAY_CHECKPOINT_NONTERMINAL_v0.1",
@@ -203,7 +218,7 @@ def replay_archive(
         "frozen_capture_count": state["frozen_capture_count"],
         "literature_record_work_items_total": 21,
         "original_source_receipts_replayed": len(receipts),
-        "literature_work_items_without_direct_bundle_receipt": 21-len(receipts),
+        "literature_work_items_without_direct_bundle_receipt": 21 - len(receipts),
         "completed_work_item_count": state["completed_work_item_count"],
         "pending_work_item_count": state["pending_work_item_count"],
         "unresolved_barrier_work_item_count": state["unresolved_barrier_work_item_count"],
@@ -216,7 +231,9 @@ def replay_archive(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", required=True, type=Path, help="Original saved 590503-byte GitHub artifact ZIP")
-    parser.add_argument("--output", required=True, type=Path, help="Metadata-only JSON destination, outside source checkout")
+    parser.add_argument(
+        "--output", required=True, type=Path, help="Metadata-only JSON destination, outside source checkout"
+    )
     arguments = parser.parse_args(argv)
     report = replay_archive(arguments.archive)
     out = arguments.output
