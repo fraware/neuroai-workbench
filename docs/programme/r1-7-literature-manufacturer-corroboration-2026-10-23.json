@@ -1,0 +1,312 @@
+{
+  "artifact_type": "R1_7_NONCANONICAL_MANUFACTURER_CORROBORATION_REVIEW_v0.1",
+  "generated_utc": "2026-10-23T19:41:14Z",
+  "world_time_cutoff": "2026-09-24",
+  "knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "frozen_source_original_archive_sha256": "fed125c0f7d727c9fab5188ecc68914b2a7e18a04765d15697f33b6cb6bc6945",
+  "frozen_review_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+  "source_of_four_anomalies": "NeuroAI_R1_7_Four_Papers_Mention_Triage_v0.2_2026-10-23.json",
+  "source_web_observation_method": "PUBLIC_WEB_EXTRACTED_TEXT_ONLY_NO_ORIGINAL_HTTP_ARCHIVE",
+  "first_party_evidence": [
+    {
+      "evidence_id": "BB-HERO",
+      "source_url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/hero",
+      "source_owner": "Bitbrain",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": null,
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Official listing identifies Hero 9ch EEG and currently displays discontinued/unavailable notice.",
+      "does_not_establish": "Effective discontinuation date, cutoff distribution, exact AI-enabled processing, a product called Diamond."
+    },
+    {
+      "evidence_id": "BB-DIADEM",
+      "source_url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/diadem",
+      "source_owner": "Bitbrain",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": null,
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Official listing identifies Diadem 12ch EEG separately from Hero.",
+      "does_not_establish": "Automatic equivalence to source table label Diamond, exact world-cutoff distribution or AI eligibility."
+    },
+    {
+      "evidence_id": "MUSE-ATHENA-2025",
+      "source_url": "https://choosemuse.com/blogs/news/the-future-of-mental-fitness-starts-now-meet-muse-s-athena",
+      "source_owner": "Muse/InteraXon",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": "2025-03-18",
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Manufacturer article dated 2025-03-18 identifies Muse S Athena, EEG + fNIRS and claims AI-powered neurofeedback.",
+      "does_not_establish": "Independent algorithm validation, device-level clinical efficacy, a product called Muse 2 ATHENA."
+    },
+    {
+      "evidence_id": "MUSE-COMPARE",
+      "source_url": "https://ca.choosemuse.com/pages/compare",
+      "source_owner": "Muse/InteraXon",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": null,
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Manufacturer compares Muse 2 and Muse S Athena under distinct headings.",
+      "does_not_establish": "Publication date for the comparison page, identity equivalence with the anomalous phrase Muse 2 ATHENA."
+    },
+    {
+      "evidence_id": "NE-STARSTIM",
+      "source_url": "https://www.neuroelectrics.com/products/research/starstim",
+      "source_owner": "Neuroelectrics",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": null,
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Official product family identifies Starstim tES, Starstim 8, 20, and 32 and mentions model-driven protocol optimization.",
+      "does_not_establish": "A product named Startsim, the AI construct requirement, per-model world-cutoff commercial status."
+    },
+    {
+      "evidence_id": "NEUR-LT-ANN-2025",
+      "source_url": "https://www.neurable.com/blog-posts/neurable-introduces-mw75-neuro-lt-lighter-more-accessible-just-as-groundbreaking",
+      "source_owner": "Neurable",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": "2025-09-30",
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Manufacturer announcement dated 2025-09-30 distinguishes MW75 Neuro LT from predecessor MW75 Neuro and claims AI-powered EEG capabilities.",
+      "does_not_establish": "Delivery to customers by 2026-09-24, validated measured AI performance."
+    },
+    {
+      "evidence_id": "NEUR-LT-DELAY-2026",
+      "source_url": "https://www.neurable.com/lt-faqs",
+      "source_owner": "Neurable",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": "2026-02-04",
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Manufacturer FAQ bearing last-updated date 2026-02-04 says manufacturing delayed shipping into 2026 and pre-shipment refunds available.",
+      "does_not_establish": "That no customer was shipped by 2026-09-24, or that shipment completed by then."
+    },
+    {
+      "evidence_id": "NEUR-LT-CURRENT",
+      "source_url": "https://www.neurable.com/products/mw75neurolt",
+      "source_owner": "Neurable",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": null,
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Current first-party product page says MW75 Neuro LT production has stopped and directs visitors to Neurable One.",
+      "does_not_establish": "Date production ended, whether units shipped prior to cutoff, availability at 2026-09-24."
+    },
+    {
+      "evidence_id": "NEUR-ONE-POST",
+      "source_url": "https://www.neurable.com/blog-posts/neurable-one-is-here-the-headphones-ive-wanted-to-build-for-10-years",
+      "source_owner": "Neurable",
+      "source_kind": "PUBLIC_FIRST_PARTY_WEB_EXTRACTED_TEXT",
+      "public_web_observed_at_utc": "2026-10-23T19:41:14Z",
+      "claimed_publication_date": "2026-10-01",
+      "raw_http_bytes_retained": false,
+      "request_headers_retained": false,
+      "response_headers_retained": false,
+      "replayable_archived_evidence": false,
+      "supported_proposition": "Manufacturer launches Neurable One on 2026-10-01.",
+      "does_not_establish": "World-time eligibility on 2026-09-24; launches after cutoff must not be backdated."
+    }
+  ],
+  "identity_cases": [
+    {
+      "case_id": "R17-ID-BITBRAIN-T1R9",
+      "table_original": "BrainBit Hero/Diamond",
+      "first_party_evidence_ids": [
+        "BB-HERO",
+        "BB-DIADEM"
+      ],
+      "bounded_assessment": "The article citation graph points to separately named Bitbrain Hero and Diadem devices. The table label is internally inconsistent, and Diamond is not independently corroborated here.",
+      "aliases_provisionally_admissible": [
+        "Bitbrain Hero",
+        "Bitbrain Diadem"
+      ],
+      "aliases_unverified": [
+        "BrainBit Diamond",
+        "BrainBit Hero"
+      ],
+      "temporal_question": "Hero current manufacturer discontinued status lacks effective date; no determination of market state at 2026-09-24.",
+      "ai_scope_question": "Sensing and software listing do not establish exact autonomous or AI algorithm integration without additional evidence.",
+      "frozen_publication_pmid": "42505450",
+      "frozen_article_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+      "table_number": 1,
+      "table_row_1based": 9,
+      "source_row_sha256": "1dd400a0a26d2b5003432b2bd52fbecd1d9bacdf39a66f406522936e87ade2d2",
+      "original_source_unchanged": true,
+      "human_review_state": "NOT_PERFORMED",
+      "r1_7_governed_route_completion": "NOT_ESTABLISHED",
+      "new_canonical_product_id": null,
+      "new_product_count_credited": 0,
+      "eligible_at_world_cutoff": "UNDETERMINED",
+      "raw_first_party_html_captured": false,
+      "missing_decisions": [
+        "identity authority",
+        "scope-specific AI qualification",
+        "worldtime currentness",
+        "commercial distribution",
+        "exact capture-to-route binding"
+      ]
+    },
+    {
+      "case_id": "R17-ID-MUSE-T2R1",
+      "table_original": "Muse S ATHENA",
+      "first_party_evidence_ids": [
+        "MUSE-ATHENA-2025",
+        "MUSE-COMPARE"
+      ],
+      "bounded_assessment": "Muse 2 and Muse S Athena are explicitly distinct manufacturer product headings; published narrative Muse 2 ATHENA remains conflated nomenclature. Manufacturer dated 2025 release supports Athena existence before world cutoff.",
+      "aliases_provisionally_admissible": [
+        "Muse S Athena",
+        "Muse 2"
+      ],
+      "aliases_unverified": [
+        "Muse 2 ATHENA"
+      ],
+      "temporal_question": "Whether the source wording is a transcription error needs human reviewer disposition; do not create second Athena ID.",
+      "ai_scope_question": "2025 manufacturer AI-powered neurofeedback claim is a vendor assertion, not independent scientific algorithm validation.",
+      "frozen_publication_pmid": "42505450",
+      "frozen_article_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+      "table_number": 2,
+      "table_row_1based": 1,
+      "source_row_sha256": "01f16d1a4aba8603ecace3cdf431b876b1d6dba061702dbc94ec959edcdfc10f",
+      "original_source_unchanged": true,
+      "human_review_state": "NOT_PERFORMED",
+      "r1_7_governed_route_completion": "NOT_ESTABLISHED",
+      "new_canonical_product_id": null,
+      "new_product_count_credited": 0,
+      "eligible_at_world_cutoff": "UNDETERMINED",
+      "raw_first_party_html_captured": false,
+      "missing_decisions": [
+        "identity authority",
+        "scope-specific AI qualification",
+        "worldtime currentness",
+        "commercial distribution",
+        "exact capture-to-route binding"
+      ]
+    },
+    {
+      "case_id": "R17-ID-STARSTIM-T3R10",
+      "table_original": "Neuro-electrics Startsim",
+      "first_party_evidence_ids": [
+        "NE-STARSTIM"
+      ],
+      "bounded_assessment": "Neuroelectrics identifies Starstim as a family name, listing tES, 8, 20 and 32 systems. The Startsim spelling is unsupported by the consulted manufacturer page; the family contains distinct model designations.",
+      "aliases_provisionally_admissible": [
+        "Starstim",
+        "Starstim tES",
+        "Starstim 8",
+        "Starstim 20",
+        "Starstim 32"
+      ],
+      "aliases_unverified": [
+        "Startsim"
+      ],
+      "temporal_question": "Observed undated product page cannot independently prove every family model marketed on 2026-09-24.",
+      "ai_scope_question": "Model-driven optimization and EEG/tES closed-loop examples cannot be treated as proven AI implementation by default.",
+      "frozen_publication_pmid": "42505450",
+      "frozen_article_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+      "table_number": 3,
+      "table_row_1based": 10,
+      "source_row_sha256": "86fb714714006fd70b756376cb7095e292e16a4f224e39cc6cecf5928b02b285",
+      "original_source_unchanged": true,
+      "human_review_state": "NOT_PERFORMED",
+      "r1_7_governed_route_completion": "NOT_ESTABLISHED",
+      "new_canonical_product_id": null,
+      "new_product_count_credited": 0,
+      "eligible_at_world_cutoff": "UNDETERMINED",
+      "raw_first_party_html_captured": false,
+      "missing_decisions": [
+        "identity authority",
+        "scope-specific AI qualification",
+        "worldtime currentness",
+        "commercial distribution",
+        "exact capture-to-route binding"
+      ]
+    },
+    {
+      "case_id": "R17-ID-NEURABLE-T5R5",
+      "table_original": "Neurable",
+      "first_party_evidence_ids": [
+        "NEUR-LT-ANN-2025",
+        "NEUR-LT-DELAY-2026",
+        "NEUR-LT-CURRENT",
+        "NEUR-ONE-POST"
+      ],
+      "bounded_assessment": "Neurable is company-level table wording; manufacturer announcement explicitly distinguishes MW75 Neuro LT and earlier MW75 Neuro. Feb 2026 manufacturer FAQ documents manufacturing delay; current LT product page says production stopped without a date. Neurable One launched after frozen world cutoff.",
+      "aliases_provisionally_admissible": [
+        "MW75 Neuro",
+        "MW75 Neuro LT",
+        "Neurable One"
+      ],
+      "aliases_unverified": [
+        "Neurable (as one exact product)",
+        "Enten equals MW75 Neuro LT"
+      ],
+      "temporal_question": "Do not infer LT delivery before 2026-09-24 from its 2025 announcement or infer prior discontinuation from current notice. Neurable One launched 2026-10-01, after cutoff.",
+      "ai_scope_question": "Manufacturer asserts AI EEG for LT; exact implementation and independent validation remain unadjudicated.",
+      "frozen_publication_pmid": "42505450",
+      "frozen_article_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+      "table_number": 5,
+      "table_row_1based": 5,
+      "source_row_sha256": "51490afd478d54ce5c19273551746e1a25ba043fc7b312a21af3ac2034232843",
+      "original_source_unchanged": true,
+      "human_review_state": "NOT_PERFORMED",
+      "r1_7_governed_route_completion": "NOT_ESTABLISHED",
+      "new_canonical_product_id": null,
+      "new_product_count_credited": 0,
+      "eligible_at_world_cutoff": "UNDETERMINED",
+      "raw_first_party_html_captured": false,
+      "missing_decisions": [
+        "identity authority",
+        "scope-specific AI qualification",
+        "worldtime currentness",
+        "commercial distribution",
+        "exact capture-to-route binding"
+      ]
+    }
+  ],
+  "post_world_cutoff_negative_control": {
+    "entity_label": "Neurable One",
+    "announced_on": "2026-10-01",
+    "admissible_as_new_release_a_world_time_2026_09_24_product": false,
+    "supported_by_evidence_id": "NEUR-ONE-POST"
+  },
+  "no_automated_canonical_or_ledger_mutation": true,
+  "no_new_product_count_credit": 0,
+  "no_r1_7_completed_work_item_credit": 0,
+  "remaining_r1_7_work_items_pending": 192,
+  "open_validation_needs": [
+    "capture independent original HTTP request/response artifacts via approved acquisition infrastructure",
+    "check underlying manufacturer time-bound documents against frozen cutoff",
+    "independent reviewer source and alias adjudication",
+    "qualifying AI capability assessment",
+    "governed R1.7 ledger-entry construction only after valid capture and review"
+  ]
+}
