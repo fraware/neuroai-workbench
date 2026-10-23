@@ -5,10 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-RESOURCE = (
-    Path(__file__).resolve().parents[2]
-    / "docs/programme/r1-7-f8-five-frozen-source-work-items-2026-10-23.json"
-)
+RESOURCE = Path(__file__).resolve().parents[2] / "docs/programme/r1-7-f8-five-frozen-source-work-items-2026-10-23.json"
 
 FROZEN_QUERIES = {
     "F8-R2-CAP-ZH-2",
@@ -24,9 +21,7 @@ def test_original_f8_capture_route_mapping_stays_frozen_and_nonterminal() -> Non
     rows = packet["frozen_f8_work_item_mapping"]
     assert packet["frozen_world_time_cutoff"] == "2026-09-24"
     assert packet["frozen_knowledge_time_cutoff"] == "2026-10-24T23:59:59Z"
-    assert packet["original_zip_sha256"] == (
-        "9d32393e10ef1f7ab2991b72a04e2ba2e6d415837750d3b639dd48332fc08dd2"
-    )
+    assert packet["original_zip_sha256"] == ("9d32393e10ef1f7ab2991b72a04e2ba2e6d415837750d3b639dd48332fc08dd2")
     assert len(rows) == packet["frozen_capture_count"] == packet["route_work_item_count"] == 5
     assert {r["frozen_query_or_seed_id"] for r in rows} == FROZEN_QUERIES
     assert len({r["capture_id"] for r in rows}) == 5
@@ -51,9 +46,7 @@ def test_original_f8_capture_route_mapping_stays_frozen_and_nonterminal() -> Non
         assert row["original_frozen_capture_state_unchanged"] is True
         assert row["reviewer_state"] == "NOT_HUMAN_REVIEWED"
         assert row["resolved_product_identity_count"] == 0
-        assert row["alternative_attempt_count"] == (
-            row["saved_http_response_count"] + row["failed_http_attempt_count"]
-        )
+        assert row["alternative_attempt_count"] == (row["saved_http_response_count"] + row["failed_http_attempt_count"])
         assert all(response["raw_sha256"] and response["raw_bytes"] > 0 for response in row["saved_responses"])
 
 
