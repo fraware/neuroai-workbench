@@ -1,0 +1,79 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_PMID42505450_VENDOR_MODEL_CITATION_MISMATCH_v0.1",
+  "inspection_date_utc": "2026-10-22",
+  "publication": {
+    "pmid": "42505450",
+    "pmcid": "PMC13406779",
+    "source_xml_sha256": "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f",
+    "original_table": "Table 1",
+    "original_row_1_based": 9,
+    "raw_designation": "BrainBit Hero/Diamond",
+    "original_row_content_sha256": "1dd400a0a26d2b5003432b2bd52fbecd1d9bacdf39a66f406522936e87ade2d2",
+    "original_citation_numbers": [
+      66,
+      67
+    ]
+  },
+  "reference_links": [
+    {
+      "citation_number": 66,
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/hero",
+      "source_context": "Bitbrain Hero 9-channel research dry EEG; current first-party product page explicitly says discontinued.",
+      "original_review_reference_label": "Hero. Dry-EEG System for Sensorimotor Research"
+    },
+    {
+      "citation_number": 67,
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/diadem",
+      "source_context": "Bitbrain Diadem 12-channel wearable dry EEG; manufacturer page distinct from Hero.",
+      "original_review_reference_label": "Diadem. Wearable 12ch Dry EEG Headset for Research Bitbrain"
+    }
+  ],
+  "separate_vendor_identity": {
+    "distinct_site": "https://brainbit.com/",
+    "observed_current_positioning": "BrainBit company sells EEG wearables and SDK; must not conflate company with Bitbrain manufacturer.",
+    "distinct_vendor_identity_is_not_auto_resolution": true
+  },
+  "diagnosis": "PUBLISHED_VENDOR_AND_MODEL_LABEL_INCONSISTENT_WITH_ITS_CITED_PRODUCT_REFERENCES",
+  "mechanical_observation": "The review table says BrainBit Hero/Diamond with 9-or-12 channels; citations 66 and 67 explicitly refer to Bitbrain Hero and Bitbrain Diadem. This establishes a source-reference mismatch for review, not permission to rewrite the published row.",
+  "historical_boundaries": [
+    "No dated record establishing Bitbrain Hero discontinuation by 2026-09-24",
+    "No proof that Diamond was a marketed Bitbrain model or synonymous with Diadem",
+    "Manufacturer identity must be independently adjudicated from original publisher/cited evidence",
+    "Research-use EEG alone is not sufficient to establish an eligible NeuroAI offering"
+  ],
+  "recommended_human_question": "Does this publication erroneously concatenate Bitbrain Hero and Diadem and misspell Bitbrain as BrainBit, or does it refer to some other actual model? Establish with exact pre-cutoff manufacturer records before committing identities.",
+  "original_label_rewritten": false,
+  "canonical_offerings_allocated": 0,
+  "r1_7_terminal_extractions_credited": 0,
+  "no_published_row_mutation": true,
+  "source_response_raw_bytes_saved_for_this_new_investigation": false,
+  "same_publication_body_paragraph": {
+    "paragraph_index_zero_based": 17,
+    "normalized_text_sha256": "21ced8b7e7c90b26d2eb1f1e04d18c47a578e3a28a1fd233670ed829f41e70de",
+    "body_assertion": "Original publication prose identifies Bitbrain Diadem (12 EEG channels) and Hero (9 EEG channels), citing original references 66 and 67.",
+    "source_kind": "ORIGINAL_SAVED_JATS_PARAGRAPH",
+    "source_distinct_from_manufacturer_sale_proof": true
+  },
+  "additional_independent_source_leads": [
+    {
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/hero",
+      "kind": "FIRST_PARTY_MANUFACTURER",
+      "observation": "Hero 9ch EEG page currently marks product discontinued without a reliably sourced original notice date",
+      "historical_world_time_status": "UNDETERMINED"
+    },
+    {
+      "url": "https://www.bitbrain.com/neurotechnology-products/dry-eeg/diadem",
+      "kind": "FIRST_PARTY_MANUFACTURER",
+      "observation": "Diadem 12ch EEG product description",
+      "historical_world_time_status": "UNDETERMINED_FROM_UNDATED_PAGE"
+    },
+    {
+      "url": "https://noldus.com/shared/resources/book/noldus-product-documentation/chapter/the-observer-xt/page/the-observer-xt-17-bitbrain-eeg-bitbrain-diadem-eeg-and-the-observer-xt",
+      "kind": "DATED_INDEPENDENT_PRODUCT_INTEGRATION_DOCUMENTATION",
+      "observed_page_last_updated": "2026-07-28",
+      "observation": "A third-party integration documentation page describes Bitbrain Diadem 12-channel EEG in use with Observer XT; separate evidence of pre-2026-09-24 integration documentation, not necessarily a sales transaction",
+      "historical_world_time_status": "PRODUCT_INTEGRATION_DOCUMENTED_NOT_COMPLETED_COMMERCIAL_TRANSACTION"
+    }
+  ],
+  "source_mismatch_strengthening": "Both the original JATS bibliography and the ORIGINAL PAPER BODY contradict the Table 1 compressed label. Candidate interpretation Bitbrain Hero/Diadem is strongly supported as source attribution; exact historical commercial/currentness eligibility remains undecided."
+}
