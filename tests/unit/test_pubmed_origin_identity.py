@@ -36,6 +36,17 @@ def test_unapproved_source_url_cannot_infer_bare_pmid(adapter: PubmedCrossrefAda
     assert adapter.extract_publication_id(None, {"requested_url": url}) is None
 
 
+@pytest.mark.parametrize(
+    "url",
+    (
+        "https://[invalid/12345678/",
+        "https://[::1/12345678/",
+    ),
+)
+def test_malformed_urls_fail_closed_without_raising(adapter: PubmedCrossrefAdapter, url: str) -> None:
+    assert adapter.extract_publication_id(None, {"requested_url": url}) is None
+
+
 def test_explicit_pmid_in_trusted_metadata_preserved(adapter: PubmedCrossrefAdapter) -> None:
     assert adapter.extract_publication_id(
         {"pmid": "12345678"}, {"requested_url": "https://example.org/not-a-pubmed-id"}
