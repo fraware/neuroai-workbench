@@ -15,8 +15,8 @@ import binascii
 import hashlib
 import json
 import os
-from pathlib import Path
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 from zipfile import BadZipFile, ZipFile
 
