@@ -8,8 +8,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 PACKET = (
-    Path(__file__).resolve().parents[2]
-    / "docs/programme/r1-7-literature-manufacturer-corroboration-2026-10-23.json"
+    Path(__file__).resolve().parents[2] / "docs/programme/r1-7-literature-manufacturer-corroboration-2026-10-23.json"
 )
 CUTOFF = datetime.fromisoformat("2026-10-24T23:59:59+00:00")
 SOURCE_DIGEST = "9b6552f265236c2c65dedde840d5cf0de0472ba607aed68d93dd61ee248d6c5f"
@@ -33,8 +32,7 @@ def test_identity_review_freeze_and_row_provenance() -> None:
     cases = packet["identity_cases"]
     assert len(cases) == 4
     assert {
-        (c["table_original"], c["table_number"], c["table_row_1based"]): c["source_row_sha256"]
-        for c in cases
+        (c["table_original"], c["table_number"], c["table_row_1based"]): c["source_row_sha256"] for c in cases
     } == EXPECTED_ROWS
     assert all(c["frozen_article_xml_sha256"] == SOURCE_DIGEST for c in cases)
     assert datetime.fromisoformat(packet["generated_utc"].replace("Z", "+00:00")) <= CUTOFF
