@@ -23,6 +23,8 @@ Offline one-command reference flow (no network; mechanical candidate only):
 python scripts/offline_reference_flow.py --output-dir .tmp/offline-flow
 ```
 
+Read [CI and evidence assurance](docs/development/ci-and-evidence-assurance.md) for the exact-head required-check contract, dependency action pins, hosted branch-protection limitations and separate scientific/rights authority gates. A local green test run does not replace GitHub's full matrix or an authorized evidence review.
+
 ## Pull-request contract
 
 - Link one bounded issue.
