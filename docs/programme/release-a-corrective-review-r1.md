@@ -10,6 +10,8 @@
 
 This record preserves the post-completion adversarial audit that reopened Release A. It does not mutate or invalidate historical packet bytes. It separates engineering reproducibility from scientific sufficiency.
 
+**Historical-baseline reading rule (updated 24 October 2026):** The numbered findings below describe **the original audit baseline**, including their then-open issue statuses. Subsequent issue resolution is tracked separately: #342/#343/#344 were closed following merged #415; see the dated [Release A current corrective status](release-a-completion-status.md). Do not read an earlier statement such as “issue #342 remains open” as its current GitHub state, and do not infer that a mechanical fix retroactively validates the historical A8 denominator or admits a scientific release.
+
 Recent Release-A PR heads, including A7, A8, A-G and the completion-status change, passed their required CI, CodeQL and Dependency Review gates. The corrective review was triggered by semantic and measurement findings discovered after the reconstruction gate.
 
 ## Verified strengths
