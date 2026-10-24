@@ -12,7 +12,7 @@ SOURCE_ID = "SRC-PR-002"
 NCT_ID = "NCT04676854"
 ORIGIN = "https://clinicaltrials.gov"
 PROGRAMME_ID = "PHASE3-CTGOV-EXTERNAL-PROOF-V1"
-UPLOAD_ACTION = "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+UPLOAD_ACTION = "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
 
 
 def _workflow_text() -> str:
