@@ -219,6 +219,8 @@ Normative v4.2 machine-readable resources ship inside the package. Treat edits t
 | Start here | Purpose |
 | --- | --- |
 | [Documentation map](docs/README.md) | Full index of architecture, ops, and reference docs |
+| [CI and evidence assurance](docs/development/ci-and-evidence-assurance.md) | Exact-commit CI verification, pinned workflow dependencies, required checks and research approval boundaries |
+| [Release A corrective status](docs/programme/release-a-completion-status.md) | Current corrective-review status; historical reconstruction success does not authorize scientific release |
 | [Product Population → Industrial Observatory plan](docs/programme/product-population-industrial-observatory-deployment-plan.md) | Stable deployment roadmap and release gates for the next research programme |
 | [Architecture overview](docs/architecture/overview.md) | Component and storage boundaries |
 | [Evidence and decision boundary](docs/governance/evidence-boundary.md) | What software can and cannot decide |
