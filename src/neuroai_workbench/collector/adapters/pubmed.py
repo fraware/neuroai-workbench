@@ -107,11 +107,18 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
             try:
                 parsed = urlsplit(requested_url)
                 hostname = parsed.hostname
+                port = parsed.port
             except ValueError:
-                # Malformed bracketed hosts or invalid netloc characters
+                # Malformed bracketed hosts and nonnumeric or invalid ports
                 # must fail closed instead of aborting source classification.
                 return None
-            if parsed.scheme == "https" and hostname == "pubmed.ncbi.nlm.nih.gov":
+            if (
+                parsed.scheme == "https"
+                and hostname == "pubmed.ncbi.nlm.nih.gov"
+                and port in (None, 443)
+                and parsed.username is None
+                and parsed.password is None
+            ):
                 bare = re.fullmatch(r"/([0-9]{7,8})/?", parsed.path)
                 if bare:
                     return "PMID", bare.group(1)
