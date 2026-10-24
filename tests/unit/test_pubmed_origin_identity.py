@@ -18,6 +18,8 @@ def test_real_pubmed_https_numeric_path_is_admitted(adapter: PubmedCrossrefAdapt
         "https://pubmed.ncbi.nlm.nih.gov/12345678/",
         "https://pubmed.ncbi.nlm.nih.gov/12345678",
         "https://pubmed.ncbi.nlm.nih.gov/12345678/?format=pubmed",
+        "https://pubmed.ncbi.nlm.nih.gov:443/12345678/",
+        "https://PUBMED.NCBI.NLM.NIH.GOV/12345678/",
     ):
         assert adapter.extract_publication_id(None, {"requested_url": url}) == ("PMID", "12345678")
 
@@ -30,6 +32,14 @@ def test_real_pubmed_https_numeric_path_is_admitted(adapter: PubmedCrossrefAdapt
         "http://pubmed.ncbi.nlm.nih.gov/12345678/",
         "https://pubmed.ncbi.nlm.nih.gov/some-path/12345678/",
         "https://pubmed.ncbi.nlm.nih.gov/?term=12345678",
+        "https://user@pubmed.ncbi.nlm.nih.gov/12345678/",
+        "https://user:secret@pubmed.ncbi.nlm.nih.gov/12345678/",
+        "https://@pubmed.ncbi.nlm.nih.gov/12345678/",
+        "https://pubmed.ncbi.nlm.nih.gov:444/12345678/",
+        "https://pubmed.ncbi.nlm.nih.gov:80/12345678/",
+        "https://pubmed.ncbi.nlm.nih.gov:0/12345678/",
+        "https://pubmed.ncbi.nlm.nih.gov:invalid/12345678/",
+        "https://pubmed.ncbi.nlm.nih.gov:65536/12345678/",
     ),
 )
 def test_unapproved_source_url_cannot_infer_bare_pmid(adapter: PubmedCrossrefAdapter, url: str) -> None:
