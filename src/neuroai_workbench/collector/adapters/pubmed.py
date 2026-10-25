@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 from typing import Any, Literal
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 from ..schemas import validate_or_raise
 from ..service import CollectionOutcome, HttpCollector, PriorCapture
@@ -28,7 +28,6 @@ EUTILS_SUMMARY = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 CROSSREF_WORKS = "https://api.crossref.org/works"
 
 _PMID_RE = re.compile(r"\bPMID[:\s-]*([0-9]{5,9})\b", re.I)
-_PMID_BARE_RE = re.compile(r"\b([0-9]{7,8})\b")
 _PMCID_RE = re.compile(r"\bPMC\d+\b", re.I)
 _DOI_RE = re.compile(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", re.I)
 
@@ -100,9 +99,27 @@ class PubmedCrossrefAdapter(HttpCollectorAdapter):
                 if isinstance(value, str) and value.isdigit():
                     return "PMID", value
 
-        for candidate in candidates:
-            if "pubmed.ncbi.nlm.nih.gov" in candidate.lower():
-                bare = _PMID_BARE_RE.search(candidate)
+        # A bare PMID can be inferred only from the path of an actual
+        # PubMed HTTPS URL. Substring matching accepts lookalike hosts
+        # and unrelated numeric tokens in query strings.
+        requested_url = request.get("requested_url")
+        if isinstance(requested_url, str):
+            try:
+                parsed = urlsplit(requested_url)
+                hostname = parsed.hostname
+                port = parsed.port
+            except ValueError:
+                # Malformed bracketed hosts and nonnumeric or invalid ports
+                # must fail closed instead of aborting source classification.
+                return None
+            if (
+                parsed.scheme == "https"
+                and hostname == "pubmed.ncbi.nlm.nih.gov"
+                and port in (None, 443)
+                and parsed.username is None
+                and parsed.password is None
+            ):
+                bare = re.fullmatch(r"/([0-9]{7,8})/?", parsed.path)
                 if bare:
                     return "PMID", bare.group(1)
         return None
