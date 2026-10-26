@@ -233,7 +233,7 @@ The software and the associated research programme have separate validation proc
 
 ## Release status
 
-The most recent published Workbench software tag is [v0.2.1](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1). The default branch contains ongoing development and must not be treated as a tagged release.
+The latest published Workbench software tag is [`v0.2.1`](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1). The default branch currently identifies as `0.3.0.dev0`, an unreleased development version. Verify the actual release tags before using a build.
 
 Workbench validation establishes the integrity of software outputs and evidence records within their declared assumptions. Scientific eligibility, research completeness, institutional acceptance, and authorization to publish observatory data remain separate decisions.
 
