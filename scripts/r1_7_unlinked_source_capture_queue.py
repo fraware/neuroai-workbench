@@ -1,0 +1,173 @@
+"""Project all unlinked original R1.7 source captures into executable research leads.
+
+This is a read-only queue. It joins the R1.6.1 route checkpoint, existing
+immutable original source records, and a strictly BOUNDED saved-archive
+inventory. A missing receipt in the two named archives is NOT evidence of
+a missing source, an empty search, or an absent eligible product.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
+from neuroai_workbench.release_a_r1_resolution import (
+    compile_r1_source_records,
+    load_r1_candidate_resolution_manifest,
+)
+from scripts.r1_7_a3_a4_source_queue import build_queue
+from scripts.r1_7_all_routes_archive_coverage import build_report
+
+UNLINKED = "NO_LINKED_ARCHIVE_EVIDENCE_IN_THIS_BOUNDED_INVENTORY"
+
+
+def build_unlinked_source_queue() -> dict[str, Any]:
+    """Create 221 source-capture tasks without inventing query results."""
+    report = build_report()
+    if report["governed_work_item_count"] != 192 or report["governed_capture_count"] != 247:
+        raise ValueError("R1.7 complete frozen source/record denominator drift")
+    if report["archive_state_counts_by_capture"].get(UNLINKED) != 221:
+        raise ValueError("Two-archive nonmatching source capture count drift")
+    priority = build_queue()
+    by_priority_capture = {
+        cap["capture_id"]: (work["work_item_id"], cap) for work in priority["items"] for cap in work["captures"]
+    }
+    if len(by_priority_capture) != 69:
+        raise ValueError("Original A3/A4 query-seed population drift")
+    source_rows = compile_r1_source_records(load_r1_candidate_resolution_manifest())
+    by_capture = {row["capture_id"]: row for row in source_rows}
+    if len(by_capture) != len(source_rows):
+        raise ValueError("Original source ledger duplicated a capture identifier")
+
+    pending: list[dict[str, Any]] = []
+    counts_by_frame: Counter[str] = Counter()
+    counts_by_historical_outcome: Counter[str] = Counter()
+    for work in report["work_items"]:
+        for cap in work["captures"]:
+            if cap["archive_state"] != UNLINKED:
+                continue
+            if work["execution_route"] != "SOURCE_SURFACE_RESOLUTION":
+                raise ValueError("Unexpected archived-literature context without matching article")
+            source = by_capture.get(cap["capture_id"])
+            if source is None:
+                raise ValueError("No immutable first-party A2 capture record for a frozen R1.7 task")
+            record = {
+                "work_item_id": work["work_item_id"],
+                "capture_id": cap["capture_id"],
+                "execution_route": work["execution_route"],
+                "frame_id": source["frame_id"],
+                "round_id": source["round_id"],
+                "query_family": source["query_family"],
+                "source_class": source["source_class"],
+                "language": source["language"],
+                "jurisdiction": source["jurisdiction"],
+                "frozen_query_or_seed_id": source["query_or_seed_id"],
+                "source_packet_id": source["source_packet_id"],
+                "source_observation_ref": source["source_observation_ref"],
+                "original_source_outcome": source["outcome"],
+                "original_raw_candidate_key": source["raw_candidate_key"],
+                "original_normalized_candidate_label": source["normalized_candidate_label"],
+                "could_change_a3_increment": source["could_change_a3_increment"],
+                "could_change_a4_increment": source["could_change_a4_increment"],
+                "could_change_marginal_yield_stop": source["could_change_marginal_yield_stop"],
+                "source_or_abstention_barrier": source["source_or_abstention_barrier"],
+                "matched_saved_evidence_receipt_in_two_archives": False,
+                "attributable_new_source_retrieval_performed_by_queue": False,
+                "terminal_source_completion": False,
+                "canonical_offering_identity": None,
+                "eligible_product_increment": 0,
+            }
+            if not record["frozen_query_or_seed_id"] or not record["source_observation_ref"]:
+                raise ValueError("Immutable source capture lacks query or observation identity")
+            if record["could_change_a3_increment"] and record["could_change_a4_increment"]:
+                raise ValueError("One capture cannot be in both frozen A3 and A4 discovery frames")
+            priority_binding = by_priority_capture.get(cap["capture_id"])
+            if record["could_change_a3_increment"] or record["could_change_a4_increment"]:
+                if priority_binding is None:
+                    raise ValueError("A3/A4 source task lacks original frozen query expression")
+                priority_work_item, priority_capture = priority_binding
+                if (
+                    priority_work_item != work["work_item_id"]
+                    or priority_capture["query_or_seed_id"] != record["frozen_query_or_seed_id"]
+                ):
+                    raise ValueError("A3/A4 source query does not match the original route")
+                record["registered_query_expression"] = priority_capture["query_expression"]
+            else:
+                if priority_binding is not None:
+                    raise ValueError("Non-priority task unexpectedly identified as A3/A4")
+                record["registered_query_expression"] = None
+            record["execution_priority_class"] = (
+                "A3_FROZEN_CAPABILITY_SENSITIVITY"
+                if record["could_change_a3_increment"]
+                else (
+                    "A4_FROZEN_MULTILINGUAL_SENSITIVITY"
+                    if record["could_change_a4_increment"]
+                    else "OTHER_FROZEN_SOURCE_ROUTE"
+                )
+            )
+            pending.append(record)
+            counts_by_frame[str(source["frame_id"])] += 1
+            counts_by_historical_outcome[str(source["outcome"])] += 1
+    if len(pending) != 221 or len({r["capture_id"] for r in pending}) != 221:
+        raise ValueError("R1.7 unlinked source capture identity or count drift")
+    priority_counts = Counter(row["execution_priority_class"] for row in pending)
+    if priority_counts != {
+        "A3_FROZEN_CAPABILITY_SENSITIVITY": 18,
+        "A4_FROZEN_MULTILINGUAL_SENSITIVITY": 46,
+        "OTHER_FROZEN_SOURCE_ROUTE": 157,
+    }:
+        raise ValueError("Unlinked priority classification differs from the frozen 69-item A3/A4 universe")
+    priority_order = {
+        "A3_FROZEN_CAPABILITY_SENSITIVITY": 0,
+        "A4_FROZEN_MULTILINGUAL_SENSITIVITY": 1,
+        "OTHER_FROZEN_SOURCE_ROUTE": 2,
+    }
+    pending.sort(
+        key=lambda r: (
+            priority_order[r["execution_priority_class"]],
+            r["frame_id"],
+            r["round_id"],
+            r["work_item_id"],
+            r["capture_id"],
+        )
+    )
+    return {
+        "report_type": "RELEASE_A_R1_7_UNLINKED_FROZEN_SOURCE_CAPTURE_QUEUE_v0.1",
+        "status": "PENDING_ATTRIBUTABLE_SOURCE_EXECUTION_NOT_SOURCE_ABSENCE",
+        "analysis_universe_id": report["analysis_universe_id"],
+        "world_time_cutoff": report["world_time_cutoff"],
+        "knowledge_time_cutoff": report["knowledge_time_cutoff"],
+        "covered_source_record_work_items": report["governed_work_item_count"],
+        "covered_frozen_capture_population": report["governed_capture_count"],
+        "unlinked_capture_count": len(pending),
+        "frame_counts": dict(sorted(counts_by_frame.items())),
+        "execution_priority_class_counts": dict(sorted(priority_counts.items())),
+        "historical_outcome_counts": dict(sorted(counts_by_historical_outcome.items())),
+        "records": pending,
+        "terminal_source_completions": 0,
+        "new_canonical_entities": 0,
+        "scope": (
+            "Only captures without links in two specified acquisition archives. "
+            "Other independent evidence may already exist elsewhere. "
+            "No network access, live search, absence inference, completed review, "
+            "product inclusion, or publication was performed."
+        ),
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args(argv)
+    report = build_unlinked_source_queue()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    print("221 original source capture references, all nonterminal and uncredited")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

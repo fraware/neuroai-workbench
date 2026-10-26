@@ -1,0 +1,252 @@
+{
+  "artifact_type": "R1_7_F8_FROZEN_SOURCE_ALTERNATE_ACQUISITION_CROSSWALK_v0.1",
+  "generated_at_utc": "2026-10-23T19:59:27Z",
+  "frozen_world_time_cutoff": "2026-09-24",
+  "frozen_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "original_github_action_artifact_id": 12325963314,
+  "original_zip_sha256": "9d32393e10ef1f7ab2991b72a04e2ba2e6d415837750d3b639dd48332fc08dd2",
+  "original_attempt_report_member": "attempt-report.json",
+  "original_attempt_count": 10,
+  "frozen_capture_count": 5,
+  "route_work_item_count": 5,
+  "saved_original_http_responses": 8,
+  "original_failed_http_attempts": 2,
+  "frozen_f8_work_item_mapping": [
+    {
+      "work_item_id": "R1WI-e70e671465223df3e67d0cc845e3d57eb29fda6320515f19f6878bfa6b8c3a3f",
+      "capture_id": "PDC-48a2e7d423ea9d7d5d89f019247c0f3697624366e0dad0781aa673d2a594d841",
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "frame_id": "F8",
+      "round_id": "R3",
+      "frozen_query_or_seed_id": "F8-R3-LOC-MOH-IL",
+      "original_frozen_capture_outcome": "FAILED_INACCESSIBLE",
+      "execution_route": "SOURCE_SURFACE_RESOLUTION",
+      "covered_capture_count": 1,
+      "decision_sensitivity": {
+        "could_change_marginal_yield_stop": true,
+        "could_change_a3_increment": false,
+        "could_change_a4_increment": true,
+        "could_change_a_p1_membership": true
+      },
+      "alternative_attempt_count": 2,
+      "saved_http_response_count": 0,
+      "failed_http_attempt_count": 2,
+      "saved_responses": [],
+      "failed_attempts": [
+        {
+          "source_locator": "https://www.gov.il/en/service/health-registries",
+          "failure_type": "HTTPError",
+          "failure_detail": "HTTP Error 403: Forbidden",
+          "observed_at_utc": "2026-10-21T06:40:54.486047+00:00"
+        },
+        {
+          "source_locator": "https://www.gov.il/he/pages/amar-announcements",
+          "failure_type": "HTTPError",
+          "failure_detail": "HTTP Error 403: Forbidden",
+          "observed_at_utc": "2026-10-21T06:40:54.601490+00:00"
+        }
+      ],
+      "bounded_review_class": "ALL_ALTERNATIVES_HTTP_403",
+      "review_rationale": "Israeli health-register surfaces remained inaccessible in both probes, original source barrier persists.",
+      "alternative_responses_promoted_to_terminal_r1_7_execution": false,
+      "original_frozen_capture_state_unchanged": true,
+      "reviewer_state": "NOT_HUMAN_REVIEWED",
+      "resolved_product_identity_count": 0
+    },
+    {
+      "work_item_id": "R1WI-adb0dfcf659de53fd1f737de1eeac72d9f520c477c29b9171f6c132589a8df52",
+      "capture_id": "PDC-625bf5bcebe32ce24b2b6b0922ae7ec904bedce2f007e2ed322ba50eac0c11bd",
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "frame_id": "F8",
+      "round_id": "R3",
+      "frozen_query_or_seed_id": "F8-R3-LOC-BITBRAIN-ES",
+      "original_frozen_capture_outcome": "FAILED_INACCESSIBLE",
+      "execution_route": "SOURCE_SURFACE_RESOLUTION",
+      "covered_capture_count": 1,
+      "decision_sensitivity": {
+        "could_change_marginal_yield_stop": true,
+        "could_change_a3_increment": false,
+        "could_change_a4_increment": true,
+        "could_change_a_p1_membership": true
+      },
+      "alternative_attempt_count": 2,
+      "saved_http_response_count": 2,
+      "failed_http_attempt_count": 0,
+      "saved_responses": [
+        {
+          "raw_file_name": "F8-R3-LOC-BITBRAIN-ES-1.response",
+          "source_locator": "https://www.bitbrain.com/es/productos-neurotecnologia/dry-eeg/diadem",
+          "raw_sha256": "a380a3afb55c8f333dfb2c54e828380a204077d370f081b592844d88f62190f4",
+          "raw_bytes": 315389,
+          "observed_at_utc": "2026-10-21T06:40:49.487665+00:00",
+          "status": 200,
+          "source_locator_type": "CURRENT_SPANISH_MANUFACTURER_MODEL_PAGE"
+        },
+        {
+          "raw_file_name": "F8-R3-LOC-BITBRAIN-ES-2.response",
+          "source_locator": "https://www.bitbrain.com/es/blog/amplificardor-eeg",
+          "raw_sha256": "e6e8b6ed257d7846fb79f9763f141fe3513c0e94796d39d4f4e07af88fa7a3f0",
+          "raw_bytes": 148582,
+          "observed_at_utc": "2026-10-21T06:40:50.456010+00:00",
+          "status": 200,
+          "source_locator_type": "DATED_SPANISH_MANUFACTURER_TECHNICAL_ARTICLE"
+        }
+      ],
+      "failed_attempts": [],
+      "bounded_review_class": "POSSIBLE_RELEVANT_SPANISH_MANUFACTURER_MODEL_PAGE",
+      "review_rationale": "One exact Spanish Diadem model page and one dated manufacturer technical article retrieved; identity and query coverage still need human review.",
+      "alternative_responses_promoted_to_terminal_r1_7_execution": false,
+      "original_frozen_capture_state_unchanged": true,
+      "reviewer_state": "NOT_HUMAN_REVIEWED",
+      "resolved_product_identity_count": 0
+    },
+    {
+      "work_item_id": "R1WI-eae01298e566c659655633bd6bc4eab835c5774fd11b45d7d33a273bafbd2836",
+      "capture_id": "PDC-6ffe1e5c22e4e1654329b1e4664976f9ad71eadd8ca2009d3afb5ce2748df5e6",
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "frame_id": "F8",
+      "round_id": "R3",
+      "frozen_query_or_seed_id": "F8-R3-LOC-NEUROELECTRICS-ES",
+      "original_frozen_capture_outcome": "FAILED_INACCESSIBLE",
+      "execution_route": "SOURCE_SURFACE_RESOLUTION",
+      "covered_capture_count": 1,
+      "decision_sensitivity": {
+        "could_change_marginal_yield_stop": true,
+        "could_change_a3_increment": false,
+        "could_change_a4_increment": true,
+        "could_change_a_p1_membership": true
+      },
+      "alternative_attempt_count": 2,
+      "saved_http_response_count": 2,
+      "failed_http_attempt_count": 0,
+      "saved_responses": [
+        {
+          "raw_file_name": "F8-R3-LOC-NEUROELECTRICS-ES-1.response",
+          "source_locator": "https://www.neuroelectrics.com/products/research/enobio",
+          "raw_sha256": "5fb184223ca2b9718da254b208fe4bd23355f8520005fa59f36122487bc3d39e",
+          "raw_bytes": 2636021,
+          "observed_at_utc": "2026-10-21T06:40:54.672251+00:00",
+          "status": 200,
+          "source_locator_type": "CURRENT_MANUFACTURER_MODEL_FAMILY_PAGE_NOT_SPANISH"
+        },
+        {
+          "raw_file_name": "F8-R3-LOC-NEUROELECTRICS-ES-2.response",
+          "source_locator": "https://www.neuroelectrics.com/blog/5-chinese-research-studies-advancing-neuroscience-with-enobio-and-starstim",
+          "raw_sha256": "127f4ab1478366f0de7df7b60aa7cc312f438356dbd725ea064409ab49868609",
+          "raw_bytes": 2501589,
+          "observed_at_utc": "2026-10-21T06:40:55.636886+00:00",
+          "status": 200,
+          "source_locator_type": "DATED_MANUFACTURER_RESEARCH_ARTICLE_NOT_SPANISH"
+        }
+      ],
+      "failed_attempts": [],
+      "bounded_review_class": "ENGLISH_MANUFACTURER_FALLBACK_SPANISH_UNRESOLVED",
+      "review_rationale": "English Enobio family page and manufacturer research article retrieved; does not resolve the requested Spanish language source route.",
+      "alternative_responses_promoted_to_terminal_r1_7_execution": false,
+      "original_frozen_capture_state_unchanged": true,
+      "reviewer_state": "NOT_HUMAN_REVIEWED",
+      "resolved_product_identity_count": 0
+    },
+    {
+      "work_item_id": "R1WI-6ceb7d1c05c0f7a2f7340ae1fcd83e9fdf43c752dbd0d429ef3c9bc926395092",
+      "capture_id": "PDC-8648b52b8cabed563602da5c6c3db751bff0508479ef4bec884b5c2f00093b73",
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "frame_id": "F8",
+      "round_id": "R2",
+      "frozen_query_or_seed_id": "F8-R2-CAP-ZH-2",
+      "original_frozen_capture_outcome": "FAILED_INACCESSIBLE",
+      "execution_route": "SOURCE_SURFACE_RESOLUTION",
+      "covered_capture_count": 1,
+      "decision_sensitivity": {
+        "could_change_marginal_yield_stop": true,
+        "could_change_a3_increment": false,
+        "could_change_a4_increment": true,
+        "could_change_a_p1_membership": true
+      },
+      "alternative_attempt_count": 2,
+      "saved_http_response_count": 2,
+      "failed_http_attempt_count": 0,
+      "saved_responses": [
+        {
+          "raw_file_name": "F8-R2-CAP-ZH-2-1.response",
+          "source_locator": "https://www.miit.gov.cn/jgsj/kjs/wjfb/art/2025/art_438e059801414869abc50abdb06eeac6.html",
+          "raw_sha256": "601bb69ed258e5774c6037f7b0cbd96acee8596d2d250340dbaf92bf009d665c",
+          "raw_bytes": 31643,
+          "observed_at_utc": "2026-10-21T06:40:44.090393+00:00",
+          "status": 200,
+          "source_locator_type": "DATED_PUBLIC_POLICY_CONTEXT"
+        },
+        {
+          "raw_file_name": "F8-R2-CAP-ZH-2-2.response",
+          "source_locator": "https://udi.nmpa.gov.cn/",
+          "raw_sha256": "2c977fafaedcde597cede4ffb6125fd2ff5cb0820b9fc2e5f708d015995f1259",
+          "raw_bytes": 49343,
+          "observed_at_utc": "2026-10-21T06:40:47.826387+00:00",
+          "status": 200,
+          "source_locator_type": "OFFICIAL_DYNAMIC_DEVICE_IDENTIFIER_LOOKUP"
+        }
+      ],
+      "failed_attempts": [],
+      "bounded_review_class": "ALTERNATIVE_POLICY_PAGE_AND_DYNAMIC_UDI_PORTAL",
+      "review_rationale": "HTTP 200 for public policy or portal shell does not establish usable product-identifier results for the frozen query.",
+      "alternative_responses_promoted_to_terminal_r1_7_execution": false,
+      "original_frozen_capture_state_unchanged": true,
+      "reviewer_state": "NOT_HUMAN_REVIEWED",
+      "resolved_product_identity_count": 0
+    },
+    {
+      "work_item_id": "R1WI-db862532574ab17cd9e57cdeddd0dc84b31cfcbde34d7336344c22f3cb9552ad",
+      "capture_id": "PDC-eae331ea8da97f74e658bdc6803821d2eaab8f3503102072a0a4717c29bfbbe8",
+      "source_packet_id": "RELEASE_A_A2_F8_OPEN_WORLD_ROUNDS_1_3_TRANCHE_1_v1.0",
+      "frame_id": "F8",
+      "round_id": "R3",
+      "frozen_query_or_seed_id": "F8-R3-LOC-NMPA-ZH",
+      "original_frozen_capture_outcome": "FAILED_INACCESSIBLE",
+      "execution_route": "SOURCE_SURFACE_RESOLUTION",
+      "covered_capture_count": 1,
+      "decision_sensitivity": {
+        "could_change_marginal_yield_stop": true,
+        "could_change_a3_increment": false,
+        "could_change_a4_increment": true,
+        "could_change_a_p1_membership": true
+      },
+      "alternative_attempt_count": 2,
+      "saved_http_response_count": 2,
+      "failed_http_attempt_count": 0,
+      "saved_responses": [
+        {
+          "raw_file_name": "F8-R3-LOC-NMPA-ZH-1.response",
+          "source_locator": "https://www.nmpa.gov.cn/zwfwqjd/index.html?type=pc",
+          "raw_sha256": "bceabe863f440f110d96467146042c7b60b5b2e218e87b6db1e338bcc642505b",
+          "raw_bytes": 19266,
+          "observed_at_utc": "2026-10-21T06:40:51.222754+00:00",
+          "status": 200,
+          "source_locator_type": "OFFICIAL_DEVICE_REGISTRATION_SEARCH_PORTAL"
+        },
+        {
+          "raw_file_name": "F8-R3-LOC-NMPA-ZH-2.response",
+          "source_locator": "https://udi.nmpa.gov.cn/",
+          "raw_sha256": "2c977fafaedcde597cede4ffb6125fd2ff5cb0820b9fc2e5f708d015995f1259",
+          "raw_bytes": 49343,
+          "observed_at_utc": "2026-10-21T06:40:52.729003+00:00",
+          "status": 200,
+          "source_locator_type": "OFFICIAL_DEVICE_IDENTIFIER_DATABASE"
+        }
+      ],
+      "failed_attempts": [],
+      "bounded_review_class": "DYNAMIC_REGISTRY_ENTRY_POINT_NOT_ITEM_RECORD",
+      "review_rationale": "NMPA/UDI web entry points retrieved, but no verified per-product registration search results or explicit query exhaustiveness.",
+      "alternative_responses_promoted_to_terminal_r1_7_execution": false,
+      "original_frozen_capture_state_unchanged": true,
+      "reviewer_state": "NOT_HUMAN_REVIEWED",
+      "resolved_product_identity_count": 0
+    }
+  ],
+  "derived_relevant_work_item_count": 5,
+  "new_frozen_capture_records_created": 0,
+  "original_frozen_failed_inaccessible_outcomes_changed": 0,
+  "terminal_r1_7_route_completions_credited": 0,
+  "canonical_product_identifications_credited": 0,
+  "remaining_full_r1_7_work_items_pending": 192,
+  "boundary": "Alternative saved pages and alternative query/locale identity do not prove full route execution, historical commercial status, or canonical product identity. All original R1.6.1 work-item/capture boundaries remain unchanged."
+}
