@@ -1,47 +1,42 @@
+# Contributing to NeuroAI Workbench
 
-# Contributing
+Contributions to the offline-first NeuroAI assessment toolkit are welcome. Please keep changes focused, testable, reproducible, and consistent with the project's evidence and security boundaries.
 
-## Development setup
+## Development
+
+Requires Python 3.11 or later. From a checkout of the repository:
 
 ```bash
 python -m venv .venv
-. .venv/bin/activate
-python -m pip install -e .[dev]
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
 make quality
 make test
 ```
 
-Read `AGENTS.md`, [AI-agent development](docs/operations/ai-agent-development.md), and the applicable `.cursor/rules/` files before changing code or controlled resources.
+On Windows, activate the virtual environment using `.venv\\Scripts\\Activate.ps1`.
 
-## Extending programmes and graph vocabulary
+See the [architecture overview](docs/architecture/overview.md), [CLI reference](docs/reference/cli.md) and [contributor guidance](docs/operations/extending-observatory.md) for supported extension points.
 
-See [Extending Observatory programmes](docs/operations/extending-observatory.md) for adding a source universe, collector adapter, assertion predicate, entity kind, or typed delta operation.
+## Proposing a change
 
-Offline one-command reference flow (no network; mechanical candidate only):
+Open an issue or refer to an existing issue describing the user-visible problem. Keep pull requests small enough for independent review. Include a description of the intended behaviour, affected interfaces, relevant tests and any compatibility or migration implications.
 
-```bash
-python scripts/offline_reference_flow.py --output-dir .tmp/offline-flow
-```
+- Add regression tests for behaviour changes and avoid altering normative assessment identifiers incidentally.
+- Document new public interfaces and commands alongside the implementation.
+- Preserve provenance, source identity, and the distinction between evidence observations and human judgments.
+- Update security assumptions when the trust boundary changes.
+- Avoid new outbound network calls, telemetry, model-provider dependencies, or third-party assets in the offline interface.
+- Keep examples synthetic or demonstrably cleared for redistribution.
 
-Read [CI and evidence assurance](docs/development/ci-and-evidence-assurance.md) for the exact-head required-check contract, dependency action pins, hosted branch-protection limitations and separate scientific/rights authority gates. A local green test run does not replace GitHub's full matrix or an authorized evidence review.
+Passing CI validates software checks, not scientific validity, clinical effectiveness, conformity, data-licensing rights, or permission to publish.
 
-## Pull-request contract
+## Handling sensitive material
 
-- Link one bounded issue.
-- State the exact problem and affected controlled objects.
-- Identify whether schema, migration, evidence, authority, security, or normative semantics changed.
-- Add tests for every behavior change.
-- Preserve all 78 requirement identifiers unless the proposal is explicitly a major instrument change.
-- Provide migration and regression fixtures for model changes.
-- Update the threat model when the attack surface changes.
-- Do not add remote analytics, telemetry, model calls, or third-party assets to the offline interface.
-- Do not describe validation as certification or conformance.
-- Do not commit generated artifacts or protected information.
+Never commit identifiable participant or neural data, credentials, tokens, private regulatory records, confidential review packets, licensed source captures, or unreleased evidence. Use privately authorized evidence custody and public synthetic fixtures for tests.
 
-## Commit and branch style
+Report security vulnerabilities privately following [SECURITY.md](SECURITY.md). See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
-Use `agent/<bounded-objective>` for agent branches. Use imperative, scoped commits such as `workspace: centralize version metadata`.
+## License
 
-## Sensitive material
-
-Never commit private neural data, participant records, confidential regulatory files, protected security findings, credentials, tokens, keys, or decryption material. Use synthetic or explicitly public fixtures.
+Contributions are submitted under the repository's [Apache-2.0 license](LICENSE) unless expressly agreed otherwise.
