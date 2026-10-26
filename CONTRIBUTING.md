@@ -14,7 +14,7 @@ make quality
 make test
 ```
 
-On Windows, activate the virtual environment using `.venv\\Scripts\\Activate.ps1`.
+On Windows, activate the virtual environment using `.venv\Scripts\Activate.ps1`.
 
 See the [architecture overview](docs/architecture/overview.md), [CLI reference](docs/reference/cli.md) and [contributor guidance](docs/operations/extending-observatory.md) for supported extension points.
 
