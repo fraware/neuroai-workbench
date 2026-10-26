@@ -78,7 +78,7 @@ Assessments and observatory state stay coupled by explicit dependencies and reop
 
 ## Install
 
-Requires **Python 3.11+**. Python 3.10 reached upstream end-of-life in October 2026; the upcoming development-line security dependency refresh targets Python 3.11–3.14. Published prior tags retain their historical compatibility claims.
+Requires **Python 3.11+**. See `pyproject.toml` for the supported Python range of the checked-out version.
 
 ```bash
 git clone https://github.com/fraware/neuroai-workbench.git
@@ -216,37 +216,26 @@ Normative v4.2 machine-readable resources ship inside the package. Treat edits t
 
 ## Documentation
 
-| Start here | Purpose |
+| Guide | Description |
 | --- | --- |
-| [Documentation map](docs/README.md) | Full index of architecture, ops, and reference docs |
-| [CI and evidence assurance](docs/development/ci-and-evidence-assurance.md) | Exact-commit CI verification, pinned workflow dependencies, required checks and research approval boundaries |
-| [Release A corrective status](docs/programme/release-a-completion-status.md) | Current corrective-review status; historical reconstruction success does not authorize scientific release |
-| [Product Population → Industrial Observatory plan](docs/programme/product-population-industrial-observatory-deployment-plan.md) | Stable deployment roadmap and release gates for the next research programme |
-| [Architecture overview](docs/architecture/overview.md) | Component and storage boundaries |
-| [Evidence and decision boundary](docs/governance/evidence-boundary.md) | What software can and cannot decide |
-| [Observatory automation](docs/operations/observatory-automation.md) | Monitoring operating model |
-| [CLI reference](docs/reference/cli.md) | Command surface |
-| [Collaborative review](docs/reference/review.md) | Review records and application rules |
-| [Protected-evidence exchange](docs/reference/evidence-exchange.md) | Metadata-only custodian workflow |
-| [Controlled model assistance](docs/reference/assistance.md) | Provider-neutral assistance records |
-| [Threat model](THREAT_MODEL.md) | Security assumptions and withheld claims |
-| [Data governance](DATA_GOVERNANCE.md) | Data handling expectations |
-| [Release process](docs/operations/release-process.md) | Software release integrity |
+| [Documentation](docs/README.md) | Public guides and technical reference |
+| [Architecture](docs/architecture/overview.md) | Components and data boundaries |
+| [Command-line interface](docs/reference/cli.md) | Supported commands and workflows |
+| [Evidence and review](docs/reference/review.md) | Review records, provenance, and decision boundaries |
+| [Observatory](docs/reference/observatory.md) | Source monitoring and candidate review |
+| [Security](SECURITY.md) | Security assumptions and vulnerability reporting |
+| [Data governance](DATA_GOVERNANCE.md) | Handling of protected and public evidence |
+| [Contributing](CONTRIBUTING.md) | Development setup, tests, and contribution guidelines |
 
-Engineering invariants for contributors live in [`AGENTS.md`](AGENTS.md).
+The software and the associated research programme have separate validation processes. Published research findings require independent scientific review; successful software checks alone do not establish a population estimate, product eligibility, clinical claim, or permission to publish data.
 
 ---
 
-## Status
+## Release status
 
-| Layer | Current state |
-| --- | --- |
-| Package on `main` | `0.3.0.dev0` (development identity; not a tagged `v0.3.0` release) |
-| Latest published tag | [`v0.2.1`](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1) |
-| v4.2 requirement semantics | Unchanged; all 78 identifiers preserved |
-| Institutional deployment readiness | Not established by this software |
+The most recent published Workbench software tag is [v0.2.1](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1). The default branch contains ongoing development and must not be treated as a tagged release.
 
-Software-release state, canonical observatory publication, and institutional readiness are independent. Evidence for one must not be treated as evidence for another.
+Workbench validation establishes the integrity of software outputs and evidence records within their declared assumptions. Scientific eligibility, research completeness, institutional acceptance, and authorization to publish observatory data remain separate decisions.
 
 ---
 
