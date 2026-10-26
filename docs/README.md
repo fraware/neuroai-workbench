@@ -27,6 +27,8 @@ The workbench records provenance and review decisions. Software integrity checks
 - [Review and adjudication](reference/review.md)
 - [Evidence and authority limits](governance/evidence-boundary.md)
 - [Research and publication reproducibility](architecture/publication-reproducibility.md)
+- [Release A scientific status](programme/release-a-completion-status.md)
+- [Release A corrective scientific review](programme/release-a-corrective-review-r1.md)
 
 Assessment methods, product inclusion criteria, and publication decisions are governed independently of this software repository. The existence of source records or a passing test is insufficient evidence for a completed scientific census or population estimate.
 
