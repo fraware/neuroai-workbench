@@ -1,6 +1,6 @@
 # NeuroAI Workbench documentation
 
-NeuroAI Workbench is an offline-first toolkit for evidence-backed NeuroAI assessment and source monitoring. This index organizes its public user and contributor documentation.
+NeuroAI Workbench provides offline-capable, local-first assessment and evidence review. Authorized Observatory source acquisition operates separately through a network-enabled collector. This index organizes the public user and contributor documentation.
 
 The workbench records provenance and review decisions. Software integrity checks do not establish clinical efficacy, scientific completeness, regulatory approval, or permission to publish protected data.
 
@@ -15,6 +15,7 @@ The workbench records provenance and review decisions. Software integrity checks
 ## Concepts and architecture
 
 - [Architecture overview](architecture/overview.md)
+- [Offline assessment and governed online source acquisition](architecture/online-first-acquisition.md)
 - [Entity and identity model](architecture/entity-identity-model.md)
 - [Evidence storage boundaries](architecture/data-storage-boundaries.md)
 - [Temporal model](architecture/temporal-model.md)
