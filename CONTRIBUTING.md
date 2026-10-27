@@ -1,6 +1,6 @@
 # Contributing to NeuroAI Workbench
 
-Contributions to the offline-first NeuroAI assessment toolkit are welcome. Please keep changes focused, testable, reproducible, and consistent with the project's evidence and security boundaries.
+Contributions to NeuroAI's local-first assessment tools and separately authorized Observatory acquisition tools are welcome. Keep changes focused, testable, reproducible, and consistent with the project's evidence and security boundaries.
 
 ## Development
 
