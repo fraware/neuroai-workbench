@@ -1,140 +1,41 @@
-# Release A corrective review R1
+# Release A: corrective scientific review
 
-**Tracking issue:** #410  
-**Audit baseline:** `1928eca5063840083b663e15d2c6f68b653b2766`  
-**Historical A8 package SHA-256:** `71ff7a917e9104ca279352643afbaebabc19c362527d36bcbfab1311aef73190`  
-**Historical A-G packet SHA-256:** `33dc577617518df8f88a6faf38ef0b6b6b0c06ec91e004776cf74d64d9f69c92`  
-**Disposition:** `CORRECTIVE_REVIEW_R1_OPEN`
+Release A is under corrective review following independent inspection of its historical product-population reconstruction. The original software reconstruction records are preserved. Their reproducibility is a narrower claim than the scientific adequacy of the source coverage, product decisions or resulting population denominator.
 
-## Purpose
+**Status:** Corrective scientific review open as of 26 October 2026. See the [current Release-A status](release-a-completion-status.md) and [public corrective-review issue](https://github.com/fraware/neuroai-workbench/issues/410).
 
-This record preserves the post-completion adversarial audit that reopened Release A. It does not mutate or invalidate historical packet bytes. It separates engineering reproducibility from scientific sufficiency.
+## Established engineering boundaries
 
-Recent Release-A PR heads, including A7, A8, A-G and the completion-status change, passed their required CI, CodeQL and Dependency Review gates. The corrective review was triggered by semantic and measurement findings discovered after the reconstruction gate.
+The Workbench records source identities, discovery frames, decisions and immutable analytical artifacts. It can reconstruct the historical analysis inputs subject to the declared contracts. Subsequent validation work strengthened derivation of capture eligibility, round-start identity binding and stopping-rule evidence. The corresponding technical issues (#342–#344) were closed after their fixes; historical results were not retroactively validated by those software corrections.
 
-## Verified strengths
+The historical unseen-population estimate remained unavailable. This is an intentional, conservative outcome; it should not be interpreted as evidence that the unseen population is zero.
 
-The audit confirmed:
+## Scientific questions requiring resolution
 
-- the six A1 seed offering identities have separate canonical PRODUCT authority through PR #349;
-- the A2 analysis universe binds that authority through PR #351;
-- F9 has a frozen per-actor enumeration procedure and immutable completion-ledger lineage;
-- F2/F3/F9 bounded-source execution records explicit protocol-bounded exhaustion;
-- F7/F9/F11 remain excluded from the primary unseen-population estimator;
-- A7 fails closed rather than inventing an unseen-population estimate;
-- A8 explicitly prohibits market-share, comparative-effectiveness, national-leadership and global-census claims;
-- A-G reconstructs its required headlines through immutable upstream digest bindings.
+### Product identity and eligibility
 
-## Corrective findings
+The initial six offering identities are a registry baseline, not six verified current products. Under the frozen current-product criteria, the original registry provisionally qualified four. Flow FL-100 and Modius Spero need independent decisions regarding historical currentness, lifecycle and the evidence underlying their claimed access or commercialization. Regulatory actions, manufacturer marketing and demonstrated shipments or use are distinct evidentiary categories.
 
-### R1-1 — authoritative capture eligibility is stored rather than fully derived
+### Discovery and coverage
 
-Issue #342 remains open. The generic capture validator checks that an estimator-eligible capture is `INCLUDE_RESOLVED` and belongs to an estimator-eligible frame, but does not derive the stored flag from exact target-view Product Registry qualification under the same frozen universe.
+Source attempts, retrieved records, distinct original source receipts and human-adjudicated products have different counting units. Unresolved candidate identities and incomplete capture routes prevent the historical zero increments from demonstrating that relevant product categories or non-English markets have been exhausted.
 
-### R1-1b — historical A-P1 observed denominator is inconsistent with the frozen machine predicate
+Frame-specific stopping rules are useful only for the explicitly defined frame and search protocol. They do not establish global completeness, total industry size or geographic market shares.
 
-The A1 seed Product Registry contains six canonical OFFERING rows, but the frozen A-P1 predicate requires `currentness_state == CURRENT` and a current lifecycle state.
+### Human calibration and inference
 
-Under that predicate:
+Product boundary decisions need evidence-bound, independently reviewed reference cases. The historical exploratory working labels are not substitutes for independent blinded calibration or final evaluation. Sources collected after the historical cutoff belong in a prospective research update rather than a retroactively amended snapshot.
 
-- NextSense Smartbuds qualifies;
-- Muse S Athena qualifies;
-- EMOTIV EPOC X qualifies;
-- Synchron Stentrode qualifies;
-- Flow FL-100 does not qualify (`currentness_state=UNRESOLVED`, `lifecycle_state=UNRESOLVED`);
-- Modius Spero does not qualify (`currentness_state=UNRESOLVED`, `lifecycle_state=UNRESOLVED`).
+Sampling probabilities, measurement error, and missing or unresolved identities need explicit treatment before an observed count could support a population estimate.
 
-The frozen seed projection therefore yields four A-P1 identities. Historical A7/A8 instead fix `N_observed=6` to the six A1 identity IDs.
+### Publication and data rights
 
-The audit also found stored `capture_estimation_eligible=true` rows for Flow and/or Modius in F2, F1 and F4, demonstrating that #342 affects current results.
+Software tests, schema conformance and checksum identity do not independently authorize publication. Protected source bytes and patent-related material also have distinct rights and evidence-custody conditions. Those conditions need separate review before redistribution or use in a public dataset.
 
-In addition, the seed registry rows bind knowledge cutoff `2026-09-24T21:00:00Z`, whereas the A2 analysis universe binds `2026-10-24T23:59:59Z`. A successor Product Registry projection at the exact A2 universe/cutoffs is required before authoritative target-view eligibility and the corrected A-P1 observed denominator are frozen.
+## Acceptance principle
 
-### R1-2 — round-start identity baseline is not generically proven
+A future scientific Release-A disposition must be based on a consistent product definition, qualified dated source evidence, resolved or explicitly accounted-for identity cases, documented coverage limitations, appropriate human judgments, and an attributable research and publication decision.
 
-Issue #343 remains open. `known_identity_set_sha256` is included in deterministic run identity, but the generic authoritative run validator does not receive the actual round-start canonical OFFERING set, recompute the digest and derive the round summary from the same set.
+The historical reconstruction may continue to be cited as a software result with its proper qualification. **No global product census, release denominator, market-share estimate, scientific saturation finding or downstream Observatory publication approval follows from that reconstruction alone.**
 
-### R1-3 — stored run stop state is not generically derived from stop evidence
-
-Issue #344 remains open. `evaluate_frame_stop()` exists, but the generic run validator does not require the stored terminal state to equal the state derived from the frozen rule and explicit execution evidence.
-
-### R1-4 — resolved-identity yield is confounded by unresolved adjudication
-
-The frozen marginal-yield rule measures new **resolved canonical identities**. Current execution contains substantial unresolved candidate mass while allocating zero new canonical identities after A1.
-
-Post-checkpoint unresolved capture rows:
-
-| Frame | UNRESOLVED_IDENTITY capture rows |
-| --- | ---: |
-| F1 | 22 |
-| F4 | 43 |
-| F5 | 38 |
-| F6 | 48 |
-| F8 | 12 |
-| F10 | 65 |
-| F11 | 12 |
-| **Total** | **240** |
-
-Those rows contain 168 globally distinct `candidate_key` strings before governed cross-frame identity deduplication.
-
-This does not prove that 168 new products exist. It proves that low new-resolved-ID yield is compatible with a material unresolved backlog. A successor rule must establish enough resolution/adjudication completeness for marginal-yield interpretation.
-
-### R1-5 — A3/A4 point-zero interpretation is resolution-censored
-
-Historical outputs:
-
-- `delta_n_capability = 0`;
-- `delta_n_multilingual = 0`.
-
-The executed F6 arm includes 48 unresolved captures, and F8 includes 12 unresolved captures plus substantial abstain mass. The historical zero values are valid as counts of additional **resolved canonical offering IDs**. They are not yet sufficient evidence that capability-first or native-language discovery produces zero incremental relevant products.
-
-### R1-6 — the historical A8 unresolved register is bounded-checkpoint-only
-
-A8 reports 416 unresolved candidates, derived from the bounded A2 checkpoint:
-
-- F3: 310;
-- F9: 106.
-
-It omits later unresolved rows from F1/F4/F5/F6/F8/F10/F11. A successor Release-A unresolved register must cover the full executed discovery history and distinguish capture-row count from deduplicated candidate identity.
-
-### R1-7 — A7 is appropriately conservative but must be recompiled
-
-Historical A7:
-
-- `N_observed = 6`;
-- `N_estimated = null`;
-- outcome `FAIL_CLOSED`;
-- reasons `CAPTURE_TABLE_TOO_SPARSE` and `INSUFFICIENT_MULTI_FRAME_OVERLAP`.
-
-This fail-closed result is retained. The successor A7 compile must use corrected authoritative capture eligibility and the successor candidate/identity state.
-
-### R1-8 — A-G is a reconstruction gate, not the successor scientific-validity gate
-
-The historical A-G `PASSED` packet demonstrates that required outputs reconstruct through the frozen digest chain. It does not independently prove R1-1 through R1-7.
-
-A successor gate must make scientific blockers explicit and fail closed if any remain.
-
-## Corrective execution order
-
-1. Implement #342, #343 and #344.
-2. Materialize a successor Product Registry projection at the exact A2 analysis universe/cutoffs and derive the target A-P1 identity set through the frozen machine predicate.
-3. Back-validate all existing authoritative A2 captures/runs without mutating historical packet bytes.
-4. Build a cross-frame candidate-resolution ledger for every unresolved/borderline/abstain object capable of changing product-population accounting.
-5. Freeze an adjudication-completeness / unresolved-mass rule for marginal-yield interpretation.
-6. Execute governed candidate resolution and emit successor round/stop-state evidence.
-7. Recompute A3 and A4 under the successor resolved/unresolved state.
-8. Rebuild the complete unresolved register.
-9. Recompile A7 and rerun the frozen/predeclared model-admissibility logic through a successor specification if the input universe materially changes.
-10. Emit successor A8.
-11. Run a successor A-G gate that tests both reconstruction and the R1 scientific-integrity obligations.
-12. Advance `release-a-completion-status.md` only from that successor evidence.
-
-## Preservation rules
-
-- Historical packets are immutable.
-- Existing exact-head-green CI evidence is retained.
-- Any new canonical PRODUCT identity requires separate governed identity authority.
-- Post-world-cutoff observations cannot be back-projected without explicit support.
-- Candidate, product identity, scope inclusion, currentness, commercialization, deployment and effectiveness remain distinct claim dimensions.
-- Bounded-source exhaustion and marginal-yield saturation remain protocol statements, not global-census claims.
-- No B/C/D denominator consumption until R1 closes.
+For implementation-specific findings and historical issue lineage, refer to the version-controlled code and the [corrective review record](https://github.com/fraware/neuroai-workbench/issues/410). This public methodological summary is not an operational control file.

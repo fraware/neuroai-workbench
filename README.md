@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 
-**Offline-first tooling for exact NeuroAI assessments and controlled observatory evidence records.**
+**Local-first NeuroAI assessments, with controlled online source acquisition for the Observatory.**
 
 The workbench helps researchers, reviewers, and programme operators keep system boundaries, evidence, findings, and decisions attributable and reproducible—without pretending that software can authorize scientific, clinical, or regulatory conclusions.
 
@@ -19,7 +19,7 @@ The workbench helps researchers, reviewers, and programme operators keep system 
 - Assessors and reviewers working with the **v4.2 Pilot-Calibrated Universal NeuroAI Assessment Instrument**
 - Research and governance teams that need local, auditable case workspaces
 - Programme operators who maintain controlled source registries, change candidates, and reopening queues
-- Contributors building offline-first evidence tooling for neurotechnology and NeuroAI
+- Contributors building reproducible local assessment and controlled source-acquisition tools
 
 ---
 
@@ -38,7 +38,9 @@ The workbench helps researchers, reviewers, and programme operators keep system 
 | **Report** | Render deterministic Markdown assessment, gap, and review reports |
 | **Compare** | Diff assessments across cases without inventing new findings |
 
-Default operation is **local and offline**. Network collection, if used at all, stays outside the core workbench behind an explicitly approved collector.
+**Two complementary execution modes:** Core assessments, evidence review, reports, and reproducible replay work locally without automatic network collection. Observatory operators may separately authorize a collector to retrieve current external source records into controlled quarantine; retrieval does not establish source truth, update assessments, or authorize publication.
+
+The default assessment workflow makes no Internet acquisition requests. Offline execution and replay remain supported. The [Observatory acquisition architecture](docs/architecture/online-first-acquisition.md) defines a phased move toward online-first **scheduled source collection** for approved sources. Such an operational default change needs separate evidence, security review, and authorization; it does not remove offline assessment or replay.
 
 ---
 
@@ -78,7 +80,7 @@ Assessments and observatory state stay coupled by explicit dependencies and reop
 
 ## Install
 
-Requires **Python 3.11+**. Python 3.10 reached upstream end-of-life in October 2026; the upcoming development-line security dependency refresh targets Python 3.11–3.14. Published prior tags retain their historical compatibility claims.
+Requires **Python 3.11+**. See `pyproject.toml` for the supported Python range of the checked-out version.
 
 ```bash
 git clone https://github.com/fraware/neuroai-workbench.git
@@ -122,7 +124,7 @@ neuroai-workbench serve workspaces/demo
 
 Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
-The reference server binds to localhost by default. It has **no authentication, authorization, multi-tenant isolation, or TLS**. Do not expose it on an untrusted network. Non-loopback binding requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`.
+The reference server binds to localhost by default. It has **no authentication, authorization, multi-tenant isolation, or TLS**. Do not expose it on an untrusted network. Non-loopback binding requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`. Those settings control incoming access to the local server; they do **not** authorize the separate online source collector.
 
 ### 2. Import a public reference assessment
 
@@ -185,7 +187,7 @@ neuroai-monitor plan workspaces/operations \
   --out artifacts/monitor-plan.json
 ```
 
-Network acquisition remains outside the default workbench. An approved collector captures source bytes; the workbench controls identity, comparison, review, and release preparation.
+Online retrieval is a separately authorized Observatory collector operation, not part of the default assessment workflow. The collector records source bytes in controlled quarantine; subsequent review and release decisions remain independent. See the [acquisition modes and migration boundary](docs/architecture/online-first-acquisition.md).
 
 ### 7. Optional: offline discovery reference flow
 
@@ -216,35 +218,26 @@ Normative v4.2 machine-readable resources ship inside the package. Treat edits t
 
 ## Documentation
 
-| Start here | Purpose |
+| Guide | Description |
 | --- | --- |
-| [Documentation map](docs/README.md) | Full index of architecture, ops, and reference docs |
-| [Product Population → Industrial Observatory plan](docs/programme/product-population-industrial-observatory-deployment-plan.md) | Stable deployment roadmap and release gates for the next research programme |
-| [Architecture overview](docs/architecture/overview.md) | Component and storage boundaries |
-| [Evidence and decision boundary](docs/governance/evidence-boundary.md) | What software can and cannot decide |
-| [Observatory automation](docs/operations/observatory-automation.md) | Monitoring operating model |
-| [CLI reference](docs/reference/cli.md) | Command surface |
-| [Collaborative review](docs/reference/review.md) | Review records and application rules |
-| [Protected-evidence exchange](docs/reference/evidence-exchange.md) | Metadata-only custodian workflow |
-| [Controlled model assistance](docs/reference/assistance.md) | Provider-neutral assistance records |
-| [Threat model](THREAT_MODEL.md) | Security assumptions and withheld claims |
-| [Data governance](DATA_GOVERNANCE.md) | Data handling expectations |
-| [Release process](docs/operations/release-process.md) | Software release integrity |
+| [Documentation](docs/README.md) | Public guides and technical reference |
+| [Architecture](docs/architecture/overview.md) | Components and data boundaries |
+| [Command-line interface](docs/reference/cli.md) | Supported commands and workflows |
+| [Evidence and review](docs/reference/review.md) | Review records, provenance, and decision boundaries |
+| [Observatory](docs/reference/observatory.md) | Source monitoring and candidate review |
+| [Security](SECURITY.md) | Security assumptions and vulnerability reporting |
+| [Data governance](DATA_GOVERNANCE.md) | Handling of protected and public evidence |
+| [Contributing](CONTRIBUTING.md) | Development setup, tests, and contribution guidelines |
 
-Engineering invariants for contributors live in [`AGENTS.md`](AGENTS.md).
+The software and the associated research programme have separate validation processes. Published research findings require independent scientific review; successful software checks alone do not establish a population estimate, product eligibility, clinical claim, or permission to publish data.
 
 ---
 
-## Status
+## Release status
 
-| Layer | Current state |
-| --- | --- |
-| Package on `main` | `0.3.0.dev0` (development identity; not a tagged `v0.3.0` release) |
-| Latest published tag | [`v0.2.1`](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1) |
-| v4.2 requirement semantics | Unchanged; all 78 identifiers preserved |
-| Institutional deployment readiness | Not established by this software |
+The latest published Workbench software tag is [`v0.2.1`](https://github.com/fraware/neuroai-workbench/releases/tag/v0.2.1). The default branch currently identifies as `0.3.0.dev0`, an unreleased development version. Verify the actual release tags before using a build.
 
-Software-release state, canonical observatory publication, and institutional readiness are independent. Evidence for one must not be treated as evidence for another.
+Workbench validation establishes the integrity of software outputs and evidence records within their declared assumptions. Scientific eligibility, research completeness, institutional acceptance, and authorization to publish observatory data remain separate decisions.
 
 ---
 

@@ -3,7 +3,7 @@
 
 ## Supported versions
 
-Security fixes are applied to the current `0.2.x` line during the controlled pilot period. Earlier lines are retained for provenance and are not supported for new deployments.
+The latest tagged line documented by this repository is `v0.2.1`; `main` currently identifies as `0.3.0.dev0`, a **development build, not a published `v0.3.0` release**. The previously documented controlled-pilot maintenance line is `0.2.x`. A security fix landing on `main` does **not** automatically reach a tagged `0.2.x` release: any supported-line backport needs a separately reviewed patch and published release/advisory record. Historical tags are preserved for provenance. Verify the actual published releases and repository security advisories before deciding which build to deploy; development CI success is not a support guarantee.
 
 ## Reporting
 

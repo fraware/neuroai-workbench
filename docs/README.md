@@ -1,123 +1,54 @@
-# Documentation map
+# NeuroAI Workbench documentation
 
-Audience-oriented index for the NeuroAI Workbench. Root project files remain the primary landing surfaces; this tree holds durable architecture, governance, operations, and reference material.
+NeuroAI Workbench provides offline-capable, local-first assessment and evidence review. Authorized Observatory source acquisition operates separately through a network-enabled collector. This index organizes the public user and contributor documentation.
 
-## Architecture
+The workbench records provenance and review decisions. Software integrity checks do not establish clinical efficacy, scientific completeness, regulatory approval, or permission to publish protected data.
 
-| Document | Purpose |
-| --- | --- |
-| [overview.md](architecture/overview.md) | System architecture and component boundaries |
-| [data-storage-boundaries.md](architecture/data-storage-boundaries.md) | Five-store model and storage roles |
-| [vision-and-target-architecture.md](architecture/vision-and-target-architecture.md) | Seven-layer Observatory v2 programme target and transition gates |
-| [observatory-v2-ontology.md](architecture/observatory-v2-ontology.md) | Target entities, observations, assertions, relationships, events, and assessment dependencies |
-| [observatory-v2-migration-boundary.md](architecture/observatory-v2-migration-boundary.md) | Narrow source/time-unresolved exception for lossless predecessor migration |
-| [temporal-model.md](architecture/temporal-model.md) | Valid-time, knowledge-time, observation succession, and as-of semantics |
-| [entity-identity-model.md](architecture/entity-identity-model.md) | Stable IDs, resolution proposals, lineage, and no-silent-merge rules |
-| [s2-s3-evidence-contract.md](architecture/s2-s3-evidence-contract.md) | Public evidence metadata versus protected/restricted evidence bytes |
-| [release-model-v2.md](architecture/release-model-v2.md) | Immutable S2 authority, projection boundary, and v2 migration release gates |
-| [compatibility-identity.md](architecture/compatibility-identity.md) | Package version, runtime pin, S2 WORKBENCH_VERSION, producer commit, and schema version |
-| [static-to-operational.md](architecture/static-to-operational.md) | Archive versus operational programme layout |
-| [release-attestation.md](architecture/release-attestation.md) | Default proportional release-control profile |
-| [governance-single-authority.md](architecture/governance-single-authority.md) | Designated authority and default/high-assurance profiles |
-| [institutional-deployment-profile.md](architecture/institutional-deployment-profile.md) | Controls required before an institutional pilot claim |
-| [compatibility-identity.md](architecture/compatibility-identity.md) | Package version, runtime pin, S2 WORKBENCH_VERSION, producer commit, and schema version |
+## Get started
 
-## Governance
+- [Installation and first assessment](../README.md#install)
+- [Command-line reference](reference/cli.md)
+- [Local user interface](reference/review-ui.md)
+- [Working with evidence](reference/evidence-exchange.md)
+- [Reports and exports](reference/reports.md)
 
-| Document | Purpose |
-| --- | --- |
-| [evidence-boundary.md](governance/evidence-boundary.md) | What software can and cannot decide |
-| [unesco-alignment.md](governance/unesco-alignment.md) | UNESCO-facing withheld-claim language |
-| [retention-and-access.md](data-governance/retention-and-access.md) | Retention and access notes for programme stores |
+## Concepts and architecture
 
-## Programme plans
+- [Architecture overview](architecture/overview.md)
+- [Offline assessment and governed online source acquisition](architecture/online-first-acquisition.md)
+- [Entity and identity model](architecture/entity-identity-model.md)
+- [Evidence storage boundaries](architecture/data-storage-boundaries.md)
+- [Temporal model](architecture/temporal-model.md)
+- [Observatory source records](reference/observatory.md)
+- [Assessment dependencies](reference/assessment-dependencies.md)
 
-| Document | Purpose |
-| --- | --- |
-| [Product Population → Industrial Observatory deployment plan](programme/product-population-industrial-observatory-deployment-plan.md) | Dependency- and gate-based deployment plan for product population, commercial measurement, evidence/effectiveness, and integrated industrial-observatory releases |
-| [Release A completion status](programme/release-a-completion-status.md) | A2–A8 + A-G PASSED pointer: A8/A-G digests, headline denominators (`N_observed=6`, `N_estimated` null fail-closed), frame/estimator boundaries; does not authorize B/C/D |
-| [Release-A Product Discovery Frame Contract](programme/release-a-product-discovery-frame-contract.md) | P0.4 discovery frames F1–F11, stopping semantics, estimator eligibility, and A2–A-G artifact bindings |
-| [Release A Analysis Preregistration](programme/release-a-analysis-preregistration.md) | P0.5 analysis estimands, capture-history rules, and population-estimation acceptance criteria |
-| [Product Measurement Contract v1.0](programme/product-measurement-contract.md) | P0.1 measurement semantics for product/service identity, state, counting, and downstream denominator discipline |
-| [Exact Product Registry Contract](programme/exact-product-registry-contract.md) | P0.3 exact-product registry projection and identity grain |
-| [P0.1 Product Measurement Contract adversarial review R1](methodology/p0-1-product-measurement-contract-adversarial-review.md) | Pre-freeze adversarial review, R1–R40 findings, corrections, residual risks, and human-freeze boundary |
-| [D4 Product Reference Standard execution protocol](methodology/d4-product-reference-standard-execution-protocol.md) | P0.2 controlled execution protocol for real human calibration, deterministic final selection, adjudication, commitments, and freeze |
+## Assessment and scientific methodology
 
-## Architecture decision records
+- [Assessment validation protocol](evaluation/assessment-validation-protocol.md)
+- [Review and adjudication](reference/review.md)
+- [Evidence and authority limits](governance/evidence-boundary.md)
+- [Research and publication reproducibility](architecture/publication-reproducibility.md)
+- [Release A scientific status](programme/release-a-completion-status.md)
+- [Release A corrective scientific review](programme/release-a-corrective-review-r1.md)
 
-Individual ADRs under [`adr/`](adr/) preserve focused architectural decisions and their rationale. ADR 0014 is the accepted temporal implementation ADR. ADR 0015 and ADR 0016 are implementation ADRs for provenance and identity references. ADR 0017 expands the typed delta vocabulary without RFC-6902 patch. ADR 0019 records the PRE-G2 held-out benchmark implementation lineage (`#272` then `#275`) without G1/G2 approval claims.
+Assessment methods, product inclusion criteria, and publication decisions are governed independently of this software repository. The existence of source records or a passing test is insufficient evidence for a completed scientific census or population estimate.
 
-## Operations
+## Security and data handling
 
-| Document | Purpose |
-| --- | --- |
-| [deployment.md](operations/deployment.md) | Local and container deployment |
-| [pilot-runbook.md](operations/pilot-runbook.md) | Controlled local pilot procedure |
-| [release-process.md](operations/release-process.md) | Software release integrity and canonical release attestation |
-| [github-governance-setup.md](operations/github-governance-setup.md) | Branch protection and required checks |
-| [github-required-checks.md](operations/github-required-checks.md) | Repository-owned required-check contract |
-| [hosted-ci-empty-steps.md](operations/hosted-ci-empty-steps.md) | Hosted jobs with empty `steps: []` are infrastructure failure, not test results |
-| [extending-observatory.md](operations/extending-observatory.md) | Contributor guide for programmes, adapters, predicates, entity kinds, delta ops |
-| [pr-229-231-233-integration.md](operations/pr-229-231-233-integration.md) | Local integration of Observatory v2 docs, CT.gov discovery, and pinned transport |
-| [observatory-automation.md](operations/observatory-automation.md) | Monitoring operating model, programme control, verification |
-| [observatory-s1-pin-handoff.md](operations/observatory-s1-pin-handoff.md) | Exact S1 Observatory pin SHA, package version, and hosted proof IDs (G0 not passed) |
-| [collector-contracts.md](operations/collector-contracts.md) | Collector ingestion contracts |
-| [shadow-refresh-evaluation.md](operations/shadow-refresh-evaluation.md) | Non-canonical shadow refresh evaluation |
-| [shadow-cycle-43-execution.md](operations/shadow-cycle-43-execution.md) | #43 core-cycle acceptance summary |
-| [deferred-governance.md](operations/deferred-governance.md) | Current release-governance status and remaining real decision boundary |
-| [protected-governance-execution.md](operations/protected-governance-execution.md) | Optional high-assurance governance profile |
-| [governance-transaction-recovery.md](operations/governance-transaction-recovery.md) | Crash-consistent governance write recovery |
-| [governing-input-migration.md](operations/governing-input-migration.md) | Governing-input lineage and migration |
-| [public-data-release.md](operations/public-data-release.md) | Bootstrap and publish to `neuroai-observatory-data` |
-| [post-publication-withdrawal-drill.md](operations/post-publication-withdrawal-drill.md) | Withdrawal and correction drill |
-| [independent-review-acceptance.md](operations/independent-review-acceptance.md) | Optional external independent-review evidence |
+- [Security policy](../SECURITY.md)
+- [Threat model](../THREAT_MODEL.md)
+- [Data governance](../DATA_GOVERNANCE.md)
+- [Retention and access](data-governance/retention-and-access.md)
+- [Local deployment](operations/deployment.md)
 
-## Reference
+The included local web server does not implement network authentication. Follow the [security policy](../SECURITY.md) before deploying outside a trusted workstation.
 
-| Document | Purpose |
-| --- | --- |
-| [cli.md](reference/cli.md) | CLI surface |
-| [api.md](reference/api.md) | HTTP API surface |
-| [web-ui.md](reference/web-ui.md) | Local assessment browser UI |
-| [review-ui.md](reference/review-ui.md) | Monitoring review UI |
-| [observatory.md](reference/observatory.md) | Observatory record semantics |
-| [programme-adapter.md](reference/programme-adapter.md) | PRIMA programme adapter |
-| [reports.md](reference/reports.md) | Deterministic assessment reports |
-| [assistance.md](reference/assistance.md) | Controlled assistance records |
-| [review.md](reference/review.md) | Collaborative review records |
-| [review-queue.md](reference/review-queue.md) | Monitoring review queue API |
-| [evidence-exchange.md](reference/evidence-exchange.md) | Protected-evidence exchange |
-| [entities.md](reference/entities.md) | Entity registry and resolver |
-| [extraction.md](reference/extraction.md) | Bounded source extraction contract |
-| [assessment-dependencies.md](reference/assessment-dependencies.md) | Assessment dependency graph |
-| [adjudicated-delta.md](reference/adjudicated-delta.md) | Adjudicated delta packages |
-| [analytical-workbook.md](reference/analytical-workbook.md) | Generated analytical workbook views |
-| [publication-products.md](reference/publication-products.md) | Generated publication products |
-| [reopening-engine.md](reference/reopening-engine.md) | Assessment reopening recommendations |
-| [successor-releases.md](reference/successor-releases.md) | Successor candidate and default canonical release semantics |
-| [governance-records.md](reference/governance-records.md) | Optional high-assurance governance record semantics |
+## For contributors
 
-## Release boundaries
+- [Contributing](../CONTRIBUTING.md)
+- [Development tests and quality checks](../CONTRIBUTING.md#development)
+- [Architecture decision records](adr/)
+- [Release process](operations/release-process.md)
+- [Changelog](../CHANGELOG.md)
 
-| Document | Purpose |
-| --- | --- |
-| [v0.3-foundation-boundary.md](releases/v0.3-foundation-boundary.md) | v0.3 foundation, software-release, canonical-publication, and deployment states |
-
-## Evaluation
-
-| Document | Purpose |
-| --- | --- |
-| [assessment-validation-protocol.md](evaluation/assessment-validation-protocol.md) | Pre-outcome reliability, decision-usefulness, accessibility, and linguistic-validation protocol contract |
-| [extraction-evaluation.md](evaluation/extraction-evaluation.md) | Preregistration, offline comparison, dispositions |
-| [entity-resolution-report.md](evaluation/entity-resolution-report.md) | Entity-resolution benchmark corpora and metrics |
-
-## Security
-
-| Document | Purpose |
-| --- | --- |
-| [review-checklist.md](security/review-checklist.md) | Local-profile security review checklist |
-| [model-assistance-boundary.md](security/model-assistance-boundary.md) | Assistance authority boundary |
-| [collector-threat-model.md](security/collector-threat-model.md) | Collector-specific threat analysis |
-| [pinned-dns-transport.md](collector/pinned-dns-transport.md) | DNS-pinned production HTTP transport boundary |
-
-Root `THREAT_MODEL.md` and `SECURITY.md` remain the programme-level threat and reporting entrypoints.
+Technical design records and historical experiment materials are retained for engineering provenance. They do not constitute public release authorizations, scientific findings, or deployment instructions. Verify current versions and the relevant scientific protocol before relying on dated status records.
