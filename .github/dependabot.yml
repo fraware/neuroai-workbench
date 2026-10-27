@@ -18,3 +18,7 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     labels: [dependencies, github-actions]
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
