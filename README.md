@@ -19,7 +19,7 @@ The workbench helps researchers, reviewers, and programme operators keep system 
 - Assessors and reviewers working with the **v4.2 Pilot-Calibrated Universal NeuroAI Assessment Instrument**
 - Research and governance teams that need local, auditable case workspaces
 - Programme operators who maintain controlled source registries, change candidates, and reopening queues
-- Contributors building offline-first evidence tooling for neurotechnology and NeuroAI
+- Contributors building reproducible local assessment and controlled source-acquisition tools
 
 ---
 
@@ -40,7 +40,7 @@ The workbench helps researchers, reviewers, and programme operators keep system 
 
 **Two complementary execution modes:** Core assessments, evidence review, reports, and reproducible replay work locally without automatic network collection. Observatory operators may separately authorize a collector to retrieve current external source records into controlled quarantine; retrieval does not establish source truth, update assessments, or authorize publication.
 
-The default Workbench remains offline-capable. The [Observatory acquisition architecture](docs/architecture/online-first-acquisition.md) defines a phased move toward online-first **scheduled source collection** for approved sources. Such an operational default change needs separate evidence, security review, and authorization; it does not remove offline assessment or replay.
+The default assessment workflow makes no Internet acquisition requests. Offline execution and replay remain supported. The [Observatory acquisition architecture](docs/architecture/online-first-acquisition.md) defines a phased move toward online-first **scheduled source collection** for approved sources. Such an operational default change needs separate evidence, security review, and authorization; it does not remove offline assessment or replay.
 
 ---
 
@@ -124,7 +124,7 @@ neuroai-workbench serve workspaces/demo
 
 Open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
-The reference server binds to localhost by default. It has **no authentication, authorization, multi-tenant isolation, or TLS**. Do not expose it on an untrusted network. Non-loopback binding requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`.
+The reference server binds to localhost by default. It has **no authentication, authorization, multi-tenant isolation, or TLS**. Do not expose it on an untrusted network. Non-loopback binding requires both an explicit flag and `NEUROAI_ALLOW_NETWORK=1`. Those settings control incoming access to the local server; they do **not** authorize the separate online source collector.
 
 ### 2. Import a public reference assessment
 
