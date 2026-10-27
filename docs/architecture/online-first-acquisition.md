@@ -5,6 +5,8 @@
 **Scope:** operational acquisition permission semantics only  
 **Runtime default:** unchanged; local/offline-first  
 
+This page records the initial acquisition-policy design. Subsequent implementation introduced an [opt-in policy-bound execution path](online-first-phase-2a-boundary.md), [explicit replay and prior-capture fallback](online-first-phase-2b-fallback-replay.md), and a [bounded live/replay proof harness](online-first-phase-3-runtime-proof.md). Those additions do not constitute a programme-wide change to the default assessment workflow or an approved transition to online-first scheduled operation. The latter remains a separate operational and governance decision.
+
 ## Objective
 
 The long-run Observatory needs current external observations as a normal operational input while preserving deterministic replay, explicit coverage accounting, quarantine custody, and independent publication authority. The migration therefore makes acquisition online-first at the operational edge without making network state authoritative inside the evidence or release layers.
