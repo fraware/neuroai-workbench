@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 
-**Offline-first tooling for exact NeuroAI assessments and controlled observatory evidence records.**
+**Local-first NeuroAI assessments, with controlled online source acquisition for the Observatory.**
 
 The workbench helps researchers, reviewers, and programme operators keep system boundaries, evidence, findings, and decisions attributable and reproducible—without pretending that software can authorize scientific, clinical, or regulatory conclusions.
 
@@ -38,7 +38,9 @@ The workbench helps researchers, reviewers, and programme operators keep system 
 | **Report** | Render deterministic Markdown assessment, gap, and review reports |
 | **Compare** | Diff assessments across cases without inventing new findings |
 
-Default operation is **local and offline**. Network collection, if used at all, stays outside the core workbench behind an explicitly approved collector.
+**Two complementary execution modes:** Core assessments, evidence review, reports, and reproducible replay work locally without automatic network collection. Observatory operators may separately authorize a collector to retrieve current external source records into controlled quarantine; retrieval does not establish source truth, update assessments, or authorize publication.
+
+The default Workbench remains offline-capable. The [Observatory acquisition architecture](docs/architecture/online-first-acquisition.md) defines a phased move toward online-first **scheduled source collection** for approved sources. Such an operational default change needs separate evidence, security review, and authorization; it does not remove offline assessment or replay.
 
 ---
 
@@ -185,7 +187,7 @@ neuroai-monitor plan workspaces/operations \
   --out artifacts/monitor-plan.json
 ```
 
-Network acquisition remains outside the default workbench. An approved collector captures source bytes; the workbench controls identity, comparison, review, and release preparation.
+Online retrieval is a separately authorized Observatory collector operation, not part of the default assessment workflow. The collector records source bytes in controlled quarantine; subsequent review and release decisions remain independent. See the [acquisition modes and migration boundary](docs/architecture/online-first-acquisition.md).
 
 ### 7. Optional: offline discovery reference flow
 
