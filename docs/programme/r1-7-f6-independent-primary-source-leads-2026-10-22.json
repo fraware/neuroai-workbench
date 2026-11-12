@@ -1,0 +1,93 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_F6_HIGH_PRIORITY_SOURCE_LEADS_v0.1",
+  "prepared_at_utc_date": "2026-10-22",
+  "original_world_time_cutoff": "2026-09-24",
+  "original_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "scope": "SOURCE-LEVEL_PUBLIC_RECORD_TRIAGE_ONLY_NO_NEW_REGISTERED_QUERY_EXECUTION",
+  "frozen_obligation_bindings": [
+    {
+      "work_item_id": "R1WI-cb35c6d682078f9ccc1082e7b2c5bde75e12bdb48bf2bf1353174c42b790fcb0",
+      "capture_id": "PDC-beeca13d5ba212f2fa5287d71c7881edc7225a1778ad37100fdf692786d68a98",
+      "query_id": "F6-R1-ATTENTION_VIGILANCE-V2"
+    },
+    {
+      "work_item_id": "R1WI-963e4a78e94f5625ecc399078fe8356fdfbb79977569cab1ecb9614cdb86f9d7",
+      "capture_id": "PDC-ba42b136e776c11ad7443e73cb97746b9f0fc72e468858de1630b71b5ff0989e",
+      "query_id": "F6-R1-FATIGUE_DROWSINESS-V2"
+    },
+    {
+      "work_item_id": "R1WI-6d24de03c1335762cbbfb4bac1ec02a93341b33a4e234756b60978f13a05aa20",
+      "capture_id": "PDC-b478d8a7dc37815dcbb5d66959d5532095371374bfcca5dae475054fd0e9aefb",
+      "query_id": "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2"
+    },
+    {
+      "work_item_id": "R1WI-72ab03668003f03036c7a9656d9700cc827df4ea5d9207c11cf549b6057c36ec",
+      "capture_id": "PDC-0cc175ba9b07406e0dea01d579c8287adb9f77897b219ea616a22b8bd0154120",
+      "query_id": "F6-R1-ADAPTIVE_INTERFACE-V2"
+    }
+  ],
+  "evidence_leads": [
+    {
+      "source_id": "SBIR-NEURABLE-2025-PRISM",
+      "url": "https://www.sbir.gov/awards/216851",
+      "source_type": "PUBLIC_US_GOVERNMENT_AWARD_RECORD",
+      "source_document_time": "2025",
+      "date_precision": "AWARD_YEAR_ONLY",
+      "observed_text_claim": "2025 SBIR project describes Neurable existing commercial MW75 Neuro EEG headphones as an input; separately refers to defense-focused Ops-Core AMP Neuro EEG hearing protection being adapted for USAF cognitive-readiness work.",
+      "supports": "PRE_WORLD_CUTOFF_UNDATED_WITHIN_2025_REFERENCE_TO_MW75_NEURO_COMMERCIAL_BASELINE",
+      "does_not_establish": "That MW75 Neuro LT, Ops-Core AMP Neuro, or a BrainOS defense prototype was a separately distributed September 2026 commercial offering.",
+      "linked_frozen_query_ids": [
+        "F6-R1-ATTENTION_VIGILANCE-V2",
+        "F6-R1-FATIGUE_DROWSINESS-V2",
+        "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2"
+      ]
+    },
+    {
+      "source_id": "NEXTSENSE-MAY22-2026-RESEARCH",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42169202/",
+      "source_type": "PEER_REVIEWED_CLINICAL_FEASIBILITY_REPORT",
+      "source_document_time": "2026-05-22",
+      "date_precision": "DAY",
+      "observed_text_claim": "Berent et al. describe a custom-molded in-ear EEG research system and compare sleep/daytime wakefulness measurements to PSG under specified feasibility protocols.",
+      "supports": "BEFORE_WORLD_CUTOFF_RESEARCH_USE_OF_IN_EAR_EEG_SYSTEM",
+      "does_not_establish": "An identity match to a commercially available NextSense Smartbuds version, marketing availability, FDA approval, or validated real-world screening efficacy.",
+      "linked_frozen_query_ids": [
+        "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2"
+      ]
+    },
+    {
+      "source_id": "NEUROSITY-SDK-UNDATED",
+      "url": "https://docs.neurosity.co/docs/overview/",
+      "source_type": "MANUFACTURER_DEVELOPER_DOCUMENTATION",
+      "source_document_time": null,
+      "date_precision": "UNDATED_CURRENT_PAGE",
+      "observed_text_claim": "Neurosity documents a device-connected SDK for EEG monitoring and neuro-driven application development.",
+      "supports": "CURRENT_DEVELOPER_FEATURE_CLAIM",
+      "does_not_establish": "Separate commercial adaptive-interface product identity or feature status on 2026-09-24.",
+      "linked_frozen_query_ids": [
+        "F6-R1-ADAPTIVE_INTERFACE-V2"
+      ]
+    },
+    {
+      "source_id": "NEURABLE-ONE-CURRENT",
+      "url": "https://www.neurable.com/products/neurable-one",
+      "source_type": "UNDATED_CURRENT_MANUFACTURER_PRODUCT_PAGE",
+      "source_document_time": null,
+      "date_precision": "UNDATED_CURRENT_PAGE",
+      "observed_text_claim": "Neurable One product page describes an EEG headphone device distinct by name from MW75 Neuro, with focus metrics and wellness-only positioning; present checkout surface mentions October 2026 shipping.",
+      "supports": "CURRENT_NAME_AND_MANUFACTURER_FEATURE_LEAD",
+      "does_not_establish": "The distinct Neurable One was commercially distributed by 2026-09-24 or identical to MW75 Neuro or MW75 Neuro LT.",
+      "linked_frozen_query_ids": [
+        "F6-R1-ATTENTION_VIGILANCE-V2",
+        "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2"
+      ]
+    }
+  ],
+  "archival_integrity": "PUBLIC_WEB_TEXT_INSPECTED_IN_CURRENT_RESEARCH_NO_RAW_HTTP_BYTES_SAVED_NO_INDEPENDENT_SOURCE_HASH",
+  "newly_executed_frozen_query_requests": 0,
+  "archived_http_response_byte_count": 0,
+  "terminal_r1_7_source_work_items": 0,
+  "canonical_product_ids_added": 0,
+  "new_eligible_offerings_established": 0,
+  "assessment": "Dated source citations sharpen hardware/version/research scope while preserving uncertainty in world-time distribution and exact source-execution completions."
+}

@@ -1,0 +1,144 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_NEO_CHINESE_PRIMARY_SOURCES_NONCANONICAL_v0.1",
+  "prepared_date_utc": "2026-10-22",
+  "frozen_world_time_cutoff": "2026-09-24",
+  "frozen_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "discovery_method": "FROZEN_CHINESE_QUERY_TEXT_SEARCH_WITH_FOLLOWUP_SOURCE_VERIFICATION",
+  "query_attribution_limit": "The candidate was found during a seven-query multilingual batch; the standalone exact Chinese query was subsequently rerun. The returned per-query search trace does not by itself prove a specific result was on the original frozen search engine or at original A2 world time.",
+  "frozen_context": {
+    "work_item_id": "R1WI-584f3da044ad6f1a4d5308851f5f8e39652de813b95e5e810f1b0826824a0143",
+    "capture_id": "PDC-9ac8a0f56286289e4e0924b9160ea166957afc51fc66085dcee6a2d4634bf36a",
+    "query_id": "F8-R1-CAT-ZH-1",
+    "query_expression": "脑机接口 产品",
+    "language": "zh",
+    "jurisdiction": "CN",
+    "frame": "F8",
+    "original_frozen_capture_outcome": "ABSTAIN",
+    "original_source_observation_ref": "OBS-A2-F8-b45a8a882eca63da741f7be1"
+  },
+  "candidate": {
+    "research_label": "Neuracle Medical Technology (Shanghai) / NEO",
+    "manufacturer_chinese": "博睿康医疗科技（上海）有限公司",
+    "original_product_name_chinese": "植入式脑机接口手部运动功能代偿系统",
+    "commercial_short_name": "NEO",
+    "device_type": "Epidural implantable brain-computer interface with hand-grasp pneumatic glove, recording/decoding and medical management software",
+    "regulatory_registration_candidate": "国械注准20263120537",
+    "registration_identifier_status": "IDENTIFIER_REPORTED_BY_DATED_2026_APRIL_THIRD_PARTY_MEDICAL_AFFAIRS_PROVIDER_NOT_INDEPENDENTLY_RETRIEVED_FROM_DEVICE_LEVEL_NMPA_ROW",
+    "country": "China",
+    "distinct_from": {
+      "entity": "Japanese NeU or any NeuroSky product",
+      "status": "COMPANY_NAME_NOT_TO_BE_CONFLATED"
+    },
+    "issuer_product_model_label": "NEO-ONE SCI",
+    "issuer_model_source": "Official Shanghai Stock Exchange June 11 2026 IPO prospectus indexed document snippet; raw PDF 422 pages could not be fetched for independent page-level verification in this run.",
+    "distinct_applicant_and_issuer_legal_entities": "FDA/NMPA approval names 博睿康医疗科技（上海）有限公司; June 2026 IPO issuer uses 博睿康技术（上海）股份有限公司. Corporate relationship must be substantiated before merging company identities."
+  },
+  "sources": [
+    {
+      "id": "NEO-NMPA-20260313",
+      "url": "https://www.nmpa.gov.cn/directory/web/nmpa/zhuanti/zt2023/ypgzhlfzh/shypqxgg/ggjzcx/20260313134742156.html",
+      "published_on": "2026-03-13",
+      "source_class": "PRIMARY_NATIONAL_REGULATOR",
+      "observed": "NMPA approved the innovative implantable hand-motor-compensation BCI system from 博睿康医疗科技（上海）有限公司; specifies implant, electrodes, telemetry, pneumatic glove and EEG decoding software",
+      "valid_axis": "REGULATORY_APPROVAL_AND_CONFIGURED_SYSTEM",
+      "not_proof": "Independent patient dispensing or validated AI decoding performance"
+    },
+    {
+      "id": "NEO-SHANGHAI-20260313",
+      "url": "https://yjj.sh.gov.cn/sjdt/20260313/274e66190b4a4fb8996b4d62334b1a6d.html",
+      "published_on": "2026-03-13",
+      "source_class": "PRIMARY_SHANGHAI_REGULATOR",
+      "observed": "Municipal regulator independently publishes system approval, component list, intended patient cohort and clinical-trial claims",
+      "valid_axis": "REGULATORY_CORROBORATION",
+      "not_proof": "Independent clinical sale or AI feature validation"
+    },
+    {
+      "id": "NEO-HUASHAN-20260715",
+      "url": "https://m.thepaper.cn/newsDetail_forward_33588510",
+      "published_on": "2026-07-15",
+      "source_class": "DATED_NEWS_REPORT_DIRECTLY_ATTRIBUTING_HOSPITAL_INFORMATION",
+      "observed": "Reports hospital's first postregistration prescription and commercial implantation at Huashan Hospital on 2026-07-13",
+      "valid_axis": "REPORTED_HISTORICAL_CLINICAL_DEPLOYMENT",
+      "not_proof": "Routine scale of commercial uptake or all patients eligible"
+    },
+    {
+      "id": "NEO-SHANGHAI-20260811",
+      "url": "https://www.shanghai.gov.cn/zfkfmtbd/20260811/491d88b8b2454f47972e80154a02943b.html",
+      "published_on": "2026-08-07",
+      "source_class": "DATED_LOCAL_GOVERNMENT_REPORT",
+      "observed": "Shanghai source quotes BCI project manager saying first prescription July 13 and two formal clinical applications by report date",
+      "valid_axis": "PRE_CUTOFF_DEPLOYMENT_CORROBORATION",
+      "not_proof": "Exact pricing or independent census of devices",
+      "publication_date_provenance": "Article heading states 2026-08-07, originally from 青年报; rehosting Shanghai URL path is 20260811"
+    },
+    {
+      "id": "NEO-SHANGHAI-PUDONG-20260616",
+      "url": "https://www.shanghai.gov.cn/nw15343/20260617/13602e6d1f094445aa9752adeb8be62c.html",
+      "published_on": "2026-06-16",
+      "source_class": "DATED_SHANGHAI_MUNICIPAL_GOVERNMENT_REPUBLICATION_OF_PUDONG_REPORT",
+      "observed": "Shanghai municipal website's pre-cutoff June 2026 trade-fair report identifies exhibitor 博睿康医疗 and its implantable hand-function brain-computer interface by the short name NEO.",
+      "valid_axis": "PRE_CUTOFF_MANUFACTURER_TO_NEO_SHORT_NAME_PUBLIC_DEMONSTRATION_CORROBORATION",
+      "not_proof": "Device registration number, NEO-ONE SCI model equivalence, clinical delivery, exact algorithm implementation or independent effectiveness.",
+      "publication_date_provenance": "Article heading dates the original Pudong report 2026-06-16; the Shanghai municipal URL path contains 20260617.",
+      "raw_http_bytes_retained_for_this_source": false
+    },
+    {
+      "id": "NEO-NHSA-20260322",
+      "url": "https://www.nhsa.gov.cn/art/2026/3/22/art_14_19989.html",
+      "published_on": "2026-03-22",
+      "source_class": "PRIMARY_NATIONAL_HEALTHCARE_ADMINISTRATION",
+      "observed": "States national healthcare coding assigned to newly approved implantable BCI in mid March 2026",
+      "valid_axis": "POST_APPROVAL_HEALTHCARE_CODING",
+      "not_proof": "Actual reimbursement/payment by national insurance"
+    },
+    {
+      "id": "NEO-REGNO-THIRD-PARTY-20260416",
+      "url": "https://www.healtech.com.cn/news/info.html?id=472",
+      "published_on": "2026-04-16",
+      "source_class": "DATED_THIRD_PARTY_MEDICAL_AFFAIRS_PROVIDER",
+      "observed": "Reports device registration number 国械注准20263120537",
+      "valid_axis": "REGISTRATION_NUMBER_LEAD",
+      "not_proof": "Authoritative direct registration-record verification"
+    },
+    {
+      "id": "NEO-SSE-IPO-20260611",
+      "url": "https://static.sse.com.cn/stock/disclosure/announcement/c/202606/002198_20260611_0RN0.pdf",
+      "published_on": "2026-06-11",
+      "source_class": "OFFICIAL_STOCK_EXCHANGE_ISSUER_DISCLOSURE_INDEX_ONLY",
+      "observed": "Public search index for Shanghai Stock Exchange first IPO draft prospectus identifies commercial NEO-ONE SCI as NEO platform's initial implantable hand motor compensation device and describes neural-signal decoding/online parameter-learning technology at issuer platform level.",
+      "valid_axis": "PRE_CUTOFF_ISSUER_PRODUCT_NAME_AND_TECHNICAL_PLATFORM_DISCLOSURE",
+      "not_proof": "Model-level audited AI algorithm implementation or independent external clinical algorithm validation; the original PDF could not be opened for page-level content verification.",
+      "direct_pdf_read_status": "WEB_FETCH_TIMEOUT_SEARCH_INDEX_SNIPPET_ONLY",
+      "original_file_sha256": null,
+      "page_specific_citation": null
+    }
+  ],
+  "source_acquisition": {
+    "query_expressions_submitted_this_session": 1,
+    "followup_source_searches_performed": true,
+    "read_via": "PUBLIC_WEB_SEARCH_EXTRACTED_TEXT",
+    "raw_http_response_bytes_retained": false,
+    "independently_recomputed_source_response_sha256": false,
+    "source_urls_attached": true
+  },
+  "adjudication": {
+    "candidate_identity": "PROVISIONAL_SAME_SYSTEM_REFERENT_ACROSS_SOURCES",
+    "FDA_or_CE_authorization": "NOT_ASSERTED",
+    "china_regulatory_approval": "SUPPORTED_BY_NMPA_DATED_NOTICE",
+    "clinical_commercial_distribution": "SUPPORTED_BY_DATED_PRESCRIPTION_AND_IMPLANT_REPORTS",
+    "ai_model_capability": "PRE_CUTOFF_ISSUER_IPO_DISCLOSES_NEURAL_DECODING_AND_ONLINE_LEARNING_PLATFORM_CAPABILITIES_BUT_EXACT_REGISTERED_MODEL_IMPLEMENTATION_AND_EXTERNAL_VALIDATION_STILL_UNVERIFIED",
+    "market_eligibility_under_frozen_NEUROAI_protocol": "REQUIRES_GOVERNED_INCLUSION_AND_DEDUP_REVIEW",
+    "terminal_r1_7_review": false,
+    "new_canonical_product_identifiers": 0,
+    "new_a4_increment": 0
+  },
+  "important_distinctions": [
+    "The 2026-03-13 approval and 2026-07-13 clinical prescription are different evidence axes.",
+    "NMPA authority applies to exact registered device and Chinese indication, not unrelated worldwide commercialization.",
+    "The original 2026-09-24 cutoff is maintained; the October research finding cannot rewrite the historical A2 ABSTAIN row.",
+    "Full R1.7 source closure and global saturation remain unestablished.",
+    "Potential machine-learning brain decoding remains a separate technical capability question requiring direct evidence.",
+    "NEO-ONE SCI is identified by the June 2026 official-venue IPO disclosure; do not infer every NEO platform device has the same approved indication or algorithm.",
+    "The dated 2026-06-16 Shanghai municipal exhibition report corroborates the company's NEO short name before the world-time cutoff; it does not prove exact NEO-ONE SCI device identity or product-level AI capabilities."
+  ]
+}

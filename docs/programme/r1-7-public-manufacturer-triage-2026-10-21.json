@@ -1,0 +1,82 @@
+{
+  "record_type": "RELEASE_A_R1_7_PROVISIONAL_PUBLIC_MANUFACTURER_SOURCE_TRIAGE_v0.1",
+  "compiled_at_date_utc": "2026-10-21",
+  "original_world_time_cutoff": "2026-09-24",
+  "original_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "scope": "MANUFACTURER_PAGE_PUBLIC_TEXT_RESEARCH_AND_FROZEN_QUERY_RELEVANCE_MAP_ONLY",
+  "acquisition_boundary": "These URLs were inspected as rendered public webpages on 2026-10-21. This record does not preserve raw response bytes or constitute R1.7 source collection under a frozen query.",
+  "records": [
+    {
+      "lead_id": "TRIAGE-NEURABLE-MW75-NEURO-LT-2025",
+      "manufacturer": "Neurable",
+      "subject": "MW75 Neuro LT (separate named version from MW75 Neuro)",
+      "source_url": "https://www.neurable.com/blog-posts/neurable-introduces-mw75-neuro-lt-lighter-more-accessible-just-as-groundbreaking",
+      "source_publication_date": "2025-09-30",
+      "date_basis": "Dated manufacturer announcement shown on webpage",
+      "observed_source_claim": "MW75 Neuro LT headphones integrate 12-channel EEG and AI-powered focus/fatigue assessment; manufacturer described pre-order availability on the announcement date.",
+      "permitted_inference": "Historically published manufacturer claim exists before the 2026-09-24 world-time cutoff.",
+      "unresolved": "Exact offering identity, independent capability validation, Sep 2026 distribution/currentness and Release-A inclusion remain unadjudicated.",
+      "related_frozen_obligations": [
+        {
+          "frozen_query_or_seed_id": "F6-R1-ATTENTION_VIGILANCE-V2",
+          "frozen_capture_id": "PDC-beeca13d5ba212f2fa5287d71c7881edc7225a1778ad37100fdf692786d68a98",
+          "frozen_work_item_id": "R1WI-cb35c6d682078f9ccc1082e7b2c5bde75e12bdb48bf2bf1353174c42b790fcb0"
+        },
+        {
+          "frozen_query_or_seed_id": "F6-R1-FATIGUE_DROWSINESS-V2",
+          "frozen_capture_id": "PDC-ba42b136e776c11ad7443e73cb97746b9f0fc72e468858de1630b71b5ff0989e",
+          "frozen_work_item_id": "R1WI-963e4a78e94f5625ecc399078fe8356fdfbb79977569cab1ecb9614cdb86f9d7"
+        },
+        {
+          "frozen_query_or_seed_id": "F6-R1-NONTRADITIONAL_FORM_FACTOR-V2",
+          "frozen_capture_id": "PDC-b478d8a7dc37815dcbb5d66959d5532095371374bfcca5dae475054fd0e9aefb",
+          "frozen_work_item_id": "R1WI-6d24de03c1335762cbbfb4bac1ec02a93341b33a4e234756b60978f13a05aa20"
+        }
+      ]
+    },
+    {
+      "lead_id": "TRIAGE-NEUROSITY-CROWN-OSC-PERFORM-MODE-2024",
+      "manufacturer": "Neurosity",
+      "subject": "Crown OSC Perform Mode",
+      "source_url": "https://neurosity.co/blog/introducing-osc-perform-mode",
+      "source_publication_date": "2024-11-19",
+      "date_basis": "Dated manufacturer blog shown on webpage",
+      "observed_source_claim": "Manufacturer describes OSC Perform Mode outputting processed real-time EEG metrics for performances and installations; differentiates raw streaming from processed mode.",
+      "permitted_inference": "A pre-cutoff manufacturer article describes an interactive brain-signal software capability; separate product/version eligibility remains open.",
+      "unresolved": "Determine whether the application meets the frozen adaptive-interface criterion and whether the feature is an independent offering or a versioned feature of Crown.",
+      "related_frozen_obligations": [
+        {
+          "frozen_query_or_seed_id": "F6-R1-ADAPTIVE_INTERFACE-V2",
+          "frozen_capture_id": "PDC-0cc175ba9b07406e0dea01d579c8287adb9f77897b219ea616a22b8bd0154120",
+          "frozen_work_item_id": "R1WI-72ab03668003f03036c7a9656d9700cc827df4ea5d9207c11cf549b6057c36ec"
+        }
+      ]
+    },
+    {
+      "lead_id": "TRIAGE-BITBRAIN-DIADEM-ES-WEBPAGE",
+      "manufacturer": "Bitbrain",
+      "subject": "Diadem 12ch EEG",
+      "source_url": "https://www.bitbrain.com/es/productos-neurotecnologia/dry-eeg/diadem",
+      "source_publication_date": null,
+      "date_basis": "No dependable page publication date observed in the inspected content",
+      "observed_source_claim": "Spanish manufacturer page describes 12-channel dry wearable EEG and related signal-acquisition software.",
+      "permitted_inference": "The currently retrievable Spanish page is a plausible primary-language product reference.",
+      "unresolved": "No independent historical page-date or Sep 2026 commercial eligibility proof; EEG acquisition alone does not settle the NeuroAI inclusion boundary. Match English and Spanish pages as possible same offering.",
+      "related_frozen_obligations": [
+        {
+          "frozen_query_or_seed_id": "F8-R3-LOC-BITBRAIN-ES",
+          "frozen_capture_id": "PDC-625bf5bcebe32ce24b2b6b0922ae7ec904bedce2f007e2ed322ba50eac0c11bd",
+          "frozen_work_item_id": "R1WI-adb0dfcf659de53fd1f737de1eeac72d9f520c477c29b9171f6c132589a8df52"
+        }
+      ]
+    }
+  ],
+  "no_credit": {
+    "original_query_reexecutions_proven": 0,
+    "newly_archived_raw_http_source_bytes_in_this_packet": 0,
+    "terminal_source_resolutions": 0,
+    "new_canonical_product_identifiers": 0,
+    "a3_or_a4_product_increments": 0,
+    "human_adjudications": 0
+  }
+}

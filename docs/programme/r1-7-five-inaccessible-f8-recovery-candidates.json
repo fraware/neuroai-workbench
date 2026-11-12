@@ -1,0 +1,139 @@
+{
+  "artifact_id": "R1_7_F8_FIVE_INACCESSIBLE_SOURCE_RECOVERY_CANDIDATES_v0.1",
+  "source_boundary": "SECONDARY_LOOKUP_OF_ALTERNATIVE_OFFICIAL_ENTRY_POINTS_NOT_RAW_HTTP_CAPTURE",
+  "compiled_utc_date": "2026-10-21",
+  "frozen_world_time_cutoff": "2026-09-24",
+  "frozen_knowledge_time_cutoff": "2026-10-24T23:59:59Z",
+  "original_capture_outcome": "FAILED_INACCESSIBLE",
+  "item_count": 5,
+  "evidence_records_accepted": 0,
+  "terminal_extractions_claimed": 0,
+  "capture_context": "Exact original capture/query IDs from frozen F8 candidate-resolution shard; proposed alternative URLs were found later and are not represented as original query targets or as confirmed retrieved snapshots",
+  "items": [
+    {
+      "capture_id": "PDC-8648b52b8cabed563602da5c6c3db751bff0508479ef4bec884b5c2f00093b73",
+      "query_or_seed_id": "F8-R2-CAP-ZH-2",
+      "language": "zh",
+      "jurisdiction": "CN",
+      "kind": "GENERIC_LOCAL_LANGUAGE_CAPABILITY_QUERY",
+      "locators": [
+        {
+          "url": "https://www.miit.gov.cn/jgsj/kjs/wjfb/art/2025/art_438e059801414869abc50abdb06eeac6.html",
+          "kind": "DATED_PUBLIC_POLICY_CONTEXT",
+          "document_date": "2025-07-30",
+          "supports": "China's multi-ministry brain-computer-interface industry policy describes neural decoding and device development; no specific product matched"
+        },
+        {
+          "url": "https://udi.nmpa.gov.cn/",
+          "kind": "OFFICIAL_DYNAMIC_DEVICE_IDENTIFIER_LOOKUP",
+          "document_date": null,
+          "supports": "Search interface for registered medical-device identifiers; no device-level search result extracted"
+        }
+      ],
+      "unresolved": "Original generic Chinese capability-page locator and any attributable product/capability result remain unknown",
+      "source_retrieval_status": "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED",
+      "source_decision": "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION",
+      "new_product_identity_established": false
+    },
+    {
+      "capture_id": "PDC-625bf5bcebe32ce24b2b6b0922ae7ec904bedce2f007e2ed322ba50eac0c11bd",
+      "query_or_seed_id": "F8-R3-LOC-BITBRAIN-ES",
+      "language": "es",
+      "jurisdiction": "ES",
+      "kind": "LOCALIZED_MANUFACTURER_QUERY",
+      "locators": [
+        {
+          "url": "https://www.bitbrain.com/es/productos-neurotecnologia/dry-eeg/diadem",
+          "kind": "CURRENT_SPANISH_MANUFACTURER_MODEL_PAGE",
+          "document_date": null,
+          "supports": "Spanish manufacturer page describes Diadem as 12-channel dry EEG; no September 2026 availability inferred"
+        },
+        {
+          "url": "https://www.bitbrain.com/es/blog/amplificardor-eeg",
+          "kind": "DATED_SPANISH_MANUFACTURER_TECHNICAL_ARTICLE",
+          "document_date": "2024-07-10",
+          "supports": "Manufacturer historical technical article names Diadem EEG and Versatile EEG; supports existence at article date"
+        }
+      ],
+      "unresolved": "Exact original failed URL, specific model relationship, and historic availability require review",
+      "source_retrieval_status": "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED",
+      "source_decision": "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION",
+      "new_product_identity_established": false
+    },
+    {
+      "capture_id": "PDC-eae331ea8da97f74e658bdc6803821d2eaab8f3503102072a0a4717c29bfbbe8",
+      "query_or_seed_id": "F8-R3-LOC-NMPA-ZH",
+      "language": "zh",
+      "jurisdiction": "CN",
+      "kind": "LOCAL_REGULATOR_LOOKUP",
+      "locators": [
+        {
+          "url": "https://www.nmpa.gov.cn/zwfwqjd/index.html?type=pc",
+          "kind": "OFFICIAL_DEVICE_REGISTRATION_SEARCH_PORTAL",
+          "document_date": null,
+          "supports": "NMPA government service lists domestic and imported medical device registration searches; no specific registration matched"
+        },
+        {
+          "url": "https://udi.nmpa.gov.cn/",
+          "kind": "OFFICIAL_DEVICE_IDENTIFIER_DATABASE",
+          "document_date": null,
+          "supports": "NMPA UDI search entry point; no retrieved record supports a particular product's registration"
+        }
+      ],
+      "unresolved": "Specific medical device registration, dates, and exact original failed destination are unresolved",
+      "source_retrieval_status": "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED",
+      "source_decision": "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION",
+      "new_product_identity_established": false
+    },
+    {
+      "capture_id": "PDC-48a2e7d423ea9d7d5d89f019247c0f3697624366e0dad0781aa673d2a594d841",
+      "query_or_seed_id": "F8-R3-LOC-MOH-IL",
+      "language": "he",
+      "jurisdiction": "IL",
+      "kind": "LOCAL_REGULATOR_LOOKUP",
+      "locators": [
+        {
+          "url": "https://www.gov.il/en/service/health-registries",
+          "kind": "OFFICIAL_MEDICAL_DEVICE_REGISTRY_ENTRY_POINT",
+          "document_date": null,
+          "supports": "Israeli Ministry of Health identifies medical devices and accessories among its public registries; no individual device approval checked"
+        },
+        {
+          "url": "https://www.gov.il/he/pages/amar-announcements",
+          "kind": "DATED_HEBREW_MEDICAL_DEVICE_ADMINISTRATIVE_CONTEXT",
+          "document_date": "2024-12-22",
+          "supports": "Israeli AMR announcements describe medical-device registration and renewal processes; no product-specific approval inferred"
+        }
+      ],
+      "unresolved": "Specific device registration match, historical coverage, and frozen source URL remain unresolved",
+      "source_retrieval_status": "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED",
+      "source_decision": "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION",
+      "new_product_identity_established": false
+    },
+    {
+      "capture_id": "PDC-6ffe1e5c22e4e1654329b1e4664976f9ad71eadd8ca2009d3afb5ce2748df5e6",
+      "query_or_seed_id": "F8-R3-LOC-NEUROELECTRICS-ES",
+      "language": "es",
+      "jurisdiction": "ES",
+      "kind": "LOCALIZED_MANUFACTURER_QUERY",
+      "locators": [
+        {
+          "url": "https://www.neuroelectrics.com/products/research/enobio",
+          "kind": "CURRENT_MANUFACTURER_MODEL_FAMILY_PAGE_NOT_SPANISH",
+          "document_date": null,
+          "supports": "Manufacturer describes Enobio EEG systems in 8/20/32 channel models, with BCI/neurofeedback uses; page is English"
+        },
+        {
+          "url": "https://www.neuroelectrics.com/blog/5-chinese-research-studies-advancing-neuroscience-with-enobio-and-starstim",
+          "kind": "DATED_MANUFACTURER_RESEARCH_ARTICLE_NOT_SPANISH",
+          "document_date": "2024-02-06",
+          "supports": "Manufacturer historical article references Enobio and Starstim research; not an original Spanish source or commercial-currentness assertion"
+        }
+      ],
+      "unresolved": "Spanish-language original target remains inaccessible/unverified; historical model-specific product state unresolved",
+      "source_retrieval_status": "ALTERNATIVE_LOCATOR_DISCOVERED;RAW_HTTP_BYTES_NOT_ARCHIVED",
+      "source_decision": "PENDING_INDEPENDENT_PRIMARY_SOURCE_ACQUISITION",
+      "new_product_identity_established": false
+    }
+  ]
+}

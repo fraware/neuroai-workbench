@@ -1,0 +1,128 @@
+{
+  "artifact_type": "RELEASE_A_R1_7_NEO_TWO_RUN_PUBLIC_HTTP_DIGEST_RECONCILIATION_v0.1",
+  "prepared_utc_date": "2026-10-22",
+  "frozen_context": {
+    "query_id": "F8-R1-CAT-ZH-1",
+    "capture_id": "PDC-9ac8a0f56286289e4e0924b9160ea166957afc51fc66085dcee6a2d4634bf36a",
+    "original_outcome": "ABSTAIN",
+    "world_time_cutoff": "2026-09-24",
+    "knowledge_time_cutoff": "2026-10-24T23:59:59Z"
+  },
+  "acquisition_runs": [
+    {
+      "run_id": 39870521895,
+      "artifact_id": 12465519277,
+      "completed_on_utc": "2026-10-22",
+      "source_urls_attempted": 3,
+      "http_200": 2,
+      "artifact_zip_sha256": "1a92769b6d956ac2017c64c195a9abd75560a7a6b40ec8799e38b85e529306d1",
+      "provenance": "Github Actions upload-artifact runner digest"
+    },
+    {
+      "run_id": 39871029899,
+      "artifact_id": 12467060178,
+      "completed_on_utc": "2026-10-22",
+      "source_urls_attempted": 5,
+      "http_200": 3,
+      "artifact_zip_sha256": "9c08e0d9828532c01b450550fa67abbb04465f52738ff4e00d8d433ea7050878",
+      "provenance": "Independently recomputed from connector-downloaded ZIP"
+    }
+  ],
+  "distinct_successful_urls": 4,
+  "distinct_successful_response_bytes_total": 64109,
+  "sources": [
+    {
+      "id": "NEO-NMPA-20260313",
+      "attempts": [
+        {
+          "run_id": 39870521895,
+          "status": 412
+        },
+        {
+          "run_id": 39871029899,
+          "status": 412
+        }
+      ],
+      "successful_digest": null,
+      "acquisition_state": "ACCESS_RESTRICTED_HTTP_412_NO_NEGATIVE_INFERENCE"
+    },
+    {
+      "id": "NEO-SHANGHAI-20260313",
+      "attempts": [
+        {
+          "run_id": 39870521895,
+          "status": 200
+        },
+        {
+          "run_id": 39871029899,
+          "status": 200
+        }
+      ],
+      "successful_digest": "a13cc943e3d993c9f60c3dfbea895fd703bedf20911dc1c2318dae3849984bf6",
+      "bytes": 15835,
+      "last_modified_header": "Fri, 13 Mar 2026 09:00:10 GMT",
+      "acquisition_state": "INDEPENDENT_TWO_RUN_SHA256_MATCH"
+    },
+    {
+      "id": "NEO-NHSA-20260322",
+      "attempts": [
+        {
+          "run_id": 39870521895,
+          "status": 200
+        },
+        {
+          "run_id": 39871029899,
+          "status": null,
+          "outcome": "NETWORK_FAILURE"
+        }
+      ],
+      "successful_digest": "a480d0cdc9f9d5777358b987c2deffe22ef36b2ad6f5ad66d4073b6817fbcce7",
+      "bytes": 14387,
+      "last_modified_header": "Sun, 22 Mar 2026 06:00:00 GMT",
+      "acquisition_state": "FIRST_RUN_DIGEST_RETAINED_SECOND_RUN_NETWORK_FAILURE"
+    },
+    {
+      "id": "NEO-SHANGHAI-CLINICAL-AUG2026",
+      "attempts": [
+        {
+          "run_id": 39871029899,
+          "status": 200
+        }
+      ],
+      "successful_digest": "8d304d5efb38aeb92bcf7699da298dcdb89ee84ba15c2547a1c4cf2cfd16e48d",
+      "bytes": 17363,
+      "last_modified_header": "Wed, 12 Aug 2026 01:46:13 GMT",
+      "acquisition_state": "SOURCE_BYTES_HASHED_CURRENT_OBSERVATION",
+      "article_displayed_publication_date": "2026-08-07",
+      "interpretation": "The article date is the heading date; HTTP Last-Modified and URL path represent host metadata, not proof of first publication."
+    },
+    {
+      "id": "NEO-SHANGHAI-JULY-IMPLANT",
+      "attempts": [
+        {
+          "run_id": 39871029899,
+          "status": 200
+        }
+      ],
+      "successful_digest": "df1981062dd9bdd9f4c53f2af04cdc7a669eba626786c1ba94e6ea4aa1869d5f",
+      "bytes": 16524,
+      "acquisition_state": "SOURCE_BYTES_HASHED_CURRENT_OBSERVATION",
+      "source_role": "Shanghai Information Office reproduces a Yicai Global July 16 account; not an independent hospital registry record."
+    }
+  ],
+  "license": "Source HTTP bodies hashed in runner memory, not saved in GitHub or artifact. Digests cannot themselves replay the historical source without obtaining the bytes.",
+  "source_credit": {
+    "original_frozen_A2_ABSTAIN_preserved": true,
+    "source_claims_temporally_accepted": false,
+    "terminal_R1_7_work_items": 0,
+    "canonical_product_increments": 0,
+    "new_human_adjudications": 0,
+    "global_saturation_creditted": false
+  },
+  "bounds": [
+    "Current October HTTP content hashes are not cryptographic proof that page content was identical on September 24.",
+    "The separately reported first prescription July 13 is a sourced historical claim, not a direct independently retained hospital transaction.",
+    "Device-level AI-enabled functionality and exact regulatory device model identity still require full technical review.",
+    "The 221 unlinked-capture projection retains its original two-archive scope; adding this supplement does not change that denominator."
+  ]
+}
